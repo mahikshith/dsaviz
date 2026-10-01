@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Interview prep — dsaviz</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button{font:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1500px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<header style="height: 76px; flex-shrink: 0; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; gap: 22px; border-bottom: 1px solid {{t.line}}">
+<a href="Home.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="{{t.text}}"></rect><circle cx="10" cy="15" r="3.5" fill="{{t.logoL}}"></circle><circle cx="20" cy="15" r="3.5" fill="{{t.logoR}}"></circle></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">dsaviz</span></a>
+<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 16px; font-size: 15px; font-weight: 500">
+<a href="Home.dc.html" style="color: {{t.muted}}">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Interview.dc.html" style="font-weight: 700">Interview prep</a><a href="Glossary.dc.html" style="color: {{t.muted}}">Glossary</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
+</nav>
+<div style="flex-grow: 1"></div>
+<div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3">
+<button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button>
+</sc-for>
+</div>
+
+</header>
+
+<div style="flex-grow: 1; padding: 36px 40px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 46px; font-weight: 600; letter-spacing: -0.02em">Interview prep</h1>
+<p style="margin: 0; font-size: 16px; color: {{t.text2}}">{{tabLine}}</p>
+</div>
+</div>
+<div role="tablist" aria-label="Interview prep" style="display: flex; gap: 2px; padding: 4px; border-radius: 14px; background: {{t.sunk}}; align-self: flex-start">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="5"><button role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="height: 42px; padding: 0 18px; border: 0; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+</div>
+
+<!-- PLANS -->
+<sc-if value="{{isPlans}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; animation: rise 0.3s ease">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; font-weight: 700; color: {{t.muted}}">How long do you have?</span>
+<sc-for list="{{plans}}" as="pl" hint-placeholder-count="3"><button onClick="{{pl.pick}}" aria-pressed="{{pl.on}}" style="padding: 14px 16px; border-radius: 14px; border: 2px solid {{pl.border}}; background: {{pl.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 3px"><span style="font-size: 16px; font-weight: 700">{{pl.name}}</span><span style="font-size: 13px; color: {{t.muted}}">{{pl.sub}}</span></button></sc-for>
+</div>
+<div style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; font-weight: 700; color: {{t.muted}}">Where are you starting?</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{levels}}" as="lv" hint-placeholder-count="3"><button onClick="{{lv.pick}}" aria-pressed="{{lv.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{lv.bg}}; color: {{lv.fg}}">{{lv.label}}</button></sc-for>
+</div>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.text2}}">{{levelNote}}</span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{days}}" as="dy" hint-placeholder-count="14"><button onClick="{{dy.pick}}" aria-pressed="{{dy.on}}" style="min-height: 64px; padding: 8px; border-radius: 12px; border: 1.5px solid {{dy.border}}; background: {{dy.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 3px"><span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}">day {{dy.n}}</span><span style="font-size: 12px; font-weight: 700; text-align: left">{{dy.label}}</span></button></sc-for>
+</div>
+<div style="padding: 22px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation: rise 0.3s ease">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Day {{day.n}} · {{day.label}}</span><span style="font-size: 13px; color: {{t.muted}}">~{{day.mins}} min</span></div>
+<sc-for list="{{day.items}}" as="it" hint-placeholder-count="3">
+<a href="Briefing.dc.html" onClick="{{it.go}}" style="min-height: 60px; display: flex; gap: 14px; align-items: center; border-top: 1px solid {{t.line}}">
+<span style="width: 8px; height: 8px; border-radius: 999px; background: {{it.dot}}"></span>
+<span style="display: flex; flex-direction: column; flex-grow: 1"><span style="font-size: 15px; font-weight: 600">{{it.title}}</span><span style="font-family: {{t.display}}; font-style: italic; font-size: 14px; color: {{t.muted}}">{{it.story}} · {{it.pattern}}</span></span>
+<span style="font-size: 13px; color: {{t.muted}}">{{it.diff}} · {{it.time}}</span>
+</a>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- COMPANY TRACKS -->
+<sc-if value="{{isCompany}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 18px; animation: rise 0.3s ease">
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{companies}}" as="c" hint-placeholder-count="10"><button onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-size: 14px; font-weight: 700; background: {{c.bg}}; color: {{c.fg}}; border: 1px solid {{c.border}}">{{c.label}}</button></sc-for></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{coPatterns}}" as="cp" hint-placeholder-count="6">
+<div style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; gap: 10px"><span style="font-size: 17px; font-weight: 700">{{cp.name}}</span><span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}">#{{cp.rank}}</span></div>
+<span style="font-family: {{t.display}}; font-style: italic; font-size: 14px; color: {{t.muted}}">with {{cp.cast}}</span>
+<sc-for list="{{cp.rows}}" as="cr" hint-placeholder-count="2"><a href="Briefing.dc.html" onClick="{{cr.go}}" style="min-height: 44px; display: flex; gap: 10px; align-items: center; border-top: 1px solid {{t.line}}; font-size: 14px"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{cr.dot}}"></span><span style="font-weight: 600; flex-grow: 1">{{cr.title}}</span><span style="font-size: 12px; color: {{t.muted}}">{{cr.diff}}</span></a></sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- PATTERN RADAR -->
+<sc-if value="{{isRadar}}" hint-placeholder-val="{{ false }}">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; animation: rise 0.3s ease">
+<div style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 190px minmax(0, 1fr); gap: 14px; padding: 12px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}"><span>If the problem says…</span><span>Think</span><span>Flagship story</span></div>
+<sc-for list="{{radar}}" as="rd" hint-placeholder-count="12">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 190px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 20px; border-top: 1px solid {{t.line}}">
+<span style="font-size: 15px; line-height: 1.45">{{rd.clue}}</span>
+<span style="font-size: 14px; font-weight: 700; color: {{t.accent}}">{{rd.pattern}}</span>
+<a href="Briefing.dc.html" onClick="{{rd.go}}" style="font-family: {{t.display}}; font-style: italic; font-size: 15px">{{rd.story}} →</a>
+</div>
+</sc-for>
+</div>
+<div style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px; align-self: start">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Quick drill · {{quiz.n}} of {{quiz.total}}</span>
+<p style="margin: 0; font-family: {{t.display}}; font-size: 20px; line-height: 1.5">“{{quiz.prompt}}”</p>
+<sc-for list="{{quiz.options}}" as="qo" hint-placeholder-count="4"><button onClick="{{qo.pick}}" aria-pressed="{{qo.on}}" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1.5px solid {{qo.border}}; background: {{qo.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; font-size: 15px; font-weight: 600">{{qo.label}}</button></sc-for>
+<sc-if value="{{quiz.answered}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; line-height: 1.55; color: {{t.text2}}; animation: rise 0.25s ease">{{quiz.feedback}}</span></sc-if>
+<button onClick="{{quiz.next}}" style="height: 44px; border-radius: 999px; border: 0; background: {{t.text}}; color: {{t.bg}}; cursor: pointer; font-size: 14px; font-weight: 700">Next clue</button>
+</div>
+</div>
+</sc-if>
+
+<!-- MOCK INTERVIEW -->
+<sc-if value="{{isMock}}" hint-placeholder-val="{{ false }}">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; animation: rise 0.3s ease">
+<div style="padding: 28px; border-radius: 22px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<sc-if value="{{mock.idle}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Interview mode</span>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 34px; font-weight: 600">No stories. No hints. Just you and the clock.</h2>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: {{t.text2}}">We pick a problem you haven't solved, hide the story and the pattern name, and start a 45-minute timer. Talk it through out loud as if someone were listening.</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap"><sc-for list="{{mockLevels}}" as="ml" hint-placeholder-count="3"><button onClick="{{ml.pick}}" aria-pressed="{{ml.on}}" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{ml.border}}; background: {{ml.bg}}; color: {{ml.fg}}; cursor: pointer; font-size: 14px; font-weight: 700">{{ml.label}}</button></sc-for></div>
+<button onClick="{{mock.start}}" style="align-self: flex-start; height: 52px; padding: 0 26px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 16px; font-weight: 700">Start a 45-minute mock</button>
+</div>
+</sc-if>
+<sc-if value="{{mock.running}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 13px; color: {{t.muted}}">LeetCode {{mock.p.n}} · {{mock.p.diff}}</span><span style="font-family: {{t.mono}}; font-size: 34px; font-weight: 800; color: {{mock.clockColor}}">{{mock.clock}}</span></div>
+<h2 style="margin: 0; font-size: 30px; font-weight: 700">{{mock.p.title}}</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: {{t.text2}}">Open the original statement for LeetCode {{mock.p.n}} in your usual editor. The story, cast and pattern name stay hidden until you finish.</p>
+<div style="display: flex; gap: 10px">
+<button onClick="{{mock.pause}}" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">{{mock.pauseText}}</button>
+<button onClick="{{mock.finish}}" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 700">I'm done</button>
+<button onClick="{{mock.abort}}" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Give up</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{mock.done}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; animation: rise 0.3s ease">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}">Mock finished · {{mock.used}}</span>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 30px; font-weight: 600">That was “{{mock.p.story}}”.</h2>
+<p style="margin: 0; font-size: 16px; line-height: 1.6">{{mock.p.synopsis}}</p>
+<span style="font-size: 15px">Pattern: <b style="color: {{t.accent}}">{{mock.p.pattern}}</b>. Did you spot it before you started coding?</span>
+<div style="display: flex; gap: 10px"><a href="Briefing.dc.html" onClick="{{mock.review}}" style="height: 46px; padding: 0 20px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700">Read the story</a><button onClick="{{mock.again}}" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Another mock</button></div>
+</div>
+</sc-if>
+</div>
+<div style="padding: 24px; border-radius: 22px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px; align-self: start">
+<span style="font-size: 17px; font-weight: 700">Think-aloud checklist</span>
+<sc-for list="{{checklist}}" as="ck" hint-placeholder-count="6"><button onClick="{{ck.toggle}}" aria-pressed="{{ck.on}}" style="min-height: 48px; padding: 8px 12px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{ck.bg}}; color: {{t.text}}; cursor: pointer; display: flex; gap: 12px; align-items: center; text-align: left; font-size: 14px"><span style="width: 22px; height: 22px; flex-shrink: 0; box-sizing: border-box; border-radius: 6px; border: 2px solid {{ck.box}}; background: {{ck.fill}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">{{ck.mark}}</span>{{ck.label}}</button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- RESOURCES -->
+<sc-if value="{{isResources}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 18px; animation: rise 0.3s ease">
+<div style="padding: 14px 18px; border-radius: 14px; background: {{t.sunk}}; font-size: 14px; line-height: 1.5">Affiliate disclosure: none of these links earn us anything today. If that ever changes, the link will say so.</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{resources}}" as="rs" hint-placeholder-count="9">
+<a href="{{rs.url}}" target="_blank" rel="noopener" style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.accent}}">{{rs.kind}}</span>
+<span style="font-size: 17px; font-weight: 700">{{rs.name}} ↗</span>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">{{rs.why}}</span>
+<span style="font-size: 12px; color: {{t.muted}}">Best for: {{rs.when}}</span>
+</a>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["paper","ink","field"],"default":"paper"},"$preview":{"width":1440,"height":1500}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const THEMES = {
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+// @@CATALOG@@ — generated block, shared by every board that lists problems.
+// Company tags: where learners most often report meeting each problem in interviews. Times are typical first-solve times.
+const STAGES = [
+  { key: "strings", name: "Strings", meta: "bead necklaces", blurb: "A string is a necklace of letter-beads. You'll walk it from both ends, slide a window along it, and count its beads.", why: "Everyone has used text. It's the gentlest place to meet your first patterns." },
+  { key: "arrays", name: "Arrays", meta: "rows of lanterns", blurb: "An array is a row of numbered lanterns. The big ideas show up here: two friends walking inward, sliding windows, halving searches and grids you can turn.", why: "Most interview problems are arrays in disguise." },
+  { key: "hash", name: "Maps & sets", meta: "coat-check counters", blurb: "Hand over a coat, get a ticket, find it again instantly. Maps and sets turn “search everything” into “just look it up”.", why: "The most-used trick for turning O(n²) into O(n)." },
+  { key: "stacks", name: "Stacks, queues & heaps", meta: "plates, lines and triage", blurb: "A stack is a pile of plates, a queue is a ticket line, and a heap is a triage desk where the most urgent case is always on top.", why: "They power bracket-matching, 'next warmer day' puzzles, top-K lists and the BFS you'll meet later." },
+  { key: "linked", name: "Linked lists", meta: "train carriages", blurb: "Each carriage only knows the next one. You'll turn trains around, zip two trains together and catch loops with a tortoise and a hare.", why: "Your first real taste of pointers — you'll need them for trees." },
+  { key: "trees", name: "Trees", meta: "family trees", blurb: "One ancestor at the top, branches below. Explore deep down one branch first, or visit floor by floor.", why: "DFS and BFS begin here, on shapes with no loops." },
+  { key: "graphs", name: "Graphs & grids", meta: "islands and ripples", blurb: "Maps of islands, cities and friendships. Ripple outward with BFS, or explore every path with DFS and backtrack when you hit a wall.", why: "Trees with loops — so you learn to remember where you've been." },
+  { key: "dp", name: "Dynamic programming", meta: "notes to your future self", blurb: "Solve the small versions first and write the answers down, so you never solve the same thing twice.", why: "It comes last because it builds on the recursion from trees and graphs." }
+];
+
+// name, tagline, companion (name, role)
+const PATTERNS = [
+  ["Two Pointers", "Two friends walk toward each other", "Lumi & Roo", "two friends who start at opposite ends"],
+  ["Sliding Window", "A train window gliding past the view", "Wren", "the window-keeper on the night train"],
+  ["Hash Map", "The coat-check counter", "Cleo", "the coat-check clerk who never forgets a ticket"],
+  ["Prefix Sum", "A running tally in the margin", "Penny", "who writes the running total after every step"],
+  ["Binary Search", "Guess the number, halve the doubt", "Gus", "the number-guesser who halves the doubt"],
+  ["Matrix", "Turning the tiled floor", "Tilda", "the tiler who turns whole floors"],
+  ["Intervals", "The meeting-room diary", "Iris", "the scheduler with the fat diary"],
+  ["Greedy", "Take the best step you can see", "Jax", "the stone-hopper who always leaps as far as he can"],
+  ["Stack", "A pile of plates: last on, first off", "Pip", "the plate-stacker at the busy canteen"],
+  ["Heap", "The triage desk", "Nia", "the triage nurse who always knows who's next"],
+  ["In-place Reversal", "Turning the train around", "Cole", "the conductor who re-couples carriages"],
+  ["Fast & Slow Pointers", "The tortoise and the hare", "Tam & Hazel", "a tortoise and a hare on the same track"],
+  ["Depth-First Search", "The maze explorer with chalk", "Moss", "the explorer who goes deep before going wide"],
+  ["Breadth-First Search", "Ripples in a pond", "Rill", "the ripple that spreads one ring at a time"],
+  ["Backtracking", "Try, mark, undo", "Chalk", "who marks every path and rubs it out on the way back"],
+  ["Dynamic Programming", "Notes to your future self", "Sol", "the scribe who writes every small answer down"]
+];
+
+// id, LeetCode #, title, story title, synopsis, difficulty, minutes, companies, pattern, stage, status, popularity rank, order added, animated?
+const PROBLEMS = [
+  ["valid-anagram", 242, "Valid Anagram", "The Scrabble Swap", "Two friends each hold a bag of Scrabble tiles. Can one spell exactly the other's word — nothing extra, nothing missing? Cleo keeps a tally: add for one bag, subtract for the other, and check every count lands on zero.", "Starter", 8, ["Amazon", "Bloomberg", "Uber"], "Hash Map", "strings", "done", 3, 1, true],
+  ["valid-palindrome", 125, "Valid Palindrome", "The Mirror Hallway", "Lumi and Roo walk a hallway painted with letters, one from each end, stepping over spaces and commas. If every pair of letters they meet matches, the hallway is a perfect mirror.", "Easy", 10, ["Meta", "Microsoft", "Apple"], "Two Pointers", "strings", "done", 2, 2, true],
+  ["longest-substring", 3, "Longest Substring Without Repeating Characters", "The Train of Unique Faces", "Wren watches passengers through the train window. She wants the longest stretch where no face appears twice. When a familiar face shows up, the back of the window slides forward just past the first one.", "Medium", 25, ["Amazon", "Microsoft", "Google"], "Sliding Window", "strings", "done", 1, 3, true],
+  ["char-replacement", 424, "Longest Repeating Character Replacement", "The Paint Touch-up", "A painter may repaint at most k tiles. How long a stretch can she make one colour? Wren keeps the window honest: window size minus the most common colour must stay at or below k.", "Medium", 30, ["Google", "Amazon", "Uber"], "Sliding Window", "strings", "todo", 5, 30, true],
+  ["min-window", 76, "Minimum Window Substring", "The Shopping List Window", "Walking down a market street, find the shortest stretch of stalls that sells everything on your list. Grow the window until the list is covered, then squeeze it from the left.", "Hard", 45, ["Meta", "Amazon", "Google", "Airbnb"], "Sliding Window", "strings", "todo", 4, 31, false],
+  ["longest-palindrome", 5, "Longest Palindromic Substring", "The Echo Chamber", "Stand in the middle of a word and shout. The echo spreads both ways for as long as the letters match. Try every middle — including the gaps between letters — and keep the longest echo.", "Medium", 30, ["Amazon", "Microsoft", "Adobe"], "Two Pointers", "strings", "todo", 3, 32, false],
+
+  ["two-sum-ii", 167, "Two Sum II — Sorted", "The Lantern Bridge", "Six lanterns hang in a row from dimmest to brightest. The gate opens only for two lanterns whose glow adds up to exactly the target. Lumi starts at the dim end, Roo at the bright end, and they squeeze inward.", "Medium", 20, ["Amazon", "Adobe", "Google", "Meta"], "Two Pointers", "arrays", "now", 4, 4, true],
+  ["container", 11, "Container With Most Water", "The Rain Barrel Builders", "Two builders stand at the ends of a fence of uneven planks. The shorter plank always decides how much rain the barrel holds, so the builder at the shorter plank steps inward, hoping for a taller one.", "Medium", 25, ["Amazon", "Google", "Meta"], "Two Pointers", "arrays", "todo", 3, 20, true],
+  ["3sum", 15, "3Sum", "The Campfire Trio", "Three friends around a fire need glows that add up to zero. Sort them, fix one friend in place, and let the other two play the Lantern Bridge on everyone to their right. Skip twins so no trio repeats.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Two Pointers", "arrays", "todo", 2, 6, false],
+  ["trapping-rain", 42, "Trapping Rain Water", "The Valley After the Storm", "Rain falls on a row of rocks. The water above each rock rises to the lower of the tallest rock on its left and the tallest on its right. Two walkers from the ends carry those heights with them.", "Hard", 45, ["Amazon", "Google", "Goldman Sachs"], "Two Pointers", "arrays", "todo", 5, 7, false],
+  ["move-zeroes", 283, "Move Zeroes", "The Tidy Bookshelf", "Push every empty slot on a bookshelf to the right while keeping the books in their order. Roo reads each slot; Lumi places the next book wherever the tidy part ends.", "Starter", 8, ["Meta", "Amazon", "Apple"], "Two Pointers", "arrays", "done", 6, 33, false],
+  ["best-time-stock", 121, "Best Time to Buy and Sell Stock", "The Market Stall Diary", "Each morning you note the price of mangoes. Remember the cheapest morning so far; today's profit is today's price minus that. Keep the best profit you've ever seen.", "Easy", 15, ["Amazon", "Goldman Sachs", "Flipkart"], "Sliding Window", "arrays", "done", 1, 5, true],
+  ["product-except-self", 238, "Product of Array Except Self", "The Group Photo Scores", "Everyone in a group photo gets a score: the product of everybody else's numbers. Penny walks once from the left and once from the right, and multiplies the two notes she left at each seat.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Apple"], "Prefix Sum", "arrays", "todo", 2, 34, false],
+  ["subarray-sum-k", 560, "Subarray Sum Equals K", "The Coin Jar Checkpoints", "Drop coins in a jar and note the running total at every checkpoint. Two checkpoints whose totals differ by exactly k fence off a stretch that sums to k — Cleo remembers how often each total has appeared.", "Medium", 30, ["Meta", "Google", "Amazon"], "Prefix Sum", "arrays", "todo", 3, 35, false],
+  ["binary-search", 704, "Binary Search", "The Number-Guessing Game", "Gus has to find a number in a sorted row. Every guess tells him higher or lower, so half the row disappears each time. Eight guesses are enough for 256 numbers.", "Starter", 8, ["Microsoft", "Apple"], "Binary Search", "arrays", "done", 4, 36, false],
+  ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, false],
+  ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, false],
+  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, false],
+  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, false],
+  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, false],
+  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, false],
+  ["subsets", 78, "Subsets", "The Picnic Basket Choices", "For every snack, Chalk asks one question: in the basket or not? Two branches per snack, and every path to the bottom is one possible basket.", "Medium", 25, ["Meta", "Amazon"], "Backtracking", "arrays", "todo", 2, 42, false],
+  ["permutations", 46, "Permutations", "The Seating Chart", "Seat guests one chair at a time. Try each unseated guest in the next chair, go deeper, then stand them back up and try the next.", "Medium", 25, ["Microsoft", "LinkedIn", "Amazon"], "Backtracking", "arrays", "todo", 3, 43, false],
+  ["combination-sum", 39, "Combination Sum", "The Exact Price Basket", "Fill a basket that costs exactly the target, reusing any item as often as you like. Chalk tries items in order so the same basket is never counted twice.", "Medium", 30, ["Amazon", "Airbnb"], "Backtracking", "arrays", "todo", 4, 44, false],
+
+  ["contains-duplicate", 217, "Contains Duplicate", "The Guest List", "At the door, Cleo checks every guest against her list. The moment someone is already on it, she knows someone came twice.", "Starter", 8, ["Amazon", "Apple"], "Hash Map", "hash", "done", 3, 8, true],
+  ["two-sum", 1, "Two Sum", "The Coat-Check Counter", "Guests arrive one by one. For each guest, Cleo checks her ticket book: is the partner who completes the target already here? If not, she writes this guest down and waits.", "Easy", 15, ["Amazon", "Google", "Meta", "Microsoft"], "Hash Map", "hash", "done", 1, 9, true],
+  ["group-anagrams", 49, "Group Anagrams", "The Letter-Sorting Office", "Every word goes into a pigeonhole labelled with its letters in alphabetical order. Words that share a label are anagrams of each other.", "Medium", 25, ["Amazon", "Uber", "Meta"], "Hash Map", "hash", "todo", 2, 10, false],
+  ["longest-consecutive", 128, "Longest Consecutive Sequence", "The Missing Page Hunt", "Torn diary pages lie scattered. Cleo only starts counting a run from a page whose previous page is missing, then counts upward — so every page is visited once.", "Medium", 25, ["Google", "Amazon"], "Hash Map", "hash", "todo", 4, 45, false],
+
+  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, false],
+  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, false],
+  ["min-stack", 155, "Min Stack", "The Plate Pile with a Memory", "Next to every plate, Pip writes the smallest plate in the pile at that moment. Taking a plate off takes its note with it.", "Medium", 15, ["Amazon", "Bloomberg"], "Stack", "stacks", "todo", 3, 46, false],
+  ["kth-largest", 215, "Kth Largest Element in an Array", "The Talent Show Top K", "Nia keeps only the k best acts in a small room, weakest at the door. A new act gets in only if it beats the weakest, who then leaves.", "Medium", 25, ["Meta", "Amazon", "Microsoft"], "Heap", "stacks", "todo", 1, 47, false],
+  ["top-k-frequent", 347, "Top K Frequent Elements", "The Most-Requested Songs", "Cleo tallies every song request; Nia keeps the k most-requested in her small room. The quieter songs never make it past the door.", "Medium", 25, ["Amazon", "Meta", "Apple"], "Heap", "stacks", "todo", 2, 48, false],
+  ["sliding-window-max", 239, "Sliding Window Maximum", "The Tallest in the Window", "As Wren's window slides, she keeps a line of candidates, tallest at the front. Anyone shorter than a newcomer can never be the tallest again, so they leave.", "Hard", 40, ["Amazon", "Google"], "Sliding Window", "stacks", "todo", 4, 49, false],
+
+  ["reverse-linked-list", 206, "Reverse Linked List", "Turning the Train Around", "Cole walks down the train unhooking each carriage and re-hooking it to face backward. Three hands are all he needs: the carriage behind, the one he holds, and the one ahead.", "Easy", 15, ["Amazon", "Microsoft", "Apple"], "In-place Reversal", "linked", "todo", 1, 13, false],
+  ["linked-list-cycle", 141, "Linked List Cycle", "The Tortoise and the Hare", "Tam walks one carriage at a time; Hazel runs two. If the track loops, the hare laps the tortoise and they meet. If it doesn't, Hazel reaches the end.", "Easy", 15, ["Amazon", "Microsoft", "Goldman Sachs"], "Fast & Slow Pointers", "linked", "todo", 2, 14, false],
+  ["middle-of-list", 876, "Middle of the Linked List", "Halfway Across the Bridge", "Hazel runs two carriages for every one Tam walks. When Hazel reaches the end of the train, Tam is standing in the middle.", "Starter", 8, ["Amazon", "Apple"], "Fast & Slow Pointers", "linked", "todo", 4, 50, false],
+  ["merge-two-lists", 21, "Merge Two Sorted Lists", "The Zipper Merge", "Two sorted trains meet at a junction. Lumi and Roo each watch one train and wave through whichever carriage is smaller next, zipping them into one sorted train.", "Easy", 12, ["Amazon", "Microsoft", "Apple"], "Two Pointers", "linked", "todo", 3, 51, false],
+  ["remove-nth", 19, "Remove Nth Node From End of List", "The Carriage Gap", "Send a scout n carriages ahead. Walk both together; when the scout reaches the end, you're standing just before the carriage to unhook.", "Medium", 20, ["Meta", "Amazon"], "Two Pointers", "linked", "todo", 5, 52, false],
+  ["merge-k-lists", 23, "Merge k Sorted Lists", "The Train Yard Merge", "k sorted trains pull into one yard. Nia keeps the front carriage of every train at her desk and always sends out the smallest one next.", "Hard", 40, ["Amazon", "Google", "Meta"], "Heap", "linked", "todo", 6, 53, false],
+
+  ["invert-tree", 226, "Invert Binary Tree", "The Mirror Garden", "Moss swaps each gardener's left and right flower beds, then asks their children to do the same. The whole garden ends up mirrored.", "Starter", 8, ["Google", "Amazon"], "Depth-First Search", "trees", "todo", 3, 54, false],
+  ["max-depth", 104, "Maximum Depth of Binary Tree", "The Tallest Branch", "Every branch asks its two children how deep they go, adds one for itself, and passes the bigger answer up to its parent.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Depth-First Search", "trees", "todo", 2, 15, false],
+  ["validate-bst", 98, "Validate Binary Search Tree", "The Orchard Rule", "In this orchard every tree on the left must be shorter and every tree on the right taller — not just than the parent, but than every ancestor. Moss carries the allowed range down with him.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Depth-First Search", "trees", "todo", 4, 55, false],
+  ["level-order", 102, "Binary Tree Level Order Traversal", "Floors of the Treehouse", "Rill visits the treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.", "Medium", 25, ["Amazon", "Meta", "Microsoft"], "Breadth-First Search", "trees", "todo", 1, 16, false],
+  ["right-side-view", 199, "Binary Tree Right Side View", "The View from the Right Balcony", "Stand on the right balcony of every floor of the treehouse. The last person on each floor is the one you can see.", "Medium", 20, ["Meta", "Amazon"], "Breadth-First Search", "trees", "todo", 5, 56, false],
+
+  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, false],
+  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, false],
+  ["clone-graph", 133, "Clone Graph", "The Friendship Photocopier", "Moss photocopies a web of friends. He keeps a notebook of who's already copied, so nobody gets copied twice and every friendship is redrawn.", "Medium", 25, ["Meta", "Google", "Amazon"], "Depth-First Search", "graphs", "todo", 4, 57, false],
+  ["course-schedule", 207, "Course Schedule", "The Prerequisite Map", "Rill starts with every course that has no prerequisites, then unlocks the courses that were waiting on them. If some are never unlocked, there's a loop.", "Medium", 30, ["Amazon", "Microsoft", "Uber"], "Breadth-First Search", "graphs", "todo", 3, 58, false],
+  ["word-search", 79, "Word Search", "The Letter Maze", "Chalk traces the word letter by letter through a grid, marking each square as he goes and rubbing the mark out when a path fails.", "Medium", 30, ["Amazon", "Microsoft", "Bloomberg"], "Backtracking", "graphs", "todo", 5, 59, false],
+
+  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, false],
+  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, false],
+  ["max-subarray", 53, "Maximum Subarray", "The Hiker's Best Stretch", "A hiker logs every climb and drop. Sol keeps a running total of the current stretch; the moment it sinks below zero, starting fresh is better.", "Medium", 20, ["Amazon", "Microsoft", "LinkedIn"], "Dynamic Programming", "dp", "todo", 3, 60, false],
+  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, false],
+  ["lis", 300, "Longest Increasing Subsequence", "The Staircase of Heights", "Pick people from a line to build the longest staircase of rising heights, keeping their order. For each person, Sol asks how long a staircase could end with them.", "Medium", 30, ["Google", "Microsoft", "Amazon"], "Dynamic Programming", "dp", "todo", 5, 62, false],
+  ["word-break", 139, "Word Break", "The Dictionary Fence", "Can a long string be cut into dictionary words? Sol marks every position he can reach with a clean cut and checks whether the end gets a mark.", "Medium", 30, ["Amazon", "Google", "Meta"], "Dynamic Programming", "dp", "todo", 6, 63, false],
+  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, false]
+].map(([id, n, title, story, synopsis, diff, mins, cos, pattern, dtype, status, pop, added, animated]) =>
+  ({ id, n, title, story, synopsis, diff, time: mins + " min", mins, cos, pattern, dtype, status, pop, added, animated }));
+
+const COMPANY_TABS = [
+  ["MAANG", ["Meta", "Apple", "Amazon", "Netflix", "Google"]],
+  ["Amazon", ["Amazon"]], ["Google", ["Google"]], ["Meta", ["Meta"]], ["Microsoft", ["Microsoft"]], ["Apple", ["Apple"]],
+  ["Adobe", ["Adobe"]], ["Uber", ["Uber"]], ["Bloomberg", ["Bloomberg"]], ["LinkedIn", ["LinkedIn"]], ["Airbnb", ["Airbnb"]],
+  ["Goldman Sachs", ["Goldman Sachs"]], ["Flipkart", ["Flipkart"]]
+];
+const PROBLEM_KEY = "dsaviz-problem";
+function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
+function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }
+function storeSaved(list) { writeJSON('dsaviz-saved', list); }
+function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function storeDeck(d) { writeJSON('dsaviz-deck', d); }
+// @@END@@
+
+const TAB_KEY = 'dsaviz-interview-tab';
+const TABS = [
+  ['plans', 'Plans', 'A day-by-day plan in learning-path order, sized to the time you have.'],
+  ['company', 'Company tracks', 'The patterns each company leans on in our library, with the stories to rehearse.'],
+  ['radar', 'Pattern radar', 'Learn to spot the pattern from the wording of the question — the skill interviews actually test.'],
+  ['mock', 'Mock interview', 'A timed run with the story and pattern hidden, to practise under pressure.'],
+  ['resources', 'Resources', 'The books, repos and sites we recommend, and when each one helps.']
+];
+const PLANS = [['sprint', '2-week sprint', '14 days · about 2 stories a day', 14], ['month', '30-day plan', '30 days · the full learning path', 30], ['long', '90-day path', '90 days · slow, deep, with revision days', 90]];
+const LEVELS = [['new', 'New', 'We’ll start with Language basics and Starter stories, and skip the Hard ones.'], ['mid', 'Some practice', 'Easy to Medium stories in path order, with one Hard story a week.'], ['pro', 'Experienced', 'Mediums and Hards first, grouped by the patterns companies ask most.']];
+const RADAR = [
+  ['The array is sorted and you need a pair (or triple) hitting a target', 'Two Pointers', 'two-sum-ii'],
+  ['Longest / shortest contiguous substring or subarray with a condition', 'Sliding Window', 'longest-substring'],
+  ['“Have I seen this before?” or counting things', 'Hash Map', 'two-sum'],
+  ['Sums of ranges, or “subarray sums to k”', 'Prefix Sum', 'subarray-sum-k'],
+  ['Sorted input, or “minimum value that works”, and O(log n) is expected', 'Binary Search', 'binary-search'],
+  ['Matching brackets, or “next greater / warmer” element', 'Stack', 'daily-temperatures'],
+  ['Top K, Kth largest, or merging many sorted things', 'Heap', 'kth-largest'],
+  ['Linked list with a loop, a middle, or “nth from the end”', 'Fast & Slow Pointers', 'linked-list-cycle'],
+  ['Overlapping meetings, bookings or ranges', 'Intervals', 'merge-intervals'],
+  ['Shortest path in an unweighted grid or graph, or “minimum minutes”', 'Breadth-First Search', 'rotting-oranges'],
+  ['Count connected regions, or explore every cell reachable', 'Depth-First Search', 'number-of-islands'],
+  ['“All possible” combinations, subsets or arrangements', 'Backtracking', 'subsets'],
+  ['Count the ways, or min/max cost, where small answers repeat', 'Dynamic Programming', 'climbing-stairs']
+];
+const DRILLS = [
+  ['Given a sorted list of prices, find two that add up to your gift card balance.', 'Two Pointers', 'Sorted + a pair + a target: two friends from both ends.'],
+  ['Find the shortest stretch of a playlist that contains every genre at least once.', 'Sliding Window', 'Contiguous stretch + shortest + a condition: grow, then squeeze the window.'],
+  ['How many minutes until a rumour reaches every desk in the office grid?', 'Breadth-First Search', 'Spreading one step at a time from many sources: ripples, ring by ring.'],
+  ['How many different ways can you make ₹100 with ₹1, ₹2 and ₹5 coins?', 'Dynamic Programming', 'Counting ways where smaller totals repeat: write small answers down.'],
+  ['Return the 10 most-viewed videos from a stream of views.', 'Heap', 'Top K from a stream: keep a small room with the weakest at the door.']
+];
+const DRILL_OPTIONS = ['Two Pointers', 'Sliding Window', 'Breadth-First Search', 'Dynamic Programming', 'Heap', 'Hash Map'];
+const CHECK = ['Repeat the problem in your own words', 'Ask about edge cases and input size', 'Walk one small example by hand', 'Say the brute force and its cost', 'Name the pattern and why it fits', 'Code it, then test with your example'];
+const RESOURCES = [
+  ['Practice', 'LeetCode', 'The problem bank most interviews draw from. Practise here after the story clicks.', 'daily reps', 'https://leetcode.com'],
+  ['Roadmap', 'NeetCode roadmap', 'A widely used ordered list of core problems with video walkthroughs.', 'a second explanation', 'https://neetcode.io/roadmap'],
+  ['Free guide', 'Tech Interview Handbook', 'Free, thorough guide to the whole interview process, from resume to negotiation.', 'the non-coding parts', 'https://www.techinterviewhandbook.org'],
+  ['GitHub', 'awesome-leetcode-resources', 'A curated repo of pattern guides and problem lists by Ashish Pratap Singh.', 'pattern-by-pattern lists', 'https://github.com/ashishps1/awesome-leetcode-resources'],
+  ['Cheat sheet', 'Big-O Cheat Sheet', 'One page of time and space costs for common structures and sorts.', 'the night before', 'https://www.bigocheatsheet.com'],
+  ['Visualiser', 'VisuAlgo', 'Classic animated visualisations of data structures and algorithms.', 'seeing sorts and trees move', 'https://visualgo.net'],
+  ['Practice', 'HackerRank', 'Timed practice and the format many companies use for online assessments.', 'online-test rehearsal', 'https://www.hackerrank.com'],
+  ['Book', 'Grokking Algorithms', 'By Aditya Bhargava. An illustrated, gentle first book on algorithms.', 'absolute beginners', 'https://www.manning.com/books/grokking-algorithms-second-edition'],
+  ['Book', 'Cracking the Coding Interview', 'By Gayle Laakmann McDowell. The classic interview-prep book.', 'the full picture', 'https://www.crackingthecodinginterview.com']
+];
+const DIFF_RANK = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };
+const STAGE_RANK = {};
+STAGES.forEach((s, i) => { STAGE_RANK[s.key] = i; });
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let tab = 'plans';
+    try { const k = window.localStorage.getItem(TAB_KEY); if (TABS.some(([x]) => x === k)) tab = k; } catch (e) {}
+    this.state = { theme: loadTheme(), tab, plan: 'sprint', level: 'mid', day: 0, company: 'MAANG', drill: 0, drillPick: null, mockLevel: 'Medium', mock: 'idle', mockId: null, left: 2700, paused: false, checks: {} };
+  }
+  componentDidMount() {
+    listenTheme(this);
+    this.tick = setInterval(() => {
+      if (this.state.mock === 'running' && !this.state.paused && this.state.left > 0) this.setState({ left: this.state.left - 1 });
+    }, 1000);
+  }
+  componentWillUnmount() { unlistenTheme(this); clearInterval(this.tick); }
+  setTab(k) { try { window.localStorage.setItem(TAB_KEY, k); } catch (e) {} this.setState({ tab: k }); }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'paper';
+    const t = THEMES[themeKey] || THEMES.paper;
+    const pill = (on) => ({ bg: on ? t.text : 'transparent', fg: on ? t.bg : t.muted });
+    // plan
+    const plan = PLANS.find(([k]) => k === this.state.plan);
+    const nDays = plan[3];
+    let pool = PROBLEMS.slice();
+    if (this.state.level === 'new') pool = pool.filter((p) => p.diff !== 'Hard');
+    if (this.state.level === 'pro') pool = pool.filter((p) => p.diff !== 'Starter');
+    pool.sort((a, b) => this.state.level === 'pro' ? (a.pop - b.pop || DIFF_RANK[b.diff] - DIFF_RANK[a.diff]) : (STAGE_RANK[a.dtype] - STAGE_RANK[b.dtype] || DIFF_RANK[a.diff] - DIFF_RANK[b.diff]));
+    const shown = Math.min(nDays, 14);
+    const per = Math.max(1, Math.ceil(pool.length / nDays));
+    const dayItems = (i) => {
+      if (nDays === 90 && i % 7 === 6) return [];
+      const start = (i * per) % pool.length;
+      return pool.slice(start, start + per);
+    };
+    const days = Array.from({ length: shown }, (_, i) => {
+      const items = dayItems(i);
+      const label = items.length ? STAGES[STAGE_RANK[items[0].dtype]].name : 'Revision day';
+      return { n: i + 1, label, on: this.state.day === i, bg: this.state.day === i ? t.sunk : t.surface, border: this.state.day === i ? t.accent : t.line, pick: () => this.setState({ day: i }) };
+    });
+    const dItems = dayItems(this.state.day);
+    // company
+    const tab = COMPANY_TABS.find(([k]) => k === this.state.company) || COMPANY_TABS[0];
+    const coRows = PROBLEMS.filter((p) => p.cos.some((c) => tab[1].includes(c)));
+    const coPatterns = PATTERNS.map(([name, tag, cast]) => {
+      const rows = coRows.filter((p) => p.pattern === name).sort((a, b) => DIFF_RANK[a.diff] - DIFF_RANK[b.diff]);
+      return { name, cast, n: rows.length, rows: rows.slice(0, 4).map((p) => ({ title: p.title, diff: p.diff, dot: t.diff[p.diff][0], go: () => saveProblem(p.id) })) };
+    }).filter((g) => g.n).sort((a, b) => b.n - a.n).map((g, i) => Object.assign(g, { rank: i + 1 }));
+    // drill
+    const D = DRILLS[this.state.drill % DRILLS.length];
+    const opts = DRILL_OPTIONS.filter((o) => o === D[1]).concat(DRILL_OPTIONS.filter((o) => o !== D[1])).slice(0, 4);
+    const order = [2, 0, 3, 1];
+    const drillOptions = order.map((j) => opts[j]).map((label) => {
+      const on = this.state.drillPick === label;
+      const right = label === D[1];
+      return { label, on, border: on ? (right ? t.ok : t.left) : t.line, bg: on ? (right ? t.okBg : t.warnBg) : 'transparent', pick: () => this.setState({ drillPick: label }) };
+    });
+    // mock
+    const mockPool = PROBLEMS.filter((p) => p.status !== 'done' && p.diff === this.state.mockLevel);
+    const mp = PROBLEMS.find((p) => p.id === this.state.mockId) || mockPool[0] || PROBLEMS[0];
+    const m = Math.floor(this.state.left / 60), s = this.state.left % 60;
+    const usedS = 2700 - this.state.left;
+    const pickMock = () => { const pool2 = mockPool.length ? mockPool : PROBLEMS; return pool2[Math.floor(Math.random() * pool2.length)].id; };
+    return {
+      t, themeBtns: themeButtons(this, themeKey, t),
+      tabs: TABS.map(([k, label]) => ({ label, on: k === this.state.tab, bg: k === this.state.tab ? t.surface : 'transparent', fg: k === this.state.tab ? t.text : t.muted, pick: () => this.setTab(k) })),
+      tabLine: TABS.find(([k]) => k === this.state.tab)[2],
+      isPlans: this.state.tab === 'plans', isCompany: this.state.tab === 'company', isRadar: this.state.tab === 'radar', isMock: this.state.tab === 'mock', isResources: this.state.tab === 'resources',
+      plans: PLANS.map(([k, name, sub]) => ({ name, sub, on: k === this.state.plan, border: k === this.state.plan ? t.accent : t.line, bg: k === this.state.plan ? t.sunk : 'transparent', pick: () => this.setState({ plan: k, day: 0 }) })),
+      levels: LEVELS.map(([k, label]) => Object.assign({ label, on: k === this.state.level, pick: () => this.setState({ level: k, day: 0 }) }, pill(k === this.state.level))),
+      levelNote: LEVELS.find(([k]) => k === this.state.level)[2] + (nDays > 14 ? ' Showing the first two weeks.' : ''),
+      days,
+      day: {
+        n: this.state.day + 1,
+        label: dItems.length ? STAGES[STAGE_RANK[dItems[0].dtype]].name : 'Revision day',
+        mins: dItems.reduce((a, p) => a + p.mins, 0) || 30,
+        items: (dItems.length ? dItems : pool.slice(0, 2)).map((p) => ({ title: p.title, story: p.story, pattern: p.pattern, diff: p.diff, time: p.time, dot: t.diff[p.diff][0], go: () => saveProblem(p.id) }))
+      },
+      companies: COMPANY_TABS.map(([k]) => ({ label: k, on: k === tab[0], bg: k === tab[0] ? t.text : 'transparent', fg: k === tab[0] ? t.bg : t.text, border: k === tab[0] ? t.text : t.line2, pick: () => this.setState({ company: k }) })),
+      coPatterns,
+      radar: RADAR.map(([clue, pattern, id]) => ({ clue, pattern, story: PROBLEMS.find((p) => p.id === id).story, go: () => saveProblem(id) })),
+      quiz: {
+        n: (this.state.drill % DRILLS.length) + 1, total: DRILLS.length, prompt: D[0], options: drillOptions,
+        answered: this.state.drillPick !== null,
+        feedback: this.state.drillPick === D[1] ? 'Yes — ' + D[2] : 'Not quite. ' + D[2],
+        next: () => this.setState({ drill: this.state.drill + 1, drillPick: null })
+      },
+      mockLevels: ['Easy', 'Medium', 'Hard'].map((k) => ({ label: k, on: k === this.state.mockLevel, border: k === this.state.mockLevel ? t.text : t.line2, bg: k === this.state.mockLevel ? t.text : 'transparent', fg: k === this.state.mockLevel ? t.bg : t.text, pick: () => this.setState({ mockLevel: k }) })),
+      mock: {
+        idle: this.state.mock === 'idle', running: this.state.mock === 'running', done: this.state.mock === 'done',
+        p: mp,
+        clock: String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0'),
+        clockColor: this.state.left < 300 ? t.left : t.text,
+        pauseText: this.state.paused ? 'Resume' : 'Pause',
+        used: Math.floor(usedS / 60) + ' min ' + (usedS % 60) + ' s',
+        start: () => this.setState({ mock: 'running', mockId: pickMock(), left: 2700, paused: false, checks: {} }),
+        pause: () => this.setState({ paused: !this.state.paused }),
+        finish: () => this.setState({ mock: 'done' }),
+        abort: () => this.setState({ mock: 'idle' }),
+        again: () => this.setState({ mock: 'idle' }),
+        review: () => saveProblem(mp.id)
+      },
+      checklist: CHECK.map((label, i) => {
+        const on = !!this.state.checks[i];
+        return { label, on, mark: on ? '✓' : '', bg: on ? t.okBg : 'transparent', box: on ? t.ok : t.line2, fill: on ? t.ok : 'transparent', toggle: () => this.setState({ checks: Object.assign({}, this.state.checks, { [i]: !on }) }) };
+      }),
+      resources: RESOURCES.map(([kind, name, why, when, url]) => ({ kind, name, why, when, url }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

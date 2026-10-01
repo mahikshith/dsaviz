@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Keyword glossary — dsaviz</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button,input{font:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1400px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<header style="height: 76px; flex-shrink: 0; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; gap: 22px; border-bottom: 1px solid {{t.line}}">
+<a href="Home.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="{{t.text}}"></rect><circle cx="10" cy="15" r="3.5" fill="{{t.logoL}}"></circle><circle cx="20" cy="15" r="3.5" fill="{{t.logoR}}"></circle></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">dsaviz</span></a>
+<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 16px; font-size: 15px; font-weight: 500">
+<a href="Home.dc.html" style="color: {{t.muted}}">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Glossary.dc.html" style="font-weight: 700">Glossary</a><a href="Basics.dc.html" style="color: {{t.muted}}">Basics</a>
+</nav>
+<div style="flex-grow: 1"></div>
+<div role="tablist" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
+<sc-for list="{{langs}}" as="lg" hint-placeholder-count="5"><button role="tab" aria-selected="{{lg.on}}" onClick="{{lg.pick}}" style="height: 36px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>
+</div>
+<div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3">
+<button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button>
+</sc-for>
+</div>
+
+</header>
+
+<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 340px minmax(0, 1fr)">
+<aside style="border-right: 1px solid {{t.line}}; padding: 24px 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 32px; font-weight: 600">Keyword glossary</h1>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">The words DSA solutions lean on, explained like a story and shown in all five languages.</span>
+</div>
+<div style="height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid {{t.line2}}; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; color: {{t.muted}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search keywords" placeholder="Try getOrDefault, range, heap…" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 14px"></div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{cats}}" as="ct" hint-placeholder-count="5"><button onClick="{{ct.pick}}" aria-pressed="{{ct.on}}" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid {{ct.border}}; background: {{ct.bg}}; color: {{ct.fg}}; cursor: pointer; font-size: 12px; font-weight: 700">{{ct.label}}</button></sc-for></div>
+<nav aria-label="Keywords" style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{list}}" as="kw" hint-placeholder-count="12">
+<button onClick="{{kw.pick}}" aria-current="{{kw.cur}}" style="min-height: 48px; padding: 6px 12px; border: 0; border-radius: 10px; background: {{kw.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-family: {{t.mono}}; font-size: 14px; font-weight: 700; color: {{kw.fg}}">{{kw.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{kw.cat}} · {{kw.gist}}</span></button>
+</sc-for>
+<sc-if value="{{noMatch}}" hint-placeholder-val="{{ false }}"><span style="padding: 12px; font-size: 13px; color: {{t.muted}}">No keyword matches. Suggest one on the About page.</span></sc-if>
+</nav>
+</aside>
+
+<main style="padding: 30px 40px; display: flex; flex-direction: column; gap: 20px; min-width: 0; animation: rise 0.3s ease">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">{{k.cat}} · in {{langName}}</span>
+<h2 style="margin: 0; font-family: {{t.mono}}; font-size: 40px; font-weight: 800; letter-spacing: -0.01em">{{k.kw}}</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.55; color: {{t.text2}}; max-width: 820px">{{k.what}}</p>
+</div>
+<div style="display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true" style="flex-shrink: 0"><ellipse cx="20" cy="23" rx="15" ry="15" fill="{{t.owl}}"></ellipse><path d="M8 12 L12 4 L16 11 M24 11 L28 4 L32 12" fill="{{t.owl}}"></path><circle cx="14" cy="20" r="6" fill="{{t.surface}}"></circle><circle cx="26" cy="20" r="6" fill="{{t.surface}}"></circle><circle cx="14" cy="20" r="2.6" fill="{{t.text}}"></circle><circle cx="26" cy="20" r="2.6" fill="{{t.text}}"></circle><path d="M18 26 L20 30 L22 26 Z" fill="{{t.accent}}"></path></svg>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Old Hoot, kid version</span><span style="font-family: {{t.display}}; font-size: 20px; line-height: 1.5">“{{k.kid}}”</span></div>
+</div>
+
+<sc-if value="{{hasFrames}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 20px 22px; border-radius: 18px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">step {{frame.no}} / {{frame.total}}</span>
+<div style="display: flex; gap: 6px">
+<button onClick="{{prevFrame}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer">◀</button>
+<button onClick="{{togglePlay}}" aria-label="{{playLabel}}" style="height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-weight: 700">{{playText}}</button>
+<button onClick="{{nextFrame}}" aria-label="Next step" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer">▶</button>
+</div></div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-for list="{{frame.cells}}" as="fc" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+<div style="min-width: 64px; height: 60px; padding: 0 12px; box-sizing: border-box; border-radius: 12px; border: 2px solid {{fc.border}}; background: {{fc.bg}}; color: {{fc.fg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 17px; font-weight: 700; transform: {{fc.lift}}; transition: all 0.35s ease">{{fc.v}}</div>
+<span style="font-family: {{t.mono}}; font-size: 12px; color: {{fc.idxColor}}">{{fc.idx}}</span>
+</div>
+</sc-for>
+</div>
+<span style="font-family: {{t.mono}}; font-size: 15px; color: {{t.text}}">{{frame.note}}</span>
+</div>
+</sc-if>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px">
+<div style="border-radius: 16px; border: 1px solid {{t.line}}; overflow: hidden">
+<div style="padding: 10px 16px; background: {{t.sunk}}; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.accent}}">{{langName}}</div>
+<pre style="margin: 0; padding: 16px; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: 14px; line-height: 1.75; white-space: pre; overflow-x: auto; font-variant-ligatures: none">{{k.code}}</pre>
+</div>
+<div style="border-radius: 16px; border: 1px solid {{t.line}}; overflow: hidden">
+<div style="padding: 10px 16px; background: {{t.sunk}}; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.muted}}">output</div>
+<pre style="margin: 0; padding: 16px; background: {{t.codeBg}}; color: {{t.ok}}; font-family: {{t.mono}}; font-size: 14px; line-height: 1.75; white-space: pre-wrap">{{k.out}}</pre>
+</div>
+</div>
+
+<sc-if value="{{hasWatch}}" hint-placeholder-val="{{ false }}"><div style="padding: 14px 18px; border-radius: 14px; background: {{t.warnBg}}; font-size: 15px; line-height: 1.5"><b>Watch out:</b> {{k.watch}}</div></sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 14px; font-weight: 700">Same idea in every language</span>
+<div style="border-radius: 16px; border: 1px solid {{t.line}}; overflow: hidden; background: {{t.surface}}">
+<sc-for list="{{others}}" as="ot" hint-placeholder-count="5">
+<button onClick="{{ot.pick}}" aria-pressed="{{ot.on}}" style="width: 100%; min-height: 48px; padding: 8px 16px; border: 0; border-top: 1px solid {{ot.divider}}; background: {{ot.bg}}; color: {{t.text}}; cursor: pointer; display: grid; grid-template-columns: 110px 240px minmax(0, 1fr); gap: 14px; align-items: center; text-align: left"><span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.muted}}">{{ot.lang}}</span><span style="font-family: {{t.mono}}; font-size: 14px; font-weight: 700">{{ot.kw}}</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.text2}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ot.first}}</span></button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap"><span style="font-size: 14px; font-weight: 700">Shows up in</span><sc-for list="{{k.stories}}" as="sy" hint-placeholder-count="2"><a href="Briefing.dc.html" onClick="{{sy.go}}" style="min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-family: {{t.display}}; font-style: italic; font-size: 14px">{{sy.story}}</a></sc-for></div>
+</main>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["paper","ink","field"],"default":"paper"},"$preview":{"width":1440,"height":1400}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const THEMES = {
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+// @@CATALOG@@ — generated block, shared by every board that lists problems.
+// Company tags: where learners most often report meeting each problem in interviews. Times are typical first-solve times.
+const STAGES = [
+  { key: "strings", name: "Strings", meta: "bead necklaces", blurb: "A string is a necklace of letter-beads. You'll walk it from both ends, slide a window along it, and count its beads.", why: "Everyone has used text. It's the gentlest place to meet your first patterns." },
+  { key: "arrays", name: "Arrays", meta: "rows of lanterns", blurb: "An array is a row of numbered lanterns. The big ideas show up here: two friends walking inward, sliding windows, halving searches and grids you can turn.", why: "Most interview problems are arrays in disguise." },
+  { key: "hash", name: "Maps & sets", meta: "coat-check counters", blurb: "Hand over a coat, get a ticket, find it again instantly. Maps and sets turn “search everything” into “just look it up”.", why: "The most-used trick for turning O(n²) into O(n)." },
+  { key: "stacks", name: "Stacks, queues & heaps", meta: "plates, lines and triage", blurb: "A stack is a pile of plates, a queue is a ticket line, and a heap is a triage desk where the most urgent case is always on top.", why: "They power bracket-matching, 'next warmer day' puzzles, top-K lists and the BFS you'll meet later." },
+  { key: "linked", name: "Linked lists", meta: "train carriages", blurb: "Each carriage only knows the next one. You'll turn trains around, zip two trains together and catch loops with a tortoise and a hare.", why: "Your first real taste of pointers — you'll need them for trees." },
+  { key: "trees", name: "Trees", meta: "family trees", blurb: "One ancestor at the top, branches below. Explore deep down one branch first, or visit floor by floor.", why: "DFS and BFS begin here, on shapes with no loops." },
+  { key: "graphs", name: "Graphs & grids", meta: "islands and ripples", blurb: "Maps of islands, cities and friendships. Ripple outward with BFS, or explore every path with DFS and backtrack when you hit a wall.", why: "Trees with loops — so you learn to remember where you've been." },
+  { key: "dp", name: "Dynamic programming", meta: "notes to your future self", blurb: "Solve the small versions first and write the answers down, so you never solve the same thing twice.", why: "It comes last because it builds on the recursion from trees and graphs." }
+];
+
+// name, tagline, companion (name, role)
+const PATTERNS = [
+  ["Two Pointers", "Two friends walk toward each other", "Lumi & Roo", "two friends who start at opposite ends"],
+  ["Sliding Window", "A train window gliding past the view", "Wren", "the window-keeper on the night train"],
+  ["Hash Map", "The coat-check counter", "Cleo", "the coat-check clerk who never forgets a ticket"],
+  ["Prefix Sum", "A running tally in the margin", "Penny", "who writes the running total after every step"],
+  ["Binary Search", "Guess the number, halve the doubt", "Gus", "the number-guesser who halves the doubt"],
+  ["Matrix", "Turning the tiled floor", "Tilda", "the tiler who turns whole floors"],
+  ["Intervals", "The meeting-room diary", "Iris", "the scheduler with the fat diary"],
+  ["Greedy", "Take the best step you can see", "Jax", "the stone-hopper who always leaps as far as he can"],
+  ["Stack", "A pile of plates: last on, first off", "Pip", "the plate-stacker at the busy canteen"],
+  ["Heap", "The triage desk", "Nia", "the triage nurse who always knows who's next"],
+  ["In-place Reversal", "Turning the train around", "Cole", "the conductor who re-couples carriages"],
+  ["Fast & Slow Pointers", "The tortoise and the hare", "Tam & Hazel", "a tortoise and a hare on the same track"],
+  ["Depth-First Search", "The maze explorer with chalk", "Moss", "the explorer who goes deep before going wide"],
+  ["Breadth-First Search", "Ripples in a pond", "Rill", "the ripple that spreads one ring at a time"],
+  ["Backtracking", "Try, mark, undo", "Chalk", "who marks every path and rubs it out on the way back"],
+  ["Dynamic Programming", "Notes to your future self", "Sol", "the scribe who writes every small answer down"]
+];
+
+// id, LeetCode #, title, story title, synopsis, difficulty, minutes, companies, pattern, stage, status, popularity rank, order added, animated?
+const PROBLEMS = [
+  ["valid-anagram", 242, "Valid Anagram", "The Scrabble Swap", "Two friends each hold a bag of Scrabble tiles. Can one spell exactly the other's word — nothing extra, nothing missing? Cleo keeps a tally: add for one bag, subtract for the other, and check every count lands on zero.", "Starter", 8, ["Amazon", "Bloomberg", "Uber"], "Hash Map", "strings", "done", 3, 1, true],
+  ["valid-palindrome", 125, "Valid Palindrome", "The Mirror Hallway", "Lumi and Roo walk a hallway painted with letters, one from each end, stepping over spaces and commas. If every pair of letters they meet matches, the hallway is a perfect mirror.", "Easy", 10, ["Meta", "Microsoft", "Apple"], "Two Pointers", "strings", "done", 2, 2, true],
+  ["longest-substring", 3, "Longest Substring Without Repeating Characters", "The Train of Unique Faces", "Wren watches passengers through the train window. She wants the longest stretch where no face appears twice. When a familiar face shows up, the back of the window slides forward just past the first one.", "Medium", 25, ["Amazon", "Microsoft", "Google"], "Sliding Window", "strings", "done", 1, 3, true],
+  ["char-replacement", 424, "Longest Repeating Character Replacement", "The Paint Touch-up", "A painter may repaint at most k tiles. How long a stretch can she make one colour? Wren keeps the window honest: window size minus the most common colour must stay at or below k.", "Medium", 30, ["Google", "Amazon", "Uber"], "Sliding Window", "strings", "todo", 5, 30, true],
+  ["min-window", 76, "Minimum Window Substring", "The Shopping List Window", "Walking down a market street, find the shortest stretch of stalls that sells everything on your list. Grow the window until the list is covered, then squeeze it from the left.", "Hard", 45, ["Meta", "Amazon", "Google", "Airbnb"], "Sliding Window", "strings", "todo", 4, 31, false],
+  ["longest-palindrome", 5, "Longest Palindromic Substring", "The Echo Chamber", "Stand in the middle of a word and shout. The echo spreads both ways for as long as the letters match. Try every middle — including the gaps between letters — and keep the longest echo.", "Medium", 30, ["Amazon", "Microsoft", "Adobe"], "Two Pointers", "strings", "todo", 3, 32, false],
+
+  ["two-sum-ii", 167, "Two Sum II — Sorted", "The Lantern Bridge", "Six lanterns hang in a row from dimmest to brightest. The gate opens only for two lanterns whose glow adds up to exactly the target. Lumi starts at the dim end, Roo at the bright end, and they squeeze inward.", "Medium", 20, ["Amazon", "Adobe", "Google", "Meta"], "Two Pointers", "arrays", "now", 4, 4, true],
+  ["container", 11, "Container With Most Water", "The Rain Barrel Builders", "Two builders stand at the ends of a fence of uneven planks. The shorter plank always decides how much rain the barrel holds, so the builder at the shorter plank steps inward, hoping for a taller one.", "Medium", 25, ["Amazon", "Google", "Meta"], "Two Pointers", "arrays", "todo", 3, 20, true],
+  ["3sum", 15, "3Sum", "The Campfire Trio", "Three friends around a fire need glows that add up to zero. Sort them, fix one friend in place, and let the other two play the Lantern Bridge on everyone to their right. Skip twins so no trio repeats.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Two Pointers", "arrays", "todo", 2, 6, false],
+  ["trapping-rain", 42, "Trapping Rain Water", "The Valley After the Storm", "Rain falls on a row of rocks. The water above each rock rises to the lower of the tallest rock on its left and the tallest on its right. Two walkers from the ends carry those heights with them.", "Hard", 45, ["Amazon", "Google", "Goldman Sachs"], "Two Pointers", "arrays", "todo", 5, 7, false],
+  ["move-zeroes", 283, "Move Zeroes", "The Tidy Bookshelf", "Push every empty slot on a bookshelf to the right while keeping the books in their order. Roo reads each slot; Lumi places the next book wherever the tidy part ends.", "Starter", 8, ["Meta", "Amazon", "Apple"], "Two Pointers", "arrays", "done", 6, 33, false],
+  ["best-time-stock", 121, "Best Time to Buy and Sell Stock", "The Market Stall Diary", "Each morning you note the price of mangoes. Remember the cheapest morning so far; today's profit is today's price minus that. Keep the best profit you've ever seen.", "Easy", 15, ["Amazon", "Goldman Sachs", "Flipkart"], "Sliding Window", "arrays", "done", 1, 5, true],
+  ["product-except-self", 238, "Product of Array Except Self", "The Group Photo Scores", "Everyone in a group photo gets a score: the product of everybody else's numbers. Penny walks once from the left and once from the right, and multiplies the two notes she left at each seat.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Apple"], "Prefix Sum", "arrays", "todo", 2, 34, false],
+  ["subarray-sum-k", 560, "Subarray Sum Equals K", "The Coin Jar Checkpoints", "Drop coins in a jar and note the running total at every checkpoint. Two checkpoints whose totals differ by exactly k fence off a stretch that sums to k — Cleo remembers how often each total has appeared.", "Medium", 30, ["Meta", "Google", "Amazon"], "Prefix Sum", "arrays", "todo", 3, 35, false],
+  ["binary-search", 704, "Binary Search", "The Number-Guessing Game", "Gus has to find a number in a sorted row. Every guess tells him higher or lower, so half the row disappears each time. Eight guesses are enough for 256 numbers.", "Starter", 8, ["Microsoft", "Apple"], "Binary Search", "arrays", "done", 4, 36, false],
+  ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, false],
+  ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, false],
+  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, false],
+  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, false],
+  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, false],
+  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, false],
+  ["subsets", 78, "Subsets", "The Picnic Basket Choices", "For every snack, Chalk asks one question: in the basket or not? Two branches per snack, and every path to the bottom is one possible basket.", "Medium", 25, ["Meta", "Amazon"], "Backtracking", "arrays", "todo", 2, 42, false],
+  ["permutations", 46, "Permutations", "The Seating Chart", "Seat guests one chair at a time. Try each unseated guest in the next chair, go deeper, then stand them back up and try the next.", "Medium", 25, ["Microsoft", "LinkedIn", "Amazon"], "Backtracking", "arrays", "todo", 3, 43, false],
+  ["combination-sum", 39, "Combination Sum", "The Exact Price Basket", "Fill a basket that costs exactly the target, reusing any item as often as you like. Chalk tries items in order so the same basket is never counted twice.", "Medium", 30, ["Amazon", "Airbnb"], "Backtracking", "arrays", "todo", 4, 44, false],
+
+  ["contains-duplicate", 217, "Contains Duplicate", "The Guest List", "At the door, Cleo checks every guest against her list. The moment someone is already on it, she knows someone came twice.", "Starter", 8, ["Amazon", "Apple"], "Hash Map", "hash", "done", 3, 8, true],
+  ["two-sum", 1, "Two Sum", "The Coat-Check Counter", "Guests arrive one by one. For each guest, Cleo checks her ticket book: is the partner who completes the target already here? If not, she writes this guest down and waits.", "Easy", 15, ["Amazon", "Google", "Meta", "Microsoft"], "Hash Map", "hash", "done", 1, 9, true],
+  ["group-anagrams", 49, "Group Anagrams", "The Letter-Sorting Office", "Every word goes into a pigeonhole labelled with its letters in alphabetical order. Words that share a label are anagrams of each other.", "Medium", 25, ["Amazon", "Uber", "Meta"], "Hash Map", "hash", "todo", 2, 10, false],
+  ["longest-consecutive", 128, "Longest Consecutive Sequence", "The Missing Page Hunt", "Torn diary pages lie scattered. Cleo only starts counting a run from a page whose previous page is missing, then counts upward — so every page is visited once.", "Medium", 25, ["Google", "Amazon"], "Hash Map", "hash", "todo", 4, 45, false],
+
+  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, false],
+  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, false],
+  ["min-stack", 155, "Min Stack", "The Plate Pile with a Memory", "Next to every plate, Pip writes the smallest plate in the pile at that moment. Taking a plate off takes its note with it.", "Medium", 15, ["Amazon", "Bloomberg"], "Stack", "stacks", "todo", 3, 46, false],
+  ["kth-largest", 215, "Kth Largest Element in an Array", "The Talent Show Top K", "Nia keeps only the k best acts in a small room, weakest at the door. A new act gets in only if it beats the weakest, who then leaves.", "Medium", 25, ["Meta", "Amazon", "Microsoft"], "Heap", "stacks", "todo", 1, 47, false],
+  ["top-k-frequent", 347, "Top K Frequent Elements", "The Most-Requested Songs", "Cleo tallies every song request; Nia keeps the k most-requested in her small room. The quieter songs never make it past the door.", "Medium", 25, ["Amazon", "Meta", "Apple"], "Heap", "stacks", "todo", 2, 48, false],
+  ["sliding-window-max", 239, "Sliding Window Maximum", "The Tallest in the Window", "As Wren's window slides, she keeps a line of candidates, tallest at the front. Anyone shorter than a newcomer can never be the tallest again, so they leave.", "Hard", 40, ["Amazon", "Google"], "Sliding Window", "stacks", "todo", 4, 49, false],
+
+  ["reverse-linked-list", 206, "Reverse Linked List", "Turning the Train Around", "Cole walks down the train unhooking each carriage and re-hooking it to face backward. Three hands are all he needs: the carriage behind, the one he holds, and the one ahead.", "Easy", 15, ["Amazon", "Microsoft", "Apple"], "In-place Reversal", "linked", "todo", 1, 13, false],
+  ["linked-list-cycle", 141, "Linked List Cycle", "The Tortoise and the Hare", "Tam walks one carriage at a time; Hazel runs two. If the track loops, the hare laps the tortoise and they meet. If it doesn't, Hazel reaches the end.", "Easy", 15, ["Amazon", "Microsoft", "Goldman Sachs"], "Fast & Slow Pointers", "linked", "todo", 2, 14, false],
+  ["middle-of-list", 876, "Middle of the Linked List", "Halfway Across the Bridge", "Hazel runs two carriages for every one Tam walks. When Hazel reaches the end of the train, Tam is standing in the middle.", "Starter", 8, ["Amazon", "Apple"], "Fast & Slow Pointers", "linked", "todo", 4, 50, false],
+  ["merge-two-lists", 21, "Merge Two Sorted Lists", "The Zipper Merge", "Two sorted trains meet at a junction. Lumi and Roo each watch one train and wave through whichever carriage is smaller next, zipping them into one sorted train.", "Easy", 12, ["Amazon", "Microsoft", "Apple"], "Two Pointers", "linked", "todo", 3, 51, false],
+  ["remove-nth", 19, "Remove Nth Node From End of List", "The Carriage Gap", "Send a scout n carriages ahead. Walk both together; when the scout reaches the end, you're standing just before the carriage to unhook.", "Medium", 20, ["Meta", "Amazon"], "Two Pointers", "linked", "todo", 5, 52, false],
+  ["merge-k-lists", 23, "Merge k Sorted Lists", "The Train Yard Merge", "k sorted trains pull into one yard. Nia keeps the front carriage of every train at her desk and always sends out the smallest one next.", "Hard", 40, ["Amazon", "Google", "Meta"], "Heap", "linked", "todo", 6, 53, false],
+
+  ["invert-tree", 226, "Invert Binary Tree", "The Mirror Garden", "Moss swaps each gardener's left and right flower beds, then asks their children to do the same. The whole garden ends up mirrored.", "Starter", 8, ["Google", "Amazon"], "Depth-First Search", "trees", "todo", 3, 54, false],
+  ["max-depth", 104, "Maximum Depth of Binary Tree", "The Tallest Branch", "Every branch asks its two children how deep they go, adds one for itself, and passes the bigger answer up to its parent.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Depth-First Search", "trees", "todo", 2, 15, false],
+  ["validate-bst", 98, "Validate Binary Search Tree", "The Orchard Rule", "In this orchard every tree on the left must be shorter and every tree on the right taller — not just than the parent, but than every ancestor. Moss carries the allowed range down with him.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Depth-First Search", "trees", "todo", 4, 55, false],
+  ["level-order", 102, "Binary Tree Level Order Traversal", "Floors of the Treehouse", "Rill visits the treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.", "Medium", 25, ["Amazon", "Meta", "Microsoft"], "Breadth-First Search", "trees", "todo", 1, 16, false],
+  ["right-side-view", 199, "Binary Tree Right Side View", "The View from the Right Balcony", "Stand on the right balcony of every floor of the treehouse. The last person on each floor is the one you can see.", "Medium", 20, ["Meta", "Amazon"], "Breadth-First Search", "trees", "todo", 5, 56, false],
+
+  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, false],
+  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, false],
+  ["clone-graph", 133, "Clone Graph", "The Friendship Photocopier", "Moss photocopies a web of friends. He keeps a notebook of who's already copied, so nobody gets copied twice and every friendship is redrawn.", "Medium", 25, ["Meta", "Google", "Amazon"], "Depth-First Search", "graphs", "todo", 4, 57, false],
+  ["course-schedule", 207, "Course Schedule", "The Prerequisite Map", "Rill starts with every course that has no prerequisites, then unlocks the courses that were waiting on them. If some are never unlocked, there's a loop.", "Medium", 30, ["Amazon", "Microsoft", "Uber"], "Breadth-First Search", "graphs", "todo", 3, 58, false],
+  ["word-search", 79, "Word Search", "The Letter Maze", "Chalk traces the word letter by letter through a grid, marking each square as he goes and rubbing the mark out when a path fails.", "Medium", 30, ["Amazon", "Microsoft", "Bloomberg"], "Backtracking", "graphs", "todo", 5, 59, false],
+
+  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, false],
+  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, false],
+  ["max-subarray", 53, "Maximum Subarray", "The Hiker's Best Stretch", "A hiker logs every climb and drop. Sol keeps a running total of the current stretch; the moment it sinks below zero, starting fresh is better.", "Medium", 20, ["Amazon", "Microsoft", "LinkedIn"], "Dynamic Programming", "dp", "todo", 3, 60, false],
+  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, false],
+  ["lis", 300, "Longest Increasing Subsequence", "The Staircase of Heights", "Pick people from a line to build the longest staircase of rising heights, keeping their order. For each person, Sol asks how long a staircase could end with them.", "Medium", 30, ["Google", "Microsoft", "Amazon"], "Dynamic Programming", "dp", "todo", 5, 62, false],
+  ["word-break", 139, "Word Break", "The Dictionary Fence", "Can a long string be cut into dictionary words? Sol marks every position he can reach with a clean cut and checks whether the end gets a mark.", "Medium", 30, ["Amazon", "Google", "Meta"], "Dynamic Programming", "dp", "todo", 6, 63, false],
+  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, false]
+].map(([id, n, title, story, synopsis, diff, mins, cos, pattern, dtype, status, pop, added, animated]) =>
+  ({ id, n, title, story, synopsis, diff, time: mins + " min", mins, cos, pattern, dtype, status, pop, added, animated }));
+
+const COMPANY_TABS = [
+  ["MAANG", ["Meta", "Apple", "Amazon", "Netflix", "Google"]],
+  ["Amazon", ["Amazon"]], ["Google", ["Google"]], ["Meta", ["Meta"]], ["Microsoft", ["Microsoft"]], ["Apple", ["Apple"]],
+  ["Adobe", ["Adobe"]], ["Uber", ["Uber"]], ["Bloomberg", ["Bloomberg"]], ["LinkedIn", ["LinkedIn"]], ["Airbnb", ["Airbnb"]],
+  ["Goldman Sachs", ["Goldman Sachs"]], ["Flipkart", ["Flipkart"]]
+];
+const PROBLEM_KEY = "dsaviz-problem";
+function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
+function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }
+function storeSaved(list) { writeJSON('dsaviz-saved', list); }
+function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function storeDeck(d) { writeJSON('dsaviz-deck', d); }
+// @@END@@
+
+const LANGS = [['py', 'python', 'Python'], ['java', 'java', 'Java'], ['cpp', 'c++', 'C++'], ['js', 'js', 'JavaScript'], ['go', 'go', 'Go']];
+const CATS = ['All', 'Loops', 'Collections', 'Maps & sets', 'Strings', 'Math'];
+// id, category, gist, kid analogy, what it does, watch-out, stories, frames [cells, [[highlight idx], note]...], per-language [keyword, code, output]
+const KEYWORDS = [
+  { id: 'enumerate', cat: 'Loops', gist: 'index + value together', kid: 'Like a teacher calling the register: you get each student and their seat number at the same time.', what: 'Loops over a collection and hands you the position and the item together, so you never keep a separate counter.', watch: '', stories: ['two-sum', 'contains-duplicate'],
+    frames: { cells: ['"ann"', '"bo"', '"cy"'], steps: [[[0], 'i = 0, name = "ann"'], [[1], 'i = 1, name = "bo"'], [[2], 'i = 2, name = "cy"']] },
+    langs: {
+      py: ['enumerate()', 'names = ["ann", "bo", "cy"]\nfor i, name in enumerate(names):\n    print(i, name)', '0 ann\n1 bo\n2 cy'],
+      java: ['for (int i = 0; …)', 'String[] names = {"ann", "bo", "cy"};\nfor (int i = 0; i < names.length; i++) {\n    System.out.println(i + " " + names[i]);\n}', '0 ann\n1 bo\n2 cy'],
+      cpp: ['for (size_t i = 0; …)', 'vector<string> names = {"ann", "bo", "cy"};\nfor (size_t i = 0; i < names.size(); i++) {\n    cout << i << " " << names[i] << "\\n";\n}', '0 ann\n1 bo\n2 cy'],
+      js: ['forEach((x, i) => …)', 'const names = ["ann", "bo", "cy"];\nnames.forEach((name, i) => console.log(i, name));', '0 ann\n1 bo\n2 cy'],
+      go: ['for i, x := range', 'names := []string{"ann", "bo", "cy"}\nfor i, name := range names {\n    fmt.Println(i, name)\n}', '0 ann\n1 bo\n2 cy'] } },
+  { id: 'zip', cat: 'Loops', gist: 'walk two lists side by side', kid: 'Like zipping a jacket: one tooth from the left, one from the right, locked together in pairs.', what: 'Walks two or more collections in step and pairs up their items. It stops at the end of the shorter one.', watch: 'Python\u2019s zip silently drops the extra items of the longer list.', stories: ['merge-two-lists'],
+    frames: { cells: ['"ann" + 90', '"bo" + 75', '"cy" + 82'], steps: [[[0], 'pair 1: ("ann", 90)'], [[1], 'pair 2: ("bo", 75)'], [[2], 'pair 3: ("cy", 82)']] },
+    langs: {
+      py: ['zip()', 'names = ["ann", "bo", "cy"]\nscores = [90, 75, 82]\nfor name, score in zip(names, scores):\n    print(name, score)', 'ann 90\nbo 75\ncy 82'],
+      java: ['one index, two arrays', 'for (int i = 0; i < Math.min(names.length, scores.length); i++) {\n    System.out.println(names[i] + " " + scores[i]);\n}', 'ann 90\nbo 75\ncy 82'],
+      cpp: ['one index, two vectors', 'for (size_t i = 0; i < min(names.size(), scores.size()); i++) {\n    cout << names[i] << " " << scores[i] << "\\n";\n}', 'ann 90\nbo 75\ncy 82'],
+      js: ['map((x, i) => [x, b[i]])', 'const pairs = names.map((n, i) => [n, scores[i]]);\npairs.forEach(([n, s]) => console.log(n, s));', 'ann 90\nbo 75\ncy 82'],
+      go: ['one index, two slices', 'for i := 0; i < len(names) && i < len(scores); i++ {\n    fmt.Println(names[i], scores[i])\n}', 'ann 90\nbo 75\ncy 82'] } },
+  { id: 'range', cat: 'Loops', gist: 'count from start to stop', kid: 'A roll of numbered raffle tickets: start here, stop just before there, tear off every few.', what: 'Produces the numbers from start up to, but not including, stop \u2014 optionally jumping by a step.', watch: 'The stop number is never included: range(2, 10) ends at 9.', stories: ['climbing-stairs', 'binary-search'],
+    frames: { cells: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], steps: [[[2], 'start at 2'], [[2, 5], 'step 3 \u2192 5'], [[2, 5, 8], 'step 3 \u2192 8'], [[2, 5, 8], 'next would be 11 \u2265 10, so stop']] },
+    langs: {
+      py: ['range(start, stop, step)', 'for i in range(2, 10, 3):\n    print(i)', '2\n5\n8'],
+      java: ['for (int i = 2; i < 10; i += 3)', 'for (int i = 2; i < 10; i += 3) {\n    System.out.println(i);\n}', '2\n5\n8'],
+      cpp: ['for (int i = 2; i < 10; i += 3)', 'for (int i = 2; i < 10; i += 3) {\n    cout << i << "\\n";\n}', '2\n5\n8'],
+      js: ['for (let i = 2; i < 10; i += 3)', 'for (let i = 2; i < 10; i += 3) {\n  console.log(i);\n}', '2\n5\n8'],
+      go: ['for i := 2; i < 10; i += 3', 'for i := 2; i < 10; i += 3 {\n    fmt.Println(i)\n}', '2\n5\n8'] } },
+  { id: 'slicing', cat: 'Strings', gist: 'take a piece of a list or string', kid: 'Cutting a slice of cake: from this candle up to, but not including, that one.', what: 'Copies a contiguous piece of a string or list, from a start index up to (not including) an end index.', watch: 'C++ substr takes a start and a LENGTH, not an end index.', stories: ['longest-palindrome', 'longest-substring'],
+    frames: { cells: ['h', 'e', 'l', 'l', 'o'], steps: [[[1], 'start at index 1'], [[1, 2], 'keep going'], [[1, 2, 3], 'stop before index 4'], [[1, 2, 3], 'result: "ell"']] },
+    langs: {
+      py: ['s[start:end]', 'word = "hello"\nprint(word[1:4])\nprint(word[::-1])', 'ell\nolleh'],
+      java: ['s.substring(start, end)', 'String word = "hello";\nSystem.out.println(word.substring(1, 4));', 'ell'],
+      cpp: ['s.substr(start, length)', 'string word = "hello";\ncout << word.substr(1, 3) << "\\n";', 'ell'],
+      js: ['s.slice(start, end)', 'const word = "hello";\nconsole.log(word.slice(1, 4));', 'ell'],
+      go: ['s[start:end]', 'word := "hello"\nfmt.Println(word[1:4])', 'ell'] } },
+  { id: 'comprehension', cat: 'Collections', gist: 'build a list in one line', kid: 'A one-line recipe: for every apple in the basket, if it\u2019s red, make juice.', what: 'Builds a new list by transforming (and optionally filtering) every item of another collection.', watch: '', stories: ['move-zeroes'],
+    frames: { cells: ['1', '2', '3', '4'], steps: [[[1], '2 is even \u2192 4'], [[1, 3], '4 is even \u2192 16'], [[1, 3], 'result: [4, 16]']] },
+    langs: {
+      py: ['[f(x) for x in xs if …]', 'nums = [1, 2, 3, 4]\nsquares = [x * x for x in nums if x % 2 == 0]\nprint(squares)', '[4, 16]'],
+      java: ['stream().filter().map()', 'List<Integer> squares = nums.stream()\n    .filter(x -> x % 2 == 0)\n    .map(x -> x * x)\n    .toList();', '[4, 16]'],
+      cpp: ['loop + push_back', 'vector<int> squares;\nfor (int x : nums)\n    if (x % 2 == 0) squares.push_back(x * x);', '4 16'],
+      js: ['filter().map()', 'const squares = nums.filter(x => x % 2 === 0).map(x => x * x);', '[ 4, 16 ]'],
+      go: ['loop + append', 'var squares []int\nfor _, x := range nums {\n    if x%2 == 0 {\n        squares = append(squares, x*x)\n    }\n}', '[4 16]'] } },
+  { id: 'get-default', cat: 'Maps & sets', gist: 'look up with a fallback', kid: 'Ask the coat-check clerk for a coat; if there isn\u2019t one, they hand you a spare instead of shouting.', what: 'Reads a key from a map, returning a default value (often 0) when the key isn\u2019t there yet. Perfect for counting.', watch: 'In C++ and Go, reading a missing key quietly creates or returns a zero value.', stories: ['valid-anagram', 'top-k-frequent'],
+    langs: {
+      py: ['dict.get(key, default)', 'count = {}\nfor w in ["a", "b", "a"]:\n    count[w] = count.get(w, 0) + 1\nprint(count)', "{'a': 2, 'b': 1}"],
+      java: ['getOrDefault(key, 0)', 'Map<String, Integer> count = new HashMap<>();\nfor (String w : words)\n    count.put(w, count.getOrDefault(w, 0) + 1);', '{a=2, b=1}'],
+      cpp: ['count[key]++', 'unordered_map<string, int> count;\nfor (auto& w : words) count[w]++;  // missing keys start at 0', 'a:2 b:1'],
+      js: ['map.get(k) ?? 0', 'const count = new Map();\nfor (const w of words) count.set(w, (count.get(w) ?? 0) + 1);', "Map(2) { 'a' => 2, 'b' => 1 }"],
+      go: ['count[key]++', 'count := map[string]int{}\nfor _, w := range words {\n    count[w]++ // zero value if missing\n}', 'map[a:2 b:1]'] } },
+  { id: 'defaultdict', cat: 'Maps & sets', gist: 'buckets that create themselves', kid: 'Pigeonholes that build themselves the first time you post a letter to them.', what: 'A map that creates an empty value (like a list) the first time you touch a new key, so you can append straight away.', watch: '', stories: ['group-anagrams', 'clone-graph'],
+    langs: {
+      py: ['defaultdict(list)', 'from collections import defaultdict\ngroups = defaultdict(list)\nfor w in ["eat", "tea", "tan"]:\n    groups["".join(sorted(w))].append(w)\nprint(dict(groups))', "{'aet': ['eat', 'tea'], 'ant': ['tan']}"],
+      java: ['computeIfAbsent(k, …)', 'Map<String, List<String>> groups = new HashMap<>();\nfor (String w : words) {\n    char[] c = w.toCharArray(); Arrays.sort(c);\n    groups.computeIfAbsent(new String(c), k -> new ArrayList<>()).add(w);\n}', '{aet=[eat, tea], ant=[tan]}'],
+      cpp: ['map[key].push_back(v)', 'unordered_map<string, vector<string>> groups;\nfor (auto w : words) {\n    string key = w; sort(key.begin(), key.end());\n    groups[key].push_back(w);\n}', 'aet: eat tea | ant: tan'],
+      js: ['if (!m.has(k)) m.set(k, [])', 'const groups = new Map();\nfor (const w of words) {\n  const key = [...w].sort().join("");\n  if (!groups.has(key)) groups.set(key, []);\n  groups.get(key).push(w);\n}', "Map(2) { 'aet' => [ 'eat', 'tea' ], 'ant' => [ 'tan' ] }"],
+      go: ['m[k] = append(m[k], v)', 'groups := map[string][]string{}\nfor _, w := range words {\n    key := sortString(w)\n    groups[key] = append(groups[key], w)\n}', 'map[aet:[eat tea] ant:[tan]]'] } },
+  { id: 'counter', cat: 'Maps & sets', gist: 'tally everything at once', kid: 'A tally sheet that counts every sweet in the jar for you.', what: 'Counts how many times each item appears, in one line.', watch: '', stories: ['valid-anagram', 'top-k-frequent'],
+    langs: {
+      py: ['Counter(xs)', 'from collections import Counter\nprint(Counter("banana"))\nprint(Counter("listen") == Counter("silent"))', "Counter({'a': 3, 'n': 2, 'b': 1})\nTrue"],
+      java: ['merge(k, 1, Integer::sum)', 'Map<Character, Integer> c = new HashMap<>();\nfor (char ch : "banana".toCharArray())\n    c.merge(ch, 1, Integer::sum);', '{a=3, b=1, n=2}'],
+      cpp: ['int freq[26]', 'int freq[26] = {0};\nfor (char ch : string("banana")) freq[ch - \'a\']++;', 'a:3 b:1 n:2'],
+      js: ['Map + reduce', 'const c = new Map();\nfor (const ch of "banana") c.set(ch, (c.get(ch) ?? 0) + 1);', "Map(3) { 'b' => 1, 'a' => 3, 'n' => 2 }"],
+      go: ['map[rune]int', 'c := map[rune]int{}\nfor _, ch := range "banana" {\n    c[ch]++\n}', 'map[97:3 98:1 110:2]'] } },
+  { id: 'set-in', cat: 'Maps & sets', gist: 'have I seen this before?', kid: 'A guest list at the door: are you on it? Yes or no, instantly.', what: 'A set stores unique items and answers \u201cis this in here?\u201d in about constant time.', watch: '\u201cx in list\u201d scans the whole list (slow); \u201cx in set\u201d is instant.', stories: ['contains-duplicate', 'longest-consecutive'],
+    frames: { cells: ['3', '1', '4', '1'], steps: [[[0], 'add 3 \u2192 {3}'], [[1], 'add 1 \u2192 {3, 1}'], [[2], 'add 4 \u2192 {3, 1, 4}'], [[3], '1 is already in the set \u2192 duplicate!']] },
+    langs: {
+      py: ['x in seen', 'seen = set()\nfor x in [3, 1, 4, 1]:\n    if x in seen:\n        print("duplicate", x)\n    seen.add(x)', 'duplicate 1'],
+      java: ['seen.contains(x)', 'Set<Integer> seen = new HashSet<>();\nfor (int x : nums) {\n    if (!seen.add(x)) System.out.println("duplicate " + x);\n}', 'duplicate 1'],
+      cpp: ['seen.count(x)', 'unordered_set<int> seen;\nfor (int x : nums) {\n    if (seen.count(x)) cout << "duplicate " << x;\n    seen.insert(x);\n}', 'duplicate 1'],
+      js: ['seen.has(x)', 'const seen = new Set();\nfor (const x of nums) {\n  if (seen.has(x)) console.log("duplicate", x);\n  seen.add(x);\n}', 'duplicate 1'],
+      go: ['map[int]bool', 'seen := map[int]bool{}\nfor _, x := range nums {\n    if seen[x] {\n        fmt.Println("duplicate", x)\n    }\n    seen[x] = true\n}', 'duplicate 1'] } },
+  { id: 'deque', cat: 'Collections', gist: 'a line with two doors', kid: 'A ticket line with doors at both ends: join at the back, leave from the front, both instant.', what: 'A double-ended queue: add or remove from either end in constant time. The standard tool for BFS.', watch: 'In JavaScript, array.shift() is O(n) \u2014 keep a head index instead for big queues.', stories: ['rotting-oranges', 'level-order', 'sliding-window-max'],
+    frames: { cells: ['A', 'B', 'C'], steps: [[[0, 1, 2], 'queue: A B C'], [[0], 'popleft() \u2192 A leaves from the front'], [[1, 2], 'queue: B C'], [[1, 2], 'append(D) joins at the back']] },
+    langs: {
+      py: ['collections.deque', 'from collections import deque\nq = deque(["A", "B", "C"])\nq.append("D")\nprint(q.popleft(), list(q))', "A ['B', 'C', 'D']"],
+      java: ['ArrayDeque', 'Deque<String> q = new ArrayDeque<>(List.of("A", "B", "C"));\nq.offer("D");\nSystem.out.println(q.poll() + " " + q);', 'A [B, C, D]'],
+      cpp: ['std::deque / queue', 'deque<string> q = {"A", "B", "C"};\nq.push_back("D");\nstring front = q.front(); q.pop_front();', 'A  (then B C D)'],
+      js: ['array + head index', 'const q = ["A", "B", "C"]; let head = 0;\nq.push("D");\nconsole.log(q[head++]);', 'A'],
+      go: ['slice as queue', 'q := []string{"A", "B", "C"}\nq = append(q, "D")\nfront := q[0]\nq = q[1:]\nfmt.Println(front, q)', 'A [B C D]'] } },
+  { id: 'heap', cat: 'Collections', gist: 'smallest always on top', kid: 'A triage desk: whoever is most urgent (the smallest number) is always seen first.', what: 'A priority queue that always gives you the smallest (or largest) item in O(log n) per push or pop.', watch: 'Python\u2019s heapq is a min-heap. For a max-heap, push negative numbers.', stories: ['kth-largest', 'top-k-frequent', 'merge-k-lists'],
+    frames: { cells: ['5', '1', '8', '3'], steps: [[[0], 'push 5 \u2192 top is 5'], [[1], 'push 1 \u2192 top is 1'], [[1], 'push 8 \u2192 top is still 1'], [[1], 'push 3 \u2192 pop gives 1, then 3']] },
+    langs: {
+      py: ['heapq.heappush / heappop', 'import heapq\nh = []\nfor x in [5, 1, 8, 3]:\n    heapq.heappush(h, x)\nprint(heapq.heappop(h), heapq.heappop(h))', '1 3'],
+      java: ['PriorityQueue', 'PriorityQueue<Integer> h = new PriorityQueue<>();\nh.addAll(List.of(5, 1, 8, 3));\nSystem.out.println(h.poll() + " " + h.poll());', '1 3'],
+      cpp: ['priority_queue (greater<>)', 'priority_queue<int, vector<int>, greater<int>> h;\nfor (int x : {5, 1, 8, 3}) h.push(x);\ncout << h.top();', '1'],
+      js: ['no built-in: small class', '// JavaScript has no heap; write a 20-line MinHeap\n// or sort once if you only need the top k.\nconst top2 = [5, 1, 8, 3].sort((a, b) => a - b).slice(0, 2);', '[ 1, 3 ]'],
+      go: ['container/heap', 'h := &IntHeap{5, 1, 8, 3}\nheap.Init(h)\nfmt.Println(heap.Pop(h), heap.Pop(h))', '1 3'] } },
+  { id: 'sort-key', cat: 'Collections', gist: 'sort by any rule', kid: 'Line the class up by whatever rule the sticky note says: height, age, or first name.', what: 'Sorts items using a rule you provide, like \u201cby the second number\u201d. The workhorse of interval and greedy problems.', watch: 'JavaScript sorts numbers as text unless you pass (a, b) => a - b.', stories: ['merge-intervals', 'insert-interval'],
+    frames: { cells: ['[1,3]', '[8,10]', '[2,6]'], steps: [[[0, 1, 2], 'unsorted meetings'], [[0, 2], 'compare by start: 1 < 2'], [[0, 2, 1], 'sorted: [1,3] [2,6] [8,10]']] },
+    langs: {
+      py: ['sorted(xs, key=…)', 'meetings = [[1, 3], [8, 10], [2, 6]]\nmeetings.sort(key=lambda m: m[0])\nprint(meetings)', '[[1, 3], [2, 6], [8, 10]]'],
+      java: ['Arrays.sort(a, comparator)', 'Arrays.sort(meetings, (a, b) -> Integer.compare(a[0], b[0]));', '[[1, 3], [2, 6], [8, 10]]'],
+      cpp: ['sort(begin, end, lambda)', 'sort(m.begin(), m.end(), [](auto& a, auto& b) { return a[0] < b[0]; });', '[1,3] [2,6] [8,10]'],
+      js: ['arr.sort((a, b) => …)', 'meetings.sort((a, b) => a[0] - b[0]);', '[ [ 1, 3 ], [ 2, 6 ], [ 8, 10 ] ]'],
+      go: ['sort.Slice', 'sort.Slice(m, func(i, j int) bool { return m[i][0] < m[j][0] })', '[[1 3] [2 6] [8 10]]'] } },
+  { id: 'div-mod', cat: 'Math', gist: 'share sweets fairly', kid: 'Sharing 17 sweets between 5 friends: // is how many each friend gets, % is what\u2019s left in the bag.', what: 'Integer division gives the whole-number quotient; modulo gives the remainder. Great for digits, wrapping around and halving.', watch: 'Negative numbers differ: -7 // 2 is -4 in Python, but -7 / 2 is -3 in Java, C++, JS (Math.trunc) and Go.', stories: ['binary-search', 'rotate-image'],
+    langs: {
+      py: ['// and %', 'print(17 // 5, 17 % 5)\nprint(-7 // 2)', '3 2\n-4'],
+      java: ['/ and % (ints)', 'System.out.println(17 / 5 + " " + 17 % 5);\nSystem.out.println(-7 / 2);', '3 2\n-3'],
+      cpp: ['/ and % (ints)', 'cout << 17 / 5 << " " << 17 % 5 << "\\n";\ncout << -7 / 2;', '3 2\n-3'],
+      js: ['Math.floor(a / b) and %', 'console.log(Math.floor(17 / 5), 17 % 5);\nconsole.log(Math.trunc(-7 / 2));', '3 2\n-3'],
+      go: ['/ and % (ints)', 'fmt.Println(17/5, 17%5)\nfmt.Println(-7 / 2)', '3 2\n-3'] } },
+  { id: 'infinity', cat: 'Math', gist: 'a best-so-far you will beat', kid: 'A starting score so huge that the very first real score is guaranteed to beat it.', what: 'A sentinel value bigger (or smaller) than anything in your data \u2014 the usual starting point for \u201cminimum so far\u201d.', watch: 'Adding 1 to INT_MAX overflows in Java, C++ and Go. Use a long or check first.', stories: ['best-time-stock', 'coin-change'],
+    langs: {
+      py: ["float('inf')", "best = float('inf')\nfor price in [7, 1, 5]:\n    best = min(best, price)\nprint(best)", '1'],
+      java: ['Integer.MAX_VALUE', 'int best = Integer.MAX_VALUE;\nfor (int p : prices) best = Math.min(best, p);', '1'],
+      cpp: ['INT_MAX', 'int best = INT_MAX;\nfor (int p : prices) best = min(best, p);', '1'],
+      js: ['Infinity', 'let best = Infinity;\nfor (const p of prices) best = Math.min(best, p);', '1'],
+      go: ['math.MaxInt', 'best := math.MaxInt\nfor _, p := range prices {\n    best = min(best, p)\n}', '1'] } },
+  { id: 'char-code', cat: 'Strings', gist: 'letters as locker numbers', kid: 'Every letter has a locker number. \u2018a\u2019 is locker 97, so \u2018c\u2019 minus \u2018a\u2019 is 2.', what: 'Turns a character into its number code and back. \u201cc - \u2018a\u2019\u201d maps letters to 0\u201325 for a 26-slot count array.', watch: '', stories: ['valid-anagram', 'group-anagrams'],
+    frames: { cells: ['a', 'b', 'c', 'd'], steps: [[[0], "'a' \u2192 97 \u2192 slot 0"], [[2], "'c' \u2192 99 \u2192 slot 2"], [[3], "'d' \u2192 100 \u2192 slot 3"]] },
+    langs: {
+      py: ['ord() / chr()', "print(ord('c') - ord('a'))\nprint(chr(ord('a') + 3))", '2\nd'],
+      java: ["c - 'a'", "System.out.println('c' - 'a');\nSystem.out.println((char) ('a' + 3));", '2\nd'],
+      cpp: ["c - 'a'", "cout << ('c' - 'a') << \"\\n\";\ncout << char('a' + 3);", '2\nd'],
+      js: ['charCodeAt / fromCharCode', "console.log('c'.charCodeAt(0) - 97);\nconsole.log(String.fromCharCode(97 + 3));", '2\nd'],
+      go: ["rune math", "fmt.Println('c' - 'a')\nfmt.Println(string(rune('a' + 3)))", '2\nd'] } },
+  { id: 'append-pop', cat: 'Collections', gist: 'push and pop the end', kid: 'A pile of plates: put one on top, take the top one off. Nobody touches the bottom.', what: 'Adds to or removes from the end of a list in constant time \u2014 which makes a plain list a perfect stack.', watch: 'Removing from the FRONT of a list is slow; use a deque for that.', stories: ['valid-parentheses', 'daily-temperatures', 'min-stack'],
+    frames: { cells: ['(', '[', '{'], steps: [[[0], "push '('"], [[0, 1], "push '['"], [[0, 1, 2], "push '{'"], [[0, 1], "'}' arrives \u2192 pop '{' \u2014 it matches"]] },
+    langs: {
+      py: ['append() / pop()', "stack = []\nstack.append('(')\nstack.append('[')\nprint(stack.pop(), stack)", "[ ['(']"],
+      java: ['Deque push() / pop()', 'Deque<Character> stack = new ArrayDeque<>();\nstack.push(\'(\'); stack.push(\'[\');\nSystem.out.println(stack.pop() + " " + stack);', '[ [(]'],
+      cpp: ['push_back() / pop_back()', "vector<char> st;\nst.push_back('('); st.push_back('[');\nchar top = st.back(); st.pop_back();", "[  (then '(' remains)"],
+      js: ['push() / pop()', "const stack = [];\nstack.push('('); stack.push('[');\nconsole.log(stack.pop(), stack);", "[ [ '(' ]"],
+      go: ['append / slice off the end', "st := []rune{}\nst = append(st, '(', '[')\ntop := st[len(st)-1]\nst = st[:len(st)-1]", "top = '['"] } }
+];
+
+const LANG_KEY = 'dsaviz-lang';
+const GENERIC = ['key', 'default', 'start', 'stop', 'step', 'end', 'int', 'size', 'length', 'arrays', 'array', 'with', 'small', 'class', 'built', 'slice', 'loop', 'index', 'two'];
+function keyLine([kw, code]) {
+  const lines = code.split('\n').map((x) => x.trim()).filter((x) => x && !x.startsWith('//') && !x.startsWith('#') && !x.startsWith('from ') && !x.startsWith('import '));
+  const tokens = (kw.match(/[A-Za-z_]{2,}/g) || []).filter((w) => !GENERIC.includes(w.toLowerCase()));
+  return lines.find((l) => tokens.some((w) => l.includes(w))) || lines.find((l) => /[\[\]\/%]/.test(l) && !/=\s*[\[{"]/.test(l)) || lines[0];
+}
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let lang = 'py';
+    try { const l = window.localStorage.getItem(LANG_KEY); if (LANGS.some(([k]) => k === l)) lang = l; } catch (e) {}
+    this.state = { theme: loadTheme(), lang, cat: 'All', query: '', sel: 'enumerate', frame: 0, playing: false };
+  }
+  componentDidMount() { listenTheme(this); }
+  componentWillUnmount() { unlistenTheme(this); clearInterval(this.timer); }
+  stop() { clearInterval(this.timer); this.setState({ playing: false }); }
+  play(n) {
+    if (this.state.frame >= n - 1) this.setState({ frame: 0 });
+    this.setState({ playing: true });
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      if (this.state.frame >= n - 1) { this.stop(); return; }
+      this.setState({ frame: this.state.frame + 1 });
+    }, 1300);
+  }
+  setLang(k) { try { window.localStorage.setItem(LANG_KEY, k); } catch (e) {} this.setState({ lang: k }); }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'paper';
+    const t = THEMES[themeKey] || THEMES.paper;
+    const q = this.state.query.trim().toLowerCase();
+    const matches = KEYWORDS.filter((k) => (this.state.cat === 'All' || k.cat === this.state.cat) &&
+      (!q || (k.id + ' ' + k.gist + ' ' + Object.values(k.langs).map((l) => l[0] + ' ' + l[1]).join(' ')).toLowerCase().includes(q)));
+    const K = KEYWORDS.find((k) => k.id === this.state.sel) || KEYWORDS[0];
+    const L = K.langs[this.state.lang];
+    const F = K.frames;
+    const fi = F ? Math.min(this.state.frame, F.steps.length - 1) : 0;
+    const hi = F ? F.steps[fi][0] : [];
+    const langName = LANGS.find(([k]) => k === this.state.lang)[2];
+    return {
+      t, themeBtns: themeButtons(this, themeKey, t),
+      langs: LANGS.map(([k, label]) => ({ label, on: k === this.state.lang, bg: k === this.state.lang ? t.accent : 'transparent', fg: k === this.state.lang ? t.onAccent : t.muted, pick: () => this.setLang(k) })),
+      langName,
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      cats: CATS.map((c) => ({ label: c, on: c === this.state.cat, bg: c === this.state.cat ? t.text : 'transparent', fg: c === this.state.cat ? t.bg : t.text, border: c === this.state.cat ? t.text : t.line2, pick: () => this.setState({ cat: c }) })),
+      list: matches.map((k) => ({
+        label: k.langs[this.state.lang][0], cat: k.cat, gist: k.gist, cur: k.id === K.id ? 'true' : 'false',
+        bg: k.id === K.id ? t.sunk : 'transparent', fg: k.id === K.id ? t.accent : t.text,
+        pick: () => { this.stop(); this.setState({ sel: k.id, frame: 0 }); }
+      })),
+      noMatch: matches.length === 0,
+      k: {
+        kw: L[0], cat: K.cat, what: K.what, kid: K.kid, code: L[1], out: L[2], watch: K.watch,
+        stories: K.stories.map((id) => { const p = PROBLEMS.find((x) => x.id === id); return { story: p.story, go: () => saveProblem(id) }; })
+      },
+      hasWatch: !!K.watch,
+      hasFrames: !!F,
+      frame: F ? {
+        no: fi + 1, total: F.steps.length, note: F.steps[fi][1],
+        cells: F.cells.map((v, i) => {
+          const on = hi.includes(i), last = on && hi[hi.length - 1] === i;
+          return { v, idx: i, on, bg: on ? t.hl : 'transparent', border: last ? t.accent : on ? t.line2 : t.line, fg: on ? t.text : t.muted, lift: last ? 'translateY(-6px)' : 'none', idxColor: last ? t.accent : t.muted };
+        })
+      } : { no: 0, total: 0, note: '', cells: [] },
+      prevFrame: () => { this.stop(); this.setState({ frame: Math.max(0, fi - 1) }); },
+      nextFrame: () => { this.stop(); if (F) this.setState({ frame: Math.min(F.steps.length - 1, fi + 1) }); },
+      togglePlay: () => { if (this.state.playing) this.stop(); else if (F) this.play(F.steps.length); },
+      playText: this.state.playing ? 'pause' : 'play',
+      playLabel: this.state.playing ? 'Pause animation' : 'Play animation',
+      others: LANGS.map(([k, , name], i) => ({
+        lang: name, kw: K.langs[k][0], first: keyLine(K.langs[k]),
+        on: k === this.state.lang, bg: k === this.state.lang ? t.hl : 'transparent', divider: i === 0 ? 'transparent' : t.line,
+        pick: () => this.setLang(k)
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

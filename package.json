@@ -1,0 +1,16 @@
+{
+  "name": "dsaviz",
+  "version": "0.4.0",
+  "private": true,
+  "description": "DSA patterns taught as animated stories.",
+  "scripts": {
+    "build": "python3 scripts/build_pages.py && python3 scripts/build_site.py",
+    "test": "node tests/backtest.js && node tests/scenecheck.js",
+    "test:browser": "node tests/site-test.js",
+    "start": "python3 -m http.server 5173 --directory dist"
+  },
+  "devDependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

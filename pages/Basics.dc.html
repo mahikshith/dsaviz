@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Language basics — Lists are backpacks</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'JetBrains Mono',ui-monospace,monospace}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button{font:inherit}
+button:disabled{opacity:0.35;cursor:default}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(0.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1180px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: 'JetBrains Mono', ui-monospace, monospace; transition: background 0.3s, color 0.3s">
+
+<header style="height: 64px; flex-shrink: 0; box-sizing: border-box; padding: 0 28px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid {{t.line}}; font-size: 14px">
+<a href="Main.dc.html" style="font-weight: 800; font-size: 17px; color: {{t.accent}}">dsaviz<span style="color: {{t.muted}}">:~/basics$</span><span style="color: {{t.accent}}; animation: blink 1.1s steps(1) infinite">_</span></a>
+<div role="tablist" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 8px; border: 1px solid {{t.line}}">
+<sc-for list="{{langs}}" as="lg" hint-placeholder-count="5">
+<button role="tab" aria-selected="{{lg.on}}" onClick="{{lg.pick}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button>
+</sc-for>
+</div>
+<a href="Patterns.dc.html" style="color: {{t.muted}}">library</a>
+<a href="Glossary.dc.html" style="color: {{t.muted}}">glossary</a>
+<a href="Home.dc.html" style="color: {{t.muted}}">home</a>
+<div style="flex-grow: 1"></div>
+<span style="color: {{t.muted}}">compare with</span>
+<button onClick="{{cycleCompare}}" aria-label="Change comparison language" style="height: 36px; padding: 0 12px; border-radius: 6px; border: 1px solid {{t.left}}; background: transparent; color: {{t.left}}; font-size: 13px; font-weight: 700; cursor: pointer">{{compareName}} ↻</button>
+<div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3">
+<button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button>
+</sc-for>
+</div>
+</header>
+
+<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 290px minmax(0, 1fr) 340px">
+
+<!-- chapters -->
+<nav aria-label="Chapters" style="border-right: 1px solid {{t.line}}; padding: 22px 16px; display: flex; flex-direction: column; gap: 2px; font-size: 13px">
+<span style="font-size: 12px; color: {{t.muted}}; margin: 0 8px 10px">// {{langName}} in 11 short stories</span>
+<sc-for list="{{chapters}}" as="c" hint-placeholder-count="11">
+<button onClick="{{c.pick}}" aria-current="{{c.cur}}" style="min-height: 44px; padding: 0 10px; border: 0; border-radius: 6px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; background: {{c.bg}}; color: {{c.fg}}; font-size: 13px; font-weight: {{c.weight}}"><span style="color: {{c.markColor}}">{{c.mark}}</span>{{c.label}}</button>
+</sc-for>
+<a href="Patterns.dc.html" style="margin: 18px 8px 0; padding: 14px; border: 1px dashed {{t.line2}}; border-radius: 8px; font-size: 13px; line-height: 1.6; color: {{t.muted}}">Ready for real problems?<br><span style="color: {{t.accent}}">→ stage 1: strings</span></a>
+</nav>
+
+<!-- lesson -->
+<main style="padding: 26px 36px; display: flex; flex-direction: column; gap: 20px; min-width: 0">
+<sc-if value="{{isLists}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; color: {{t.muted}}">chapter 03 · ~6 min · kid depth</span>
+<h1 style="margin: 0; font-size: 36px; font-weight: 800; color: {{t.accent}}; letter-spacing: -0.01em">Lists are backpacks.</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.7; color: {{t.text2}}; max-width: 760px">A list is a backpack with numbered pockets. The first pocket is number 0, not 1. You can add to the end, peek into any pocket, or pull the last thing out.</p>
+</div>
+
+<div style="padding: 20px 22px; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: {{t.muted}}">
+<span>frame {{frameNo}} / 4 — <span style="color: {{t.text}}">{{frameTitle}}</span></span>
+<div style="display: flex; gap: 6px">
+<button onClick="{{prevFrame}}" disabled="{{atFirst}}" aria-label="Previous frame" style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer">◀</button>
+<button onClick="{{toggleFrames}}" aria-label="{{playLabel}}" style="height: 44px; padding: 0 14px; border-radius: 8px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-weight: 700">{{playText}}</button>
+<button onClick="{{nextFrame}}" disabled="{{atLast}}" aria-label="Next frame" style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer">▶</button>
+</div>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-end; min-height: 112px">
+<sc-for list="{{pockets}}" as="pk" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: {{pk.op}}; transition: opacity 0.4s">
+<span style="font-size: 11px; font-weight: 800; color: {{pk.tagColor}}; height: 14px">{{pk.tag}}</span>
+<div style="width: 118px; height: 72px; box-sizing: border-box; border: 2px {{pk.style}} {{pk.border}}; background: {{pk.bg}}; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: {{pk.fg}}; animation: {{pk.anim}}; transition: all 0.35s">{{pk.v}}</div>
+<span style="font-size: 12px; color: {{t.muted}}">[{{pk.i}}]  [{{pk.neg}}]</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding-top: 14px; border-top: 1px solid {{t.line}}">
+<span style="flex-shrink: 0; padding: 2px 8px; border-radius: 4px; background: {{t.left}}; color: {{t.bg}}; font-size: 12px; font-weight: 800">HOOT</span>
+<span style="font-size: 14px; line-height: 1.6">{{hoot}}</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{panels}}" as="pn" hint-placeholder-count="2">
+<div style="border-radius: 10px; border: 1px solid {{t.line}}; overflow: hidden">
+<div style="padding: 8px 14px; background: {{t.sunk}}; font-size: 12px; font-weight: 700; color: {{pn.color}}">{{pn.title}}</div>
+<div style="padding: 8px 0; background: {{t.codeBg}}; font-size: 13px; line-height: 1.75">
+<sc-for list="{{pn.lines}}" as="cl" hint-placeholder-count="6">
+<div style="display: flex; background: {{cl.bg}}; border-left: 3px solid {{cl.bar}}; transition: background 0.3s"><span style="width: 34px; flex-shrink: 0; text-align: right; padding-right: 12px; color: {{t.muted}}">{{cl.n}}</span><span style="white-space: pre">{{cl.code}}</span><span style="white-space: pre; color: {{t.muted}}">{{cl.comment}}</span></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+
+<fieldset style="margin: 0; padding: 16px 18px; border-radius: 10px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<legend style="padding: 0 8px; font-size: 13px; color: {{t.muted}}">quick check</legend>
+<span style="font-size: 15px; font-weight: 700">After the pop, what's in the last pocket?</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{quiz}}" as="qz" hint-placeholder-count="4">
+<button onClick="{{qz.pick}}" aria-pressed="{{qz.on}}" style="height: 48px; padding: 0 14px; border-radius: 8px; border: 1px solid {{qz.border}}; background: {{qz.bg}}; color: {{t.text}}; cursor: pointer; font-size: 14px; text-align: left">{{qz.label}}</button>
+</sc-for>
+</div>
+<sc-if value="{{answered}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; line-height: 1.6; color: {{fbColor}}; animation: rise 0.3s ease">{{feedback}}</span></sc-if>
+</fieldset>
+</div>
+</sc-if>
+
+<sc-if value="{{isOther}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 18px; animation: rise 0.35s ease">
+<span style="font-size: 13px; color: {{t.muted}}">chapter {{other.num}}</span>
+<h1 style="margin: 0; font-size: 36px; font-weight: 800; color: {{t.accent}}">{{other.title}}</h1>
+<p style="margin: 0; font-size: 18px; line-height: 1.7; max-width: 720px">{{other.story}}</p>
+<div style="padding: 16px 18px; border-radius: 10px; border: 1px dashed {{t.line2}}; font-size: 14px; color: {{t.muted}}">This chapter's animation arrives in the next design pass. Chapter 03 shows the format.</div>
+<button onClick="{{backToLists}}" style="align-self: flex-start; height: 44px; padding: 0 16px; border-radius: 8px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-weight: 700">open chapter 03 →</button>
+</div>
+</sc-if>
+</main>
+
+<!-- toolkit -->
+<aside style="border-left: 1px solid {{t.line}}; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; background: {{t.surface}}">
+<span style="font-size: 13px; font-weight: 700; color: {{t.accent}}">$ cat dsa_toolkit.{{ext}}</span>
+<span style="font-size: 13px; line-height: 1.6; color: {{t.muted}}">The built-ins every pattern borrows, named the {{langName}} way. Tap one for its story.</span>
+<a href="Glossary.dc.html" style="padding: 12px; border-radius: 8px; background: {{t.sunk}}; font-size: 13px; font-weight: 700; color: {{t.accent}}">Forgot enumerate, zip or //? Open the keyword glossary →</a>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px">
+<sc-for list="{{tools}}" as="tl" hint-placeholder-count="6">
+<button onClick="{{tl.pick}}" aria-expanded="{{tl.on}}" style="padding: 12px; border-radius: 8px; border: 1px solid {{tl.border}}; background: {{tl.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px">
+<span style="display: flex; justify-content: space-between; gap: 8px"><b>{{tl.name}}</b><span style="color: {{t.left}}; white-space: nowrap">{{tl.cost}}</span></span>
+<span style="color: {{t.muted}}">{{tl.use}}</span>
+<sc-if value="{{tl.on}}" hint-placeholder-val="{{ false }}"><span style="padding-top: 6px; line-height: 1.55; animation: rise 0.25s ease">{{tl.story}}</span></sc-if>
+</button>
+</sc-for>
+</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["paper","ink","field"],"default":"field"},"$preview":{"width":1440,"height":1180}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const THEMES = {
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+
+const LANGS = [['py', 'python', 'py'], ['java', 'java', 'java'], ['cpp', 'c++', 'cpp'], ['js', 'javascript', 'js'], ['go', 'go', 'go']];
+const CODE = {
+  py: [['bag = ["map", "torch", "rope"]', ''], ['bag.append("snack")', ''], ['bag[0]', '                 # "map"'], ['bag[-1]', '                # "snack"'], ['len(bag)', '               # 4'], ['bag.pop()', '              # takes out "snack"']],
+  java: [['var bag = new ArrayList<>(List.of("map", "torch", "rope"));', ''], ['bag.add("snack");', ''], ['bag.get(0);', '                  // "map"'], ['bag.get(bag.size() - 1);', '     // "snack" (no [-1] in Java)'], ['bag.size();', '                  // 4'], ['bag.remove(bag.size() - 1);', '  // takes out "snack"']],
+  cpp: [['vector<string> bag = {"map", "torch", "rope"};', ''], ['bag.push_back("snack");', ''], ['bag[0];', '                  // "map"'], ['bag.back();', '              // "snack"'], ['bag.size();', '              // 4'], ['bag.pop_back();', '          // removes it, returns nothing']],
+  js: [['const bag = ["map", "torch", "rope"];', ''], ['bag.push("snack");', ''], ['bag[0];', '             // "map"'], ['bag.at(-1);', '         // "snack"'], ['bag.length;', '         // 4'], ['bag.pop();', '          // takes out "snack"']],
+  go: [['bag := []string{"map", "torch", "rope"}', ''], ['bag = append(bag, "snack")', ''], ['bag[0]', '                  // "map"'], ['bag[len(bag)-1]', '         // "snack"'], ['len(bag)', '                // 4'], ['bag = bag[:len(bag)-1]', '  // drop "snack"']]
+};
+const FRAMES = [
+  { title: 'pack the bag', items: ['"map"', '"torch"', '"rope"'], lines: [1],
+    hoot: '“Three things in the backpack. Pockets start at 0, so “map” lives in pocket 0.”' },
+  { title: 'add to the end', items: ['"map"', '"torch"', '"rope"', '"snack"'], lines: [2], fresh: 3,
+    hoot: '“Adding puts a new pocket at the very end. It’s quick — O(1) — because nobody has to shuffle over.”' },
+  { title: 'peek front and back', items: ['"map"', '"torch"', '"rope"', '"snack"'], lines: [3, 4], peek: [0, 3],
+    hoot: '“Pocket 0 is the front. Counting from the back, -1 is the last pocket — handy when you don’t know the size.”' },
+  { title: 'take the last out', items: ['"map"', '"torch"', '"rope"', '"snack"'], lines: [6], gone: 3,
+    hoot: '“Pop hands you the last thing and the backpack shrinks by one. Also O(1).”' }
+];
+const CHAPTERS = [
+  ['01', 'variables — name tags', 'A variable is a name tag stuck on a value. Move the tag, and the name points somewhere new.'],
+  ['02', 'strings — bead necklaces', 'A string is a necklace of letter-beads. You can count them and read any bead, but to change one you make a new necklace.'],
+  ['03', 'lists — backpacks', ''],
+  ['04', 'dicts — coat check', 'Hand over a coat, get a ticket. Show the ticket, get the coat back instantly — no searching the whole room.'],
+  ['05', 'sets — guest lists', 'A guest list only cares whether you’re on it, not how many times you were written down.'],
+  ['06', 'loops — laps on a track', 'A loop is running laps: same track, one more lap each time, until the whistle blows.'],
+  ['07', 'functions — recipes', 'A function is a recipe card: ingredients in, dish out, and you can cook it again any time.'],
+  ['08', 'classes — blueprints', 'A class is a blueprint. Every house you build from it is an object with its own rooms.'],
+  ['09', 'sorting & lambdas', 'Sorting is lining the class up by height. A lambda is the sticky note that says which height counts.'],
+  ['10', 'big-O in five minutes', 'Big-O asks one question: if the pile doubles, how much longer does the job take?'],
+  ['11', 'the DSA toolkit', 'The built-in tools every pattern borrows. The list on the right is your starter kit.']
+];
+const QUIZ = [
+  ['"map"', false, 'Close — “map” is the front pocket, [0]. The last pocket is counted from the back.'],
+  ['"rope"', true, 'Right. Once “snack” is popped, “rope” is the last pocket again.'],
+  ['"snack"', false, '“snack” left the backpack when we popped it.'],
+  ['an error', false, 'No error — the backpack still holds three things.']
+];
+const TOOLS = [
+  { names: { py: 'dict / set', java: 'HashMap / HashSet', cpp: 'unordered_map / set', js: 'Map / Set', go: 'map' }, cost: 'O(1) lookup', use: 'Hash Map, Two Sum', story: 'The coat check: find anything by its ticket in one step.' },
+  { names: { py: 'collections.deque', java: 'ArrayDeque', cpp: 'deque', js: 'array (shift is O(n)!)', go: 'container/list' }, cost: 'O(1) both ends', use: 'BFS, sliding window max', story: 'A train with doors at both ends: hop on or off either side instantly.' },
+  { names: { py: 'heapq', java: 'PriorityQueue', cpp: 'priority_queue', js: 'write your own heap', go: 'container/heap' }, cost: 'O(log n) push/pop', use: 'Top-K, merge K lists', story: 'The triage line: the most urgent patient is always at the front.' },
+  { names: { py: 'Counter', java: 'HashMap + merge()', cpp: 'unordered_map<T,int>', js: 'Map + get() ?? 0', go: 'map[T]int' }, cost: 'O(n) build', use: 'Anagrams, frequency', story: 'A tally sheet that counts every item for you.' },
+  { names: { py: 'bisect', java: 'Collections.binarySearch', cpp: 'lower_bound', js: 'hand-rolled binary search', go: 'sort.Search' }, cost: 'O(log n)', use: 'Binary search on sorted lists', story: 'Finding your seat in a sorted row by halving the search each time.' },
+  { names: { py: 'sorted(key=...)', java: 'list.sort(comparator)', cpp: 'sort(begin, end, cmp)', js: 'arr.sort((a, b) => ...)', go: 'sort.Slice' }, cost: 'O(n log n)', use: 'Intervals, greedy', story: 'Lining things up by the rule you choose.' }
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { theme: loadTheme(), lang: 'py', compare: 'java', chapter: 2, frame: 1, playing: false, answer: null, tool: null };
+  }
+  componentDidMount() { listenTheme(this); }
+  componentWillUnmount() { unlistenTheme(this); clearInterval(this.timer); }
+  stop() { clearInterval(this.timer); this.setState({ playing: false }); }
+  play() {
+    if (this.state.frame === FRAMES.length - 1) this.setState({ frame: 0 });
+    this.setState({ playing: true });
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      const f = this.state.frame + 1;
+      if (f >= FRAMES.length) { this.stop(); return; }
+      this.setState({ frame: f });
+    }, 1900);
+  }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'field';
+    const t = THEMES[themeKey] || THEMES.field;
+    const F = FRAMES[this.state.frame];
+    const lang = LANGS.find(([k]) => k === this.state.lang);
+    const cmp = LANGS.find(([k]) => k === this.state.compare);
+    const panel = (k, title, color) => ({
+      title, color,
+      lines: CODE[k].map(([code, comment], i) => {
+        const on = F.lines.includes(i + 1);
+        return { n: i + 1, code, comment, bg: on ? t.hl : 'transparent', bar: on ? t.accent : 'transparent' };
+      })
+    });
+    const pockets = F.items.map((v, i) => {
+      const fresh = F.fresh === i, peek = (F.peek || []).includes(i), gone = F.gone === i;
+      const hot = fresh || peek;
+      return {
+        v, i, neg: i - F.items.length,
+        tag: fresh ? 'NEW' : peek ? 'PEEK' : gone ? 'POPPED' : '',
+        tagColor: gone ? t.left : t.accent,
+        border: hot ? t.accent : gone ? t.left : t.line2,
+        style: gone ? 'dashed' : 'solid',
+        bg: hot ? t.hl : 'transparent',
+        fg: hot ? t.accent : t.text,
+        op: gone ? 0.45 : 1,
+        anim: fresh ? 'pop 0.5s ease' : 'none'
+      };
+    });
+    const ans = this.state.answer;
+    return {
+      t, themeBtns: themeButtons(this, themeKey, t),
+      langs: LANGS.map(([k, label]) => ({
+        label, on: this.state.lang === k,
+        bg: this.state.lang === k ? t.accent : 'transparent', fg: this.state.lang === k ? t.onAccent : t.muted,
+        pick: () => this.setState({ lang: k, compare: k === this.state.compare ? (k === 'java' ? 'py' : 'java') : this.state.compare })
+      })),
+      langName: lang[1], ext: lang[2],
+      compareName: cmp[1],
+      cycleCompare: () => {
+        const order = LANGS.map(([k]) => k).filter((k) => k !== this.state.lang);
+        const next = order[(order.indexOf(this.state.compare) + 1) % order.length];
+        this.setState({ compare: next });
+      },
+      chapters: CHAPTERS.map(([num, label], i) => {
+        const cur = i === this.state.chapter;
+        const done = i < 2;
+        return {
+          label: num + ' ' + label, cur: cur ? 'page' : 'false',
+          mark: done ? '[x]' : cur ? '[>]' : '[ ]',
+          markColor: done ? t.accent : cur ? t.left : t.muted,
+          bg: cur ? t.sunk : 'transparent', fg: cur ? t.text : t.muted, weight: cur ? '700' : '400',
+          pick: () => this.setState({ chapter: i })
+        };
+      }),
+      isLists: this.state.chapter === 2, isOther: this.state.chapter !== 2,
+      other: { num: CHAPTERS[this.state.chapter][0], title: CHAPTERS[this.state.chapter][1], story: CHAPTERS[this.state.chapter][2] },
+      backToLists: () => this.setState({ chapter: 2 }),
+      frameNo: this.state.frame + 1, frameTitle: F.title, hoot: F.hoot, pockets,
+      atFirst: this.state.frame === 0, atLast: this.state.frame === FRAMES.length - 1,
+      prevFrame: () => { this.stop(); this.setState({ frame: Math.max(0, this.state.frame - 1) }); },
+      nextFrame: () => { this.stop(); this.setState({ frame: Math.min(FRAMES.length - 1, this.state.frame + 1) }); },
+      toggleFrames: () => (this.state.playing ? this.stop() : this.play()),
+      playText: this.state.playing ? 'pause' : 'play',
+      playLabel: this.state.playing ? 'Pause animation' : 'Play animation',
+      panels: [panel(this.state.lang, lang[1], t.accent), panel(this.state.compare, cmp[1] + ' — same idea', t.left)],
+      quiz: QUIZ.map(([label, right], i) => {
+        const on = ans === i;
+        return { label, on, border: on ? (right ? t.ok : t.left) : t.line, bg: on ? (right ? t.okBg : t.warnBg) : 'transparent', pick: () => this.setState({ answer: i }) };
+      }),
+      answered: ans !== null,
+      feedback: ans !== null ? QUIZ[ans][2] : '',
+      fbColor: ans !== null && QUIZ[ans][1] ? t.ok : t.text2,
+      tools: TOOLS.map((tl, i) => {
+        const on = this.state.tool === i;
+        return {
+          name: tl.names[this.state.lang], cost: tl.cost, use: tl.use, story: tl.story, on,
+          border: on ? t.accent : t.line, bg: on ? t.sunk : 'transparent',
+          pick: () => this.setState({ tool: on ? null : i })
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

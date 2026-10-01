@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home — dsaviz</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button,input{font:inherit}
+@keyframes slidein{from{transform:translateX(-40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes feedin{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes flicker{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.06) rotate(-3deg)}60%{transform:scale(0.97) rotate(2deg)}}
+</style>
+</helmet>
+<div style="width: 1440px; height: 2160px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+
+<header style="height: 76px; flex-shrink: 0; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid {{t.line}}">
+<button onClick="{{openDrawer}}" aria-label="Open menu" style="width: 46px; height: 46px; border-radius: 14px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="{{t.text}}"></rect><circle cx="10" cy="15" r="3.5" fill="{{t.logoL}}"></circle><circle cx="20" cy="15" r="3.5" fill="{{t.logoR}}"></circle></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">dsaviz</span></a>
+<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 16px; font-size: 15px; font-weight: 500">
+<a href="Home.dc.html" style="font-weight: 700">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Revisit.dc.html" style="color: {{t.muted}}">Revisit</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Glossary.dc.html" style="color: {{t.muted}}">Glossary</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
+</nav>
+<div style="flex-grow: 1"></div>
+<a href="Auth.dc.html" style="height: 40px; padding: 0 14px; border-radius: 999px; background: {{t.warnBg}}; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700">Trial · 2 days left<span style="color: {{t.accent}}">See plans →</span></a>
+<button onClick="{{openDrawer}}" aria-label="23-day streak" style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>23</button>
+<a href="Leaderboard.dc.html" aria-label="Lantern League, rank 14" style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"></path></svg>#14</a>
+<button onClick="{{openDrawer}}" aria-label="Account menu" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 800">AS</button>
+</header>
+
+<div style="flex-grow: 1; padding: 32px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 28px; align-items: start">
+
+<!-- LEFT -->
+<div style="display: flex; flex-direction: column; gap: 22px; min-width: 0">
+<section style="padding: 28px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 24px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 14px; color: {{t.muted}}">{{greetingTime}}</span>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Welcome back, Aarav.</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.5; color: {{t.text2}}">{{goalLine}}</p>
+<div style="display: flex; gap: 28px; margin-top: 6px">
+<sc-for list="{{stats}}" as="st" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: {{t.mono}}; font-size: 24px; font-weight: 700">{{st.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{st.k}}</span></div></sc-for>
+</div>
+</div>
+<div style="position: relative; width: 150px; height: 150px">
+<svg width="150" height="150" viewBox="0 0 150 150" aria-label="Daily goal: {{goalDone}} of 3 stories"><circle cx="75" cy="75" r="62" fill="none" stroke="{{t.sunk}}" stroke-width="14"></circle><circle cx="75" cy="75" r="62" fill="none" stroke="{{t.ok}}" stroke-width="14" stroke-linecap="round" stroke-dasharray="{{ringDash}}" transform="rotate(-90 75 75)" style="transition: stroke-dasharray 0.8s ease"></circle></svg>
+<div style="position: absolute; top: 0; left: 0; width: 150px; height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-family: {{t.mono}}; font-size: 30px; font-weight: 700">{{goalDone}}/3</span><span style="font-size: 12px; color: {{t.muted}}">today's goal</span></div>
+</div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px">
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Daily quests</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">reset in {{resetIn}}</span></div>
+<sc-for list="{{quests}}" as="qs" hint-placeholder-count="3">
+<a href="{{qs.href}}" onClick="{{qs.go}}" style="display: flex; gap: 12px; align-items: center; min-height: 48px">
+<span style="width: 30px; height: 30px; flex-shrink: 0; border-radius: 999px; background: {{qs.dotBg}}; color: {{qs.dotFg}}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800">{{qs.mark}}</span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 5px"><span style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 600"><span>{{qs.name}}</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">{{qs.count}}</span></span><span style="height: 6px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 6px; border-radius: 999px; width: {{qs.pct}}; background: {{qs.color}}"></span></span></span>
+</a>
+</sc-for>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 14px; background: {{t.sunk}}">
+<span style="font-size: 14px; line-height: 1.4">{{chestLine}}</span>
+<button onClick="{{openChest}}" disabled="{{chestLocked}}" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 0; background: {{chestBg}}; color: {{t.onAccent}}; cursor: pointer; font-size: 13px; font-weight: 700">{{chestBtn}}</button>
+</div>
+</section>
+
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.right}}">Revisit</span><span style="font-size: 13px; color: {{t.muted}}">about 6 min</span></div>
+<span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600; line-height: 1.2">5 stories are starting to fade</span>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">Name the pattern from the story, check the key move, rate how well you remembered. Old Hoot schedules the rest.</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{fading}}" as="fa" hint-placeholder-count="3"><span style="padding: 5px 10px; border-radius: 999px; background: {{t.coolBg}}; font-size: 13px; font-weight: 600">{{fa}}</span></sc-for></div>
+<a href="Revisit.dc.html" style="margin-top: auto; height: 48px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">Start revisit</a>
+</section>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px">
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Continue</span><span style="font-size: 13px; color: {{t.muted}}">Step {{mini.no}} of 6</span></div>
+<span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600">The Lantern Bridge</span>
+<div style="padding: 18px 12px 12px; border-radius: 16px; background: #1B1E26; display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="display: flex; gap: 8px">
+<sc-for list="{{mini.lanterns}}" as="ln" hint-placeholder-count="6"><div style="width: 40px; height: 52px; box-sizing: border-box; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', Georgia, serif; font-size: 19px; font-weight: 600; background: {{ln.fill}}; color: {{ln.ink}}; box-shadow: {{ln.glow}}; border: 2px solid {{ln.ring}}; transition: all 0.45s ease">{{ln.v}}</div></sc-for>
+</div>
+<div style="position: relative; width: 280px; height: 30px">
+<span style="position: absolute; top: 4px; left: {{mini.lumiX}}px; width: 22px; height: 22px; border-radius: 999px; background: #F5A06E; transition: left 0.5s cubic-bezier(.5,1.6,.4,1)"></span>
+<span style="position: absolute; top: 4px; left: {{mini.rooX}}px; width: 22px; height: 22px; border-radius: 7px; background: #6F98E6; transition: left 0.5s cubic-bezier(.5,1.6,.4,1)"></span>
+</div>
+</div>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">{{mini.line}}</span>
+<a href="Story.dc.html" onClick="{{continueGo}}" style="height: 48px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">Continue the story</a>
+</section>
+
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}">Today's story</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">new in {{resetIn}}</span></div>
+<span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600">{{daily.story}}</span>
+<span style="font-size: 13px; color: {{t.muted}}">{{daily.title}} · {{daily.pattern}}</span>
+<p style="margin: 0; font-size: 15px; line-height: 1.55; flex-grow: 1">{{daily.synopsis}}</p>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{daily.dBg}}; color: {{daily.dFg}}">{{daily.diff}}</span>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{t.sunk}}">~{{daily.time}}</span>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{t.okBg}}">+50 XP · keeps your streak</span>
+</div>
+<a href="Briefing.dc.html" onClick="{{daily.go}}" style="height: 48px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">Play today's story</a>
+</section>
+</div>
+
+<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Your learning path</span><a href="Patterns.dc.html" style="font-size: 14px; font-weight: 700; color: {{t.accent}}">Open the library →</a></div>
+<div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{path}}" as="pt" hint-placeholder-count="8">
+<a href="Patterns.dc.html" style="display: flex; flex-direction: column; gap: 8px">
+<span style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 8px; width: {{pt.pct}}; background: {{pt.color}}; border-radius: 999px"></span></span>
+<span style="font-size: 12px; font-weight: 700; color: {{pt.fg}}">{{pt.name}}</span>
+<span style="font-size: 11px; color: {{t.muted}}">{{pt.count}}</span>
+</a>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column">
+<span style="font-size: 13px; font-weight: 700; color: {{t.muted}}; margin-bottom: 6px">Up next in {{nextStage}}</span>
+<sc-for list="{{upNext}}" as="un" hint-placeholder-count="3">
+<a href="Briefing.dc.html" onClick="{{un.go}}" style="min-height: 52px; display: flex; gap: 14px; align-items: center; border-top: 1px solid {{t.line}}">
+<span style="width: 8px; height: 8px; border-radius: 999px; background: {{un.dot}}"></span>
+<span style="font-size: 15px; font-weight: 600">{{un.title}}</span>
+<span style="font-family: {{t.display}}; font-style: italic; color: {{t.muted}}; flex-grow: 1">{{un.story}}</span>
+<span style="font-size: 13px; color: {{t.muted}}">{{un.diff}} · {{un.time}}</span>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 20px; font-weight: 700">Pattern mastery</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 32px">
+<sc-for list="{{mastery}}" as="ms" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 600">{{ms.name}}</span><span style="font-family: {{t.mono}}; color: {{t.muted}}">{{ms.done}}/{{ms.total}}</span></div>
+<span style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{ms.pct}}; background: {{ms.color}}"></span></span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+
+<!-- RIGHT -->
+<div style="display: flex; flex-direction: column; gap: 22px">
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; gap: 14px; align-items: center">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true" style="animation: flicker 2.2s ease-in-out infinite"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
+<div style="display: flex; flex-direction: column"><span style="font-family: {{t.mono}}; font-size: 30px; font-weight: 800">23 days</span><span style="font-size: 14px; color: {{t.muted}}">Longest: 31 days · 30-day badge in 7</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{week}}" as="wk" hint-placeholder-count="7"><span style="height: 38px; border-radius: 10px; border: 1.5px solid {{wk.border}}; background: {{wk.bg}}; color: {{wk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">{{wk.d}}</span></sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 14px; background: {{t.coolBg}}">
+<span style="font-size: 14px; line-height: 1.4">Streak freeze · {{freezeText}}</span>
+<button onClick="{{toggleFreeze}}" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 0; background: {{t.text}}; color: {{t.bg}}; cursor: pointer; font-size: 13px; font-weight: 700">{{freezeBtn}}</button>
+</div>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Miss a day with no freeze and your streak halves instead of resetting — one bad day never wipes out a month.</span>
+</section>
+
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 700">Lantern League</span><span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}">ends in 2d 5h</span></div>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">You're #14 of 20. Top 7 move up to the Ember League — you're 180 XP away.</span>
+<sc-for list="{{league}}" as="lg" hint-placeholder-count="5">
+<div style="display: flex; gap: 12px; align-items: center; min-height: 40px; padding: 0 10px; border-radius: 10px; background: {{lg.bg}}">
+<span style="width: 26px; font-family: {{t.mono}}; font-size: 13px; font-weight: 700; color: {{lg.rankColor}}">{{lg.rank}}</span>
+<span style="flex-grow: 1; font-size: 14px; font-weight: {{lg.weight}}">{{lg.name}}</span>
+<span style="font-family: {{t.mono}}; font-size: 13px; font-weight: 700">{{lg.xp}} XP</span>
+</div>
+</sc-for>
+<a href="Leaderboard.dc.html" style="height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">See the full league</a>
+</section>
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 700">Study buddies</span><a href="Profile.dc.html" style="font-size: 13px; font-weight: 700; color: {{t.accent}}">Invite a friend →</a></div>
+<sc-for list="{{buddies}}" as="bu" hint-placeholder-count="2">
+<div style="display: flex; gap: 12px; align-items: center; min-height: 52px; border-top: 1px solid {{t.line}}">
+<span style="width: 38px; height: 38px; border-radius: 999px; background: {{bu.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800">{{bu.initials}}</span>
+<span style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 700">{{bu.name}}</span><span style="font-size: 12px; color: {{t.flame}}; font-weight: 700">🔥 {{bu.streak}}-day buddy streak</span></span>
+<button onClick="{{bu.nudge}}" disabled="{{bu.done}}" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{bu.fg}}; cursor: pointer; font-size: 12px; font-weight: 700">{{bu.btn}}</button>
+</div>
+</sc-for>
+</section>
+
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<span style="display: flex; gap: 8px; align-items: center; font-size: 18px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{t.ok}}; animation: pulse 1.6s ease-in-out infinite"></span>What others are learning</span>
+<sc-for list="{{feed}}" as="fd" hint-placeholder-count="4">
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid {{t.line}}; animation: {{fd.anim}}">
+<span style="flex-shrink: 0; min-width: 40px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 7px; background: {{t.sunk}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 11px; font-weight: 700">{{fd.tag}}</span>
+<span style="flex-grow: 1; font-size: 14px; line-height: 1.45">{{fd.who}} <span style="color: {{t.muted}}">{{fd.verb}}</span> <b>{{fd.what}}</b></span>
+<span style="font-size: 11px; color: {{t.muted}}; white-space: nowrap">{{fd.when}}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 18px; font-weight: 700">Interview coming up?</span>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: {{t.muted}}">Interview date<input type="date" value="{{interviewDate}}" onChange="{{setInterview}}" style="height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid {{t.line2}}; background: {{t.bg}}; color: {{t.text}}; font: inherit; font-size: 15px"></label>
+<span style="font-size: 15px; line-height: 1.5">{{interviewLine}}</span>
+<a href="Interview.dc.html" onClick="{{toPlans}}" style="height: 44px; border-radius: 999px; background: {{t.sunk}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Build my prep plan</a>
+</section>
+
+<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 18px; font-weight: 700">Badges</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{badges}}" as="bd" hint-placeholder-count="6">
+<button onClick="{{bd.pick}}" aria-pressed="{{bd.on}}" style="padding: 12px 8px; border-radius: 14px; border: 1px solid {{bd.border}}; background: {{bd.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: {{bd.op}}">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: {{bd.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 13px; font-weight: 800">{{bd.mark}}</span>
+<span style="font-size: 12px; font-weight: 700; text-align: center">{{bd.name}}</span>
+</button>
+</sc-for>
+</div>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.text2}}; min-height: 40px">{{badgeNote}}</span>
+</section>
+</div>
+</div>
+<!-- MENU DRAWER -->
+<sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
+<aside aria-label="Menu" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">dsaviz</span>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 10px; align-items: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
+<div style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 700">23-day streak</span><span style="font-size: 13px; color: {{t.muted}}">Play one story today to make it 24</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{week}}" as="wk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{wk.border}}; background: {{wk.bg}}; color: {{wk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{wk.d}}</span></sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px">Daily goal · 2 of 3 stories</span><span style="height: 6px; border-radius: 999px; background: {{t.line}}; display: block"><span style="display: block; width: 66%; height: 6px; border-radius: 999px; background: {{t.ok}}"></span></span></div>
+<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Go to my home</a>
+</div>
+</sc-if>
+<sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 16px; font-weight: 700">Keep a streak. Climb the league.</span>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Sign in to save progress, keep your daily streak and see where you rank this week.</span>
+<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Start 3-day free trial</a>
+<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Preview as a signed-in learner</button>
+</div>
+</sc-if>
+<nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="9">
+<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
+</sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>
+</aside>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="flex-grow: 1; height: 100vh; border: 0; background: rgba(10,10,10,0.4); cursor: pointer"></button>
+</div>
+</sc-if>
+<!-- /MENU DRAWER -->
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["paper","ink","field"],"default":"paper"},"$preview":{"width":1440,"height":2160}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const THEMES = {
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+// @@CATALOG@@ — generated block, shared by every board that lists problems.
+// Company tags: where learners most often report meeting each problem in interviews. Times are typical first-solve times.
+const STAGES = [
+  { key: "strings", name: "Strings", meta: "bead necklaces", blurb: "A string is a necklace of letter-beads. You'll walk it from both ends, slide a window along it, and count its beads.", why: "Everyone has used text. It's the gentlest place to meet your first patterns." },
+  { key: "arrays", name: "Arrays", meta: "rows of lanterns", blurb: "An array is a row of numbered lanterns. The big ideas show up here: two friends walking inward, sliding windows, halving searches and grids you can turn.", why: "Most interview problems are arrays in disguise." },
+  { key: "hash", name: "Maps & sets", meta: "coat-check counters", blurb: "Hand over a coat, get a ticket, find it again instantly. Maps and sets turn “search everything” into “just look it up”.", why: "The most-used trick for turning O(n²) into O(n)." },
+  { key: "stacks", name: "Stacks, queues & heaps", meta: "plates, lines and triage", blurb: "A stack is a pile of plates, a queue is a ticket line, and a heap is a triage desk where the most urgent case is always on top.", why: "They power bracket-matching, 'next warmer day' puzzles, top-K lists and the BFS you'll meet later." },
+  { key: "linked", name: "Linked lists", meta: "train carriages", blurb: "Each carriage only knows the next one. You'll turn trains around, zip two trains together and catch loops with a tortoise and a hare.", why: "Your first real taste of pointers — you'll need them for trees." },
+  { key: "trees", name: "Trees", meta: "family trees", blurb: "One ancestor at the top, branches below. Explore deep down one branch first, or visit floor by floor.", why: "DFS and BFS begin here, on shapes with no loops." },
+  { key: "graphs", name: "Graphs & grids", meta: "islands and ripples", blurb: "Maps of islands, cities and friendships. Ripple outward with BFS, or explore every path with DFS and backtrack when you hit a wall.", why: "Trees with loops — so you learn to remember where you've been." },
+  { key: "dp", name: "Dynamic programming", meta: "notes to your future self", blurb: "Solve the small versions first and write the answers down, so you never solve the same thing twice.", why: "It comes last because it builds on the recursion from trees and graphs." }
+];
+
+// name, tagline, companion (name, role)
+const PATTERNS = [
+  ["Two Pointers", "Two friends walk toward each other", "Lumi & Roo", "two friends who start at opposite ends"],
+  ["Sliding Window", "A train window gliding past the view", "Wren", "the window-keeper on the night train"],
+  ["Hash Map", "The coat-check counter", "Cleo", "the coat-check clerk who never forgets a ticket"],
+  ["Prefix Sum", "A running tally in the margin", "Penny", "who writes the running total after every step"],
+  ["Binary Search", "Guess the number, halve the doubt", "Gus", "the number-guesser who halves the doubt"],
+  ["Matrix", "Turning the tiled floor", "Tilda", "the tiler who turns whole floors"],
+  ["Intervals", "The meeting-room diary", "Iris", "the scheduler with the fat diary"],
+  ["Greedy", "Take the best step you can see", "Jax", "the stone-hopper who always leaps as far as he can"],
+  ["Stack", "A pile of plates: last on, first off", "Pip", "the plate-stacker at the busy canteen"],
+  ["Heap", "The triage desk", "Nia", "the triage nurse who always knows who's next"],
+  ["In-place Reversal", "Turning the train around", "Cole", "the conductor who re-couples carriages"],
+  ["Fast & Slow Pointers", "The tortoise and the hare", "Tam & Hazel", "a tortoise and a hare on the same track"],
+  ["Depth-First Search", "The maze explorer with chalk", "Moss", "the explorer who goes deep before going wide"],
+  ["Breadth-First Search", "Ripples in a pond", "Rill", "the ripple that spreads one ring at a time"],
+  ["Backtracking", "Try, mark, undo", "Chalk", "who marks every path and rubs it out on the way back"],
+  ["Dynamic Programming", "Notes to your future self", "Sol", "the scribe who writes every small answer down"]
+];
+
+// id, LeetCode #, title, story title, synopsis, difficulty, minutes, companies, pattern, stage, status, popularity rank, order added, animated?
+const PROBLEMS = [
+  ["valid-anagram", 242, "Valid Anagram", "The Scrabble Swap", "Two friends each hold a bag of Scrabble tiles. Can one spell exactly the other's word — nothing extra, nothing missing? Cleo keeps a tally: add for one bag, subtract for the other, and check every count lands on zero.", "Starter", 8, ["Amazon", "Bloomberg", "Uber"], "Hash Map", "strings", "done", 3, 1, true],
+  ["valid-palindrome", 125, "Valid Palindrome", "The Mirror Hallway", "Lumi and Roo walk a hallway painted with letters, one from each end, stepping over spaces and commas. If every pair of letters they meet matches, the hallway is a perfect mirror.", "Easy", 10, ["Meta", "Microsoft", "Apple"], "Two Pointers", "strings", "done", 2, 2, true],
+  ["longest-substring", 3, "Longest Substring Without Repeating Characters", "The Train of Unique Faces", "Wren watches passengers through the train window. She wants the longest stretch where no face appears twice. When a familiar face shows up, the back of the window slides forward just past the first one.", "Medium", 25, ["Amazon", "Microsoft", "Google"], "Sliding Window", "strings", "done", 1, 3, true],
+  ["char-replacement", 424, "Longest Repeating Character Replacement", "The Paint Touch-up", "A painter may repaint at most k tiles. How long a stretch can she make one colour? Wren keeps the window honest: window size minus the most common colour must stay at or below k.", "Medium", 30, ["Google", "Amazon", "Uber"], "Sliding Window", "strings", "todo", 5, 30, true],
+  ["min-window", 76, "Minimum Window Substring", "The Shopping List Window", "Walking down a market street, find the shortest stretch of stalls that sells everything on your list. Grow the window until the list is covered, then squeeze it from the left.", "Hard", 45, ["Meta", "Amazon", "Google", "Airbnb"], "Sliding Window", "strings", "todo", 4, 31, false],
+  ["longest-palindrome", 5, "Longest Palindromic Substring", "The Echo Chamber", "Stand in the middle of a word and shout. The echo spreads both ways for as long as the letters match. Try every middle — including the gaps between letters — and keep the longest echo.", "Medium", 30, ["Amazon", "Microsoft", "Adobe"], "Two Pointers", "strings", "todo", 3, 32, false],
+
+  ["two-sum-ii", 167, "Two Sum II — Sorted", "The Lantern Bridge", "Six lanterns hang in a row from dimmest to brightest. The gate opens only for two lanterns whose glow adds up to exactly the target. Lumi starts at the dim end, Roo at the bright end, and they squeeze inward.", "Medium", 20, ["Amazon", "Adobe", "Google", "Meta"], "Two Pointers", "arrays", "now", 4, 4, true],
+  ["container", 11, "Container With Most Water", "The Rain Barrel Builders", "Two builders stand at the ends of a fence of uneven planks. The shorter plank always decides how much rain the barrel holds, so the builder at the shorter plank steps inward, hoping for a taller one.", "Medium", 25, ["Amazon", "Google", "Meta"], "Two Pointers", "arrays", "todo", 3, 20, true],
+  ["3sum", 15, "3Sum", "The Campfire Trio", "Three friends around a fire need glows that add up to zero. Sort them, fix one friend in place, and let the other two play the Lantern Bridge on everyone to their right. Skip twins so no trio repeats.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Two Pointers", "arrays", "todo", 2, 6, false],
+  ["trapping-rain", 42, "Trapping Rain Water", "The Valley After the Storm", "Rain falls on a row of rocks. The water above each rock rises to the lower of the tallest rock on its left and the tallest on its right. Two walkers from the ends carry those heights with them.", "Hard", 45, ["Amazon", "Google", "Goldman Sachs"], "Two Pointers", "arrays", "todo", 5, 7, false],
+  ["move-zeroes", 283, "Move Zeroes", "The Tidy Bookshelf", "Push every empty slot on a bookshelf to the right while keeping the books in their order. Roo reads each slot; Lumi places the next book wherever the tidy part ends.", "Starter", 8, ["Meta", "Amazon", "Apple"], "Two Pointers", "arrays", "done", 6, 33, false],
+  ["best-time-stock", 121, "Best Time to Buy and Sell Stock", "The Market Stall Diary", "Each morning you note the price of mangoes. Remember the cheapest morning so far; today's profit is today's price minus that. Keep the best profit you've ever seen.", "Easy", 15, ["Amazon", "Goldman Sachs", "Flipkart"], "Sliding Window", "arrays", "done", 1, 5, true],
+  ["product-except-self", 238, "Product of Array Except Self", "The Group Photo Scores", "Everyone in a group photo gets a score: the product of everybody else's numbers. Penny walks once from the left and once from the right, and multiplies the two notes she left at each seat.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Apple"], "Prefix Sum", "arrays", "todo", 2, 34, false],
+  ["subarray-sum-k", 560, "Subarray Sum Equals K", "The Coin Jar Checkpoints", "Drop coins in a jar and note the running total at every checkpoint. Two checkpoints whose totals differ by exactly k fence off a stretch that sums to k — Cleo remembers how often each total has appeared.", "Medium", 30, ["Meta", "Google", "Amazon"], "Prefix Sum", "arrays", "todo", 3, 35, false],
+  ["binary-search", 704, "Binary Search", "The Number-Guessing Game", "Gus has to find a number in a sorted row. Every guess tells him higher or lower, so half the row disappears each time. Eight guesses are enough for 256 numbers.", "Starter", 8, ["Microsoft", "Apple"], "Binary Search", "arrays", "done", 4, 36, false],
+  ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, false],
+  ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, false],
+  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, false],
+  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, false],
+  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, false],
+  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, false],
+  ["subsets", 78, "Subsets", "The Picnic Basket Choices", "For every snack, Chalk asks one question: in the basket or not? Two branches per snack, and every path to the bottom is one possible basket.", "Medium", 25, ["Meta", "Amazon"], "Backtracking", "arrays", "todo", 2, 42, false],
+  ["permutations", 46, "Permutations", "The Seating Chart", "Seat guests one chair at a time. Try each unseated guest in the next chair, go deeper, then stand them back up and try the next.", "Medium", 25, ["Microsoft", "LinkedIn", "Amazon"], "Backtracking", "arrays", "todo", 3, 43, false],
+  ["combination-sum", 39, "Combination Sum", "The Exact Price Basket", "Fill a basket that costs exactly the target, reusing any item as often as you like. Chalk tries items in order so the same basket is never counted twice.", "Medium", 30, ["Amazon", "Airbnb"], "Backtracking", "arrays", "todo", 4, 44, false],
+
+  ["contains-duplicate", 217, "Contains Duplicate", "The Guest List", "At the door, Cleo checks every guest against her list. The moment someone is already on it, she knows someone came twice.", "Starter", 8, ["Amazon", "Apple"], "Hash Map", "hash", "done", 3, 8, true],
+  ["two-sum", 1, "Two Sum", "The Coat-Check Counter", "Guests arrive one by one. For each guest, Cleo checks her ticket book: is the partner who completes the target already here? If not, she writes this guest down and waits.", "Easy", 15, ["Amazon", "Google", "Meta", "Microsoft"], "Hash Map", "hash", "done", 1, 9, true],
+  ["group-anagrams", 49, "Group Anagrams", "The Letter-Sorting Office", "Every word goes into a pigeonhole labelled with its letters in alphabetical order. Words that share a label are anagrams of each other.", "Medium", 25, ["Amazon", "Uber", "Meta"], "Hash Map", "hash", "todo", 2, 10, false],
+  ["longest-consecutive", 128, "Longest Consecutive Sequence", "The Missing Page Hunt", "Torn diary pages lie scattered. Cleo only starts counting a run from a page whose previous page is missing, then counts upward — so every page is visited once.", "Medium", 25, ["Google", "Amazon"], "Hash Map", "hash", "todo", 4, 45, false],
+
+  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, false],
+  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, false],
+  ["min-stack", 155, "Min Stack", "The Plate Pile with a Memory", "Next to every plate, Pip writes the smallest plate in the pile at that moment. Taking a plate off takes its note with it.", "Medium", 15, ["Amazon", "Bloomberg"], "Stack", "stacks", "todo", 3, 46, false],
+  ["kth-largest", 215, "Kth Largest Element in an Array", "The Talent Show Top K", "Nia keeps only the k best acts in a small room, weakest at the door. A new act gets in only if it beats the weakest, who then leaves.", "Medium", 25, ["Meta", "Amazon", "Microsoft"], "Heap", "stacks", "todo", 1, 47, false],
+  ["top-k-frequent", 347, "Top K Frequent Elements", "The Most-Requested Songs", "Cleo tallies every song request; Nia keeps the k most-requested in her small room. The quieter songs never make it past the door.", "Medium", 25, ["Amazon", "Meta", "Apple"], "Heap", "stacks", "todo", 2, 48, false],
+  ["sliding-window-max", 239, "Sliding Window Maximum", "The Tallest in the Window", "As Wren's window slides, she keeps a line of candidates, tallest at the front. Anyone shorter than a newcomer can never be the tallest again, so they leave.", "Hard", 40, ["Amazon", "Google"], "Sliding Window", "stacks", "todo", 4, 49, false],
+
+  ["reverse-linked-list", 206, "Reverse Linked List", "Turning the Train Around", "Cole walks down the train unhooking each carriage and re-hooking it to face backward. Three hands are all he needs: the carriage behind, the one he holds, and the one ahead.", "Easy", 15, ["Amazon", "Microsoft", "Apple"], "In-place Reversal", "linked", "todo", 1, 13, false],
+  ["linked-list-cycle", 141, "Linked List Cycle", "The Tortoise and the Hare", "Tam walks one carriage at a time; Hazel runs two. If the track loops, the hare laps the tortoise and they meet. If it doesn't, Hazel reaches the end.", "Easy", 15, ["Amazon", "Microsoft", "Goldman Sachs"], "Fast & Slow Pointers", "linked", "todo", 2, 14, false],
+  ["middle-of-list", 876, "Middle of the Linked List", "Halfway Across the Bridge", "Hazel runs two carriages for every one Tam walks. When Hazel reaches the end of the train, Tam is standing in the middle.", "Starter", 8, ["Amazon", "Apple"], "Fast & Slow Pointers", "linked", "todo", 4, 50, false],
+  ["merge-two-lists", 21, "Merge Two Sorted Lists", "The Zipper Merge", "Two sorted trains meet at a junction. Lumi and Roo each watch one train and wave through whichever carriage is smaller next, zipping them into one sorted train.", "Easy", 12, ["Amazon", "Microsoft", "Apple"], "Two Pointers", "linked", "todo", 3, 51, false],
+  ["remove-nth", 19, "Remove Nth Node From End of List", "The Carriage Gap", "Send a scout n carriages ahead. Walk both together; when the scout reaches the end, you're standing just before the carriage to unhook.", "Medium", 20, ["Meta", "Amazon"], "Two Pointers", "linked", "todo", 5, 52, false],
+  ["merge-k-lists", 23, "Merge k Sorted Lists", "The Train Yard Merge", "k sorted trains pull into one yard. Nia keeps the front carriage of every train at her desk and always sends out the smallest one next.", "Hard", 40, ["Amazon", "Google", "Meta"], "Heap", "linked", "todo", 6, 53, false],
+
+  ["invert-tree", 226, "Invert Binary Tree", "The Mirror Garden", "Moss swaps each gardener's left and right flower beds, then asks their children to do the same. The whole garden ends up mirrored.", "Starter", 8, ["Google", "Amazon"], "Depth-First Search", "trees", "todo", 3, 54, false],
+  ["max-depth", 104, "Maximum Depth of Binary Tree", "The Tallest Branch", "Every branch asks its two children how deep they go, adds one for itself, and passes the bigger answer up to its parent.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Depth-First Search", "trees", "todo", 2, 15, false],
+  ["validate-bst", 98, "Validate Binary Search Tree", "The Orchard Rule", "In this orchard every tree on the left must be shorter and every tree on the right taller — not just than the parent, but than every ancestor. Moss carries the allowed range down with him.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Depth-First Search", "trees", "todo", 4, 55, false],
+  ["level-order", 102, "Binary Tree Level Order Traversal", "Floors of the Treehouse", "Rill visits the treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.", "Medium", 25, ["Amazon", "Meta", "Microsoft"], "Breadth-First Search", "trees", "todo", 1, 16, false],
+  ["right-side-view", 199, "Binary Tree Right Side View", "The View from the Right Balcony", "Stand on the right balcony of every floor of the treehouse. The last person on each floor is the one you can see.", "Medium", 20, ["Meta", "Amazon"], "Breadth-First Search", "trees", "todo", 5, 56, false],
+
+  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, false],
+  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, false],
+  ["clone-graph", 133, "Clone Graph", "The Friendship Photocopier", "Moss photocopies a web of friends. He keeps a notebook of who's already copied, so nobody gets copied twice and every friendship is redrawn.", "Medium", 25, ["Meta", "Google", "Amazon"], "Depth-First Search", "graphs", "todo", 4, 57, false],
+  ["course-schedule", 207, "Course Schedule", "The Prerequisite Map", "Rill starts with every course that has no prerequisites, then unlocks the courses that were waiting on them. If some are never unlocked, there's a loop.", "Medium", 30, ["Amazon", "Microsoft", "Uber"], "Breadth-First Search", "graphs", "todo", 3, 58, false],
+  ["word-search", 79, "Word Search", "The Letter Maze", "Chalk traces the word letter by letter through a grid, marking each square as he goes and rubbing the mark out when a path fails.", "Medium", 30, ["Amazon", "Microsoft", "Bloomberg"], "Backtracking", "graphs", "todo", 5, 59, false],
+
+  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, false],
+  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, false],
+  ["max-subarray", 53, "Maximum Subarray", "The Hiker's Best Stretch", "A hiker logs every climb and drop. Sol keeps a running total of the current stretch; the moment it sinks below zero, starting fresh is better.", "Medium", 20, ["Amazon", "Microsoft", "LinkedIn"], "Dynamic Programming", "dp", "todo", 3, 60, false],
+  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, false],
+  ["lis", 300, "Longest Increasing Subsequence", "The Staircase of Heights", "Pick people from a line to build the longest staircase of rising heights, keeping their order. For each person, Sol asks how long a staircase could end with them.", "Medium", 30, ["Google", "Microsoft", "Amazon"], "Dynamic Programming", "dp", "todo", 5, 62, false],
+  ["word-break", 139, "Word Break", "The Dictionary Fence", "Can a long string be cut into dictionary words? Sol marks every position he can reach with a clean cut and checks whether the end gets a mark.", "Medium", 30, ["Amazon", "Google", "Meta"], "Dynamic Programming", "dp", "todo", 6, 63, false],
+  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, false]
+].map(([id, n, title, story, synopsis, diff, mins, cos, pattern, dtype, status, pop, added, animated]) =>
+  ({ id, n, title, story, synopsis, diff, time: mins + " min", mins, cos, pattern, dtype, status, pop, added, animated }));
+
+const COMPANY_TABS = [
+  ["MAANG", ["Meta", "Apple", "Amazon", "Netflix", "Google"]],
+  ["Amazon", ["Amazon"]], ["Google", ["Google"]], ["Meta", ["Meta"]], ["Microsoft", ["Microsoft"]], ["Apple", ["Apple"]],
+  ["Adobe", ["Adobe"]], ["Uber", ["Uber"]], ["Bloomberg", ["Bloomberg"]], ["LinkedIn", ["LinkedIn"]], ["Airbnb", ["Airbnb"]],
+  ["Goldman Sachs", ["Goldman Sachs"]], ["Flipkart", ["Flipkart"]]
+];
+const PROBLEM_KEY = "dsaviz-problem";
+function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
+function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }
+function storeSaved(list) { writeJSON('dsaviz-saved', list); }
+function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function storeDeck(d) { writeJSON('dsaviz-deck', d); }
+// @@END@@
+
+// @@DRAWER@@ — shared menu logic (landing + home)
+const MENU = [
+  ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
+  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
+  ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
+  ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],
+  ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
+  ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
+  ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
+  ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
+];
+function drawerVals(cmp, t, themeKey) {
+  return {
+    drawerOpen: !!cmp.state.drawer,
+    openDrawer: () => cmp.setState({ drawer: true }),
+    closeDrawer: () => cmp.setState({ drawer: false }),
+    user: !!cmp.state.user, guest: !cmp.state.user,
+    signIn: () => { saveUser(true); cmp.setState({ user: true }); },
+    signOut: () => { saveUser(false); cmp.setState({ user: false, drawer: false }); },
+    week: streakDays(t),
+    themeBtns: themeButtons(cmp, themeKey, t),
+    menu: MENU.map(([href, label, sub, tab]) => ({
+      href, label, sub,
+      go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
+    }))
+  };
+}
+// @@END-DRAWER@@
+
+const NUMS = [1, 3, 4, 6, 8, 11];
+const MINI = [[0, 5, 'Six lanterns. The gate wants exactly 10.'], [0, 5, '1 + 11 = 12. Too bright — Roo steps left.'], [0, 4, '1 + 8 = 9. Too dim — Lumi steps right.'], [1, 4, '3 + 8 = 11. Too bright again.'], [1, 3, '3 + 6 = 9. One short.'], [2, 3, '4 + 6 = 10. The gate opens!']];
+const FEED = [
+  ['Sneha in Pune', 'started', 'The Campfire Trio', '2P'],
+  ['Karthik, backend dev in Bengaluru', 'finished', 'Islands on the Map', 'DFS'],
+  ['Farhan in Hyderabad', 'hit a 30-day streak on', 'The Coat-Check Counter', 'HM'],
+  ['Divya in Chennai', 'unlocked', 'Stacks, queues & heaps', 'LVL'],
+  ['Ishaan in Delhi', 'opened the glossary card for', 'enumerate', 'KW'],
+  ['Rahul, SDE-2 in Gurugram', 'started a mock interview on', 'The Train Yard Merge', 'MOCK'],
+  ['Neha in Kolkata', 'solved at expert depth', 'The Exact Change Counter', 'DP']
+];
+const LEAGUE = [['Priya Iyer', 2140], ['Karthik Reddy', 1985], ['Sneha Kulkarni', 1760], ['you', 1240], ['Rahul Menon', 1195]];
+const BADGES = [
+  ['First Light', 'FL', true, 'Finished your first story. The Lantern Bridge will always be your first.'],
+  ['Mirror Walker', 'MW', true, 'Solved three Two Pointers stories.'],
+  ['Coat Check', 'CC', true, 'Solved every Hash Map starter story.'],
+  ['Week of Fire', '7D', true, 'Kept a 7-day streak. Next up: 30 days — 7 to go.'],
+  ['Deep Diver', 'DFS', false, 'Solve five Depth-First Search stories.'],
+  ['Night Owl', 'NO', false, 'Finish a story at expert depth after 10 pm. Old Hoot approves.']
+];
+const DIFF_ORDER = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };
+// name, progress, target, where it's done, problem to open
+const QUESTS = [['Walk one story to the end', 1, 1, 'Story.dc.html', 'two-sum-ii'], ['Revisit 5 fading stories', 2, 5, 'Revisit.dc.html', null], ['Predict 3 moves correctly', 1, 3, 'Story.dc.html', 'longest-substring']];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { theme: loadTheme(), user: true, drawer: false, mini: 0, feed: 0, now: Date.now(), freeze: false, badge: 0, interview: '', chest: false, nudged: false };
+  }
+  componentDidMount() {
+    listenTheme(this);
+    this.timer = setInterval(() => this.setState({ mini: (this.state.mini + 1) % MINI.length, now: Date.now() }), 2400);
+    this.feedTimer = setInterval(() => this.setState({ feed: this.state.feed + 1 }), 3600);
+  }
+  componentWillUnmount() { unlistenTheme(this); clearInterval(this.timer); clearInterval(this.feedTimer); }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'paper';
+    const t = THEMES[themeKey] || THEMES.paper;
+    const now = new Date(this.state.now);
+    const hour = now.getHours();
+    const goalDone = 2;
+    const C = 2 * Math.PI * 62;
+    const dayIndex = Math.floor(this.state.now / 86400000);
+    const todo = PROBLEMS.filter((p) => p.status === 'todo');
+    const dp = todo[dayIndex % todo.length];
+    const midnight = new Date(now); midnight.setHours(24, 0, 0, 0);
+    const left = Math.max(0, Math.floor((midnight - now) / 1000));
+    const pad = (n) => String(n).padStart(2, '0');
+    const [L, R, line] = MINI[this.state.mini];
+    const found = this.state.mini === MINI.length - 1;
+    const stageStats = STAGES.map((s) => {
+      const all = PROBLEMS.filter((p) => p.dtype === s.key);
+      const done = all.filter((p) => p.status === 'done').length;
+      return { s, all, done };
+    });
+    const cur = stageStats.find((x) => x.done < x.all.length) || stageStats[0];
+    const d = new Date(this.state.interview);
+    const days = this.state.interview ? Math.ceil((d - now) / 86400000) : null;
+    const b = BADGES[this.state.badge];
+    const questsDone = QUESTS.every(([, h, n]) => h >= n);
+    return {
+      t, ...drawerVals(this, t, themeKey),
+      greetingTime: hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening',
+      goalLine: 'One more story today keeps your 23-day streak alive and finishes your daily goal.',
+      goalDone, ringDash: (C * goalDone / 3).toFixed(1) + ' ' + C.toFixed(1),
+      stats: [
+        { v: PROBLEMS.filter((p) => p.status === 'done').length, k: 'stories solved' },
+        { v: PATTERNS.filter(([n]) => PROBLEMS.some((p) => p.pattern === n && p.status !== 'todo')).length, k: 'patterns started' },
+        { v: '142', k: 'minutes this week' },
+        { v: '1,240', k: 'XP this week' }
+      ],
+      mini: {
+        no: this.state.mini + 1, line,
+        lumiX: L * 48 + 9, rooX: R * 48 + 9,
+        lanterns: NUMS.map((v, i) => {
+          const out = i < L || i > R;
+          return {
+            v, fill: out ? '#2A2E38' : 'hsl(42,90%,' + (95 - v * 2.8) + '%)', ink: out ? '#6E7380' : '#1D1B18',
+            glow: out ? 'none' : '0 0 ' + (6 + v * 2) + 'px hsla(42,95%,60%,0.4)',
+            ring: found && (i === L || i === R) ? '#6FCF97' : i === L ? '#F5A06E' : i === R ? '#6F98E6' : 'transparent'
+          };
+        })
+      },
+      continueGo: () => saveProblem('two-sum-ii'),
+      resetIn: pad(Math.floor(left / 3600)) + ':' + pad(Math.floor((left % 3600) / 60)) + ':' + pad(left % 60),
+      daily: Object.assign({}, dp, { dBg: t.diff[dp.diff][1], dFg: t.diff[dp.diff][2], go: () => saveProblem(dp.id) }),
+      path: stageStats.map((x) => ({
+        name: x.s.name, count: x.done + '/' + x.all.length,
+        pct: Math.round((x.done / x.all.length) * 100) + '%',
+        color: x.done === x.all.length ? t.ok : t.accent,
+        fg: x === cur ? t.accent : t.text
+      })),
+      nextStage: cur.s.name,
+      upNext: cur.all.filter((p) => p.status !== 'done').sort((a, b2) => DIFF_ORDER[a.diff] - DIFF_ORDER[b2.diff]).slice(0, 3).map((p) => ({
+        title: p.title, story: p.story, diff: p.diff, time: p.time, dot: t.diff[p.diff][0], go: () => saveProblem(p.id)
+      })),
+      mastery: PATTERNS.map(([name]) => {
+        const all = PROBLEMS.filter((p) => p.pattern === name);
+        const done = all.filter((p) => p.status === 'done').length;
+        return { name, done, total: all.length, pct: Math.round((done / Math.max(1, all.length)) * 100) + '%', color: done ? t.ok : t.line2, score: done / Math.max(1, all.length) + all.length / 100 };
+      }).sort((a, b2) => b2.score - a.score).slice(0, 8),
+      freezeText: this.state.freeze ? 'equipped for tomorrow' : '1 available',
+      freezeBtn: this.state.freeze ? 'Unequip' : 'Equip',
+      toggleFreeze: () => this.setState({ freeze: !this.state.freeze }),
+      league: LEAGUE.map(([name, xp], i) => {
+        const rank = i < 3 ? i + 1 : i === 3 ? 14 : 15;
+        const me = name === 'you';
+        return { rank, name: me ? 'You' : name, xp, bg: me ? t.hl : 'transparent', weight: me ? '800' : '600', rankColor: rank <= 7 ? t.ok : t.muted };
+      }),
+      feed: [0, 1, 2, 3].map((k) => {
+        const f = FEED[(this.state.feed + k) % FEED.length];
+        return { who: f[0], verb: f[1], what: f[2], tag: f[3], when: ['now', '1m', '3m', '5m'][k], anim: k === 0 ? 'feedin 0.5s ease' : 'none' };
+      }),
+      interviewDate: this.state.interview,
+      setInterview: (e) => this.setState({ interview: e.target.value }),
+      interviewLine: days === null || isNaN(days) ? 'Pick a date and we’ll pace a plan: which stages to finish, and which company track to rehearse.'
+        : days < 0 ? 'That date has passed. How did it go? Tell Old Hoot on the About page.'
+        : days + ' days to go. Suggested: ' + (days <= 14 ? 'the 2-week sprint' : days <= 30 ? 'the 30-day plan' : 'the 90-day path') + ', about ' + Math.max(1, Math.ceil(24 / Math.max(1, days))) + ' stories a day.',
+      toPlans: () => { try { window.localStorage.setItem('dsaviz-interview-tab', 'plans'); } catch (e) {} },
+      badges: BADGES.map(([name, mark, earned], i) => ({
+        name, mark: earned ? mark : '?', on: this.state.badge === i,
+        color: earned ? [t.accent, t.right, t.ok][i % 3] : t.line2,
+        bg: this.state.badge === i ? t.sunk : 'transparent', border: this.state.badge === i ? t.accent : t.line,
+        op: earned ? 1 : 0.7,
+        pick: () => this.setState({ badge: i })
+      })),
+      badgeNote: (b[2] ? 'Earned · ' : 'Locked · ') + b[3],
+      quests: QUESTS.map(([name, have, need, href, id]) => {
+        const done = have >= need;
+        return { name, href, count: have + ' / ' + need, pct: Math.round((have / need) * 100) + '%', mark: done ? '✓' : '·', dotBg: done ? t.ok : t.sunk, dotFg: done ? t.onAccent : t.muted, color: done ? t.ok : t.accent, go: () => { if (id) saveProblem(id); } };
+      }),
+      chestLocked: !questsDone || this.state.chest,
+      chestBg: questsDone && !this.state.chest ? t.accent : t.faint,
+      chestBtn: this.state.chest ? 'Opened ✓' : 'Open chest',
+      chestLine: this.state.chest ? '+40 XP added. New quests at midnight.' : questsDone ? 'All three done — your chest is ready.' : (QUESTS.filter(([, h, n]) => h < n).length) + ' quests to go · chest holds +40 XP',
+      openChest: () => { if (questsDone) this.setState({ chest: true }); },
+      fading: ['The Scrabble Swap', 'The Train of Unique Faces', 'The Lantern Bridge'],
+      buddies: [['Ananya Rao', 'AR', 12, true], ['Rohit Verma', 'RV', 5, false]].map(([name, initials, streak, today], i) => {
+        const done = today || this.state.nudged;
+        return { name, initials, streak, color: [t.right, t.ok][i], done, btn: today ? 'Learned today ✓' : this.state.nudged ? 'Nudged ✓' : 'Nudge', fg: done ? t.muted : t.text, nudge: () => { if (!today) this.setState({ nudged: true }); } };
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

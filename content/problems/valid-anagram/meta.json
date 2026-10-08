@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "valid-anagram",
+  "slug": "valid-anagram",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Check whether two words use the same letters",
+  "storyTitle": "The letter-tile swap",
+  "summary": "Decide whether one bag of letter tiles can spell exactly the other bag's word, nothing extra and nothing missing.",
+  "difficulty": "introductory",
+  "companies": [
+    "Amazon",
+    "Bloomberg",
+    "Uber"
+  ],
+  "topics": [
+    "strings",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "hash-map",
+      "variantId": "counting",
+      "order": 15
+    }
+  ],
+  "prerequisites": [
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the two bags hold exactly the same letters",
+  "mapping": [
+    {
+      "story": "First bag of tiles",
+      "formal": "String s"
+    },
+    {
+      "story": "Second bag of tiles",
+      "formal": "String t"
+    },
+    {
+      "story": "A tile",
+      "formal": "A character"
+    },
+    {
+      "story": "The tally sheet",
+      "formal": "Map: letter → count"
+    },
+    {
+      "story": "Same letters",
+      "formal": "Return True"
+    }
+  ],
+  "examples": [
+    {
+      "id": "listen",
+      "label": "listen / silent",
+      "input": {
+        "s": "listen",
+        "t": "silent"
+      },
+      "expectedOutput": true,
+      "explanation": "Both bags hold e, i, l, n, s, t once each."
+    },
+    {
+      "id": "rat-car",
+      "label": "rat / car",
+      "input": {
+        "s": "rat",
+        "t": "car"
+      },
+      "expectedOutput": false,
+      "explanation": "The first bag has a t and no c; the second has a c and no t."
+    },
+    {
+      "id": "sizes",
+      "label": "Different sizes",
+      "input": {
+        "s": "ab",
+        "t": "abc"
+      },
+      "expectedOutput": false,
+      "explanation": "The bags hold different numbers of tiles."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "cross-out",
+      "level": "brute-force",
+      "name": "Cross out matching tiles",
+      "idea": "For each tile in the first bag, search the second bag for the same letter and cross it out.",
+      "time": "O(n²)",
+      "space": "O(n)"
+    },
+    {
+      "id": "sort-both",
+      "level": "better",
+      "name": "Sort both words",
+      "idea": "Sort the letters of each word and compare the results.",
+      "insight": "Anagrams are the same letters in a different order, so putting both in the same order makes them identical.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "tally",
+      "level": "optimal",
+      "name": "One tally sheet",
+      "idea": "Add one for every letter of the first word and subtract one for every letter of the second. Anagrams leave every count at zero.",
+      "insight": "Order does not matter at all, only how many of each letter. Counting needs one pass and, for 26 letters, a fixed-size tally.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "tally"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "tally",
+      "name": "One tally sheet",
+      "adapterId": "anagram-count-v1",
+      "summary": "Add for the first word, subtract for the second, then check every count is zero.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "tally",
+  "transfer": {
+    "problem": "Can a ransom note be cut out of a magazine, using each magazine letter at most once?",
+    "answerPatternId": "hash-map",
+    "explanation": "Count the magazine's letters, then subtract the note's letters; if any count goes below zero, the note cannot be made."
+  },
+  "practice": {
+    "selfCheck": [
+      "Returns False straight away when the lengths differ.",
+      "Counts letters instead of comparing positions.",
+      "Checks that every count ends at exactly zero.",
+      "Handles repeated letters, such as \"aab\" and \"aba\"."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Valid Anagram",
+  "practiceLink": {
+    "label": "LeetCode 242",
+    "url": "https://leetcode.com/problems/valid-anagram/"
+  }
+}

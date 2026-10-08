@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "id": "permutations",
+  "slug": "permutations",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "All orderings of distinct values",
+  "storyTitle": "The seating chart",
+  "summary": "Seat guests one chair at a time: try each unseated guest in the next chair, go deeper, then stand them back up and try the next.",
+  "difficulty": "medium",
+  "companies": [
+    "Microsoft",
+    "LinkedIn",
+    "Amazon"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "backtracking",
+      "variantId": "arrange",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "recursion"
+  ],
+  "checker": "unordered",
+  "goal": "List every seating order",
+  "mapping": [
+    {
+      "story": "Guests",
+      "formal": "Array nums of distinct values"
+    },
+    {
+      "story": "A seating order",
+      "formal": "A permutation"
+    },
+    {
+      "story": "Filling the next chair",
+      "formal": "Choosing the next element"
+    },
+    {
+      "story": "Standing a guest back up",
+      "formal": "Undoing the choice"
+    }
+  ],
+  "examples": [
+    {
+      "id": "three",
+      "label": "Three guests",
+      "input": {
+        "nums": [
+          1,
+          2,
+          3
+        ]
+      },
+      "expectedOutput": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          3,
+          2
+        ],
+        [
+          2,
+          1,
+          3
+        ],
+        [
+          2,
+          3,
+          1
+        ],
+        [
+          3,
+          1,
+          2
+        ],
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "explanation": "3 × 2 × 1 = 6 orders."
+    },
+    {
+      "id": "two",
+      "label": "Two guests",
+      "input": {
+        "nums": [
+          0,
+          1
+        ]
+      },
+      "expectedOutput": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "explanation": "Either guest can sit first."
+    },
+    {
+      "id": "one",
+      "label": "One guest",
+      "input": {
+        "nums": [
+          1
+        ]
+      },
+      "expectedOutput": [
+        [
+          1
+        ]
+      ],
+      "explanation": "Only one order."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-sequence",
+      "level": "brute-force",
+      "name": "Try every sequence, keep the valid ones",
+      "idea": "Generate every sequence of n guests allowing repeats, and keep only those where nobody appears twice.",
+      "time": "O(n · nⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "seat-and-unseat",
+      "level": "optimal",
+      "name": "Seat one chair at a time, then unseat",
+      "idea": "Fill the next chair with each guest not yet seated, explore the rest of the chairs, then stand that guest back up.",
+      "insight": "Most sequences reuse a guest and are thrown away. Choosing only from guests not yet seated means every sequence built is a real seating order.",
+      "time": "O(n · n!)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "permutations",
+  "transfer": {
+    "problem": "List every possible order in which to visit five landmarks on a tour.",
+    "answerPatternId": "backtracking",
+    "explanation": "Each tour is an ordering of the landmarks: fill the next stop with each unvisited landmark, explore, and undo."
+  },
+  "practice": {
+    "selfCheck": [
+      "Skips guests who are already seated.",
+      "Records a copy when every chair is filled.",
+      "Unseats the guest after exploring.",
+      "Produces n! orders for n distinct guests."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Permutations",
+  "practiceLink": {
+    "label": "LeetCode 46",
+    "url": "https://leetcode.com/problems/permutations/"
+  }
+}

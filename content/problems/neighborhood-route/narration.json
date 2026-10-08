@@ -1,0 +1,49 @@
+{
+  "bfs": {
+    "present": {
+      "label": "Read the map",
+      "story": "{nodeCount} corners and {edgeCount} streets. We start at {start} and want to reach {goal} in as few streets as possible.",
+      "formal": "Graph with {nodeCount} nodes and {edgeCount} undirected edges. Find a shortest path from {start} to {goal}."
+    },
+    "same-node": {
+      "label": "Already there",
+      "story": "Home and the goal are the same corner, {start}. No streets are needed.",
+      "formal": "start == goal, so return (0, [{start}])."
+    },
+    "initialize": {
+      "label": "Start at home",
+      "story": "Home, corner {start}, is 0 streets away. Put it in the queue of corners to explore from.",
+      "formal": "distance[{start}] = 0; queue = [{start}]."
+    },
+    "dequeue": {
+      "label": "Take the next corner",
+      "story": "Take {node} from the front of the queue. Its distance from home is {distance}. Corners still waiting: {waiting}.",
+      "formal": "corner = queue.popleft() = {node}, at distance {distance}. Remaining in the queue: {waiting}."
+    },
+    "skip-seen": {
+      "label": "Already discovered",
+      "story": "The street from {from} leads to {to}, which already has distance {known}. A route through {from} cannot be shorter, so skip it.",
+      "formal": "{to} is already in distance (= {known}): continue."
+    },
+    "discover": {
+      "label": "Discover a corner",
+      "story": "{to} is new. It is one street past {from}, so its distance from home is {distance}. It joins the back of the queue.",
+      "formal": "distance[{to}] = {distance}, parent[{to}] = {from}; queue.append({to})."
+    },
+    "reach-goal": {
+      "label": "Discover the goal",
+      "story": "{to} is the goal, one street past {from}, so it is {distance} streets from home. BFS reaches corners in order of distance, so no shorter route exists.",
+      "formal": "distance[{to}] = {distance}, parent[{to}] = {from}, and {to} is the goal."
+    },
+    "found": {
+      "label": "Return the route",
+      "story": "The fewest streets is {distance}. Following the notes back from {goal} gives the route {route}.",
+      "formal": "Walk parent links back from {goal}: return ({distance}, {route})."
+    },
+    "not-found": {
+      "label": "No route",
+      "story": "The queue is empty and {goal} was never reached, so there is no route. Corners reachable from home: {reached}.",
+      "formal": "Queue exhausted without discovering {goal}. Return None."
+    }
+  }
+}

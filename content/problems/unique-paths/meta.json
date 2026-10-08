@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "id": "unique-paths",
+  "slug": "unique-paths",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Count paths through a grid moving right or down",
+  "storyTitle": "The grid walker's notebook",
+  "summary": "A robot can only move right or down; the ways into any square are the ways from above plus the ways from the left.",
+  "difficulty": "medium",
+  "companies": [
+    "Google",
+    "Amazon"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "dynamic-programming",
+      "variantId": "grid",
+      "order": 70
+    }
+  ],
+  "prerequisites": [
+    "grid",
+    "subproblem"
+  ],
+  "checker": "exact",
+  "goal": "Count the different routes from the top-left to the bottom-right corner",
+  "mapping": [
+    {
+      "story": "The floor of squares",
+      "formal": "A rows × cols grid"
+    },
+    {
+      "story": "A move",
+      "formal": "One step right or one step down"
+    },
+    {
+      "story": "Note in each square",
+      "formal": "ways[r][c]: routes reaching it"
+    },
+    {
+      "story": "Routes to the far corner",
+      "formal": "ways[rows − 1][cols − 1]"
+    }
+  ],
+  "examples": [
+    {
+      "id": "wide",
+      "label": "3 rows by 7 columns",
+      "input": {
+        "rows": 3,
+        "cols": 7
+      },
+      "expectedOutput": 28,
+      "explanation": "28 different routes."
+    },
+    {
+      "id": "small",
+      "label": "3 rows by 2 columns",
+      "input": {
+        "rows": 3,
+        "cols": 2
+      },
+      "expectedOutput": 3,
+      "explanation": "Right-down-down, down-right-down, down-down-right."
+    },
+    {
+      "id": "single",
+      "label": "1 by 1",
+      "input": {
+        "rows": 1,
+        "cols": 1
+      },
+      "expectedOutput": 1,
+      "explanation": "Already at the corner: one route, doing nothing."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "walk-every-route",
+      "level": "brute-force",
+      "name": "Walk every route",
+      "idea": "Recursively try moving right and moving down from each square, counting routes that reach the corner.",
+      "time": "O(2^(rows + cols))",
+      "space": "O(rows + cols)"
+    },
+    {
+      "id": "notebook-grid",
+      "level": "better",
+      "name": "Write a note in every square",
+      "idea": "The first row and column have one route each. Every other square's note is the note above plus the note to the left.",
+      "insight": "The last move into a square comes from above or from the left, so its routes are the routes into those two squares, already written down.",
+      "time": "O(rows · cols)",
+      "space": "O(rows · cols)"
+    },
+    {
+      "id": "one-row",
+      "level": "optimal",
+      "name": "Keep only one row of notes",
+      "idea": "Each row only needs the row above it, so update a single row in place, left to right.",
+      "insight": "When filling a row, the old value at a position is the note from above and the new value to its left is the note from the left, so one row holds both.",
+      "time": "O(rows · cols)",
+      "space": "O(cols)"
+    }
+  ],
+  "solver": "unique-paths",
+  "transfer": {
+    "problem": "A delivery bike in a city of one-way streets can only ride east or south. How many routes lead from the depot to a customer?",
+    "answerPatternId": "dynamic-programming",
+    "explanation": "Routes into each junction are routes from the north plus routes from the west: the same grid table."
+  },
+  "practice": {
+    "selfCheck": [
+      "Gives the first row and column one route each.",
+      "Adds the note above and the note to the left.",
+      "Uses one row of notes in the final version.",
+      "Handles a 1 × 1 grid."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Unique Paths",
+  "practiceLink": {
+    "label": "LeetCode 62",
+    "url": "https://leetcode.com/problems/unique-paths/"
+  }
+}

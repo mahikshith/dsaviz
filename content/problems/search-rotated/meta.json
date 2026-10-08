@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "search-rotated",
+  "slug": "search-rotated",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Search in a rotated sorted array",
+  "storyTitle": "The spun bookshelf",
+  "summary": "A sorted bookshelf was spun around a hidden point; find a book by noticing which half of any split is still in order.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Microsoft",
+    "LinkedIn"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "binary-search",
+      "variantId": "rotated",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "nondecreasing",
+    "zero-based-index"
+  ],
+  "checker": "exact",
+  "goal": "Find the position of the target book on the spun shelf, or −1",
+  "mapping": [
+    {
+      "story": "The spun shelf",
+      "formal": "Rotated sorted array nums"
+    },
+    {
+      "story": "Book wanted",
+      "formal": "target"
+    },
+    {
+      "story": "A half that is still in order",
+      "formal": "Sorted half around mid"
+    },
+    {
+      "story": "Range still possible",
+      "formal": "low..high"
+    }
+  ],
+  "examples": [
+    {
+      "id": "found",
+      "label": "Find 0",
+      "input": {
+        "nums": [
+          4,
+          5,
+          6,
+          7,
+          0,
+          1,
+          2
+        ],
+        "target": 0
+      },
+      "expectedOutput": 4,
+      "explanation": "0 is at position 4."
+    },
+    {
+      "id": "missing",
+      "label": "Find 3",
+      "input": {
+        "nums": [
+          4,
+          5,
+          6,
+          7,
+          0,
+          1,
+          2
+        ],
+        "target": 3
+      },
+      "expectedOutput": -1,
+      "explanation": "3 is not on the shelf."
+    },
+    {
+      "id": "one",
+      "label": "One book",
+      "input": {
+        "nums": [
+          1
+        ],
+        "target": 0
+      },
+      "expectedOutput": -1,
+      "explanation": "The only book is not 0."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "scan",
+      "level": "brute-force",
+      "name": "Check every book",
+      "idea": "Walk the shelf from the left until you find the book.",
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    {
+      "id": "find-cut-then-search",
+      "level": "better",
+      "name": "Find the cut, then search one side",
+      "idea": "First binary-search for the lowest book (the cut), then do an ordinary binary search on the side that could hold the target.",
+      "insight": "Each side of the cut is sorted on its own, so once the cut is known, ordinary binary search works.",
+      "time": "O(log n)",
+      "space": "O(1)"
+    },
+    {
+      "id": "one-search",
+      "level": "optimal",
+      "name": "One search, checking the sorted half",
+      "idea": "At each middle, one half is in order. If the target fits inside that half's range, search there; otherwise search the other half.",
+      "insight": "We do not need the cut's exact position. Whichever way the shelf is split, one half is sorted, and a sorted half tells us immediately whether the target can be inside it.",
+      "time": "O(log n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "rotated-search",
+  "transfer": {
+    "problem": "A circular playlist sorted by track number starts at an unknown track. Find track 42 with few looks.",
+    "answerPatternId": "binary-search",
+    "explanation": "At any split one half is in order; check whether 42 falls inside that half's range and discard the other."
+  },
+  "practice": {
+    "selfCheck": [
+      "Decides which half is sorted with nums[low] ≤ nums[mid].",
+      "Checks the target against both ends of the sorted half.",
+      "Uses inclusive bounds.",
+      "Returns −1 when the target is missing."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Search in Rotated Sorted Array",
+  "practiceLink": {
+    "label": "LeetCode 33",
+    "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/"
+  }
+}

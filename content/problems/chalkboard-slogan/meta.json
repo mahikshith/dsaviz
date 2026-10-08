@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "id": "chalkboard-slogan",
+  "slug": "chalkboard-slogan",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Check whether text is a palindrome",
+  "storyTitle": "The café slogan that reads both ways",
+  "summary": "Decide whether a chalkboard slogan reads the same backwards, ignoring spaces, punctuation and capital letters.",
+  "difficulty": "introductory",
+  "companies": [
+    "Meta",
+    "Microsoft",
+    "Apple"
+  ],
+  "topics": [
+    "strings"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "opposite",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "palindrome",
+    "alphanumeric"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the slogan reads the same in both directions",
+  "mapping": [
+    {
+      "story": "The chalkboard slogan",
+      "formal": "String text"
+    },
+    {
+      "story": "A letter or digit",
+      "formal": "An alphanumeric character"
+    },
+    {
+      "story": "Spaces and punctuation",
+      "formal": "Characters to skip"
+    },
+    {
+      "story": "Capitals don't matter",
+      "formal": "Compare in lowercase"
+    },
+    {
+      "story": "Reads the same backwards",
+      "formal": "text[i] matches its mirror position"
+    },
+    {
+      "story": "Free cookie",
+      "formal": "Return True"
+    }
+  ],
+  "examples": [
+    {
+      "id": "top-spot",
+      "label": "Top spot",
+      "input": {
+        "text": "Top spot"
+      },
+      "expectedOutput": true,
+      "explanation": "Without the space and capitals it is “topspot”, which reads the same both ways."
+    },
+    {
+      "id": "top-shop",
+      "label": "Top shop",
+      "input": {
+        "text": "Top shop"
+      },
+      "expectedOutput": false,
+      "explanation": "“topshop” read backwards is “pohspot”."
+    },
+    {
+      "id": "punctuated",
+      "label": "With punctuation",
+      "input": {
+        "text": "Step on no pets!"
+      },
+      "expectedOutput": true,
+      "explanation": "“steponnopets” reads the same both ways; the spaces and the exclamation mark do not count."
+    },
+    {
+      "id": "empty",
+      "label": "Empty board",
+      "input": {
+        "text": ""
+      },
+      "expectedOutput": true,
+      "explanation": "An empty slogan reads the same both ways."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "clean-and-reverse",
+      "level": "brute-force",
+      "name": "Clean, reverse, compare",
+      "idea": "Copy only the letters and digits in lowercase, reverse the copy, and compare it with the original copy.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "opposite-pointers",
+      "level": "optimal",
+      "name": "Opposite pointers",
+      "idea": "Compare the outermost counted characters and move both ends inward, skipping spaces and punctuation, until the ends meet.",
+      "insight": "A palindrome pairs the first counted character with the last. The pairs can be compared where they stand, so no copy is needed.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "opposite-pointers"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "opposite-pointers",
+      "name": "Opposite pointers",
+      "adapterId": "palindrome-pointers-v1",
+      "summary": "Compare the outermost letters, skip anything that is not a letter or digit, and move inward.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "opposite-pointers",
+  "transfer": {
+    "problem": "Temperatures are listed from lowest to highest, some below zero. Return the squares of all the temperatures, sorted from smallest to largest.",
+    "answerPatternId": "two-pointers",
+    "explanation": "The largest square comes from one of the two ends, the most negative or the most positive value. Compare both ends, place the larger square at the back of the result, and move that end inward."
+  },
+  "practice": {
+    "selfCheck": [
+      "Skips spaces and punctuation on both sides before comparing.",
+      "Compares letters without caring about capitals.",
+      "Stops at the first mismatch.",
+      "Treats an empty or one-character slogan as reading both ways.",
+      "Uses no reversed or cleaned copy of the slogan."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Valid Palindrome",
+  "practiceLink": {
+    "label": "LeetCode 125",
+    "url": "https://leetcode.com/problems/valid-palindrome/"
+  }
+}

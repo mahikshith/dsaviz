@@ -1,0 +1,86 @@
+{
+  "opposite-pointers": {
+    "present": {
+      "label": "Read the input",
+      "story": "The shelf is sorted from cheapest to most expensive. We need two different books that total exactly {target}.",
+      "formal": "prices has {n} values in nondecreasing order. Find indices i < j with prices[i] + prices[j] = {target}."
+    },
+    "initialize:normal": {
+      "label": "Start at both ends",
+      "story": "Point at the cheapest book (position {left}) and the most expensive (position {right}). Every possible answer is still between them.",
+      "formal": "left = {left}, right = {right}. Invariant: any answer lies within [left, right]."
+    },
+    "initialize:too-few": {
+      "label": "Start at both ends",
+      "story": "There are only {n} books on the shelf, so two different books cannot be chosen.",
+      "formal": "n = {n} < 2, so the loop condition left < right is false from the start."
+    },
+    "compare-sum:less": {
+      "label": "Compare",
+      "story": "{leftValue} + {rightValue} = {sum}, less than {target}. Even the most expensive book left cannot lift the {leftValue}-unit book to the voucher.",
+      "formal": "prices[{left}] + prices[{right}] = {sum} < {target}. prices[{right}] is the largest remaining value, so index {left} is in no answer."
+    },
+    "compare-sum:greater": {
+      "label": "Compare",
+      "story": "{leftValue} + {rightValue} = {sum}, more than {target}. Even the cheapest book left makes the {rightValue}-unit book too expensive.",
+      "formal": "prices[{left}] + prices[{right}] = {sum} > {target}. prices[{left}] is the smallest remaining value, so index {right} is in no answer."
+    },
+    "compare-sum:equal": {
+      "label": "Compare",
+      "story": "{leftValue} + {rightValue} = {sum}, exactly the voucher.",
+      "formal": "prices[{left}] + prices[{right}] = {sum} = target."
+    },
+    "move-left": {
+      "label": "Move left inward",
+      "story": "Rule out the {droppedValue}-unit book. The left pointer moves to position {to}, a {newValue}-unit book.",
+      "formal": "left: {from} → {to}. Index {from} is excluded and the invariant still holds."
+    },
+    "move-right": {
+      "label": "Move right inward",
+      "story": "Rule out the {droppedValue}-unit book. The right pointer moves to position {to}, a {newValue}-unit book.",
+      "formal": "right: {from} → {to}. Index {from} is excluded and the invariant still holds."
+    },
+    "found": {
+      "label": "Return the answer",
+      "story": "Buy the books at positions {left} and {right}: {leftValue} + {rightValue} = {target}.",
+      "formal": "Return [{left}, {right}]."
+    },
+    "not-found": {
+      "label": "No pair",
+      "story": "The pointers have met. No two different books add up to {target}.",
+      "formal": "left ≥ right, so fewer than two candidates remain. Return null."
+    }
+  },
+  "check-every-pair": {
+    "present": {
+      "label": "Read the input",
+      "story": "We need two different books that total exactly {target}. This approach ignores the order and tries every pair.",
+      "formal": "prices has {n} values. Try every pair i < j until prices[i] + prices[j] = {target}."
+    },
+    "pick-first": {
+      "label": "Choose the first book",
+      "story": "Take the {value}-unit book at position {i} as the first book. Books after it to try: {partners}.",
+      "formal": "Outer loop: i = {i}. The inner loop tries every j from i + 1 to n − 1 ({partners} pairs)."
+    },
+    "compare-pair:miss": {
+      "label": "Try a pair",
+      "story": "{firstValue} + {secondValue} = {sum}. Not {target}, so try the next book.",
+      "formal": "prices[{i}] + prices[{j}] = {sum} ≠ {target}."
+    },
+    "compare-pair:match": {
+      "label": "Try a pair",
+      "story": "{firstValue} + {secondValue} = {sum}. That matches the voucher.",
+      "formal": "prices[{i}] + prices[{j}] = {sum} = target."
+    },
+    "found": {
+      "label": "Return the answer",
+      "story": "Buy the books at positions {i} and {j}: {firstValue} + {secondValue} = {target}.",
+      "formal": "Return [{i}, {j}]."
+    },
+    "not-found": {
+      "label": "No pair",
+      "story": "All {pairs} pairs were tried and none adds up to {target}.",
+      "formal": "All {pairs} pairs checked. Return null."
+    }
+  }
+}

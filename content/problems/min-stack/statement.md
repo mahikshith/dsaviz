@@ -1,0 +1,1 @@
+Design a stack supporting `push(value)`, `pop()`, `top()` and `getMin()`, each in O(1) time. The examples list operations and their arguments; the output lists each operation's return value, with `null` for `push` and `pop`.

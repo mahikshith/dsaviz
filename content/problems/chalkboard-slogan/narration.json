@@ -1,0 +1,44 @@
+{
+  "opposite-pointers": {
+    "present": {
+      "label": "Read the slogan",
+      "story": "The slogan has {n} characters. Compare the outermost letters and work inward.",
+      "formal": "len(text) = {n}. Compare text[left] with text[right], skipping characters that are not alphanumeric."
+    },
+    "initialize": {
+      "label": "Start at both ends",
+      "story": "One finger on the first character (position {left}) and one on the last (position {right}).",
+      "formal": "left = {left}, right = {right}."
+    },
+    "skip-left": {
+      "label": "Skip on the left",
+      "story": "Position {index} is {char}, which doesn't count. The left finger steps past it without comparing.",
+      "formal": "text[{index}] is not alphanumeric: left += 1."
+    },
+    "skip-right": {
+      "label": "Skip on the right",
+      "story": "Position {index} is {char}, which doesn't count. The right finger steps past it without comparing.",
+      "formal": "text[{index}] is not alphanumeric: right -= 1."
+    },
+    "match": {
+      "label": "Compare",
+      "story": "{leftChar} and {rightChar} are the same letter once capitals are ignored. This pair mirrors.",
+      "formal": "lower(text[{left}]) == lower(text[{right}]): {leftChar} and {rightChar}."
+    },
+    "step-inward": {
+      "label": "Move both inward",
+      "story": "Both fingers step inward, to positions {left} and {right}.",
+      "formal": "left, right = {left}, {right}."
+    },
+    "mismatch": {
+      "label": "Mismatch",
+      "story": "{leftChar} and {rightChar} differ, so the slogan doesn't read the same backwards. No cookie today.",
+      "formal": "lower(text[{left}]) != lower(text[{right}]): {leftChar} and {rightChar}. Return False."
+    },
+    "palindrome": {
+      "label": "Reads both ways",
+      "story": "The fingers have met and every pair mirrored. Pairs matched: {pairs}. Free cookie!",
+      "formal": "left >= right after {pairs} matched pairs. Return True."
+    }
+  }
+}

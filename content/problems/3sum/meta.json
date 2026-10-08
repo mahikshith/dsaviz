@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "id": "3sum",
+  "slug": "3sum",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "All triples that sum to zero",
+  "storyTitle": "The campfire trio",
+  "summary": "Find every distinct trio of friends whose glow values add up to zero, by fixing one and squeezing the other two from both ends.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Microsoft",
+    "Bloomberg"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "opposite",
+      "order": 40
+    }
+  ],
+  "prerequisites": [
+    "pointer",
+    "nondecreasing"
+  ],
+  "checker": "unordered-nested",
+  "goal": "List every distinct trio whose values add up to zero",
+  "mapping": [
+    {
+      "story": "Friends around the fire",
+      "formal": "Array nums"
+    },
+    {
+      "story": "A friend's glow",
+      "formal": "A value"
+    },
+    {
+      "story": "A trio",
+      "formal": "Three different positions"
+    },
+    {
+      "story": "Same trio twice",
+      "formal": "Same three values"
+    }
+  ],
+  "examples": [
+    {
+      "id": "fire",
+      "label": "Six friends",
+      "input": {
+        "nums": [
+          -1,
+          0,
+          1,
+          2,
+          -1,
+          -4
+        ]
+      },
+      "expectedOutput": [
+        [
+          -1,
+          -1,
+          2
+        ],
+        [
+          -1,
+          0,
+          1
+        ]
+      ],
+      "explanation": "Two distinct trios add up to zero."
+    },
+    {
+      "id": "none",
+      "label": "No trio",
+      "input": {
+        "nums": [
+          0,
+          1,
+          1
+        ]
+      },
+      "expectedOutput": [],
+      "explanation": "0 + 1 + 1 is not zero."
+    },
+    {
+      "id": "zeros",
+      "label": "Three zeros",
+      "input": {
+        "nums": [
+          0,
+          0,
+          0
+        ]
+      },
+      "expectedOutput": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "explanation": "One trio, even though the values repeat."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-trio",
+      "level": "brute-force",
+      "name": "Try every trio",
+      "idea": "Check every combination of three positions and collect the trios that sum to zero, removing repeats.",
+      "time": "O(n³)",
+      "space": "O(n)"
+    },
+    {
+      "id": "fix-and-lookup",
+      "level": "better",
+      "name": "Fix one, look up the third",
+      "idea": "Fix the first friend, then for each second friend look up whether the needed third glow was seen.",
+      "insight": "Once two glows are chosen, the third is determined: it must be minus their sum. A set finds it without a third loop.",
+      "time": "O(n²)",
+      "space": "O(n)"
+    },
+    {
+      "id": "sort-and-squeeze",
+      "level": "optimal",
+      "name": "Sort, fix one, squeeze two",
+      "idea": "Sort the glows. Fix one friend and find pairs to its right with two pointers from the ends, skipping equal values to avoid repeated trios.",
+      "insight": "After sorting, the remaining pair search is the sorted pair problem from the gift-voucher lesson, and equal values sit side by side, so repeats are easy to skip.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "three-sum",
+  "transfer": {
+    "problem": "Find all distinct trios of weights from a box that together weigh exactly 1,000 grams.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Sort the weights, fix one, and look for a pair adding up to the rest with two pointers, skipping equal weights."
+  },
+  "practice": {
+    "selfCheck": [
+      "Sorts first, so pairs can be found with two pointers.",
+      "Skips equal values for the fixed friend and for both pointers after a match.",
+      "Returns every distinct trio once.",
+      "Handles fewer than three friends."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "3Sum",
+  "practiceLink": {
+    "label": "LeetCode 15",
+    "url": "https://leetcode.com/problems/3sum/"
+  }
+}

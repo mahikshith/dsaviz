@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "min-window",
+  "slug": "min-window",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Shortest window containing all required characters",
+  "storyTitle": "The shopping list window",
+  "summary": "Walking down a market street, find the shortest run of stalls that sells everything on your list.",
+  "difficulty": "hard",
+  "companies": [
+    "Meta",
+    "Amazon",
+    "Google",
+    "Airbnb"
+  ],
+  "topics": [
+    "strings",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "sliding-window",
+      "variantId": "variable",
+      "order": 60
+    }
+  ],
+  "prerequisites": [
+    "window",
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Find the shortest stretch of stalls that covers the whole shopping list",
+  "mapping": [
+    {
+      "story": "Stalls along the street",
+      "formal": "String s"
+    },
+    {
+      "story": "The shopping list",
+      "formal": "String t"
+    },
+    {
+      "story": "A run of stalls",
+      "formal": "A window of s"
+    },
+    {
+      "story": "Items still missing",
+      "formal": "Counter of characters still needed"
+    },
+    {
+      "story": "Shortest run",
+      "formal": "Minimum covering window"
+    }
+  ],
+  "examples": [
+    {
+      "id": "market",
+      "label": "ADOBECODEBANC / ABC",
+      "input": {
+        "s": "ADOBECODEBANC",
+        "t": "ABC"
+      },
+      "expectedOutput": "BANC",
+      "explanation": "BANC is the shortest stretch with an A, a B and a C."
+    },
+    {
+      "id": "single",
+      "label": "One stall",
+      "input": {
+        "s": "a",
+        "t": "a"
+      },
+      "expectedOutput": "a",
+      "explanation": "The single stall covers the list."
+    },
+    {
+      "id": "impossible",
+      "label": "Not enough",
+      "input": {
+        "s": "a",
+        "t": "aa"
+      },
+      "expectedOutput": "",
+      "explanation": "The list needs two a's; the street has one, so no window works."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-window",
+      "level": "brute-force",
+      "name": "Check every window",
+      "idea": "For every start and end, count the stalls in the window and check they cover the list.",
+      "time": "O(n² · m)",
+      "space": "O(m)"
+    },
+    {
+      "id": "extend-each-start",
+      "level": "better",
+      "name": "Extend from each start",
+      "idea": "For each start, walk right keeping counts until the list is covered; that is the shortest window from that start.",
+      "insight": "Once a window from a fixed start covers the list, longer windows from that start cannot be shorter, so stop extending.",
+      "time": "O(n²)",
+      "space": "O(m)"
+    },
+    {
+      "id": "grow-and-shrink",
+      "level": "optimal",
+      "name": "Grow, then shrink",
+      "idea": "Grow the window to the right until the list is covered, then shrink it from the left while it stays covered, recording the shortest. Repeat.",
+      "insight": "When the left edge moves right, the shortest cover from the new start never needs a right edge further left than before, so neither edge ever moves back.",
+      "time": "O(n + m)",
+      "space": "O(m)"
+    }
+  ],
+  "solver": "min-window",
+  "transfer": {
+    "problem": "In a long security log, find the shortest stretch of entries that includes every one of five suspicious IP addresses.",
+    "answerPatternId": "sliding-window",
+    "explanation": "It is a shortest window covering a required set: grow until everything is present, then shrink from the left."
+  },
+  "practice": {
+    "selfCheck": [
+      "Counts repeated list items, such as two a's.",
+      "Shrinks from the left while the window still covers the list.",
+      "Records the window before shrinking past coverage.",
+      "Returns an empty string when no window works."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Minimum Window Substring",
+  "practiceLink": {
+    "label": "LeetCode 76",
+    "url": "https://leetcode.com/problems/minimum-window-substring/"
+  }
+}

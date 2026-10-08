@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "word-search",
+  "slug": "word-search",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Find a word in a letter grid",
+  "storyTitle": "The letter maze",
+  "summary": "Trace a word letter by letter through a grid, chalking each square as you go and rubbing the mark out when a path fails.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Bloomberg"
+  ],
+  "topics": [
+    "strings",
+    "graphs"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "backtracking",
+      "variantId": "grid-path",
+      "order": 40
+    },
+    {
+      "patternId": "depth-first-search",
+      "variantId": "grid",
+      "order": 45
+    }
+  ],
+  "prerequisites": [
+    "grid",
+    "recursion"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the word can be traced through neighbouring squares",
+  "mapping": [
+    {
+      "story": "The letter maze",
+      "formal": "Grid of letters"
+    },
+    {
+      "story": "Tracing the word",
+      "formal": "A path of adjacent cells spelling it"
+    },
+    {
+      "story": "Chalk mark",
+      "formal": "Marking a cell as used on this path"
+    },
+    {
+      "story": "Rubbing it out",
+      "formal": "Unmarking when backtracking"
+    }
+  ],
+  "examples": [
+    {
+      "id": "found",
+      "label": "ABCCED",
+      "input": {
+        "board": [
+          "ABCE",
+          "SFCS",
+          "ADEE"
+        ],
+        "word": "ABCCED"
+      },
+      "expectedOutput": true,
+      "explanation": "A-B-C along the top, down to C, then E and D."
+    },
+    {
+      "id": "see",
+      "label": "SEE",
+      "input": {
+        "board": [
+          "ABCE",
+          "SFCS",
+          "ADEE"
+        ],
+        "word": "SEE"
+      },
+      "expectedOutput": true,
+      "explanation": "S on the right edge, then down to E and E."
+    },
+    {
+      "id": "reuse",
+      "label": "ABCB",
+      "input": {
+        "board": [
+          "ABCE",
+          "SFCS",
+          "ADEE"
+        ],
+        "word": "ABCB"
+      },
+      "expectedOutput": false,
+      "explanation": "The path would need the B square twice."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-path",
+      "level": "brute-force",
+      "name": "List every path of the right length",
+      "idea": "From every square, list every path of the word's length that never reuses a square, then compare each path's letters with the word.",
+      "time": "O(m·n·4ᴸ)",
+      "space": "O(L)"
+    },
+    {
+      "id": "trace-and-undo",
+      "level": "optimal",
+      "name": "Trace letter by letter, give up early",
+      "idea": "From each square matching the first letter, step to a neighbour matching the next letter, chalking squares on the way. Rub the chalk out when a path fails.",
+      "insight": "A path that already spells the wrong letter can never become right, so stop it immediately instead of building it to full length.",
+      "time": "O(m·n·4ᴸ) worst case, usually far less",
+      "space": "O(L)"
+    }
+  ],
+  "solver": "word-search",
+  "transfer": {
+    "problem": "On a word-game board, check whether a player's word can be formed from touching tiles, using each tile once.",
+    "answerPatternId": "backtracking",
+    "explanation": "Trace the word from each starting tile, marking used tiles and unmarking them when a path fails."
+  },
+  "practice": {
+    "selfCheck": [
+      "Stops a path as soon as a letter does not match.",
+      "Marks a square before exploring from it and unmarks it after.",
+      "Moves only up, down, left and right.",
+      "Tries every square as a starting point."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Word Search",
+  "practiceLink": {
+    "label": "LeetCode 79",
+    "url": "https://leetcode.com/problems/word-search/"
+  }
+}

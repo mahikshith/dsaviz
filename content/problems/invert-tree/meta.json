@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "id": "invert-tree",
+  "slug": "invert-tree",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Mirror a binary tree",
+  "storyTitle": "The mirror garden",
+  "summary": "Swap every gardener's left and right flower beds, then ask their children to do the same; the whole garden ends up mirrored.",
+  "difficulty": "introductory",
+  "companies": [
+    "Google",
+    "Amazon"
+  ],
+  "topics": [
+    "trees"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "depth-first-search",
+      "variantId": "tree",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "tree",
+    "recursion"
+  ],
+  "checker": "exact",
+  "goal": "Mirror the garden left to right",
+  "mapping": [
+    {
+      "story": "The garden",
+      "formal": "Binary tree"
+    },
+    {
+      "story": "A gardener's two beds",
+      "formal": "A node's left and right children"
+    },
+    {
+      "story": "Asking children to do the same",
+      "formal": "Recursive call on each child"
+    },
+    {
+      "story": "Mirrored garden",
+      "formal": "Inverted tree"
+    }
+  ],
+  "examples": [
+    {
+      "id": "garden",
+      "label": "Seven beds",
+      "input": {
+        "root": [
+          4,
+          2,
+          7,
+          1,
+          3,
+          6,
+          9
+        ]
+      },
+      "expectedOutput": [
+        4,
+        7,
+        2,
+        9,
+        6,
+        3,
+        1
+      ],
+      "explanation": "Every floor reads in reverse."
+    },
+    {
+      "id": "small",
+      "label": "Three beds",
+      "input": {
+        "root": [
+          2,
+          1,
+          3
+        ]
+      },
+      "expectedOutput": [
+        2,
+        3,
+        1
+      ],
+      "explanation": "The two children swap places."
+    },
+    {
+      "id": "empty",
+      "label": "No garden",
+      "input": {
+        "root": []
+      },
+      "expectedOutput": [],
+      "explanation": "Nothing to mirror."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "rebuild-levels",
+      "level": "brute-force",
+      "name": "Rebuild floor by floor",
+      "idea": "Write every floor of the garden as a list including gaps, reverse each list, and build a new garden from them.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "swap-recursively",
+      "level": "optimal",
+      "name": "Swap, then let the children swap",
+      "idea": "At each node, swap its left and right children, then mirror each child the same way.",
+      "insight": "Mirroring a tree is the same as swapping the two children and mirroring each of them: a smaller version of the same task, which recursion handles in place.",
+      "time": "O(n)",
+      "space": "O(h)"
+    }
+  ],
+  "solver": "invert-tree",
+  "transfer": {
+    "problem": "Check whether a tree is a mirror of itself (symmetric).",
+    "answerPatternId": "depth-first-search",
+    "explanation": "Compare the left subtree with the mirror of the right one, recursively: same shape of recursion on two children."
+  },
+  "practice": {
+    "selfCheck": [
+      "Swaps the children at every node.",
+      "Recurses on both children.",
+      "Returns the root.",
+      "Handles an empty tree."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Invert Binary Tree",
+  "practiceLink": {
+    "label": "LeetCode 226",
+    "url": "https://leetcode.com/problems/invert-binary-tree/"
+  }
+}

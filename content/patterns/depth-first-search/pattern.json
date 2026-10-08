@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "id": "depth-first-search",
+  "status": "published",
+  "name": "Depth-first search",
+  "short": "DF",
+  "hue": "violet",
+  "family": "graph",
+  "order": 20,
+  "intuition": "Follow one path as deep as it goes, then back up and try the next, marking what you have already explored.",
+  "aliases": [
+    "DFS",
+    "recursion on trees",
+    "flood fill",
+    "explore deep",
+    "connected components"
+  ],
+  "topics": [
+    "trees",
+    "graphs"
+  ],
+  "prerequisites": [
+    "recursion",
+    "tree",
+    "graph"
+  ],
+  "variants": [
+    {
+      "id": "tree",
+      "name": "Recursion on trees",
+      "summary": "Solve the problem for each child, then combine the answers at the parent.",
+      "requires": "The structure has no cycles, so each node is reached once."
+    },
+    {
+      "id": "grid",
+      "name": "Flood fill on grids",
+      "summary": "From a cell, visit every connected cell of the same kind, marking as you go.",
+      "requires": "Neighbours are well defined, and marks prevent revisiting."
+    },
+    {
+      "id": "graph",
+      "name": "Walk a whole graph",
+      "summary": "Visit each node once, using a visited set to survive cycles.",
+      "requires": "You need every reachable node, not shortest distances."
+    }
+  ],
+  "visual": {
+    "caption": "Depth-first goes 4 → 2 → 1, backs up to 2, and is now exploring 3. The 7 branch waits until the left side is finished.",
+    "scene": {
+      "graph": {
+        "width": 380,
+        "height": 230,
+        "nodes": [
+          {
+            "id": "a",
+            "label": "4",
+            "x": 190,
+            "y": 40,
+            "state": "visited"
+          },
+          {
+            "id": "b",
+            "label": "2",
+            "x": 100,
+            "y": 120,
+            "state": "visited"
+          },
+          {
+            "id": "c",
+            "label": "7",
+            "x": 280,
+            "y": 120,
+            "state": "idle"
+          },
+          {
+            "id": "d",
+            "label": "1",
+            "x": 50,
+            "y": 200,
+            "state": "visited"
+          },
+          {
+            "id": "e",
+            "label": "3",
+            "x": 150,
+            "y": 200,
+            "state": "current"
+          }
+        ],
+        "edges": [
+          {
+            "id": "ab",
+            "from": "a",
+            "to": "b",
+            "state": "tree"
+          },
+          {
+            "id": "ac",
+            "from": "a",
+            "to": "c",
+            "state": "idle"
+          },
+          {
+            "id": "bd",
+            "from": "b",
+            "to": "d",
+            "state": "tree"
+          },
+          {
+            "id": "be",
+            "from": "b",
+            "to": "e",
+            "state": "checking"
+          }
+        ]
+      },
+      "legend": [
+        {
+          "label": "Finished",
+          "swatch": "window"
+        },
+        {
+          "label": "Exploring now",
+          "swatch": "primary"
+        }
+      ]
+    }
+  }
+}

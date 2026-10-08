@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "id": "reverse-linked-list",
+  "slug": "reverse-linked-list",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Reverse a linked list",
+  "storyTitle": "Turning the train around",
+  "summary": "Walk down a train unhooking each carriage and re-hooking it to face backwards, holding just three carriages at a time.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Apple"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "in-place-reversal",
+      "variantId": "whole-list",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "linked-list"
+  ],
+  "checker": "exact",
+  "goal": "Turn the whole train around",
+  "mapping": [
+    {
+      "story": "The train",
+      "formal": "Linked list head"
+    },
+    {
+      "story": "A coupling",
+      "formal": "A node's next link"
+    },
+    {
+      "story": "Carriage already turned",
+      "formal": "prev"
+    },
+    {
+      "story": "Carriage being turned",
+      "formal": "curr"
+    },
+    {
+      "story": "Carriage ahead",
+      "formal": "next, saved first"
+    }
+  ],
+  "examples": [
+    {
+      "id": "five",
+      "label": "Five carriages",
+      "input": {
+        "head": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expectedOutput": [
+        5,
+        4,
+        3,
+        2,
+        1
+      ],
+      "explanation": "Every coupling now points the other way."
+    },
+    {
+      "id": "two",
+      "label": "Two carriages",
+      "input": {
+        "head": [
+          1,
+          2
+        ]
+      },
+      "expectedOutput": [
+        2,
+        1
+      ],
+      "explanation": "One coupling is turned."
+    },
+    {
+      "id": "empty",
+      "label": "No carriages",
+      "input": {
+        "head": []
+      },
+      "expectedOutput": [],
+      "explanation": "Nothing to turn."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "copy-values",
+      "level": "brute-force",
+      "name": "Copy the numbers and rebuild",
+      "idea": "Copy every carriage number into an array, then build a new train from the end.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "recursive",
+      "level": "better",
+      "name": "Turn the rest, then this one",
+      "idea": "Recursively reverse the train after the first carriage, then hook the first carriage on at the end.",
+      "insight": "No copy is needed: the existing couplings can be turned around. Recursion does it but keeps one call per carriage on the call stack.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "three-pointers",
+      "level": "optimal",
+      "name": "Three hands: before, current, next",
+      "idea": "Walk from the front. Save the next carriage, point the current one back at the previous, then step forward.",
+      "insight": "Turning one coupling only needs the carriage before and the carriage after, so three pointers replace the recursion's whole call stack.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "reverse-list",
+  "transfer": {
+    "problem": "Reverse only carriages 2 to 4 of a train, leaving the others in place.",
+    "answerPatternId": "in-place-reversal",
+    "explanation": "Walk to the carriage before position 2, reverse the stretch with the same three pointers, then reconnect both ends."
+  },
+  "practice": {
+    "selfCheck": [
+      "Saves next before changing curr.next.",
+      "Returns prev, the old last carriage.",
+      "Handles an empty train and a one-carriage train.",
+      "Uses O(1) extra memory."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Reverse Linked List",
+  "practiceLink": {
+    "label": "LeetCode 206",
+    "url": "https://leetcode.com/problems/reverse-linked-list/"
+  }
+}

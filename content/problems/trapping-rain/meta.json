@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "trapping-rain",
+  "slug": "trapping-rain",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Water trapped between bars",
+  "storyTitle": "The valley after the storm",
+  "summary": "After rain, water fills the dips between rocks; walk in from both ends carrying the tallest rock seen to total the water.",
+  "difficulty": "hard",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Goldman Sachs"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "opposite",
+      "order": 60
+    }
+  ],
+  "prerequisites": [
+    "pointer"
+  ],
+  "checker": "exact",
+  "goal": "Total the water held between the rocks",
+  "mapping": [
+    {
+      "story": "Rocks in a row",
+      "formal": "Array heights"
+    },
+    {
+      "story": "Water above one rock",
+      "formal": "min(max left, max right) − height"
+    },
+    {
+      "story": "Walkers from each end",
+      "formal": "Left and right pointers"
+    },
+    {
+      "story": "Tallest rock each walker has passed",
+      "formal": "left_max and right_max"
+    }
+  ],
+  "examples": [
+    {
+      "id": "valley",
+      "label": "Twelve rocks",
+      "input": {
+        "heights": [
+          0,
+          1,
+          0,
+          2,
+          1,
+          0,
+          1,
+          3,
+          2,
+          1,
+          2,
+          1
+        ]
+      },
+      "expectedOutput": 6,
+      "explanation": "Six units of water settle in the dips."
+    },
+    {
+      "id": "basin",
+      "label": "One big basin",
+      "input": {
+        "heights": [
+          4,
+          2,
+          0,
+          3,
+          2,
+          5
+        ]
+      },
+      "expectedOutput": 9,
+      "explanation": "Water rises to 4 across the basin."
+    },
+    {
+      "id": "no-walls",
+      "label": "Rising rocks",
+      "input": {
+        "heights": [
+          1,
+          2,
+          3
+        ]
+      },
+      "expectedOutput": 0,
+      "explanation": "Water runs off; nothing is trapped."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "scan-each",
+      "level": "brute-force",
+      "name": "Scan both sides of every rock",
+      "idea": "For each rock, find the tallest rock to its left and to its right; the water above it is the lower of the two minus its own height.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "two-tables",
+      "level": "better",
+      "name": "Precompute the tallest on each side",
+      "idea": "Fill one list of tallest-so-far from the left and one from the right, then add up the water at each rock.",
+      "insight": "The tallest rock to the left of position i is just the tallest to the left of i − 1, or rock i itself. One pass computes all of them.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "two-walkers",
+      "level": "optimal",
+      "name": "Two walkers from the ends",
+      "idea": "Walk in from both ends, each carrying the tallest rock it has passed. The walker on the lower side settles its rock's water and steps inward.",
+      "insight": "If the left walker's tallest is lower than the right side, the left rock's water is limited by the left tallest alone; the right side cannot lower it. So we never need the full tables.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "trapping-rain",
+  "transfer": {
+    "problem": "Along a city skyline, find how much snow settles on rooftops lying between taller buildings, given each building's height.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Each rooftop holds up to the lower of the tallest buildings on either side; walk in from both ends carrying those maxima."
+  },
+  "practice": {
+    "selfCheck": [
+      "Water above a rock is the lower of the two side maxima minus its height.",
+      "Moves the walker on the lower side.",
+      "Never adds negative water.",
+      "Returns 0 when nothing can be trapped."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Trapping Rain Water",
+  "practiceLink": {
+    "label": "LeetCode 42",
+    "url": "https://leetcode.com/problems/trapping-rain-water/"
+  }
+}

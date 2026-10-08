@@ -1,0 +1,30 @@
+[
+  {
+    "id": "which-half",
+    "approachId": "halve",
+    "exampleId": "found",
+    "frameId": "2-probe",
+    "question": "The middle book is 17, smaller than 21. Which part of the shelf can be ruled out?",
+    "context": "The search covers positions 0 to 6; the middle, position 3, holds 17.",
+    "choices": [
+      {
+        "id": "left-half",
+        "label": "Positions 0 to 3: the middle and everything left of it",
+        "correct": true,
+        "feedback": "Right. Every book up to position 3 is 17 or less, so 21 cannot be there. The search continues on positions 4 to 6."
+      },
+      {
+        "id": "right-half",
+        "label": "Positions 3 to 6",
+        "correct": false,
+        "feedback": "Those are the books larger than 17, which is exactly where 21 must be."
+      },
+      {
+        "id": "only-middle",
+        "label": "Only position 3",
+        "correct": false,
+        "feedback": "Ruling out just the middle wastes the comparison. Because the shelf is sorted, everything left of 17 is smaller too."
+      }
+    ]
+  }
+]

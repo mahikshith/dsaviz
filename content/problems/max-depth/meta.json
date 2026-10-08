@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "id": "max-depth",
+  "slug": "max-depth",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Maximum depth of a binary tree",
+  "storyTitle": "The tallest branch",
+  "summary": "Every branch asks its two children how deep they go, adds one for itself, and reports the larger answer upwards.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Adobe"
+  ],
+  "topics": [
+    "trees"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "depth-first-search",
+      "variantId": "tree",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "tree",
+    "recursion"
+  ],
+  "checker": "exact",
+  "goal": "Count the floors on the longest path from the top to a leaf",
+  "mapping": [
+    {
+      "story": "The tree",
+      "formal": "Binary tree"
+    },
+    {
+      "story": "A branch's depth",
+      "formal": "Nodes on the longest path down from it"
+    },
+    {
+      "story": "Asking the children",
+      "formal": "Recursive calls"
+    },
+    {
+      "story": "Tallest branch",
+      "formal": "Maximum depth of the root"
+    }
+  ],
+  "examples": [
+    {
+      "id": "tree",
+      "label": "Three floors",
+      "input": {
+        "root": [
+          3,
+          9,
+          20,
+          null,
+          null,
+          15,
+          7
+        ]
+      },
+      "expectedOutput": 3,
+      "explanation": "3 → 20 → 15 has three nodes."
+    },
+    {
+      "id": "lean",
+      "label": "Leaning right",
+      "input": {
+        "root": [
+          1,
+          null,
+          2
+        ]
+      },
+      "expectedOutput": 2,
+      "explanation": "1 → 2."
+    },
+    {
+      "id": "empty",
+      "label": "No tree",
+      "input": {
+        "root": []
+      },
+      "expectedOutput": 0,
+      "explanation": "An empty tree has depth 0."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-path",
+      "level": "brute-force",
+      "name": "List every path to a leaf",
+      "idea": "Walk every path from the root to each leaf, keeping the whole path, and measure the longest.",
+      "time": "O(n · h)",
+      "space": "O(n · h)"
+    },
+    {
+      "id": "ask-children",
+      "level": "optimal",
+      "name": "Ask the children",
+      "idea": "The depth of a node is 1 plus the larger of its children's depths; an empty child has depth 0.",
+      "insight": "Only the length of the deepest path matters, not the path itself. Each node can combine two numbers from its children.",
+      "time": "O(n)",
+      "space": "O(h)"
+    }
+  ],
+  "solver": "max-depth",
+  "transfer": {
+    "problem": "Find the number of floors in an organisation chart, from the CEO down to the most junior employee.",
+    "answerPatternId": "depth-first-search",
+    "explanation": "Each manager's depth is one plus the largest depth among their reports: the same recursion."
+  },
+  "practice": {
+    "selfCheck": [
+      "Returns 0 for an empty tree.",
+      "Adds one for the current node.",
+      "Takes the larger of the two children.",
+      "Visits each node once."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Maximum Depth of Binary Tree",
+  "practiceLink": {
+    "label": "LeetCode 104",
+    "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "max-subarray",
+  "slug": "max-subarray",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Largest sum of a contiguous subarray",
+  "storyTitle": "The hiker's best stretch",
+  "summary": "A hiker logs every climb and drop; keep the running total of the current stretch, and start fresh the moment it sinks below zero.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "LinkedIn"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "dynamic-programming",
+      "variantId": "ending-here",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "subarray",
+    "subproblem"
+  ],
+  "checker": "exact",
+  "goal": "Find the stretch of consecutive legs with the biggest total climb",
+  "mapping": [
+    {
+      "story": "Climbs and drops per leg",
+      "formal": "Array nums"
+    },
+    {
+      "story": "A stretch of legs",
+      "formal": "A subarray"
+    },
+    {
+      "story": "Best stretch ending at this leg",
+      "formal": "best_here"
+    },
+    {
+      "story": "Best stretch anywhere",
+      "formal": "best"
+    }
+  ],
+  "examples": [
+    {
+      "id": "hike",
+      "label": "Nine legs",
+      "input": {
+        "nums": [
+          -2,
+          1,
+          -3,
+          4,
+          -1,
+          2,
+          1,
+          -5,
+          4
+        ]
+      },
+      "expectedOutput": 6,
+      "explanation": "Legs 3 to 6: 4 − 1 + 2 + 1 = 6."
+    },
+    {
+      "id": "one",
+      "label": "One leg",
+      "input": {
+        "nums": [
+          1
+        ]
+      },
+      "expectedOutput": 1,
+      "explanation": "The only stretch."
+    },
+    {
+      "id": "mostly-up",
+      "label": "Mostly climbing",
+      "input": {
+        "nums": [
+          5,
+          4,
+          -1,
+          7,
+          8
+        ]
+      },
+      "expectedOutput": 23,
+      "explanation": "The whole hike: the small drop is worth crossing."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-stretch",
+      "level": "brute-force",
+      "name": "Add up every stretch",
+      "idea": "For each start, extend to the right keeping a running total, and keep the best total seen.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "best-ending-here",
+      "level": "optimal",
+      "name": "Best stretch ending here",
+      "idea": "For each leg, the best stretch ending here either continues the best stretch ending at the previous leg or starts fresh. Keep the best of these.",
+      "insight": "A stretch with a negative total only drags down whatever follows it, so starting fresh beats continuing it. That makes the best stretch ending at each leg a one-step decision.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "max-subarray",
+  "transfer": {
+    "problem": "A shop's daily profits and losses are listed. Find the most profitable run of consecutive days.",
+    "answerPatternId": "dynamic-programming",
+    "explanation": "The best run ending today either extends yesterday's best run or starts today; keep the best overall."
+  },
+  "practice": {
+    "selfCheck": [
+      "Starts fresh when continuing would be worse than the leg alone.",
+      "Keeps the best total over all legs.",
+      "Handles all-negative input by returning the largest single leg.",
+      "Uses one pass."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Maximum Subarray",
+  "practiceLink": {
+    "label": "LeetCode 53",
+    "url": "https://leetcode.com/problems/maximum-subarray/"
+  }
+}

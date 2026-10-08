@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "id": "merge-two-lists",
+  "slug": "merge-two-lists",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Merge two sorted linked lists",
+  "storyTitle": "The zipper merge",
+  "summary": "Two sorted trains meet at a junction; send through the smaller front carriage each time to make one sorted train.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Apple"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "merge",
+      "order": 15
+    }
+  ],
+  "prerequisites": [
+    "linked-list",
+    "pointer"
+  ],
+  "checker": "exact",
+  "goal": "Join two sorted trains into one sorted train",
+  "mapping": [
+    {
+      "story": "Each train",
+      "formal": "A sorted linked list"
+    },
+    {
+      "story": "A carriage number",
+      "formal": "A node's value"
+    },
+    {
+      "story": "Front carriage of each train",
+      "formal": "The two pointers"
+    },
+    {
+      "story": "The merged train",
+      "formal": "The returned list"
+    }
+  ],
+  "examples": [
+    {
+      "id": "trains",
+      "label": "Two short trains",
+      "input": {
+        "first": [
+          1,
+          2,
+          4
+        ],
+        "second": [
+          1,
+          3,
+          4
+        ]
+      },
+      "expectedOutput": [
+        1,
+        1,
+        2,
+        3,
+        4,
+        4
+      ],
+      "explanation": "Carriages leave in order, taking the smaller front carriage each time."
+    },
+    {
+      "id": "one-empty",
+      "label": "One empty train",
+      "input": {
+        "first": [],
+        "second": [
+          0
+        ]
+      },
+      "expectedOutput": [
+        0
+      ],
+      "explanation": "The other train passes through unchanged."
+    },
+    {
+      "id": "both-empty",
+      "label": "No trains",
+      "input": {
+        "first": [],
+        "second": []
+      },
+      "expectedOutput": [],
+      "explanation": "Nothing to merge."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "join-and-sort",
+      "level": "brute-force",
+      "name": "Join, then sort",
+      "idea": "Put every carriage into one list and sort it.",
+      "time": "O((n + m) log(n + m))",
+      "space": "O(n + m)"
+    },
+    {
+      "id": "zip",
+      "level": "optimal",
+      "name": "Zip with two pointers",
+      "idea": "Watch the front carriage of each train and link whichever is smaller next, until one train runs out; then attach the rest of the other.",
+      "insight": "Both trains are already sorted, so the next carriage overall is always one of the two front carriages. Sorting again throws that order away.",
+      "time": "O(n + m)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "merge-sorted",
+  "transfer": {
+    "problem": "Two shops each keep a list of orders sorted by time. Produce one list of all orders sorted by time.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Two already-sorted lists: compare the fronts and take the earlier order each time."
+  },
+  "practice": {
+    "selfCheck": [
+      "Takes the smaller front value each time, the first train's on a tie.",
+      "Attaches the leftover train when one runs out.",
+      "Handles one or both trains being empty.",
+      "Relinks existing nodes instead of copying values."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Merge Two Sorted Lists",
+  "practiceLink": {
+    "label": "LeetCode 21",
+    "url": "https://leetcode.com/problems/merge-two-sorted-lists/"
+  }
+}

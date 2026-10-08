@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "group-anagrams",
+  "slug": "group-anagrams",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Group words that are anagrams",
+  "storyTitle": "The letter-sorting office",
+  "summary": "Every word goes into a pigeonhole labelled with its letter counts; words sharing a pigeonhole are anagrams of each other.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Uber",
+    "Meta"
+  ],
+  "topics": [
+    "strings",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "hash-map",
+      "variantId": "grouping",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "hash-map"
+  ],
+  "checker": "unordered-nested",
+  "goal": "Put words made of the same letters into the same group",
+  "mapping": [
+    {
+      "story": "Incoming words",
+      "formal": "Array words"
+    },
+    {
+      "story": "A pigeonhole label",
+      "formal": "A key shared by all anagrams"
+    },
+    {
+      "story": "The pigeonholes",
+      "formal": "Map: key → list of words"
+    },
+    {
+      "story": "The groups",
+      "formal": "The map's values"
+    }
+  ],
+  "examples": [
+    {
+      "id": "office",
+      "label": "Six words",
+      "input": {
+        "words": [
+          "eat",
+          "tea",
+          "tan",
+          "ate",
+          "nat",
+          "bat"
+        ]
+      },
+      "expectedOutput": [
+        [
+          "eat",
+          "tea",
+          "ate"
+        ],
+        [
+          "tan",
+          "nat"
+        ],
+        [
+          "bat"
+        ]
+      ],
+      "explanation": "Three groups of anagrams."
+    },
+    {
+      "id": "empty-word",
+      "label": "An empty word",
+      "input": {
+        "words": [
+          ""
+        ]
+      },
+      "expectedOutput": [
+        [
+          ""
+        ]
+      ],
+      "explanation": "The empty word forms its own group."
+    },
+    {
+      "id": "single",
+      "label": "One word",
+      "input": {
+        "words": [
+          "a"
+        ]
+      },
+      "expectedOutput": [
+        [
+          "a"
+        ]
+      ],
+      "explanation": "One word, one group."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "compare-to-groups",
+      "level": "brute-force",
+      "name": "Compare with every group",
+      "idea": "For each word, check it against one word from every existing group and join the first that is an anagram.",
+      "time": "O(n² · k)",
+      "space": "O(n · k)"
+    },
+    {
+      "id": "sorted-key",
+      "level": "better",
+      "name": "Label by sorted letters",
+      "idea": "Sort each word's letters to make its label, and collect words under their label in a map.",
+      "insight": "Anagrams become identical when their letters are sorted, so the sorted word is a label all anagrams share.",
+      "time": "O(n · k log k)",
+      "space": "O(n · k)"
+    },
+    {
+      "id": "count-key",
+      "level": "optimal",
+      "name": "Label by letter counts",
+      "idea": "Use the count of each of the 26 letters as the label instead of sorting.",
+      "insight": "Counting the letters of a word takes one pass, while sorting takes k log k, and the counts identify anagrams just as well.",
+      "time": "O(n · k)",
+      "space": "O(n · k)"
+    }
+  ],
+  "solver": "group-anagrams",
+  "transfer": {
+    "problem": "Group shopping baskets that contain exactly the same items in any order.",
+    "answerPatternId": "hash-map",
+    "explanation": "Give each basket a signature that ignores order, such as its sorted items, and group baskets by signature."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses a label that is identical for anagrams and different otherwise.",
+      "Collects words in a map keyed by label.",
+      "Keeps every word, including duplicates and empty words.",
+      "Returns the groups, in any order."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Group Anagrams",
+  "practiceLink": {
+    "label": "LeetCode 49",
+    "url": "https://leetcode.com/problems/group-anagrams/"
+  }
+}

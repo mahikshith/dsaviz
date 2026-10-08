@@ -1,0 +1,1 @@
+Given `numCourses` and a list of pairs `[a, b]` meaning b must be taken before a, return whether all courses can be finished, that is, whether the prerequisite [[graph]] has a [[topological-order|topological order]].

@@ -1,0 +1,34 @@
+{
+  "tally": {
+    "present": {
+      "label": "Read the input",
+      "story": "The first bag holds {n} tiles and the second holds {m}.",
+      "formal": "len(s) = {n}, len(t) = {m}."
+    },
+    "length-mismatch": {
+      "label": "Different sizes",
+      "story": "The bags hold {n} and {m} tiles. Bags of different sizes can never hold the same letters.",
+      "formal": "len(s) ≠ len(t). Return False."
+    },
+    "initialize": {
+      "label": "Start the tally",
+      "story": "Start a tally sheet with every letter at zero.",
+      "formal": "count = {}."
+    },
+    "tally": {
+      "label": "Tally a pair",
+      "story": "Pair {i}: add one {add} for the first bag and take one {sub} away for the second. Now {add} is {addCount} and {sub} is {subCount}.",
+      "formal": "count[{add}] += 1 → {addCount}; count[{sub}] −= 1 → {subCount}."
+    },
+    "nonzero": {
+      "label": "Not zero",
+      "story": "The tally for {letter} ends at {count}, not zero: one bag has more {letter} tiles.",
+      "formal": "count[{letter}] = {count} ≠ 0. Return False."
+    },
+    "all-zero": {
+      "label": "Everything cancels",
+      "story": "All {letters} letters cancel out to zero. The bags hold exactly the same tiles.",
+      "formal": "Every count is 0. Return True."
+    }
+  }
+}

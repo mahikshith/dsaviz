@@ -1,0 +1,44 @@
+{
+  "stack": {
+    "present": {
+      "label": "Read the log",
+      "story": "The log has {n} symbols. We read them left to right and keep a pile of the compartments that are still open.",
+      "formal": "len(log) = {n}. Scan left to right with a stack of unmatched openers."
+    },
+    "initialize": {
+      "label": "Start empty",
+      "story": "No compartments are open yet, so the pile is empty.",
+      "formal": "stack = []."
+    },
+    "push": {
+      "label": "Push an opener",
+      "story": "Position {index} opens a compartment, {char}. It goes on top of the pile and will need a {closer} lid. Open compartments: {depth}.",
+      "formal": "log[{index}] = '{char}' is an opener: push it. Stack size {depth}."
+    },
+    "pop-match": {
+      "label": "Pop a match",
+      "story": "Position {index} is a {char} lid. The most recently opened compartment is {opener} from position {openerIndex}, and the lid fits, so it comes off the pile.",
+      "formal": "log[{index}] = '{char}' matches the top '{opener}' (from index {openerIndex}): pop. Stack size {depth}."
+    },
+    "mismatch": {
+      "label": "Mismatch",
+      "story": "Position {index} is a {char} lid, but the compartment opened most recently is {top} from position {topIndex}, which needs {expected}. The lids are crossed.",
+      "formal": "log[{index}] = '{char}' does not match the top '{top}' (it needs '{expected}'). Return False."
+    },
+    "unmatched-close": {
+      "label": "Nothing to close",
+      "story": "Position {index} is a {char} lid, but no compartment is open.",
+      "formal": "log[{index}] = '{char}' with an empty stack. Return False."
+    },
+    "leftover": {
+      "label": "Left open",
+      "story": "The log has ended, but compartments are still open: {count}. The top one is {top}, from position {topIndex}.",
+      "formal": "End of input with unmatched openers on the stack ({count}). Return False."
+    },
+    "valid": {
+      "label": "All matched",
+      "story": "Every lid fit the most recent open compartment and nothing is left open. The crate is packed correctly.",
+      "formal": "End of input with an empty stack. Return True."
+    }
+  }
+}

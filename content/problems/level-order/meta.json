@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "id": "level-order",
+  "slug": "level-order",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Binary tree level order traversal",
+  "storyTitle": "Floors of the treehouse",
+  "summary": "Visit a treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Microsoft"
+  ],
+  "topics": [
+    "trees",
+    "stacks-and-queues"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "breadth-first-search",
+      "variantId": "level-order",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "tree",
+    "queue"
+  ],
+  "checker": "exact",
+  "goal": "List the treehouse floor by floor, left to right",
+  "mapping": [
+    {
+      "story": "The treehouse",
+      "formal": "Binary tree"
+    },
+    {
+      "story": "A floor",
+      "formal": "All nodes at one depth"
+    },
+    {
+      "story": "Visitors waiting to be greeted",
+      "formal": "A queue"
+    },
+    {
+      "story": "The floor list",
+      "formal": "One inner list per depth"
+    }
+  ],
+  "examples": [
+    {
+      "id": "house",
+      "label": "Three floors",
+      "input": {
+        "root": [
+          3,
+          9,
+          20,
+          null,
+          null,
+          15,
+          7
+        ]
+      },
+      "expectedOutput": [
+        [
+          3
+        ],
+        [
+          9,
+          20
+        ],
+        [
+          15,
+          7
+        ]
+      ],
+      "explanation": "Floors from the top: 3; then 9 and 20; then 15 and 7."
+    },
+    {
+      "id": "one",
+      "label": "One node",
+      "input": {
+        "root": [
+          1
+        ]
+      },
+      "expectedOutput": [
+        [
+          1
+        ]
+      ],
+      "explanation": "A single floor."
+    },
+    {
+      "id": "empty",
+      "label": "No treehouse",
+      "input": {
+        "root": []
+      },
+      "expectedOutput": [],
+      "explanation": "No floors."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "depth-by-depth",
+      "level": "brute-force",
+      "name": "Collect one floor at a time",
+      "idea": "For depth 0, 1, 2, … walk the whole tree collecting the nodes at that depth, until a depth has none.",
+      "time": "O(n · h)",
+      "space": "O(h)"
+    },
+    {
+      "id": "queue-by-floor",
+      "level": "optimal",
+      "name": "A queue, one floor at a time",
+      "idea": "Keep a queue of nodes on the current floor. Take exactly that many from the front, record them, and add their children for the next floor.",
+      "insight": "Children of one floor are exactly the next floor, in left-to-right order. A first-in, first-out queue keeps them in that order, so one pass is enough.",
+      "time": "O(n)",
+      "space": "O(w)"
+    }
+  ],
+  "solver": "level-order",
+  "transfer": {
+    "problem": "Print an organisation chart level by level: the CEO, then everyone reporting to the CEO, and so on.",
+    "answerPatternId": "breadth-first-search",
+    "explanation": "Each level is the reports of the previous level, so a queue processed one level at a time gives the order."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses a queue, not a stack.",
+      "Processes exactly the nodes of the current floor before the next.",
+      "Adds left children before right children.",
+      "Returns an empty list for an empty tree."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Binary Tree Level Order Traversal",
+  "practiceLink": {
+    "label": "LeetCode 102",
+    "url": "https://leetcode.com/problems/binary-tree-level-order-traversal/"
+  }
+}

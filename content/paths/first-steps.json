@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "first-steps",
+  "status": "published",
+  "title": "First steps with patterns",
+  "summary": "Five short lessons that introduce one idea at a time, then mix them so you practise recognising which pattern fits.",
+  "sections": [
+    {
+      "title": "Meet the walkthrough",
+      "kind": "guided",
+      "summary": "One lesson, fully guided: read the story, step through the reasoning, answer one prediction.",
+      "problems": ["book-voucher-pair"]
+    },
+    {
+      "title": "Same move, new rule",
+      "kind": "supported",
+      "summary": "Opposite pointers again, then your first window. The walkthroughs are there when you need them.",
+      "problems": ["chalkboard-slogan", "busiest-three-days"]
+    },
+    {
+      "title": "New structures",
+      "kind": "independent",
+      "summary": "Read the formal statement first and try a plan on paper, then use the walkthrough to check it.",
+      "problems": ["parcel-compartments", "neighborhood-route"]
+    },
+    {
+      "title": "Mixed review",
+      "kind": "mixed-review",
+      "summary": "Pattern names are hidden. Decide which pattern fits each problem before you reveal it.",
+      "problems": ["neighborhood-route", "busiest-three-days", "book-voucher-pair", "parcel-compartments", "chalkboard-slogan"]
+    }
+  ]
+}

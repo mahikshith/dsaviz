@@ -1,0 +1,247 @@
+.storageNote {
+  font-size: 14px;
+  color: var(--muted);
+  margin: -8px 0 20px;
+}
+.muted {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* ---- Overview: ring, tiles, next step, all in one band ---- */
+.overview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(280px, 0.9fr);
+  gap: 18px;
+  align-items: stretch;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.ringBox {
+  display: grid;
+  place-items: center;
+}
+.ring {
+  width: 150px;
+  height: 150px;
+}
+.ringTrack {
+  fill: none;
+  stroke: var(--neutral-soft);
+  stroke-width: 12;
+}
+.ringValue {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dasharray 600ms var(--ease);
+}
+.ringNumber {
+  font: 600 30px var(--font-display);
+  fill: var(--text);
+}
+.ringLabel {
+  font: 11px var(--font-sans);
+  fill: var(--muted);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.tiles div {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunk);
+}
+.tiles dt {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.tiles dd {
+  margin: 2px 0 0;
+  font: 650 26px/1.2 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.tiles dd span {
+  font: 15px var(--font-sans);
+  color: var(--muted);
+}
+.next {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.nextCard {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--canvas);
+}
+.nextTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 560;
+}
+.suggest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---- By pattern ---- */
+.patterns {
+  margin-top: 24px;
+}
+.patterns h2,
+.data h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+.patterns ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 8px;
+}
+.patternRow {
+  display: grid;
+  grid-template-columns: auto 150px minmax(60px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+}
+.patternRow:hover {
+  border-color: var(--control-border);
+}
+.patterns li:not([data-started]) .patternRow {
+  opacity: 0.75;
+}
+.patternName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.patternCount {
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+
+/* ---- Lists ---- */
+.lists {
+  margin-top: 24px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'title steps' 'canonical steps' 'updated updated';
+  align-items: center;
+  column-gap: 16px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--border);
+}
+.list li:last-child {
+  border-bottom: 0;
+}
+.title {
+  grid-area: title;
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+}
+.title:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.canonical {
+  grid-area: canonical;
+  font-size: 13px;
+  color: var(--muted);
+}
+.steps {
+  grid-area: steps;
+  display: flex;
+  gap: 4px;
+}
+.steps span {
+  width: 22px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--neutral-soft);
+}
+.steps span[data-done] {
+  background: var(--success);
+}
+.updated {
+  grid-area: updated;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+}
+.data {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 8px;
+}
+.dataActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1099px) {
+  .overview {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .next {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 599px) {
+  .overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .patternRow {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .patternBar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

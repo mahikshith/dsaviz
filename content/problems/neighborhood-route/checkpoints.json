@@ -1,0 +1,30 @@
+[
+  {
+    "id": "skip-discovered",
+    "approachId": "bfs",
+    "exampleId": "to-library",
+    "frameId": "9-skip-seen",
+    "question": "C's next neighbour is D. What should happen?",
+    "context": "We are exploring from C, at distance 1. D was already discovered from B, with distance 2.",
+    "choices": [
+      {
+        "id": "skip",
+        "label": "Skip D: its distance is already final",
+        "correct": true,
+        "feedback": "Right. A route through C would also reach D in 2 streets. BFS gives every corner its smallest distance the first time it is discovered, so D is skipped."
+      },
+      {
+        "id": "requeue",
+        "label": "Add D to the queue again",
+        "correct": false,
+        "feedback": "That would explore D twice, and on larger maps the repeats add up fast. A discovered corner already has its final distance, so it is skipped."
+      },
+      {
+        "id": "reparent",
+        "label": "Record D as reached from C instead",
+        "correct": false,
+        "feedback": "Both routes to D are 2 streets long, so nothing improves. BFS keeps the first discovery and moves on."
+      }
+    ]
+  }
+]

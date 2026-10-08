@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "id": "book-voucher-pair",
+  "slug": "book-voucher-pair",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Find a pair matching a target in a sorted array",
+  "storyTitle": "Two books for one gift voucher",
+  "summary": "Find two different books on a price-sorted shelf whose prices add up exactly to a gift voucher.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Adobe",
+    "Google",
+    "Meta"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "opposite",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "zero-based-index",
+    "nondecreasing"
+  ],
+  "checker": "target-pair",
+  "goal": "Choose two different books whose prices add up to the voucher",
+  "mapping": [
+    {
+      "story": "The shelf",
+      "formal": "Sorted array prices"
+    },
+    {
+      "story": "A book's price",
+      "formal": "A value prices[i]"
+    },
+    {
+      "story": "Shelf position",
+      "formal": "Zero-based index i"
+    },
+    {
+      "story": "Gift voucher",
+      "formal": "target"
+    },
+    {
+      "story": "Two different books",
+      "formal": "Two distinct indices i < j"
+    },
+    {
+      "story": "The books to buy",
+      "formal": "Output [i, j], or null if none"
+    }
+  ],
+  "examples": [
+    {
+      "id": "voucher-18",
+      "label": "Voucher of 18",
+      "input": {
+        "prices": [
+          2,
+          4,
+          7,
+          11,
+          15
+        ],
+        "target": 18
+      },
+      "expectedOutput": [
+        2,
+        3
+      ],
+      "explanation": "7 + 11 = 18, at positions 2 and 3."
+    },
+    {
+      "id": "no-pair",
+      "label": "No pair works",
+      "input": {
+        "prices": [
+          1,
+          3,
+          5,
+          9
+        ],
+        "target": 7
+      },
+      "expectedOutput": null,
+      "explanation": "No two different books total 7, so the answer is null."
+    },
+    {
+      "id": "equal-prices",
+      "label": "Two equal prices",
+      "input": {
+        "prices": [
+          3,
+          3,
+          6,
+          8
+        ],
+        "target": 6
+      },
+      "expectedOutput": [
+        0,
+        1
+      ],
+      "explanation": "Two different books can share a price: 3 + 3 = 6 at positions 0 and 1."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "check-every-pair",
+      "level": "brute-force",
+      "name": "Check every pair",
+      "idea": "Fix one book, then try it with every book after it. Move to the next book and repeat until a pair totals the voucher.",
+      "time": "O(n²)",
+      "space": "O(1)",
+      "approachId": "check-every-pair"
+    },
+    {
+      "id": "binary-search-partner",
+      "level": "better",
+      "name": "Search for the partner",
+      "idea": "Each book needs a partner costing exactly `target − price`. The shelf is sorted, so binary-search the books to its right for that price.",
+      "insight": "Once one book is chosen, the partner's price is known exactly. A sorted shelf lets us find a known price in log n steps instead of scanning.",
+      "time": "O(n log n)",
+      "space": "O(1)"
+    },
+    {
+      "id": "opposite-pointers",
+      "level": "optimal",
+      "name": "Opposite pointers",
+      "idea": "Start at the cheapest and the most expensive book. Too small: drop the cheapest. Too large: drop the most expensive. Each comparison rules out one book for good.",
+      "insight": "Comparing the two ends tells us which end can never be part of an answer, so we can drop a whole book per step instead of searching for each partner.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "opposite-pointers"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "check-every-pair",
+      "name": "Check every pair",
+      "adapterId": "pair-enumeration-v1",
+      "summary": "Fix one book, then try it with every book after it.",
+      "timeComplexity": "O(n²)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    },
+    {
+      "id": "opposite-pointers",
+      "name": "Opposite pointers",
+      "adapterId": "sorted-target-pair-v1",
+      "summary": "Start at the cheapest and the most expensive book and rule out one end per comparison.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "opposite-pointers",
+  "transfer": {
+    "problem": "Song lengths are listed from shortest to longest. Find two different songs that fill a 30-minute drive exactly.",
+    "answerPatternId": "two-pointers",
+    "explanation": "The list is sorted and you need a pair with an exact total. Start at both ends: too short rules out the shortest song, too long rules out the longest."
+  },
+  "practice": {
+    "selfCheck": [
+      "Returns positions, not prices, and counts them from 0.",
+      "Never uses the same book twice, even when one price is exactly half the voucher.",
+      "Returns null (None) when no pair works, including for an empty shelf or a single book.",
+      "Every pass of the loop moves exactly one pointer inward, so the loop always ends."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Two Sum II (sorted input)",
+  "practiceLink": {
+    "label": "LeetCode 167 (counts positions from 1)",
+    "url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/"
+  }
+}

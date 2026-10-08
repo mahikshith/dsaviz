@@ -1,0 +1,277 @@
+.crumbs {
+  font-size: 14px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.crumbs a {
+  color: var(--primary);
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.head > :global(.pattern-badge) {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  font-size: 20px;
+}
+.headText {
+  display: grid;
+  gap: 8px;
+  flex: 1 1 420px;
+  min-width: 0;
+}
+.headText h1 {
+  font-size: clamp(32px, 4vw, 46px);
+}
+.prereq {
+  font-size: 15px;
+  color: var(--muted);
+}
+.progressBox {
+  display: grid;
+  gap: 8px;
+  width: 240px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--muted);
+}
+.progressBox strong {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.side {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.paper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.paper > * {
+  min-width: 0;
+}
+.paper h2 {
+  font-size: 21px;
+}
+.visual {
+  margin: 0;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+}
+.visual figcaption {
+  font-size: 14px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.variants {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.variants li {
+  display: grid;
+  gap: 3px;
+  font-size: 15px;
+}
+.variants li + li {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.variantName {
+  font-weight: 650;
+}
+.variantName span {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: 6px;
+}
+.requires {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---- Problems, by difficulty band ---- */
+.problems {
+  margin-top: 32px;
+  display: grid;
+  gap: 20px;
+}
+.problemsHead {
+  display: grid;
+  gap: 6px;
+}
+.problemsHead h2 {
+  font-size: 28px;
+}
+.problemsHead p {
+  color: var(--muted);
+  max-width: 70ch;
+}
+.band {
+  display: grid;
+  gap: 10px;
+}
+.bandHead {
+  display: flex;
+  align-items: baseline;
+  gap: 4px 14px;
+  flex-wrap: wrap;
+}
+.bandHead h3 {
+  font-size: 20px;
+}
+.bandHead p {
+  font-size: 14px;
+  color: var(--muted);
+}
+.problemList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 12px;
+}
+.problemCard {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.problemTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+}
+.problemTitles {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 220px;
+}
+.problemLink {
+  font-weight: 650;
+  font-size: 16px;
+  color: var(--text);
+  text-decoration: none;
+}
+.problemLink:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.problemMeta {
+  font-size: 13px;
+  color: var(--muted);
+}
+.problemBadges {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.kind {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.builds > summary {
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+.builds ol {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  font-size: 14.5px;
+}
+.builds li {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunk);
+}
+.builds code {
+  background: var(--surface-sunk);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+.buildName {
+  font-weight: 650;
+}
+.buildLevel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.buildInsight strong {
+  color: var(--accent);
+}
+.emptyLessons {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+@media (max-width: 999px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .paper {
+    padding: 16px;
+  }
+  .progressBox {
+    width: 100%;
+  }
+}

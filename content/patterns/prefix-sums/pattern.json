@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "id": "prefix-sums",
+  "status": "published",
+  "name": "Prefix sums",
+  "short": "PS",
+  "hue": "ocean",
+  "family": "sequence",
+  "order": 30,
+  "intuition": "Write running totals once, then read the total of any range as a single subtraction.",
+  "aliases": [
+    "running total",
+    "cumulative sum",
+    "range sum"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "prerequisites": [
+    "subarray",
+    "prefix-sum"
+  ],
+  "variants": [
+    {
+      "id": "range-sum",
+      "name": "Range totals",
+      "summary": "Build running totals once, then answer each range total with one subtraction.",
+      "requires": "Values that can be added and subtracted exactly, such as whole numbers."
+    },
+    {
+      "id": "prefix-products",
+      "name": "Running products",
+      "summary": "Build products from the left and from the right, then combine them at each position.",
+      "requires": "The combining operation is exact; products of whole numbers qualify."
+    },
+    {
+      "id": "prefix-counts",
+      "name": "Count matching ranges",
+      "summary": "Count earlier running totals that differ from the current one by the target, using a map.",
+      "requires": "Range totals are differences of running totals, which holds for sums, even with negative values."
+    }
+  ],
+  "visual": {
+    "caption": "Each prefix value sits between two days. A stretch total is the prefix at its right edge minus the prefix at its left edge: 22 − 6 = 16.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "v",
+          "label": "visitors",
+          "cells": [
+            {
+              "id": "a",
+              "label": "4",
+              "sub": "0",
+              "state": "idle"
+            },
+            {
+              "id": "b",
+              "label": "2",
+              "sub": "1",
+              "state": "idle"
+            },
+            {
+              "id": "c",
+              "label": "7",
+              "sub": "2",
+              "state": "window"
+            },
+            {
+              "id": "d",
+              "label": "1",
+              "sub": "3",
+              "state": "window"
+            },
+            {
+              "id": "e",
+              "label": "8",
+              "sub": "4",
+              "state": "window"
+            },
+            {
+              "id": "f",
+              "label": "3",
+              "sub": "5",
+              "state": "idle"
+            },
+            {
+              "id": "g",
+              "label": "5",
+              "sub": "6",
+              "state": "idle"
+            }
+          ],
+          "pointers": [],
+          "bands": [
+            {
+              "id": "r",
+              "from": 2,
+              "to": 4,
+              "label": "range · 16",
+              "tone": "primary",
+              "side": "above"
+            }
+          ]
+        },
+        {
+          "id": "p",
+          "label": "prefix",
+          "offset": -0.5,
+          "cells": [
+            {
+              "id": "p0",
+              "label": "0",
+              "sub": "P0",
+              "state": "idle"
+            },
+            {
+              "id": "p1",
+              "label": "4",
+              "sub": "P1",
+              "state": "idle"
+            },
+            {
+              "id": "p2",
+              "label": "6",
+              "sub": "P2",
+              "state": "comparison"
+            },
+            {
+              "id": "p3",
+              "label": "13",
+              "sub": "P3",
+              "state": "idle"
+            },
+            {
+              "id": "p4",
+              "label": "14",
+              "sub": "P4",
+              "state": "idle"
+            },
+            {
+              "id": "p5",
+              "label": "22",
+              "sub": "P5",
+              "state": "primary"
+            },
+            {
+              "id": "p6",
+              "label": "25",
+              "sub": "P6",
+              "state": "idle"
+            },
+            {
+              "id": "p7",
+              "label": "30",
+              "sub": "P7",
+              "state": "idle"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "s",
+              "label": "P[2]",
+              "index": 2,
+              "tone": "comparison",
+              "side": "below"
+            },
+            {
+              "id": "e",
+              "label": "P[5]",
+              "index": 5,
+              "tone": "primary",
+              "side": "below"
+            }
+          ],
+          "bands": []
+        }
+      ],
+      "legend": [
+        {
+          "label": "Range",
+          "swatch": "window"
+        },
+        {
+          "label": "Right edge",
+          "swatch": "primary"
+        },
+        {
+          "label": "Left edge",
+          "swatch": "comparison"
+        }
+      ]
+    }
+  }
+}

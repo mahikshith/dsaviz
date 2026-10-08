@@ -1,0 +1,347 @@
+.pageHead {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+  max-width: 760px;
+}
+.pageHead h1 {
+  font-size: clamp(28px, 3vw, 38px);
+}
+
+/* ---- Filters ---- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: flex-end;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.searchField,
+.selectField,
+.toggleField {
+  display: grid;
+  gap: 4px;
+}
+.searchField {
+  flex: 1 1 260px;
+}
+.filters label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.filters input[type='search'],
+.filters select {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 15px;
+}
+.filters input[type='search'] {
+  width: 100%;
+}
+.toggleField label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+}
+.toggleField input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+.resultCount {
+  margin: 14px 0 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px;
+  border: 1px dashed var(--control-border);
+  border-radius: var(--radius-lg);
+  margin-top: 12px;
+}
+
+/* ---- Pattern families ---- */
+.family {
+  margin-top: 28px;
+}
+.familyHead {
+  display: flex;
+  align-items: baseline;
+  gap: 4px 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.familyHead h2 {
+  font-size: 24px;
+}
+.familyHead p {
+  color: var(--muted);
+  font-size: 15px;
+}
+.patternList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.patternCard {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--motion) var(--ease), box-shadow var(--motion) var(--ease);
+}
+.patternCard:hover {
+  border-color: var(--control-border);
+  box-shadow: var(--shadow);
+}
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.patternCard h3 {
+  font-size: 21px;
+}
+.cardLink {
+  color: var(--text);
+  text-decoration: none;
+}
+.cardLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+.cardLink:focus-visible {
+  outline: none;
+}
+.cardLink:focus-visible::after {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.intuition {
+  color: var(--muted);
+  font-size: 15px;
+}
+.cardFoot {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+}
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.cardProgress {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+.progressNote {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* ---- Practice groups ---- */
+.group {
+  margin-top: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.group > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  min-height: 60px;
+}
+.group > summary::-webkit-details-marker {
+  display: none;
+}
+.chevron {
+  flex: none;
+  transition: transform var(--motion) var(--ease);
+  color: var(--muted);
+}
+.group[open] .chevron {
+  transform: rotate(90deg);
+}
+.groupTitle {
+  display: grid;
+  gap: 2px;
+}
+.groupTitle h2 {
+  font-size: 21px;
+}
+.groupTitle p {
+  font-size: 14px;
+  color: var(--muted);
+}
+.groupCount {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.table tr:last-child td {
+  border-bottom: 0;
+}
+.table th:first-child,
+.table td:first-child {
+  padding-left: 20px;
+}
+.problemLink {
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+}
+.problemLink:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.canonical {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.statusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--control-border);
+}
+.status[data-status='in-progress'] .statusDot {
+  background: var(--comparison);
+  border-color: var(--comparison);
+}
+.status[data-status='practiced'] .statusDot {
+  background: var(--success);
+  border-color: var(--success);
+}
+.reviewTag {
+  display: block;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+}
+.iconToggle {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+}
+.iconToggle:hover {
+  background: var(--surface-sunk);
+  color: var(--text);
+}
+.iconToggle[aria-pressed='true'] {
+  color: var(--primary);
+}
+
+@media (max-width: 767px) {
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+  .table tr {
+    position: relative;
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .table td {
+    padding: 2px 0;
+    border: 0;
+  }
+  .table th:first-child,
+  .table td:first-child {
+    padding-left: 0;
+    padding-right: 44px;
+  }
+  .table td[data-label]::before {
+    content: attr(data-label) ': ';
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .table td.bookmarkCell {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    width: auto;
+  }
+  .groupCount {
+    display: none;
+  }
+}

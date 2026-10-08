@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "heap",
+  "status": "published",
+  "name": "Heap and top-k",
+  "short": "HP",
+  "hue": "slate",
+  "family": "structure",
+  "order": 20,
+  "intuition": "Keep a small heap of the best candidates so the next one to replace or hand out is always on top.",
+  "aliases": [
+    "priority queue",
+    "top k",
+    "kth largest",
+    "k-way merge",
+    "min-heap",
+    "max-heap"
+  ],
+  "topics": [
+    "heaps",
+    "arrays",
+    "linked-lists"
+  ],
+  "prerequisites": [
+    "heap"
+  ],
+  "variants": [
+    {
+      "id": "top-k",
+      "name": "Keep the k best",
+      "summary": "A min-heap of size k holds the k largest items seen; its top is the k-th largest.",
+      "requires": "You only need the k best, not a full order."
+    },
+    {
+      "id": "k-way-merge",
+      "name": "Merge k sorted lists",
+      "summary": "Keep the front of each list in a heap and always take the smallest.",
+      "requires": "Each input is already sorted."
+    }
+  ],
+  "visual": {
+    "caption": "To keep the 3 largest values seen, a min-heap of size 3 is enough: a new value replaces the top only if it beats the weakest one kept.",
+    "scene": {
+      "graph": {
+        "width": 380,
+        "height": 210,
+        "nodes": [
+          {
+            "id": "a",
+            "label": "4",
+            "x": 190,
+            "y": 40,
+            "state": "current",
+            "caption": "smallest of the 3 kept"
+          },
+          {
+            "id": "b",
+            "label": "5",
+            "x": 110,
+            "y": 140,
+            "state": "visited"
+          },
+          {
+            "id": "c",
+            "label": "6",
+            "x": 270,
+            "y": 140,
+            "state": "visited"
+          }
+        ],
+        "edges": [
+          {
+            "id": "ab",
+            "from": "a",
+            "to": "b",
+            "state": "tree"
+          },
+          {
+            "id": "ac",
+            "from": "a",
+            "to": "c",
+            "state": "tree"
+          }
+        ]
+      },
+      "legend": [
+        {
+          "label": "Top of the heap: the weakest of the k best",
+          "swatch": "primary"
+        },
+        {
+          "label": "Kept",
+          "swatch": "window"
+        }
+      ]
+    }
+  }
+}

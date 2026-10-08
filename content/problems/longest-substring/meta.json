@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "id": "longest-substring",
+  "slug": "longest-substring",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Longest stretch without a repeated character",
+  "storyTitle": "The train of unique faces",
+  "summary": "Watch passengers board through a train window and find the longest run of neighbours in which no badge repeats.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Google"
+  ],
+  "topics": [
+    "strings",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "sliding-window",
+      "variantId": "variable",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "window",
+    "subarray"
+  ],
+  "checker": "exact",
+  "goal": "Find the longest run of neighbouring passengers with no badge repeated",
+  "mapping": [
+    {
+      "story": "Badges in boarding order",
+      "formal": "String s"
+    },
+    {
+      "story": "Neighbouring passengers",
+      "formal": "A substring"
+    },
+    {
+      "story": "The window",
+      "formal": "Indices left..right"
+    },
+    {
+      "story": "Where each badge was last seen",
+      "formal": "Map: character → last index"
+    },
+    {
+      "story": "Longest run",
+      "formal": "Maximum window length"
+    }
+  ],
+  "examples": [
+    {
+      "id": "night-train",
+      "label": "abcabcbb",
+      "input": {
+        "s": "abcabcbb"
+      },
+      "expectedOutput": 3,
+      "explanation": "The longest runs are abc, bca and cab, each 3 long."
+    },
+    {
+      "id": "same-badge",
+      "label": "bbbbb",
+      "input": {
+        "s": "bbbbb"
+      },
+      "expectedOutput": 1,
+      "explanation": "Every run longer than one repeats b."
+    },
+    {
+      "id": "outside",
+      "label": "abba",
+      "input": {
+        "s": "abba"
+      },
+      "expectedOutput": 2,
+      "explanation": "ab and ba both have length 2. The second a's earlier twin is no longer in the window."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-stretch",
+      "level": "brute-force",
+      "name": "Check every stretch",
+      "idea": "For every start and end, check whether the stretch has a repeat, and keep the longest without one.",
+      "time": "O(n³)",
+      "space": "O(n)"
+    },
+    {
+      "id": "window-set",
+      "level": "better",
+      "name": "Slide a window with a set",
+      "idea": "Grow the window on the right. When the new badge is already inside, remove badges from the left one at a time until it is gone.",
+      "insight": "A stretch with a repeat stays bad if you extend it, so there is no need to restart: keep a window and shrink it only as far as needed.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "last-seen",
+      "level": "optimal",
+      "name": "Jump with last-seen positions",
+      "idea": "Remember where each badge was last seen. When a badge repeats inside the window, move the left edge straight past its previous position.",
+      "insight": "The set version removes badges one by one, but we already know where the earlier twin sits. Remembering positions lets the left edge jump there in one step.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "approachId": "last-seen"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "last-seen",
+      "name": "Jump with last-seen positions",
+      "adapterId": "unique-window-v1",
+      "summary": "Grow on the right; jump the left edge past a repeat's previous position.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(n)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "last-seen",
+  "transfer": {
+    "problem": "A playlist must not play the same artist twice in a row of consecutive songs. Find the longest stretch of the queue with no artist repeated.",
+    "answerPatternId": "sliding-window",
+    "explanation": "It asks for the longest run of consecutive items with no repeats: grow a window and move its left edge past each repeated artist."
+  },
+  "practice": {
+    "selfCheck": [
+      "Only jumps the left edge when the earlier twin is inside the window.",
+      "Never moves the left edge backwards.",
+      "Updates the last-seen position on every step.",
+      "Returns 0 for an empty string."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Longest Substring Without Repeating Characters",
+  "practiceLink": {
+    "label": "LeetCode 3",
+    "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "id": "longest-consecutive",
+  "slug": "longest-consecutive",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Longest run of consecutive numbers",
+  "storyTitle": "The missing page hunt",
+  "summary": "Torn diary pages lie scattered; count the longest run of consecutive page numbers, starting only from pages whose previous page is missing.",
+  "difficulty": "medium",
+  "companies": [
+    "Google",
+    "Amazon"
+  ],
+  "topics": [
+    "arrays",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "hash-map",
+      "variantId": "seen-before",
+      "order": 35
+    }
+  ],
+  "prerequisites": [
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Find the longest run of consecutive page numbers",
+  "mapping": [
+    {
+      "story": "Scattered pages",
+      "formal": "Array nums, unsorted"
+    },
+    {
+      "story": "Pages you have",
+      "formal": "A set of values"
+    },
+    {
+      "story": "Start of a run",
+      "formal": "x with x − 1 missing"
+    },
+    {
+      "story": "Longest run",
+      "formal": "Maximum count of x, x + 1, x + 2, …"
+    }
+  ],
+  "examples": [
+    {
+      "id": "diary",
+      "label": "Six pages",
+      "input": {
+        "nums": [
+          100,
+          4,
+          200,
+          1,
+          3,
+          2
+        ]
+      },
+      "expectedOutput": 4,
+      "explanation": "Pages 1, 2, 3, 4 form a run of 4."
+    },
+    {
+      "id": "long",
+      "label": "Ten pages",
+      "input": {
+        "nums": [
+          0,
+          3,
+          7,
+          2,
+          5,
+          8,
+          4,
+          6,
+          0,
+          1
+        ]
+      },
+      "expectedOutput": 9,
+      "explanation": "Pages 0 to 8 are all there, with 0 twice."
+    },
+    {
+      "id": "none",
+      "label": "No pages",
+      "input": {
+        "nums": []
+      },
+      "expectedOutput": 0,
+      "explanation": "No pages, no run."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "count-from-each",
+      "level": "brute-force",
+      "name": "Count up from every page",
+      "idea": "For every page, count how many next pages exist by searching the whole list each time.",
+      "time": "O(n³)",
+      "space": "O(1)"
+    },
+    {
+      "id": "sort-and-scan",
+      "level": "better",
+      "name": "Sort, then scan",
+      "idea": "Sort the page numbers and walk through, extending the run while each page is one more than the last.",
+      "insight": "In sorted order, consecutive pages sit next to each other, so one pass finds every run.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "set-starts",
+      "level": "optimal",
+      "name": "Start only at run beginnings",
+      "idea": "Put the pages in a set. Only from a page whose previous page is missing, count upwards while the next page exists.",
+      "insight": "Counting from every page repeats the same runs. Starting only where a run begins means each page is counted once, and a set makes each check one step.",
+      "time": "O(n)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "longest-consecutive",
+  "transfer": {
+    "problem": "From a list of employee badge numbers in no order, find the longest block of consecutive numbers that are all assigned.",
+    "answerPatternId": "hash-map",
+    "explanation": "Put the numbers in a set and count upward only from numbers whose predecessor is missing."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses a set for O(1) membership checks.",
+      "Starts counting only when x − 1 is missing.",
+      "Handles duplicate pages.",
+      "Returns 0 for an empty list."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Longest Consecutive Sequence",
+  "practiceLink": {
+    "label": "LeetCode 128",
+    "url": "https://leetcode.com/problems/longest-consecutive-sequence/"
+  }
+}

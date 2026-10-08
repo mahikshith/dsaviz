@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "id": "kth-largest",
+  "slug": "kth-largest",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Find the k-th largest element",
+  "storyTitle": "The talent show top k",
+  "summary": "Keep only the k best acts in a small room with the weakest by the door; at the end, the act by the door is the k-th best.",
+  "difficulty": "medium",
+  "companies": [
+    "Meta",
+    "Amazon",
+    "Microsoft"
+  ],
+  "topics": [
+    "arrays",
+    "heaps"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "heap",
+      "variantId": "top-k",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "heap"
+  ],
+  "checker": "exact",
+  "goal": "Find the score of the k-th best act",
+  "mapping": [
+    {
+      "story": "Acts' scores",
+      "formal": "Array nums"
+    },
+    {
+      "story": "The room of the k best",
+      "formal": "A min-heap of size k"
+    },
+    {
+      "story": "Weakest act in the room",
+      "formal": "The heap's top"
+    },
+    {
+      "story": "The k-th best",
+      "formal": "Top of the heap at the end"
+    }
+  ],
+  "examples": [
+    {
+      "id": "show",
+      "label": "Six acts, k = 2",
+      "input": {
+        "nums": [
+          3,
+          2,
+          1,
+          5,
+          6,
+          4
+        ],
+        "k": 2
+      },
+      "expectedOutput": 5,
+      "explanation": "The best is 6 and the second best is 5."
+    },
+    {
+      "id": "repeats",
+      "label": "Repeated scores, k = 4",
+      "input": {
+        "nums": [
+          3,
+          2,
+          3,
+          1,
+          2,
+          4,
+          5,
+          5,
+          6
+        ],
+        "k": 4
+      },
+      "expectedOutput": 4,
+      "explanation": "In order: 6, 5, 5, 4. Equal scores count separately."
+    },
+    {
+      "id": "one",
+      "label": "One act",
+      "input": {
+        "nums": [
+          1
+        ],
+        "k": 1
+      },
+      "expectedOutput": 1,
+      "explanation": "The only act is the best."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "sort-all",
+      "level": "brute-force",
+      "name": "Sort everything",
+      "idea": "Sort all scores from best to worst and read position k.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "room-of-k",
+      "level": "optimal",
+      "name": "Keep a room of the k best",
+      "idea": "Keep a min-heap of at most k scores. Each new score enters; if the room holds more than k, the weakest leaves. The top is the k-th best.",
+      "insight": "We never need the full order, only the k best. A small heap that always knows its weakest member does that with less work and memory.",
+      "time": "O(n log k)",
+      "space": "O(k)"
+    }
+  ],
+  "solver": "kth-largest",
+  "transfer": {
+    "problem": "A sensor streams thousands of readings per second. At any moment, report the 10th highest reading so far.",
+    "answerPatternId": "heap",
+    "explanation": "Keep a min-heap of the 10 highest readings; each new reading either beats the top and replaces it, or is ignored."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses a min-heap, so the weakest of the best is on top.",
+      "Removes the top whenever the heap exceeds k.",
+      "Counts equal scores separately.",
+      "Returns the top after all scores."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Kth Largest Element in an Array",
+  "practiceLink": {
+    "label": "LeetCode 215",
+    "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/"
+  }
+}

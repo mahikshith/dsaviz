@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "id": "parcel-compartments",
+  "slug": "parcel-compartments",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Check that brackets are balanced and correctly nested",
+  "storyTitle": "Every compartment closed with its own lid",
+  "summary": "Check a packing robot's log of opened and closed compartments, using a stack to track which one must close next.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Google"
+  ],
+  "topics": [
+    "stacks-and-queues",
+    "strings"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "stack",
+      "variantId": "matching",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "stack"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether every compartment was closed with its own lid, in order",
+  "mapping": [
+    {
+      "story": "The robot's log",
+      "formal": "String log"
+    },
+    {
+      "story": "Opening a compartment",
+      "formal": "An opening symbol ( [ {"
+    },
+    {
+      "story": "Putting on a lid",
+      "formal": "A closing symbol ) ] }"
+    },
+    {
+      "story": "Round, square, curly",
+      "formal": "The pairs ( ), [ ], { }"
+    },
+    {
+      "story": "Compartments still open",
+      "formal": "The stack, newest on top"
+    },
+    {
+      "story": "Crate packed correctly",
+      "formal": "Return True"
+    }
+  ],
+  "examples": [
+    {
+      "id": "nested",
+      "label": "Nested and correct",
+      "input": {
+        "log": "{[()]()}"
+      },
+      "expectedOutput": true,
+      "explanation": "Every lid fits the compartment opened most recently, and nothing is left open."
+    },
+    {
+      "id": "crossed",
+      "label": "Crossed lids",
+      "input": {
+        "log": "([)]"
+      },
+      "expectedOutput": false,
+      "explanation": "A square lid arrives while the round compartment is still the most recent open one."
+    },
+    {
+      "id": "left-open",
+      "label": "Left open",
+      "input": {
+        "log": "(()"
+      },
+      "expectedOutput": false,
+      "explanation": "One round compartment is never closed."
+    },
+    {
+      "id": "early-close",
+      "label": "Closed too early",
+      "input": {
+        "log": "())"
+      },
+      "expectedOutput": false,
+      "explanation": "The last lid arrives when no compartment is open."
+    },
+    {
+      "id": "empty",
+      "label": "Empty log",
+      "input": {
+        "log": ""
+      },
+      "expectedOutput": true,
+      "explanation": "Nothing was opened, so nothing can be wrong."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "delete-pairs",
+      "level": "brute-force",
+      "name": "Delete matching pairs",
+      "idea": "Repeatedly delete adjacent matching pairs such as `()`, `[]` and `{}` until none are left. The log is correct if nothing remains.",
+      "time": "O(n²)",
+      "space": "O(n)"
+    },
+    {
+      "id": "stack",
+      "level": "optimal",
+      "name": "Stack of open compartments",
+      "idea": "Push every opening symbol. Each closing symbol must match the symbol on top of the stack, which is then popped. At the end the stack must be empty.",
+      "insight": "Every pair you delete is the most recently opened compartment. A stack keeps exactly the compartments still open, newest on top, so one pass is enough.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "approachId": "stack"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "stack",
+      "name": "Stack of open compartments",
+      "adapterId": "bracket-match-v1",
+      "summary": "Push every opening; each lid must match the compartment on top of the stack.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(n)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "stack",
+  "transfer": {
+    "problem": "A text editor must check that formatting tags such as <b>…</b> and <i>…</i> are properly nested, as in <b><i>hi</i></b>.",
+    "answerPatternId": "stack",
+    "explanation": "The most recently opened tag must close first, which is last in, first out. Push opening tags and compare each closing tag with the top."
+  },
+  "practice": {
+    "selfCheck": [
+      "Returns False when a lid arrives and nothing is open.",
+      "Compares each closing symbol with the most recent unmatched opening symbol, not with any open one.",
+      "Returns False when compartments are still open at the end.",
+      "Treats an empty log as correct."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Valid Parentheses",
+  "practiceLink": {
+    "label": "LeetCode 20",
+    "url": "https://leetcode.com/problems/valid-parentheses/"
+  }
+}

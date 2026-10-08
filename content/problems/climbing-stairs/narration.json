@@ -1,0 +1,24 @@
+{
+  "table": {
+    "present": {
+      "label": "Read the input",
+      "story": "A staircase of {n} steps, climbed 1 or 2 steps at a time.",
+      "formal": "n = {n}. Count sequences of 1s and 2s summing to n."
+    },
+    "base": {
+      "label": "Write the first notes",
+      "story": "There is 1 way to stand on the ground and 1 way to reach step 1.",
+      "formal": "ways[0] = 1, ways[1] = 1."
+    },
+    "fill": {
+      "label": "Write a note",
+      "story": "Step {i} is reached by one step from step {prev} ({oneBack} ways) or two steps from step {prev2} ({twoBack} ways): {oneBack} + {twoBack} = {value}.",
+      "formal": "ways[{i}] = ways[{prev}] + ways[{prev2}] = {oneBack} + {twoBack} = {value}."
+    },
+    "done": {
+      "label": "Read the top note",
+      "story": "The note on step {n} says {ways} ways.",
+      "formal": "Return ways[{n}] = {ways}."
+    }
+  }
+}

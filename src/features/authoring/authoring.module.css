@@ -1,0 +1,127 @@
+.wrap {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: grid;
+  gap: 10px;
+}
+.panel h2 {
+  font-size: 22px;
+}
+.panel h3 {
+  font-size: 17px;
+}
+.ok {
+  color: var(--success);
+  font-weight: 600;
+}
+.issues,
+.records {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+  font-family: var(--font-mono);
+}
+.issues li[data-level='error'] strong {
+  color: var(--danger);
+}
+.issues li[data-level='warning'] strong {
+  color: var(--comparison);
+}
+.records [data-status],
+.picker [data-status] {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--success-soft);
+  color: var(--success);
+  margin-left: 6px;
+}
+.records [data-status='draft'],
+.picker [data-status='draft'] {
+  background: var(--comparison-soft);
+  color: var(--comparison);
+}
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.picker button {
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--control-border);
+  background: var(--surface);
+  font-size: 14px;
+}
+.picker button[aria-checked='true'] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 650;
+}
+.error {
+  color: var(--danger);
+  font-weight: 600;
+}
+.preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.public {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.raw {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  background: var(--code-bg);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+.raw h3 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.raw pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+@media (max-width: 999px) {
+  .preview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .raw {
+    position: static;
+    max-height: none;
+  }
+}

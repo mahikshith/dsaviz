@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "id": "climbing-stairs",
+  "slug": "climbing-stairs",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Count the ways to climb n steps",
+  "storyTitle": "Notes on the staircase",
+  "summary": "Count the different ways to climb a staircase taking one or two steps at a time, by writing an answer on every step.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Adobe"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "dynamic-programming",
+      "variantId": "linear",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "subproblem",
+    "recursion"
+  ],
+  "checker": "exact",
+  "goal": "Count the different ways to reach the top step",
+  "mapping": [
+    {
+      "story": "The staircase",
+      "formal": "Steps 0 to n"
+    },
+    {
+      "story": "A move",
+      "formal": "Climb 1 or 2 steps"
+    },
+    {
+      "story": "Note written on step i",
+      "formal": "ways[i]"
+    },
+    {
+      "story": "Reaching step i",
+      "formal": "Last move from step i − 1 or i − 2"
+    },
+    {
+      "story": "The answer",
+      "formal": "ways[n]"
+    }
+  ],
+  "examples": [
+    {
+      "id": "five",
+      "label": "Five steps",
+      "input": {
+        "n": 5
+      },
+      "expectedOutput": 8,
+      "explanation": "8 different sequences of 1s and 2s add up to 5."
+    },
+    {
+      "id": "two",
+      "label": "Two steps",
+      "input": {
+        "n": 2
+      },
+      "expectedOutput": 2,
+      "explanation": "1 + 1 or 2."
+    },
+    {
+      "id": "one",
+      "label": "One step",
+      "input": {
+        "n": 1
+      },
+      "expectedOutput": 1,
+      "explanation": "Only a single 1-step move."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "try-every-path",
+      "level": "brute-force",
+      "name": "Try every path",
+      "idea": "Recursively try a 1-step and a 2-step move from each step and count the paths that land exactly on the top.",
+      "time": "O(2ⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "table",
+      "level": "better",
+      "name": "A note on every step",
+      "idea": "Write on each step how many ways reach it: the ways to reach the step below plus the ways to reach the step two below.",
+      "insight": "The brute force asks \"how many ways reach step 3?\" again and again. Writing each answer down once means every step is worked out exactly once.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "approachId": "table"
+    },
+    {
+      "id": "two-notes",
+      "level": "optimal",
+      "name": "Keep only the last two notes",
+      "idea": "Each note only uses the two notes before it, so keep just those two numbers and roll them forward.",
+      "insight": "Once step i is written, notes below i − 1 are never read again. Two variables are enough.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "table",
+      "name": "A note on every step",
+      "adapterId": "climbing-stairs-v1",
+      "summary": "Fill ways[i] = ways[i − 1] + ways[i − 2] from the bottom up.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(n)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "table",
+  "transfer": {
+    "problem": "Tiling a 2 × n path with 1 × 2 paving slabs, laid either across or as a pair along: how many layouts are there?",
+    "answerPatternId": "dynamic-programming",
+    "explanation": "The last slab either covers one column (across) or two columns (a pair), so layouts(n) = layouts(n − 1) + layouts(n − 2): the same recurrence."
+  },
+  "practice": {
+    "selfCheck": [
+      "Sets both base cases: one way to stand on step 0 and one way to reach step 1.",
+      "Adds the two previous answers for each step.",
+      "Handles n = 1.",
+      "Does not recompute the same step twice."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Climbing Stairs",
+  "practiceLink": {
+    "label": "LeetCode 70",
+    "url": "https://leetcode.com/problems/climbing-stairs/"
+  }
+}

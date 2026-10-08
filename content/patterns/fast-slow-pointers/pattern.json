@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "id": "fast-slow-pointers",
+  "status": "published",
+  "name": "Fast and slow pointers",
+  "short": "FS",
+  "hue": "gold",
+  "family": "structure",
+  "order": 40,
+  "intuition": "Move one pointer one step and another two steps; where they meet, or where the slow one is when the fast one stops, reveals the structure.",
+  "aliases": [
+    "tortoise and hare",
+    "floyd",
+    "cycle detection",
+    "middle of list",
+    "runner technique"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "prerequisites": [
+    "linked-list",
+    "pointer"
+  ],
+  "variants": [
+    {
+      "id": "middle",
+      "name": "Find the middle",
+      "summary": "When the fast pointer reaches the end, the slow one is halfway.",
+      "requires": "You can walk the list from its head."
+    },
+    {
+      "id": "cycle",
+      "name": "Detect a cycle",
+      "summary": "If the list loops, the fast pointer eventually laps the slow one and they meet.",
+      "requires": "Nodes can be compared by identity."
+    }
+  ],
+  "visual": {
+    "caption": "After two moves, slow has walked 2 nodes and fast 4. When fast reaches the end, slow stands in the middle.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "l",
+          "label": "nodes",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "1",
+              "sub": "0",
+              "state": "idle"
+            },
+            {
+              "id": "c1",
+              "label": "2",
+              "sub": "1",
+              "state": "idle"
+            },
+            {
+              "id": "c2",
+              "label": "3",
+              "sub": "2",
+              "state": "idle"
+            },
+            {
+              "id": "c3",
+              "label": "4",
+              "sub": "3",
+              "state": "idle"
+            },
+            {
+              "id": "c4",
+              "label": "5",
+              "sub": "4",
+              "state": "idle"
+            },
+            {
+              "id": "c5",
+              "label": "6",
+              "sub": "5",
+              "state": "idle"
+            },
+            {
+              "id": "c6",
+              "label": "7",
+              "sub": "6",
+              "state": "idle"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "s",
+              "label": "slow",
+              "index": 2,
+              "tone": "primary",
+              "side": "above"
+            },
+            {
+              "id": "f",
+              "label": "fast",
+              "index": 4,
+              "tone": "comparison",
+              "side": "below"
+            }
+          ],
+          "bands": []
+        }
+      ],
+      "legend": [
+        {
+          "label": "Slow: one step at a time",
+          "swatch": "primary"
+        },
+        {
+          "label": "Fast: two steps at a time",
+          "swatch": "comparison"
+        }
+      ]
+    }
+  }
+}

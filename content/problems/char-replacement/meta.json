@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "id": "char-replacement",
+  "slug": "char-replacement",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Longest run that can be made one letter with k changes",
+  "storyTitle": "The paint touch-up",
+  "summary": "With paint for only k tiles, find the longest stretch of a tiled wall that can be made a single colour.",
+  "difficulty": "medium",
+  "companies": [
+    "Google",
+    "Amazon",
+    "Uber"
+  ],
+  "topics": [
+    "strings",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "sliding-window",
+      "variantId": "variable",
+      "order": 40
+    }
+  ],
+  "prerequisites": [
+    "window",
+    "subarray"
+  ],
+  "checker": "exact",
+  "goal": "Find the longest stretch that can become one colour with at most k repaints",
+  "mapping": [
+    {
+      "story": "Tile colours in a row",
+      "formal": "String s of capital letters"
+    },
+    {
+      "story": "Repaints allowed",
+      "formal": "Integer k"
+    },
+    {
+      "story": "A stretch of tiles",
+      "formal": "A window left..right"
+    },
+    {
+      "story": "Repaints a stretch needs",
+      "formal": "Window size − count of its most common letter"
+    },
+    {
+      "story": "Longest stretch",
+      "formal": "Maximum window size"
+    }
+  ],
+  "examples": [
+    {
+      "id": "wall",
+      "label": "AABABBA, k = 1",
+      "input": {
+        "s": "AABABBA",
+        "k": 1
+      },
+      "expectedOutput": 4,
+      "explanation": "AABA becomes AAAA by repainting one B."
+    },
+    {
+      "id": "two-paints",
+      "label": "ABAB, k = 2",
+      "input": {
+        "s": "ABAB",
+        "k": 2
+      },
+      "expectedOutput": 4,
+      "explanation": "Repaint both A tiles (or both B tiles) to make the whole wall one colour."
+    },
+    {
+      "id": "no-paint",
+      "label": "AAAA, k = 0",
+      "input": {
+        "s": "AAAA",
+        "k": 0
+      },
+      "expectedOutput": 4,
+      "explanation": "The wall is already one colour."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-stretch",
+      "level": "brute-force",
+      "name": "Check every stretch",
+      "idea": "For each start, extend the stretch tile by tile, keeping counts, and stop when it needs more than k repaints.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "sliding-tally",
+      "level": "optimal",
+      "name": "Slide a window with a tally",
+      "idea": "Grow the window one tile at a time while tracking how many tiles share the most common colour. When it would need more than k repaints, slide it forward instead of growing.",
+      "insight": "A stretch needs (size − most common count) repaints. We only want stretches longer than the best so far, so a window that breaks the rule can slide instead of shrinking.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "sliding-tally"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "sliding-tally",
+      "name": "Slide a window with a tally",
+      "adapterId": "replacement-window-v1",
+      "summary": "Grow; when repaints exceed k, slide the window one tile.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "sliding-tally",
+  "transfer": {
+    "problem": "A list of exam answers is either right or wrong. You may flip up to k wrong answers. What is the longest run of consecutive right answers you can make?",
+    "answerPatternId": "sliding-window",
+    "explanation": "It is the same window: keep the stretch whose wrong answers number at most k, growing on the right and sliding when there are too many."
+  },
+  "practice": {
+    "selfCheck": [
+      "Computes repaints as window size minus the most common count.",
+      "Slides the window by one when it needs more than k repaints.",
+      "Returns the best size seen, not the final window size.",
+      "Handles k = 0."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Longest Repeating Character Replacement",
+  "practiceLink": {
+    "label": "LeetCode 424",
+    "url": "https://leetcode.com/problems/longest-repeating-character-replacement/"
+  }
+}

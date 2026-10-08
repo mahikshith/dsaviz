@@ -1,0 +1,42 @@
+[
+  {
+    "id": "arrays",
+    "name": "Arrays",
+    "summary": "Ordered values at numbered positions."
+  },
+  {
+    "id": "strings",
+    "name": "Strings",
+    "summary": "Text, read one character at a time."
+  },
+  {
+    "id": "hash-tables",
+    "name": "Hash tables",
+    "summary": "Instant lookup by key: maps and sets."
+  },
+  {
+    "id": "stacks-and-queues",
+    "name": "Stacks and queues",
+    "summary": "Collections that decide which item comes out next."
+  },
+  {
+    "id": "heaps",
+    "name": "Heaps",
+    "summary": "Always know the smallest or largest item, cheaply."
+  },
+  {
+    "id": "linked-lists",
+    "name": "Linked lists",
+    "summary": "Items that each point to the next one."
+  },
+  {
+    "id": "trees",
+    "name": "Trees",
+    "summary": "One root, branches below, no loops."
+  },
+  {
+    "id": "graphs",
+    "name": "Graphs",
+    "summary": "Things connected to other things: corners and streets, people and friendships."
+  }
+]

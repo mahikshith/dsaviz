@@ -1,0 +1,30 @@
+[
+  {
+    "id": "square-lid-next",
+    "approachId": "stack",
+    "exampleId": "nested",
+    "frameId": "5-pop-match",
+    "question": "The next symbol is ]. What happens?",
+    "context": "The round compartment from position 2 was just closed. The top of the pile is now [, opened at position 1.",
+    "choices": [
+      {
+        "id": "pop",
+        "label": "Pop [: the square lid fits",
+        "correct": true,
+        "feedback": "Right. The square compartment is the most recently opened one still open, and a square lid fits it, so it comes off the pile."
+      },
+      {
+        "id": "push",
+        "label": "Push ] onto the pile",
+        "correct": false,
+        "feedback": "Only opening symbols go on the pile. A closing symbol is compared with the top and, if it fits, removes it."
+      },
+      {
+        "id": "fail",
+        "label": "Stop: the log is wrong",
+        "correct": false,
+        "feedback": "Not here. The lid only has to fit the top of the pile, which is [. The curly compartment underneath waits its turn."
+      }
+    ]
+  }
+]

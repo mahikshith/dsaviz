@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "id": "product-except-self",
+  "slug": "product-except-self",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Product of all other elements",
+  "storyTitle": "The group photo scores",
+  "summary": "Give everyone in a group photo the product of everybody else's numbers, using one pass from the left and one from the right.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Microsoft",
+    "Apple"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "prefix-sums",
+      "variantId": "prefix-products",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "prefix-sum"
+  ],
+  "checker": "exact",
+  "goal": "Give each person the product of everyone else's numbers",
+  "mapping": [
+    {
+      "story": "People in the photo",
+      "formal": "Array nums"
+    },
+    {
+      "story": "Everyone to the left",
+      "formal": "Prefix product"
+    },
+    {
+      "story": "Everyone to the right",
+      "formal": "Suffix product"
+    },
+    {
+      "story": "A person's score",
+      "formal": "prefix × suffix at that position"
+    }
+  ],
+  "examples": [
+    {
+      "id": "photo",
+      "label": "Four people",
+      "input": {
+        "nums": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "expectedOutput": [
+        24,
+        12,
+        8,
+        6
+      ],
+      "explanation": "The person holding 1 scores 2 × 3 × 4 = 24, and so on."
+    },
+    {
+      "id": "zero",
+      "label": "A zero",
+      "input": {
+        "nums": [
+          -1,
+          1,
+          0,
+          -3,
+          3
+        ]
+      },
+      "expectedOutput": [
+        0,
+        0,
+        9,
+        0,
+        0
+      ],
+      "explanation": "Only the person holding 0 avoids multiplying by 0."
+    },
+    {
+      "id": "pair",
+      "label": "Two people",
+      "input": {
+        "nums": [
+          2,
+          3
+        ]
+      },
+      "expectedOutput": [
+        3,
+        2
+      ],
+      "explanation": "Each scores the other's number."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "multiply-others",
+      "level": "brute-force",
+      "name": "Multiply everyone else",
+      "idea": "For each person, multiply all the other numbers.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "two-lists",
+      "level": "better",
+      "name": "Left products and right products",
+      "idea": "Write the product of everyone to the left of each person, and of everyone to the right. Each score is the two multiplied.",
+      "insight": "Everyone else is exactly the people on the left times the people on the right, and both can be built as running products.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "one-list",
+      "level": "optimal",
+      "name": "Fold the right pass into the answer",
+      "idea": "Store the left products in the answer list, then walk from the right with one running product, multiplying it in.",
+      "insight": "The right products are used once each, in order from the right, so a single running number replaces their list.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "product-except-self",
+  "transfer": {
+    "problem": "For each day, compute the total sales of every other day of the week, without subtracting from the weekly total.",
+    "answerPatternId": "prefix-sums",
+    "explanation": "Everything except one position is everything before it plus everything after it: prefix and suffix running totals."
+  },
+  "practice": {
+    "selfCheck": [
+      "Never divides.",
+      "Uses running products from both sides.",
+      "Handles a zero, and two zeros.",
+      "Uses O(1) extra space besides the answer."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Product of Array Except Self",
+  "practiceLink": {
+    "label": "LeetCode 238",
+    "url": "https://leetcode.com/problems/product-of-array-except-self/"
+  }
+}

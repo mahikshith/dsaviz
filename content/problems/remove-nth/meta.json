@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "id": "remove-nth",
+  "slug": "remove-nth",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Remove the n-th node from the end of a list",
+  "storyTitle": "The carriage gap",
+  "summary": "Unhook the n-th carriage from the end of a train in one walk, by sending a scout n carriages ahead.",
+  "difficulty": "medium",
+  "companies": [
+    "Meta",
+    "Amazon"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "same-direction",
+      "order": 35
+    }
+  ],
+  "prerequisites": [
+    "linked-list",
+    "pointer"
+  ],
+  "checker": "exact",
+  "goal": "Unhook the n-th carriage counting from the end",
+  "mapping": [
+    {
+      "story": "The train",
+      "formal": "Linked list head"
+    },
+    {
+      "story": "Counting from the end",
+      "formal": "n-th node from the tail"
+    },
+    {
+      "story": "The scout",
+      "formal": "Lead pointer, n + 1 ahead"
+    },
+    {
+      "story": "Unhooking",
+      "formal": "Relinking around the node"
+    }
+  ],
+  "examples": [
+    {
+      "id": "five",
+      "label": "Remove 2nd from end",
+      "input": {
+        "head": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "n": 2
+      },
+      "expectedOutput": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "explanation": "Carriage 4 is second from the end."
+    },
+    {
+      "id": "only",
+      "label": "Only carriage",
+      "input": {
+        "head": [
+          1
+        ],
+        "n": 1
+      },
+      "expectedOutput": [],
+      "explanation": "Removing the only carriage leaves an empty train."
+    },
+    {
+      "id": "last",
+      "label": "Remove the last",
+      "input": {
+        "head": [
+          1,
+          2
+        ],
+        "n": 1
+      },
+      "expectedOutput": [
+        1
+      ],
+      "explanation": "The last carriage is first from the end."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "copy",
+      "level": "brute-force",
+      "name": "Copy into an array",
+      "idea": "Copy the carriages into an array, delete position length − n, and rebuild the train.",
+      "time": "O(L)",
+      "space": "O(L)"
+    },
+    {
+      "id": "two-passes",
+      "level": "better",
+      "name": "Count, then walk",
+      "idea": "Walk once to count the carriages, then walk again to the one before position L − n and unhook the next.",
+      "insight": "We only need the length to know where to stop, not a copy of every carriage.",
+      "time": "O(L)",
+      "space": "O(1)"
+    },
+    {
+      "id": "scout",
+      "level": "optimal",
+      "name": "Send a scout ahead",
+      "idea": "Start a scout n + 1 carriages ahead of a marker. Move both together; when the scout falls off the end, the marker is just before the carriage to unhook.",
+      "insight": "Keeping a fixed gap of n between two walkers measures \"n from the end\" without knowing the length, so one walk is enough.",
+      "time": "O(L)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "remove-nth",
+  "transfer": {
+    "problem": "Find the k-th last entry in a long log you can only read forwards, once.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Keep a second pointer k entries behind the first; when the first reaches the end, the second is the answer."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses a placeholder head, so removing the first carriage works.",
+      "Moves the scout n + 1 steps before moving both.",
+      "Relinks around the removed carriage.",
+      "Handles a one-carriage train."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Remove Nth Node From End of List",
+  "practiceLink": {
+    "label": "LeetCode 19",
+    "url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/"
+  }
+}

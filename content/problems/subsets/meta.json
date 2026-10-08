@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "id": "subsets",
+  "slug": "subsets",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "All subsets of a set",
+  "storyTitle": "The picnic basket choices",
+  "summary": "For every snack ask one question, in the basket or not; every path through those questions is one possible basket.",
+  "difficulty": "medium",
+  "companies": [
+    "Meta",
+    "Amazon"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "backtracking",
+      "variantId": "choose-or-skip",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "recursion"
+  ],
+  "checker": "unordered-nested",
+  "goal": "List every possible picnic basket",
+  "mapping": [
+    {
+      "story": "The snacks",
+      "formal": "Array nums of distinct values"
+    },
+    {
+      "story": "A basket",
+      "formal": "A subset"
+    },
+    {
+      "story": "In or out, for each snack",
+      "formal": "Choose or skip at each index"
+    },
+    {
+      "story": "Taking the snack back out",
+      "formal": "Undoing the choice"
+    }
+  ],
+  "examples": [
+    {
+      "id": "three",
+      "label": "Three snacks",
+      "input": {
+        "nums": [
+          1,
+          2,
+          3
+        ]
+      },
+      "expectedOutput": [
+        [],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "explanation": "Two choices for each of three snacks: 8 baskets."
+    },
+    {
+      "id": "one",
+      "label": "One snack",
+      "input": {
+        "nums": [
+          0
+        ]
+      },
+      "expectedOutput": [
+        [],
+        [
+          0
+        ]
+      ],
+      "explanation": "Take it or leave it."
+    },
+    {
+      "id": "none",
+      "label": "No snacks",
+      "input": {
+        "nums": []
+      },
+      "expectedOutput": [
+        []
+      ],
+      "explanation": "Only the empty basket."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "count-masks",
+      "level": "brute-force",
+      "name": "Count through every on/off pattern",
+      "idea": "Number the baskets 0 to 2ⁿ − 1; in binary, each bit says whether a snack is in. Build the basket for every number.",
+      "time": "O(n · 2ⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "choose-or-skip",
+      "level": "optimal",
+      "name": "Choose or skip, then undo",
+      "idea": "Walk the snacks in order. For each, explore the baskets that include it, take it back out, and explore the baskets without it.",
+      "insight": "There are 2ⁿ baskets to write out, so no method beats O(n · 2ⁿ). Building baskets one choice at a time shares the work between them and is the shape every backtracking problem reuses.",
+      "time": "O(n · 2ⁿ)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "subsets",
+  "transfer": {
+    "problem": "List every way to choose toppings for a pizza from a menu of toppings, including no toppings.",
+    "answerPatternId": "backtracking",
+    "explanation": "Each topping is either chosen or not: the choose-or-skip search lists every combination."
+  },
+  "practice": {
+    "selfCheck": [
+      "Records a copy of the basket, not the basket itself.",
+      "Undoes each choice after exploring it.",
+      "Produces 2ⁿ baskets, including the empty one.",
+      "Never repeats a basket."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Subsets",
+  "practiceLink": {
+    "label": "LeetCode 78",
+    "url": "https://leetcode.com/problems/subsets/"
+  }
+}

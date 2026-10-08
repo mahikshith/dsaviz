@@ -1,0 +1,30 @@
+[
+  {
+    "id": "where-to-jump",
+    "approachId": "last-seen",
+    "exampleId": "night-train",
+    "frameId": "8-read",
+    "question": "Another a boards; the last a sat at position 0, inside the window. Where should the window start now?",
+    "context": "The window held a, b, c at positions 0 to 2. Passenger 3 wears a.",
+    "choices": [
+      {
+        "id": "past-twin",
+        "label": "At position 1, just past the old a",
+        "correct": true,
+        "feedback": "Right. Any run ending here must leave out the earlier a, and b, c, a from position 1 is still repeat-free."
+      },
+      {
+        "id": "restart",
+        "label": "At position 3, starting over",
+        "correct": false,
+        "feedback": "That throws away b and c, which are still fine. Starting over can miss the longest run."
+      },
+      {
+        "id": "stay",
+        "label": "Stay at 0 and allow one repeat",
+        "correct": false,
+        "feedback": "The run would then contain a twice, which breaks the rule. The window must exclude the earlier a."
+      }
+    ]
+  }
+]

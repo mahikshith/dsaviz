@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "id": "binary-search",
+  "status": "published",
+  "name": "Binary search",
+  "short": "BS",
+  "hue": "violet",
+  "family": "sequence",
+  "order": 40,
+  "intuition": "Halve a sorted search space with every comparison until one candidate remains.",
+  "aliases": [
+    "halving",
+    "bisection",
+    "guess the number",
+    "lower bound"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "prerequisites": [
+    "nondecreasing",
+    "zero-based-index"
+  ],
+  "variants": [
+    {
+      "id": "exact",
+      "name": "Exact value",
+      "summary": "Find the position of a value in a sorted array, or report that it is missing.",
+      "requires": "The array is sorted."
+    },
+    {
+      "id": "boundary",
+      "name": "First position that works",
+      "summary": "Find where a yes/no condition switches from no to yes.",
+      "requires": "The condition is false up to some point and true from then on."
+    },
+    {
+      "id": "rotated",
+      "name": "Rotated sorted order",
+      "summary": "A sorted array cut and swapped; one half of any split is still sorted.",
+      "requires": "Values are distinct, so you can tell which half is in order."
+    }
+  ],
+  "visual": {
+    "caption": "Comparing with the middle value (17) rules out the whole left half when the target is larger.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "v",
+          "label": "sorted values",
+          "cells": [
+            {
+              "id": "a",
+              "label": "3",
+              "sub": "0",
+              "state": "discarded"
+            },
+            {
+              "id": "b",
+              "label": "8",
+              "sub": "1",
+              "state": "discarded"
+            },
+            {
+              "id": "c",
+              "label": "12",
+              "sub": "2",
+              "state": "discarded"
+            },
+            {
+              "id": "d",
+              "label": "17",
+              "sub": "3",
+              "state": "comparison"
+            },
+            {
+              "id": "e",
+              "label": "21",
+              "sub": "4",
+              "state": "window"
+            },
+            {
+              "id": "f",
+              "label": "30",
+              "sub": "5",
+              "state": "window"
+            },
+            {
+              "id": "g",
+              "label": "34",
+              "sub": "6",
+              "state": "window"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "m",
+              "label": "mid",
+              "index": 3,
+              "tone": "comparison",
+              "side": "below"
+            }
+          ],
+          "bands": [
+            {
+              "id": "r",
+              "from": 4,
+              "to": 6,
+              "label": "still possible",
+              "tone": "primary",
+              "side": "above"
+            }
+          ]
+        }
+      ],
+      "legend": [
+        {
+          "label": "Still possible",
+          "swatch": "window"
+        },
+        {
+          "label": "Middle",
+          "swatch": "comparison"
+        },
+        {
+          "label": "Ruled out",
+          "swatch": "discarded"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,248 @@
+/* ---- Inner tabs ---- */
+.innerTabs {
+  display: grid;
+  min-width: 0;
+}
+.tabList {
+  display: flex;
+  gap: 2px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px;
+  background: var(--surface-sunk);
+  border-radius: var(--radius-md);
+}
+.tabList::-webkit-scrollbar {
+  display: none;
+}
+.tabButton {
+  flex: 1 0 auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tabButton:hover {
+  color: var(--text);
+}
+.tabButton[aria-selected='true'] {
+  background: var(--select-bg);
+  color: var(--select-fg);
+}
+.tabPanel {
+  padding: 16px 2px 2px;
+  min-width: 0;
+}
+.tabPanel:focus {
+  outline: none;
+}
+.tabPanel:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+/* ---- Approach ladder ---- */
+.ladder {
+  display: grid;
+  gap: 14px;
+}
+.rungs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  counter-reset: rung;
+}
+.rungItem {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.rungItem + .rungItem::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 2px;
+  background: var(--control-border);
+  margin: 0 2px;
+}
+.rung {
+  --lvl: var(--hue-rose);
+  --lvl-soft: var(--hue-rose-soft);
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  min-height: 52px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: left;
+  transition: border-color var(--motion) var(--ease), background-color var(--motion) var(--ease);
+}
+.rung[data-level='better'] {
+  --lvl: var(--hue-gold);
+  --lvl-soft: var(--hue-gold-soft);
+}
+.rung[data-level='optimal'] {
+  --lvl: var(--hue-moss);
+  --lvl-soft: var(--hue-moss-soft);
+}
+.rung:hover {
+  border-color: var(--control-border);
+}
+.rung[aria-pressed='true'] {
+  border-color: var(--text);
+  background: var(--surface-sunk);
+}
+.rungStep {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--lvl-soft);
+  color: var(--lvl);
+  font: 700 12px var(--font-mono);
+}
+.rungText {
+  display: grid;
+  min-width: 0;
+}
+.rungLevel {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rungTime {
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+.rungDetail {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunk);
+}
+.rungName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 650;
+}
+.rungLevelTag {
+  font: 600 12px var(--font-mono);
+  color: var(--hue-rose);
+}
+.rungLevelTag[data-level='better'] {
+  color: var(--hue-gold);
+}
+.rungLevelTag[data-level='optimal'] {
+  color: var(--hue-moss);
+}
+.insight {
+  font-size: 15px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunk);
+}
+.insight strong {
+  color: var(--accent);
+}
+.idea {
+  font-size: 15.5px;
+}
+.idea code,
+.insight code {
+  background: var(--surface);
+  padding: 0.1em 0.35em;
+  border-radius: 5px;
+}
+.cost {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--muted);
+}
+.cost .complexity {
+  background: var(--surface);
+  color: var(--text);
+}
+.rungActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.summary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 13px;
+}
+.summary li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.summary li + li::before {
+  content: '→';
+  color: var(--muted);
+  margin-right: 2px;
+}
+.summaryName {
+  color: var(--muted);
+}
+.summary li[data-level='optimal'] .summaryName {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 520px) {
+  .rungs {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rungItem + .rungItem::before {
+    display: none;
+  }
+}
+
+/* ---- Progress bars ---- */
+.bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--neutral-soft);
+}
+.barDone {
+  background: var(--hue, var(--success));
+}
+.barStarted {
+  background: var(--hue-soft, var(--success-soft));
+  box-shadow: inset 0 0 0 1px var(--hue, var(--success));
+}

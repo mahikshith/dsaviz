@@ -1,0 +1,26 @@
+[
+  {
+    "id": "sequence",
+    "name": "Sequence patterns",
+    "summary": "Walk through arrays and strings without starting over at every position.",
+    "order": 1
+  },
+  {
+    "id": "structure",
+    "name": "Structure patterns",
+    "summary": "Keep pending work in the right container, so the next item to handle is always on hand.",
+    "order": 2
+  },
+  {
+    "id": "graph",
+    "name": "Tree and graph patterns",
+    "summary": "Explore connections in an order that guarantees what you find.",
+    "order": 3
+  },
+  {
+    "id": "optimization",
+    "name": "Optimization patterns",
+    "summary": "Build the best answer from smaller decisions: take the best step now, or remember answers to smaller problems.",
+    "order": 4
+  }
+]

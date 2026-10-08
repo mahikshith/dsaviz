@@ -1,0 +1,49 @@
+{
+  "halve": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} books sorted by call number. We are looking for {target}.",
+      "formal": "nums has {n} sorted values; target = {target}."
+    },
+    "initialize": {
+      "label": "The whole shelf",
+      "story": "At first the book could be anywhere from position {low} to {high}.",
+      "formal": "low = {low}, high = {high}."
+    },
+    "probe:equal": {
+      "label": "Check the middle",
+      "story": "The middle of positions {low} to {high} is {mid}, holding {value}: exactly {target}.",
+      "formal": "mid = {mid}, nums[{mid}] = {value} = target."
+    },
+    "probe:less": {
+      "label": "Check the middle",
+      "story": "The middle of positions {low} to {high} is {mid}, holding {value}. That is smaller than {target}, so the book must be to its right.",
+      "formal": "mid = {mid}, nums[{mid}] = {value} < {target}."
+    },
+    "probe:greater": {
+      "label": "Check the middle",
+      "story": "The middle of positions {low} to {high} is {mid}, holding {value}. That is larger than {target}, so the book must be to its left.",
+      "formal": "mid = {mid}, nums[{mid}] = {value} > {target}."
+    },
+    "go-right": {
+      "label": "Keep the right half",
+      "story": "Rule out {ruledOut} books: the search now starts at position {to}.",
+      "formal": "low = mid + 1: {from} → {to}."
+    },
+    "go-left": {
+      "label": "Keep the left half",
+      "story": "Rule out {ruledOut} books: the search now ends at position {to}.",
+      "formal": "high = mid − 1: {from} → {to}."
+    },
+    "found": {
+      "label": "Found it",
+      "story": "Call number {target} is at position {mid}, found in {probes} checks.",
+      "formal": "Return {mid}."
+    },
+    "not-found": {
+      "label": "Not on the shelf",
+      "story": "Nothing is left to check after {probes} checks, so {target} is not on the shelf.",
+      "formal": "low > high. Return −1."
+    }
+  }
+}

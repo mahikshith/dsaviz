@@ -1,0 +1,30 @@
+[
+  {
+    "id": "too-many",
+    "approachId": "sliding-tally",
+    "exampleId": "wall",
+    "frameId": "10-grow",
+    "question": "The window now needs 2 repaints, but only 1 is allowed. What happens?",
+    "context": "The window is AABAB: 5 tiles, 3 of them A, so 2 repaints.",
+    "choices": [
+      {
+        "id": "slide",
+        "label": "Drop the leftmost tile and keep the size at 4",
+        "correct": true,
+        "feedback": "Right. We only care about beating the best of 4, so the window keeps its size and slides forward instead of shrinking."
+      },
+      {
+        "id": "shrink",
+        "label": "Shrink until it needs at most 1 repaint",
+        "correct": false,
+        "feedback": "Shrinking below 4 can never beat the best we already have. Sliding keeps the size, which is all that matters."
+      },
+      {
+        "id": "restart",
+        "label": "Start a new window at this tile",
+        "correct": false,
+        "feedback": "That throws away tiles that may be part of a long stretch. Slide by one tile instead."
+      }
+    ]
+  }
+]

@@ -1,0 +1,96 @@
+{
+  "sliding-window": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} days of visitor counts. We want the busiest stretch of {k} consecutive days.",
+      "formal": "visitors has {n} values. Find the largest sum over all subarrays of length k = {k}."
+    },
+    "initialize": {
+      "label": "Start the window",
+      "story": "Start with an empty window and a running total of 0.",
+      "formal": "window_sum = 0."
+    },
+    "add-initial": {
+      "label": "Build the first window",
+      "story": "Add day {index}: {value} visitors. Running total {windowSum}.",
+      "formal": "window_sum += visitors[{index}] → {windowSum}. Values still to add for the first window: {remaining}."
+    },
+    "record-first": {
+      "label": "Record the first total",
+      "story": "Days 0 to {end} had {total} visitors. It is the best so far, simply because it is the first.",
+      "formal": "best = {total}, best_start = 0."
+    },
+    "slide": {
+      "label": "Slide one day",
+      "story": "Day {leaveIndex} ({leaveValue}) leaves and day {enterIndex} ({enterValue}) enters: {before} − {leaveValue} + {enterValue} = {after}.",
+      "formal": "window_sum += visitors[{enterIndex}] − visitors[{leaveIndex}]: {before} → {after}. The window is now [{start}, {end}]."
+    },
+    "new-best": {
+      "label": "New best",
+      "story": "{total} beats the old best of {previousBest}. The busiest stretch now starts on day {start}.",
+      "formal": "{total} > {previousBest}, so best = {total} and best_start = {start}."
+    },
+    "keep-best:lower": {
+      "label": "Keep the best",
+      "story": "{total} is fewer than the best of {best}, so the stretch starting on day {bestStart} stays the busiest.",
+      "formal": "{total} < best = {best}. No update."
+    },
+    "keep-best:tie": {
+      "label": "Tie: keep the earlier",
+      "story": "{total} ties the best. The rules say the earlier stretch wins, so day {bestStart} stays.",
+      "formal": "{total} = best. The strict > keeps the earliest best_start = {bestStart}."
+    },
+    "done": {
+      "label": "Return the answer",
+      "story": "The busiest stretch runs from day {start} to day {end}, with {total} visitors.",
+      "formal": "Return (best_start, best) = ({start}, {total})."
+    }
+  },
+  "prefix-sums": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} days of visitor counts. First write running totals, then read every {k}-day stretch from them.",
+      "formal": "Build P with P[0] = 0 and P[i + 1] = P[i] + visitors[i]. Then the sum of a..a+k−1 is P[a + k] − P[a]."
+    },
+    "initialize": {
+      "label": "Start the totals",
+      "story": "Before any day, the running total is 0.",
+      "formal": "P = [0]."
+    },
+    "build-prefix": {
+      "label": "Write a running total",
+      "story": "Day {day} adds {value}: {before} + {value} = {after} visitors over the first {position} days.",
+      "formal": "P[{position}] = P[{day}] + visitors[{day}] = {before} + {value} = {after}."
+    },
+    "range-sum": {
+      "label": "Read a stretch",
+      "story": "Days {start} to {end}: the total after day {end} minus the total before day {start} is {endPrefix} − {startPrefix} = {total}.",
+      "formal": "sum = P[{endPosition}] − P[{start}] = {endPrefix} − {startPrefix} = {total}."
+    },
+    "new-best:first": {
+      "label": "Record the first total",
+      "story": "{total} is the first stretch total, so it is the best so far.",
+      "formal": "best was {previousBest}; now best = {total}, best_start = {start}."
+    },
+    "new-best:better": {
+      "label": "New best",
+      "story": "{total} beats the old best of {previousBest}. The busiest stretch now starts on day {start}.",
+      "formal": "{total} > {previousBest}, so best = {total} and best_start = {start}."
+    },
+    "keep-best:lower": {
+      "label": "Keep the best",
+      "story": "{total} is fewer than the best of {best}, so the stretch starting on day {bestStart} stays the busiest.",
+      "formal": "{total} < best = {best}. No update."
+    },
+    "keep-best:tie": {
+      "label": "Tie: keep the earlier",
+      "story": "{total} ties the best. The rules say the earlier stretch wins, so day {bestStart} stays.",
+      "formal": "{total} = best. The strict > keeps the earliest best_start = {bestStart}."
+    },
+    "done": {
+      "label": "Return the answer",
+      "story": "The busiest stretch runs from day {start} to day {end}, with {total} visitors.",
+      "formal": "Return (best_start, best) = ({start}, {total})."
+    }
+  }
+}

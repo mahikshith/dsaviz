@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "id": "move-zeroes",
+  "slug": "move-zeroes",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Move zeros to the end, keeping order",
+  "storyTitle": "The tidy bookshelf",
+  "summary": "Push every empty slot on a bookshelf to the right while the books keep their order, without a second shelf.",
+  "difficulty": "introductory",
+  "companies": [
+    "Meta",
+    "Amazon",
+    "Apple"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "same-direction",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "pointer",
+    "array"
+  ],
+  "checker": "exact",
+  "goal": "Move every empty slot to the end while books keep their order",
+  "mapping": [
+    {
+      "story": "The shelf",
+      "formal": "Array nums"
+    },
+    {
+      "story": "An empty slot",
+      "formal": "A zero"
+    },
+    {
+      "story": "A book",
+      "formal": "A non-zero value"
+    },
+    {
+      "story": "Where the tidy part ends",
+      "formal": "Write index"
+    },
+    {
+      "story": "The slot being read",
+      "formal": "Read index"
+    }
+  ],
+  "examples": [
+    {
+      "id": "shelf",
+      "label": "Two gaps",
+      "input": {
+        "nums": [
+          0,
+          1,
+          0,
+          3,
+          12
+        ]
+      },
+      "expectedOutput": [
+        1,
+        3,
+        12,
+        0,
+        0
+      ],
+      "explanation": "Books 1, 3, 12 keep their order; both gaps move right."
+    },
+    {
+      "id": "only-gap",
+      "label": "Only a gap",
+      "input": {
+        "nums": [
+          0
+        ]
+      },
+      "expectedOutput": [
+        0
+      ],
+      "explanation": "Nothing to move."
+    },
+    {
+      "id": "tidy",
+      "label": "Already tidy",
+      "input": {
+        "nums": [
+          4,
+          2,
+          0
+        ]
+      },
+      "expectedOutput": [
+        4,
+        2,
+        0
+      ],
+      "explanation": "The gap is already at the end."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "bubble",
+      "level": "brute-force",
+      "name": "Bubble each gap right",
+      "idea": "Whenever a gap sits left of a book, swap them, and repeat until no gap is left of a book.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "second-shelf",
+      "level": "better",
+      "name": "Copy onto a second shelf",
+      "idea": "Copy the books in order onto an empty shelf, then fill the rest with gaps.",
+      "insight": "The books' final order is just their current order with gaps removed, so one pass that copies books is enough.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "read-write",
+      "level": "optimal",
+      "name": "Read and write pointers",
+      "idea": "One pointer reads every slot; another marks where the tidy part ends. Each book read is swapped to the write pointer.",
+      "insight": "The second shelf is only needed because we fear overwriting books. Writing never runs ahead of reading, so the same shelf can be both.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "move-zeroes",
+  "transfer": {
+    "problem": "A list of exam scores contains −1 for absent students. Move all the −1 entries to the end without changing the order of real scores, in place.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Same shape: a read pointer scans every entry and a write pointer marks where kept entries go."
+  },
+  "practice": {
+    "selfCheck": [
+      "Keeps the books in their original order.",
+      "Works in place, without a second list.",
+      "Leaves all gaps at the end.",
+      "Handles a shelf with no gaps and a shelf of only gaps."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Move Zeroes",
+  "practiceLink": {
+    "label": "LeetCode 283",
+    "url": "https://leetcode.com/problems/move-zeroes/"
+  }
+}

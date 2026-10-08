@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "id": "daily-temperatures",
+  "slug": "daily-temperatures",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Days until a warmer day",
+  "storyTitle": "The weather watchers",
+  "summary": "Each chilly day waits on a pile; when a warmer day arrives, every colder day on top finally gets its answer and leaves.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Google"
+  ],
+  "topics": [
+    "arrays",
+    "stacks-and-queues"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "stack",
+      "variantId": "monotonic",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "stack",
+    "monotonic"
+  ],
+  "checker": "exact",
+  "goal": "For each day, count the days until a warmer one",
+  "mapping": [
+    {
+      "story": "Daily temperatures",
+      "formal": "Array temps"
+    },
+    {
+      "story": "Days still waiting",
+      "formal": "Stack of indices, temperatures decreasing"
+    },
+    {
+      "story": "A warmer day arrives",
+      "formal": "temps[day] > temps[top]"
+    },
+    {
+      "story": "Days waited",
+      "formal": "answer[i] = day − i, or 0"
+    }
+  ],
+  "examples": [
+    {
+      "id": "week",
+      "label": "Eight days",
+      "input": {
+        "temps": [
+          73,
+          74,
+          75,
+          71,
+          69,
+          72,
+          76,
+          73
+        ]
+      },
+      "expectedOutput": [
+        1,
+        1,
+        4,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      "explanation": "Day 2 (75) waits 4 days for 76."
+    },
+    {
+      "id": "rising",
+      "label": "Rising",
+      "input": {
+        "temps": [
+          30,
+          40,
+          50,
+          60
+        ]
+      },
+      "expectedOutput": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "explanation": "Every day is followed by a warmer one."
+    },
+    {
+      "id": "three",
+      "label": "Three days",
+      "input": {
+        "temps": [
+          30,
+          60,
+          90
+        ]
+      },
+      "expectedOutput": [
+        1,
+        1,
+        0
+      ],
+      "explanation": "The last day never sees a warmer one."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "look-ahead",
+      "level": "brute-force",
+      "name": "Look ahead from each day",
+      "idea": "For each day, scan forward until a warmer day appears.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "waiting-pile",
+      "level": "optimal",
+      "name": "A pile of days still waiting",
+      "idea": "Keep a pile of days still waiting, coldest on top. Each new day answers every colder day on top of the pile, then joins it.",
+      "insight": "A day can only be answered by the first warmer day after it. Days still waiting are always in decreasing temperature, so a new warm day answers them from the top down.",
+      "time": "O(n)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "daily-temperatures",
+  "transfer": {
+    "problem": "For each building in a row, find the first taller building to its right.",
+    "answerPatternId": "stack",
+    "explanation": "Same shape: next greater element. Keep a pile of buildings still waiting and answer them when a taller one arrives."
+  },
+  "practice": {
+    "selfCheck": [
+      "Stores indices on the pile, not temperatures.",
+      "Pops while the new day is strictly warmer.",
+      "Leaves 0 for days that are never answered.",
+      "Each day is pushed and popped at most once."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Daily Temperatures",
+  "practiceLink": {
+    "label": "LeetCode 739",
+    "url": "https://leetcode.com/problems/daily-temperatures/"
+  }
+}

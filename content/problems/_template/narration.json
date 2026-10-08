@@ -1,0 +1,5 @@
+{
+  "main-approach": {
+    "present": { "label": "Read the input", "story": "Uses only fields the event provides, such as {target}.", "formal": "Formal wording of the same frame." }
+  }
+}

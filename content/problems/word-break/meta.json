@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "id": "word-break",
+  "slug": "word-break",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Can a string be split into dictionary words?",
+  "storyTitle": "The dictionary fence",
+  "summary": "Mark every position of a long string where a clean cut can be made, and check whether the end gets a mark.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta"
+  ],
+  "topics": [
+    "strings",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "dynamic-programming",
+      "variantId": "choices",
+      "order": 60
+    }
+  ],
+  "prerequisites": [
+    "subproblem",
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the whole string splits into dictionary words",
+  "mapping": [
+    {
+      "story": "The painted fence",
+      "formal": "String s"
+    },
+    {
+      "story": "The dictionary",
+      "formal": "List of allowed words"
+    },
+    {
+      "story": "A clean cut before position i",
+      "formal": "can[i]: s[:i] splits into words"
+    },
+    {
+      "story": "The end is reachable",
+      "formal": "can[len(s)]"
+    }
+  ],
+  "examples": [
+    {
+      "id": "pen",
+      "label": "applepenapple",
+      "input": {
+        "s": "applepenapple",
+        "words": [
+          "apple",
+          "pen"
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "apple + pen + apple."
+    },
+    {
+      "id": "stuck",
+      "label": "catsandog",
+      "input": {
+        "s": "catsandog",
+        "words": [
+          "cats",
+          "dog",
+          "sand",
+          "and",
+          "cat"
+        ]
+      },
+      "expectedOutput": false,
+      "explanation": "Every split leaves og or sandog unmatched."
+    },
+    {
+      "id": "cars",
+      "label": "cars",
+      "input": {
+        "s": "cars",
+        "words": [
+          "car",
+          "ca",
+          "rs"
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "ca + rs works, even though car leaves s."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "try-every-split",
+      "level": "brute-force",
+      "name": "Try every split",
+      "idea": "Try every dictionary word at the start; for each that fits, recursively split the rest.",
+      "time": "O(2ⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "mark-cuts",
+      "level": "optimal",
+      "name": "Mark every reachable cut",
+      "idea": "Mark position 0. For each marked position, mark every position reachable by one dictionary word from it. The answer is whether the end is marked.",
+      "insight": "Whether the rest of the string can be split depends only on where it starts, not on how we got there. Marking each position once replaces exploring every split.",
+      "time": "O(n² )",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "word-break",
+  "transfer": {
+    "problem": "Can a long URL without separators, such as findmeaparking, be split into English words?",
+    "answerPatternId": "dynamic-programming",
+    "explanation": "Mark every position reachable by a dictionary word from an earlier marked position, starting at 0."
+  },
+  "practice": {
+    "selfCheck": [
+      "Marks position 0 as reachable.",
+      "Only extends from positions already marked.",
+      "Uses a set for fast word lookups.",
+      "Returns whether the last position is marked."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Word Break",
+  "practiceLink": {
+    "label": "LeetCode 139",
+    "url": "https://leetcode.com/problems/word-break/"
+  }
+}

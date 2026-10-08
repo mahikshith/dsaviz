@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "id": "merge-k-lists",
+  "slug": "merge-k-lists",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Merge k sorted linked lists",
+  "storyTitle": "The train yard merge",
+  "summary": "k sorted trains pull into one yard; keep every train's front carriage at a desk and always send out the smallest next.",
+  "difficulty": "hard",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta"
+  ],
+  "topics": [
+    "linked-lists",
+    "heaps"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "heap",
+      "variantId": "k-way-merge",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "heap",
+    "linked-list"
+  ],
+  "checker": "exact",
+  "goal": "Join every sorted train into one sorted train",
+  "mapping": [
+    {
+      "story": "The trains",
+      "formal": "k sorted linked lists"
+    },
+    {
+      "story": "Front carriage of each train",
+      "formal": "Current head of each list"
+    },
+    {
+      "story": "The desk",
+      "formal": "Min-heap of front carriages"
+    },
+    {
+      "story": "The departing train",
+      "formal": "The merged list"
+    }
+  ],
+  "examples": [
+    {
+      "id": "yard",
+      "label": "Three trains",
+      "input": {
+        "lists": [
+          [
+            1,
+            4,
+            5
+          ],
+          [
+            1,
+            3,
+            4
+          ],
+          [
+            2,
+            6
+          ]
+        ]
+      },
+      "expectedOutput": [
+        1,
+        1,
+        2,
+        3,
+        4,
+        4,
+        5,
+        6
+      ],
+      "explanation": "The smallest front carriage always leaves next."
+    },
+    {
+      "id": "no-trains",
+      "label": "No trains",
+      "input": {
+        "lists": []
+      },
+      "expectedOutput": [],
+      "explanation": "Nothing to merge."
+    },
+    {
+      "id": "empty-train",
+      "label": "One empty train",
+      "input": {
+        "lists": [
+          []
+        ]
+      },
+      "expectedOutput": [],
+      "explanation": "The only train has no carriages."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "collect-and-sort",
+      "level": "brute-force",
+      "name": "Collect every carriage and sort",
+      "idea": "Put all N carriages in one list and sort it.",
+      "time": "O(N log N)",
+      "space": "O(N)"
+    },
+    {
+      "id": "merge-one-by-one",
+      "level": "better",
+      "name": "Merge trains one at a time",
+      "idea": "Merge the first two trains with the zipper merge, then merge the result with the third, and so on.",
+      "insight": "Every train is already sorted, so the two-train zipper merge applies. But early carriages get re-merged k times.",
+      "time": "O(k · N)",
+      "space": "O(1)"
+    },
+    {
+      "id": "front-desk-heap",
+      "level": "optimal",
+      "name": "A desk of front carriages",
+      "idea": "Put each train's front carriage in a min-heap. Repeatedly send out the smallest and replace it with the next carriage of its train.",
+      "insight": "The next carriage overall is always one of the k front carriages. A heap finds the smallest of k in log k steps, so each carriage is handled once.",
+      "time": "O(N log k)",
+      "space": "O(k)"
+    }
+  ],
+  "solver": "merge-k-sorted",
+  "transfer": {
+    "problem": "Combine k sorted log files from different servers into one log sorted by time.",
+    "answerPatternId": "heap",
+    "explanation": "Keep the next entry from each file in a min-heap and always output the earliest, refilling from the same file."
+  },
+  "practice": {
+    "selfCheck": [
+      "Puts only front carriages in the heap.",
+      "Pushes the next carriage of the train that just left.",
+      "Breaks ties between equal values without comparing nodes.",
+      "Handles empty trains and no trains."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Merge k Sorted Lists",
+  "practiceLink": {
+    "label": "LeetCode 23",
+    "url": "https://leetcode.com/problems/merge-k-sorted-lists/"
+  }
+}

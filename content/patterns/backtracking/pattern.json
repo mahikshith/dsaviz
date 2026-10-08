@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "id": "backtracking",
+  "status": "published",
+  "name": "Backtracking",
+  "short": "BT",
+  "hue": "rose",
+  "family": "graph",
+  "order": 30,
+  "intuition": "Build a candidate one choice at a time, go deeper, and undo the last choice before trying the next one.",
+  "aliases": [
+    "choose explore unchoose",
+    "subsets",
+    "permutations",
+    "combinations",
+    "search with undo"
+  ],
+  "topics": [
+    "arrays",
+    "strings"
+  ],
+  "prerequisites": [
+    "recursion"
+  ],
+  "variants": [
+    {
+      "id": "choose-or-skip",
+      "name": "Choose or skip",
+      "summary": "For each item, branch on taking it or leaving it.",
+      "requires": "Every candidate is a selection of items, in a fixed order."
+    },
+    {
+      "id": "arrange",
+      "name": "Arrange in order",
+      "summary": "Fill one position at a time with any unused item.",
+      "requires": "Every candidate uses each item exactly once."
+    },
+    {
+      "id": "grid-path",
+      "name": "Paths in a grid",
+      "summary": "Step to a neighbour, mark it, explore, then unmark it.",
+      "requires": "A cell may not be reused within one path."
+    }
+  ],
+  "visual": {
+    "caption": "Each level decides one item: take 2 or skip it. After {1, 2} is recorded, the search undoes the last choice and tries {1} without 2.",
+    "scene": {
+      "graph": {
+        "width": 420,
+        "height": 230,
+        "nodes": [
+          {
+            "id": "r",
+            "label": "{}",
+            "x": 210,
+            "y": 30,
+            "state": "visited"
+          },
+          {
+            "id": "a",
+            "label": "{1}",
+            "x": 110,
+            "y": 110,
+            "state": "visited"
+          },
+          {
+            "id": "b",
+            "label": "{}",
+            "x": 310,
+            "y": 110,
+            "state": "idle"
+          },
+          {
+            "id": "c",
+            "label": "{1,2}",
+            "x": 50,
+            "y": 195,
+            "state": "success"
+          },
+          {
+            "id": "d",
+            "label": "{1}",
+            "x": 170,
+            "y": 195,
+            "state": "current"
+          }
+        ],
+        "edges": [
+          {
+            "id": "ra",
+            "from": "r",
+            "to": "a",
+            "state": "tree"
+          },
+          {
+            "id": "rb",
+            "from": "r",
+            "to": "b",
+            "state": "idle"
+          },
+          {
+            "id": "ac",
+            "from": "a",
+            "to": "c",
+            "state": "tree"
+          },
+          {
+            "id": "ad",
+            "from": "a",
+            "to": "d",
+            "state": "checking"
+          }
+        ]
+      },
+      "legend": [
+        {
+          "label": "Choice made",
+          "swatch": "window"
+        },
+        {
+          "label": "Complete candidate",
+          "swatch": "success"
+        },
+        {
+          "label": "Trying now",
+          "swatch": "primary"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "id": "min-stack",
+  "slug": "min-stack",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "A stack that also reports its minimum",
+  "storyTitle": "The plate pile with a memory",
+  "summary": "Next to every plate, write the smallest plate in the pile at that moment, so the minimum is always on top.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Bloomberg"
+  ],
+  "topics": [
+    "stacks-and-queues"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "stack",
+      "variantId": "design",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "stack"
+  ],
+  "checker": "exact",
+  "goal": "Support push, pop, top and get-minimum, each in one step",
+  "mapping": [
+    {
+      "story": "The pile of plates",
+      "formal": "A stack"
+    },
+    {
+      "story": "A plate's number",
+      "formal": "A pushed value"
+    },
+    {
+      "story": "Note beside each plate",
+      "formal": "Minimum of the pile at that moment"
+    },
+    {
+      "story": "Operations",
+      "formal": "push, pop, top, getMin"
+    }
+  ],
+  "examples": [
+    {
+      "id": "classic",
+      "label": "Push −2, 0, −3",
+      "input": {
+        "ops": [
+          "push",
+          "push",
+          "push",
+          "getMin",
+          "pop",
+          "top",
+          "getMin"
+        ],
+        "args": [
+          [
+            -2
+          ],
+          [
+            0
+          ],
+          [
+            -3
+          ],
+          [],
+          [],
+          [],
+          []
+        ]
+      },
+      "expectedOutput": [
+        null,
+        null,
+        null,
+        -3,
+        null,
+        0,
+        -2
+      ],
+      "explanation": "After popping −3, the minimum is −2 again."
+    },
+    {
+      "id": "repeats",
+      "label": "Equal plates",
+      "input": {
+        "ops": [
+          "push",
+          "push",
+          "getMin",
+          "pop",
+          "getMin"
+        ],
+        "args": [
+          [
+            5
+          ],
+          [
+            5
+          ],
+          [],
+          [],
+          []
+        ]
+      },
+      "expectedOutput": [
+        null,
+        null,
+        5,
+        null,
+        5
+      ],
+      "explanation": "Popping one of two equal plates keeps the minimum."
+    },
+    {
+      "id": "one",
+      "label": "One plate",
+      "input": {
+        "ops": [
+          "push",
+          "top",
+          "getMin"
+        ],
+        "args": [
+          [
+            3
+          ],
+          [],
+          []
+        ]
+      },
+      "expectedOutput": [
+        null,
+        3,
+        3
+      ],
+      "explanation": "With one plate, it is both the top and the minimum."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "scan-pile",
+      "level": "brute-force",
+      "name": "Scan the pile for the minimum",
+      "idea": "Keep an ordinary stack; for getMin, look at every plate.",
+      "time": "O(n) per getMin",
+      "space": "O(n)"
+    },
+    {
+      "id": "note-beside",
+      "level": "optimal",
+      "name": "Write the minimum beside each plate",
+      "idea": "When pushing, store the plate together with the smaller of it and the minimum below it. The minimum is always the note on top.",
+      "insight": "The minimum of the pile only depends on the plates below the top, and a stack never changes those plates. So each plate can carry the minimum at the moment it was pushed.",
+      "time": "O(1) per operation",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "min-stack",
+  "transfer": {
+    "problem": "A browser's back button should also report the oldest date among pages in the history so far, instantly.",
+    "answerPatternId": "stack",
+    "explanation": "Store, beside each page pushed on the history stack, the oldest date at that moment."
+  },
+  "practice": {
+    "selfCheck": [
+      "Stores the current minimum with every pushed value.",
+      "Popping removes the value and its note together.",
+      "Handles equal values correctly.",
+      "Every operation is O(1)."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Min Stack",
+  "practiceLink": {
+    "label": "LeetCode 155",
+    "url": "https://leetcode.com/problems/min-stack/"
+  }
+}

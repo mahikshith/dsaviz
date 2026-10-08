@@ -1,0 +1,30 @@
+[
+  {
+    "id": "cheaper-day",
+    "approachId": "cheapest-so-far",
+    "exampleId": "week",
+    "frameId": "1-initialize",
+    "question": "Day 1's price is 1, cheaper than day 0's 7. What should happen?",
+    "context": "The cheapest morning so far is day 0 at 7.",
+    "choices": [
+      {
+        "id": "move-buy",
+        "label": "Make day 1 the buying day",
+        "correct": true,
+        "feedback": "Right. Any later sale earns more if it buys at 1 instead of 7, so day 1 replaces day 0 as the cheapest morning."
+      },
+      {
+        "id": "sell",
+        "label": "Sell on day 1",
+        "correct": false,
+        "feedback": "Selling at 1 after buying at 7 loses money. A cheaper day is a better place to buy, not to sell."
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore it: day 0 was already chosen",
+        "correct": false,
+        "feedback": "Then a sale at 6 on day 4 would earn only −1 instead of 5. Always buy at the cheapest morning seen so far."
+      }
+    ]
+  }
+]

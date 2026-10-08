@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "id": "hash-map",
+  "status": "published",
+  "name": "Hash lookup",
+  "short": "HM",
+  "hue": "copper",
+  "family": "structure",
+  "order": 5,
+  "intuition": "Write down what you have seen in a map or set, so every later question is answered in one step instead of a search.",
+  "aliases": [
+    "hash map",
+    "hash table",
+    "dictionary",
+    "set",
+    "seen before",
+    "complement lookup",
+    "counting"
+  ],
+  "topics": [
+    "hash-tables",
+    "arrays",
+    "strings"
+  ],
+  "prerequisites": [
+    "hash-map",
+    "array"
+  ],
+  "variants": [
+    {
+      "id": "seen-before",
+      "name": "Seen before?",
+      "summary": "Keep a set of what has appeared; a repeat or a missing neighbour is found in one lookup.",
+      "requires": "Items can be compared for exact equality."
+    },
+    {
+      "id": "complement",
+      "name": "Find a partner",
+      "summary": "For each item, look up the partner it needs, then write the item down.",
+      "requires": "The partner is fully determined by the item, such as target minus value."
+    },
+    {
+      "id": "counting",
+      "name": "Count and compare",
+      "summary": "Tally how often each item appears, then compare or rank the tallies.",
+      "requires": "Each item has a simple key, such as the letter itself."
+    },
+    {
+      "id": "grouping",
+      "name": "Group by a signature",
+      "summary": "Give every item a key that equal items share, and collect items under their key.",
+      "requires": "You can compute a signature that is identical exactly when items belong together."
+    }
+  ],
+  "visual": {
+    "caption": "At position 3 the value 7 needs a partner worth 5. One look in the map answers whether 5 has been seen, without scanning earlier values.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "n",
+          "label": "tickets",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "4",
+              "sub": "0",
+              "state": "muted"
+            },
+            {
+              "id": "c1",
+              "label": "9",
+              "sub": "1",
+              "state": "muted"
+            },
+            {
+              "id": "c2",
+              "label": "2",
+              "sub": "2",
+              "state": "muted"
+            },
+            {
+              "id": "c3",
+              "label": "7",
+              "sub": "3",
+              "state": "primary"
+            },
+            {
+              "id": "c4",
+              "label": "5",
+              "sub": "4",
+              "state": "idle"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "i",
+              "label": "i",
+              "index": 3,
+              "tone": "primary",
+              "side": "above"
+            }
+          ],
+          "bands": []
+        }
+      ],
+      "table": {
+        "label": "seen: value → position",
+        "columns": [
+          "value",
+          "position"
+        ],
+        "rows": [
+          {
+            "id": "a",
+            "key": "4",
+            "value": "at 0",
+            "state": "idle"
+          },
+          {
+            "id": "b",
+            "key": "9",
+            "value": "at 1",
+            "state": "idle"
+          },
+          {
+            "id": "c",
+            "key": "2",
+            "value": "at 2",
+            "state": "idle"
+          }
+        ],
+        "capacity": 3,
+        "emptyText": "empty"
+      },
+      "legend": [
+        {
+          "label": "Current value",
+          "swatch": "primary"
+        },
+        {
+          "label": "Already written down",
+          "swatch": "neutral"
+        }
+      ]
+    }
+  }
+}

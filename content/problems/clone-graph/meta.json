@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "id": "clone-graph",
+  "slug": "clone-graph",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Deep copy a connected graph",
+  "storyTitle": "The friendship photocopier",
+  "summary": "Photocopy a web of friends, keeping a notebook of who is already copied so nobody is copied twice and every friendship is redrawn.",
+  "difficulty": "medium",
+  "companies": [
+    "Meta",
+    "Google",
+    "Amazon"
+  ],
+  "topics": [
+    "graphs",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "depth-first-search",
+      "variantId": "graph",
+      "order": 50
+    }
+  ],
+  "prerequisites": [
+    "graph",
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Make an independent copy of the whole friendship web",
+  "mapping": [
+    {
+      "story": "A person",
+      "formal": "A node with a value"
+    },
+    {
+      "story": "A friendship",
+      "formal": "An undirected edge"
+    },
+    {
+      "story": "The notebook of copies",
+      "formal": "Map: original node → its copy"
+    },
+    {
+      "story": "The copied web",
+      "formal": "A new graph with the same shape"
+    }
+  ],
+  "examples": [
+    {
+      "id": "square",
+      "label": "Four friends in a ring",
+      "input": {
+        "adj": [
+          [
+            2,
+            4
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "explanation": "The copy has the same friendships, but every node is new."
+    },
+    {
+      "id": "alone",
+      "label": "One person",
+      "input": {
+        "adj": [
+          []
+        ]
+      },
+      "expectedOutput": [
+        []
+      ],
+      "explanation": "A single person with no friends."
+    },
+    {
+      "id": "nobody",
+      "label": "No people",
+      "input": {
+        "adj": []
+      },
+      "expectedOutput": [],
+      "explanation": "An empty web copies to an empty web."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "two-passes",
+      "level": "brute-force",
+      "name": "Copy people, then friendships",
+      "idea": "First walk the web to list every person and make a copy of each. Then walk again, wiring each copy's friendships through the list.",
+      "time": "O(V + E)",
+      "space": "O(V)"
+    },
+    {
+      "id": "notebook-dfs",
+      "level": "optimal",
+      "name": "Copy as you go, with a notebook",
+      "idea": "Walk the web depth-first. The first time you meet a person, copy them and note the copy; then copy their friends and link them. A person already in the notebook is linked, not copied again.",
+      "insight": "A notebook from original to copy lets each friendship be wired the moment it is seen, and stops the walk from looping forever around cycles of friends.",
+      "time": "O(V + E)",
+      "space": "O(V)"
+    }
+  ],
+  "solver": "clone-graph",
+  "transfer": {
+    "problem": "Copy a linked list where each node also has a pointer to a random other node in the list.",
+    "answerPatternId": "hash-map",
+    "explanation": "Map each original node to its copy as you go, so random pointers can be wired to the right copies."
+  },
+  "practice": {
+    "selfCheck": [
+      "Records a copy in the notebook before copying its neighbours.",
+      "Reuses notebook copies for people seen before.",
+      "Never links a copy to an original node.",
+      "Handles an empty graph."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Clone Graph",
+  "practiceLink": {
+    "label": "LeetCode 133",
+    "url": "https://leetcode.com/problems/clone-graph/"
+  }
+}

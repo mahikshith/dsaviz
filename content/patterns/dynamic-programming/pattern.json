@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "id": "dynamic-programming",
+  "status": "published",
+  "name": "Dynamic programming",
+  "short": "DP",
+  "hue": "indigo",
+  "family": "optimization",
+  "order": 20,
+  "intuition": "Write down the answers to smaller versions of the problem, then build each bigger answer from those notes.",
+  "aliases": [
+    "DP",
+    "memoization",
+    "tabulation",
+    "subproblems",
+    "recurrence"
+  ],
+  "topics": [
+    "arrays",
+    "strings"
+  ],
+  "prerequisites": [
+    "subproblem",
+    "memoization"
+  ],
+  "variants": [
+    {
+      "id": "linear",
+      "name": "One row of answers",
+      "summary": "The answer for position i uses the answers for a few earlier positions.",
+      "requires": "Each answer depends only on earlier ones."
+    },
+    {
+      "id": "choices",
+      "name": "Best over choices",
+      "summary": "At each size, try every last choice and keep the best combination.",
+      "requires": "A choice leaves a smaller problem of the same kind."
+    },
+    {
+      "id": "ending-here",
+      "name": "Best ending here",
+      "summary": "For each position, compute the best answer that ends exactly there.",
+      "requires": "An answer ending at i extends an answer ending earlier."
+    },
+    {
+      "id": "grid",
+      "name": "A table of answers",
+      "summary": "Fill a 2D table where each cell uses its neighbours above and to the left.",
+      "requires": "Moves only go one way, so cells can be filled in order."
+    }
+  ],
+  "visual": {
+    "caption": "The ways to reach step 4 are the ways to reach step 3 (then one step) plus the ways to reach step 2 (then two steps): 3 + 2.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "w",
+          "label": "ways to reach each step",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "1",
+              "sub": "step 0",
+              "state": "idle"
+            },
+            {
+              "id": "c1",
+              "label": "1",
+              "sub": "step 1",
+              "state": "idle"
+            },
+            {
+              "id": "c2",
+              "label": "2",
+              "sub": "step 2",
+              "state": "comparison"
+            },
+            {
+              "id": "c3",
+              "label": "3",
+              "sub": "step 3",
+              "state": "primary"
+            },
+            {
+              "id": "c4",
+              "label": "·",
+              "sub": "step 4",
+              "state": "entering"
+            },
+            {
+              "id": "c5",
+              "label": "·",
+              "sub": "step 5",
+              "state": "pending"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "a",
+              "label": "two back",
+              "index": 2,
+              "tone": "comparison",
+              "side": "below"
+            },
+            {
+              "id": "b",
+              "label": "one back",
+              "index": 3,
+              "tone": "primary",
+              "side": "below"
+            }
+          ],
+          "bands": []
+        }
+      ],
+      "legend": [
+        {
+          "label": "One step back",
+          "swatch": "primary"
+        },
+        {
+          "label": "Two steps back",
+          "swatch": "comparison"
+        },
+        {
+          "label": "Being written: 3 + 2 = 5",
+          "swatch": "accent"
+        }
+      ]
+    }
+  }
+}

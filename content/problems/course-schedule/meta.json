@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "course-schedule",
+  "slug": "course-schedule",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Can every course be finished?",
+  "storyTitle": "The prerequisite map",
+  "summary": "Start with the courses that need nothing, then unlock the courses waiting on them; if some never unlock, there is a loop.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Uber"
+  ],
+  "topics": [
+    "graphs",
+    "stacks-and-queues"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "breadth-first-search",
+      "variantId": "topological",
+      "order": 50
+    }
+  ],
+  "prerequisites": [
+    "graph",
+    "queue",
+    "topological-order"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether all the courses can be completed",
+  "mapping": [
+    {
+      "story": "Courses",
+      "formal": "Nodes 0 to n − 1"
+    },
+    {
+      "story": "“Take b before a”",
+      "formal": "Directed edge b → a"
+    },
+    {
+      "story": "Prerequisites still missing",
+      "formal": "In-degree of a node"
+    },
+    {
+      "story": "Courses ready to take",
+      "formal": "Queue of nodes with in-degree 0"
+    },
+    {
+      "story": "All finished",
+      "formal": "Every node removed: no cycle"
+    }
+  ],
+  "examples": [
+    {
+      "id": "chain",
+      "label": "One prerequisite",
+      "input": {
+        "numCourses": 2,
+        "prerequisites": [
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "Take course 0, then course 1."
+    },
+    {
+      "id": "loop",
+      "label": "A loop",
+      "input": {
+        "numCourses": 2,
+        "prerequisites": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "expectedOutput": false,
+      "explanation": "Each course needs the other first."
+    },
+    {
+      "id": "three",
+      "label": "A chain of three",
+      "input": {
+        "numCourses": 3,
+        "prerequisites": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "Take 0, then 1, then 2."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "repeat-scan",
+      "level": "brute-force",
+      "name": "Scan repeatedly for a course you can take",
+      "idea": "Repeatedly scan all courses for one whose prerequisites are all done, take it, and start the scan again.",
+      "time": "O(V · (V + E))",
+      "space": "O(V)"
+    },
+    {
+      "id": "unlock-queue",
+      "level": "optimal",
+      "name": "Unlock courses with a queue",
+      "idea": "Count each course's missing prerequisites. Queue every course with none. Taking a course lowers the count of courses that need it; any count reaching zero joins the queue.",
+      "insight": "Taking a course can only unlock the courses that list it as a prerequisite. Keeping counts means each prerequisite is checked once instead of rescanning everything.",
+      "time": "O(V + E)",
+      "space": "O(V + E)"
+    }
+  ],
+  "solver": "course-order",
+  "transfer": {
+    "problem": "A build system compiles modules that depend on other modules. Decide whether a valid build order exists.",
+    "answerPatternId": "breadth-first-search",
+    "explanation": "Modules are nodes and dependencies edges; repeatedly build modules with no unbuilt dependencies, and fail if some never become ready."
+  },
+  "practice": {
+    "selfCheck": [
+      "Counts missing prerequisites (in-degrees) for every course.",
+      "Starts the queue with all courses that need nothing.",
+      "Lowers counts only of courses that depend on the one taken.",
+      "Returns whether every course was taken."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Course Schedule",
+  "practiceLink": {
+    "label": "LeetCode 207",
+    "url": "https://leetcode.com/problems/course-schedule/"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "cheapest-so-far": {
+    "present": {
+      "label": "Read the diary",
+      "story": "{n} mornings of prices. Buy once, sell once later.",
+      "formal": "prices has {n} values. Maximise prices[j] − prices[i] for i < j."
+    },
+    "initialize": {
+      "label": "Start on day 0",
+      "story": "So far the cheapest morning is day 0, at {price}. No profit yet.",
+      "formal": "buy = 0 (price {price}), best = 0."
+    },
+    "cheaper": {
+      "label": "A cheaper morning",
+      "story": "Day {day} costs {price}, cheaper than {oldPrice}. Any later sale should buy here instead.",
+      "formal": "prices[{day}] = {price} < prices[{from}] = {oldPrice}: buy = {day}."
+    },
+    "sell-check:record": {
+      "label": "Check selling today",
+      "story": "Selling on day {day} at {price}, after buying at {buyPrice} on day {buyDay}, earns {profit}. A new best.",
+      "formal": "{price} − {buyPrice} = {profit} > previous best, so best = {best}."
+    },
+    "sell-check:keep": {
+      "label": "Check selling today",
+      "story": "Selling on day {day} at {price}, after buying at {buyPrice}, would earn {profit}. The best stays {best}.",
+      "formal": "{price} − {buyPrice} = {profit} ≤ best = {best}."
+    },
+    "done:profit": {
+      "label": "Return the best",
+      "story": "The best plan buys on day {buyDay} and sells on day {sellDay}, earning {best}.",
+      "formal": "Return best = {best}."
+    },
+    "done:none": {
+      "label": "No profit",
+      "story": "No sale ever made money, so the best plan is not to trade: 0.",
+      "formal": "Return best = 0."
+    }
+  }
+}

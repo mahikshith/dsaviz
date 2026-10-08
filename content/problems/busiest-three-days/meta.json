@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "id": "busiest-three-days",
+  "slug": "busiest-three-days",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Maximum sum of k consecutive values",
+  "storyTitle": "The library's busiest three days",
+  "summary": "Find the three consecutive days with the most library visitors, using a window that slides one day at a time.",
+  "difficulty": "easy",
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "sliding-window",
+      "variantId": "fixed",
+      "order": 10
+    },
+    {
+      "patternId": "prefix-sums",
+      "variantId": "range-sum",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "subarray",
+    "zero-based-index"
+  ],
+  "checker": "window-max",
+  "goal": "Find the k consecutive days with the most visitors",
+  "mapping": [
+    {
+      "story": "Daily visitor log",
+      "formal": "Array visitors"
+    },
+    {
+      "story": "Visitors on one day",
+      "formal": "A value visitors[i]"
+    },
+    {
+      "story": "Day number",
+      "formal": "Zero-based index i"
+    },
+    {
+      "story": "A three-day stretch",
+      "formal": "A subarray of length k = 3"
+    },
+    {
+      "story": "Busiest stretch",
+      "formal": "Largest subarray sum"
+    },
+    {
+      "story": "First day of that stretch",
+      "formal": "Output start (earliest on ties)"
+    }
+  ],
+  "examples": [
+    {
+      "id": "week",
+      "label": "One week, k = 3",
+      "input": {
+        "visitors": [
+          4,
+          2,
+          7,
+          1,
+          8,
+          3,
+          5
+        ],
+        "k": 3
+      },
+      "expectedOutput": {
+        "start": 2,
+        "total": 16
+      },
+      "explanation": "Days 2–4 (7 + 1 + 8) and days 4–6 (8 + 3 + 5) both total 16; the earlier stretch, starting on day 2, wins the tie."
+    },
+    {
+      "id": "single-day",
+      "label": "k = 1",
+      "input": {
+        "visitors": [
+          3,
+          9,
+          9,
+          2
+        ],
+        "k": 1
+      },
+      "expectedOutput": {
+        "start": 1,
+        "total": 9
+      },
+      "explanation": "With k = 1 the busiest stretch is the single busiest day. Days 1 and 2 tie, so day 1 is reported."
+    },
+    {
+      "id": "whole-log",
+      "label": "k covers every day",
+      "input": {
+        "visitors": [
+          5,
+          0,
+          6
+        ],
+        "k": 3
+      },
+      "expectedOutput": {
+        "start": 0,
+        "total": 11
+      },
+      "explanation": "When k equals the number of days there is only one stretch: the whole log."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "recompute-each",
+      "level": "brute-force",
+      "name": "Add up every stretch",
+      "idea": "For every start day, add the k counts from scratch and keep the largest total.",
+      "time": "O(n·k)",
+      "space": "O(1)"
+    },
+    {
+      "id": "prefix-sums",
+      "level": "better",
+      "name": "Prefix sums",
+      "idea": "Write the running total after each day once. Any stretch total is then one subtraction: `P[start + k] − P[start]`.",
+      "insight": "Neighbouring stretches share almost all of their days, so the same additions are repeated. Storing running totals once removes the repetition.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "approachId": "prefix-sums"
+    },
+    {
+      "id": "sliding-window",
+      "level": "optimal",
+      "name": "Slide a fixed window",
+      "idea": "Keep one window total. Each slide subtracts the day that leaves and adds the day that enters.",
+      "insight": "Stretches are visited in order, so only the current window's total is ever needed. One running total replaces the whole prefix list.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "sliding-window"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "sliding-window",
+      "name": "Slide a fixed window",
+      "adapterId": "fixed-window-max-v1",
+      "summary": "Keep a running window total; each step adds the day that enters and subtracts the day that leaves.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    },
+    {
+      "id": "prefix-sums",
+      "name": "Prefix sums",
+      "adapterId": "prefix-window-max-v1",
+      "summary": "Write running totals once, then read every stretch as the difference of two of them.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(n)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "sliding-window",
+  "transfer": {
+    "problem": "A fitness tracker logs steps per hour. Find the 4-hour block with the fewest steps, to schedule a reminder to move.",
+    "answerPatternId": "sliding-window",
+    "explanation": "It asks about every block of exactly 4 consecutive hours, so keep a fixed window of 4 and slide it, tracking the minimum instead of the maximum."
+  },
+  "practice": {
+    "selfCheck": [
+      "Adds exactly k consecutive days, never skipping one.",
+      "Keeps the earliest stretch when two totals tie.",
+      "Works for k = 1 and for k equal to the number of days.",
+      "Updates the total in constant time per step instead of re-adding k values."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Maximum sum of a fixed-size window",
+  "practiceLink": {
+    "label": "Similar: LeetCode 643 (average instead of total)",
+    "url": "https://leetcode.com/problems/maximum-average-subarray-i/"
+  }
+}

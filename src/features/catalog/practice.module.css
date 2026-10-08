@@ -1,0 +1,386 @@
+/* ---- Filter bar ---- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: flex-end;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.search,
+.select {
+  display: grid;
+  gap: 4px;
+}
+.search {
+  flex: 1 1 240px;
+}
+.filters label,
+.chips legend {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.search input,
+.select select {
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 15px;
+  width: 100%;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.chips legend {
+  width: 100%;
+  padding: 0 0 4px;
+}
+/* Filter chips: an ink pill when selected, like every other "which option" control. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--control-border);
+  background: var(--surface);
+  color: var(--text) !important;
+  font-size: 14px !important;
+  font-weight: 560 !important;
+  cursor: pointer;
+  user-select: none;
+}
+.chip:hover {
+  background: var(--surface-sunk);
+}
+.chip[data-checked] {
+  background: var(--select-bg);
+  border-color: var(--select-bg);
+  color: var(--select-fg) !important;
+}
+.chip:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  margin: 14px 0 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.summaryActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---- Layout: pattern index beside the groups ---- */
+.layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.index {
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 92px);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 8px;
+}
+.index ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.index a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  min-height: 38px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+}
+.index a:hover {
+  background: var(--surface-sunk);
+}
+.index li[data-empty] a {
+  opacity: 0.45;
+}
+.indexName {
+  flex: 1;
+  min-width: 0;
+}
+.indexCount {
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+
+/* ---- Groups: plain cards; an open group lists its problems as cards ---- */
+.groups {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  scroll-margin-top: 76px;
+}
+.groupHeading {
+  font: inherit;
+  margin: 0;
+}
+.groupToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  transition: background-color var(--motion) var(--ease);
+  text-align: left;
+  color: var(--text);
+}
+.groupToggle:hover:not(:disabled) {
+  background: var(--surface-sunk);
+}
+.groupToggle:disabled {
+  cursor: default;
+}
+.groupText {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.groupName {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+.groupIntuition {
+  font-size: 14px;
+  color: var(--muted);
+}
+.groupStats {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  min-width: 140px;
+}
+.groupProgress {
+  display: grid;
+  gap: 4px;
+  width: 140px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+.chevron {
+  flex: none;
+  color: var(--muted);
+  transition: transform var(--motion) var(--ease);
+}
+.groupToggle[aria-expanded='true'] .chevron {
+  transform: rotate(90deg);
+}
+.groupToggle:disabled .chevron {
+  display: none;
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 4px 12px 12px;
+  display: grid;
+  gap: 8px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--canvas);
+  transition: border-color var(--motion) var(--ease), background-color var(--motion) var(--ease);
+}
+.row:hover {
+  border-color: var(--control-border);
+  background: var(--surface);
+}
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.rowTitle {
+  font-weight: 650;
+  color: var(--text);
+  text-decoration: none;
+}
+.rowTitle:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.rowSub {
+  font-size: 13px;
+  color: var(--muted);
+}
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+.kind {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.bookmark {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+}
+.bookmark:hover {
+  background: var(--surface-sunk);
+}
+.bookmark[aria-pressed='true'] {
+  color: var(--accent);
+}
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px;
+  border: 1px dashed var(--control-border);
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 1099px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .index {
+    display: none;
+  }
+}
+@media (max-width: 899px) {
+  .row {
+    flex-wrap: wrap;
+  }
+  .rowMeta {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px 12px;
+  }
+  .kind {
+    min-width: 0;
+  }
+  .bookmark {
+    margin-left: auto;
+  }
+  .groupStats {
+    display: none;
+  }
+  .groupToggle {
+    gap: 10px;
+    padding: 12px;
+  }
+  .groupName {
+    font-size: 19px;
+  }
+}
+
+/* ---- View switch (pattern / company) and company chips ---- */
+.viewBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-bottom: 14px;
+}
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.segmented button,
+.companies button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 14px;
+  transition: background-color var(--motion) var(--ease), color var(--motion) var(--ease);
+}
+.segmented button:hover,
+.companies button:hover {
+  color: var(--text);
+}
+.segmented button[aria-pressed='true'],
+.companies button[aria-pressed='true'] {
+  background: var(--select-bg);
+  color: var(--select-fg);
+}
+.companies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.companies button {
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  font-size: 13px;
+}
+.companies button span {
+  font: 600 11px var(--font-mono);
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+.layout[data-single] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.layout[data-single] .index {
+  display: none;
+}

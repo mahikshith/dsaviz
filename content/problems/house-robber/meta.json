@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "house-robber",
+  "slug": "house-robber",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Maximum sum with no two neighbours",
+  "storyTitle": "The carol singers' route",
+  "summary": "Carol singers collect donations along a street but never sing at two neighbouring houses; decide at each house whether to stop.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "dynamic-programming",
+      "variantId": "linear",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "subproblem"
+  ],
+  "checker": "exact",
+  "goal": "Collect the most donations without visiting two neighbouring houses",
+  "mapping": [
+    {
+      "story": "Houses along the street",
+      "formal": "Array money"
+    },
+    {
+      "story": "Donation at a house",
+      "formal": "money[i]"
+    },
+    {
+      "story": "Never two neighbours",
+      "formal": "No two adjacent indices"
+    },
+    {
+      "story": "Best total up to house i",
+      "formal": "best[i]"
+    }
+  ],
+  "examples": [
+    {
+      "id": "four",
+      "label": "Four houses",
+      "input": {
+        "money": [
+          1,
+          2,
+          3,
+          1
+        ]
+      },
+      "expectedOutput": 4,
+      "explanation": "Sing at houses 0 and 2: 1 + 3."
+    },
+    {
+      "id": "five",
+      "label": "Five houses",
+      "input": {
+        "money": [
+          2,
+          7,
+          9,
+          3,
+          1
+        ]
+      },
+      "expectedOutput": 12,
+      "explanation": "Houses 0, 2 and 4: 2 + 9 + 1."
+    },
+    {
+      "id": "one",
+      "label": "One house",
+      "input": {
+        "money": [
+          5
+        ]
+      },
+      "expectedOutput": 5,
+      "explanation": "Sing at the only house."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-route",
+      "level": "brute-force",
+      "name": "Try every allowed route",
+      "idea": "List every set of houses with no two neighbours and add up each one.",
+      "time": "O(2ⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "best-so-far-table",
+      "level": "better",
+      "name": "Best total up to each house",
+      "idea": "Write, for each house, the best total using houses up to it: skip it (best up to the previous house) or sing here (this donation plus best up to two houses back).",
+      "insight": "At each house there are only two choices, and each leaves a smaller street of the same kind. Writing down the best total for every prefix avoids recomputing it.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "two-totals",
+      "level": "optimal",
+      "name": "Keep only two totals",
+      "idea": "Each house's best only uses the bests one and two houses back, so roll two numbers forward.",
+      "insight": "Older entries of the table are never read again, so two variables are enough.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "house-robber",
+  "transfer": {
+    "problem": "A delivery driver can take a job on any day but needs a rest day after each job. Maximise the total pay from a list of daily job offers.",
+    "answerPatternId": "dynamic-programming",
+    "explanation": "No two consecutive days: best up to day i is the better of skipping day i or taking it plus the best up to day i − 2."
+  },
+  "practice": {
+    "selfCheck": [
+      "Compares skipping a house with singing there.",
+      "Uses the best from two houses back when singing.",
+      "Handles one or two houses.",
+      "Uses O(1) extra space in the final version."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "House Robber",
+  "practiceLink": {
+    "label": "LeetCode 198",
+    "url": "https://leetcode.com/problems/house-robber/"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "id": "best-time-stock",
+  "slug": "best-time-stock",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Best single buy and later sell",
+  "storyTitle": "The market stall diary",
+  "summary": "From a diary of daily mango prices, find the most you could earn by buying once and selling on a later day.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Goldman Sachs",
+    "Flipkart"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "sliding-window",
+      "variantId": "variable",
+      "order": 20
+    },
+    {
+      "patternId": "greedy",
+      "variantId": "running-best",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "zero-based-index"
+  ],
+  "checker": "exact",
+  "goal": "Find the largest profit from one buy and one later sell",
+  "mapping": [
+    {
+      "story": "The price diary",
+      "formal": "Array prices"
+    },
+    {
+      "story": "Price on a morning",
+      "formal": "prices[i]"
+    },
+    {
+      "story": "Buy, then sell later",
+      "formal": "Indices i < j"
+    },
+    {
+      "story": "Profit",
+      "formal": "prices[j] − prices[i], or 0"
+    }
+  ],
+  "examples": [
+    {
+      "id": "week",
+      "label": "Six mornings",
+      "input": {
+        "prices": [
+          7,
+          1,
+          5,
+          3,
+          6,
+          4
+        ]
+      },
+      "expectedOutput": 5,
+      "explanation": "Buy at 1 on day 1, sell at 6 on day 4."
+    },
+    {
+      "id": "falling",
+      "label": "Prices only fall",
+      "input": {
+        "prices": [
+          7,
+          6,
+          4,
+          3,
+          1
+        ]
+      },
+      "expectedOutput": 0,
+      "explanation": "Every sale would lose money, so the best choice is not to trade."
+    },
+    {
+      "id": "late-dip",
+      "label": "A late dip",
+      "input": {
+        "prices": [
+          2,
+          4,
+          1
+        ]
+      },
+      "expectedOutput": 2,
+      "explanation": "Buy at 2, sell at 4. The cheaper day 2 comes too late to sell afterwards."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-pair",
+      "level": "brute-force",
+      "name": "Try every buy and sell day",
+      "idea": "For every buying day, try every later selling day and keep the best profit.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "cheapest-so-far",
+      "level": "optimal",
+      "name": "Remember the cheapest morning",
+      "idea": "Walk through the days once. Keep the cheapest price so far; each day, check what selling today would earn.",
+      "insight": "For a sale on any given day, the best buying day is simply the cheapest earlier day. One remembered number replaces the inner loop.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "cheapest-so-far"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "cheapest-so-far",
+      "name": "Remember the cheapest morning",
+      "adapterId": "stock-profit-v1",
+      "summary": "Track the cheapest price so far and the best profit from selling today.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "cheapest-so-far",
+  "transfer": {
+    "problem": "A hiker records altitude every hour. Find the biggest climb from a lower point to a later higher point.",
+    "answerPatternId": "greedy",
+    "explanation": "It is the same shape: remember the lowest altitude so far, and at each hour compare the climb from that lowest point."
+  },
+  "practice": {
+    "selfCheck": [
+      "Never sells before buying.",
+      "Returns 0 when prices only fall.",
+      "Updates the cheapest price before or instead of selling on that day.",
+      "Uses one pass over the prices."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Best Time to Buy and Sell Stock",
+  "practiceLink": {
+    "label": "LeetCode 121",
+    "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"
+  }
+}

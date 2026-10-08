@@ -1,0 +1,29 @@
+{
+  "guest-list": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} guests will arrive. We want to know whether any number shows up twice.",
+      "formal": "nums has {n} values. Return True if any value repeats."
+    },
+    "initialize": {
+      "label": "Start the list",
+      "story": "The guest list starts empty.",
+      "formal": "seen = set()."
+    },
+    "add": {
+      "label": "Check and add",
+      "story": "Guest {i} wears {value}, which is not on the list yet. Add it; the list now has {size} numbers.",
+      "formal": "{value} not in seen: seen.add({value}). Size {size}."
+    },
+    "duplicate": {
+      "label": "Repeat found",
+      "story": "Guest {i} wears {value}, and {value} is already on the list from position {first}. Someone came twice.",
+      "formal": "{value} in seen (first at {first}). Return True."
+    },
+    "all-unique": {
+      "label": "All different",
+      "story": "All {n} guests are checked and no number appeared twice.",
+      "formal": "Loop finished with no repeat. Return False."
+    }
+  }
+}

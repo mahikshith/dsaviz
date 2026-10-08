@@ -1,0 +1,30 @@
+[
+  {
+    "id": "tie-keeps-earlier",
+    "approachId": "sliding-window",
+    "exampleId": "week",
+    "frameId": "12-slide",
+    "question": "This stretch also totals 16. What should happen to the answer?",
+    "context": "Days 4 to 6 total 16, the same as the best stretch so far, which starts on day 2.",
+    "choices": [
+      {
+        "id": "keep-earlier",
+        "label": "Keep day 2 as the answer",
+        "correct": true,
+        "feedback": "Right. A tie does not replace the best, because the rules ask for the earlier stretch. That is why the code compares with > rather than >=."
+      },
+      {
+        "id": "switch-later",
+        "label": "Switch to day 4",
+        "correct": false,
+        "feedback": "That would report the later of two tied stretches. The rules ask for the earliest, so only a strictly larger total may replace the best."
+      },
+      {
+        "id": "report-both",
+        "label": "Report both stretches",
+        "correct": false,
+        "feedback": "The task asks for one start and one total. With a tie, the earlier stretch, starting on day 2, is the answer."
+      }
+    ]
+  }
+]

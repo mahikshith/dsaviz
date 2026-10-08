@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "id": "sliding-window-max",
+  "slug": "sliding-window-max",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Maximum in every window of size k",
+  "storyTitle": "The tallest in the window",
+  "summary": "As people walk past a window that fits k of them, report the tallest in view at every moment, dropping anyone who can never be tallest again.",
+  "difficulty": "hard",
+  "companies": [
+    "Amazon",
+    "Google"
+  ],
+  "topics": [
+    "arrays",
+    "stacks-and-queues"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "sliding-window",
+      "variantId": "monotonic-queue",
+      "order": 70
+    }
+  ],
+  "prerequisites": [
+    "window",
+    "queue",
+    "monotonic"
+  ],
+  "checker": "exact",
+  "goal": "Report the tallest person in view for every window position",
+  "mapping": [
+    {
+      "story": "People walking past",
+      "formal": "Array nums"
+    },
+    {
+      "story": "What fits in the window",
+      "formal": "k consecutive values"
+    },
+    {
+      "story": "The line of candidates",
+      "formal": "A deque of indices with decreasing values"
+    },
+    {
+      "story": "Tallest in view",
+      "formal": "Front of the deque"
+    }
+  ],
+  "examples": [
+    {
+      "id": "parade",
+      "label": "Eight people, k = 3",
+      "input": {
+        "nums": [
+          1,
+          3,
+          -1,
+          -3,
+          5,
+          3,
+          6,
+          7
+        ],
+        "k": 3
+      },
+      "expectedOutput": [
+        3,
+        3,
+        5,
+        5,
+        6,
+        7
+      ],
+      "explanation": "One maximum for each of the six window positions."
+    },
+    {
+      "id": "one",
+      "label": "Window of one",
+      "input": {
+        "nums": [
+          1
+        ],
+        "k": 1
+      },
+      "expectedOutput": [
+        1
+      ],
+      "explanation": "Each window holds one person."
+    },
+    {
+      "id": "falling",
+      "label": "Falling heights",
+      "input": {
+        "nums": [
+          9,
+          8,
+          7
+        ],
+        "k": 2
+      },
+      "expectedOutput": [
+        9,
+        8
+      ],
+      "explanation": "The tallest is always the one entering first."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "scan-each",
+      "level": "brute-force",
+      "name": "Scan every window",
+      "idea": "For each window position, look at all k people and take the tallest.",
+      "time": "O(n · k)",
+      "space": "O(1)"
+    },
+    {
+      "id": "heap",
+      "level": "better",
+      "name": "A heap of who is in view",
+      "idea": "Keep heights in a max-heap with their positions; before reading the top, discard tops that have left the window.",
+      "insight": "Neighbouring windows share k − 1 people, so keeping them in a structure that knows the tallest avoids rescanning.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "deque",
+      "level": "optimal",
+      "name": "A line of candidates",
+      "idea": "Keep a line of positions with decreasing heights. A newcomer sends home everyone shorter at the back; the front leaves when it slides out of view. The front is always the tallest.",
+      "insight": "Anyone shorter than a newcomer who arrived later can never be the tallest again: the newcomer stays in view longer. Dropping them keeps the line sorted.",
+      "time": "O(n)",
+      "space": "O(k)"
+    }
+  ],
+  "solver": "window-max",
+  "transfer": {
+    "problem": "For each day, report the highest temperature over the past seven days.",
+    "answerPatternId": "sliding-window",
+    "explanation": "It is a maximum over a fixed-size window that slides by one: keep a decreasing line of candidates."
+  },
+  "practice": {
+    "selfCheck": [
+      "Removes shorter people from the back before adding a newcomer.",
+      "Removes the front when it is outside the window.",
+      "Starts reporting once the first window is full.",
+      "Stores positions, not heights, so leaving is detected."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Sliding Window Maximum",
+  "practiceLink": {
+    "label": "LeetCode 239",
+    "url": "https://leetcode.com/problems/sliding-window-maximum/"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "id": "merge-intervals",
+  "slug": "merge-intervals",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Merge overlapping intervals",
+  "storyTitle": "The meeting room diary",
+  "summary": "Tidy a diary of overlapping meetings into the fewest blocks of busy time by sorting and sweeping once.",
+  "difficulty": "medium",
+  "companies": [
+    "Google",
+    "Meta",
+    "Amazon",
+    "Bloomberg"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "intervals",
+      "variantId": "merge",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "interval"
+  ],
+  "checker": "exact",
+  "goal": "Combine overlapping meetings into blocks of busy time",
+  "mapping": [
+    {
+      "story": "A meeting",
+      "formal": "An interval [start, end]"
+    },
+    {
+      "story": "The diary",
+      "formal": "List of intervals"
+    },
+    {
+      "story": "Meetings that overlap",
+      "formal": "start ≤ previous end"
+    },
+    {
+      "story": "A block of busy time",
+      "formal": "A merged interval"
+    }
+  ],
+  "examples": [
+    {
+      "id": "diary",
+      "label": "Four meetings",
+      "input": {
+        "intervals": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            15,
+            18
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          1,
+          6
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          15,
+          18
+        ]
+      ],
+      "explanation": "1–3 and 2–6 overlap, so they become 1–6."
+    },
+    {
+      "id": "touching",
+      "label": "Back to back",
+      "input": {
+        "intervals": [
+          [
+            1,
+            4
+          ],
+          [
+            4,
+            5
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          1,
+          5
+        ]
+      ],
+      "explanation": "A meeting starting exactly when another ends is treated as overlapping."
+    },
+    {
+      "id": "unsorted",
+      "label": "Out of order",
+      "input": {
+        "intervals": [
+          [
+            5,
+            7
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          1,
+          2
+        ],
+        [
+          5,
+          7
+        ]
+      ],
+      "explanation": "Sorted by start, nothing overlaps."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "merge-any-pair",
+      "level": "brute-force",
+      "name": "Merge any overlapping pair, repeat",
+      "idea": "Look for any two meetings that overlap, merge them, and start again until no pair overlaps.",
+      "time": "O(n³)",
+      "space": "O(n)"
+    },
+    {
+      "id": "sort-and-sweep",
+      "level": "optimal",
+      "name": "Sort by start, sweep once",
+      "idea": "Sort meetings by start. Walk through them: if a meeting starts before the current block ends, stretch the block; otherwise start a new block.",
+      "insight": "Once sorted by start, a meeting can only overlap the block just before it, never an earlier one. One pass settles everything.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "merge-intervals",
+  "transfer": {
+    "problem": "Given the times each visitor was in a museum, find the periods when at least one visitor was inside.",
+    "answerPatternId": "intervals",
+    "explanation": "Each visit is an interval; merging overlapping visits gives the periods the museum was occupied."
+  },
+  "practice": {
+    "selfCheck": [
+      "Sorts by start before merging.",
+      "Stretches the block with the larger of the two ends.",
+      "Treats a meeting starting at the block's end as overlapping.",
+      "Handles a single meeting."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Merge Intervals",
+  "practiceLink": {
+    "label": "LeetCode 56",
+    "url": "https://leetcode.com/problems/merge-intervals/"
+  }
+}

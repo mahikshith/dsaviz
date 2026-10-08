@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "intervals",
+  "status": "published",
+  "name": "Interval sweep",
+  "short": "IN",
+  "hue": "olive",
+  "family": "sequence",
+  "order": 50,
+  "intuition": "Sort intervals by their start, then sweep once: an interval either extends the current one or begins a new one.",
+  "aliases": [
+    "merge intervals",
+    "overlapping ranges",
+    "meeting rooms",
+    "insert interval",
+    "sweep line"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "prerequisites": [
+    "interval"
+  ],
+  "variants": [
+    {
+      "id": "merge",
+      "name": "Merge overlaps",
+      "summary": "Sort by start; stretch the last merged interval or start a new one.",
+      "requires": "Intervals can be sorted by start."
+    },
+    {
+      "id": "insert",
+      "name": "Insert into sorted intervals",
+      "summary": "Copy those ending before the new one, merge those that overlap it, copy the rest.",
+      "requires": "The existing intervals are sorted and do not overlap."
+    }
+  ],
+  "visual": {
+    "caption": "Sorted by start, 1–3 and 2–6 overlap (2 starts before 3 ends), so they become one meeting, 1–6.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "m",
+          "label": "meetings sorted by start",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "1–3",
+              "sub": "0",
+              "state": "window"
+            },
+            {
+              "id": "c1",
+              "label": "2–6",
+              "sub": "1",
+              "state": "window"
+            },
+            {
+              "id": "c2",
+              "label": "8–10",
+              "sub": "2",
+              "state": "idle"
+            },
+            {
+              "id": "c3",
+              "label": "15–18",
+              "sub": "3",
+              "state": "idle"
+            }
+          ],
+          "pointers": [],
+          "bands": [
+            {
+              "id": "b",
+              "from": 0,
+              "to": 1,
+              "label": "merged: 1–6",
+              "tone": "primary",
+              "side": "above"
+            }
+          ]
+        }
+      ],
+      "legend": [
+        {
+          "label": "Overlapping, merged into one",
+          "swatch": "window"
+        }
+      ]
+    }
+  }
+}

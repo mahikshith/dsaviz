@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "id": "validate-bst",
+  "slug": "validate-bst",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Validate a binary search tree",
+  "storyTitle": "The orchard rule",
+  "summary": "In this orchard every tree to the left must be smaller and every tree to the right larger, than every ancestor, not just the parent.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Microsoft",
+    "Bloomberg"
+  ],
+  "topics": [
+    "trees"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "depth-first-search",
+      "variantId": "tree",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "binary-search-tree",
+    "recursion"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the orchard follows the ordering rule everywhere",
+  "mapping": [
+    {
+      "story": "The orchard",
+      "formal": "Binary tree"
+    },
+    {
+      "story": "The rule",
+      "formal": "Binary search tree property"
+    },
+    {
+      "story": "Allowed heights for a tree",
+      "formal": "An open range (low, high) from its ancestors"
+    },
+    {
+      "story": "Follows the rule",
+      "formal": "Return True"
+    }
+  ],
+  "examples": [
+    {
+      "id": "valid",
+      "label": "Small and valid",
+      "input": {
+        "root": [
+          2,
+          1,
+          3
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "1 < 2 < 3."
+    },
+    {
+      "id": "child",
+      "label": "A child breaks it",
+      "input": {
+        "root": [
+          5,
+          1,
+          4,
+          null,
+          null,
+          3,
+          6
+        ]
+      },
+      "expectedOutput": false,
+      "explanation": "4 is the right child of 5 but is smaller than 5."
+    },
+    {
+      "id": "ancestor",
+      "label": "An ancestor breaks it",
+      "input": {
+        "root": [
+          5,
+          4,
+          6,
+          null,
+          null,
+          3,
+          7
+        ]
+      },
+      "expectedOutput": false,
+      "explanation": "3 sits in 5's right subtree, so it must be larger than 5, even though it is fine under 6."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "check-subtrees",
+      "level": "brute-force",
+      "name": "Check every node against its whole subtrees",
+      "idea": "For each node, check that everything in its left subtree is smaller and everything in its right subtree is larger.",
+      "time": "O(n²)",
+      "space": "O(h)"
+    },
+    {
+      "id": "in-order",
+      "level": "better",
+      "name": "Read the orchard in order",
+      "idea": "Visit left subtree, node, right subtree; a valid search tree produces strictly increasing values.",
+      "insight": "A binary search tree read left-node-right is sorted, and checking a list is sorted is one pass.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "carry-range",
+      "level": "optimal",
+      "name": "Carry the allowed range down",
+      "idea": "Pass each node the range its value must lie in. Going left lowers the upper limit to the node's value; going right raises the lower limit.",
+      "insight": "Each node only needs to know the tightest limits set by its ancestors, two numbers, not the whole subtree. Checking against them catches rules broken by distant ancestors.",
+      "time": "O(n)",
+      "space": "O(h)"
+    }
+  ],
+  "solver": "validate-bst",
+  "transfer": {
+    "problem": "A file system says every folder's files are alphabetically between the folder's neighbours above. Check a nested listing follows that rule.",
+    "answerPatternId": "depth-first-search",
+    "explanation": "Carry the allowed range down the hierarchy and check each entry against its inherited limits."
+  },
+  "practice": {
+    "selfCheck": [
+      "Checks every node against limits from all ancestors, not just its parent.",
+      "Uses strict inequalities.",
+      "Starts with unlimited bounds.",
+      "Treats an empty tree as valid."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Validate Binary Search Tree",
+  "practiceLink": {
+    "label": "LeetCode 98",
+    "url": "https://leetcode.com/problems/validate-binary-search-tree/"
+  }
+}

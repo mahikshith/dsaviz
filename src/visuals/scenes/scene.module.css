@@ -1,0 +1,546 @@
+.scene {
+  display: grid;
+  gap: 14px;
+}
+.scene {
+  /* Slower than UI motion so learners can follow each move; a slight overshoot reads as "this moved". */
+  --scene-motion: 420ms;
+  --scene-ease: cubic-bezier(0.34, 1.36, 0.64, 1);
+}
+.scene[data-instant] * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Stages that are wider than their container scroll locally; the page never scrolls sideways. */
+.scroll {
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 2px;
+}
+.arraySvg,
+.graphSvg {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: calc(var(--scene-w) * 0.92);
+  min-width: calc(var(--scene-w) * 0.62);
+  height: auto;
+  overflow: visible;
+}
+
+.rowLabel {
+  font: 600 12px var(--font-mono);
+  fill: var(--muted);
+}
+
+/* ---- Cells ---- */
+.cellBox {
+  fill: var(--surface);
+  stroke: var(--control-border);
+  stroke-width: 1.5;
+  transition: fill var(--motion) var(--ease), stroke var(--motion) var(--ease), stroke-width var(--motion) var(--ease);
+}
+.cellValue {
+  font: 600 21px var(--font-mono);
+  fill: var(--text);
+  transition: fill var(--motion) var(--ease);
+}
+.cellSub {
+  font: 12px var(--font-mono);
+  fill: var(--muted);
+}
+.cell[data-state='primary'] .cellBox {
+  fill: var(--primary-soft);
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+.cell[data-state='comparison'] .cellBox {
+  fill: var(--comparison-soft);
+  stroke: var(--comparison);
+  stroke-width: 3;
+}
+.cell[data-state='success'] .cellBox {
+  fill: var(--success-soft);
+  stroke: var(--success);
+  stroke-width: 3;
+}
+.cell[data-state='danger'] .cellBox {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+  stroke-width: 3;
+}
+.cell[data-state='window'] .cellBox {
+  fill: var(--primary-soft);
+  stroke: var(--primary);
+  stroke-width: 1.5;
+}
+.cell[data-state='entering'] .cellBox {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.cell[data-state='leaving'] .cellBox,
+.cell[data-state='discarded'] .cellBox {
+  stroke: var(--hatch);
+  stroke-dasharray: 5 4;
+}
+.cell[data-state='leaving'] .cellValue,
+.cell[data-state='discarded'] .cellValue,
+.cell[data-state='muted'] .cellValue,
+.cell[data-state='pending'] .cellValue {
+  fill: var(--muted);
+}
+.cell[data-state='muted'] .cellBox {
+  fill: var(--neutral-soft);
+  stroke: var(--border);
+}
+.cell[data-state='pending'] .cellBox {
+  fill: transparent;
+  stroke: var(--border);
+  stroke-dasharray: 4 4;
+}
+.hatchBg {
+  fill: var(--neutral-soft);
+}
+.hatchLine {
+  stroke: var(--hatch);
+  stroke-width: 2;
+}
+
+/* ---- Pointers ---- */
+.pointer {
+  transition: transform var(--scene-motion) var(--scene-ease);
+  --tone: var(--primary);
+}
+.pointer[data-tone='comparison'] {
+  --tone: var(--comparison);
+}
+.pointer[data-tone='accent'] {
+  --tone: var(--accent);
+}
+.pointer[data-tone='success'] {
+  --tone: var(--success);
+}
+.pointerArrow {
+  fill: var(--tone);
+}
+.pointerLabel {
+  font: 700 13px var(--font-sans);
+  fill: var(--tone);
+}
+
+/* ---- Bands (windows, ranges) ---- */
+.band {
+  --tone: var(--primary);
+}
+.band[data-tone='success'],
+.bracket[data-tone='success'] {
+  --tone: var(--success);
+}
+.band[data-tone='accent'],
+.bracket[data-tone='accent'] {
+  --tone: var(--accent);
+}
+.bandRect {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 2.5;
+  transition: x var(--motion) var(--ease), width var(--motion) var(--ease);
+}
+.bandLabel {
+  font: 700 13px var(--font-mono);
+  fill: var(--tone);
+  transition: transform var(--motion) var(--ease);
+}
+.bracket {
+  --tone: var(--primary);
+  transition: transform var(--motion) var(--ease);
+}
+.bracketLine {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.bracketLabel {
+  font: 700 13px var(--font-mono);
+  fill: var(--tone);
+}
+
+/* ---- Graph ---- */
+.edge {
+  stroke: var(--control-border);
+  stroke-width: 2;
+  opacity: 0.55;
+  transition: stroke var(--motion) var(--ease), stroke-width var(--motion) var(--ease), opacity var(--motion) var(--ease);
+}
+.edge[data-state='tree'] {
+  stroke: var(--primary);
+  stroke-width: 3;
+  opacity: 0.8;
+}
+.edge[data-state='checking'] {
+  stroke: var(--comparison);
+  stroke-width: 4;
+  stroke-dasharray: 8 6;
+  opacity: 1;
+}
+.edge[data-state='success'] {
+  stroke: var(--success);
+  stroke-width: 6;
+  opacity: 1;
+}
+.nodeCircle {
+  fill: var(--surface);
+  stroke: var(--control-border);
+  stroke-width: 2;
+  transition: fill var(--motion) var(--ease), stroke var(--motion) var(--ease);
+}
+.nodeLabel {
+  font: 700 17px var(--font-mono);
+  fill: var(--text);
+}
+.nodeCaption {
+  font: 600 12px var(--font-sans);
+  fill: var(--muted);
+}
+.goalRing {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+.node[data-state='queued'] .nodeCircle {
+  fill: var(--comparison-soft);
+  stroke: var(--comparison);
+  stroke-width: 3;
+}
+.node[data-state='current'] .nodeCircle {
+  fill: var(--primary);
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+.node[data-state='current'] .nodeLabel {
+  fill: var(--on-primary);
+}
+.node[data-state='visited'] .nodeCircle {
+  fill: var(--primary-soft);
+  stroke: var(--primary);
+}
+.node[data-state='success'] .nodeCircle {
+  fill: var(--success-soft);
+  stroke: var(--success);
+  stroke-width: 3.5;
+}
+.badgeBox {
+  fill: var(--text);
+}
+.badgeText {
+  font: 700 12px var(--font-mono);
+  fill: var(--canvas);
+}
+
+/* ---- Stack and queue (HTML) ---- */
+.collections {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.collection {
+  min-width: 180px;
+}
+.collectionLabel {
+  font: 600 12px var(--font-mono);
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.stack {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  gap: 6px;
+  border: 1.5px solid var(--control-border);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  width: 200px;
+}
+.queue {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  display: flex;
+  gap: 6px;
+  min-height: 52px;
+  border: 1.5px solid var(--control-border);
+  border-left: 0;
+  border-right: 0;
+  flex-wrap: wrap;
+}
+.stackItem,
+.queueItem {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 12px;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--primary);
+  background: var(--primary-soft);
+  animation: enter var(--motion) var(--ease);
+}
+.queueItem {
+  border-color: var(--comparison);
+  background: var(--comparison-soft);
+}
+.stackItem[data-state='entering'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.stackItem[data-state='comparison'] {
+  border-color: var(--comparison);
+  background: var(--comparison-soft);
+}
+.stackItem[data-state='danger'] {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+.itemLabel {
+  font: 700 18px var(--font-mono);
+}
+.itemSub {
+  font-size: 12px;
+  color: var(--muted);
+}
+.topTag {
+  margin-left: auto;
+  font: 700 11px var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.empty {
+  padding: 10px 12px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 14px;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* ---- Legend ---- */
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 2px solid var(--primary);
+  background: var(--primary-soft);
+}
+.swatch[data-swatch='comparison'] {
+  border-color: var(--comparison);
+  background: var(--comparison-soft);
+}
+.swatch[data-swatch='success'] {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+.swatch[data-swatch='danger'] {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+.swatch[data-swatch='accent'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.swatch[data-swatch='window'] {
+  border-width: 1.5px;
+}
+.swatch[data-swatch='neutral'] {
+  border-color: var(--border);
+  background: var(--neutral-soft);
+}
+.swatch[data-swatch='discarded'] {
+  border: 1.5px dashed var(--hatch);
+  background: repeating-linear-gradient(45deg, var(--neutral-soft) 0 3px, var(--hatch) 3px 5px);
+}
+
+/* ---- Bars (heights, prices) ---- */
+.bar {
+  fill: var(--neutral-soft);
+  stroke: var(--control-border);
+  stroke-width: 1.5;
+  transition: y var(--motion) var(--ease), height var(--motion) var(--ease), fill var(--motion) var(--ease);
+}
+.bar[data-state='primary'],
+.bar[data-state='window'] {
+  fill: var(--primary-soft);
+  stroke: var(--primary);
+}
+.bar[data-state='comparison'] {
+  fill: var(--comparison-soft);
+  stroke: var(--comparison);
+}
+.bar[data-state='success'] {
+  fill: var(--success-soft);
+  stroke: var(--success);
+}
+.bar[data-state='entering'] {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+}
+.bar[data-state='discarded'],
+.bar[data-state='muted'] {
+  opacity: 0.45;
+}
+
+/* ---- Key → value table (HTML) ---- */
+.table {
+  border-collapse: separate;
+  border-spacing: 0 4px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  min-width: 200px;
+}
+.table th {
+  font: 600 12px var(--font-mono);
+  color: var(--muted);
+  text-align: left;
+  padding: 0 12px 2px;
+}
+.table td {
+  padding: 6px 12px;
+  border-top: 1.5px solid var(--border);
+  border-bottom: 1.5px solid var(--border);
+  background: var(--surface);
+  transition: background var(--motion) var(--ease), border-color var(--motion) var(--ease);
+}
+.table td:first-child {
+  border-left: 1.5px solid var(--border);
+  border-radius: 8px 0 0 8px;
+  font-weight: 700;
+}
+.table td:last-child {
+  border-right: 1.5px solid var(--border);
+  border-radius: 0 8px 8px 0;
+}
+.table tr[data-state='primary'] td,
+.table tr[data-state='entering'] td {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.table tr[data-state='comparison'] td {
+  background: var(--comparison-soft);
+  border-color: var(--comparison);
+}
+.table tr[data-state='success'] td {
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+.table tr[data-state='danger'] td {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+.table tr[data-state='muted'] td {
+  color: var(--muted);
+}
+.tableBox {
+  overflow-y: auto;
+}
+
+/* ---- Step animations: whatever changed this step draws the eye once ---- */
+.cell,
+.node,
+.stackItem {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.cellBox {
+  transition-duration: var(--scene-motion);
+}
+/* One keyframe name per state, so moving from one state to another replays the pop. */
+.cell[data-state='primary'],
+.node[data-state='current'],
+.stackItem[data-state='entering'] {
+  animation: pop-a 380ms var(--scene-ease);
+}
+.cell[data-state='comparison'],
+.node[data-state='queued'],
+.stackItem[data-state='comparison'] {
+  animation: pop-b 380ms var(--scene-ease);
+}
+.cell[data-state='success'],
+.node[data-state='success'] {
+  animation: pop-c 460ms var(--scene-ease);
+}
+.cell[data-state='danger'],
+.stackItem[data-state='danger'] {
+  animation: shake 360ms var(--ease);
+}
+.cell[data-state='entering'] {
+  animation: pop-d 380ms var(--scene-ease);
+}
+.cellValue {
+  animation: value-in 320ms var(--ease);
+}
+@keyframes pop-a {
+  40% {
+    transform: scale(1.08);
+  }
+}
+@keyframes pop-b {
+  40% {
+    transform: scale(1.08);
+  }
+}
+@keyframes pop-c {
+  35% {
+    transform: scale(1.12);
+  }
+}
+@keyframes pop-d {
+  40% {
+    transform: scale(1.08) translateY(-3px);
+  }
+}
+@keyframes shake {
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+}
+@keyframes value-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}

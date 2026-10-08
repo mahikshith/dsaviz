@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "id": "two-pointers",
+  "status": "published",
+  "name": "Two pointers",
+  "short": "TP",
+  "hue": "indigo",
+  "family": "sequence",
+  "order": 10,
+  "intuition": "Two indices move through a sequence so that every step rules out candidates for good.",
+  "aliases": [
+    "opposite ends",
+    "left and right pointers",
+    "converging pointers",
+    "two indices"
+  ],
+  "topics": [
+    "arrays",
+    "strings"
+  ],
+  "prerequisites": [
+    "array",
+    "zero-based-index"
+  ],
+  "variants": [
+    {
+      "id": "opposite",
+      "name": "Opposite ends",
+      "summary": "Start at both ends and move inward, dropping one end per step.",
+      "requires": "A rule that proves one end can be dropped safely, usually sorted order or a mirror comparison."
+    },
+    {
+      "id": "same-direction",
+      "name": "Same direction",
+      "summary": "A slow and a fast index move left to right, such as compacting an array in place.",
+      "requires": "Everything behind the slow index is already final and never needs another look."
+    },
+    {
+      "id": "merge",
+      "name": "Merge two sorted inputs",
+      "summary": "One pointer walks each sorted input; the smaller item goes next.",
+      "requires": "Both inputs are sorted the same way."
+    },
+    {
+      "id": "expand-center",
+      "name": "From the middle out",
+      "summary": "Start at a centre and widen both ends while a condition holds.",
+      "requires": "The property can be checked by growing outward one step at a time."
+    }
+  ],
+  "visual": {
+    "caption": "Each comparison rules out one end for good. The answer, if there is one, stays between the pointers.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "v",
+          "label": "sorted values",
+          "cells": [
+            {
+              "id": "a",
+              "label": "2",
+              "sub": "0",
+              "state": "discarded"
+            },
+            {
+              "id": "b",
+              "label": "4",
+              "sub": "1",
+              "state": "primary"
+            },
+            {
+              "id": "c",
+              "label": "7",
+              "sub": "2",
+              "state": "idle"
+            },
+            {
+              "id": "d",
+              "label": "11",
+              "sub": "3",
+              "state": "comparison"
+            },
+            {
+              "id": "e",
+              "label": "15",
+              "sub": "4",
+              "state": "discarded"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "l",
+              "label": "L · left",
+              "index": 1,
+              "tone": "primary",
+              "side": "above"
+            },
+            {
+              "id": "r",
+              "label": "R · right",
+              "index": 3,
+              "tone": "comparison",
+              "side": "below"
+            }
+          ],
+          "bands": []
+        }
+      ],
+      "legend": [
+        {
+          "label": "Left pointer",
+          "swatch": "primary"
+        },
+        {
+          "label": "Right pointer",
+          "swatch": "comparison"
+        },
+        {
+          "label": "Ruled out",
+          "swatch": "discarded"
+        }
+      ]
+    }
+  }
+}

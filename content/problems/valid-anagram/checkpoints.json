@@ -1,0 +1,30 @@
+[
+  {
+    "id": "not-yet",
+    "approachId": "tally",
+    "exampleId": "listen",
+    "frameId": "2-tally",
+    "question": "After the first pair, l is +1 and s is −1. Are the words already proven different?",
+    "context": "Only the first tile of each bag has been tallied: l from listen and s from silent.",
+    "choices": [
+      {
+        "id": "wait",
+        "label": "No: later tiles can cancel these counts",
+        "correct": true,
+        "feedback": "Right. The second bag's l and the first bag's s are still to come. Only the final tally decides."
+      },
+      {
+        "id": "different",
+        "label": "Yes: the counts are not zero",
+        "correct": false,
+        "feedback": "Not yet. A count only has to be zero at the end. Later tiles bring l back down and s back up."
+      },
+      {
+        "id": "compare",
+        "label": "Compare the first tiles: l is not s, so False",
+        "correct": false,
+        "feedback": "Anagrams can start with different letters, like listen and silent. Positions do not matter, only counts."
+      }
+    ]
+  }
+]

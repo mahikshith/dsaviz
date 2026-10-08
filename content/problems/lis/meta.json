@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "id": "lis",
+  "slug": "lis",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Longest strictly increasing subsequence",
+  "storyTitle": "The staircase of heights",
+  "summary": "Pick people from a line, keeping their order, to build the longest staircase of rising heights.",
+  "difficulty": "medium",
+  "companies": [
+    "Google",
+    "Microsoft",
+    "Amazon"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "dynamic-programming",
+      "variantId": "ending-here",
+      "order": 50
+    }
+  ],
+  "prerequisites": [
+    "subsequence",
+    "subproblem"
+  ],
+  "checker": "exact",
+  "goal": "Find how many people the tallest staircase can have",
+  "mapping": [
+    {
+      "story": "People in a line",
+      "formal": "Array nums"
+    },
+    {
+      "story": "A staircase",
+      "formal": "A strictly increasing subsequence"
+    },
+    {
+      "story": "Longest staircase ending with this person",
+      "formal": "length[i]"
+    },
+    {
+      "story": "Smallest top for each staircase length",
+      "formal": "tails list"
+    }
+  ],
+  "examples": [
+    {
+      "id": "line",
+      "label": "Eight people",
+      "input": {
+        "nums": [
+          10,
+          9,
+          2,
+          5,
+          3,
+          7,
+          101,
+          18
+        ]
+      },
+      "expectedOutput": 4,
+      "explanation": "For example 2, 3, 7, 18."
+    },
+    {
+      "id": "mixed",
+      "label": "Six people",
+      "input": {
+        "nums": [
+          0,
+          1,
+          0,
+          3,
+          2,
+          3
+        ]
+      },
+      "expectedOutput": 4,
+      "explanation": "0, 1, 2, 3."
+    },
+    {
+      "id": "flat",
+      "label": "All the same height",
+      "input": {
+        "nums": [
+          7,
+          7,
+          7,
+          7
+        ]
+      },
+      "expectedOutput": 1,
+      "explanation": "Equal heights are not rising, so each staircase has one person."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-selection",
+      "level": "brute-force",
+      "name": "Try every selection",
+      "idea": "Check every subset of people, in line order, for strictly rising heights, and keep the largest.",
+      "time": "O(n · 2ⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "ending-here",
+      "level": "better",
+      "name": "Longest staircase ending with each person",
+      "idea": "For each person, look at everyone before them who is shorter and extend the longest staircase that ends there.",
+      "insight": "A staircase ending with person i is a staircase ending with some shorter person before them, plus person i. Writing those lengths down makes each one a single scan.",
+      "time": "O(n²)",
+      "space": "O(n)"
+    },
+    {
+      "id": "smallest-tops",
+      "level": "optimal",
+      "name": "Keep the smallest top for each length",
+      "idea": "Keep, for each staircase length, the smallest possible top height. Each person replaces the first top that is at least their height, found by binary search, or extends the longest staircase.",
+      "insight": "For staircases of the same length, a lower top is always at least as good for extending. Those smallest tops are sorted, so each person's place is found by binary search.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "lis",
+  "transfer": {
+    "problem": "Stack boxes by height and width so each box is strictly smaller than the one below it; maximise the number of boxes, keeping a given order.",
+    "answerPatternId": "dynamic-programming",
+    "explanation": "It is a longest increasing subsequence under a stricter comparison: best chain ending with each box."
+  },
+  "practice": {
+    "selfCheck": [
+      "Requires strictly rising heights.",
+      "Keeps the original order of the line.",
+      "Replaces the first top that is not smaller than the new height.",
+      "Returns 1 for a line of equal heights."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Longest Increasing Subsequence",
+  "practiceLink": {
+    "label": "LeetCode 300",
+    "url": "https://leetcode.com/problems/longest-increasing-subsequence/"
+  }
+}

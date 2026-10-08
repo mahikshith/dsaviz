@@ -1,0 +1,30 @@
+[
+  {
+    "id": "skip-the-space",
+    "approachId": "opposite-pointers",
+    "exampleId": "top-spot",
+    "frameId": "7-step-inward",
+    "question": "The left finger is on a space. What happens next?",
+    "context": "Three pairs have matched. Left is at position 3, a space; right is at position 4, the letter s.",
+    "choices": [
+      {
+        "id": "skip",
+        "label": "Skip the space: move left inward",
+        "correct": true,
+        "feedback": "Right. Spaces don't count, so the left finger steps past it without comparing anything."
+      },
+      {
+        "id": "compare",
+        "label": "Compare the space with s: mismatch",
+        "correct": false,
+        "feedback": "Spaces never take part in a comparison. Comparing one would wrongly reject slogans like “Top spot”."
+      },
+      {
+        "id": "stop",
+        "label": "Stop now: it reads both ways",
+        "correct": false,
+        "feedback": "Not yet. The loop stops only when the fingers meet or cross, and left (3) is still before right (4)."
+      }
+    ]
+  }
+]

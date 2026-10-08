@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "jump-game",
+  "slug": "jump-game",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Can you reach the last index?",
+  "storyTitle": "The stepping stones",
+  "summary": "Each stone says how far you can leap from it; track the farthest stone reachable to know whether you can cross.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "greedy",
+      "variantId": "reach",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "invariant"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the far bank can be reached",
+  "mapping": [
+    {
+      "story": "Stones across the river",
+      "formal": "Array nums"
+    },
+    {
+      "story": "How far you can leap from a stone",
+      "formal": "nums[i], the maximum jump"
+    },
+    {
+      "story": "Farthest stone reachable so far",
+      "formal": "reach"
+    },
+    {
+      "story": "Reaching the far bank",
+      "formal": "Reaching the last index"
+    }
+  ],
+  "examples": [
+    {
+      "id": "cross",
+      "label": "Can cross",
+      "input": {
+        "nums": [
+          2,
+          3,
+          1,
+          1,
+          4
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "Leap 1 stone, then 3, to reach the end."
+    },
+    {
+      "id": "stuck",
+      "label": "Stuck at a zero",
+      "input": {
+        "nums": [
+          3,
+          2,
+          1,
+          0,
+          4
+        ]
+      },
+      "expectedOutput": false,
+      "explanation": "Every route lands on the 0 at position 3 and cannot go further."
+    },
+    {
+      "id": "one",
+      "label": "Already there",
+      "input": {
+        "nums": [
+          0
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "The first stone is the last."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "try-every-route",
+      "level": "brute-force",
+      "name": "Try every route",
+      "idea": "From each stone, recursively try every possible leap and see if any route reaches the end.",
+      "time": "O(2ⁿ)",
+      "space": "O(n)"
+    },
+    {
+      "id": "reachable-table",
+      "level": "better",
+      "name": "Mark reachable stones",
+      "idea": "Walk the stones in order; from every reachable stone, mark all stones it can leap to.",
+      "insight": "Many routes reach the same stone, and what happens next depends only on the stone, not the route. Marking each stone once removes the repetition.",
+      "time": "O(n²)",
+      "space": "O(n)"
+    },
+    {
+      "id": "farthest-reach",
+      "level": "optimal",
+      "name": "Track the farthest reach",
+      "idea": "Walk the stones keeping the farthest stone reachable so far. If you ever stand beyond it, you are stuck.",
+      "insight": "The reachable stones always form one unbroken stretch from the start, so a single number, its far end, describes all of them.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "jump-game",
+  "transfer": {
+    "problem": "A delivery van can drive a certain distance from each fuel station. Can it get from the first station to the last?",
+    "answerPatternId": "greedy",
+    "explanation": "Each station extends the farthest point reachable; if you ever arrive beyond that point, the trip fails."
+  },
+  "practice": {
+    "selfCheck": [
+      "Stops with False the moment a position is beyond the reach.",
+      "Updates the reach with i + nums[i].",
+      "Returns True for a single stone.",
+      "Uses one pass."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Jump Game",
+  "practiceLink": {
+    "label": "LeetCode 55",
+    "url": "https://leetcode.com/problems/jump-game/"
+  }
+}

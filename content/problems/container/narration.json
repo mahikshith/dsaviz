@@ -1,0 +1,39 @@
+{
+  "opposite-pointers": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} planks in a row. Any two can be the walls of the barrel.",
+      "formal": "heights has {n} values. Maximise min(h[i], h[j]) × (j − i)."
+    },
+    "initialize": {
+      "label": "Widest barrel first",
+      "story": "One builder takes the first plank (position {left}), the other the last (position {right}).",
+      "formal": "left = {left}, right = {right}, best = 0."
+    },
+    "measure:record": {
+      "label": "Measure",
+      "story": "Walls of {leftHeight} and {rightHeight}: water rises to {height} over a width of {width}, holding {area}. A new record.",
+      "formal": "min({leftHeight}, {rightHeight}) × {width} = {area} > previous best, so best = {best}."
+    },
+    "measure:keep": {
+      "label": "Measure",
+      "story": "Walls of {leftHeight} and {rightHeight}: water rises to {height} over a width of {width}, holding {area}. The record stays {best}.",
+      "formal": "min({leftHeight}, {rightHeight}) × {width} = {area} ≤ best = {best}."
+    },
+    "move-left": {
+      "label": "Drop the left wall",
+      "story": "The left plank ({height}) is shorter than the right ({other}). Any narrower barrel with it holds less, so drop it: move to position {to}.",
+      "formal": "h[{from}] < h[right]: left {from} → {to}."
+    },
+    "move-right": {
+      "label": "Drop the right wall",
+      "story": "The right plank ({height}) is not taller than the left ({other}). Any narrower barrel with it holds less, so drop it: move to position {to}.",
+      "formal": "h[{from}] ≤ h[left]: right {from} → {to}."
+    },
+    "done": {
+      "label": "Return the best",
+      "story": "The builders have met. The biggest barrel used planks {left} and {right} and holds {best}.",
+      "formal": "left = right. Return best = {best}."
+    }
+  }
+}

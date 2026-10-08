@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "id": "find-min-rotated",
+  "slug": "find-min-rotated",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Minimum of a rotated sorted array",
+  "storyTitle": "The lowest step",
+  "summary": "A staircase was cut and its pieces swapped; find the lowest step by comparing the middle step with the last one.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "binary-search",
+      "variantId": "rotated",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "nondecreasing"
+  ],
+  "checker": "exact",
+  "goal": "Find the lowest step of the cut-and-swapped staircase",
+  "mapping": [
+    {
+      "story": "Step heights in order",
+      "formal": "Array nums, rotated"
+    },
+    {
+      "story": "The drop where the cut was",
+      "formal": "Rotation point"
+    },
+    {
+      "story": "The lowest step",
+      "formal": "Minimum value"
+    },
+    {
+      "story": "Range still possible",
+      "formal": "low..high"
+    }
+  ],
+  "examples": [
+    {
+      "id": "cut",
+      "label": "Cut after 5",
+      "input": {
+        "nums": [
+          3,
+          4,
+          5,
+          1,
+          2
+        ]
+      },
+      "expectedOutput": 1,
+      "explanation": "The staircase drops from 5 to 1."
+    },
+    {
+      "id": "longer",
+      "label": "Seven steps",
+      "input": {
+        "nums": [
+          4,
+          5,
+          6,
+          7,
+          0,
+          1,
+          2
+        ]
+      },
+      "expectedOutput": 0,
+      "explanation": "The drop is from 7 to 0."
+    },
+    {
+      "id": "not-cut",
+      "label": "Not rotated",
+      "input": {
+        "nums": [
+          11,
+          13,
+          15,
+          17
+        ]
+      },
+      "expectedOutput": 11,
+      "explanation": "With no cut, the first step is lowest."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "scan",
+      "level": "brute-force",
+      "name": "Look at every step",
+      "idea": "Walk the whole staircase and keep the lowest step.",
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    {
+      "id": "compare-last",
+      "level": "optimal",
+      "name": "Compare the middle with the last step",
+      "idea": "If the middle step is higher than the last step, the drop is to its right; otherwise the lowest step is the middle or to its left. Halve and repeat.",
+      "insight": "The last step tells us which side of the cut the middle is on: the part after the cut is entirely lower than the part before it.",
+      "time": "O(log n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "rotated-min",
+  "transfer": {
+    "problem": "A circular list of times sorted from earliest but starting somewhere in the middle: find the earliest time quickly.",
+    "answerPatternId": "binary-search",
+    "explanation": "It is a rotated sorted list; comparing the middle with the end tells you which half holds the start."
+  },
+  "practice": {
+    "selfCheck": [
+      "Compares the middle with the last element of the range, not the first.",
+      "Keeps the middle when it might be the minimum (high = mid).",
+      "Loops while low < high.",
+      "Works when the array is not rotated."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Find Minimum in Rotated Sorted Array",
+  "practiceLink": {
+    "label": "LeetCode 153",
+    "url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/"
+  }
+}

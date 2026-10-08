@@ -1,0 +1,30 @@
+[
+  {
+    "id": "drop-shorter",
+    "approachId": "opposite-pointers",
+    "exampleId": "fence",
+    "frameId": "2-measure",
+    "question": "The walls are 1 and 7 high. Which builder should step inward?",
+    "context": "The widest barrel uses planks of height 1 (left) and 7 (right) and holds 1 × 8 = 8.",
+    "choices": [
+      {
+        "id": "left",
+        "label": "The left builder, at the 1-high plank",
+        "correct": true,
+        "feedback": "Right. Water can never rise above 1 while that plank is a wall, and every other barrel with it is narrower, so it can only hold less."
+      },
+      {
+        "id": "right",
+        "label": "The right builder, at the 7-high plank",
+        "correct": false,
+        "feedback": "Moving the taller wall keeps the 1-high plank, so the water stays at most 1 while the barrel gets narrower. That can only lose water."
+      },
+      {
+        "id": "both",
+        "label": "Both builders together",
+        "correct": false,
+        "feedback": "That would skip pairs that use the 7-high plank with planks further left, such as the 8 at position 1. Move only the shorter wall."
+      }
+    ]
+  }
+]

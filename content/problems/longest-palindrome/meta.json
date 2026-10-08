@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "id": "longest-palindrome",
+  "slug": "longest-palindrome",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Longest palindromic substring",
+  "storyTitle": "The echo chamber",
+  "summary": "Stand at every middle of a word and let the echo spread both ways while the letters match; keep the longest echo.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Adobe"
+  ],
+  "topics": [
+    "strings"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "expand-center",
+      "order": 50
+    }
+  ],
+  "prerequisites": [
+    "palindrome",
+    "pointer"
+  ],
+  "checker": "exact",
+  "goal": "Find the longest stretch of the word that reads the same both ways",
+  "mapping": [
+    {
+      "story": "The word",
+      "formal": "String s"
+    },
+    {
+      "story": "Where you stand and shout",
+      "formal": "A centre: a letter or a gap between letters"
+    },
+    {
+      "story": "How far the echo spreads",
+      "formal": "Expanding left and right pointers"
+    },
+    {
+      "story": "Longest echo",
+      "formal": "Longest palindromic substring"
+    }
+  ],
+  "examples": [
+    {
+      "id": "racecars",
+      "label": "racecars",
+      "input": {
+        "s": "racecars"
+      },
+      "expectedOutput": "racecar",
+      "explanation": "racecar reads the same both ways; no longer stretch does."
+    },
+    {
+      "id": "even",
+      "label": "cbbd",
+      "input": {
+        "s": "cbbd"
+      },
+      "expectedOutput": "bb",
+      "explanation": "The longest echo is centred on the gap between the two b's."
+    },
+    {
+      "id": "single",
+      "label": "One letter",
+      "input": {
+        "s": "x"
+      },
+      "expectedOutput": "x",
+      "explanation": "A single letter is a palindrome."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-substring",
+      "level": "brute-force",
+      "name": "Check every stretch",
+      "idea": "Check every substring, from longest to shortest, for whether it reads the same both ways.",
+      "time": "O(n³)",
+      "space": "O(1)"
+    },
+    {
+      "id": "table",
+      "level": "better",
+      "name": "Remember shorter palindromes",
+      "idea": "A stretch is a palindrome when its ends match and the stretch inside is one. Fill a table from short stretches to long.",
+      "insight": "Checking a stretch repeats the work done for the stretch inside it. Remembering inner answers turns each check into one comparison.",
+      "time": "O(n²)",
+      "space": "O(n²)"
+    },
+    {
+      "id": "expand",
+      "level": "optimal",
+      "name": "Expand from every centre",
+      "idea": "For each centre, a letter or the gap between two letters, widen while both ends match. Keep the longest.",
+      "insight": "Every palindrome has a centre, and growing outward from it checks exactly the same pairs as the table, without storing the table.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "longest-palindrome",
+  "transfer": {
+    "problem": "Count how many substrings of a word are palindromes.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Expand from every centre; each successful widening is one more palindrome."
+  },
+  "practice": {
+    "selfCheck": [
+      "Tries both odd centres (a letter) and even centres (a gap).",
+      "Stops widening at the first mismatch.",
+      "Keeps the longest stretch found.",
+      "Handles a one-letter word."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Longest Palindromic Substring",
+  "practiceLink": {
+    "label": "LeetCode 5",
+    "url": "https://leetcode.com/problems/longest-palindromic-substring/"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "last-seen": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} passengers will board. We want the longest run with no badge twice.",
+      "formal": "len(s) = {n}. Find the longest substring without a repeated character."
+    },
+    "initialize": {
+      "label": "Open the window",
+      "story": "The window is empty and nothing has been seen yet.",
+      "formal": "last = {}, left = 0, best = 0."
+    },
+    "read:new": {
+      "label": "Board a passenger",
+      "story": "Passenger {right} wears {char}, a badge not seen before.",
+      "formal": "s[{right}] = '{char}' not in last."
+    },
+    "read:outside": {
+      "label": "Board a passenger",
+      "story": "Passenger {right} wears {char}. It was seen at {lastIndex}, but that passenger is already behind the window, so it does not count.",
+      "formal": "s[{right}] = '{char}', last['{char}'] = {lastIndex} < left: no repeat inside the window."
+    },
+    "read:repeat": {
+      "label": "A familiar badge",
+      "story": "Passenger {right} wears {char}, and another {char} sits inside the window at {lastIndex}.",
+      "formal": "s[{right}] = '{char}', last['{char}'] = {lastIndex} ≥ left: a repeat inside the window."
+    },
+    "jump": {
+      "label": "Move the back of the window",
+      "story": "The window must start after the earlier {char}, so its back jumps from {from} to {to}.",
+      "formal": "left = last['{char}'] + 1: {from} → {to}."
+    },
+    "measure:record": {
+      "label": "Measure",
+      "story": "The window runs from {left} to {right}: {length} passengers, a new longest.",
+      "formal": "length = {right} − {left} + 1 = {length} > best. best = {best}."
+    },
+    "measure:keep": {
+      "label": "Measure",
+      "story": "The window runs from {left} to {right}: {length} passengers. The longest stays {best}.",
+      "formal": "length = {length} ≤ best = {best}."
+    },
+    "done": {
+      "label": "Return the longest",
+      "story": "Everyone has boarded. The longest run without a repeat is {best}, from {start} to {end}.",
+      "formal": "Return best = {best}."
+    }
+  }
+}

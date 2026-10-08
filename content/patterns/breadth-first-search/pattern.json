@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "id": "breadth-first-search",
+  "status": "published",
+  "name": "Breadth-first search",
+  "short": "BF",
+  "hue": "teal",
+  "family": "graph",
+  "order": 10,
+  "intuition": "Explore a graph in rings of distance with a queue, so the first time you reach a node you have found the fewest steps.",
+  "aliases": [
+    "BFS",
+    "fewest steps",
+    "shortest path unweighted",
+    "level by level",
+    "ripple"
+  ],
+  "topics": [
+    "graphs",
+    "stacks-and-queues"
+  ],
+  "prerequisites": [
+    "graph",
+    "queue",
+    "unweighted"
+  ],
+  "variants": [
+    {
+      "id": "shortest-path",
+      "name": "Fewest edges",
+      "summary": "Spread out one ring at a time and stop when the goal is discovered.",
+      "requires": "Every edge costs the same. With different costs, use Dijkstra's algorithm."
+    },
+    {
+      "id": "level-order",
+      "name": "Level by level",
+      "summary": "Visit a tree or grid one layer at a time, processing each layer as a group.",
+      "requires": "You need to know which layer each node belongs to, not only the order of visits."
+    },
+    {
+      "id": "multi-source",
+      "name": "Many starting points",
+      "summary": "Put every starting node in the queue at once and spread from all of them together.",
+      "requires": "All sources start at the same time and every step costs the same."
+    },
+    {
+      "id": "topological",
+      "name": "Dependency order",
+      "summary": "Repeatedly take tasks with no unfinished prerequisites, unlocking the tasks that wait on them.",
+      "requires": "Dependencies form a directed graph; a cycle means no valid order exists."
+    }
+  ],
+  "visual": {
+    "caption": "Corners are reached in rings: distance 0, then every corner at distance 1, then distance 2. The number on each corner is its distance.",
+    "scene": {
+      "graph": {
+        "width": 470,
+        "height": 250,
+        "nodes": [
+          {
+            "id": "A",
+            "label": "A",
+            "caption": "Home",
+            "x": 50,
+            "y": 125,
+            "state": "visited",
+            "badge": "0"
+          },
+          {
+            "id": "B",
+            "label": "B",
+            "x": 170,
+            "y": 55,
+            "state": "visited",
+            "badge": "1"
+          },
+          {
+            "id": "C",
+            "label": "C",
+            "x": 170,
+            "y": 195,
+            "state": "current",
+            "badge": "1"
+          },
+          {
+            "id": "D",
+            "label": "D",
+            "x": 290,
+            "y": 55,
+            "state": "queued",
+            "badge": "2"
+          },
+          {
+            "id": "E",
+            "label": "E",
+            "x": 290,
+            "y": 195,
+            "state": "queued",
+            "badge": "2"
+          },
+          {
+            "id": "F",
+            "label": "F",
+            "x": 410,
+            "y": 125,
+            "state": "idle",
+            "goal": true,
+            "caption": "Library"
+          }
+        ],
+        "edges": [
+          {
+            "id": "A-B",
+            "from": "A",
+            "to": "B",
+            "state": "tree"
+          },
+          {
+            "id": "A-C",
+            "from": "A",
+            "to": "C",
+            "state": "tree"
+          },
+          {
+            "id": "B-D",
+            "from": "B",
+            "to": "D",
+            "state": "tree"
+          },
+          {
+            "id": "C-E",
+            "from": "C",
+            "to": "E",
+            "state": "tree"
+          },
+          {
+            "id": "C-D",
+            "from": "C",
+            "to": "D",
+            "state": "checking"
+          },
+          {
+            "id": "D-F",
+            "from": "D",
+            "to": "F",
+            "state": "idle"
+          },
+          {
+            "id": "E-F",
+            "from": "E",
+            "to": "F",
+            "state": "idle"
+          }
+        ]
+      },
+      "legend": [
+        {
+          "label": "Taken from queue",
+          "swatch": "primary"
+        },
+        {
+          "label": "Waiting in queue",
+          "swatch": "comparison"
+        },
+        {
+          "label": "Distance known",
+          "swatch": "window"
+        }
+      ]
+    }
+  }
+}

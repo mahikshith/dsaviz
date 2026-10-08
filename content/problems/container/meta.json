@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "id": "container",
+  "slug": "container",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Largest area between two lines",
+  "storyTitle": "The rain barrel builders",
+  "summary": "Pick two fence planks as the walls of a rain barrel so it holds the most water, dropping the shorter wall each step.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "two-pointers",
+      "variantId": "opposite",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "pointer",
+    "zero-based-index"
+  ],
+  "checker": "exact",
+  "goal": "Choose two planks that hold the most water between them",
+  "mapping": [
+    {
+      "story": "Fence planks in a row",
+      "formal": "Array heights"
+    },
+    {
+      "story": "A plank's height",
+      "formal": "A value heights[i]"
+    },
+    {
+      "story": "Gap between two planks",
+      "formal": "Width j − i"
+    },
+    {
+      "story": "Water level",
+      "formal": "min(heights[i], heights[j])"
+    },
+    {
+      "story": "Water held",
+      "formal": "Area min(...) × (j − i)"
+    }
+  ],
+  "examples": [
+    {
+      "id": "fence",
+      "label": "Nine planks",
+      "input": {
+        "heights": [
+          1,
+          8,
+          6,
+          2,
+          5,
+          4,
+          8,
+          3,
+          7
+        ]
+      },
+      "expectedOutput": 49,
+      "explanation": "Planks 1 (height 8) and 8 (height 7): water rises to 7 over a width of 7, so 49."
+    },
+    {
+      "id": "two",
+      "label": "Two planks",
+      "input": {
+        "heights": [
+          1,
+          1
+        ]
+      },
+      "expectedOutput": 1,
+      "explanation": "Only one pair: height 1, width 1."
+    },
+    {
+      "id": "tall-ends",
+      "label": "Tall ends",
+      "input": {
+        "heights": [
+          4,
+          3,
+          2,
+          1,
+          4
+        ]
+      },
+      "expectedOutput": 16,
+      "explanation": "The two end planks, both 4 high and 4 apart, hold 16."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-pair",
+      "level": "brute-force",
+      "name": "Try every pair of planks",
+      "idea": "Measure the water between every pair of planks and keep the largest.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "opposite-pointers",
+      "level": "optimal",
+      "name": "Drop the shorter wall",
+      "idea": "Start with the widest barrel. Measure it, then move the shorter wall inward and measure again, keeping the best.",
+      "insight": "Water only rises to the shorter wall. Every narrower barrel that keeps that wall holds less, so the shorter wall can be dropped for good.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "approachId": "opposite-pointers"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "opposite-pointers",
+      "name": "Drop the shorter wall",
+      "adapterId": "container-area-v1",
+      "summary": "Measure the widest barrel, then always move the shorter wall inward.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "opposite-pointers",
+  "transfer": {
+    "problem": "Two towers on a skyline: choose two buildings so that a banner hung between their roofs, sagging to the lower roof, has the largest area.",
+    "answerPatternId": "two-pointers",
+    "explanation": "It is the same trade-off between width and the shorter of two heights: start widest and move the lower building inward."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses the shorter of the two walls for the water level.",
+      "Moves the shorter wall, not the taller one.",
+      "Keeps the best area seen, not the last one.",
+      "Stops when the two walls meet."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Container With Most Water",
+  "practiceLink": {
+    "label": "LeetCode 11",
+    "url": "https://leetcode.com/problems/container-with-most-water/"
+  }
+}

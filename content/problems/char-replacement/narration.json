@@ -1,0 +1,39 @@
+{
+  "sliding-tally": {
+    "present": {
+      "label": "Read the input",
+      "story": "{n} tiles and paint for {k}.",
+      "formal": "len(s) = {n}, k = {k}."
+    },
+    "initialize": {
+      "label": "Start empty",
+      "story": "The window is empty and the tally is blank.",
+      "formal": "count = {}, left = 0, top = 0, best = 0."
+    },
+    "grow": {
+      "label": "Add a tile",
+      "story": "Tile {right} is {char}; there are now {count} of it in the window. The most common colour appears {top} times, so this window of {size} needs {repaints} repaints.",
+      "formal": "count['{char}'] = {count}, top = {top}, size {size}, repaints = {size} − {top} = {repaints}."
+    },
+    "slide": {
+      "label": "Slide instead of growing",
+      "story": "That is more than {k}, so the leftmost tile ({char}) leaves the window, which moves from {from} to {to}. The window keeps its size.",
+      "formal": "{repaints} > k: count['{char}'] −= 1, left {from} → {to}."
+    },
+    "measure:record": {
+      "label": "Measure",
+      "story": "The window now holds {size} tiles, the longest so far.",
+      "formal": "best = {best}."
+    },
+    "measure:keep": {
+      "label": "Measure",
+      "story": "The window holds {size} tiles; the best stays {best}.",
+      "formal": "size {size} ≤ best = {best}."
+    },
+    "done": {
+      "label": "Return the longest",
+      "story": "The longest stretch that can be made one colour is {best} tiles.",
+      "formal": "Return best = {best}."
+    }
+  }
+}

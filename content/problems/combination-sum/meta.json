@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "id": "combination-sum",
+  "slug": "combination-sum",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Combinations that add up to a target, with reuse",
+  "storyTitle": "The exact price basket",
+  "summary": "Fill a basket that costs exactly the target, reusing any item as often as you like, trying items in order so no basket is counted twice.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Airbnb"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "backtracking",
+      "variantId": "choose-or-skip",
+      "order": 30
+    }
+  ],
+  "prerequisites": [
+    "recursion"
+  ],
+  "checker": "unordered-nested",
+  "goal": "List every basket of items that costs exactly the target",
+  "mapping": [
+    {
+      "story": "Items for sale",
+      "formal": "Array candidates, distinct and positive"
+    },
+    {
+      "story": "Budget to hit exactly",
+      "formal": "target"
+    },
+    {
+      "story": "A basket",
+      "formal": "A multiset of candidates"
+    },
+    {
+      "story": "Trying items in order",
+      "formal": "Each step starts at the current item's index"
+    }
+  ],
+  "examples": [
+    {
+      "id": "shop",
+      "label": "Items 2, 3, 6, 7 and target 7",
+      "input": {
+        "candidates": [
+          2,
+          3,
+          6,
+          7
+        ],
+        "target": 7
+      },
+      "expectedOutput": [
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          7
+        ]
+      ],
+      "explanation": "2 + 2 + 3 and 7 alone."
+    },
+    {
+      "id": "eight",
+      "label": "Items 2, 3, 5 and target 8",
+      "input": {
+        "candidates": [
+          2,
+          3,
+          5
+        ],
+        "target": 8
+      },
+      "expectedOutput": [
+        [
+          2,
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          3,
+          3
+        ],
+        [
+          3,
+          5
+        ]
+      ],
+      "explanation": "Three different baskets."
+    },
+    {
+      "id": "none",
+      "label": "Impossible",
+      "input": {
+        "candidates": [
+          2
+        ],
+        "target": 1
+      },
+      "expectedOutput": [],
+      "explanation": "No basket of 2s costs 1."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-basket",
+      "level": "brute-force",
+      "name": "Try every basket, remove repeats",
+      "idea": "Build every sequence of items up to the target, keep those that hit it exactly, and remove baskets that are the same items in a different order.",
+      "time": "Exponential",
+      "space": "Exponential"
+    },
+    {
+      "id": "ordered-backtracking",
+      "level": "optimal",
+      "name": "Add items in order, stop when over",
+      "idea": "Sort the items. Add an item and recurse starting from that same item, so baskets are built in non-decreasing order; stop as soon as the next item would overshoot.",
+      "insight": "Building each basket in sorted order means every basket is built exactly once, so no de-duplication is needed. Sorting also lets the search stop the moment an item is too expensive.",
+      "time": "Exponential, pruned",
+      "space": "O(target / min item)"
+    }
+  ],
+  "solver": "combination-sum",
+  "transfer": {
+    "problem": "Find all ways to make 12 cents from coins of 1, 2 and 5, where order does not matter.",
+    "answerPatternId": "backtracking",
+    "explanation": "It is the same search: add coins in non-decreasing order with reuse, stopping when the total overshoots."
+  },
+  "practice": {
+    "selfCheck": [
+      "Lets the same item be used again by recursing from the same index.",
+      "Never goes back to an earlier item, so no basket repeats.",
+      "Stops exploring once the remaining budget is negative or the item is too big.",
+      "Records a copy when the remaining budget is exactly zero."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Combination Sum",
+  "practiceLink": {
+    "label": "LeetCode 39",
+    "url": "https://leetcode.com/problems/combination-sum/"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "subarray-sum-k",
+  "slug": "subarray-sum-k",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Count subarrays that sum to k",
+  "storyTitle": "The coin jar checkpoints",
+  "summary": "Drop coins in a jar and note the running total at every checkpoint; two checkpoints that differ by k fence off a stretch worth k.",
+  "difficulty": "medium",
+  "companies": [
+    "Meta",
+    "Google",
+    "Amazon"
+  ],
+  "topics": [
+    "arrays",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "prefix-sums",
+      "variantId": "prefix-counts",
+      "order": 30
+    },
+    {
+      "patternId": "hash-map",
+      "variantId": "complement",
+      "order": 40
+    }
+  ],
+  "prerequisites": [
+    "prefix-sum",
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Count the stretches of coins that add up to exactly k",
+  "mapping": [
+    {
+      "story": "Coins dropped in order",
+      "formal": "Array nums"
+    },
+    {
+      "story": "Running total at a checkpoint",
+      "formal": "Prefix sum"
+    },
+    {
+      "story": "A stretch of coins",
+      "formal": "A subarray"
+    },
+    {
+      "story": "Notebook of totals seen",
+      "formal": "Map: prefix sum → count"
+    }
+  ],
+  "examples": [
+    {
+      "id": "ones",
+      "label": "Three 1s, k = 2",
+      "input": {
+        "nums": [
+          1,
+          1,
+          1
+        ],
+        "k": 2
+      },
+      "expectedOutput": 2,
+      "explanation": "Positions 0–1 and 1–2 each add up to 2."
+    },
+    {
+      "id": "mixed",
+      "label": "1, 2, 3 and k = 3",
+      "input": {
+        "nums": [
+          1,
+          2,
+          3
+        ],
+        "k": 3
+      },
+      "expectedOutput": 2,
+      "explanation": "1 + 2 and 3 on its own."
+    },
+    {
+      "id": "negatives",
+      "label": "With a negative",
+      "input": {
+        "nums": [
+          1,
+          -1,
+          0
+        ],
+        "k": 0
+      },
+      "expectedOutput": 3,
+      "explanation": "[1, −1], [0] and [1, −1, 0] all add up to 0."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "every-stretch",
+      "level": "brute-force",
+      "name": "Add up every stretch",
+      "idea": "For each start, extend to the right, keeping a running sum, and count every time it equals k.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "checkpoint-notebook",
+      "level": "optimal",
+      "name": "Count matching checkpoints",
+      "idea": "Keep a running total and a notebook of how often each total has appeared. At each coin, the stretches ending here that add up to k are the earlier checkpoints equal to total − k.",
+      "insight": "The sum of a stretch is the difference of two running totals. Counting stretches ending here is counting earlier totals that differ from now by exactly k.",
+      "time": "O(n)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "subarray-sum-count",
+  "transfer": {
+    "problem": "Count the periods of consecutive days where a shop's daily profit and loss adds up to exactly zero.",
+    "answerPatternId": "prefix-sums",
+    "explanation": "A zero-sum period is two equal running totals; count how often each running total has appeared."
+  },
+  "practice": {
+    "selfCheck": [
+      "Starts the notebook with total 0 seen once.",
+      "Looks up total − k before recording the current total.",
+      "Works with negative numbers.",
+      "Counts stretches, not distinct totals."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Subarray Sum Equals K",
+  "practiceLink": {
+    "label": "LeetCode 560",
+    "url": "https://leetcode.com/problems/subarray-sum-equals-k/"
+  }
+}

@@ -1,66 +1,72 @@
-# dsaviz
+# Pattern Atlas (dsaviz)
 
-Data structures and algorithms, taught as animated stories. Every problem has a story, a cast of characters per pattern, three explanation depths (kid, builder, expert) and code in Python, Java, C++, JavaScript and Go.
+Data structures and algorithms taught through short stories, step-by-step walkthroughs and practice grouped by pattern. "Pattern Atlas" is a working name; check that it is free to use before launch. It is set in one place, `src/lib/site.ts`.
 
-## See it
+Each lesson has three modes:
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 9 animated stories, light, dark and terminal themes. It needs no server and no internet apart from the web fonts.
+- **Understand**: a short story, the formal statement, and a table that maps every story term to the data.
+- **Visualize**: a walkthrough you step through forwards and backwards. The diagram, explanation, variables and highlighted code line all come from the same trace frame. It includes one prediction question.
+- **Practice**: a scratchpad with sample cases and a self-check list. There is no code runner yet, and the site never pretends there is.
 
-Or serve it locally:
+Five lessons are published: opposite pointers (two lessons), fixed sliding window and prefix sums (one problem in two patterns), stack matching, and breadth-first search.
 
-```bash
-npm start            # http://localhost:5173
-```
+## Run it
 
-## Work on it
-
-Requirements: Node 18+ and Python 3.
+Requirements: Node 20.9 or newer.
 
 ```bash
-npm install          # React, used only to bundle the site
-npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # logic back-test of every page + every animated story
-npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Edit, then `npm run build`, then refresh `dist/index.html`.
+Production build (static export to `out/`) and a local check of it:
 
-## Layout
+```bash
+npm run build        # validates content, then builds
+npm start            # serves out/ at http://localhost:4173
+```
+
+`out/` is plain HTML, CSS and JS. Host it on any static host: GitHub Pages, Netlify, Vercel, S3 or similar. There is no server and no backend.
+
+### If the native compiler can't be downloaded
+
+Some networks block the download of Next.js's native compiler (`@next/swc-*`) and other native binaries. `scripts/next.mjs` detects this and falls back to the WebAssembly compiler with webpack. It is slower (about a minute for a first build) but produces the same site. The test tooling uses Rollup's WebAssembly build through an `overrides` entry in `package.json` for the same reason.
+
+## Checks
+
+```bash
+npm run typecheck    # TypeScript
+npm run validate     # content rules (also runs as part of build)
+npm test             # unit tests: algorithms, traces, player, content, progress, contrast
+npm run test:e2e     # browser tests against out/ (run npm run build first)
+npm run check        # typecheck + unit tests + build
+```
+
+Browser tests use the Chrome already installed on the machine. Use `PW_CHANNEL=msedge` for Edge, or `PW_CHANNEL=bundled` after `npx playwright install chromium`.
+
+## Where things are
 
 | Path | What it is |
 | --- | --- |
-| `pages/*.dc.html` | One file per page: markup template, then a `<script type="text/x-dc">` with a `Component` class whose `renderVals()` fills the `{{holes}}`. |
-| `pages/canvas.json` | Board positions for the design-canvas view. |
-| `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the 58-problem catalog (`catalog.js`), the menu drawer. |
-| `src/story/` | The story engine: `scenes_tp.js` (Two Pointers), `scenes_sw.js` (Sliding Window), `scenes_hm.js` (Hash Map), `tail.js` (scene registry and quiz kits), `comp.js` (the player), `story_body.html` (its markup). |
-| `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
-| `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
-| `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). |
-| `tests/` | `backtest.js`, `scenecheck.js`, `site-test.js`. |
+| `content/` | Lessons, patterns, glossary, topics and paths: Markdown and JSON, validated at build |
+| `content/problems/_template/` | Copy this to start a new lesson |
+| `src/engine/` | Trace contracts, pure algorithm adapters, adapter registries, output checkers, narration presenter |
+| `src/visuals/scenes/` | Reusable renderers: arrays (SVG), graphs (SVG), stacks and queues (HTML lists) |
+| `src/features/player/` | Playback reducer, scheduler, stage, controls, checkpoint, code panel, custom input |
+| `src/features/lesson/` | Lesson workspace (modes, rail, practice, glossary) |
+| `src/features/catalog/` | Pattern catalog, practice catalog, path pages |
+| `src/features/progress/`, `src/lib/progress/` | Local progress: model, storage adapter, provider, My learning |
+| `src/lib/content/` | Schemas, loader and validation, Markdown, reference-code anchors |
+| `src/app/` | Routes |
+| `docs/` | Architecture, design tokens, authoring guide, verification record |
 
-Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
+## Documentation
 
-### Template syntax used in pages
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how a lesson runs from one deterministic trace
+- [docs/CONTENT_AUTHORING.md](docs/CONTENT_AUTHORING.md): how to add a lesson or pattern
+- [docs/DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md): colour, type and spacing tokens, with contrast rules
+- [docs/VERIFICATION.md](docs/VERIFICATION.md): what was checked, how, and the known limits
 
-- `{{path.to.value}}` in text or attributes. A lone hole in an attribute passes the raw value, such as a function for `onClick`.
-- `<sc-for list="{{items}}" as="it">…</sc-for>` repeats, `<sc-if value="{{flag}}">…</sc-if>` shows conditionally.
-- `onClick`, `onChange`, `onMouseEnter`, `onMouseLeave`, `onTouchStart`, `ref`.
-- Links to `X.dc.html` move between pages. `hint-*` attributes are editor hints and are ignored.
+## History
 
-## Add an animated story
-
-1. Write a scene function in the right `src/story/scenes_*.js` (copy a sibling). It returns items, steps (each with `kind`, `dialog`, narration at three depths, `meter`, `watch`), code in five languages, and a `lines` map from step kind to code line.
-2. Register it in `SCENE_LIST` in `src/story/tail.js`.
-3. Set its `animated` flag to `true` in `shared/catalog.js`.
-4. Run `npm run build && npm test`. `scenecheck.js` fails if a step kind has no code line or a narration is missing.
-
-## State
-
-Progress lives in the browser's `localStorage` under `dsaviz-*` keys: theme, user, problem, lang, saved, deck, prefs, onboard. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
-
-## Known gaps
-
-- 9 of 58 stories are animated (Two Pointers, Sliding Window, Hash Map). The rest have story, synopsis and briefing.
-- Language basics: only chapter 03 is written.
-- Pages are laid out at 1440px and scaled down on small screens; there is no dedicated mobile layout.
-- Success stories on the landing page are labelled illustrative. Replace them with real, consented stories before launch.
+Before version 0.5 this repository held a different site: fixed 1440 px pages in a custom `.dc.html` template format, bundled into one `dist/index.html`. That version is in git history (commit `9376a08`) if any of its 58-problem catalog or nine animated stories should be ported. To port one, write it to the authoring contract in `docs/CONTENT_AUTHORING.md`.

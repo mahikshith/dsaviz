@@ -1,0 +1,14 @@
+[
+  {
+    "id": "first-prediction",
+    "approachId": "main-approach",
+    "exampleId": "first-example",
+    "frameId": "4-compare-sum",
+    "question": "The question shown on that frame.",
+    "context": "What the learner can see at this moment.",
+    "choices": [
+      { "id": "right", "label": "The correct decision", "correct": true, "feedback": "Why it is right, in a sentence or two." },
+      { "id": "wrong", "label": "A tempting wrong decision", "correct": false, "feedback": "Why it fails, without giving up." }
+    ]
+  }
+]

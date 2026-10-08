@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "id": "rotting-oranges",
+  "slug": "rotting-oranges",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Minutes until every orange rots",
+  "storyTitle": "The spreading ripple",
+  "summary": "Every rotten orange spoils its neighbours a minute later, like a ripple; count the rings needed to reach every fresh orange.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Microsoft"
+  ],
+  "topics": [
+    "graphs",
+    "stacks-and-queues"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "breadth-first-search",
+      "variantId": "multi-source",
+      "order": 40
+    }
+  ],
+  "prerequisites": [
+    "grid",
+    "queue"
+  ],
+  "checker": "exact",
+  "goal": "Count the minutes until no fresh orange is left, or report that one never rots",
+  "mapping": [
+    {
+      "story": "The crate",
+      "formal": "Grid: 0 empty, 1 fresh, 2 rotten"
+    },
+    {
+      "story": "Rot spreading for a minute",
+      "formal": "One BFS level"
+    },
+    {
+      "story": "All rotten oranges at the start",
+      "formal": "All sources in the queue at once"
+    },
+    {
+      "story": "Minutes needed",
+      "formal": "Number of levels, or −1"
+    }
+  ],
+  "examples": [
+    {
+      "id": "crate",
+      "label": "Rot reaches all",
+      "input": {
+        "grid": [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ]
+      },
+      "expectedOutput": 4,
+      "explanation": "The ripple needs four minutes to reach the bottom-right orange."
+    },
+    {
+      "id": "cut-off",
+      "label": "One orange is cut off",
+      "input": {
+        "grid": [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ]
+      },
+      "expectedOutput": -1,
+      "explanation": "The bottom-left orange has no neighbour that can rot it."
+    },
+    {
+      "id": "nothing",
+      "label": "No fresh oranges",
+      "input": {
+        "grid": [
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      "expectedOutput": 0,
+      "explanation": "There is nothing left to rot."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "minute-by-minute",
+      "level": "brute-force",
+      "name": "Simulate minute by minute",
+      "idea": "Each minute, scan the whole crate and rot every fresh orange next to a rotten one; stop when nothing changes.",
+      "time": "O((m·n)²)",
+      "space": "O(m·n)"
+    },
+    {
+      "id": "multi-source-bfs",
+      "level": "optimal",
+      "name": "One ripple from every rotten orange",
+      "idea": "Put every rotten orange in a queue at once. Spread one ring per minute: each orange taken from the queue rots its fresh neighbours and queues them.",
+      "insight": "Rescanning the whole crate every minute repeats work. Only oranges that rotted last minute can spread rot this minute, and a queue holds exactly those.",
+      "time": "O(m·n)",
+      "space": "O(m·n)"
+    }
+  ],
+  "solver": "rotting-oranges",
+  "transfer": {
+    "problem": "Several fire stations respond to a city grid. Find the longest time any block waits for the nearest station.",
+    "answerPatternId": "breadth-first-search",
+    "explanation": "Start BFS from all stations at once; the last ring reached gives the longest wait."
+  },
+  "practice": {
+    "selfCheck": [
+      "Starts with every rotten orange in the queue.",
+      "Counts minutes by levels, not by oranges.",
+      "Returns −1 if a fresh orange remains.",
+      "Returns 0 when nothing is fresh."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Rotting Oranges",
+  "practiceLink": {
+    "label": "LeetCode 994",
+    "url": "https://leetcode.com/problems/rotting-oranges/"
+  }
+}

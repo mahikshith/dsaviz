@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "id": "number-of-islands",
+  "slug": "number-of-islands",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Count islands in a grid",
+  "storyTitle": "Islands on the map",
+  "summary": "Scan a map; each time you step on unexplored land you have found a new island, so chalk all of it before moving on.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Uber"
+  ],
+  "topics": [
+    "graphs"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "depth-first-search",
+      "variantId": "grid",
+      "order": 40
+    }
+  ],
+  "prerequisites": [
+    "grid",
+    "recursion"
+  ],
+  "checker": "exact",
+  "goal": "Count the separate islands on the map",
+  "mapping": [
+    {
+      "story": "The map",
+      "formal": "Grid of '1' (land) and '0' (water)"
+    },
+    {
+      "story": "An island",
+      "formal": "Land cells connected up, down, left or right"
+    },
+    {
+      "story": "Chalking an island",
+      "formal": "Flood fill that marks visited land"
+    },
+    {
+      "story": "Number of islands",
+      "formal": "Number of flood fills started"
+    }
+  ],
+  "examples": [
+    {
+      "id": "one",
+      "label": "One big island",
+      "input": {
+        "grid": [
+          "11110",
+          "11010",
+          "11000",
+          "00000"
+        ]
+      },
+      "expectedOutput": 1,
+      "explanation": "All the land touches."
+    },
+    {
+      "id": "three",
+      "label": "Three islands",
+      "input": {
+        "grid": [
+          "11000",
+          "11000",
+          "00100",
+          "00011"
+        ]
+      },
+      "expectedOutput": 3,
+      "explanation": "Three separate patches of land."
+    },
+    {
+      "id": "sea",
+      "label": "Only sea",
+      "input": {
+        "grid": [
+          "0"
+        ]
+      },
+      "expectedOutput": 0,
+      "explanation": "No land at all."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "label-and-compare",
+      "level": "brute-force",
+      "name": "Map each land cell's island, then de-duplicate",
+      "idea": "From every land cell, explore its whole island and record the set of cells; count the distinct sets.",
+      "time": "O((m·n)²)",
+      "space": "O(m·n)"
+    },
+    {
+      "id": "flood-fill",
+      "level": "optimal",
+      "name": "Chalk each island once",
+      "idea": "Scan the map. On finding land not yet chalked, count a new island and chalk all connected land with a depth-first flood fill.",
+      "insight": "Exploring the same island from each of its cells repeats work. Marking cells as visited means each island is explored exactly once.",
+      "time": "O(m·n)",
+      "space": "O(m·n)"
+    }
+  ],
+  "solver": "count-islands",
+  "transfer": {
+    "problem": "A photo is a grid of pixels. Count the separate blobs of black pixels.",
+    "answerPatternId": "depth-first-search",
+    "explanation": "Each blob is a connected region; flood-fill each new black pixel's region and count how many fills you start."
+  },
+  "practice": {
+    "selfCheck": [
+      "Marks land as visited before or as it is explored.",
+      "Explores only up, down, left and right.",
+      "Stays inside the grid.",
+      "Counts one island per flood fill started."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Number of Islands",
+  "practiceLink": {
+    "label": "LeetCode 200",
+    "url": "https://leetcode.com/problems/number-of-islands/"
+  }
+}

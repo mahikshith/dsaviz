@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "id": "in-place-reversal",
+  "status": "published",
+  "name": "Linked list reversal",
+  "short": "LR",
+  "hue": "moss",
+  "family": "structure",
+  "order": 30,
+  "intuition": "Turn the links of a list around one node at a time, holding just three pointers: before, current and next.",
+  "aliases": [
+    "reverse linked list",
+    "in-place reversal",
+    "reverse links",
+    "prev curr next"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "prerequisites": [
+    "linked-list",
+    "pointer"
+  ],
+  "variants": [
+    {
+      "id": "whole-list",
+      "name": "Reverse a whole list",
+      "summary": "Walk from the head, pointing each node back at the one before it.",
+      "requires": "You may change the links of the list."
+    },
+    {
+      "id": "sublist",
+      "name": "Reverse part of a list",
+      "summary": "Reverse only between two positions, then reconnect the ends.",
+      "requires": "You can find the node just before the part, or use a placeholder head."
+    }
+  ],
+  "visual": {
+    "caption": "Nodes 1 and 2 already point backwards. The current node is about to point back at prev, after next has been saved so the rest of the list is not lost.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "l",
+          "label": "nodes (links point right)",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "1",
+              "sub": "0",
+              "state": "success"
+            },
+            {
+              "id": "c1",
+              "label": "2",
+              "sub": "1",
+              "state": "success"
+            },
+            {
+              "id": "c2",
+              "label": "3",
+              "sub": "2",
+              "state": "primary"
+            },
+            {
+              "id": "c3",
+              "label": "4",
+              "sub": "3",
+              "state": "comparison"
+            },
+            {
+              "id": "c4",
+              "label": "5",
+              "sub": "4",
+              "state": "idle"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "p",
+              "label": "prev",
+              "index": 1,
+              "tone": "accent",
+              "side": "below"
+            },
+            {
+              "id": "c",
+              "label": "curr",
+              "index": 2,
+              "tone": "primary",
+              "side": "above"
+            },
+            {
+              "id": "n",
+              "label": "next",
+              "index": 3,
+              "tone": "comparison",
+              "side": "below"
+            }
+          ],
+          "bands": [
+            {
+              "id": "d",
+              "from": 0,
+              "to": 1,
+              "label": "already reversed",
+              "tone": "success",
+              "side": "above"
+            }
+          ]
+        }
+      ],
+      "legend": [
+        {
+          "label": "Links already turned around",
+          "swatch": "success"
+        },
+        {
+          "label": "Turning this link now",
+          "swatch": "primary"
+        },
+        {
+          "label": "Saved so it is not lost",
+          "swatch": "comparison"
+        }
+      ]
+    }
+  }
+}

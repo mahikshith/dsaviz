@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "id": "right-side-view",
+  "slug": "right-side-view",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Right side view of a binary tree",
+  "storyTitle": "The view from the right balcony",
+  "summary": "Standing on the right balcony of each floor of a treehouse, you see only the rightmost room on that floor.",
+  "difficulty": "medium",
+  "companies": [
+    "Meta",
+    "Amazon"
+  ],
+  "topics": [
+    "trees"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "breadth-first-search",
+      "variantId": "level-order",
+      "order": 30
+    },
+    {
+      "patternId": "depth-first-search",
+      "variantId": "tree",
+      "order": 35
+    }
+  ],
+  "prerequisites": [
+    "tree",
+    "queue"
+  ],
+  "checker": "exact",
+  "goal": "List the room you see from the right on every floor",
+  "mapping": [
+    {
+      "story": "The treehouse",
+      "formal": "Binary tree"
+    },
+    {
+      "story": "A floor",
+      "formal": "A depth"
+    },
+    {
+      "story": "What you see from the right",
+      "formal": "The last node of each level"
+    },
+    {
+      "story": "The view",
+      "formal": "List of those values, top to bottom"
+    }
+  ],
+  "examples": [
+    {
+      "id": "balcony",
+      "label": "Three floors",
+      "input": {
+        "root": [
+          1,
+          2,
+          3,
+          null,
+          5,
+          null,
+          4
+        ]
+      },
+      "expectedOutput": [
+        1,
+        3,
+        4
+      ],
+      "explanation": "The rightmost rooms are 1, 3 and 4."
+    },
+    {
+      "id": "lean",
+      "label": "Leaning right",
+      "input": {
+        "root": [
+          1,
+          null,
+          3
+        ]
+      },
+      "expectedOutput": [
+        1,
+        3
+      ],
+      "explanation": "Each floor has one room."
+    },
+    {
+      "id": "empty",
+      "label": "No treehouse",
+      "input": {
+        "root": []
+      },
+      "expectedOutput": [],
+      "explanation": "Nothing to see."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "all-floors",
+      "level": "brute-force",
+      "name": "List every floor, keep the last",
+      "idea": "Build the full floor-by-floor list, then take the last room of each floor.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "right-first",
+      "level": "optimal",
+      "name": "Look right first, note the first room per floor",
+      "idea": "Walk the tree depth-first, visiting right children before left. The first room reached at each new depth is the one seen from the right.",
+      "insight": "We only need one room per floor, the first one met when looking from the right. A right-first walk meets it before any other room on that floor, so nothing else needs storing.",
+      "time": "O(n)",
+      "space": "O(h)"
+    }
+  ],
+  "solver": "right-side-view",
+  "transfer": {
+    "problem": "Show the leftmost room on every floor of the treehouse instead.",
+    "answerPatternId": "depth-first-search",
+    "explanation": "Walk left-first and record the first room at each new depth, or take the first room of each level with BFS."
+  },
+  "practice": {
+    "selfCheck": [
+      "Records exactly one room per floor.",
+      "Visits the right child before the left in the depth-first version.",
+      "Detects a new floor by comparing depth with the view's length.",
+      "Handles an empty tree."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Binary Tree Right Side View",
+  "practiceLink": {
+    "label": "LeetCode 199",
+    "url": "https://leetcode.com/problems/binary-tree-right-side-view/"
+  }
+}

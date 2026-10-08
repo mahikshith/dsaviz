@@ -1,0 +1,172 @@
+[
+  {
+    "id": "array",
+    "term": "Array",
+    "definition": "An ordered list of values stored side by side. Each value sits at a numbered position called its index."
+  },
+  {
+    "id": "zero-based-index",
+    "term": "Zero-based index",
+    "definition": "Counting positions from 0, so the first item is at index 0 and the last of n items is at index n − 1."
+  },
+  {
+    "id": "nondecreasing",
+    "term": "Nondecreasing",
+    "definition": "Each value is at least as large as the one before it. Equal neighbours are allowed, so [2, 4, 4, 7] is nondecreasing."
+  },
+  {
+    "id": "invariant",
+    "term": "Invariant",
+    "definition": "A statement that stays true at every step of an algorithm. Showing it holds at the start and after each step shows the algorithm is correct."
+  },
+  {
+    "id": "pointer",
+    "term": "Pointer",
+    "definition": "Here, a variable that holds an index, such as left or right. Moving a pointer means changing which position it refers to."
+  },
+  {
+    "id": "subarray",
+    "term": "Subarray",
+    "definition": "A run of consecutive items from an array, such as positions 2, 3 and 4. A subarray never skips an item."
+  },
+  {
+    "id": "subsequence",
+    "term": "Subsequence",
+    "definition": "Items taken from an array in their original order, possibly skipping some. Every subarray is a subsequence, but not the other way round."
+  },
+  {
+    "id": "window",
+    "term": "Window",
+    "definition": "The subarray an algorithm is currently looking at, described by its first and last index."
+  },
+  {
+    "id": "prefix-sum",
+    "term": "Prefix sum",
+    "definition": "The running total of the first i items. With prefix sums P, the total of positions a to b is P[b + 1] − P[a]."
+  },
+  {
+    "id": "stack",
+    "term": "Stack",
+    "definition": "A collection where the last item added is the first one removed (last in, first out), like a pile of plates."
+  },
+  {
+    "id": "queue",
+    "term": "Queue",
+    "definition": "A collection where the first item added is the first one removed (first in, first out), like a line at a counter."
+  },
+  {
+    "id": "graph",
+    "term": "Graph",
+    "definition": "A set of nodes joined by edges, used to model things such as street corners joined by streets."
+  },
+  {
+    "id": "node",
+    "term": "Node",
+    "definition": "One point in a graph, such as a street corner. Also called a vertex."
+  },
+  {
+    "id": "edge",
+    "term": "Edge",
+    "definition": "A connection between two nodes. In these lessons edges are undirected: they can be travelled either way."
+  },
+  {
+    "id": "unweighted",
+    "term": "Unweighted",
+    "definition": "Every edge counts the same, so the length of a route is simply its number of edges."
+  },
+  {
+    "id": "distance",
+    "term": "Distance",
+    "definition": "In an unweighted graph, the fewest edges on any route between two nodes."
+  },
+  {
+    "id": "palindrome",
+    "term": "Palindrome",
+    "definition": "Text that reads the same forwards and backwards, such as “level”."
+  },
+  {
+    "id": "alphanumeric",
+    "term": "Alphanumeric",
+    "definition": "A letter or a digit. Spaces and punctuation marks are not alphanumeric."
+  },
+  {
+    "id": "big-o",
+    "term": "Big O",
+    "definition": "A way to describe how work grows with the input size n. O(n) grows in step with n; O(n²) grows with its square."
+  },
+  {
+    "id": "auxiliary-space",
+    "term": "Auxiliary space",
+    "definition": "Extra memory an algorithm uses beyond its input and output."
+  },
+  {
+    "id": "brute-force",
+    "term": "Brute force",
+    "definition": "Trying every candidate directly. Usually simple and correct, but slow on large inputs."
+  },
+  {
+    "id": "linked-list",
+    "term": "Linked list",
+    "definition": "A chain of nodes where each node holds a value and a link to the next node. You can only reach a node by following links from the start."
+  },
+  {
+    "id": "tree",
+    "term": "Tree",
+    "definition": "Nodes connected without loops, with one root at the top. Each node has children below it; a binary tree has at most two."
+  },
+  {
+    "id": "binary-search-tree",
+    "term": "Binary search tree",
+    "definition": "A binary tree where every value in a node's left subtree is smaller than the node, and every value in its right subtree is larger."
+  },
+  {
+    "id": "heap",
+    "term": "Heap",
+    "definition": "A tree-shaped structure that always keeps its smallest (or largest) item on top, so that item can be read at once and removed in O(log n)."
+  },
+  {
+    "id": "recursion",
+    "term": "Recursion",
+    "definition": "Solving a problem by calling the same function on a smaller piece of it, until a piece is small enough to answer directly."
+  },
+  {
+    "id": "memoization",
+    "term": "Memoization",
+    "definition": "Remembering the answer to each smaller problem the first time it is solved, so it is never solved twice."
+  },
+  {
+    "id": "interval",
+    "term": "Interval",
+    "definition": "A range with a start and an end, such as a meeting from 9 to 11. Two intervals overlap when one starts before the other ends."
+  },
+  {
+    "id": "grid",
+    "term": "Grid",
+    "definition": "A table of cells in rows and columns. A cell's neighbours are usually the cells directly above, below, left and right."
+  },
+  {
+    "id": "cycle",
+    "term": "Cycle",
+    "definition": "A path that returns to where it started, such as a linked list whose last node links back into the list."
+  },
+  {
+    "id": "topological-order",
+    "term": "Topological order",
+    "definition": "An order of tasks in which every task comes after all the tasks it depends on. It exists only when the dependencies have no cycle."
+  },
+  {
+    "id": "monotonic",
+    "term": "Monotonic",
+    "definition": "Always moving in one direction: never decreasing, or never increasing."
+  },
+  {
+    "id": "subproblem",
+    "term": "Subproblem",
+    "definition": "A smaller version of the problem, such as the same question for the first i items instead of all of them."
+  },
+  {
+    "id": "hash-map",
+    "term": "Hash map",
+    "definition": "A table that stores values under keys and finds any key in about one step on average, no matter how many keys it holds."
+  }
+]

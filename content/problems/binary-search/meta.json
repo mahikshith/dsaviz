@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "id": "binary-search",
+  "slug": "binary-search",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Find a value in a sorted array",
+  "storyTitle": "The number-guessing game",
+  "summary": "Find a book's position on a shelf sorted by call number by checking the middle and ruling out half each time.",
+  "difficulty": "introductory",
+  "companies": [
+    "Microsoft",
+    "Apple"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "binary-search",
+      "variantId": "exact",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "nondecreasing",
+    "zero-based-index"
+  ],
+  "checker": "exact",
+  "goal": "Find the position of the target, or report that it is missing",
+  "mapping": [
+    {
+      "story": "The shelf",
+      "formal": "Sorted array nums"
+    },
+    {
+      "story": "Call number",
+      "formal": "A value nums[i]"
+    },
+    {
+      "story": "Shelf position",
+      "formal": "Zero-based index"
+    },
+    {
+      "story": "The book wanted",
+      "formal": "target"
+    },
+    {
+      "story": "Part of the shelf still possible",
+      "formal": "Indices low..high"
+    }
+  ],
+  "examples": [
+    {
+      "id": "found",
+      "label": "Find 21",
+      "input": {
+        "nums": [
+          3,
+          8,
+          12,
+          17,
+          21,
+          30,
+          34
+        ],
+        "target": 21
+      },
+      "expectedOutput": 4,
+      "explanation": "21 sits at position 4."
+    },
+    {
+      "id": "missing",
+      "label": "Find 5",
+      "input": {
+        "nums": [
+          3,
+          8,
+          12,
+          17,
+          21,
+          30,
+          34
+        ],
+        "target": 5
+      },
+      "expectedOutput": -1,
+      "explanation": "5 is not on the shelf, so the answer is −1."
+    },
+    {
+      "id": "single",
+      "label": "One book",
+      "input": {
+        "nums": [
+          7
+        ],
+        "target": 7
+      },
+      "expectedOutput": 0,
+      "explanation": "The only book is the one wanted."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "scan",
+      "level": "brute-force",
+      "name": "Check every book",
+      "idea": "Walk along the shelf from the left until you find the call number or reach the end.",
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    {
+      "id": "halve",
+      "level": "optimal",
+      "name": "Check the middle, keep half",
+      "idea": "Look at the middle book of the part still possible. Too small: keep only the right half. Too large: keep only the left half.",
+      "insight": "The shelf is sorted, so one comparison with the middle book tells us which half cannot contain the target. Every check halves what is left.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "approachId": "halve"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "halve",
+      "name": "Check the middle, keep half",
+      "adapterId": "binary-search-v1",
+      "summary": "Compare with the middle and discard the half that cannot hold the target.",
+      "timeComplexity": "O(log n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "halve",
+  "transfer": {
+    "problem": "A friend thinks of a number from 1 to 1,000 and answers each guess with higher, lower or correct. How do you find it in at most 10 guesses?",
+    "answerPatternId": "binary-search",
+    "explanation": "Each answer rules out half the remaining numbers when you guess the middle, and 2¹⁰ = 1,024 covers all 1,000."
+  },
+  "practice": {
+    "selfCheck": [
+      "Uses inclusive bounds and loops while low ≤ high.",
+      "Moves low to mid + 1 or high to mid − 1, never to mid itself.",
+      "Returns −1 when the target is missing.",
+      "Works for a one-element array."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Binary Search",
+  "practiceLink": {
+    "label": "LeetCode 704",
+    "url": "https://leetcode.com/problems/binary-search/"
+  }
+}

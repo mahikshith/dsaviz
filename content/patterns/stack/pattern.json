@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "id": "stack",
+  "status": "published",
+  "name": "Stack",
+  "short": "ST",
+  "hue": "rose",
+  "family": "structure",
+  "order": 10,
+  "intuition": "When the most recent unfinished item must be handled first, keep pending items on a stack.",
+  "aliases": [
+    "last in first out",
+    "LIFO",
+    "matching brackets",
+    "nesting"
+  ],
+  "topics": [
+    "stacks-and-queues",
+    "strings"
+  ],
+  "prerequisites": [
+    "stack"
+  ],
+  "variants": [
+    {
+      "id": "matching",
+      "name": "Matching pairs",
+      "summary": "Push every opener; each closer must match the opener on top.",
+      "requires": "Pairs must nest: whatever opened last must close first."
+    },
+    {
+      "id": "monotonic",
+      "name": "Monotonic stack",
+      "summary": "Keep the stack in sorted order to find each item's next larger or smaller neighbour.",
+      "requires": "Each item needs only its nearest larger (or smaller) neighbour in one direction."
+    },
+    {
+      "id": "design",
+      "name": "Stack with extra memory",
+      "summary": "Store extra information beside each item, such as the minimum at that moment.",
+      "requires": "The extra information depends only on the items below it."
+    }
+  ],
+  "visual": {
+    "caption": "Reading “)” here: the top of the stack is “(”, the compartment opened most recently, so they match and it is popped.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "log",
+          "label": "log",
+          "cells": [
+            {
+              "id": "a",
+              "label": "{",
+              "sub": "0",
+              "state": "primary"
+            },
+            {
+              "id": "b",
+              "label": "[",
+              "sub": "1",
+              "state": "primary"
+            },
+            {
+              "id": "c",
+              "label": "(",
+              "sub": "2",
+              "state": "primary"
+            },
+            {
+              "id": "d",
+              "label": ")",
+              "sub": "3",
+              "state": "comparison"
+            },
+            {
+              "id": "e",
+              "label": "]",
+              "sub": "4",
+              "state": "idle"
+            },
+            {
+              "id": "f",
+              "label": "}",
+              "sub": "5",
+              "state": "idle"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "i",
+              "label": "i",
+              "index": 3,
+              "tone": "comparison",
+              "side": "above"
+            }
+          ],
+          "bands": []
+        }
+      ],
+      "stack": {
+        "label": "stack",
+        "items": [
+          {
+            "id": "s0",
+            "label": "{",
+            "sub": "from 0",
+            "state": "primary"
+          },
+          {
+            "id": "s1",
+            "label": "[",
+            "sub": "from 1",
+            "state": "primary"
+          },
+          {
+            "id": "s2",
+            "label": "(",
+            "sub": "from 2",
+            "state": "comparison"
+          }
+        ],
+        "capacity": 3,
+        "emptyText": "empty"
+      },
+      "legend": [
+        {
+          "label": "Lid and top being compared",
+          "swatch": "comparison"
+        },
+        {
+          "label": "Waiting on the stack",
+          "swatch": "primary"
+        }
+      ]
+    }
+  }
+}

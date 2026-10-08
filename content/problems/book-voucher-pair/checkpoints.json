@@ -1,0 +1,30 @@
+[
+  {
+    "id": "which-end-moves",
+    "approachId": "opposite-pointers",
+    "exampleId": "voucher-18",
+    "frameId": "4-compare-sum",
+    "question": "The total is 19. Which end should move?",
+    "context": "The books at the two ends cost 4 and 15, and 4 + 15 = 19 is more than the voucher of 18.",
+    "choices": [
+      {
+        "id": "move-right",
+        "label": "Move right inward",
+        "correct": true,
+        "feedback": "Right. 4 is the cheapest book still in play, and even with it the 15-unit book overshoots. No remaining pair that uses 15 can work, so it is ruled out."
+      },
+      {
+        "id": "move-left",
+        "label": "Move left inward",
+        "correct": false,
+        "feedback": "Moving left swaps 4 for a more expensive book, so the total can only stay at 19 or grow. The 15-unit book is the one that can never fit: even its cheapest partner is too much."
+      },
+      {
+        "id": "stop",
+        "label": "Stop: no pair exists",
+        "correct": false,
+        "feedback": "Too early. One total being too high only rules out one book, the 15-unit one. Positions 1 to 3 may still hold an answer."
+      }
+    ]
+  }
+]

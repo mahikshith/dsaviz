@@ -1,0 +1,30 @@
+[
+  {
+    "id": "one-lookup",
+    "approachId": "ticket-book",
+    "exampleId": "evening",
+    "frameId": "14-need",
+    "question": "Guest 4 wears 5 and needs a partner wearing 7. What happens next?",
+    "context": "The book already holds 4, 9, 2 and 7, written down at positions 0 to 3.",
+    "choices": [
+      {
+        "id": "lookup",
+        "label": "Look 7 up in the book: it is there",
+        "correct": true,
+        "feedback": "Right. 7 was written down at position 3, so one lookup finds the partner. The answer is [3, 4]."
+      },
+      {
+        "id": "scan",
+        "label": "Compare 5 with every earlier guest",
+        "correct": false,
+        "feedback": "That is the brute-force step this approach replaces. The book answers \"has a 7 arrived?\" in a single lookup."
+      },
+      {
+        "id": "store-first",
+        "label": "Write 5 down first, then look",
+        "correct": false,
+        "feedback": "Writing first could let a number pair with itself, such as 6 with 6 for a target of 12. Look up first, then write."
+      }
+    ]
+  }
+]

@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "id": "middle-of-list",
+  "slug": "middle-of-list",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Middle node of a linked list",
+  "storyTitle": "Halfway across the bridge",
+  "summary": "One walker takes two carriages for every one the other takes; when the fast one reaches the end, the slow one is in the middle.",
+  "difficulty": "introductory",
+  "companies": [
+    "Amazon",
+    "Apple"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "fast-slow-pointers",
+      "variantId": "middle",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "linked-list",
+    "pointer"
+  ],
+  "checker": "exact",
+  "goal": "Find the middle carriage, the second of two middles for an even train",
+  "mapping": [
+    {
+      "story": "The train",
+      "formal": "Linked list"
+    },
+    {
+      "story": "Slow walker",
+      "formal": "Pointer moving one node"
+    },
+    {
+      "story": "Fast walker",
+      "formal": "Pointer moving two nodes"
+    },
+    {
+      "story": "The middle",
+      "formal": "Node where slow stops; the list from there is returned"
+    }
+  ],
+  "examples": [
+    {
+      "id": "odd",
+      "label": "Five carriages",
+      "input": {
+        "head": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expectedOutput": [
+        3,
+        4,
+        5
+      ],
+      "explanation": "Carriage 3 is the middle; the train from there is 3, 4, 5."
+    },
+    {
+      "id": "even",
+      "label": "Six carriages",
+      "input": {
+        "head": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "expectedOutput": [
+        4,
+        5,
+        6
+      ],
+      "explanation": "With two middles, 3 and 4, the second is chosen."
+    },
+    {
+      "id": "one",
+      "label": "One carriage",
+      "input": {
+        "head": [
+          1
+        ]
+      },
+      "expectedOutput": [
+        1
+      ],
+      "explanation": "The only carriage is the middle."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "count-then-walk",
+      "level": "brute-force",
+      "name": "Count, then walk halfway",
+      "idea": "Walk the train once to count its carriages, then walk again to carriage count / 2.",
+      "time": "O(n)",
+      "space": "O(1)"
+    },
+    {
+      "id": "fast-slow",
+      "level": "optimal",
+      "name": "Fast and slow walkers",
+      "idea": "Start two walkers at the front. Slow moves one carriage, fast moves two. When fast cannot move on, slow is in the middle.",
+      "insight": "Fast always covers twice the distance of slow, so when fast has covered the whole train, slow has covered half of it. One walk replaces the count.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "list-middle",
+  "transfer": {
+    "problem": "Split a linked list into two halves of equal length (the first half one longer if odd).",
+    "answerPatternId": "fast-slow-pointers",
+    "explanation": "Use fast and slow pointers to find the middle in one pass, then cut the list there."
+  },
+  "practice": {
+    "selfCheck": [
+      "Moves fast two steps and slow one step per loop.",
+      "Checks both fast and fast.next before moving.",
+      "Returns the second middle for an even train.",
+      "Walks the train once."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Middle of the Linked List",
+  "practiceLink": {
+    "label": "LeetCode 876",
+    "url": "https://leetcode.com/problems/middle-of-the-linked-list/"
+  }
+}

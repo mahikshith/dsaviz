@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "id": "top-k-frequent",
+  "slug": "top-k-frequent",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "The k most frequent elements",
+  "storyTitle": "The most-requested songs",
+  "summary": "Tally every song request, then pick the k songs requested most, without sorting every song.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Apple"
+  ],
+  "topics": [
+    "arrays",
+    "hash-tables",
+    "heaps"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "heap",
+      "variantId": "top-k",
+      "order": 20
+    },
+    {
+      "patternId": "hash-map",
+      "variantId": "counting",
+      "order": 50
+    }
+  ],
+  "prerequisites": [
+    "hash-map",
+    "heap"
+  ],
+  "checker": "unordered",
+  "goal": "Name the k songs requested most often",
+  "mapping": [
+    {
+      "story": "Song requests",
+      "formal": "Array nums"
+    },
+    {
+      "story": "Tally of requests",
+      "formal": "Map: value → count"
+    },
+    {
+      "story": "Shelves by number of requests",
+      "formal": "Buckets indexed by count"
+    },
+    {
+      "story": "The top songs",
+      "formal": "k values with the highest counts"
+    }
+  ],
+  "examples": [
+    {
+      "id": "radio",
+      "label": "Six requests, k = 2",
+      "input": {
+        "nums": [
+          1,
+          1,
+          1,
+          2,
+          2,
+          3
+        ],
+        "k": 2
+      },
+      "expectedOutput": [
+        1,
+        2
+      ],
+      "explanation": "Song 1 was requested 3 times and song 2 twice."
+    },
+    {
+      "id": "one",
+      "label": "One request",
+      "input": {
+        "nums": [
+          1
+        ],
+        "k": 1
+      },
+      "expectedOutput": [
+        1
+      ],
+      "explanation": "The only song is the top song."
+    },
+    {
+      "id": "favourite",
+      "label": "k = 1",
+      "input": {
+        "nums": [
+          4,
+          4,
+          5,
+          5,
+          5,
+          6
+        ],
+        "k": 1
+      },
+      "expectedOutput": [
+        5
+      ],
+      "explanation": "Song 5 was requested most."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "sort-by-count",
+      "level": "brute-force",
+      "name": "Count, then sort every song",
+      "idea": "Tally requests per song, sort all songs by their tally, and take the first k.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "heap-of-k",
+      "level": "better",
+      "name": "Count, then keep a heap of k",
+      "idea": "Tally requests, then keep the k most-requested songs in a min-heap ordered by count.",
+      "insight": "We need only the top k, not the full order, so a heap of size k is enough.",
+      "time": "O(n log k)",
+      "space": "O(n)"
+    },
+    {
+      "id": "buckets",
+      "level": "optimal",
+      "name": "Count, then shelve by count",
+      "idea": "Tally requests, then place each song on a shelf numbered by its count. Read shelves from the highest number down until k songs are collected.",
+      "insight": "Counts are whole numbers between 1 and n, so songs can be placed directly by count, which is a sort without comparisons.",
+      "time": "O(n)",
+      "space": "O(n)"
+    }
+  ],
+  "solver": "top-k-frequent",
+  "transfer": {
+    "problem": "Find the 3 words used most often in a long document.",
+    "answerPatternId": "hash-map",
+    "explanation": "Count each word with a map, then pick the top 3 counts with a small heap or with buckets by count."
+  },
+  "practice": {
+    "selfCheck": [
+      "Counts every request with a map.",
+      "Returns exactly k songs.",
+      "Never sorts all songs when buckets or a heap will do.",
+      "The examples have no ties for the k-th place."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Top K Frequent Elements",
+  "practiceLink": {
+    "label": "LeetCode 347",
+    "url": "https://leetcode.com/problems/top-k-frequent-elements/"
+  }
+}

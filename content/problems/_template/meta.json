@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "your-problem-id",
+  "slug": "your-problem-id",
+  "contentVersion": 1,
+  "status": "draft",
+  "title": "Canonical title, such as: Find a pair matching a target in a sorted array",
+  "storyTitle": "Story title, such as: Two books for one gift voucher",
+  "summary": "One sentence for catalogs, 10 to 220 characters.",
+  "difficulty": "easy",
+  "topics": ["arrays"],
+  "patternMemberships": [{ "patternId": "two-pointers", "variantId": "opposite", "order": 30 }],
+  "prerequisites": ["zero-based-index"],
+  "checker": "exact",
+  "goal": "Short goal line shown above the walkthrough",
+  "mapping": [
+    { "story": "A story term", "formal": "Its formal meaning" },
+    { "story": "Another story term", "formal": "Its formal meaning" }
+  ],
+  "examples": [
+    {
+      "id": "first-example",
+      "label": "Shown in the example picker",
+      "input": { "prices": [2, 4, 7, 11, 15], "target": 18 },
+      "expectedOutput": [2, 3],
+      "explanation": "Why this is the answer, in one or two sentences."
+    }
+  ],
+  "approaches": [
+    {
+      "id": "main-approach",
+      "name": "Approach name",
+      "adapterId": "sorted-target-pair-v1",
+      "summary": "One sentence on what this approach does.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(1)",
+      "languages": ["python", "typescript"]
+    }
+  ],
+  "defaultApproach": "main-approach",
+  "transfer": {
+    "problem": "A related problem, told in one or two sentences.",
+    "answerPatternId": "two-pointers",
+    "explanation": "Why that pattern fits."
+  },
+  "practice": { "selfCheck": ["A check the learner can do by hand.", "Another check."] },
+  "provenance": { "kind": "original", "author": "Your name", "sourceUrls": [] }
+}

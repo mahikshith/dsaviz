@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "id": "matrix",
+  "status": "published",
+  "name": "Matrix transforms",
+  "short": "MX",
+  "hue": "gold",
+  "family": "sequence",
+  "order": 60,
+  "intuition": "Turn a grid operation into simple index rules, such as a transpose followed by a mirror, and apply them in place.",
+  "aliases": [
+    "2d array",
+    "grid",
+    "rotate image",
+    "transpose",
+    "spiral",
+    "matrix rotation"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "prerequisites": [
+    "grid",
+    "zero-based-index"
+  ],
+  "variants": [
+    {
+      "id": "transform",
+      "name": "Rotate and reflect",
+      "summary": "Compose simple moves: swap across the diagonal, then reverse each row.",
+      "requires": "The matrix is square for in-place rotation."
+    }
+  ],
+  "visual": {
+    "caption": "Transposing swaps cell (r, c) with cell (c, r). The diagonal cells stay where they are.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "r0",
+          "label": "row 0",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "1",
+              "sub": "0,0",
+              "state": "success"
+            },
+            {
+              "id": "c1",
+              "label": "2",
+              "sub": "0,1",
+              "state": "idle"
+            },
+            {
+              "id": "c2",
+              "label": "3",
+              "sub": "0,2",
+              "state": "idle"
+            }
+          ],
+          "pointers": [],
+          "bands": []
+        },
+        {
+          "id": "r1",
+          "label": "row 1",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "4",
+              "sub": "1,0",
+              "state": "idle"
+            },
+            {
+              "id": "c1",
+              "label": "5",
+              "sub": "1,1",
+              "state": "success"
+            },
+            {
+              "id": "c2",
+              "label": "6",
+              "sub": "1,2",
+              "state": "idle"
+            }
+          ],
+          "pointers": [],
+          "bands": []
+        },
+        {
+          "id": "r2",
+          "label": "row 2",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "7",
+              "sub": "2,0",
+              "state": "idle"
+            },
+            {
+              "id": "c1",
+              "label": "8",
+              "sub": "2,1",
+              "state": "idle"
+            },
+            {
+              "id": "c2",
+              "label": "9",
+              "sub": "2,2",
+              "state": "success"
+            }
+          ],
+          "pointers": [],
+          "bands": []
+        }
+      ],
+      "legend": [
+        {
+          "label": "The diagonal stays put when transposing",
+          "swatch": "success"
+        }
+      ]
+    }
+  }
+}

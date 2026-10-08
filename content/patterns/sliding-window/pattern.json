@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "id": "sliding-window",
+  "status": "published",
+  "name": "Sliding window",
+  "short": "SW",
+  "hue": "teal",
+  "family": "sequence",
+  "order": 20,
+  "intuition": "Keep a running summary of a stretch of consecutive items and update it from what enters and leaves.",
+  "aliases": [
+    "moving range",
+    "moving window",
+    "rolling sum",
+    "consecutive stretch"
+  ],
+  "topics": [
+    "arrays",
+    "strings"
+  ],
+  "prerequisites": [
+    "subarray",
+    "window"
+  ],
+  "variants": [
+    {
+      "id": "fixed",
+      "name": "Fixed size",
+      "summary": "The window always holds exactly k items and slides one step at a time.",
+      "requires": "Only that k is fixed. It works with negative values too."
+    },
+    {
+      "id": "variable",
+      "name": "Variable size",
+      "summary": "Grow the right edge, and shrink the left edge while a condition is broken.",
+      "requires": "A monotone condition: shrinking must never break a valid window. For sums this usually means no negative values."
+    },
+    {
+      "id": "monotonic-queue",
+      "name": "Window with a sorted queue",
+      "summary": "Keep candidates for the window's best in a queue that stays in order, dropping ones that can never win.",
+      "requires": "A newer item can make an older one useless for every future window."
+    }
+  ],
+  "visual": {
+    "caption": "Sliding one step drops the day on the left and adds the day on the right. The days in between never need adding again.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "v",
+          "label": "visitors",
+          "cells": [
+            {
+              "id": "a",
+              "label": "4",
+              "sub": "0",
+              "state": "idle"
+            },
+            {
+              "id": "b",
+              "label": "2",
+              "sub": "1",
+              "state": "leaving"
+            },
+            {
+              "id": "c",
+              "label": "7",
+              "sub": "2",
+              "state": "window"
+            },
+            {
+              "id": "d",
+              "label": "1",
+              "sub": "3",
+              "state": "window"
+            },
+            {
+              "id": "e",
+              "label": "8",
+              "sub": "4",
+              "state": "entering"
+            },
+            {
+              "id": "f",
+              "label": "3",
+              "sub": "5",
+              "state": "idle"
+            },
+            {
+              "id": "g",
+              "label": "5",
+              "sub": "6",
+              "state": "idle"
+            }
+          ],
+          "pointers": [],
+          "bands": [
+            {
+              "id": "w",
+              "from": 2,
+              "to": 4,
+              "label": "window · 16",
+              "tone": "primary",
+              "side": "above"
+            }
+          ]
+        }
+      ],
+      "legend": [
+        {
+          "label": "Window",
+          "swatch": "window"
+        },
+        {
+          "label": "Entering",
+          "swatch": "accent"
+        },
+        {
+          "label": "Leaving",
+          "swatch": "discarded"
+        }
+      ]
+    }
+  }
+}

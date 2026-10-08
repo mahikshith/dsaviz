@@ -1,0 +1,44 @@
+{
+  "ticket-book": {
+    "present": {
+      "label": "Read the input",
+      "story": "Guests arrive one at a time. We need two whose numbers add up to {target}.",
+      "formal": "nums has {n} values. Find j < i with nums[j] + nums[i] = {target}."
+    },
+    "initialize": {
+      "label": "Open the book",
+      "story": "The ticket book starts empty: nobody has arrived yet.",
+      "formal": "seen = {} (value → index)."
+    },
+    "need": {
+      "label": "Work out the partner",
+      "story": "Guest {i} wears {value}, so their partner must wear {target} − {value} = {need}.",
+      "formal": "need = target − nums[{i}] = {need}."
+    },
+    "lookup:miss": {
+      "label": "Look it up",
+      "story": "Nobody wearing {need} has arrived yet.",
+      "formal": "{need} is not in seen."
+    },
+    "lookup:hit": {
+      "label": "Look it up",
+      "story": "{need} is in the book: the guest at position {partner} wears it.",
+      "formal": "seen[{need}] = {partner}."
+    },
+    "store": {
+      "label": "Write it down",
+      "story": "Write guest {i}'s number in the book, in case a later guest needs it. It replaces: {replaced}.",
+      "formal": "seen[{value}] = {i} (previous entry: {replaced})."
+    },
+    "found": {
+      "label": "Return the pair",
+      "story": "Positions {partner} and {i}: {need} + {value} = {target}.",
+      "formal": "Return [{partner}, {i}]."
+    },
+    "not-found": {
+      "label": "No pair",
+      "story": "Every guest has arrived and no two numbers add up to {target}.",
+      "formal": "Loop finished without a hit. Return None."
+    }
+  }
+}

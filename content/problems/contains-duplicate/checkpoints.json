@@ -1,0 +1,30 @@
+[
+  {
+    "id": "repeat-check",
+    "approachId": "guest-list",
+    "exampleId": "gatecrasher",
+    "frameId": "5-add",
+    "question": "The next guest wears 8. What does the list say?",
+    "context": "The guest list already holds 3, 8, 4 and 6.",
+    "choices": [
+      {
+        "id": "repeat",
+        "label": "8 is already on the list: someone came twice",
+        "correct": true,
+        "feedback": "Right. One lookup in the set finds 8, so the answer is True without comparing 8 with each guest."
+      },
+      {
+        "id": "add",
+        "label": "Add 8 to the list and continue",
+        "correct": false,
+        "feedback": "Adding it would hide the repeat. The set already contains 8, so this guest is a second arrival."
+      },
+      {
+        "id": "compare",
+        "label": "Compare 8 with each guest inside",
+        "correct": false,
+        "feedback": "That works but is the brute-force step. The set answers \"is 8 here?\" in one lookup."
+      }
+    ]
+  }
+]

@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "id": "two-sum",
+  "slug": "two-sum",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Find two values that add up to a target",
+  "storyTitle": "The coat-check counter",
+  "summary": "Guests arrive one at a time; find two whose ticket numbers add up to a target by remembering everyone already seen.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Meta",
+    "Microsoft"
+  ],
+  "topics": [
+    "arrays",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "hash-map",
+      "variantId": "complement",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "hash-map",
+    "zero-based-index"
+  ],
+  "checker": "target-pair",
+  "goal": "Find two guests whose numbers add up to the target",
+  "mapping": [
+    {
+      "story": "Guests in arrival order",
+      "formal": "Array nums"
+    },
+    {
+      "story": "A guest's ticket number",
+      "formal": "A value nums[i]"
+    },
+    {
+      "story": "Arrival position",
+      "formal": "Zero-based index i"
+    },
+    {
+      "story": "The ticket book",
+      "formal": "Hash map: value → index"
+    },
+    {
+      "story": "The two guests",
+      "formal": "Indices [j, i] with j < i"
+    }
+  ],
+  "examples": [
+    {
+      "id": "evening",
+      "label": "Five guests, target 12",
+      "input": {
+        "nums": [
+          4,
+          9,
+          2,
+          7,
+          5
+        ],
+        "target": 12
+      },
+      "expectedOutput": [
+        3,
+        4
+      ],
+      "explanation": "7 + 5 = 12, at positions 3 and 4."
+    },
+    {
+      "id": "twins",
+      "label": "Two equal numbers",
+      "input": {
+        "nums": [
+          3,
+          3
+        ],
+        "target": 6
+      },
+      "expectedOutput": [
+        0,
+        1
+      ],
+      "explanation": "Two different guests can wear the same number: 3 + 3 = 6."
+    },
+    {
+      "id": "none",
+      "label": "No pair",
+      "input": {
+        "nums": [
+          1,
+          2,
+          4
+        ],
+        "target": 10
+      },
+      "expectedOutput": null,
+      "explanation": "No two guests add up to 10, so there is no answer."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "check-every-pair",
+      "level": "brute-force",
+      "name": "Check every pair",
+      "idea": "For each guest, compare their number with every guest who arrived after them.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "sort-and-squeeze",
+      "level": "better",
+      "name": "Sort, then squeeze from both ends",
+      "idea": "Sort the guests by number while remembering their positions, then use two pointers from the ends.",
+      "insight": "If the numbers were in order, two pointers could rule out one guest per step, as in the gift-voucher lesson.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "ticket-book",
+      "level": "optimal",
+      "name": "Ticket book (hash map)",
+      "idea": "For each guest, the partner they need is `target − number`. Look that up in a book of everyone already seen, then write this guest down.",
+      "insight": "The partner a guest needs is fully determined by their number. A lookup table answers \"has that number arrived?\" in one step, with no sorting.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "approachId": "ticket-book"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "ticket-book",
+      "name": "Ticket book (hash map)",
+      "adapterId": "hash-pair-v1",
+      "summary": "Look up the needed partner, then write the guest down.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(n)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "ticket-book",
+  "transfer": {
+    "problem": "A shop lists item prices in no particular order. Find two different items that together cost exactly a gift card's value.",
+    "answerPatternId": "hash-map",
+    "explanation": "The order is arbitrary and you need a pair with an exact total: for each item, look up whether its complement has been seen."
+  },
+  "practice": {
+    "selfCheck": [
+      "Looks up the partner before writing the current value down, so a value never pairs with itself.",
+      "Returns positions, not values.",
+      "Returns no answer when no pair exists.",
+      "Uses one pass and a map, not two nested loops."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Two Sum",
+  "practiceLink": {
+    "label": "LeetCode 1",
+    "url": "https://leetcode.com/problems/two-sum/"
+  }
+}

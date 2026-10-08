@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "id": "greedy",
+  "status": "published",
+  "name": "Greedy choice",
+  "short": "GR",
+  "hue": "copper",
+  "family": "optimization",
+  "order": 10,
+  "intuition": "Make the choice that looks best right now, when you can argue it never makes a later choice worse.",
+  "aliases": [
+    "greedy",
+    "farthest reach",
+    "best so far",
+    "local choice",
+    "exchange argument"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "prerequisites": [
+    "invariant"
+  ],
+  "variants": [
+    {
+      "id": "reach",
+      "name": "Farthest reach",
+      "summary": "Track the farthest point reachable so far and check you never fall behind it.",
+      "requires": "Reaching further never hurts: anything reachable from a nearer point stays reachable."
+    },
+    {
+      "id": "running-best",
+      "name": "Best so far",
+      "summary": "Keep the single best value seen so far and combine it with today's value.",
+      "requires": "Only the best earlier value can matter for later decisions."
+    }
+  ],
+  "visual": {
+    "caption": "From stone 1 you could jump up to 3 stones ahead, so everything up to stone 4 is reachable. Only the farthest reach matters, not which jump you take.",
+    "scene": {
+      "arrays": [
+        {
+          "id": "j",
+          "label": "jump length at each stone",
+          "cells": [
+            {
+              "id": "c0",
+              "label": "2",
+              "sub": "0",
+              "state": "muted"
+            },
+            {
+              "id": "c1",
+              "label": "3",
+              "sub": "1",
+              "state": "primary"
+            },
+            {
+              "id": "c2",
+              "label": "1",
+              "sub": "2",
+              "state": "window"
+            },
+            {
+              "id": "c3",
+              "label": "1",
+              "sub": "3",
+              "state": "window"
+            },
+            {
+              "id": "c4",
+              "label": "4",
+              "sub": "4",
+              "state": "window"
+            }
+          ],
+          "pointers": [
+            {
+              "id": "i",
+              "label": "here",
+              "index": 1,
+              "tone": "primary",
+              "side": "above"
+            }
+          ],
+          "bands": [
+            {
+              "id": "r",
+              "from": 1,
+              "to": 4,
+              "label": "reachable up to 4",
+              "tone": "success",
+              "side": "below"
+            }
+          ]
+        }
+      ],
+      "legend": [
+        {
+          "label": "Standing here",
+          "swatch": "primary"
+        },
+        {
+          "label": "Within reach",
+          "swatch": "window"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "id": "rotate-image",
+  "slug": "rotate-image",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Rotate a square matrix a quarter turn clockwise",
+  "storyTitle": "The turning tile floor",
+  "summary": "Turn a square floor of painted tiles a quarter turn clockwise in place: flip across the diagonal, then mirror each row.",
+  "difficulty": "medium",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Apple"
+  ],
+  "topics": [
+    "arrays"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "matrix",
+      "variantId": "transform",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "grid",
+    "zero-based-index"
+  ],
+  "checker": "exact",
+  "goal": "Turn the tile floor a quarter turn clockwise",
+  "mapping": [
+    {
+      "story": "The tile floor",
+      "formal": "n × n matrix"
+    },
+    {
+      "story": "Tile at row r, column c",
+      "formal": "matrix[r][c]"
+    },
+    {
+      "story": "Flip across the diagonal",
+      "formal": "Transpose: swap (r, c) and (c, r)"
+    },
+    {
+      "story": "Mirror each row",
+      "formal": "Reverse every row"
+    }
+  ],
+  "examples": [
+    {
+      "id": "three",
+      "label": "3 × 3 floor",
+      "input": {
+        "matrix": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6
+          ],
+          [
+            7,
+            8,
+            9
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          7,
+          4,
+          1
+        ],
+        [
+          8,
+          5,
+          2
+        ],
+        [
+          9,
+          6,
+          3
+        ]
+      ],
+      "explanation": "The left column 1, 4, 7 becomes the top row, read upwards."
+    },
+    {
+      "id": "two",
+      "label": "2 × 2 floor",
+      "input": {
+        "matrix": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          3,
+          1
+        ],
+        [
+          4,
+          2
+        ]
+      ],
+      "explanation": "Each tile moves one corner clockwise."
+    },
+    {
+      "id": "one",
+      "label": "1 × 1 floor",
+      "input": {
+        "matrix": [
+          [
+            1
+          ]
+        ]
+      },
+      "expectedOutput": [
+        [
+          1
+        ]
+      ],
+      "explanation": "A single tile looks the same."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "new-floor",
+      "level": "brute-force",
+      "name": "Lay a new floor",
+      "idea": "Build a new grid where the tile at (r, c) moves to (c, n − 1 − r), then copy it back.",
+      "time": "O(n²)",
+      "space": "O(n²)"
+    },
+    {
+      "id": "transpose-mirror",
+      "level": "optimal",
+      "name": "Flip, then mirror",
+      "idea": "Swap every tile with its partner across the main diagonal, then reverse each row. Both steps work in place.",
+      "insight": "A quarter turn is the same as a transpose followed by a left-right mirror, and both of those are simple in-place swaps.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "rotate-matrix",
+  "transfer": {
+    "problem": "Rotate a square image a quarter turn anticlockwise, in place.",
+    "answerPatternId": "matrix",
+    "explanation": "Compose simple moves again: transpose, then reverse each column (or reverse each row first, then transpose)."
+  },
+  "practice": {
+    "selfCheck": [
+      "Transposes by swapping only pairs above the diagonal.",
+      "Reverses each row after transposing.",
+      "Works in place.",
+      "Handles a 1 × 1 floor."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Rotate Image",
+  "practiceLink": {
+    "label": "LeetCode 48",
+    "url": "https://leetcode.com/problems/rotate-image/"
+  }
+}

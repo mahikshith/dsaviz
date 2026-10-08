@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "id": "linked-list-cycle",
+  "slug": "linked-list-cycle",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Detect a cycle in a linked list",
+  "storyTitle": "The tortoise and the hare",
+  "summary": "A tortoise walks one carriage at a time and a hare runs two; if the track loops, the hare laps the tortoise and they meet.",
+  "difficulty": "easy",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Goldman Sachs"
+  ],
+  "topics": [
+    "linked-lists"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "fast-slow-pointers",
+      "variantId": "cycle",
+      "order": 20
+    }
+  ],
+  "prerequisites": [
+    "linked-list",
+    "cycle"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether the track loops back on itself",
+  "mapping": [
+    {
+      "story": "The track of carriages",
+      "formal": "Linked list"
+    },
+    {
+      "story": "A loop in the track",
+      "formal": "A cycle"
+    },
+    {
+      "story": "Tortoise and hare",
+      "formal": "Slow and fast pointers"
+    },
+    {
+      "story": "They meet",
+      "formal": "Return True"
+    }
+  ],
+  "examples": [
+    {
+      "id": "loop",
+      "label": "Loops back to the second",
+      "input": {
+        "head": [
+          3,
+          2,
+          0,
+          -4
+        ],
+        "pos": 1
+      },
+      "expectedOutput": true,
+      "explanation": "The last carriage links back to the carriage at position 1."
+    },
+    {
+      "id": "two",
+      "label": "Loops to the start",
+      "input": {
+        "head": [
+          1,
+          2
+        ],
+        "pos": 0
+      },
+      "expectedOutput": true,
+      "explanation": "The second carriage links back to the first."
+    },
+    {
+      "id": "straight",
+      "label": "No loop",
+      "input": {
+        "head": [
+          1
+        ],
+        "pos": -1
+      },
+      "expectedOutput": false,
+      "explanation": "The single carriage links to nothing."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "visited-set",
+      "level": "brute-force",
+      "name": "Remember every carriage visited",
+      "idea": "Walk the track, keeping a set of carriages seen. Seeing one twice means a loop; reaching the end means none.",
+      "time": "O(n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "tortoise-hare",
+      "level": "optimal",
+      "name": "Tortoise and hare",
+      "idea": "Move one pointer one step and another two steps. If they ever meet, there is a loop; if the fast one reaches the end, there is none.",
+      "insight": "Inside a loop, the hare gains one carriage on the tortoise every step, so it must land on it. No memory of visited carriages is needed.",
+      "time": "O(n)",
+      "space": "O(1)"
+    }
+  ],
+  "solver": "list-cycle",
+  "transfer": {
+    "problem": "Repeatedly replace a number by the sum of the squares of its digits. Does it ever reach 1, or loop forever?",
+    "answerPatternId": "fast-slow-pointers",
+    "explanation": "The numbers form a chain where each points to the next; detect a loop with a slow and a fast walker."
+  },
+  "practice": {
+    "selfCheck": [
+      "Compares nodes by identity, not value.",
+      "Checks fast and fast.next before the double step.",
+      "Returns False when the fast pointer reaches the end.",
+      "Uses O(1) extra memory."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Linked List Cycle",
+  "practiceLink": {
+    "label": "LeetCode 141",
+    "url": "https://leetcode.com/problems/linked-list-cycle/"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "id": "contains-duplicate",
+  "slug": "contains-duplicate",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Detect whether any value repeats",
+  "storyTitle": "The guest list",
+  "summary": "Check guests at the door against a list of everyone already inside, to catch anyone who comes in twice.",
+  "difficulty": "introductory",
+  "companies": [
+    "Amazon",
+    "Apple"
+  ],
+  "topics": [
+    "arrays",
+    "hash-tables"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "hash-map",
+      "variantId": "seen-before",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "hash-map"
+  ],
+  "checker": "exact",
+  "goal": "Decide whether any guest number appears twice",
+  "mapping": [
+    {
+      "story": "Guests at the door, in order",
+      "formal": "Array nums"
+    },
+    {
+      "story": "A guest's number",
+      "formal": "A value nums[i]"
+    },
+    {
+      "story": "The guest list",
+      "formal": "A set of values seen"
+    },
+    {
+      "story": "Someone came twice",
+      "formal": "Return True"
+    }
+  ],
+  "examples": [
+    {
+      "id": "gatecrasher",
+      "label": "A repeat",
+      "input": {
+        "nums": [
+          3,
+          8,
+          4,
+          6,
+          8
+        ]
+      },
+      "expectedOutput": true,
+      "explanation": "8 appears at positions 1 and 4."
+    },
+    {
+      "id": "all-different",
+      "label": "All different",
+      "input": {
+        "nums": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "expectedOutput": false,
+      "explanation": "No number appears twice."
+    },
+    {
+      "id": "empty",
+      "label": "Nobody came",
+      "input": {
+        "nums": []
+      },
+      "expectedOutput": false,
+      "explanation": "With no guests, nobody can come twice."
+    }
+  ],
+  "ladder": [
+    {
+      "id": "compare-pairs",
+      "level": "brute-force",
+      "name": "Compare every pair",
+      "idea": "Compare each guest's number with every guest who arrived later.",
+      "time": "O(n²)",
+      "space": "O(1)"
+    },
+    {
+      "id": "sort-neighbours",
+      "level": "better",
+      "name": "Sort, then compare neighbours",
+      "idea": "Sort the numbers; any repeat now sits right next to its twin.",
+      "insight": "Equal values end up side by side once sorted, so one pass over neighbours replaces all the pairs.",
+      "time": "O(n log n)",
+      "space": "O(n)"
+    },
+    {
+      "id": "guest-list",
+      "level": "optimal",
+      "name": "Guest list (a set)",
+      "idea": "Keep a set of numbers already inside. Each arrival is one lookup: seen before means a repeat; otherwise add it.",
+      "insight": "We only ever ask \"has this exact number been seen?\". A set answers that in one step, with no sorting.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "approachId": "guest-list"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "guest-list",
+      "name": "Guest list (a set)",
+      "adapterId": "set-duplicate-v1",
+      "summary": "Check each number against a set of numbers seen, then add it.",
+      "timeComplexity": "O(n)",
+      "auxiliarySpaceComplexity": "O(n)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "guest-list",
+  "transfer": {
+    "problem": "A library scans returned books one by one. Flag the moment a barcode is scanned a second time.",
+    "answerPatternId": "hash-map",
+    "explanation": "Each scan asks whether this exact barcode has been seen before: keep a set and check each new scan against it."
+  },
+  "practice": {
+    "selfCheck": [
+      "Checks the set before adding the current number.",
+      "Stops at the first repeat.",
+      "Returns False for an empty or one-item list.",
+      "Uses one pass, not nested loops."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Contains Duplicate",
+  "practiceLink": {
+    "label": "LeetCode 217",
+    "url": "https://leetcode.com/problems/contains-duplicate/"
+  }
+}

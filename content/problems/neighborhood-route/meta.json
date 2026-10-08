@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "id": "neighborhood-route",
+  "slug": "neighborhood-route",
+  "contentVersion": 1,
+  "status": "published",
+  "title": "Shortest path in an unweighted graph",
+  "storyTitle": "The fewest streets to the library",
+  "summary": "Find the route with the fewest streets from home to the library by exploring the neighbourhood one ring at a time.",
+  "difficulty": "medium",
+  "topics": [
+    "graphs"
+  ],
+  "patternMemberships": [
+    {
+      "patternId": "breadth-first-search",
+      "variantId": "shortest-path",
+      "order": 10
+    }
+  ],
+  "prerequisites": [
+    "graph",
+    "queue",
+    "unweighted"
+  ],
+  "checker": "shortest-route",
+  "goal": "Reach the library using as few streets as possible",
+  "mapping": [
+    {
+      "story": "A street corner",
+      "formal": "A node"
+    },
+    {
+      "story": "A street between two corners",
+      "formal": "An undirected edge"
+    },
+    {
+      "story": "Every street is one block",
+      "formal": "Unweighted edges"
+    },
+    {
+      "story": "Home and the library",
+      "formal": "start and goal"
+    },
+    {
+      "story": "Fewest streets",
+      "formal": "Shortest path length (distance)"
+    },
+    {
+      "story": "The route to ride",
+      "formal": "Nodes from start to goal"
+    }
+  ],
+  "examples": [
+    {
+      "id": "to-library",
+      "label": "Home to the library",
+      "input": {
+        "edges": [
+          [
+            "A",
+            "B"
+          ],
+          [
+            "A",
+            "C"
+          ],
+          [
+            "B",
+            "D"
+          ],
+          [
+            "C",
+            "D"
+          ],
+          [
+            "C",
+            "E"
+          ],
+          [
+            "D",
+            "F"
+          ],
+          [
+            "E",
+            "G"
+          ],
+          [
+            "F",
+            "H"
+          ],
+          [
+            "G",
+            "H"
+          ]
+        ],
+        "start": "A",
+        "goal": "H"
+      },
+      "expectedOutput": {
+        "distance": 4,
+        "path": [
+          "A",
+          "B",
+          "D",
+          "F",
+          "H"
+        ]
+      },
+      "explanation": "Several routes use 4 streets, such as A → B → D → F → H and A → C → E → G → H. None uses fewer.",
+      "display": {
+        "positions": {
+          "A": [
+            40,
+            180
+          ],
+          "B": [
+            170,
+            60
+          ],
+          "C": [
+            170,
+            300
+          ],
+          "D": [
+            300,
+            180
+          ],
+          "E": [
+            300,
+            300
+          ],
+          "F": [
+            430,
+            60
+          ],
+          "G": [
+            430,
+            300
+          ],
+          "H": [
+            560,
+            180
+          ]
+        },
+        "captions": {
+          "A": "Home",
+          "H": "Library"
+        }
+      }
+    },
+    {
+      "id": "unreachable",
+      "label": "Library across the river",
+      "input": {
+        "edges": [
+          [
+            "A",
+            "B"
+          ],
+          [
+            "A",
+            "C"
+          ],
+          [
+            "B",
+            "C"
+          ],
+          [
+            "D",
+            "E"
+          ]
+        ],
+        "start": "A",
+        "goal": "E"
+      },
+      "expectedOutput": null,
+      "explanation": "The library's corner E only connects to D, and no street links D or E to home's side, so there is no route.",
+      "display": {
+        "positions": {
+          "A": [
+            40,
+            140
+          ],
+          "B": [
+            170,
+            50
+          ],
+          "C": [
+            170,
+            230
+          ],
+          "D": [
+            360,
+            50
+          ],
+          "E": [
+            360,
+            230
+          ]
+        },
+        "captions": {
+          "A": "Home",
+          "E": "Library"
+        }
+      }
+    },
+    {
+      "id": "already-there",
+      "label": "Already there",
+      "input": {
+        "edges": [
+          [
+            "A",
+            "B"
+          ],
+          [
+            "B",
+            "C"
+          ]
+        ],
+        "start": "A",
+        "goal": "A"
+      },
+      "expectedOutput": {
+        "distance": 0,
+        "path": [
+          "A"
+        ]
+      },
+      "explanation": "Start and goal are the same corner, so no streets are needed.",
+      "display": {
+        "positions": {
+          "A": [
+            40,
+            100
+          ],
+          "B": [
+            180,
+            100
+          ],
+          "C": [
+            320,
+            100
+          ]
+        },
+        "captions": {
+          "A": "Home"
+        }
+      }
+    }
+  ],
+  "ladder": [
+    {
+      "id": "all-routes",
+      "level": "brute-force",
+      "name": "Try every route",
+      "idea": "List every route from home that never revisits a corner, and keep the shortest one that reaches the library.",
+      "time": "Exponential",
+      "space": "O(V)"
+    },
+    {
+      "id": "bfs",
+      "level": "optimal",
+      "name": "Breadth-first search",
+      "idea": "Explore corners in rings of distance with a queue. The first time the library is discovered, its distance is the fewest streets.",
+      "insight": "If corners are reached in order of distance, the first route to the library is a shortest one, so complete routes never need comparing.",
+      "time": "O(V + E)",
+      "space": "O(V)",
+      "approachId": "bfs"
+    }
+  ],
+  "approaches": [
+    {
+      "id": "bfs",
+      "name": "Breadth-first search",
+      "adapterId": "bfs-shortest-path-v1",
+      "summary": "Visit corners in order of distance with a queue; the first time the library is reached, the route is a shortest one.",
+      "timeComplexity": "O(V + E)",
+      "auxiliarySpaceComplexity": "O(V)",
+      "languages": [
+        "python",
+        "typescript"
+      ]
+    }
+  ],
+  "defaultApproach": "bfs",
+  "transfer": {
+    "problem": "In a word game you change one letter at a time and every step must be a real word. Find the fewest steps from COLD to WARM.",
+    "answerPatternId": "breadth-first-search",
+    "explanation": "Each word is a node and each one-letter change is an edge of equal cost, so the fewest steps is a shortest path in an unweighted graph."
+  },
+  "practice": {
+    "selfCheck": [
+      "Records a corner's distance when it joins the queue, so no corner is queued twice.",
+      "Uses a queue (first in, first out), not a stack.",
+      "Returns no route when the goal cannot be reached.",
+      "Returns 0 streets when start and goal are the same corner.",
+      "Only promises the shortest route because every street counts the same."
+    ]
+  },
+  "provenance": {
+    "kind": "original",
+    "author": "Pattern Atlas",
+    "sourceUrls": []
+  },
+  "aka": "Shortest path in an unweighted graph"
+}

@@ -1,0 +1,33 @@
+/* Marks the shared ml.module.css does not cover. Theme tokens only. */
+
+/* An outline drawn around a highlighted point or centroid. */
+.ring {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.5;
+  transition: cx var(--scene-motion, 420ms) var(--ease), cy var(--scene-motion, 420ms) var(--ease);
+}
+
+/* A neighbourhood radius (DBSCAN eps). */
+.halo {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 4;
+  transition: cx 300ms var(--ease), cy 300ms var(--ease);
+}
+
+/* A point that belongs to no cluster. */
+.hollow {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+
+/* A small marker such as the mean cross. */
+.mark {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  transition: d 420ms var(--ease);
+}

@@ -7,6 +7,9 @@ import styles from './shell.module.css';
 const LINKS = [
   { href: '/patterns/', label: 'Patterns', match: ['/patterns', '/problems', '/paths'] },
   { href: '/practice/', label: 'Practice', match: ['/practice'] },
+  { href: '/git/', label: 'Git', match: ['/git'] },
+  { href: '/ml/', label: 'ML', match: ['/ml'] },
+  { href: '/resources/', label: 'Resources', match: ['/resources'] },
   { href: '/my-learning/', label: 'My learning', match: ['/my-learning'] },
 ];
 

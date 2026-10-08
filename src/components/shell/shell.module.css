@@ -41,8 +41,17 @@
   display: flex;
   gap: 2px;
   margin-right: auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.brand,
+.themes {
+  flex: none;
 }
 .navLink {
+  flex: none;
   padding: 7px 12px;
   border-radius: var(--radius-sm);
   color: var(--muted);
@@ -129,7 +138,7 @@
   }
   .nav {
     order: 3;
-    width: 100%;
+    width: calc(100% + 20px);
     margin: 0 -10px;
   }
   .navLink {

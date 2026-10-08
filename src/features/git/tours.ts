@@ -1,0 +1,138 @@
+/** Guided tours for the Git page. Each one starts from an empty simulator; tests run every step. */
+
+export interface TourStep {
+  command: string;
+  say: string;
+}
+export interface Tour {
+  id: string;
+  title: string;
+  steps: TourStep[];
+}
+
+export const TOURS: Tour[] = [
+  {
+    id: 'first-commit',
+    title: 'First commit',
+    steps: [
+      { command: 'git init', say: 'Create an empty repository. HEAD points at main, which has no commits yet.' },
+      { command: 'edit app.js', say: 'Create app.js. It exists only in the working directory, so Git calls it untracked.' },
+      { command: 'git status', say: 'Status lists app.js under untracked files.' },
+      { command: 'git add app.js', say: 'Copy app.js (v1) into the staging area, the draft of your next commit.' },
+      { command: 'git status', say: 'Now app.js is listed as a change to be committed.' },
+      { command: 'git commit -m "Add app"', say: 'Save the staging area as the first commit. main points at it, and HEAD points at main.' },
+      { command: 'edit app.js', say: 'Edit the file again. The working directory has v2, while the staging area and the commit still have v1.' },
+      { command: 'git status', say: 'app.js is changed but not staged. git add would stage v2.' },
+      { command: 'git log', say: 'List the commits, newest first. There is just one so far.' },
+    ],
+  },
+  {
+    id: 'branch-merge',
+    title: 'Branch and merge',
+    steps: [
+      { command: 'git clone https://example.com/project.git', say: 'Start from a small project with three commits on main.' },
+      { command: 'git switch -c feature', say: 'Create a branch called feature and switch to it. Both names point at the same commit.' },
+      { command: 'edit app.js', say: 'Change app.js on the feature branch.' },
+      { command: 'git add app.js', say: 'Stage the change.' },
+      { command: 'git commit -m "Improve app"', say: 'Commit it. feature moves ahead; main stays where it was.' },
+      { command: 'git switch main', say: 'Go back to main. The working directory returns to main’s version of app.js.' },
+      { command: 'git merge feature', say: 'main has no commits of its own since feature split off, so Git just moves main forward. This is a fast-forward: no new commit.' },
+      { command: 'git switch -c login', say: 'Start another branch for a login page.' },
+      { command: 'edit login.js', say: 'Create login.js.' },
+      { command: 'git add login.js', say: 'Stage it.' },
+      { command: 'git commit -m "Add login"', say: 'Commit it on the login branch.' },
+      { command: 'git switch main', say: 'Back on main, login.js disappears from the working directory because main does not have it.' },
+      { command: 'edit readme.md', say: 'Meanwhile, change the readme on main.' },
+      { command: 'git add readme.md', say: 'Stage it.' },
+      { command: 'git commit -m "Update readme"', say: 'Now main and login each have a commit the other lacks: they have diverged.' },
+      { command: 'git merge login', say: 'A fast-forward is impossible, so Git makes a merge commit with two parents: one from main, one from login.' },
+      { command: 'git branch -d login', say: 'Delete the branch name. Its commits are safe, because main now leads to them.' },
+    ],
+  },
+  {
+    id: 'rebase',
+    title: 'Rebase vs merge',
+    steps: [
+      { command: 'git clone https://example.com/project.git', say: 'Start from the starter project.' },
+      { command: 'git switch -c feature', say: 'Branch off to build a feature.' },
+      { command: 'edit login.js', say: 'Create login.js.' },
+      { command: 'git add login.js', say: 'Stage it.' },
+      { command: 'git commit -m "Add login"', say: 'First commit on feature.' },
+      { command: 'edit login.js', say: 'Keep working.' },
+      { command: 'git add login.js', say: 'Stage the new version.' },
+      { command: 'git commit -m "Style login"', say: 'Second commit on feature.' },
+      { command: 'git switch main', say: 'Meanwhile, main moves on.' },
+      { command: 'edit readme.md', say: 'Change the readme on main.' },
+      { command: 'git add readme.md', say: 'Stage it.' },
+      { command: 'git commit -m "Update readme"', say: 'main and feature have diverged. A merge would join them with a merge commit.' },
+      { command: 'git switch feature', say: 'Instead, go back to feature to rebase it.' },
+      { command: 'git rebase main', say: 'Git copies both feature commits onto the tip of main as new commits with new ids. The originals fade out: nothing points at them now.' },
+      { command: 'git switch main', say: 'Switch to main to bring the feature in.' },
+      { command: 'git merge feature', say: 'Because feature now sits on top of main, the merge is a fast-forward. History is one straight line, with no merge commit.' },
+      { command: 'git log', say: 'The log reads top to bottom with no branches. That tidiness is why people rebase; rewriting ids is why you never rebase shared commits.' },
+    ],
+  },
+  {
+    id: 'undo',
+    title: 'Undo safely: restore, reset, revert',
+    steps: [
+      { command: 'git clone https://example.com/project.git', say: 'Start from the starter project.' },
+      { command: 'edit app.js', say: 'Make an edit you will regret.' },
+      { command: 'git restore app.js', say: 'Throw it away: the staging area’s copy is written back over the working directory.' },
+      { command: 'edit app.js', say: 'Make a better edit.' },
+      { command: 'git add app.js', say: 'Stage it.' },
+      { command: 'git restore --staged app.js', say: 'Unstage it: the staging area gets HEAD’s version back, and your edit stays in the working directory.' },
+      { command: 'git add app.js', say: 'Stage it again.' },
+      { command: 'git commit -m "Tweak app"', say: 'Commit it.' },
+      { command: 'git commit --amend -m "Tweak app layout"', say: 'Fix the message. Git makes a new commit and moves main to it; the old one fades out.' },
+      { command: 'git reset --soft HEAD~1', say: 'Undo the commit but keep its change staged. main moves back one commit.' },
+      { command: 'git status', say: 'app.js is still staged, ready to commit again.' },
+      { command: 'git reset --mixed HEAD', say: 'Reset the staging area to HEAD. The edit stays in the working directory, now unstaged.' },
+      { command: 'git reset --hard HEAD', say: 'Discard the edit completely: the staging area and working directory both match HEAD again.' },
+      { command: 'git revert HEAD', say: 'Undo the last shared commit, Add styles, the safe way: a new commit removes style.css and history stays intact.' },
+      { command: 'git log', say: 'Both Add styles and its revert are in the history. Nothing was rewritten.' },
+    ],
+  },
+  {
+    id: 'stash',
+    title: 'Stash work in progress',
+    steps: [
+      { command: 'git clone https://example.com/project.git', say: 'Start from the starter project.' },
+      { command: 'edit app.js', say: 'Start a change to app.js.' },
+      { command: 'git add app.js', say: 'Stage it.' },
+      { command: 'edit readme.md', say: 'Start a change to the readme too, unstaged.' },
+      { command: 'git status', say: 'Half-done work: one staged change and one unstaged change.' },
+      { command: 'git stash', say: 'An urgent bug comes in. Put both changes aside: the working directory and staging area go back to HEAD.' },
+      { command: 'git status', say: 'The working tree is clean, so it is safe to switch branches.' },
+      { command: 'git switch -c hotfix', say: 'Make a branch for the fix.' },
+      { command: 'edit fix.js', say: 'Write the fix.' },
+      { command: 'git add fix.js', say: 'Stage it.' },
+      { command: 'git commit -m "Fix crash"', say: 'Commit it.' },
+      { command: 'git switch main', say: 'Back to main.' },
+      { command: 'git merge hotfix', say: 'Bring the fix into main with a fast-forward.' },
+      { command: 'git stash pop', say: 'Bring your unfinished work back and drop it from the stash.' },
+      { command: 'git status', say: 'Both edits are back. app.js was staged before, but pop brings changes back unstaged unless you add --index.' },
+    ],
+  },
+  {
+    id: 'remote',
+    title: 'Push and pull with a remote',
+    steps: [
+      { command: 'git clone https://example.com/project.git', say: 'Copy the project from origin. origin/main remembers where origin’s main was the last time you talked to it.' },
+      { command: 'edit app.js', say: 'Change app.js.' },
+      { command: 'git add app.js', say: 'Stage it.' },
+      { command: 'git commit -m "Update app"', say: 'Commit it. main moves ahead; origin/main stays behind.' },
+      { command: 'git status', say: 'Your branch is ahead of origin/main by one commit.' },
+      { command: 'git push', say: 'Upload the commit. origin’s main and your origin/main both move to it.' },
+      { command: 'teammate push', say: 'A teammate pushes to origin. Their commit is drawn dashed: it is on origin, not in your repository.' },
+      { command: 'git status', say: 'Still “up to date”: Git only knows what it fetched last time.' },
+      { command: 'edit readme.md', say: 'You keep working, unaware.' },
+      { command: 'git add readme.md', say: 'Stage it.' },
+      { command: 'git commit -m "Update readme"', say: 'Commit it locally.' },
+      { command: 'git fetch', say: 'Download the teammate’s commit. origin/main moves; your main does not.' },
+      { command: 'git status', say: 'Now Git can see that you have diverged: one commit each.' },
+      { command: 'git pull', say: 'Fetch, then merge origin/main into main. Both sides moved, so this makes a merge commit.' },
+      { command: 'git push', say: 'Upload your commits and the merge. origin is up to date and your teammate’s work is safe.' },
+    ],
+  },
+];

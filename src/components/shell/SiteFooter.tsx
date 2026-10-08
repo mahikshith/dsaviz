@@ -10,6 +10,9 @@ export function SiteFooter() {
         <nav aria-label="Footer" className={styles.footerNav}>
           <Link href="/patterns/">Patterns</Link>
           <Link href="/practice/">Practice</Link>
+          <Link href="/git/">Git</Link>
+          <Link href="/ml/">ML</Link>
+          <Link href="/resources/">Resources</Link>
           <Link href="/my-learning/">My learning</Link>
         </nav>
       </div>

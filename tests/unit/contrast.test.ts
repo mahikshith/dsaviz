@@ -61,6 +61,7 @@ const PAIRS: [string, string, number][] = [
   ['success', 'success-soft', TEXT],
   ['danger', 'surface', TEXT],
   ['danger', 'danger-soft', TEXT],
+  ['danger', 'code-bg', TEXT],
   ['text', 'primary-soft', TEXT],
   ['text', 'comparison-soft', TEXT],
   ['text', 'success-soft', TEXT],

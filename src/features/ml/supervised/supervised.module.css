@@ -1,0 +1,72 @@
+/* Marks the shared ml.module.css does not cover. Colours come from theme tokens only. */
+
+/* Thin connector, coloured with data-tone (neighbour links, gradient tangent). */
+.link {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transition: d 300ms var(--ease);
+}
+
+/* Dashed helper marks: residuals, margins, the step trail, the neighbour radius. */
+.guide {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 4;
+  transition: d 300ms var(--ease), cx 300ms var(--ease), cy 300ms var(--ease), rx 300ms var(--ease), ry 300ms var(--ease);
+}
+
+/* A learned decision boundary. */
+.boundary {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: d 300ms var(--ease);
+}
+
+/* Highlight ring around a point (support vectors, the query point). */
+.ring {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.5;
+  transition: cx 300ms var(--ease), cy 300ms var(--ease);
+}
+
+/* Probability shading cells: tone picks the class, fill-opacity the confidence. */
+.shade rect[data-tone] {
+  stroke: none;
+  shape-rendering: crispEdges;
+  transition: fill-opacity 300ms var(--ease), fill 300ms var(--ease);
+}
+
+/* Decision tree cuts; the newest one is drawn stronger. */
+.split {
+  stroke: var(--muted);
+  stroke-width: 1.5;
+}
+.split[data-new] {
+  stroke: var(--text);
+  stroke-width: 2.5;
+}
+
+/* Loss sparkline inset. */
+.inset {
+  fill: var(--surface);
+  stroke: var(--border);
+}
+.spark {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 1.5;
+}
+
+/* Text outline of the tree's rules. */
+.rules {
+  margin: 0;
+  font: 12px/1.6 var(--font-mono);
+  color: var(--muted);
+  white-space: pre;
+  overflow-x: auto;
+}

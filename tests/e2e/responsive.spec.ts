@@ -11,6 +11,9 @@ const PAGES = [
   '/problems/book-voucher-pair/?mode=visualize',
   '/problems/neighborhood-route/?mode=visualize',
   '/problems/parcel-compartments/?mode=practice',
+  '/git/',
+  '/ml/',
+  '/resources/',
 ];
 
 for (const width of [320, 768]) {

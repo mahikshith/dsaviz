@@ -1,0 +1,124 @@
+.head {
+  display: grid;
+  gap: 6px;
+  max-width: 760px;
+  margin-bottom: 20px;
+}
+.head h1 {
+  font-size: clamp(28px, 3vw, 38px);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.side {
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 92px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.sideFold > summary {
+  display: none;
+}
+.sideInner {
+  padding: 10px;
+}
+.main {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.nav {
+  display: grid;
+  gap: 14px;
+}
+.navGroup ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.navTitle {
+  padding: 0 8px 4px;
+  font: 600 12px var(--font-mono);
+  color: var(--muted);
+}
+.navItem {
+  width: 100%;
+  display: grid;
+  gap: 1px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color var(--motion) var(--ease);
+}
+.navItem:hover {
+  background: var(--surface-sunk);
+}
+.navItem[aria-current] {
+  background: var(--select-bg);
+  color: var(--select-fg);
+}
+.navLabel {
+  font-weight: 600;
+}
+.navHint {
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+.navItem[aria-current] .navHint {
+  color: inherit;
+  opacity: 0.75;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  min-width: 0;
+  scroll-margin-top: 76px;
+}
+.panelTitle {
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 899px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .side {
+    position: static;
+    max-height: none;
+  }
+  .sideFold > summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .sideFold:not([open]) .sideInner {
+    display: none;
+  }
+}

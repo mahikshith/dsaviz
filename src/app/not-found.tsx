@@ -1,4 +1,5 @@
-import Link from 'next/link';
+// Prefetch on hover or focus, not on sight: lists here link to many pages.
+import { IntentLink as Link } from '@/components/ui/IntentLink';
 
 export default function NotFound() {
   return (

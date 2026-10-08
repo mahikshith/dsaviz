@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "build": "npm run validate && node scripts/next.mjs build",
+    "build": "npm run validate && node scripts/next.mjs build && node scripts/flatten-segments.mjs",
     "start": "node scripts/serve-out.mjs",
     "check": "npm run typecheck && npm test && npm run build"
   },

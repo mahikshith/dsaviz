@@ -85,17 +85,16 @@ const DOMAIN: Domain = { x: [-5, 5], y: [-3, 3] };
 const CELLS = gridCenters(DOMAIN);
 const s = scales(DOMAIN, W, H);
 
+// The XOR run has no settings, so train once per page load and reuse it.
+let trained: ReturnType<typeof trainNet> | null = null;
+const nets = () => (trained ??= trainNet(XOR_DATA, { every: EVERY }));
+
 export function XorView() {
-  const frames = useMemo(
-    () =>
-      trainNet(XOR_DATA, { every: EVERY }).map((net) => ({
-        probs: CELLS.map((c) => forward(net, c).out),
-        ...evaluate(net, XOR_DATA),
-      })),
-    [],
-  );
-  const st = useStepper(frames.length, 90);
-  const f = frames[st.frame]!;
+  const all = nets();
+  const st = useStepper(all.length, 90);
+  const net = all[st.frame]!;
+  // Shade only the snapshot on screen, not all of them up front.
+  const f = useMemo(() => ({ probs: CELLS.map((c) => forward(net, c).out), ...evaluate(net, XOR_DATA) }), [net]);
   const epoch = st.frame * EVERY;
   const acc = `${(f.accuracy * 100).toFixed(0)}%`;
 

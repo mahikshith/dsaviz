@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+// Prefetch on hover or focus, not on sight: lists here link to many pages.
+import { IntentLink as Link } from '@/components/ui/IntentLink';
 import { useProgress } from '@/features/progress/ProgressProvider';
 import { statusOf, type Milestone } from '@/lib/progress/model';
 import type { Mode } from './Workspace';

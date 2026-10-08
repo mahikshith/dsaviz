@@ -1,4 +1,5 @@
-import Link from 'next/link';
+// Prefetch on hover or focus, not on sight: lists here link to many pages.
+import { IntentLink as Link } from '@/components/ui/IntentLink';
 import { getSite, problemsInPattern } from '@/lib/content/load';
 import { lessonData } from '@/lib/content/lessonData';
 import { LessonPreview } from '@/features/lesson/LessonPreview';

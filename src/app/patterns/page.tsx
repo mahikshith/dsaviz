@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+// Prefetch on hover or focus, not on sight: lists here link to many pages.
+import { IntentLink as Link } from '@/components/ui/IntentLink';
 import { getSite } from '@/lib/content/load';
 import { buildCatalog } from '@/lib/content/catalog';
 import { PatternCatalog } from '@/features/catalog/PatternCatalog';

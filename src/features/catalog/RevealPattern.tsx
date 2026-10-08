@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+// Prefetch on hover or focus, not on sight: lists here link to many pages.
+import { IntentLink as Link } from '@/components/ui/IntentLink';
 import { useState } from 'react';
 
 /** In mixed review the pattern stays hidden until the learner has decided for themselves. */

@@ -38,7 +38,7 @@
 .shade rect[data-tone] {
   stroke: none;
   shape-rendering: crispEdges;
-  transition: fill-opacity 300ms var(--ease), fill 300ms var(--ease);
+  /* No per-cell transition: hundreds of animating cells made each step a long task. */
 }
 
 /* Decision tree cuts; the newest one is drawn stronger. */

@@ -37,3 +37,11 @@ Leaderboard profile handles (under /profile/): Codesmith28, HarshThakkar0369, Pr
 Contest links (outbound, utm=codolio): atcoder.jp/contests/*, codeforces.com/contest/*, leetcode.com/contest/*, codechef.com series pages.
 
 External: instagram.com/codolio_, linkedin.com/company/codolio, x.com/codolio_, node.codolio.com API (config and billing endpoints captured on home).
+
+## Contest schedule verification (2026-10-24)
+
+| URL | Date | Status | Note | Login |
+|---|---|---|---|---|
+| https://leetcode.com/contest/ | 2026-10-24 | blocked by bot check (Cloudflare) | Stopped, per the bot-check rule | n/a |
+| https://clist.by/robots.txt | 2026-10-24 | 200 | /resource/ pages allowed | n |
+| https://clist.by/resource/leetcode.com/ | 2026-10-24 | 200 (REA) | Biweekly Contest 194 ended Sat 24 Oct 2026; Biweekly 195 listed Sat 7 Nov 2026. Used to anchor the DSAMaxxing contest calendar. | n |

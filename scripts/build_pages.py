@@ -7,6 +7,7 @@ across pages and live in one place; this script copies them back into every page
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
   shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet page)
                                and its row count -> // @@SHEET-COUNT@@ ... // @@END-SHEET-COUNT@@ (Main, Home)
+  shared/tests_spec.js ids  -> between // @@SHEET-RUN@@ ... // @@END-SHEET-RUN@@ (Sheet page: the Run badge)
   shared/data.js            -> between // @@DATA@@ ... // @@END-DATA@@ (every page; DS, the data layer)
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@ (every page)
   shared/ui.js              -> between // @@UI@@ ... // @@END-UI@@ (every page; component view models)
@@ -78,6 +79,12 @@ def main():
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
     ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html')]}
     tests_spec = read('shared', 'tests_spec.js')
+    # Ids of every problem with a runnable spec, for the Sheet's Run badge (the Sheet does not load the specs).
+    spec_block = tests_spec[tests_spec.index('const TEST_SPECS = {'):]
+    spec_block = spec_block[:spec_block.index('\n};')]
+    spec_ids = re.findall(r"^  '?([a-z0-9-]+)'?: \{\s*$", spec_block, re.M)
+    sheet_run = ('// @@SHEET-RUN@@ — generated from shared/tests_spec.js: problems the Code page can run\n'
+                 'const SHEET_RUN = new Set(%s);\n// @@END-SHEET-RUN@@' % repr(spec_ids).replace("'", '"'))
     runner = read('shared', 'runner.js')
     pane_js = read('shared', 'code_pane.js')
     pane_html = read('shared', 'code_pane.html')
@@ -110,6 +117,7 @@ def main():
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
         s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
+        s = block(s, '// @@SHEET-RUN@@', '// @@END-SHEET-RUN@@', sheet_run)
         s = ensure_blocks(s)
         for start, end, n in SHARED_JS:
             s = block(s, start, end, shared_js[n])

@@ -2,7 +2,7 @@
 // Code page: the problem on the left, the shared code pane (CodeRunner) on the right.
 // Opened with ?problem=<id>, or with the problem last chosen anywhere on the site.
 // The picker lists every problem with a spec, grouped by pattern in library order, easiest first.
-const CODE_GROUP_ORDER = PATTERNS.map((p) => p[0]).concat(['Trees', 'Graphs', 'Tries', 'Bit Manipulation', 'Math']);
+const CODE_GROUP_ORDER = PATTERNS.map((p) => p[0]).concat(['Linked Lists', 'Monotonic Stack & Queue', 'Trees', 'Graphs', 'Tries', 'Sorting', 'Design', 'String Algorithms', 'Bit Manipulation', 'Math']);
 const CODE_DIFF_ORDER = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };
 const CODE_GROUPS = CODE_GROUP_ORDER.map((name) => ({
   name,

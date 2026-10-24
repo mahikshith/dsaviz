@@ -106,12 +106,14 @@
     }
     if (valueAttr !== undefined) { if (hasChange) props.value = valueAttr; else props.defaultValue = valueAttr; }
     if (d.tag === 'a' && href !== null) {
-      const board = href.endsWith('.dc.html') ? href : null;
-      if (board) props.href = '#' + board.replace('.dc.html', '');
+      // A board link may carry a query (Code.dc.html?problem=two-sum): it becomes ?problem=two-sum#Code.
+      const m = /^([A-Za-z]+\.dc\.html)(\?[^#]*)?$/.exec(href);
+      const board = m ? m[1] : null, query = m && m[2] ? m[2] : '';
+      if (board) props.href = query + '#' + board.replace('.dc.html', '');
       else { props.href = href; if (/^https?:/i.test(href)) { props.target = '_blank'; props.rel = 'noopener'; } }
       props.onClick = (ev) => {
         if (userClick) userClick(ev);
-        if (board) { ev.preventDefault(); window.__dsNav(board); }
+        if (board) { ev.preventDefault(); window.__dsNav(board, query); }
       };
     } else if (userClick) props.onClick = userClick;
     if (VOID.has(d.tag)) return e(d.tag, props);
@@ -167,10 +169,11 @@
   class App extends React.Component {
     constructor(p) { super(p); this.state = { page: pageFromHash() || 'Main.dc.html' }; }
     componentDidMount() {
-      window.__dsNav = (name) => {
+      window.__dsNav = (name, query) => {
         if (!window.DS_BOARDS[name]) return;
+        // Set the URL first so the new page reads its query (?problem=...) when it mounts; a plain link clears it.
+        try { history.pushState(null, '', location.pathname + (query || '') + '#' + name.replace('.dc.html', '')); } catch (err) { try { location.hash = name.replace('.dc.html', ''); } catch (e2) {} }
         this.setState({ page: name });
-        try { history.pushState(null, '', '#' + name.replace('.dc.html', '')); } catch (err) { try { location.hash = name.replace('.dc.html', ''); } catch (e2) {} }
         window.scrollTo(0, 0);
       };
       const sync = () => { const p = pageFromHash(); if (p && p !== this.state.page) { this.setState({ page: p }); window.scrollTo(0, 0); } };

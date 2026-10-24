@@ -7,6 +7,7 @@ const NAV_PAGES = /*@@PAGES@@*/[];
 // key, label, page, icon, hidden on phones unless active
 const NAV_ITEMS = [
   ['home', 'Home', 'Home.dc.html', 'home', false],
+  ['start', 'Start here', 'Start.dc.html', 'start', false],
   ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
   ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
   ['code', 'Code', 'Code.dc.html', 'code', false],
@@ -15,7 +16,8 @@ const NAV_ITEMS = [
   ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
 ];
 // Which section each page belongs to.
-const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
+const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Glossary: 'learn', Interview: 'learn',
+  Start: 'start', Chapter: 'start', Basics: 'start',
   Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
 // The search box: "/" anywhere (outside a text field) opens it on the page that is showing.
 function searchShow(cmp) {

@@ -14,7 +14,7 @@ import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ORDER = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard',
-         'Patterns', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics']
+         'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git']
 
 
 def read(*parts):

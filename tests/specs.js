@@ -10,12 +10,11 @@ const { jsWorkerSource } = require('../shared/runner.js');
 let bad = 0;
 const fail = (id, msg) => { bad++; console.log('  ✗', id, msg); };
 
-// The animated stories in the catalog must all have a spec.
+// Animated stories without a spec are listed as a warning until dsamaxxing/tests-all lands; then this becomes a failure again.
 const catalog = fs.readFileSync(path.join(__dirname, '..', 'shared', 'catalog.js'), 'utf8');
 const { PROBLEMS } = new Function('const window = {};\n' + catalog + '\nreturn { PROBLEMS };')();
-// Animated stories without a spec still open the editor (the problem page says tests are coming); list them so the gap stays visible.
 const noSpec = PROBLEMS.filter((x) => x.animated && !TEST_SPECS[x.id]).map((x) => x.id);
-if (noSpec.length) console.log('  · tests coming for ' + noSpec.length + ' animated stories: ' + noSpec.join(', '));
+if (noSpec.length) console.log('  ! ' + noSpec.length + ' animated stories have no test spec yet: ' + noSpec.join(', '));
 
 function harness(code, fn, cases) {
   const out = [];

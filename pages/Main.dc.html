@@ -37,8 +37,9 @@ button{font:inherit}
 <svg width="36" height="36" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span style="font-family: {{t.display}}; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
 </a>
-<nav style="display: flex; gap: 32px; font-size: 17px; font-weight: 500">
+<nav style="display: flex; gap: 20px; font-size: 17px; font-weight: 500">
 <a href="Patterns.dc.html">Library</a>
+<a href="Sheet.dc.html">Sheet</a>
 <a href="Interview.dc.html" onClick="{{toPlans}}">Interview prep</a>
 <a href="Glossary.dc.html">Glossary</a>
 <a href="Basics.dc.html">Basics</a>
@@ -482,7 +483,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 </sc-if>
 <nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{menu}}" as="mi" hint-placeholder-count="9">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
@@ -677,6 +678,7 @@ function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
   ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
   ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],
@@ -684,6 +686,7 @@ const MENU = [
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
   ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];

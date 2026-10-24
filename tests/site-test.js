@@ -11,7 +11,7 @@ try { ({ chromium } = require('playwright')); } catch (e) {
   process.exit(1);
 }
 
-const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics'];
+const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git'];
 const html = fs.readFileSync(path.join(__dirname, '..', 'dist', 'index.html'));
 const server = http.createServer((req, res) => {
   res.writeHead(200, {

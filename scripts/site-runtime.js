@@ -187,14 +187,18 @@
     tmp.innerHTML = window.DS_BOARDS[name].helmet || '';
     for (const el of [...tmp.children]) { const k = el.outerHTML; if (seen.has(k)) continue; seen.add(k); document.head.appendChild(el); }
   }
-  // Pages are drawn at 1440px and scaled to the window. A page whose root carries data-fluid
-  // (the problem page) has its own phone layout below 760px, so it is shown there at zoom 1.
+  // Pages are laid out at 1440px and zoomed to fit. A page can declare another layout width with
+  // data-fit on its root (the Git page uses a 420px stacked layout on phones). A page whose root
+  // carries data-fluid (the problem page) has its own phone layout below 760px and is shown there at zoom 1.
   function fit() {
-    const fluid = document.querySelector('#app > [data-fluid]');
-    const z = fluid && window.innerWidth < 760 ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / 1440));
+    const r = document.querySelector('#app > div');
+    const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
+    const fluid = r && r.hasAttribute('data-fluid') && window.innerWidth < 760;
+    const z = fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
     if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
   }
   function paint() {
+    fit();
     const r = document.querySelector('#app > div');
     if (!r) return;
     const bg = getComputedStyle(r).backgroundColor;

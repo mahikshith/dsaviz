@@ -1,53 +1,62 @@
-<div style="width: 1440px; height: 1240px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fit="{{L.rootW}}" style="width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <!-- /PILL NAV -->
-<div style="flex-grow: 1; padding: 36px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 32px; align-items: start">
+<main style="flex-grow: 1; padding: {{L.pad}}; display: grid; grid-template-columns: {{L.cols}}; gap: {{L.gap}}; align-items: start">
 
 <!-- SESSION -->
-<div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
-<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+<div style="display: flex; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-width: 0">
 <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Revisit · {{today}}</span>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 44px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em">{{headline}}</h1>
-<p style="margin: 0; max-width: 720px; font-size: 17px; line-height: 1.55; color: {{t.text2}}">Old Hoot picks the stories you're about to forget. For each one: name the pattern from the story alone, check the key move, then say how well you remembered. The better you remember, the longer until it comes back.</p>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h1}}; line-height: 1.05; font-weight: 600; letter-spacing: -0.02em">{{headline}}</h1>
+<p style="margin: 0; max-width: 680px; font-size: 17px; line-height: 1.55; color: {{t.text2}}">{{subline}}</p>
+</div>
+<div role="status" aria-live="polite" style="flex-shrink: 0; padding: {{L.countPad}}; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+<span style="font-family: {{t.mono}}; font-size: {{L.count}}; font-weight: 800; line-height: 1; color: {{t.accent}}">{{dueCount}}</span>
+<span style="font-size: 13px; font-weight: 600; color: {{t.muted}}">{{dueUnit}}</span>
+</div>
 </div>
 
-<div style="display: flex; align-items: center; gap: 14px">
+<sc-if value="{{showProgress}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 16px">
 <span style="font-family: {{t.mono}}; font-size: 14px; font-weight: 700; white-space: nowrap">{{progressLabel}}</span>
-<div style="flex-grow: 1; display: flex; gap: 6px">
-<sc-for list="{{queue}}" as="q" hint-placeholder-count="5"><span title="{{q.story}}" style="flex-grow: 1; height: 10px; border-radius: 999px; background: {{q.bg}}; transition: background 0.3s"></span></sc-for>
+<div aria-hidden="true" style="flex-grow: 1; display: flex; gap: 4px">
+<sc-for list="{{bars}}" as="q" hint-placeholder-count="5"><span title="{{q.label}}" style="flex-grow: 1; height: 8px; border-radius: 999px; background: {{q.bg}}; transition: background 0.3s"></span></sc-for>
 </div>
-<span style="padding: 6px 12px; border-radius: 999px; background: {{t.okBg}}; font-size: 13px; font-weight: 700; white-space: nowrap">+{{xp}} XP so far</span>
 </div>
+</sc-if>
 
 <sc-if value="{{inSession}}" hint-placeholder-val="{{ true }}">
-<section style="padding: 32px; border-radius: 28px; background: {{t.surface}}; border: 1px solid {{t.line}}; box-shadow: 0 18px 50px {{t.shadow}}; display: flex; flex-direction: column; gap: 18px; animation: rise 0.35s ease">
-<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: {{t.muted}}">
-<span>From your library · last walked {{card.ago}}</span><span>·</span><span>LeetCode {{card.n}}</span>
-<span style="padding: 3px 10px; border-radius: 999px; font-weight: 700; background: {{card.dBg}}; color: {{card.dFg}}">{{card.diff}}</span>
+<section aria-label="Review card" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; box-shadow: 0 18px 50px {{t.shadow}}; display: flex; flex-direction: column; gap: 24px; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+<span style="height: 28px; padding: 0 12px; border-radius: 999px; background: {{t.hl}}; color: {{t.accent}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 700">{{card.pattern}}</span>
+<span style="height: 28px; padding: 0 12px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600; color: {{t.text2}}">{{card.kind}}</span>
+<span style="font-size: 13px; color: {{t.muted}}">{{card.meta}}</span>
 </div>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: 38px; font-weight: 600; line-height: 1.15">{{card.story}}</h2>
-<p style="margin: 0; font-family: {{t.display}}; font-size: 21px; line-height: 1.55">{{card.cue}}</p>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h2}}; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere">{{card.name}}</h2>
+<sc-if value="{{card.hasStory}}" hint-placeholder-val="{{ true }}"><span style="font-size: 15px; color: {{t.muted}}">Story: {{card.story}}</span></sc-if>
+</div>
+<p style="margin: 0; font-size: 22px; line-height: 1.4; font-weight: 600">What’s the key move?</p>
 
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 14px; font-weight: 700">Which pattern cracks it?</span>
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
-<sc-for list="{{options}}" as="op" hint-placeholder-count="4"><button onClick="{{op.pick}}" aria-pressed="{{op.on}}" style="min-height: 56px; padding: 10px 16px; border-radius: 14px; border: 2px solid {{op.border}}; background: {{op.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; transition: background 0.2s, border-color 0.2s"><span>{{op.name}}</span><span style="font-family: {{t.display}}; font-style: italic; font-weight: 400; font-size: 14px; color: {{t.muted}}">{{op.tag}}</span></button></sc-for>
+<sc-if value="{{hidden}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+<button id="rv-reveal" onClick="{{reveal}}" style="height: 52px; padding: 0 32px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 16px; font-weight: 800">Reveal</button>
+<span style="font-size: 13px; color: {{t.muted}}">Think of your answer first. Space reveals.</span>
 </div>
-</div>
+</sc-if>
 
-<sc-if value="{{answered}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 18px 20px; border-radius: 16px; background: {{fbBg}}; display: flex; flex-direction: column; gap: 10px; animation: rise 0.3s ease">
-<span style="font-size: 15px; font-weight: 700">{{fbTitle}}</span>
-<div style="display: flex; gap: 12px; align-items: flex-start">
-<span style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800">{{card.initial}}</span>
-<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 700; color: {{t.muted}}">{{card.companion}}, {{card.role}}</span><span style="font-size: 16px; line-height: 1.55">{{card.synopsis}}</span></span>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{ false }}">
+<div id="rv-answer" tabindex="-1" style="padding: {{L.ansPad}}; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.26s cubic-bezier(.2,.8,.2,1)">
+<sc-if value="{{card.hasWhen}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{card.pattern}}</span><span style="font-size: 18px; line-height: 1.5">{{card.when}}</span></div></sc-if>
+<sc-if value="{{card.hasRule}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{card.ruleTitle}}</span><span style="font-size: 16px; line-height: 1.55; color: {{t.text2}}">{{card.rule}}</span></div></sc-if>
+<sc-if value="{{card.hasNote}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Your note</span><span style="font-size: 15px; line-height: 1.55; color: {{t.text2}}; white-space: pre-wrap">{{card.note}}</span></div></sc-if>
+<a href="{{card.href}}" onClick="{{card.go}}" style="align-self: flex-start; min-height: 24px; font-size: 14px; font-weight: 700; color: {{t.link}}">{{card.linkLabel}} →</a>
 </div>
-<a href="{{card.href}}" onClick="{{card.go}}" style="align-self: flex-start; font-size: 14px; font-weight: 700; color: {{t.accent}}">{{card.replay}}</a>
-</div>
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 14px; font-weight: 700">How well did you remember?</span>
-<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
-<sc-for list="{{rates}}" as="rt" hint-placeholder-count="4"><button onClick="{{rt.pick}}" style="min-height: 64px; padding: 8px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{rt.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{rt.label}}</span><span style="font-size: 12px; color: {{t.muted}}">back {{rt.when}}</span></button></sc-for>
+<div role="group" aria-label="How well did you remember?" style="display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 15px; font-weight: 700">How well did you remember? <span style="font-weight: 500; color: {{t.muted}}">· keys 1 to 4</span></span>
+<div style="display: grid; grid-template-columns: {{L.rateCols}}; gap: 12px">
+<sc-for list="{{rates}}" as="rt" hint-placeholder-count="4"><button onClick="{{rt.pick}}" aria-label="{{rt.aria}}" style="min-height: 76px; padding: 8px; border-radius: 16px; border: 1px solid {{rt.border}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px"><span style="font-size: 17px; font-weight: 800">{{rt.label}}</span><span style="font-size: 12px; color: {{t.text2}}">{{rt.note}}</span><span style="font-size: 12px; color: {{t.muted}}">{{rt.when}}</span></button></sc-for>
 </div>
 </div>
 </sc-if>
@@ -55,38 +64,62 @@
 </sc-if>
 
 <sc-if value="{{sessionDone}}" hint-placeholder-val="{{ false }}">
-<section style="padding: 36px; border-radius: 28px; background: {{t.surface}}; border: 1px solid {{t.ok}}; display: flex; flex-direction: column; gap: 18px; animation: rise 0.35s ease">
+<section id="rv-done" tabindex="-1" aria-label="Session complete" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.ok}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
 <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}">Session complete</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: 38px; font-weight: 600">{{doneTitle}}</h2>
-<p style="margin: 0; font-size: 17px; line-height: 1.55; color: {{t.text2}}">{{doneLine}}</p>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
-<sc-for list="{{doneStats}}" as="ds" hint-placeholder-count="3"><div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 26px; font-weight: 800">{{ds.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{ds.k}}</span></div></sc-for>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600">{{doneTitle}}</h2>
+<div style="display: grid; grid-template-columns: {{L.statCols}}; gap: 12px">
+<sc-for list="{{doneStats}}" as="ds" hint-placeholder-count="3"><div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 28px; font-weight: 800">{{ds.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{ds.k}}</span></div></sc-for>
 </div>
-<div style="display: flex; gap: 10px; flex-wrap: wrap">
-<a href="Home.dc.html" style="height: 50px; padding: 0 24px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Back to my home</a>
-<a href="Patterns.dc.html" style="height: 50px; padding: 0 22px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Play a new story</a>
-<button onClick="{{restart}}" style="height: 50px; padding: 0 20px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 15px; font-weight: 600; text-decoration: underline">Run the session again</button>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="Home.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Back to my home</a>
+<a href="Patterns.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Play a new story</a>
 </div>
 </section>
 </sc-if>
 
-<section style="padding: 20px 22px; border-radius: 20px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}; margin-bottom: 6px">Today's queue</span>
-<sc-for list="{{queue}}" as="qq" hint-placeholder-count="5">
-<div style="min-height: 44px; display: flex; gap: 12px; align-items: center; border-top: 1px solid {{t.line}}">
-<span style="width: 26px; height: 26px; border-radius: 999px; background: {{qq.dotBg}}; color: {{qq.dotFg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">{{qq.mark}}</span>
-<span style="font-family: {{t.display}}; font-size: 17px; font-weight: 600; flex-grow: 1">{{qq.story}}</span>
-<span style="font-size: 13px; color: {{t.muted}}">{{qq.note}}</span>
+<sc-if value="{{emptyDue}}" hint-placeholder-val="{{ false }}">
+<section aria-label="How the queue fills" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px dashed {{t.line2}}; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<span style="font-size: 16px; line-height: 1.55; color: {{t.text2}}">Every story you finish and every problem you tick on the sheet becomes a card. It comes back the next day, then less and less often as you remember it.</span>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="Patterns.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 800">Find a story</a>
+<a href="Sheet.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Open the sheet</a>
 </div>
-</sc-for>
 </section>
+</sc-if>
 </div>
 
 <!-- MEMORY -->
-<div style="display: flex; flex-direction: column; gap: 22px">
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 18px; font-weight: 700">Why revisit?</span>
-<svg width="376" height="204" viewBox="0 0 376 204" role="img" aria-label="Memory without review falls fast; each revisit resets it and it falls more slowly">
+<div style="display: flex; flex-direction: column; gap: 24px">
+<section aria-labelledby="rv-ret" style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="rv-ret" style="margin: 0; font-size: 18px; font-weight: 700">Retention</h2><span style="font-size: 13px; color: {{t.muted}}">{{queueSize}}</span></div>
+<span aria-label="{{retAria}}" style="font-family: {{t.mono}}; font-size: 48px; font-weight: 800; line-height: 1; color: {{retColor}}">{{retPct}}</span>
+<span aria-hidden="true" style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{retBar}}; background: {{retColor}}; transition: width 0.4s ease"></span></span>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">{{retLine}} {{retAdvice}}</span>
+</section>
+
+<section aria-labelledby="rv-up" style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="rv-up" style="margin: 0; font-size: 18px; font-weight: 700">Upcoming</h2><span style="font-size: 13px; color: {{t.muted}}">{{weekTotal}}</span></div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 112px">
+<sc-for list="{{week}}" as="wk" hint-placeholder-count="7">
+<div role="img" aria-label="{{wk.aria}}" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; height: 112px">
+<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700">{{wk.n}}</span>
+<span style="width: 100%; height: {{wk.h}}px; border-radius: 6px 6px 2px 2px; background: {{wk.color}}; transition: height 0.4s ease"></span>
+<span style="font-size: 12px; color: {{t.muted}}">{{wk.d}}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{noUpcoming}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">No cards scheduled yet.</span></sc-if>
+<sc-if value="{{hasUpcoming}}" hint-placeholder-val="{{ true }}">
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{upcoming}}" as="u" hint-placeholder-count="4"><li style="min-height: 44px; display: flex; align-items: center; gap: 12px; border-top: 1px solid {{t.line}}"><span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{u.name}}</span><span style="font-size: 12px; color: {{t.muted}}">{{u.pattern}}</span></span><span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.text2}}; white-space: nowrap">{{u.when}}</span></li></sc-for>
+</ul>
+<sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{t.muted}}">{{upcomingMore}}</span></sc-if>
+</sc-if>
+</section>
+
+<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">Why revisit?</h2>
+<svg width="100%" viewBox="0 0 376 204" style="max-width: 376px; height: auto" role="img" aria-label="Memory without review falls fast; each revisit resets it and it falls more slowly">
 <line x1="40" y1="150" x2="370" y2="150" stroke="{{t.line2}}" stroke-width="1"></line>
 <line x1="40" y1="20" x2="40" y2="150" stroke="{{t.line2}}" stroke-width="1"></line>
 <text x="34" y="24" text-anchor="end" font-size="11" fill="{{t.muted}}">100%</text>
@@ -101,36 +134,13 @@
 <span style="font-size: 14px; line-height: 1.55; color: {{t.text2}}">A story you walked once fades within days. Each revisit brings it back to full strength, and it fades more slowly every time. Five cards a day keeps your whole library fresh.</span>
 </section>
 
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 700">Coming up this week</span><span style="font-size: 13px; color: {{t.muted}}">{{weekTotal}} cards</span></div>
-<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 120px">
-<sc-for list="{{week}}" as="wk" hint-placeholder-count="7">
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 120px">
-<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700">{{wk.n}}</span>
-<span style="width: 100%; height: {{wk.h}}px; border-radius: 6px 6px 2px 2px; background: {{wk.color}}; transition: height 0.4s ease"></span>
-<span style="font-size: 12px; color: {{wk.fg}}; font-weight: {{wk.weight}}">{{wk.d}}</span>
-</div>
-</sc-for>
-</div>
-</section>
-
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 18px; font-weight: 700">Memory by pattern</span>
-<sc-for list="{{strength}}" as="sg" hint-placeholder-count="5">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 600">{{sg.name}}</span><span style="font-family: {{t.mono}}; color: {{sg.fg}}">{{sg.pct}}</span></div>
-<span style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{sg.pct}}; background: {{sg.color}}; transition: width 0.4s ease"></span></span>
-</div>
-</sc-for>
-</section>
-
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 700">Saved by you</span><span style="font-size: 13px; color: {{t.muted}}">★ on any story</span></div>
+<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Saved by you</h2><span style="font-size: 13px; color: {{t.muted}}">★ on any story</span></div>
 <sc-if value="{{noSaved}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">Nothing saved yet. Tap ☆ Save on any story and it will wait for you here.</span></sc-if>
 <sc-for list="{{saved}}" as="sv" hint-placeholder-count="2">
-<a href="{{sv.href}}" onClick="{{sv.go}}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid {{t.line}}"><span style="font-family: {{t.display}}; font-size: 16px; font-weight: 600">{{sv.story}}</span><span style="font-size: 12px; color: {{t.muted}}">{{sv.pattern}}</span></a>
+<a href="{{sv.href}}" onClick="{{sv.go}}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid {{t.line}}"><span style="font-family: {{t.display}}; font-size: 16px; font-weight: 600">{{sv.story}}</span><span style="font-size: 12px; color: {{t.muted}}">{{sv.pattern}}</span></a>
 </sc-for>
 </section>
 </div>
-</div>
+</main>
 </div>

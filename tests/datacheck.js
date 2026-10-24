@@ -1,5 +1,6 @@
 // Data layer test: loads shared/data.js with a fake localStorage and a fake clock, then checks
-// the empty state, activity logging, streak math across days, sheet ticks, medals and demo flags.
+// the empty state, activity logging, streak math across days, sheet ticks, medals, demo flags,
+// the spaced-repetition scheduler and queue, notes, and the sheet backup file.
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -140,6 +141,109 @@ console.log('demo flags');
   check(DS.buddies().demo === true && DS.feed().demo === true, 'buddies and feed are flagged demo');
   check(DS.leaderboard('nope').tab === 'league' && DS.leaderboard('friends').rows.length === 7, 'unknown tabs fall back; friends board is small');
   check(DS.profile().demo === false && DS.streak().demo === undefined, 'real data carries no demo flag');
+}
+
+console.log('spaced repetition scheduler');
+{
+  const { DS } = load(false);
+  const t0 = new Date(2026, 9, 21, 20).getTime();
+  let c = DS.schedule(null, 3, t0);
+  check(c.interval === 3 && c.reps === 1 && c.due === '2026-10-24', 'first Good: 3 days, due on the 24th');
+  check(DS.schedule(null, 2, t0).interval === 1 && DS.schedule(null, 4, t0).interval === 6, 'first Hard is 1 day, first Easy is 6');
+  const goods = [c.interval];
+  for (let i = 0; i < 4; i++) { c = DS.schedule(c, 3, t0); goods.push(c.interval); }
+  check(goods.every((n, i) => !i || n > goods[i - 1]), 'intervals grow on every Good: ' + goods.join(', '));
+  let e = DS.schedule(null, 4, t0); const easies = [e.interval];
+  for (let i = 0; i < 3; i++) { e = DS.schedule(e, 4, t0); easies.push(e.interval); }
+  check(easies.every((n, i) => n > goods[i]), 'Easy grows faster than Good: ' + easies.join(', '));
+  check(e.ease > 2.5 && e.ease <= 3, 'Easy raises ease, capped at 3.0');
+  const again = DS.schedule(c, 1, t0);
+  check(again.interval === 1 && again.reps === 0 && again.lapses === 1 && again.ease < c.ease && again.due === '2026-10-22', 'Again resets to tomorrow, counts a lapse, lowers ease');
+  check(DS.schedule(again, 3, t0).interval === 3, 'after Again the card starts over');
+  const h = DS.schedule({ interval: 10, reps: 3, ease: 1.35 }, 2, t0);
+  check(h.interval === 12 && h.ease === 1.3, 'Hard grows by 1.2 and ease never drops below 1.3');
+  check(DS.schedule({ interval: 300, reps: 9, ease: 3 }, 4, t0).interval === 365, 'intervals cap at a year');
+  check(DS.schedule({ interval: 1, reps: 1, ease: 1.3 }, 2, t0).interval === 2, 'every pass moves the card at least a day');
+  check(DS.schedule(null, 3, new Date(2026, 11, 30, 23).getTime()).due === '2027-01-02', 'due dates cross the new year by local date');
+}
+
+console.log('review queue across days');
+{
+  const { DS, store, at } = load(true);
+  at(2026, 10, 21, 20);
+  check(DS.reviewCards().length === 0 && DS.reviewDue().length === 0 && DS.retention().pct === null, 'empty queue, no retention yet');
+  DS.finishStory('two-sum-ii');
+  DS.addCard('two-sum-ii', { rule: 'Move the end that cannot be in the answer.' });
+  let cards = DS.reviewCards();
+  check(cards.length === 1 && cards[0].kind === 'story' && !cards[0].isDue && cards[0].due === '2026-10-22', 'a finished story is due tomorrow');
+  check(cards[0].rule === 'Move the end that cannot be in the answer.', 'the key rule is kept on the card');
+  const up = DS.reviewUpcoming(7);
+  check(up.counts.length === 7 && up.counts[0].n === 1 && up.counts[0].date === '2026-10-22', 'upcoming counts it for tomorrow');
+  store['dsaviz-sheet-v1'] = JSON.stringify({ v: 1, done: { 'reverse-string': at(2026, 10, 21, 21), 'two-sum-ii': at(2026, 10, 21, 21) }, star: {} });
+  DS.addCard('sheet:reverse-string', { name: 'Reverse String', pattern: 'Two Pointers', hint: 'Swap the ends.' });
+  cards = DS.reviewCards();
+  check(cards.length === 2 && cards.some((x) => x.id === 'sheet:reverse-string' && x.kind === 'sheet' && x.name === 'Reverse String'), 'a ticked sheet problem joins the queue; a slug that is a story is not counted twice');
+  at(2026, 10, 22, 1);
+  check(DS.reviewDue().length === 2, 'just after midnight both are due');
+  const before = DS.xp().total;
+  const r = DS.review('two-sum-ii', 3);
+  check(r.interval === 3 && r.due === '2026-10-25', 'Good on day one sets the 25th');
+  check(DS.reviewDue().length === 1 && DS.reviewDue()[0].id === 'sheet:reverse-string', 'the rated card leaves today');
+  check(DS.xp().total === before + DS.XP.revisit && DS.streak().activeToday, 'a review earns revisit XP and counts for the streak');
+  DS.review('sheet:reverse-string', 1);
+  check(DS.retention().pct === 50 && DS.retention().reviews === 2 && DS.retention().today === 2, 'retention: one recalled of two');
+  at(2026, 10, 23, 9);
+  check(DS.reviewDue().map((x) => x.id).join() === 'sheet:reverse-string', 'Again comes back the next day');
+  at(2026, 10, 25, 9);
+  const due = DS.reviewDue();
+  check(due.length === 2 && due[0].id === 'sheet:reverse-string' && due[0].late === 2, 'unreviewed cards stay due and show how late they are');
+  check(DS.reviewPreview('two-sum-ii').map((p) => p.interval).join() === '1,4,8,10', 'preview shows each grade: ' + DS.reviewPreview('two-sum-ii').map((p) => p.when).join(', '));
+  const xpBefore = DS.xp().total;
+  DS.review('two-sum-ii', 4);
+  const redo = DS.review('two-sum-ii', 2, { redo: true });
+  check(redo.interval === 4 && DS.xp().total === xpBefore + DS.XP.revisit, 'changing your mind re-rates from the state before, without extra XP');
+  check(DS.retention().reviews === 3, 'a re-rate replaces the last log entry');
+  at(2026, 12, 20, 9);
+  check(DS.retention().pct === null, 'retention looks back 30 days');
+  store['dsaviz-review-v1'] = '{nope';
+  check(DS.reviewCards().length === 2 && DS.reviewCards()[0].due === '2026-10-22', 'a broken review store falls back to the day after finishing');
+  const two = load(true);
+  const hm = two.PROBLEMS.filter((p) => p.pattern === 'Hash Map');
+  hm.forEach((p) => { two.DS.finishStory(p.id); two.DS.review(p.id, 3); });
+  check(two.DS.medals(two.PROBLEMS, two.PATTERNS).find((x) => x.pattern === 'Hash Map').tier === 'gold', 'reviewed stories count as rated for gold');
+}
+
+console.log('notes and the backup file');
+{
+  const { DS, store, at } = load(false);
+  at(2026, 10, 21, 10);
+  check(DS.note('two-sum') === '', 'no note yet');
+  DS.setNote('two-sum', 'Store each value, look up the complement.');
+  check(DS.note('two-sum') === 'Store each value, look up the complement.', 'a note round-trips');
+  check(JSON.parse(store['dsaviz-notes-v1']).v === 1, 'notes are versioned in dsaviz-notes-v1');
+  DS.setNote('two-sum', '   ');
+  check(DS.note('two-sum') === '' && !('two-sum' in DS.notes()), 'an empty note is removed');
+  DS.setNote('two-sum', 'x'.repeat(5000));
+  check(DS.note('two-sum').length === 2000, 'notes are capped at 2000 characters');
+  DS.setNote('two-sum', 'Hash the complement.');
+  DS.setNote('valid-anagram', 'Count letters.');
+  store['dsaviz-sheet-v1'] = JSON.stringify({ v: 1, done: { 'two-sum': 1000, 'move-zeroes': 2000 }, star: { 'two-sum': 1 } });
+  const file = JSON.parse(JSON.stringify(DS.exportBackup()));
+  check(file.v === 1 && file.done['two-sum'] === 1000 && file.star['two-sum'] === 1 && file.notes['two-sum'].text === 'Hash the complement.', 'export holds ticks, stars and notes');
+  const fresh = load(false);
+  fresh.at(2026, 10, 22, 10);
+  fresh.store['dsaviz-sheet-v1'] = JSON.stringify({ v: 1, done: { 'two-sum': 500 }, star: {} });
+  fresh.DS.setNote('valid-anagram', 'My newer note.');
+  const res = fresh.DS.importBackup(file);
+  check(res && res.ticks === 1 && res.notes === 1, 'import adds the missing tick and the missing note: ' + JSON.stringify(res));
+  check(fresh.DS.sheet().ticked === 2 && fresh.DS.sheet().done['two-sum'] === 500 && fresh.DS.sheet().starred === 1, 'import merges ticks, keeps the earliest time, adds stars');
+  check(fresh.DS.note('two-sum') === 'Hash the complement.' && fresh.DS.note('valid-anagram') === 'My newer note.', 'an older note never overwrites a newer one');
+  file.notes['valid-anagram'] = { text: 'Even newer.', at: new Date(2026, 10, 1).getTime() };
+  fresh.DS.importBackup(file);
+  check(fresh.DS.note('valid-anagram') === 'Even newer.', 'a newer note from the file wins');
+  check(fresh.DS.importBackup({ v: 2 }) === null && fresh.DS.importBackup(null) === null, 'a file that is not a backup is refused');
+  const old = fresh.DS.importBackup({ v: 1, done: { 'reverse-string': 3000 } });
+  check(old.ticks === 1 && old.notes === 0, 'an older backup without notes still imports');
 }
 
 console.log(problems ? problems + ' problem(s)' : 'data clean');

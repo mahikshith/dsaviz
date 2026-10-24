@@ -194,6 +194,8 @@
     const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
     const z = Math.max(0.25, Math.min(1.6, window.innerWidth / w));
     if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
+    // The pill nav and the menu read --fit to stay at real size on phones (see shared/ui/nav.html).
+    if (document.documentElement.style.getPropertyValue('--fit') !== String(z)) document.documentElement.style.setProperty('--fit', String(z));
   }
   function paint() {
     fit();

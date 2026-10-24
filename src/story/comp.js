@@ -36,7 +36,7 @@ class Component extends DCLogic {
     const n = this.steps().length;
     const step = Math.max(0, Math.min(n - 1, i));
     this.setState({ step, ask: false, guess: null });
-    if (step === n - 1) this.stop();
+    if (step === n - 1) { this.stop(); DS.finishStory(this.state.scene); }
   }
   stop() { clearInterval(this.timer); this.timer = null; this.setState({ playing: false }); }
   play() {
@@ -78,6 +78,7 @@ class Component extends DCLogic {
     const deck = loadDeck();
     deck[this.state.scene] = { due: days, rated: label };
     storeDeck(deck);
+    if (!this.state.rated) DS.rateCard(this.state.scene);
     this.setState({ rated: label });
   }
   spellLines() {
@@ -290,7 +291,7 @@ class Component extends DCLogic {
     const RATES = [['Again', 'tomorrow', 1], ['Hard', 'in 3 days', 3], ['Good', 'in a week', 7], ['Easy', 'in 3 weeks', 21]];
 
     return {
-      t, themeBtns: themeButtons(this, themeKey, t),
+      t, ...navVals(this, t, themeKey, 'Story'), themeBtns: themeButtons(this, themeKey, t),
       S, P, diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2],
       patternName: S.pattern,
       levels: LEVELS.map(([k, label]) => Object.assign({ label, on: level === k, pick: () => this.setState({ level: k }) }, pill(level === k))),

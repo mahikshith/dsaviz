@@ -1,0 +1,14 @@
+<!-- RINGS -->
+<div role="img" aria-label="{{rings.aria}}" style="display: flex; align-items: center; gap: 24px">
+<svg width="{{rings.size}}" height="{{rings.size}}" viewBox="0 0 {{rings.size}} {{rings.size}}" aria-hidden="true" style="flex-shrink: 0">
+<sc-for list="{{rings.arcs}}" as="ra" hint-placeholder-count="4">
+<circle cx="{{rings.c}}" cy="{{rings.c}}" r="{{ra.r}}" fill="none" stroke="{{t.sunk}}" stroke-width="{{rings.stroke}}"></circle>
+<circle data-ring cx="{{rings.c}}" cy="{{rings.c}}" r="{{ra.r}}" fill="none" stroke="{{ra.color}}" stroke-width="{{rings.stroke}}" stroke-linecap="round" stroke-dasharray="{{ra.len}}" stroke-dashoffset="{{ra.offset}}" opacity="{{ra.op}}" transform="rotate(-90 {{rings.c}} {{rings.c}})" style="--len: {{ra.len}}"></circle>
+</sc-for>
+</svg>
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex-grow: 1">
+<sc-for list="{{rings.legend}}" as="rl" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: {{rl.color}}"></span><span style="flex-grow: 1; white-space: nowrap">{{rl.label}}</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}; padding-left: 8px">{{rl.value}}</span></span></sc-for>
+<sc-if value="{{rings.empty}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Finish a story to fill its ring.</span></sc-if>
+</div>
+</div>
+<!-- /RINGS -->

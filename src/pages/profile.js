@@ -10,7 +10,8 @@ const PREF_GROUPS = [
 ];
 // Certificates: walk a pattern's core (animated) stories, then pass its 10-minute exam.
 const CERT_PATTERNS = [['Two Pointers', 'TP'], ['Sliding Window', 'SW'], ['Hash Map', 'HM'], ['Binary Search', 'BS'], ['Stack', 'ST'], ['Breadth-First Search', 'BF']];
-const CERTIFIED = { 'Hash Map': ['Certified 20 Sep 2026', 'DSV-HM-2026-5177'] };
+// Certificates need the pattern exam, which needs accounts; none are issued yet.
+const CERTIFIED = {};
 function certRows() {
   return CERT_PATTERNS.map(([name, mark]) => {
     const core = PROBLEMS.filter((p) => p.pattern === name && p.animated);
@@ -19,22 +20,21 @@ function certRows() {
     return { name, mark, have, need: core.length, when: cert ? cert[0] : '', id: cert ? cert[1] : '', core };
   });
 }
-const BUDDIES = [
-  ['Ananya Rao', 'AR', 'Final year · PES University', 12, true],
-  ['Rohit Verma', 'RV', 'SDE-1 · Bengaluru', 5, false],
-  ['Meera Nair', 'MN', 'M.Tech · IIIT Hyderabad', 2, false]
-];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYNAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 function loadPrefs() { const v = readJSON(PREFS_KEY, {}); return Object.assign({}, PREF_DEFAULT, v && typeof v === 'object' ? v : {}); }
 // Clipboard can be blocked (permissions, iframes); the button still confirms.
 function copyText(text) { try { const w = navigator.clipboard && navigator.clipboard.writeText(text); if (w && w.catch) w.catch(() => {}); } catch (e) {} }
-function noise(i) { return Math.abs(Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1; }
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, shared: false, copied: false, nudged: [], del: 0 };
+    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, shared: false, nudged: [], del: 0 };
+    // Medals earned since the last visit shine once; then they are marked seen.
+    const medals = DS.medals(PROBLEMS, PATTERNS);
+    this.fresh = {};
+    medals.forEach((m) => { if (m.fresh) this.fresh[m.key] = 1; });
+    DS.markMedalsSeen(medals);
   }
   componentDidMount() { listenTheme(this); }
   componentWillUnmount() { unlistenTheme(this); }
@@ -46,28 +46,19 @@ class Component extends DCLogic {
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
-    // 26 weeks of activity, ending today; quieter at the start, a real habit by the end.
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const start = new Date(today); start.setDate(today.getDate() - today.getDay() - 175);
-    const todayIdx = 175 + today.getDay();
+    // 26 weeks of real activity from DS: stories, sheet ticks, passed tests and revisit cards.
+    const hm = DS.heatmap(26);
+    const todayIdx = hm.todayIndex;
     const dayIdx = this.state.day === null ? todayIdx : this.state.day;
     const levels = [t.sunk, t.okBg, 'color-mix(in srgb, ' + t.ok + ' 45%, ' + t.okBg + ')', 'color-mix(in srgb, ' + t.ok + ' 75%, ' + t.okBg + ')', t.ok];
-    let total = 0, active = 0;
-    const cells = [];
-    for (let i = 0; i < 182; i++) {
-      const d = new Date(start); d.setDate(start.getDate() + i);
-      const future = d > today;
-      const ramp = i / 182;
-      const streak = i > todayIdx - 23 && i <= todayIdx;
-      let n = future ? 0 : streak ? 1 + Math.floor(noise(i) * 5) : noise(i) < 0.25 + ramp * 0.55 ? 1 + Math.floor(noise(i + 7) * (2 + ramp * 4)) : 0;
-      if (i === todayIdx - 23) n = 0;
-      total += n; if (n) active++;
-      const lvl = n === 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 6 ? 3 : 4;
+    const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many || one + 's');
+    const cells = hm.cells.map((c, i) => {
+      const d = new Date(c.ts);
       const label = DAYNAMES[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
-      const story = PROBLEMS[(i * 7) % PROBLEMS.length].story;
-      cells.push({ n, d, label, story, bg: future ? 'transparent' : levels[lvl], border: i === dayIdx ? '2px solid ' + t.text : future ? '1px dashed ' + t.line : '0',
-        tip: label + ': ' + (n ? n + ' story step' + (n > 1 ? 's' : '') : 'no learning'), pick: () => { if (!future) this.setState({ day: i }); } });
-    }
+      const parts = [c.story ? plural(c.story, 'story', 'stories') : '', c.sheet ? plural(c.sheet, 'sheet tick') : '', c.code ? plural(c.code, 'passed test') : '', c.revisit ? plural(c.revisit, 'revisit card') : ''].filter(Boolean);
+      return { n: c.n, d, label, parts, bg: c.future ? 'transparent' : levels[c.level], border: i === dayIdx ? '2px solid ' + t.text : c.future ? '1px dashed ' + t.line : '0',
+        tip: label + ': ' + (c.n ? parts.join(', ') : 'no learning'), pick: () => { if (!c.future) this.setState({ day: i }); } };
+    });
     const months = [];
     for (let w = 0; w < 26; w++) {
       const d = cells[w * 7].d;
@@ -86,18 +77,43 @@ class Component extends DCLogic {
     const certName = c[0] + ' pattern certificate';
     const enc = encodeURIComponent;
     const prefs = this.state.prefs;
+    const me = DS.profile();
+    const st = DS.streak();
+    const xp = DS.xp();
+    const stories = DS.stories();
+    const sheet = DS.sheet();
+    const pats = DS.patterns(PROBLEMS, PATTERNS).filter((p) => p.total);
+    const top = pats.slice().sort((a, b) => b.pct - a.pct || pats.indexOf(a) - pats.indexOf(b)).slice(0, 4);
+    const ringColors = [t.accent, t.right, t.flame, t.ok];
+    const buddyData = DS.buddies();
+    const who = me.name || 'A DSAMaxxing learner';
+    const firstDay = hm.cells.find((x) => x.n);
     return {
-      t, themeBtns: themeButtons(this, themeKey, t),
-      chips: ['Level 9 · 2,640 XP', 'Lantern League #14', 'Python', 'Placements: December 2026'],
-      shareLabel: this.state.shared ? 'Profile link copied ✓' : 'Share my profile',
-      shareProfile: () => { copyText('DSAMaxxing · Aarav Sharma · 23-day streak'); this.setState({ shared: true }); },
-      stats: [['23', 'day streak', t.flame], ['31', 'longest streak', t.text], [String(PROBLEMS.filter((p) => p.status === 'done').length), 'stories finished', t.text], [String(CERTS.filter((x) => x.when).length), 'pattern certified', t.ok], ['78%', 'revisit recall', t.text]].map(([v, k, color]) => ({ v, k, color })),
-      heatTitle: total + ' story steps and revisit cards in 6 months · ' + active + ' active days',
+      t, ...navVals(this, t, themeKey, 'Profile'), themeBtns: themeButtons(this, themeKey, t),
+      me: {
+        title: me.name || 'Your profile', hasName: !!me.initials, noName: !me.initials, initials: me.initials, icon: ICONS.user,
+        avatarBg: me.initials ? t.accent : t.sunk, avatarFg: me.initials ? t.onAccent : t.text,
+        line: me.isNew ? 'Nothing learned yet. Your progress shows up here as you go.' : firstDay ? 'Learning since ' + new Date(firstDay.ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Learning for a while now',
+        cta: me.name ? 'Change my goals' : 'Set your name and goals'
+      },
+      chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
+      shareLabel: this.state.shared ? 'Copied ✓' : 'Copy my stats',
+      shareProfile: () => { copyText('DSAMaxxing · ' + who + ' · ' + st.current + '-day streak · ' + stories.count + ' stories · ' + sheet.ticked + ' sheet problems'); this.setState({ shared: true }); },
+      rings: ringSet(t, top.map((p, i) => ({ label: p.name, value: p.done + '/' + p.total, pct: p.pct, color: ringColors[i] })), 136, 11),
+      tiles: statTiles(t, [
+        { icon: 'flame', color: t.flame, value: st.current, unit: st.current === 1 ? 'day' : 'days', label: 'Streak', pct: null },
+        { icon: 'flame', color: t.medFg, value: st.longest, unit: st.longest === 1 ? 'day' : 'days', label: 'Longest streak', pct: null },
+        { icon: 'story', color: t.accent, value: stories.count, unit: '/ ' + PROBLEMS.length, label: 'Stories finished', pct: (stories.count / PROBLEMS.length) * 100 },
+        { icon: 'sheet', color: t.right, value: sheet.ticked, unit: '/ ' + sheet.total, label: 'Sheet ticked', pct: (sheet.ticked / sheet.total) * 100 },
+        { icon: 'bolt', color: t.ok, value: xp.total.toLocaleString('en-US'), unit: 'XP', label: 'Level ' + xp.level, pct: xp.pct }
+      ]),
+      shelf: medalShelf(t, DS.medals(PROBLEMS, PATTERNS), 20, this.fresh),
+      heatTitle: hm.activeDays ? plural(hm.activeDays, 'active day') + ' in 6 months' : 'Your 6 months start today',
       months, cells,
       day: {
         date: sel.label + (dayIdx === todayIdx ? ' · today' : ''),
-        head: sel.n ? sel.n + ' story step' + (sel.n > 1 ? 's' : '') : 'A rest day',
-        line: sel.n ? 'Mostly ' + sel.story + (sel.n > 3 ? ', plus a Revisit session.' : '.') : 'Nothing that day. Rest days happen — a streak freeze covers one a week.'
+        head: sel.n ? plural(sel.n, 'thing') + ' done' : dayIdx === todayIdx ? 'Nothing yet today' : 'A rest day',
+        line: sel.n ? sel.parts.join(' · ') : dayIdx === todayIdx ? 'Finish a story, tick a sheet problem or pass a code test. Each one lights up today.' : 'Nothing that day. Rest days happen.'
       },
       legend: levels,
       certs: CERTS.map(({ name, mark, have, need, when }, i) => {
@@ -105,7 +121,7 @@ class Component extends DCLogic {
         return {
           name, mark, on, pct: need ? Math.round((have / need) * 100) + '%' : '0%',
           color: done ? t.ok : have ? t.diff.Medium[0] : t.faint,
-          state: done ? 'Certified' : !need ? 'Coming soon' : have >= need ? 'Exam ready' : have ? 'In progress' : 'Not started', stateColor: done ? t.ok : t.muted,
+          state: done ? 'Certified' : !need ? 'Coming soon' : have >= need ? 'Core done' : have ? 'In progress' : 'Not started', stateColor: done ? t.ok : t.muted,
           note: done ? when : !need ? 'Its stories are being animated' : have + ' of ' + need + ' core stories walked',
           border: on ? t.text : t.line, bg: done ? t.okBg : t.surface, op: need ? 1 : 0.7,
           pick: () => this.setState({ cert: i })
@@ -114,10 +130,10 @@ class Component extends DCLogic {
       cert: {
         earned, locked: !earned, color: earned ? t.ok : t.muted, bg: earned ? t.okBg : t.sunk,
         title: earned ? c[0] : c[0] + ' — not yet',
-        line: earned ? 'Aarav Sharma walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories to unlock the 10-minute pattern exam. ' + pattern[2] + ' is waiting.',
+        line: earned ? who + ' walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories to unlock the 10-minute pattern exam. ' + pattern[2] + ' is waiting.',
         meta: earned ? c[4] + ' · ID ' + c[5] : soon ? 'Coming soon' : c[2] + ' of ' + c[3] + ' core stories walked',
         linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=DSAMaxxing&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
-        whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story. Try it: 7 free days with code AARAV7'),
+        whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story.'),
         cta: soon ? 'Read ' + nextP.story : c[2] ? 'Continue: ' + nextP.story : 'Start with ' + nextP.story,
         nextHref: nextP.animated ? 'Story.dc.html' : 'Briefing.dc.html',
         go: () => saveProblem(nextP.id),
@@ -131,12 +147,12 @@ class Component extends DCLogic {
           return { label, on, bg: on ? t.text : 'transparent', fg: on ? t.bg : t.text, border: on ? t.text : t.line2, pick: () => this.setPref(key, v) };
         })
       })),
-      buddies: BUDDIES.map(([name, initials, where, streak, today], i) => {
+      buddies: buddyData.list.map((bd, i) => {
         const nudged = this.state.nudged.includes(i);
         return {
-          name, initials, where, streak: streak + ' days', color: [t.right, t.ok, t.left][i],
-          done: today || nudged, btn: today ? 'Learned today ✓' : nudged ? 'Nudged ✓' : 'Nudge', btnFg: today || nudged ? t.muted : t.text,
-          nudge: () => { if (!today && !nudged) this.setState({ nudged: this.state.nudged.concat([i]) }); }
+          name: bd.name, initials: bd.initials, where: bd.where, streak: bd.streak + ' days', color: [t.right, t.ok, t.left][i % 3],
+          done: bd.learnedToday || nudged, btn: bd.learnedToday ? 'Learned today ✓' : nudged ? 'Nudged ✓' : 'Nudge', btnFg: bd.learnedToday || nudged ? t.muted : t.text,
+          nudge: () => { if (!bd.learnedToday && !nudged) this.setState({ nudged: this.state.nudged.concat([i]) }); }
         };
       }),
       deleting: this.state.del === 1, notDeleting: this.state.del !== 1,
@@ -144,10 +160,7 @@ class Component extends DCLogic {
       askDelete: () => { if (this.state.del !== 2) this.setState({ del: 1 }); },
       confirmDelete: () => this.setState({ del: 2 }),
       cancelDelete: () => this.setState({ del: 0 }),
-      copyLabel: this.state.copied ? 'Copied ✓' : 'Copy',
-      copyCode: () => { copyText('AARAV7'); this.setState({ copied: true }); },
-      inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on DSAMaxxing — Two Pointers finally clicked. Use my code AARAV7 for 7 free days.'),
-      milestones: [['23', '23-day streak', 'today', t.flame], ['HM', 'Hash Map certificate', '20 Sep', t.ok], ['50', '50 revisit cards', '17 Sep', t.right], ['1st', 'First story walked: The Mirror Hallway', '3 Jun', t.accent]].map(([mark, name, when, bg]) => ({ mark, name, when, bg, fg: t.onAccent }))
+      inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on DSAMaxxing. Every problem is a story you watch step by step.'),
     };
   }
 }

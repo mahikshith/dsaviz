@@ -43,7 +43,7 @@
       "y": 2340
     },
     "Home.dc.html": {
-      "h": 2160,
+      "h": 1300,
       "is_interactive": true,
       "title": "Home · quests, revisit, streak, buddies, league",
       "w": 1440,
@@ -83,7 +83,7 @@
       "y": 0
     },
     "Story.dc.html": {
-      "h": 1080,
+      "h": 1152,
       "is_interactive": true,
       "title": "Story player · 16 animated stories · predict mode · build-it puzzle",
       "w": 1440,
@@ -110,7 +110,7 @@
       "x": 3040,
       "y": 3640,
       "w": 1440,
-      "h": 2020,
+      "h": 2040,
       "title": "Profile · heatmap, certificates, invites, reminders",
       "is_interactive": true
     },

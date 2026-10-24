@@ -36,7 +36,7 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     const saved = readJSON(ONBOARD_KEY, {});
-    this.state = Object.assign({ theme: loadTheme(), step: 0, name: 'Aarav', reason: null, level: null, goal: '10', lang: 'Python', time: '21:30', channel: 'WhatsApp', date: '' }, saved && typeof saved === 'object' ? saved : {}, { step: 0 });
+    this.state = Object.assign({ theme: loadTheme(), step: 0, name: '', reason: null, level: null, goal: '10', lang: 'Python', time: '21:30', channel: 'WhatsApp', date: '' }, saved && typeof saved === 'object' ? saved : {}, { step: 0 });
   }
   componentDidMount() { listenTheme(this); }
   componentWillUnmount() { unlistenTheme(this); }

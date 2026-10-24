@@ -21,47 +21,154 @@ button{font:inherit}
 @keyframes feedin{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 </style>
 </helmet>
-<div style="width: 1440px; height: 2020px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
-<header style="height: 76px; flex-shrink: 0; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; gap: 22px; border-bottom: 1px solid {{t.line}}">
-<a href="Home.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
-<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 16px; font-size: 15px; font-weight: 500">
-<a href="Home.dc.html" style="color: {{t.muted}}">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Sheet.dc.html" style="color: {{t.muted}}">Sheet</a><a href="Revisit.dc.html" style="color: {{t.muted}}">Revisit</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
-</nav>
-<div style="flex-grow: 1"></div>
-<div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
-<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3">
-<button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button>
+<div style="width: 1440px; height: 2040px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<!-- PILL NAV -->
+<style>
+[data-pn-wrap]{position:sticky;top:0;z-index:40;padding:12px 24px 0;box-sizing:border-box;flex-shrink:0}
+[data-pn] a,[data-pn] button{transition:transform .22s cubic-bezier(.32,.72,0,1),background-color .2s,color .2s}
+[data-pn] a:active,[data-pn] button:active{transform:scale(.95);transition-duration:.12s}
+[data-pn] a:hover{opacity:1}
+[data-pn-item][data-on="false"]:hover{background:rgba(127,127,127,.12)!important}
+[data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+[data-ring]{animation:ds-ring .7s cubic-bezier(.33,1,.68,1) both}
+[data-rise]{animation:ds-rise .38s cubic-bezier(.33,1,.68,1) both}
+[data-fresh="true"]{animation:ds-pop .5s cubic-bezier(.34,1.56,.64,1) both}
+[data-shine]{animation:ds-shine .9s cubic-bezier(.65,0,.35,1) .35s both}
+@keyframes ds-ring{from{stroke-dashoffset:var(--len)}}
+@keyframes ds-rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes ds-pop{0%{transform:scale(.6)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes ds-shine{from{transform:translateX(-40px) skewX(-20deg)}to{transform:translateX(90px) skewX(-20deg)}}
+@media (prefers-reduced-motion: reduce){[data-ring],[data-rise],[data-fresh="true"]{animation:none}[data-shine]{display:none}[data-pn] a,[data-pn] button{transition:none}}
+@media (max-width: 759px){
+[data-pn-wrap]{position:fixed;top:auto;bottom:0;left:0;right:0;padding:0 8px 8px;zoom:calc(1 / var(--fit, 1))}
+[data-pn]{gap:2px!important;padding:0 4px!important}
+[data-pn-logo],[data-pn-streak],[data-pn-soon]{display:none!important}
+[data-pn-item]{padding:0 10px!important}
+[data-pn-item][data-on="false"] [data-pn-label]{display:none}
+[data-pn-item][data-extra="true"][data-on="false"]{display:none!important}
+[data-pn-items]{justify-content:space-around}
+body{padding-bottom:calc(80px / var(--fit, 1))}
+[data-drawer]{zoom:calc(1 / var(--fit, 1))}
+[data-drawer] aside{width:min(360px,86vw)!important}
+}
+</style>
+<div data-pn-wrap>
+<nav aria-label="Main" data-pn style="height: 60px; box-sizing: border-box; padding: 0 8px; border-radius: 30px; background: {{nav.glass}}; border: 1px solid {{t.line}}; box-shadow: 0 8px 24px {{nav.shadow}}; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; align-items: center; gap: 4px; font-family: {{t.body}}; color: {{t.text}}">
+<button onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 44px; padding: 0 16px 0 4px; flex-shrink: 0; display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700; white-space: nowrap">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
+<div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
+<sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="7">
+<sc-if value="{{ni.live}}" hint-placeholder-val="{{ true }}"><a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span></a></sc-if>
+<sc-if value="{{ni.soon}}" hint-placeholder-val="{{ false }}"><span aria-disabled="true" title="{{ni.title}}" data-pn-item data-pn-soon data-on="false" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; color: {{t.muted}}; cursor: default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span><span style="padding: 0 6px; border-radius: 999px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 600; line-height: 18px">Soon</span></span></sc-if>
 </sc-for>
 </div>
-<a href="Home.dc.html" aria-label="23-day streak" style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>23</a>
-<a href="Profile.dc.html" aria-label="Your profile" style="width: 44px; height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800">AS</a>
-</header>
+<sc-if value="{{nav.member}}" hint-placeholder-val="{{ true }}">
+<a href="Profile.dc.html" data-pn-streak aria-label="{{nav.streakLabel}}" title="{{nav.streakLabel}}" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{t.line}}; background: {{t.sunk}}; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{nav.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>{{nav.streak}}</a>
+<a href="Profile.dc.html" aria-label="Your profile" aria-current="{{nav.profileOn}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; background: {{nav.avatarBg}}; color: {{nav.avatarFg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800"><sc-if value="{{nav.hasName}}" hint-placeholder-val="{{ false }}">{{nav.initials}}</sc-if><sc-if value="{{nav.noName}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.userIcon}}"></path></svg></sc-if></a>
+</sc-if>
+<sc-if value="{{nav.guest}}" hint-placeholder-val="{{ false }}">
+<a href="Auth.dc.html" style="height: 44px; padding: 0 16px; flex-shrink: 0; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700; white-space: nowrap">Log in</a>
+</sc-if>
+</nav>
+</div>
+<sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
+<div data-drawer style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
+<aside aria-label="Menu" onKeyDown="{{drawerKey}}" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 10px; align-items: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
+<div style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 700">{{drawerStreak}}</span><span style="font-size: 13px; color: {{t.muted}}">{{drawerStreakLine}}</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{drawerWeek}}" as="dwk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{dwk.border}}; background: {{dwk.bg}}; color: {{dwk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{dwk.d}}</span></sc-for>
+</div>
 
-<div style="flex-grow: 1; padding: 32px 40px; display: flex; flex-direction: column; gap: 24px">
+<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Go to my home</a>
+</div>
+</sc-if>
+<sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 16px; font-weight: 700">Keep a streak. Climb the league.</span>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Sign in to save progress, keep your daily streak and see where you rank this week.</span>
+<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Start 3-day free trial</a>
+<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Preview as a signed-in learner</button>
+</div>
+</sc-if>
+<nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
+<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
+</sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>
+</aside>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="flex-grow: 1; height: 100vh; border: 0; background: rgba(10,10,10,0.4); cursor: pointer"></button>
+</div>
+</sc-if>
+<!-- /PILL NAV -->
+
+<div style="flex-grow: 1; padding: 24px 40px 40px; display: flex; flex-direction: column; gap: 24px">
 
 <!-- IDENTITY -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 26px; align-items: center">
-<span style="width: 112px; height: 112px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: 40px; font-weight: 700">AS</span>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Aarav Sharma</h1>
-<span style="font-size: 16px; color: {{t.text2}}">Final-year B.Tech CSE · PES University, Bengaluru</span>
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px">
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 24px; align-items: center">
+<span style="width: 96px; height: 96px; border-radius: 48px; background: {{me.avatarBg}}; color: {{me.avatarFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: 36px; font-weight: 700"><sc-if value="{{me.hasName}}" hint-placeholder-val="{{ true }}">{{me.initials}}</sc-if><sc-if value="{{me.noName}}" hint-placeholder-val="{{ false }}"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{me.icon}}"></path></svg></sc-if></span>
+<div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; line-height: 44px; font-weight: 700">{{me.title}}</h1>
+<span style="font-size: 15px; color: {{t.text2}}">{{me.line}}</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
-<sc-for list="{{chips}}" as="c" hint-placeholder-count="4"><span style="padding: 5px 12px; border-radius: 999px; background: {{t.sunk}}; font-size: 13px; font-weight: 600">{{c}}</span></sc-for>
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="3"><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600">{{c}}</span></sc-for>
+</div>
+<div style="display: flex; gap: 12px; align-items: center; margin-top: 4px">
+<a href="Welcome.dc.html" style="height: 44px; padding: 0 20px; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">{{me.cta}}</a>
+<button onClick="{{shareProfile}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{shareLabel}}</button>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch">
-<button onClick="{{shareProfile}}" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 0; background: {{t.text}}; color: {{t.bg}}; cursor: pointer; font-size: 15px; font-weight: 700">{{shareLabel}}</button>
-<a href="Welcome.dc.html" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">Change my goals</a>
+</div>
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 700">Patterns</h2><a href="Patterns.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: 13px; font-weight: 600">Library ›</a></div>
+<!-- RINGS -->
+<div role="img" aria-label="{{rings.aria}}" style="display: flex; align-items: center; gap: 24px">
+<svg width="{{rings.size}}" height="{{rings.size}}" viewBox="0 0 {{rings.size}} {{rings.size}}" aria-hidden="true" style="flex-shrink: 0">
+<sc-for list="{{rings.arcs}}" as="ra" hint-placeholder-count="4">
+<circle cx="{{rings.c}}" cy="{{rings.c}}" r="{{ra.r}}" fill="none" stroke="{{t.sunk}}" stroke-width="{{rings.stroke}}"></circle>
+<circle data-ring cx="{{rings.c}}" cy="{{rings.c}}" r="{{ra.r}}" fill="none" stroke="{{ra.color}}" stroke-width="{{rings.stroke}}" stroke-linecap="round" stroke-dasharray="{{ra.len}}" stroke-dashoffset="{{ra.offset}}" opacity="{{ra.op}}" transform="rotate(-90 {{rings.c}} {{rings.c}})" style="--len: {{ra.len}}"></circle>
+</sc-for>
+</svg>
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0; flex-grow: 1">
+<sc-for list="{{rings.legend}}" as="rl" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: {{rl.color}}"></span><span style="flex-grow: 1; white-space: nowrap">{{rl.label}}</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}; padding-left: 8px">{{rl.value}}</span></span></sc-for>
+<sc-if value="{{rings.empty}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Finish a story to fill its ring.</span></sc-if>
+</div>
+</div>
+<!-- /RINGS -->
 </div>
 </section>
 
-<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px">
-<sc-for list="{{stats}}" as="s" hint-placeholder-count="5"><div style="padding: 18px 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 30px; font-weight: 800; color: {{s.color}}">{{s.v}}</span><span style="font-size: 14px; color: {{t.muted}}">{{s.k}}</span></div></sc-for>
+<!-- STAT TILES -->
+<div style="display: grid; grid-template-columns: repeat({{tiles.cols}}, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{tiles.list}}" as="ti" hint-placeholder-count="4">
+<div data-rise style="padding: 16px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation-delay: {{ti.delay}}">
+<span style="width: 32px; height: 32px; border-radius: 10px; background: {{ti.box}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{ti.fill}}" stroke="{{ti.stroke}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ti.d}}"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: baseline; gap: 4px"><span style="font-family: {{t.body}}; font-size: 28px; font-weight: 700; line-height: 32px">{{ti.value}}</span><span style="font-size: 14px; color: {{t.muted}}">{{ti.unit}}</span></span><span style="font-size: 14px; color: {{t.muted}}">{{ti.label}}</span></span>
+<sc-if value="{{ti.bar}}" hint-placeholder-val="{{ true }}"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; border-radius: 2px; width: {{ti.pct}}; background: {{ti.fg}}; transition: width 0.7s cubic-bezier(.33,1,.68,1)"></span></span></sc-if>
 </div>
+</sc-for>
+</div>
+<!-- /STAT TILES -->
 
 <!-- HEATMAP -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">{{heatTitle}}</span><span style="font-size: 14px; color: {{t.muted}}">Tap a day to see what you learned</span></div>
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">{{heatTitle}}</span><span style="font-size: 14px; color: {{t.muted}}">Pick a day to see what you did</span></div>
 <div style="display: flex; gap: 10px">
 <div style="display: grid; grid-template-rows: repeat(7, 16px); gap: 4px; padding-top: 22px; font-size: 11px; color: {{t.muted}}"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
 <div style="display: flex; flex-direction: column; gap: 6px">
@@ -79,11 +186,10 @@ button{font:inherit}
 </div>
 </section>
 
-<div style="display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 24px; align-items: start">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px; align-items: start">
 <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
-
 <!-- CERTIFICATES -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Pattern certificates</span><span style="font-size: 14px; color: {{t.muted}}">Walk a pattern’s core stories, then pass its 10-minute exam</span></div>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
 <sc-for list="{{certs}}" as="ce" hint-placeholder-count="6">
@@ -108,7 +214,7 @@ button{font:inherit}
 <a href="{{cert.whatsapp}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Share on WhatsApp</a>
 </sc-if>
 <sc-if value="{{cert.locked}}" hint-placeholder-val="{{ false }}">
-<a href="{{cert.nextHref}}" onClick="{{cert.go}}" style="height: 46px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-align: center; padding: 0 12px">{{cert.cta}}</a>
+<a href="{{cert.nextHref}}" onClick="{{cert.go}}" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-align: center; padding: 0 12px">{{cert.cta}}</a>
 </sc-if>
 <span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">{{cert.help}}</span>
 </div>
@@ -116,7 +222,7 @@ button{font:inherit}
 </section>
 
 <!-- REMINDERS & GOALS -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 18px">
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Reminders &amp; daily goal</span><span style="font-size: 13px; font-weight: 700; color: {{t.ok}}">{{savedNote}}</span></div>
 <sc-for list="{{prefGroups}}" as="pg" hint-placeholder-count="5">
 <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center">
@@ -127,9 +233,9 @@ button{font:inherit}
 </div>
 </sc-for>
 <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center; padding-top: 18px; border-top: 1px solid {{t.line}}">
-<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Plan</span><span style="font-size: 12px; color: {{t.muted}}">Free trial · 2 days left</span></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Plan</span><span style="font-size: 12px; color: {{t.muted}}">Accounts are coming</span></span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
-<a href="Auth.dc.html" style="height: 40px; padding: 0 16px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700">Choose a plan</a>
+<a href="Auth.dc.html" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 14px; font-weight: 700">See plans</a>
 <sc-if value="{{notDeleting}}" hint-placeholder-val="{{ true }}"><button onClick="{{askDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">{{deleteLabel}}</button></sc-if>
 <sc-if value="{{deleting}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: {{t.text2}}">Erase your progress and streak for good?</span><button onClick="{{confirmDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.left}}; background: transparent; color: {{t.left}}; cursor: pointer; font-size: 14px; font-weight: 700">Yes, delete</button><button onClick="{{cancelDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Keep my account</button></sc-if>
 </div>
@@ -138,9 +244,36 @@ button{font:inherit}
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 24px">
+<!-- MEDALS SHELF -->
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 700">Medals</h2><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">{{shelf.caption}}</span></div>
+<span style="font-size: 14px; line-height: 20px; color: {{t.muted}}">Bronze for a pattern’s first story, silver at half, gold when every story is done and rated in Revisit.</span>
+<!-- MEDALS -->
+<div role="list" aria-label="Pattern medals" style="display: flex; flex-wrap: wrap; gap: 16px 8px">
+<sc-for list="{{shelf.items}}" as="md" hint-placeholder-count="8">
+<div role="listitem" aria-label="{{md.aria}}" title="{{md.aria}}" style="width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+<div data-fresh="{{md.fresh}}" aria-hidden="true" style="width: 56px; height: 64px">
+<svg width="56" height="64" viewBox="0 0 56 64">
+<defs><linearGradient id="{{md.gid}}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{md.c1}}"></stop><stop offset="0.55" stop-color="{{md.c2}}"></stop><stop offset="1" stop-color="{{md.c3}}"></stop></linearGradient><clipPath id="{{md.cid}}"><polygon points="28,2 53,16.5 53,47.5 28,62 3,47.5 3,16.5"></polygon></clipPath></defs>
+<polygon points="28,2 53,16.5 53,47.5 28,62 3,47.5 3,16.5" fill="{{md.fill}}" stroke="{{md.stroke}}" stroke-width="{{md.sw}}" stroke-dasharray="{{md.dash}}"></polygon>
+<sc-if value="{{md.showProgress}}" hint-placeholder-val="{{ false }}"><polygon points="28,2 53,16.5 53,47.5 28,62 3,47.5 3,16.5" fill="none" stroke="{{t.accent}}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="{{md.progress}}"></polygon></sc-if>
+<sc-if value="{{md.showMark}}" hint-placeholder-val="{{ true }}"><text x="28" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="{{md.ink}}" style="font-family: {{t.body}}">{{md.mark}}</text></sc-if>
+<sc-if value="{{md.lock}}" hint-placeholder-val="{{ false }}"><g transform="translate(20 22)" fill="none" stroke="{{md.ink}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="12" height="10" rx="2"></rect><path d="M4.5 8V5.5a3.5 3.5 0 0 1 7 0V8"></path></g></sc-if>
+<sc-if value="{{md.fresh}}" hint-placeholder-val="{{ false }}"><g clip-path="url(#{{md.cid}})"><rect data-shine x="0" y="-8" width="16" height="80" fill="#FFFFFF" opacity="0.6"></rect></g></sc-if>
+</svg>
+</div>
+<span style="font-size: 12px; font-weight: 600; text-align: center; line-height: 16px">{{md.label}}</span>
+<span style="font-size: 12px; text-align: center; line-height: 16px; color: {{md.subFg}}">{{md.sub}}</span>
+</div>
+</sc-for>
+</div>
+<!-- /MEDALS -->
+<span style="font-size: 14px; color: {{t.text2}}">Next: {{shelf.nextLine}}</span>
+</section>
+
 <!-- BUDDIES -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 20px; font-weight: 700">Study buddies</span>
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px"><span style="font-size: 20px; font-weight: 700">Study buddies</span><span title="Sample data until accounts launch" style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span></div>
 <span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">A buddy streak grows only on days you <i>both</i> learn. Nudge a friend who hasn't started yet.</span>
 <sc-for list="{{buddies}}" as="b" hint-placeholder-count="3">
 <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid {{t.line}}">
@@ -150,38 +283,14 @@ button{font:inherit}
 <button onClick="{{b.nudge}}" disabled="{{b.done}}" style="height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{b.btnFg}}; cursor: pointer; font-size: 12px; font-weight: 700">{{b.btn}}</button></span>
 </div>
 </sc-for>
-</section>
-
-<!-- INVITE -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.band}}; color: {{t.bandText}}; display: flex; flex-direction: column; gap: 14px">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandAccent}}">Invite friends</span>
-<span style="font-family: {{t.display}}; font-size: 28px; font-weight: 600; line-height: 1.2">Give a friend 7 free days. Get 7 for yourself.</span>
-<span style="font-size: 14px; line-height: 1.5; color: {{t.bandMuted}}">They get a week instead of 3 days; you get a week added to yours when they finish their first story.</span>
-<div style="display: flex; gap: 8px; align-items: center">
-<span style="flex-grow: 1; height: 46px; border-radius: 12px; border: 1px dashed {{t.bandMuted}}; display: flex; align-items: center; padding: 0 14px; font-family: {{t.mono}}; font-size: 18px; font-weight: 800; letter-spacing: 0.08em">AARAV7</span>
-<button onClick="{{copyCode}}" style="height: 46px; padding: 0 18px; border-radius: 12px; border: 0; background: {{t.bandAccent}}; color: #111317; cursor: pointer; font-size: 14px; font-weight: 800">{{copyLabel}}</button>
-</div>
-<a href="{{inviteWa}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; border: 1px solid {{t.bandMuted}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Send on WhatsApp</a>
-<span style="font-size: 13px; color: {{t.bandMuted}}">2 friends joined · 14 bonus days earned so far</span>
-</section>
-
-<!-- RECENT BADGES -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 20px; font-weight: 700">Milestones</span>
-<sc-for list="{{milestones}}" as="m" hint-placeholder-count="4">
-<div style="display: flex; gap: 12px; align-items: center; min-height: 44px; border-top: 1px solid {{t.line}}">
-<span style="width: 34px; height: 34px; border-radius: 999px; background: {{m.bg}}; color: {{m.fg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 12px; font-weight: 800">{{m.mark}}</span>
-<span style="flex-grow: 1; font-size: 15px; font-weight: 600">{{m.name}}</span>
-<span style="font-size: 12px; color: {{t.muted}}">{{m.when}}</span>
-</div>
-</sc-for>
+<a href="{{inviteWa}}" target="_blank" rel="noopener" style="height: 44px; border-radius: 22px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Invite a friend on WhatsApp</a>
 </section>
 </div>
 </div>
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":2020}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":2040}}'>
 // @@THEMES@@ — generated block, shared by every board.
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
@@ -190,16 +299,16 @@ const POSTER = "'Anton', Impact, sans-serif";
 const OUTFIT = "'Outfit', system-ui, sans-serif";
 const THEMES = {
   // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
-  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
     band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
     diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
-  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
     band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
-  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E', link: '#F5A06E',
     band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
     diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
-  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A', link: '#9FE870',
     band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
     diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
 };
@@ -226,10 +335,9 @@ function listenTheme(cmp) {
 function unlistenTheme(cmp) {
   try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
 }
-// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
-const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+// This week's streak strip, Monday first, from the real activity log (DS in shared/data.js).
 function streakDays(t) {
-  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+  return DS.streak().week.map((w) => ({ d: w.d, bg: w.on ? t.flame : 'transparent', fg: w.on ? t.onAccent : t.muted, border: w.on ? t.flame : (w.today ? t.text : t.line2) }));
 }
 // @@END-THEMES@@
 
@@ -352,6 +460,443 @@ function storeSaved(list) { writeJSON('dsaviz-saved', list); }
 function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
 function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 // @@END@@
+// @@DATA@@ — generated block (from shared/data.js): DS, the one data layer every page reads.
+// Real learner data lives in this browser's localStorage. Features that need a server (league, buddies,
+// other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
+// docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
+const DS = (function () {
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem' };
+  const XP = { story: 50, code: 30, sheet: 10, revisit: 5 };
+  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
+  const LEVEL_XP = 500;
+  const SHEET_SIZE = 216; // rows in the master sheet (shared/sheet.js on the Sheet page)
+  const DAY = 86400000;
+  let now = () => Date.now();
+
+  function store() { try { return window.localStorage; } catch (e) { return null; } }
+  function get(k) { const s = store(); try { return s ? s.getItem(k) : null; } catch (e) { return null; } }
+  function set(k, v) { const s = store(); try { if (s) s.setItem(k, v); } catch (e) {} }
+  // Parsed reads are cached by their raw string, so a render can ask many times for free.
+  const cache = {};
+  function json(k, fallback) {
+    const raw = get(k);
+    if (cache[k] && cache[k].raw === raw) return cache[k].val;
+    let val = fallback;
+    try { const v = JSON.parse(raw); if (v != null && typeof v === 'object') val = v; } catch (e) {}
+    cache[k] = { raw, val };
+    return val;
+  }
+  const pad = (n) => String(n).padStart(2, '0');
+  function dayKey(ts) { const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function midnight(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function addDays(ts, n) { const d = new Date(ts); d.setDate(d.getDate() + n); return d.getTime(); }
+
+  // -- the activity log: { v: 1, days: { 'YYYY-MM-DD': { story, code, revisit, xp } }, stories: { id: ts }, code: { id: ts } }
+  function readLog() {
+    const o = json(KEY.log, null);
+    const out = { v: 1, days: {}, stories: {}, code: {} };
+    if (!o || o.v !== 1) return out;
+    ['days', 'stories', 'code'].forEach((k) => { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) out[k] = o[k]; });
+    return out;
+  }
+  function readSheet() {
+    const o = json(KEY.sheet, null);
+    const done = {}, star = {};
+    if (o && o.v === 1) {
+      if (o.done && typeof o.done === 'object') Object.keys(o.done).forEach((k) => { const ts = Number(o.done[k]); if (isFinite(ts) && ts > 0) done[k] = ts; });
+      if (o.star && typeof o.star === 'object') Object.keys(o.star).forEach((k) => { if (o.star[k]) star[k] = 1; });
+    }
+    return { done, star };
+  }
+  // kind: 'story' | 'code' | 'revisit'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
+  function logActivity(kind, id) {
+    if (!XP[kind] || kind === 'sheet') return null;
+    const ts = now();
+    const log = JSON.parse(JSON.stringify(readLog()));
+    const k = dayKey(ts);
+    const day = log.days[k] = Object.assign({ story: 0, code: 0, revisit: 0, xp: 0 }, log.days[k]);
+    day[kind] = (day[kind] || 0) + 1;
+    let first = true;
+    if (kind === 'story' || kind === 'code') {
+      const book = kind === 'story' ? log.stories : log.code;
+      first = !(id in book);
+      if (first && id) book[id] = ts;
+    }
+    if (first) day.xp = (day.xp || 0) + XP[kind];
+    set(KEY.log, JSON.stringify(log));
+    return { day: k, first, xp: first ? XP[kind] : 0 };
+  }
+
+  // -- per-day activity: the log plus sheet ticks, keyed by local date
+  function days() {
+    const log = readLog(), sheet = readSheet();
+    const out = {};
+    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, sheet: 0, revisit: 0, xp: 0, total: 0 });
+    Object.keys(log.days).forEach((k) => {
+      const d = log.days[k] || {}, o = at(k);
+      ['story', 'code', 'revisit'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
+      o.xp += Math.max(0, Number(d.xp) || 0);
+    });
+    Object.keys(sheet.done).forEach((id) => { const o = at(dayKey(sheet.done[id])); o.sheet++; o.xp += XP.sheet; });
+    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.sheet + o.revisit; if (!o.total) delete out[k]; });
+    return out;
+  }
+
+  // -- streak: consecutive active days. A streak that ran through yesterday is still alive today (atRisk).
+  function streak() {
+    const map = days();
+    const today = midnight(now());
+    const on = (ts) => !!map[dayKey(ts)];
+    const activeToday = on(today);
+    let current = 0;
+    let cur = activeToday ? today : addDays(today, -1);
+    while (on(cur)) { current++; cur = addDays(cur, -1); }
+    const keys = Object.keys(map).sort();
+    let longest = 0, run = 0, prev = null;
+    keys.forEach((k) => {
+      const [y, m, d] = k.split('-').map(Number);
+      const ts = new Date(y, m - 1, d).getTime();
+      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + 1 : 1;
+      longest = Math.max(longest, run);
+      prev = ts;
+    });
+    // This week, Monday first.
+    const dow = (new Date(today).getDay() + 6) % 7;
+    const monday = addDays(today, -dow);
+    const week = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => {
+      const ts = addDays(monday, i);
+      return { d, date: dayKey(ts), on: on(ts), today: i === dow, future: ts > today };
+    });
+    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week };
+  }
+
+  // -- heatmap: `weeks` columns ending this week, Sunday first (GitHub layout)
+  function heatmap(weeks) {
+    weeks = weeks || 26;
+    const map = days();
+    const today = midnight(now());
+    const start = addDays(today, -(new Date(today).getDay()) - (weeks - 1) * 7);
+    const cells = [];
+    let total = 0, active = 0;
+    for (let i = 0; i < weeks * 7; i++) {
+      const ts = addDays(start, i);
+      const k = dayKey(ts);
+      const d = map[k];
+      const n = d ? d.total : 0;
+      const future = ts > today;
+      if (!future) { total += n; if (n) active++; }
+      cells.push({ date: k, ts, n, story: d ? d.story : 0, sheet: d ? d.sheet : 0, code: d ? d.code : 0, revisit: d ? d.revisit : 0,
+        level: n === 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 6 ? 3 : 4, future, today: ts === today });
+    }
+    return { weeks, cells, total, activeDays: active, todayIndex: cells.findIndex((c) => c.today) };
+  }
+
+  // -- XP: earned per day, so "this week" is a real sum
+  function xp() {
+    const map = days();
+    const today = midnight(now());
+    const monday = addDays(today, -((new Date(today).getDay() + 6) % 7));
+    let total = 0, week = 0, todayXp = 0;
+    Object.keys(map).forEach((k) => {
+      const [y, m, d] = k.split('-').map(Number);
+      const ts = new Date(y, m - 1, d).getTime();
+      total += map[k].xp;
+      if (ts >= monday && ts <= today) week += map[k].xp;
+      if (ts === today) todayXp += map[k].xp;
+    });
+    const level = Math.floor(total / LEVEL_XP) + 1;
+    const into = total % LEVEL_XP;
+    return { total, week, today: todayXp, level, into, need: LEVEL_XP, pct: Math.round((into / LEVEL_XP) * 100) };
+  }
+
+  // -- problems and stories
+  function stories() { const s = readLog().stories; return { ids: Object.keys(s), count: Object.keys(s).length, at: s }; }
+  function codePasses() { const c = readLog().code; return { ids: Object.keys(c), count: Object.keys(c).length }; }
+  function sheet() { const s = readSheet(); return { ticked: Object.keys(s.done).length, starred: Object.keys(s.star).length, total: typeof SHEET !== 'undefined' && SHEET.length ? SHEET.length : SHEET_SIZE, done: s.done }; }
+  function problemStatus(id) {
+    const log = readLog();
+    if (id in log.stories || id in log.code) return 'done';
+    return get(KEY.problem) === id ? 'now' : 'todo';
+  }
+  // The catalog ships every problem as "todo"; this makes `p.status` read the learner's real progress.
+  function bindCatalog(list) {
+    (list || []).forEach((p) => { try { Object.defineProperty(p, 'status', { get: () => problemStatus(p.id), configurable: true, enumerable: true }); } catch (e) {} });
+  }
+  function patterns(list, pats) {
+    return (pats || []).map(([name, tag, who]) => {
+      const all = (list || []).filter((p) => p.pattern === name);
+      const done = all.filter((p) => problemStatus(p.id) === 'done').length;
+      return { name, tag, companion: who, done, total: all.length, pct: all.length ? Math.round((done / all.length) * 100) : 0 };
+    });
+  }
+
+  // -- medals: bronze = first story in the pattern, silver = half its stories, gold = all of them and each rated in Revisit
+  const TIERS = ['bronze', 'silver', 'gold'];
+  function medals(list, pats) {
+    const deck = json(KEY.deck, {});
+    const seen = json(KEY.medals, {});
+    return patterns(list, pats).filter((p) => p.total > 0).map((p) => {
+      const ids = (list || []).filter((x) => x.pattern === p.name).map((x) => x.id);
+      const rated = ids.filter((id) => problemStatus(id) === 'done' && deck[id]).length;
+      const half = Math.ceil(p.total / 2);
+      const tier = p.done === p.total && rated === p.total ? 'gold' : p.done >= half ? 'silver' : p.done >= 1 ? 'bronze' : null;
+      const nextTier = tier === 'gold' ? null : TIERS[tier ? TIERS.indexOf(tier) + 1 : 0];
+      const next = !nextTier ? null : nextTier === 'bronze' ? { tier: nextTier, have: 0, need: 1, unit: 'story' }
+        : nextTier === 'silver' ? { tier: nextTier, have: p.done, need: half, unit: 'stories' }
+        : p.done < p.total ? { tier: nextTier, have: p.done, need: p.total, unit: 'stories' } : { tier: nextTier, have: rated, need: p.total, unit: 'rated' };
+      if (next) next.pct = Math.round((next.have / Math.max(1, next.need)) * 100);
+      const key = p.name + ':' + tier;
+      return { pattern: p.name, mark: p.name.split(/[\s&-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), tier, next, fresh: !!tier && !seen[key], key, done: p.done, total: p.total };
+    });
+  }
+  function markMedalsSeen(list) {
+    const seen = Object.assign({}, json(KEY.medals, {}));
+    (list || []).forEach((m) => { if (m.tier) seen[m.key] = 1; });
+    set(KEY.medals, JSON.stringify(seen));
+  }
+
+  // -- the learner, as far as this browser knows them
+  function profile() {
+    const ob = json(KEY.onboard, {});
+    const prefs = json(KEY.prefs, {});
+    const name = typeof ob.name === 'string' && ob.name.trim() ? ob.name.trim().slice(0, 40) : '';
+    const initials = name ? name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '';
+    const s = stories(), sh = sheet();
+    return { name, initials, signedIn: get(KEY.user) === '1', isNew: !s.count && !sh.ticked && !codePasses().count,
+      lang: prefs.lang || '', goal: prefs.goal || '', reason: ob.reason || '', date: ob.date || '', demo: false };
+  }
+
+  // -- demo-only data: these need accounts and a server. The learner's own row is always real.
+  const PEOPLE = [['Priya Iyer', 'Chennai', 2140, 31], ['Karthik Reddy', 'Hyderabad', 1985, 27], ['Sneha Kulkarni', 'Pune', 1760, 22], ['Arjun Mehta', 'Jaipur', 1640, 19],
+    ['Fatima Shaikh', 'Mumbai', 1590, 17], ['Vikram Singh', 'Chandigarh', 1520, 15], ['Ananya Rao', 'Bengaluru', 1470, 12], ['Rohit Verma', 'Delhi', 1400, 5],
+    ['Meera Nair', 'Kochi', 1350, 2], ['Aditya Joshi', 'Indore', 1290, 9], ['Kavya Pillai', 'Thiruvananthapuram', 1240, 8], ['Harsh Agarwal', 'Lucknow', 1180, 6],
+    ['Ritika Banerjee', 'Kolkata', 1120, 4], ['Rahul Menon', 'Noida', 1060, 7], ['Pooja Desai', 'Surat', 990, 3], ['Nikhil Bhat', 'Mangaluru', 920, 2],
+    ['Zoya Khan', 'Bhopal', 860, 1], ['Aman Chauhan', 'Dehradun', 780, 1], ['Lakshmi Narayanan', 'Coimbatore', 690, 1]];
+  const BOARDS = { league: [1, 19], all: [42, 19], friends: [1, 6], college: [3, 12] };
+  function leaderboard(tab) {
+    tab = BOARDS[tab] ? tab : 'league';
+    const [scale, size] = BOARDS[tab];
+    const me = profile(), x = xp(), st = streak();
+    const pool = tab === 'friends' ? PEOPLE.filter((p, i) => [6, 7, 8, 1, 4, 15].includes(i)) : PEOPLE.slice(0, size);
+    const rows = pool.map(([name, where, w, streakDays], i) => ({ name, where, xp: Math.round(w * scale), streak: streakDays, me: false, seed: i }))
+      .concat([{ name: me.name || 'You', where: 'This browser', xp: tab === 'league' || tab === 'friends' ? x.week : x.total, streak: st.current, me: true, seed: 99 }])
+      .sort((a, b) => b.xp - a.xp || (a.me ? 1 : -1));
+    rows.forEach((r, i) => { r.rank = i + 1; });
+    const you = rows.find((r) => r.me);
+    const promoteAt = tab === 'league' ? rows[6] : null;
+    return { demo: true, tab, rows, you: { rank: you.rank, of: rows.length, xp: you.xp, toPromotion: promoteAt && !promoteAt.me && you.rank > 7 ? promoteAt.xp - you.xp + 1 : 0 } };
+  }
+  function buddies() {
+    return { demo: true, list: [['Ananya Rao', 'AR', 'Final year · PES University', 12, true], ['Rohit Verma', 'RV', 'SDE-1 · Bengaluru', 5, false], ['Meera Nair', 'MN', 'M.Tech · IIIT Hyderabad', 2, false]]
+      .map(([name, initials, where, streakDays, today]) => ({ name, initials, where, streak: streakDays, learnedToday: today })) };
+  }
+  function feed() {
+    return { demo: true, list: [['Sneha in Pune', 'started', 'The Campfire Trio', '2P'], ['Karthik in Bengaluru', 'finished', 'Islands on the Map', 'DFS'],
+      ['Farhan in Hyderabad', 'hit a 30-day streak on', 'The Coat-Check Counter', 'HM'], ['Divya in Chennai', 'unlocked', 'Stacks, queues & heaps', 'LVL'],
+      ['Rahul in Gurugram', 'started a mock on', 'The Train Yard Merge', 'MOCK'], ['Neha in Kolkata', 'solved at expert depth', 'The Exact Change Counter', 'DP']]
+      .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
+  }
+
+  return {
+    KEY, XP, XP_RULES, LEVEL_XP, dayKey,
+    logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), rateCard: (id) => logActivity('revisit', id),
+    days, streak, heatmap, xp, stories, codePasses, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    leaderboard, buddies, feed,
+    setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
+  };
+})();
+if (typeof PROBLEMS !== 'undefined') DS.bindCatalog(PROBLEMS);
+// @@END-DATA@@
+// @@DRAWER@@ — shared menu logic (every page with the pill nav)
+const MENU = [
+  ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
+  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
+  ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
+  ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],
+  ['Profile.dc.html', 'My profile', 'Heatmap, medals, certificates, reminders', null],
+  ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
+  ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
+  ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
+  ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
+  ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
+];
+function drawerVals(cmp, t, themeKey) {
+  const user = cmp.state.user !== undefined ? !!cmp.state.user : loadUser();
+  const st = DS.streak();
+  return {
+    drawerOpen: !!cmp.state.drawer,
+    openDrawer: () => cmp.setState({ drawer: true }),
+    closeDrawer: () => cmp.setState({ drawer: false }),
+    drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
+    user, guest: !user,
+    signIn: () => { saveUser(true); cmp.setState({ user: true }); },
+    signOut: () => { saveUser(false); cmp.setState({ user: false, drawer: false }); },
+    drawerWeek: streakDays(t),
+    drawerStreak: st.current ? st.current + '-day streak' : 'No streak yet',
+    drawerStreakLine: st.activeToday ? 'Today counts. Come back tomorrow.' : st.current ? 'Finish a story today to make it ' + (st.current + 1) : 'Finish one story to start your streak',
+    themeBtns: themeButtons(cmp, themeKey, t),
+    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => ({
+      href, label, sub,
+      go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
+    }))
+  };
+}
+// @@END-DRAWER@@
+// @@UI@@ — generated block (from shared/ui.js): view models for the shared components.
+// Markup lives in shared/ui/*.html; the build copies it between the STAT TILES, RINGS and MEDALS comment markers.
+// Every builder takes the theme tokens `t` first, so all four themes work.
+const ICONS = {
+  home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+  learn: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
+  sheet: 'M10 6h10M10 12h10M10 18h10M3.5 6l1.5 1.5 2.5-3M3.5 12l1.5 1.5 2.5-3M3.5 18l1.5 1.5 2.5-3',
+  code: 'M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16',
+  git: 'M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9',
+  design: 'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01',
+  ai: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  flame: 'M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z',
+  check: 'M5 12l5 5L20 7',
+  bolt: 'M13 2L4 14h7l-1 8 9-12h-7z',
+  story: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
+  lock: 'M7 11h10v9H7zM9 11V8a3 3 0 0 1 6 0v3',
+  user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0'
+};
+// Filled icons; the rest are stroked.
+const ICON_FILLED = { flame: 1, bolt: 1 };
+// Medal metals (light, mid, shadow) from the Gym Buddy spec. Theme-independent, like real metal.
+const METALS = { bronze: ['#F2BE95', '#B97A4E', '#6E3F22'], silver: ['#F7F8FA', '#B8BCC6', '#62666F'], gold: ['#FFEAA8', '#E0B04A', '#8E6618'] };
+const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
+function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
+function iconVals(name, color) {
+  const filled = !!ICON_FILLED[name];
+  return { d: ICONS[name] || '', fill: filled ? color : 'none', stroke: filled ? 'none' : color };
+}
+// Reduced motion is read once; the CSS also turns animation off, this only drops the stagger delay.
+function reducedMotion() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+
+// Stat tiles: icon box, big number, small unit, short label, optional 4px progress bar.
+// items: [{ icon, color, value, unit, label, pct }] (pct 0-100 or null)
+function statTiles(t, items) {
+  const still = reducedMotion();
+  return {
+    cols: items.length,
+    list: items.map((it, i) => Object.assign(iconVals(it.icon, it.color), {
+      value: String(it.value), unit: it.unit || '', label: it.label, fg: it.color, box: tint(it.color, '22'),
+      bar: it.pct != null, pct: Math.max(0, Math.min(100, Math.round(it.pct || 0))) + '%',
+      delay: still ? '0ms' : i * 50 + 'ms'
+    }))
+  };
+}
+
+// Concentric progress rings, outermost first, a stroke/3 gap between them. A ring at zero hides its cap.
+// rings: [{ label, value, pct, color }]
+function ringSet(t, rings, size, stroke) {
+  size = size || 152; stroke = stroke || 12;
+  const c = size / 2;
+  const gap = stroke / 3;
+  const arcs = rings.map((r, i) => {
+    const radius = c - stroke / 2 - i * (stroke + gap);
+    const len = 2 * Math.PI * radius;
+    const pct = Math.max(0, Math.min(100, r.pct || 0));
+    return { r: radius.toFixed(2), len: len.toFixed(2), offset: (len * (1 - pct / 100)).toFixed(2), color: r.color, op: pct > 0 ? 1 : 0 };
+  });
+  return {
+    size, c, stroke, arcs,
+    legend: rings.map((r) => ({ label: r.label, value: r.value, color: r.color })),
+    aria: rings.map((r) => r.label + ' ' + r.value).join(', '),
+    empty: rings.every((r) => !r.pct)
+  };
+}
+
+// Medal shelf: earned medals in metal, the next one outlined with an accent progress line, the rest locked.
+// medals: DS.medals(...) output. fresh: keys that should shine once.
+function medalShelf(t, medals, slots, fresh) {
+  slots = slots || 8;
+  const rank = { gold: 3, silver: 2, bronze: 1 };
+  const open = medals.filter((m) => m.next).sort((a, b) => b.next.pct - a.next.pct || b.done - a.done);
+  const next = open[0] || null;
+  // The next medal sits on its own slot: when it upgrades an earned one, it shows that metal plus the progress line.
+  const earned = medals.filter((m) => m.tier && m !== next).sort((a, b) => rank[b.tier] - rank[a.tier] || b.done - a.done);
+  const locked = medals.filter((m) => !m.tier && m !== next);
+  const total = medals.length * 3;
+  const got = medals.reduce((s, m) => s + (m.tier ? rank[m.tier] : 0), 0);
+  const freshSet = fresh || {};
+  const items = [];
+  const base = (m, i) => ({ gid: 'dsm-g' + i, cid: 'dsm-c' + i, mark: m.mark, label: m.pattern, pathLen: 100, progress: '0 100', showProgress: false, fresh: false, lock: false, showMark: true, sw: '1.5', dash: 'none', op: 1 });
+  earned.forEach((m) => {
+    if (items.length >= slots) return;
+    const [c1, c2, c3] = METALS[m.tier];
+    const fr = !!freshSet[m.key];
+    items.push(Object.assign(base(m, items.length), { c1, c2, c3, fill: 'url(#dsm-g' + items.length + ')', stroke: c3, ink: '#2A1A0A',
+      sub: TIER_NAME[m.tier], subFg: t.text2, fresh: fr, aria: m.pattern + ': ' + TIER_NAME[m.tier] + ' medal' + (fr ? ', just earned' : '') }));
+  });
+  if (next && items.length < slots) {
+    const metal = next.tier ? METALS[next.tier] : null;
+    items.push(Object.assign(base(next, items.length), { c1: metal ? metal[0] : t.sunk, c2: metal ? metal[1] : t.sunk, c3: metal ? metal[2] : t.sunk,
+      fill: metal ? 'url(#dsm-g' + items.length + ')' : t.sunk, stroke: metal ? metal[2] : t.line2, ink: metal ? '#2A1A0A' : t.text,
+      showProgress: true, progress: Math.max(2, next.next.pct) + ' 100', sub: next.next.have + ' of ' + next.next.need, subFg: t.accent,
+      label: next.pattern, aria: (next.tier ? TIER_NAME[next.tier] + ' earned. ' : '') + 'Next: ' + TIER_NAME[next.next.tier] + ' in ' + next.pattern + ', ' + next.next.have + ' of ' + next.next.need + ' ' + next.next.unit }));
+  }
+  locked.forEach((m) => {
+    if (items.length >= slots) return;
+    items.push(Object.assign(base(m, items.length), { c1: t.bg, c2: t.bg, c3: t.bg, fill: 'transparent', stroke: t.line2, ink: t.faint, dash: '3 3',
+      showMark: false, lock: true, sub: 'Locked', subFg: t.muted, aria: m.pattern + ': locked' }));
+  });
+  return {
+    items, got, total, empty: got === 0,
+    caption: got + ' of ' + total,
+    nextLine: next ? TIER_NAME[next.next.tier] + ' · ' + next.pattern + ' · ' + next.next.have + ' of ' + next.next.need + ' ' + next.next.unit : 'Every medal earned'
+  };
+}
+// @@END-UI@@
+// @@NAV@@ — generated block (from shared/nav.js): the floating pill nav at the top of every page.
+// Markup: shared/ui/nav.html, copied between the PILL NAV comment markers together with the menu drawer.
+// A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
+// NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
+// whose page is not built yet shows as "Soon" instead of a dead link.
+const NAV_PAGES = ["About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Code.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "Sheet.dc.html", "Story.dc.html", "Welcome.dc.html"];
+// key, label, page, icon, hidden on phones unless active
+const NAV_ITEMS = [
+  ['home', 'Home', 'Home.dc.html', 'home', false],
+  ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
+  ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
+  ['code', 'Code', 'Code.dc.html', 'code', false],
+  ['git', 'Git', 'Git.dc.html', 'git', true],
+  ['design', 'System design', 'SystemDesign.dc.html', 'design', true],
+  ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
+];
+// Which section each page belongs to.
+const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
+  Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', AIML: 'ai' };
+function navVals(cmp, t, themeKey, page) {
+  const section = NAV_SECTION[page] || '';
+  const me = DS.profile();
+  const st = DS.streak();
+  const dv = drawerVals(cmp, t, themeKey);
+  return Object.assign(dv, {
+    nav: {
+      glass: tint(t.surface, 'EB'), shadow: t.shadow,
+      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+        const on = key === section;
+        const live = NAV_PAGES.includes(href);
+        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+          live, soon: !live, title: live ? label : label + ' · coming soon',
+          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text2 };
+      }),
+      streak: st.current, streakLabel: st.current ? st.current + '-day streak' : 'No streak yet',
+      flame: st.current ? t.flame : t.muted,
+      initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
+      profileOn: page === 'Profile' ? 'page' : 'false',
+      avatarBg: page === 'Profile' ? t.accent : t.sunk, avatarFg: page === 'Profile' ? t.onAccent : t.text,
+      guest: dv.guest && page === 'Main', member: !(dv.guest && page === 'Main')
+    }
+  });
+}
+// @@END-NAV@@
 
 // ---- page ----
 const PREFS_KEY = 'dsaviz-prefs';
@@ -365,7 +910,8 @@ const PREF_GROUPS = [
 ];
 // Certificates: walk a pattern's core (animated) stories, then pass its 10-minute exam.
 const CERT_PATTERNS = [['Two Pointers', 'TP'], ['Sliding Window', 'SW'], ['Hash Map', 'HM'], ['Binary Search', 'BS'], ['Stack', 'ST'], ['Breadth-First Search', 'BF']];
-const CERTIFIED = { 'Hash Map': ['Certified 20 Sep 2026', 'DSV-HM-2026-5177'] };
+// Certificates need the pattern exam, which needs accounts; none are issued yet.
+const CERTIFIED = {};
 function certRows() {
   return CERT_PATTERNS.map(([name, mark]) => {
     const core = PROBLEMS.filter((p) => p.pattern === name && p.animated);
@@ -374,22 +920,21 @@ function certRows() {
     return { name, mark, have, need: core.length, when: cert ? cert[0] : '', id: cert ? cert[1] : '', core };
   });
 }
-const BUDDIES = [
-  ['Ananya Rao', 'AR', 'Final year · PES University', 12, true],
-  ['Rohit Verma', 'RV', 'SDE-1 · Bengaluru', 5, false],
-  ['Meera Nair', 'MN', 'M.Tech · IIIT Hyderabad', 2, false]
-];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYNAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 function loadPrefs() { const v = readJSON(PREFS_KEY, {}); return Object.assign({}, PREF_DEFAULT, v && typeof v === 'object' ? v : {}); }
 // Clipboard can be blocked (permissions, iframes); the button still confirms.
 function copyText(text) { try { const w = navigator.clipboard && navigator.clipboard.writeText(text); if (w && w.catch) w.catch(() => {}); } catch (e) {} }
-function noise(i) { return Math.abs(Math.sin(i * 12.9898 + 78.233) * 43758.5453) % 1; }
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, shared: false, copied: false, nudged: [], del: 0 };
+    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, shared: false, nudged: [], del: 0 };
+    // Medals earned since the last visit shine once; then they are marked seen.
+    const medals = DS.medals(PROBLEMS, PATTERNS);
+    this.fresh = {};
+    medals.forEach((m) => { if (m.fresh) this.fresh[m.key] = 1; });
+    DS.markMedalsSeen(medals);
   }
   componentDidMount() { listenTheme(this); }
   componentWillUnmount() { unlistenTheme(this); }
@@ -401,28 +946,19 @@ class Component extends DCLogic {
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
-    // 26 weeks of activity, ending today; quieter at the start, a real habit by the end.
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const start = new Date(today); start.setDate(today.getDate() - today.getDay() - 175);
-    const todayIdx = 175 + today.getDay();
+    // 26 weeks of real activity from DS: stories, sheet ticks, passed tests and revisit cards.
+    const hm = DS.heatmap(26);
+    const todayIdx = hm.todayIndex;
     const dayIdx = this.state.day === null ? todayIdx : this.state.day;
     const levels = [t.sunk, t.okBg, 'color-mix(in srgb, ' + t.ok + ' 45%, ' + t.okBg + ')', 'color-mix(in srgb, ' + t.ok + ' 75%, ' + t.okBg + ')', t.ok];
-    let total = 0, active = 0;
-    const cells = [];
-    for (let i = 0; i < 182; i++) {
-      const d = new Date(start); d.setDate(start.getDate() + i);
-      const future = d > today;
-      const ramp = i / 182;
-      const streak = i > todayIdx - 23 && i <= todayIdx;
-      let n = future ? 0 : streak ? 1 + Math.floor(noise(i) * 5) : noise(i) < 0.25 + ramp * 0.55 ? 1 + Math.floor(noise(i + 7) * (2 + ramp * 4)) : 0;
-      if (i === todayIdx - 23) n = 0;
-      total += n; if (n) active++;
-      const lvl = n === 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 6 ? 3 : 4;
+    const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many || one + 's');
+    const cells = hm.cells.map((c, i) => {
+      const d = new Date(c.ts);
       const label = DAYNAMES[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
-      const story = PROBLEMS[(i * 7) % PROBLEMS.length].story;
-      cells.push({ n, d, label, story, bg: future ? 'transparent' : levels[lvl], border: i === dayIdx ? '2px solid ' + t.text : future ? '1px dashed ' + t.line : '0',
-        tip: label + ': ' + (n ? n + ' story step' + (n > 1 ? 's' : '') : 'no learning'), pick: () => { if (!future) this.setState({ day: i }); } });
-    }
+      const parts = [c.story ? plural(c.story, 'story', 'stories') : '', c.sheet ? plural(c.sheet, 'sheet tick') : '', c.code ? plural(c.code, 'passed test') : '', c.revisit ? plural(c.revisit, 'revisit card') : ''].filter(Boolean);
+      return { n: c.n, d, label, parts, bg: c.future ? 'transparent' : levels[c.level], border: i === dayIdx ? '2px solid ' + t.text : c.future ? '1px dashed ' + t.line : '0',
+        tip: label + ': ' + (c.n ? parts.join(', ') : 'no learning'), pick: () => { if (!c.future) this.setState({ day: i }); } };
+    });
     const months = [];
     for (let w = 0; w < 26; w++) {
       const d = cells[w * 7].d;
@@ -441,18 +977,43 @@ class Component extends DCLogic {
     const certName = c[0] + ' pattern certificate';
     const enc = encodeURIComponent;
     const prefs = this.state.prefs;
+    const me = DS.profile();
+    const st = DS.streak();
+    const xp = DS.xp();
+    const stories = DS.stories();
+    const sheet = DS.sheet();
+    const pats = DS.patterns(PROBLEMS, PATTERNS).filter((p) => p.total);
+    const top = pats.slice().sort((a, b) => b.pct - a.pct || pats.indexOf(a) - pats.indexOf(b)).slice(0, 4);
+    const ringColors = [t.accent, t.right, t.flame, t.ok];
+    const buddyData = DS.buddies();
+    const who = me.name || 'A DSAMaxxing learner';
+    const firstDay = hm.cells.find((x) => x.n);
     return {
-      t, themeBtns: themeButtons(this, themeKey, t),
-      chips: ['Level 9 · 2,640 XP', 'Lantern League #14', 'Python', 'Placements: December 2026'],
-      shareLabel: this.state.shared ? 'Profile link copied ✓' : 'Share my profile',
-      shareProfile: () => { copyText('DSAMaxxing · Aarav Sharma · 23-day streak'); this.setState({ shared: true }); },
-      stats: [['23', 'day streak', t.flame], ['31', 'longest streak', t.text], [String(PROBLEMS.filter((p) => p.status === 'done').length), 'stories finished', t.text], [String(CERTS.filter((x) => x.when).length), 'pattern certified', t.ok], ['78%', 'revisit recall', t.text]].map(([v, k, color]) => ({ v, k, color })),
-      heatTitle: total + ' story steps and revisit cards in 6 months · ' + active + ' active days',
+      t, ...navVals(this, t, themeKey, 'Profile'), themeBtns: themeButtons(this, themeKey, t),
+      me: {
+        title: me.name || 'Your profile', hasName: !!me.initials, noName: !me.initials, initials: me.initials, icon: ICONS.user,
+        avatarBg: me.initials ? t.accent : t.sunk, avatarFg: me.initials ? t.onAccent : t.text,
+        line: me.isNew ? 'Nothing learned yet. Your progress shows up here as you go.' : firstDay ? 'Learning since ' + new Date(firstDay.ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Learning for a while now',
+        cta: me.name ? 'Change my goals' : 'Set your name and goals'
+      },
+      chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
+      shareLabel: this.state.shared ? 'Copied ✓' : 'Copy my stats',
+      shareProfile: () => { copyText('DSAMaxxing · ' + who + ' · ' + st.current + '-day streak · ' + stories.count + ' stories · ' + sheet.ticked + ' sheet problems'); this.setState({ shared: true }); },
+      rings: ringSet(t, top.map((p, i) => ({ label: p.name, value: p.done + '/' + p.total, pct: p.pct, color: ringColors[i] })), 136, 11),
+      tiles: statTiles(t, [
+        { icon: 'flame', color: t.flame, value: st.current, unit: st.current === 1 ? 'day' : 'days', label: 'Streak', pct: null },
+        { icon: 'flame', color: t.medFg, value: st.longest, unit: st.longest === 1 ? 'day' : 'days', label: 'Longest streak', pct: null },
+        { icon: 'story', color: t.accent, value: stories.count, unit: '/ ' + PROBLEMS.length, label: 'Stories finished', pct: (stories.count / PROBLEMS.length) * 100 },
+        { icon: 'sheet', color: t.right, value: sheet.ticked, unit: '/ ' + sheet.total, label: 'Sheet ticked', pct: (sheet.ticked / sheet.total) * 100 },
+        { icon: 'bolt', color: t.ok, value: xp.total.toLocaleString('en-US'), unit: 'XP', label: 'Level ' + xp.level, pct: xp.pct }
+      ]),
+      shelf: medalShelf(t, DS.medals(PROBLEMS, PATTERNS), 20, this.fresh),
+      heatTitle: hm.activeDays ? plural(hm.activeDays, 'active day') + ' in 6 months' : 'Your 6 months start today',
       months, cells,
       day: {
         date: sel.label + (dayIdx === todayIdx ? ' · today' : ''),
-        head: sel.n ? sel.n + ' story step' + (sel.n > 1 ? 's' : '') : 'A rest day',
-        line: sel.n ? 'Mostly ' + sel.story + (sel.n > 3 ? ', plus a Revisit session.' : '.') : 'Nothing that day. Rest days happen — a streak freeze covers one a week.'
+        head: sel.n ? plural(sel.n, 'thing') + ' done' : dayIdx === todayIdx ? 'Nothing yet today' : 'A rest day',
+        line: sel.n ? sel.parts.join(' · ') : dayIdx === todayIdx ? 'Finish a story, tick a sheet problem or pass a code test. Each one lights up today.' : 'Nothing that day. Rest days happen.'
       },
       legend: levels,
       certs: CERTS.map(({ name, mark, have, need, when }, i) => {
@@ -460,7 +1021,7 @@ class Component extends DCLogic {
         return {
           name, mark, on, pct: need ? Math.round((have / need) * 100) + '%' : '0%',
           color: done ? t.ok : have ? t.diff.Medium[0] : t.faint,
-          state: done ? 'Certified' : !need ? 'Coming soon' : have >= need ? 'Exam ready' : have ? 'In progress' : 'Not started', stateColor: done ? t.ok : t.muted,
+          state: done ? 'Certified' : !need ? 'Coming soon' : have >= need ? 'Core done' : have ? 'In progress' : 'Not started', stateColor: done ? t.ok : t.muted,
           note: done ? when : !need ? 'Its stories are being animated' : have + ' of ' + need + ' core stories walked',
           border: on ? t.text : t.line, bg: done ? t.okBg : t.surface, op: need ? 1 : 0.7,
           pick: () => this.setState({ cert: i })
@@ -469,10 +1030,10 @@ class Component extends DCLogic {
       cert: {
         earned, locked: !earned, color: earned ? t.ok : t.muted, bg: earned ? t.okBg : t.sunk,
         title: earned ? c[0] : c[0] + ' — not yet',
-        line: earned ? 'Aarav Sharma walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories to unlock the 10-minute pattern exam. ' + pattern[2] + ' is waiting.',
+        line: earned ? who + ' walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories to unlock the 10-minute pattern exam. ' + pattern[2] + ' is waiting.',
         meta: earned ? c[4] + ' · ID ' + c[5] : soon ? 'Coming soon' : c[2] + ' of ' + c[3] + ' core stories walked',
         linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=DSAMaxxing&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
-        whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story. Try it: 7 free days with code AARAV7'),
+        whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story.'),
         cta: soon ? 'Read ' + nextP.story : c[2] ? 'Continue: ' + nextP.story : 'Start with ' + nextP.story,
         nextHref: nextP.animated ? 'Story.dc.html' : 'Briefing.dc.html',
         go: () => saveProblem(nextP.id),
@@ -486,12 +1047,12 @@ class Component extends DCLogic {
           return { label, on, bg: on ? t.text : 'transparent', fg: on ? t.bg : t.text, border: on ? t.text : t.line2, pick: () => this.setPref(key, v) };
         })
       })),
-      buddies: BUDDIES.map(([name, initials, where, streak, today], i) => {
+      buddies: buddyData.list.map((bd, i) => {
         const nudged = this.state.nudged.includes(i);
         return {
-          name, initials, where, streak: streak + ' days', color: [t.right, t.ok, t.left][i],
-          done: today || nudged, btn: today ? 'Learned today ✓' : nudged ? 'Nudged ✓' : 'Nudge', btnFg: today || nudged ? t.muted : t.text,
-          nudge: () => { if (!today && !nudged) this.setState({ nudged: this.state.nudged.concat([i]) }); }
+          name: bd.name, initials: bd.initials, where: bd.where, streak: bd.streak + ' days', color: [t.right, t.ok, t.left][i % 3],
+          done: bd.learnedToday || nudged, btn: bd.learnedToday ? 'Learned today ✓' : nudged ? 'Nudged ✓' : 'Nudge', btnFg: bd.learnedToday || nudged ? t.muted : t.text,
+          nudge: () => { if (!bd.learnedToday && !nudged) this.setState({ nudged: this.state.nudged.concat([i]) }); }
         };
       }),
       deleting: this.state.del === 1, notDeleting: this.state.del !== 1,
@@ -499,10 +1060,7 @@ class Component extends DCLogic {
       askDelete: () => { if (this.state.del !== 2) this.setState({ del: 1 }); },
       confirmDelete: () => this.setState({ del: 2 }),
       cancelDelete: () => this.setState({ del: 0 }),
-      copyLabel: this.state.copied ? 'Copied ✓' : 'Copy',
-      copyCode: () => { copyText('AARAV7'); this.setState({ copied: true }); },
-      inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on DSAMaxxing — Two Pointers finally clicked. Use my code AARAV7 for 7 free days.'),
-      milestones: [['23', '23-day streak', 'today', t.flame], ['HM', 'Hash Map certificate', '20 Sep', t.ok], ['50', '50 revisit cards', '17 Sep', t.right], ['1st', 'First story walked: The Mirror Hallway', '3 Jun', t.accent]].map(([mark, name, when, bg]) => ({ mark, name, when, bg, fg: t.onAccent }))
+      inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on DSAMaxxing. Every problem is a story you watch step by step.'),
     };
   }
 }

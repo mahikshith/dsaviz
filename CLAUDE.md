@@ -6,7 +6,7 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 
 - Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@RUNNER@@`, `@@CODE-PANE@@`, `@@GITSIM@@` (from `src/git/`), `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
 - Other page markup and page-specific scripts are edited directly in `pages/*.dc.html`.
-- After any change: `npm run build && npm test`. The tests must print "all clear", "all scenes clean" and "all specs pass", "sheet clean" and "all git steps consistent".
+- After any change: `npm run build && npm test`. The tests must print "all clear", "data clean", "all scenes clean" and "all specs pass", "sheet clean" and "all git steps consistent".
 - `dist/index.html` is generated and committed so the site opens without a build. Rebuild it before committing.
 
 ## Conventions
@@ -15,6 +15,8 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 - Every `<button>` needs an `onClick`. Links between pages use `href="X.dc.html"`, never `href="#"`.
 - Each page root is a fixed `width: 1440px; height: Npx` div. If content grows, raise the height in three places: the root div, `$preview.height` in `data-props`, and the board's `h` in `pages/canvas.json`. The terminal theme runs taller, so size for it.
 - Companions per pattern are in `PATTERNS` in `shared/catalog.js`. Old Hoot is the mentor everywhere.
+- Learner data comes only from `DS` (`shared/data.js`, see docs/BACKEND.md). No hard-coded streaks, XP or names; sample data for server features is flagged `demo: true` and shown with a Demo tag.
+- Every page except Auth and Welcome starts with the shared pill nav: put `<!-- PILL NAV --><!-- /PILL NAV -->` in the markup and `...navVals(this, t, themeKey, 'Page')` in `renderVals`. Spacing uses 4/8/12/16/24/32.
 - Copy style: plain, direct sentences. No placeholder brackets.
 
 ## Skills

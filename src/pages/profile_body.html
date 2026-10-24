@@ -1,44 +1,38 @@
-<div style="width: 1440px; height: 2020px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
-<header style="height: 76px; flex-shrink: 0; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; gap: 22px; border-bottom: 1px solid {{t.line}}">
-<a href="Home.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
-<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 16px; font-size: 15px; font-weight: 500">
-<a href="Home.dc.html" style="color: {{t.muted}}">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Sheet.dc.html" style="color: {{t.muted}}">Sheet</a><a href="Revisit.dc.html" style="color: {{t.muted}}">Revisit</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
-</nav>
-<div style="flex-grow: 1"></div>
-<div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
-<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3">
-<button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button>
-</sc-for>
-</div>
-<a href="Home.dc.html" aria-label="23-day streak" style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>23</a>
-<a href="Profile.dc.html" aria-label="Your profile" style="width: 44px; height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800">AS</a>
-</header>
+<div style="width: 1440px; height: 2040px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<!-- PILL NAV -->
+<!-- /PILL NAV -->
 
-<div style="flex-grow: 1; padding: 32px 40px; display: flex; flex-direction: column; gap: 24px">
+<div style="flex-grow: 1; padding: 24px 40px 40px; display: flex; flex-direction: column; gap: 24px">
 
 <!-- IDENTITY -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 26px; align-items: center">
-<span style="width: 112px; height: 112px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: 40px; font-weight: 700">AS</span>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Aarav Sharma</h1>
-<span style="font-size: 16px; color: {{t.text2}}">Final-year B.Tech CSE · PES University, Bengaluru</span>
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px">
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 24px; align-items: center">
+<span style="width: 96px; height: 96px; border-radius: 48px; background: {{me.avatarBg}}; color: {{me.avatarFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: 36px; font-weight: 700"><sc-if value="{{me.hasName}}" hint-placeholder-val="{{ true }}">{{me.initials}}</sc-if><sc-if value="{{me.noName}}" hint-placeholder-val="{{ false }}"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{me.icon}}"></path></svg></sc-if></span>
+<div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; line-height: 44px; font-weight: 700">{{me.title}}</h1>
+<span style="font-size: 15px; color: {{t.text2}}">{{me.line}}</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
-<sc-for list="{{chips}}" as="c" hint-placeholder-count="4"><span style="padding: 5px 12px; border-radius: 999px; background: {{t.sunk}}; font-size: 13px; font-weight: 600">{{c}}</span></sc-for>
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="3"><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600">{{c}}</span></sc-for>
+</div>
+<div style="display: flex; gap: 12px; align-items: center; margin-top: 4px">
+<a href="Welcome.dc.html" style="height: 44px; padding: 0 20px; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">{{me.cta}}</a>
+<button onClick="{{shareProfile}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{shareLabel}}</button>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch">
-<button onClick="{{shareProfile}}" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 0; background: {{t.text}}; color: {{t.bg}}; cursor: pointer; font-size: 15px; font-weight: 700">{{shareLabel}}</button>
-<a href="Welcome.dc.html" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700">Change my goals</a>
+</div>
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 700">Patterns</h2><a href="Patterns.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: 13px; font-weight: 600">Library ›</a></div>
+<!-- RINGS -->
+<!-- /RINGS -->
 </div>
 </section>
 
-<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px">
-<sc-for list="{{stats}}" as="s" hint-placeholder-count="5"><div style="padding: 18px 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 30px; font-weight: 800; color: {{s.color}}">{{s.v}}</span><span style="font-size: 14px; color: {{t.muted}}">{{s.k}}</span></div></sc-for>
-</div>
+<!-- STAT TILES -->
+<!-- /STAT TILES -->
 
 <!-- HEATMAP -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">{{heatTitle}}</span><span style="font-size: 14px; color: {{t.muted}}">Tap a day to see what you learned</span></div>
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">{{heatTitle}}</span><span style="font-size: 14px; color: {{t.muted}}">Pick a day to see what you did</span></div>
 <div style="display: flex; gap: 10px">
 <div style="display: grid; grid-template-rows: repeat(7, 16px); gap: 4px; padding-top: 22px; font-size: 11px; color: {{t.muted}}"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
 <div style="display: flex; flex-direction: column; gap: 6px">
@@ -56,11 +50,10 @@
 </div>
 </section>
 
-<div style="display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 24px; align-items: start">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px; align-items: start">
 <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
-
 <!-- CERTIFICATES -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Pattern certificates</span><span style="font-size: 14px; color: {{t.muted}}">Walk a pattern’s core stories, then pass its 10-minute exam</span></div>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
 <sc-for list="{{certs}}" as="ce" hint-placeholder-count="6">
@@ -85,7 +78,7 @@
 <a href="{{cert.whatsapp}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Share on WhatsApp</a>
 </sc-if>
 <sc-if value="{{cert.locked}}" hint-placeholder-val="{{ false }}">
-<a href="{{cert.nextHref}}" onClick="{{cert.go}}" style="height: 46px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-align: center; padding: 0 12px">{{cert.cta}}</a>
+<a href="{{cert.nextHref}}" onClick="{{cert.go}}" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-align: center; padding: 0 12px">{{cert.cta}}</a>
 </sc-if>
 <span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">{{cert.help}}</span>
 </div>
@@ -93,7 +86,7 @@
 </section>
 
 <!-- REMINDERS & GOALS -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 18px">
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Reminders &amp; daily goal</span><span style="font-size: 13px; font-weight: 700; color: {{t.ok}}">{{savedNote}}</span></div>
 <sc-for list="{{prefGroups}}" as="pg" hint-placeholder-count="5">
 <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center">
@@ -104,9 +97,9 @@
 </div>
 </sc-for>
 <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center; padding-top: 18px; border-top: 1px solid {{t.line}}">
-<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Plan</span><span style="font-size: 12px; color: {{t.muted}}">Free trial · 2 days left</span></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Plan</span><span style="font-size: 12px; color: {{t.muted}}">Accounts are coming</span></span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
-<a href="Auth.dc.html" style="height: 40px; padding: 0 16px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700">Choose a plan</a>
+<a href="Auth.dc.html" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 14px; font-weight: 700">See plans</a>
 <sc-if value="{{notDeleting}}" hint-placeholder-val="{{ true }}"><button onClick="{{askDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">{{deleteLabel}}</button></sc-if>
 <sc-if value="{{deleting}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: {{t.text2}}">Erase your progress and streak for good?</span><button onClick="{{confirmDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.left}}; background: transparent; color: {{t.left}}; cursor: pointer; font-size: 14px; font-weight: 700">Yes, delete</button><button onClick="{{cancelDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Keep my account</button></sc-if>
 </div>
@@ -115,9 +108,18 @@
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 24px">
+<!-- MEDALS SHELF -->
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 700">Medals</h2><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">{{shelf.caption}}</span></div>
+<span style="font-size: 14px; line-height: 20px; color: {{t.muted}}">Bronze for a pattern’s first story, silver at half, gold when every story is done and rated in Revisit.</span>
+<!-- MEDALS -->
+<!-- /MEDALS -->
+<span style="font-size: 14px; color: {{t.text2}}">Next: {{shelf.nextLine}}</span>
+</section>
+
 <!-- BUDDIES -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 20px; font-weight: 700">Study buddies</span>
+<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px"><span style="font-size: 20px; font-weight: 700">Study buddies</span><span title="Sample data until accounts launch" style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span></div>
 <span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">A buddy streak grows only on days you <i>both</i> learn. Nudge a friend who hasn't started yet.</span>
 <sc-for list="{{buddies}}" as="b" hint-placeholder-count="3">
 <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid {{t.line}}">
@@ -127,31 +129,7 @@
 <button onClick="{{b.nudge}}" disabled="{{b.done}}" style="height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{b.btnFg}}; cursor: pointer; font-size: 12px; font-weight: 700">{{b.btn}}</button></span>
 </div>
 </sc-for>
-</section>
-
-<!-- INVITE -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.band}}; color: {{t.bandText}}; display: flex; flex-direction: column; gap: 14px">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandAccent}}">Invite friends</span>
-<span style="font-family: {{t.display}}; font-size: 28px; font-weight: 600; line-height: 1.2">Give a friend 7 free days. Get 7 for yourself.</span>
-<span style="font-size: 14px; line-height: 1.5; color: {{t.bandMuted}}">They get a week instead of 3 days; you get a week added to yours when they finish their first story.</span>
-<div style="display: flex; gap: 8px; align-items: center">
-<span style="flex-grow: 1; height: 46px; border-radius: 12px; border: 1px dashed {{t.bandMuted}}; display: flex; align-items: center; padding: 0 14px; font-family: {{t.mono}}; font-size: 18px; font-weight: 800; letter-spacing: 0.08em">AARAV7</span>
-<button onClick="{{copyCode}}" style="height: 46px; padding: 0 18px; border-radius: 12px; border: 0; background: {{t.bandAccent}}; color: #111317; cursor: pointer; font-size: 14px; font-weight: 800">{{copyLabel}}</button>
-</div>
-<a href="{{inviteWa}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; border: 1px solid {{t.bandMuted}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Send on WhatsApp</a>
-<span style="font-size: 13px; color: {{t.bandMuted}}">2 friends joined · 14 bonus days earned so far</span>
-</section>
-
-<!-- RECENT BADGES -->
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 20px; font-weight: 700">Milestones</span>
-<sc-for list="{{milestones}}" as="m" hint-placeholder-count="4">
-<div style="display: flex; gap: 12px; align-items: center; min-height: 44px; border-top: 1px solid {{t.line}}">
-<span style="width: 34px; height: 34px; border-radius: 999px; background: {{m.bg}}; color: {{m.fg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 12px; font-weight: 800">{{m.mark}}</span>
-<span style="flex-grow: 1; font-size: 15px; font-weight: 600">{{m.name}}</span>
-<span style="font-size: 12px; color: {{t.muted}}">{{m.when}}</span>
-</div>
-</sc-for>
+<a href="{{inviteWa}}" target="_blank" rel="noopener" style="height: 44px; border-radius: 22px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Invite a friend on WhatsApp</a>
 </section>
 </div>
 </div>

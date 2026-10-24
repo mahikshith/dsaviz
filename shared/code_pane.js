@@ -143,6 +143,7 @@ class CodeRunner {
         const limit = (lang === 'py' ? PY_TIME_LIMIT : JS_TIME_LIMIT) / 1000;
         const status = end.cancelled ? '' : end.timeout ? 'Stopped after ' + limit + ' seconds' : end.fatal ? 'Could not run' : passed + ' / ' + cases.length + ' passed · ' + (Date.now() - out.t0) + ' ms';
         const solved = mode === 'submit' && passed === cases.length && this.s.solvedIn === null;
+        if (solved && typeof DS !== 'undefined') DS.passCode(this.pid);
         this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn });
       });
   }

@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 25 animated stories, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 15 linked pages, 25 animated stories, a code editor that runs JavaScript and Python in the browser, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -17,9 +17,9 @@ npm start            # http://localhost:5173
 Requirements: Node 18+ and Python 3.
 
 ```bash
-npm install          # React, used only to bundle the site
+npm install          # React, CodeMirror and esbuild, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # logic back-test of every page + every animated story
+npm test             # logic back-test of every page, every animated story, every test spec
 npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
 ```
 
@@ -34,9 +34,13 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the 58-problem catalog (`catalog.js`), the menu drawer. |
 | `src/story/` | The story engine: `scenes_tp.js` (Two Pointers), `scenes_sw.js` (Sliding Window), `scenes_hm.js` (Hash Map), `scenes_st.js` (Stack), `scenes_gr.js` (Greedy), `scenes_iv.js` (Intervals), `tail.js` (scene registry and quiz kits), `comp.js` (the player), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
+| `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
+| `shared/tests_spec.js` | Test spec per problem: signatures in 5 languages, 3 examples, hidden cases, comparator, JS reference. |
+| `shared/code_pane.html` + `code_pane.js` | The self-contained code pane (`CodeRunner`): language tabs, timer, editor, Run/Submit, custom input, console. Any page can drop it in with the `<!-- CODE PANE -->` and `// @@CODE-PANE@@` markers. |
+| `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
-| `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). |
-| `tests/` | `backtest.js`, `scenecheck.js`, `site-test.js`. |
+| `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
+| `tests/` | `backtest.js`, `scenecheck.js`, `specs.js` (every spec complete; JS references pass every case through the real worker harness), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -70,7 +74,11 @@ Use `visual: 'letters'` with per-step `cells` states (`in`, `out`, `cur`, `hit`,
 
 ## State
 
-Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
+Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, and `dsaviz-code-v1` (code per problem and language). There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
+
+## Add a coding problem
+
+Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself), then `npm run build && npm test`. The Code page opens with `?problem=<id>` or the last problem picked anywhere on the site. Java, C++ and Go are edit-only for now.
 
 ## Known gaps
 

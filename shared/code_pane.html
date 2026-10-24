@@ -1,0 +1,44 @@
+<!-- CODE PANE --> <!-- generated from shared/code_pane.html: editor, Run/Submit, console. Fills its parent's height; holes under cr.* come from CodeRunner.vals(t). -->
+<section aria-label="Code" style="height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<div role="group" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
+<sc-for list="{{cr.langs}}" as="lg" hint-placeholder-count="5"><button onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>
+</div>
+<div style="flex-grow: 1"></div>
+<span role="timer" aria-label="{{cr.clockLabel}}" style="display: flex; align-items: center; gap: 6px; padding: 0 6px; font-family: {{t.mono}}; font-size: 13px; font-weight: 700; color: {{cr.clockFg}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>{{cr.clock}}</span>
+<button onClick="{{cr.copy}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.copyLabel}}</button>
+<button onClick="{{cr.reset}}" aria-label="{{cr.resetAria}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{cr.resetBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.resetLabel}}</button>
+</div>
+<div ref="{{cr.ref}}" style="flex: 1 1 0; min-height: 260px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: hidden"></div>
+<sc-if value="{{cr.runnable}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<button onClick="{{cr.run}}" disabled="{{cr.busy}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>Run</button>
+<button onClick="{{cr.submit}}" disabled="{{cr.busy}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Submit</button>
+<input value="{{cr.custom}}" onChange="{{cr.setCustom}}" aria-label="Custom input for Run, written like the call's arguments in JSON" placeholder="{{cr.customHint}}" spellcheck="false" style="flex-grow: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: 13px">
+<span role="status" style="font-size: 13px; white-space: nowrap; color: {{cr.statusColor}}">{{cr.statusText}}</span>
+</div>
+</sc-if>
+<sc-if value="{{cr.notRunnable}}" hint-placeholder-val="{{ false }}">
+<div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; background: {{t.sunk}}; font-size: 14px; line-height: 1.5">Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.</div>
+</sc-if>
+<div aria-label="Output" role="region" style="flex: 0 1 auto; max-height: 48%; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 38px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output</span>
+<sc-if value="{{cr.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{cr.badgeBg}}; color: {{cr.badgeFg}}">{{cr.badge}}</span></sc-if>
+</div>
+<div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; min-height: 0">
+<sc-if value="{{cr.showHint}}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{cr.hint}}</span></sc-if>
+<sc-if value="{{cr.hasMsg}}" hint-placeholder-val="{{ false }}"><div style="padding: 10px 12px; border-radius: 10px; background: {{cr.msgBg}}; font-size: 14px; line-height: 1.5; white-space: pre-wrap; font-family: {{cr.msgFont}}">{{cr.msg}}</div></sc-if>
+<sc-for list="{{cr.rows}}" as="rw" hint-placeholder-count="3">
+<div style="flex-shrink: 0; padding: 10px 12px; border-radius: 10px; border: 1px solid {{rw.border}}; display: grid; grid-template-columns: 22px 92px minmax(0, 1fr); column-gap: 8px; row-gap: 3px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none; animation: rise 0.2s ease">
+<span aria-hidden="true" style="font-weight: 800; color: {{rw.markColor}}">{{rw.mark}}</span><span style="font-family: {{t.body}}; font-weight: 700">{{rw.title}}</span><span style="color: {{rw.markColor}}; font-family: {{t.body}}; font-weight: 600">{{rw.verdict}}</span>
+<span></span><span style="color: {{t.muted}}">input</span><span style="overflow-wrap: anywhere">{{rw.input}}</span>
+<sc-if value="{{rw.failed}}" hint-placeholder-val="{{ false }}"><span></span><span style="color: {{t.muted}}">expected</span><span style="overflow-wrap: anywhere">{{rw.expected}}</span></sc-if>
+<span></span><span style="color: {{t.muted}}">got</span><span style="overflow-wrap: anywhere; color: {{rw.gotColor}}">{{rw.got}}</span>
+<sc-if value="{{rw.hasLogs}}" hint-placeholder-val="{{ false }}"><span></span><span style="color: {{t.muted}}">printed</span><span style="white-space: pre-wrap; overflow-wrap: anywhere; color: {{t.text2}}">{{rw.logs}}</span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+<!-- /CODE PANE -->

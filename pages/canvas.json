@@ -113,6 +113,14 @@
       "h": 2020,
       "title": "Profile · heatmap, certificates, invites, reminders",
       "is_interactive": true
+    },
+    "Code.dc.html": {
+      "h": 1060,
+      "is_interactive": true,
+      "title": "Code · editor, run examples, submit hidden tests",
+      "w": 1440,
+      "x": 7600,
+      "y": 1140
     }
   },
   "createdOnFiles": {
@@ -182,6 +190,7 @@
     "Interview.dc.html",
     "Briefing.dc.html",
     "Story.dc.html",
+    "Code.dc.html",
     "Glossary.dc.html",
     "Basics.dc.html"
   ],

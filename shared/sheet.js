@@ -1,6 +1,7 @@
 // @@SHEET@@ — generated block: the DSAMaxxing master sheet (our own selection, order and hints).
 // Each group runs from the easiest idea to the hardest. Rows: LeetCode slug, number, official name, difficulty,
-// a one-line hint in our own words, and the catalog story id when the problem has a story here.
+// a one-line hint in our own words, the catalog story id when the problem has a story here, and an optional
+// { premium: true } for LeetCode Premium problems (marked only where we are sure).
 // Groups: our 16 patterns first, then five topic groups. Company tags come only from the catalog (PROBLEMS).
 const SHEET_EXTRA_GROUPS = [
   ["Linked Lists", "Nodes, next pointers and a dummy head"],
@@ -157,14 +158,14 @@ const SHEET_DATA = {
   ],
   "Intervals": [
     ["summary-ranges", 228, "Summary Ranges", "Easy", "Extend a run while the next number is one more. Close it when the chain breaks.", null],
-    ["meeting-rooms", 252, "Meeting Rooms", "Easy", "Sort by start. Any meeting that starts before the previous one ends is a clash.", null],
+    ["meeting-rooms", 252, "Meeting Rooms", "Easy", "Sort by start. Any meeting that starts before the previous one ends is a clash.", null, { "premium": true }],
     ["merge-intervals", 56, "Merge Intervals", "Medium", "Sort by start. Merge whenever the next start is not after the current end.", "merge-intervals"],
     ["insert-interval", 57, "Insert Interval", "Medium", "Copy the ones that end before, merge the ones that overlap, then copy the rest.", "insert-interval"],
     ["remove-covered-intervals", 1288, "Remove Covered Intervals", "Medium", "Sort by start, longest first on ties. An interval is covered if it ends inside the farthest end so far.", null],
     ["interval-list-intersections", 986, "Interval List Intersections", "Medium", "Two pointers. The overlap is the later start to the earlier end. Advance whichever ends first.", null],
     ["non-overlapping-intervals", 435, "Non-overlapping Intervals", "Medium", "Sort by end and keep the one that finishes first. Count the ones you drop.", null],
     ["minimum-number-of-arrows-to-burst-balloons", 452, "Minimum Number of Arrows to Burst Balloons", "Medium", "Sort by end and shoot at the first end. A new arrow only when a balloon starts after it.", null],
-    ["meeting-rooms-ii", 253, "Meeting Rooms II", "Medium", "Sort starts and ends separately. A start before the earliest end needs another room.", null],
+    ["meeting-rooms-ii", 253, "Meeting Rooms II", "Medium", "Sort starts and ends separately. A start before the earliest end needs another room.", null, { "premium": true }],
     ["car-pooling", 1094, "Car Pooling", "Medium", "Add riders at pickup and remove them at drop-off on a timeline. Check the load never goes over.", null],
     ["my-calendar-i", 729, "My Calendar I", "Medium", "A new booking fits if it ends before or starts after every booking it touches.", null],
     ["my-calendar-ii", 731, "My Calendar II", "Medium", "Keep the bookings and the overlaps apart. A new booking fails if it hits an overlap.", null],
@@ -629,21 +630,23 @@ const SHEET_DATA = {
   ],
   "Concurrency": [
     ["print-in-order", 1114, "Print in Order", "Easy", "Two signals: the second job waits for the first to finish, the third waits for the second.", null],
-    ["traffic-light-controlled-intersection", 1279, "Traffic Light Controlled Intersection", "Easy", "One lock guards the light. Switch it only when a car from the red road arrives.", null],
+    ["traffic-light-controlled-intersection", 1279, "Traffic Light Controlled Intersection", "Easy", "One lock guards the light. Switch it only when a car from the red road arrives.", null, { "premium": true }],
     ["print-foobar-alternately", 1115, "Print FooBar Alternately", "Medium", "Two semaphores passed back and forth so each thread prints only on its turn.", null],
     ["print-zero-even-odd", 1116, "Print Zero Even Odd", "Medium", "The zero thread decides who goes next: it releases the odd or even thread by the count.", null],
     ["building-h2o", 1117, "Building H2O", "Medium", "Let two hydrogens and one oxygen through, then reset with a barrier before the next molecule.", null],
     ["fizz-buzz-multithreaded", 1195, "Fizz Buzz Multithreaded", "Medium", "All four threads share one counter. Each waits until the number is its kind, prints, and moves on.", null],
     ["the-dining-philosophers", 1226, "The Dining Philosophers", "Medium", "Avoid a deadlock cycle: let at most four reach for forks, or make one pick up the other side first.", null],
-    ["design-bounded-blocking-queue", 1188, "Design Bounded Blocking Queue", "Medium", "One lock with two conditions: producers wait while full, consumers wait while empty.", null],
-    ["web-crawler-multithreaded", 1242, "Web Crawler Multithreaded", "Medium", "A thread pool fetches pages. A shared visited set under a lock stops repeat visits.", null]
+    ["design-bounded-blocking-queue", 1188, "Design Bounded Blocking Queue", "Medium", "One lock with two conditions: producers wait while full, consumers wait while empty.", null, { "premium": true }],
+    ["web-crawler-multithreaded", 1242, "Web Crawler Multithreaded", "Medium", "A thread pool fetches pages. A shared visited set under a lock stops repeat visits.", null, { "premium": true }]
   ]
 };
 // Flat list, in group order. seq is our order inside the group, starting at 1.
 const SHEET_GROUPS = PATTERNS.map(([name, tag]) => [name, tag]).concat(SHEET_EXTRA_GROUPS);
 const SHEET = [];
-SHEET_GROUPS.forEach(([group]) => (SHEET_DATA[group] || []).forEach(([id, n, name, diff, hint, story], i) => {
-  SHEET.push({ id, n, name, diff, pattern: group, hint, story, seq: i + 1, url: 'https://leetcode.com/problems/' + id + '/' });
+SHEET_GROUPS.forEach(([group]) => (SHEET_DATA[group] || []).forEach(([id, n, name, diff, hint, story, extra], i) => {
+  const row = { id, n, name, diff, pattern: group, hint, story, seq: i + 1, url: 'https://leetcode.com/problems/' + id + '/' };
+  if (extra && extra.premium) row.premium = true;
+  SHEET.push(row);
 }));
 const SHEET_KEY = 'dsaviz-sheet-v1';
 // Progress: { v: 1, done: { id: timestamp }, star: { id: 1 } }. Unknown ids are kept so an older export still imports.

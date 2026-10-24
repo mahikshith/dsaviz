@@ -42,6 +42,7 @@ SHEET.forEach((r, i) => {
   else if (r.url !== 'https://leetcode.com/problems/' + r.id + '/') fail(at + ': link slug differs from id');
   if (!DIFFS.includes(r.diff)) fail(at + ': missing or unknown difficulty "' + r.diff + '"');
   if (!r.pattern || !groupNames.includes(r.pattern)) fail(at + ': missing or unknown pattern "' + r.pattern + '"');
+  if ('premium' in r && typeof r.premium !== 'boolean') fail(at + ': premium must be a boolean, got ' + JSON.stringify(r.premium));
   if (!r.hint || !r.hint.trim()) fail(at + ': missing hint');
   else if (r.hint.length > 120) fail(at + ': hint is ' + r.hint.length + ' characters (max 120)');
   if (/[[\]{}<>]|TODO|TBD|lorem/i.test(r.hint || '')) fail(at + ': hint looks like a placeholder');
@@ -175,6 +176,14 @@ expectEq('company Amazon rows', amazon, SHEET.filter((r) => r.story && PROBLEMS.
 c.setState({ company: 'All', query: 'rotated' });
 if (c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0) !== SHEET.filter((r) => /rotated/i.test(r.name)).length) fail('search does not match names');
 c.setState({ query: '' });
+// premium: hidden by the toggle, never offered by Random unsolved
+const premiumIds = SHEET.filter((r) => r.premium).map((r) => r.id);
+c.setState({ hidePremium: true, open: {} });
+if (c.filtered().some((r) => r.premium)) fail('Hide premium still shows premium rows');
+expectEq('hide premium rows', c.filtered().length, SHEET.length - premiumIds.length);
+c.setState({ hidePremium: false, pattern: 'Concurrency' });
+for (let i = 0; i < 40; i++) { c.randomPick(); if (premiumIds.includes(c.state.pick)) { fail('Random unsolved picked premium ' + c.state.pick); break; } }
+c.setState({ pattern: 'All', pick: null });
 // Today's 5: five distinct problems, unsolved before today, the same all day
 const noon = Date.parse('2026-10-24T12:00:00Z');
 const t1 = P.todaysFive({ done: {}, star: {} }, noon).map((r) => r.id);
@@ -187,11 +196,12 @@ if (t1.length !== 5 || new Set(t1).size !== 5) fail("Today's 5 is not five disti
 if (t1.join() !== t2.join()) fail("Today's 5 changes during the day");
 if (t1.join() !== t3.join()) fail("Today's 5 changes after solving one today");
 if (t4.includes(t1[0])) fail("Today's 5 includes a problem solved on an earlier day");
+for (let d = 0; d < 60; d++) { const p = P.todaysFive({ done: {}, star: {} }, noon + d * 86400e3); if (p.some((r) => r.premium)) { fail("Today's 5 includes a premium problem"); break; } }
 if (t1.join() === P.todaysFive({ done: {}, star: {} }, noon + 86400e3).map((r) => r.id).join()) fail("Today's 5 is the same on the next day");
 
 const counts = {};
 SHEET.forEach((r) => { counts[r.pattern] = (counts[r.pattern] || 0) + 1; });
-console.log('sheet: ' + SHEET.length + ' problems in ' + SHEET_GROUPS.length + ' groups; ' + DIFFS.map((d) => d + ' ' + SHEET.filter((r) => r.diff === d).length).join(', ') + '; ' + SHEET.filter((r) => r.story).length + ' with stories');
+console.log('sheet: ' + SHEET.length + ' problems in ' + SHEET_GROUPS.length + ' groups; ' + DIFFS.map((d) => d + ' ' + SHEET.filter((r) => r.diff === d).length).join(', ') + '; ' + SHEET.filter((r) => r.story).length + ' with stories; ' + SHEET.filter((r) => r.premium).length + ' premium');
 console.log('  per group: ' + SHEET_GROUPS.map(([g]) => g + ' ' + (counts[g] || 0)).join(', '));
 if (review.length) console.log('  slug review (' + review.length + ', not failures): ' + review.join('; '));
 console.log(problems ? problems + ' sheet problem(s)' : 'sheet clean');

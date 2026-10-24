@@ -10,7 +10,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const read = (...p) => fs.readFileSync(path.join(root, ...p), 'utf8').replace(/\r\n/g, '\n');
 const src = read('src', 'ai', 'render.js') + '\n' + read('src', 'concepts', 'lessons.js');
-const M = new Function(src + '\nreturn { CS_TRACKS, CS_LESSONS, csSteps, aiSceneProblems, aiFlatten, aiPaint, aiTween, aiColors };')();
+const M = new Function(src + '\nreturn { CS_TRACKS, CS_LESSONS, CS_GE, csSteps, aiSceneProblems, aiFlatten, aiPaint, aiTween, aiColors };')();
 let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };
 
@@ -50,8 +50,59 @@ const REF = {
   openaddr: (s) => {
     const t = new Array(11).fill(null); [12, 23, 5, 34, 16, 9, 27].forEach((k) => { let b = k % 11; while (t[b] !== null) b = (b + 1) % 11; t[b] = k; });
     return same(s.out, t) ? '' : 'probe table wrong';
+  },
+  trees: (s) => (same(s.out.pre, [8, 3, 1, 6, 4, 7, 10, 14]) && same(s.out.in, [1, 3, 4, 6, 7, 8, 10, 14]) && same(s.out.post, [1, 4, 7, 6, 3, 14, 10, 8]) && same(s.out.level, [8, 3, 10, 1, 6, 14, 4, 7]) ? '' : 'a walk order is wrong'),
+  bst: (s) => (same(s.out, [4, 5, 6, 7, 8, 14]) ? '' : 'tree after insert 5 and deletes of 1, 10, 3 is wrong: ' + s.out),
+  heap: (s) => {
+    const a = s.out; for (let i = 1; i < a.length; i++) if (a[Math.floor((i - 1) / 2)] > a[i]) return 'not a min-heap: ' + a;
+    return same(sortedCopy(a), [2, 3, 5, 6, 8, 9]) ? '' : 'heap holds the wrong values: ' + a;
+  },
+  topo: (s) => { const pos = {}; s.out.order.forEach((k, i) => { pos[k] = i; }); return s.out.order.length === 6 && s.out.edges.every(([a, b]) => pos[a] < pos[b]) ? '' : 'not a valid order: ' + s.out.order; },
+  dijkstra: (s, p, M) => {
+    // reference: relax all edges until nothing changes (no heap, no greed)
+    const E = M.CS_GE; const d = { A: 0, B: Infinity, C: Infinity, D: Infinity, E: Infinity, F: Infinity };
+    for (let k = 0; k < 6; k++) E.forEach(([a, b, w]) => { d[b] = Math.min(d[b], d[a] + w); d[a] = Math.min(d[a], d[b] + w); });
+    return same(s.out, d) ? '' : 'distances ' + JSON.stringify(s.out) + ', want ' + JSON.stringify(d);
+  },
+  bellman: (s) => (same(s.out, { S: 0, A: 1, B: 5, C: 4, D: 5 }) ? '' : 'distances wrong: ' + JSON.stringify(s.out)),
+  floyd: (s) => {
+    const n = 4; const d = []; for (let i = 0; i < n; i++) { d.push([]); for (let j = 0; j < n; j++) d[i].push(i === j ? 0 : Infinity); }
+    [[1, 2, 3], [2, 3, 2], [1, 3, 8], [3, 4, 1], [4, 1, 2], [2, 4, 7]].forEach(([a, b, w]) => { d[a - 1][b - 1] = w; });
+    // reference: Bellman-Ford style from every source
+    const ref = d.map((row, src) => { const r = row.slice(); for (let k = 0; k < n; k++) for (let u = 0; u < n; u++) for (let v = 0; v < n; v++) if (r[u] + d[u][v] < r[v]) r[v] = r[u] + d[u][v]; return r; });
+    return same(s.out, ref) ? '' : 'all-pairs table wrong';
+  },
+  kruskal: (s, p, M) => { const w = mstWeight(M.CS_GE); return s.out === w ? '' : 'MST weight ' + s.out + ', want ' + w; },
+  prim: (s, p, M) => { const w = mstWeight(M.CS_GE); return s.out === w ? '' : 'MST weight ' + s.out + ', want ' + w; },
+  gcd: (s, b) => { const g = (x, y) => { for (let d = Math.min(x, y); d >= 1; d--) if (x % d === 0 && y % d === 0) return d; return 1; }; return s.out === g(120, b) ? '' : 'gcd wrong'; },
+  sieve: (s) => { const p = []; for (let v = 2; v <= 50; v++) { let ok = true; for (let d = 2; d < v; d++) if (v % d === 0) ok = false; if (ok) p.push(v); } return same(s.out, p) ? '' : 'primes wrong'; },
+  fastpow: (s, e) => { let r = 1; for (let i = 0; i < e; i++) r = r * 3 % 1000; return s.out === r ? '' : '3^' + e + ' mod 1000 = ' + s.out + ', want ' + r; },
+  modinv: (s, a) => (s.out.inv * a % 11 === 1 && s.out.fermat === s.out.inv ? '' : 'inverse wrong'),
+  ncr: (s, k) => { let c = 1; for (let i = 0; i < k; i++) c = c * (6 - i) / (i + 1); return s.out === c ? '' : '6C' + k + ' wrong'; },
+  inclexcl: (s) => { let a = 0; let b = 0; for (let i = 1; i <= 30; i++) { if (i % 2 === 0 || i % 3 === 0) a++; if (i % 2 === 0 || i % 3 === 0 || i % 5 === 0) b++; } return s.out.two === a && s.out.three === b ? '' : 'counts wrong'; },
+  bits: (s, x) => { const pc = x.toString(2).split('').filter((c) => c === '1').length; let low = 0; for (let i = 0; i < 8; i++) if ((x >> i) & 1) { low = 1 << i; break; } return s.out.pc === pc && s.out.low === low && s.out.and === (x & 106) && s.out.xor === (x ^ 106) ? '' : 'bit results wrong'; },
+  kmp: (s) => {
+    const P = 'ABABC'; const pi = P.split('').map((c, i) => { let best = 0; for (let L = 1; L <= i; L++) if (P.slice(0, L) === P.slice(i + 1 - L, i + 1)) best = L; return best; });
+    return same(s.out.pi, pi) && s.out.found === 'ABABDABABABC'.indexOf(P) ? '' : 'prefix function or match wrong';
+  },
+  zfunc: (s) => { const S = 'aabxaab'; const z = S.split('').map((c, i) => { if (!i) return 0; let k = 0; while (i + k < S.length && S[k] === S[i + k]) k++; return k; }); return same(s.out, z) ? '' : 'Z-array wrong'; },
+  rollhash: (s) => {
+    const T = 'abracadabra'; const h = (str) => str.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0) - 96) % 101, 0);
+    const hs = []; for (let i = 0; i + 3 <= T.length; i++) hs.push(h(T.substr(i, 3)));
+    return same(s.out.hs, hs) && s.out.hp === h('cad') && s.out.found === T.indexOf('cad') ? '' : 'rolling hashes wrong';
   }
 };
+function mstWeight(E) {
+  // reference: try every 5-edge subset of the 9 edges, keep the cheapest that connects all 6 nodes
+  let best = Infinity; const n = E.length;
+  for (let m = 0; m < (1 << n); m++) {
+    const pick = E.filter((e, i) => (m >> i) & 1); if (pick.length !== 5) continue;
+    const seen = { A: 1 }; let grew = true;
+    while (grew) { grew = false; pick.forEach(([a, b]) => { if (seen[a] !== seen[b]) { seen[a] = seen[b] = 1; grew = true; } }); }
+    if (Object.keys(seen).length === 6) best = Math.min(best, pick.reduce((t, e) => t + e[2], 0));
+  }
+  return best;
+}
 
 const trackIds = M.CS_TRACKS.map((t) => t.id);
 const ids = {};
@@ -104,7 +155,7 @@ M.CS_LESSONS.forEach((L, li) => {
     });
     if (REF[L.id] && steps) {
       const pv = v === undefined ? (L.param ? L.param.value : 0) : v;
-      let err; try { err = REF[L.id](steps, pv); } catch (e) { err = 'reference check threw: ' + e.message; }
+      let err; try { err = REF[L.id](steps, pv, M); } catch (e) { err = 'reference check threw: ' + e.message; }
       if (err) fail(tagv, err);
     }
   });

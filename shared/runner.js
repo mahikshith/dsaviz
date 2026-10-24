@@ -433,9 +433,14 @@ const PY_WORKER = [
   '  boot(d.url).then(function () {',
   '    if (d.type === "load") { self.postMessage({ type: "ready" }); return; }',
   '    var logs = [];',
-  '    py.setStdout({ batched: function (s) { if (logs.length < 200) logs.push(s); } });',
-  '    py.setStderr({ batched: function (s) { if (logs.length < 200) logs.push(s); } });',
+  '    py.setStdout({ batched: function (s) { if (logs.length < 500) logs.push(s); } });',
+  '    py.setStderr({ batched: function (s) { if (logs.length < 500) logs.push(s); } });',
   '    var ns = py.globals.get("dict")();',
+  '    if (d.program) {',
+  '      try { py.runPython(HARNESS, { globals: ns }); py.runPython(d.prelude, { globals: ns }); py.runPython(d.code, { globals: ns }); }',
+  '      catch (err) { self.postMessage({ type: "fatal", error: tidy(err.message), logs: logs }); ns.destroy(); return; }',
+  '      ns.destroy(); self.postMessage({ type: "done", logs: logs }); return;',
+  '    }',
   '    try { py.runPython(HARNESS, { globals: ns }); py.runPython(d.code, { globals: ns }); }',
   '    catch (err) { self.postMessage({ type: "fatal", error: tidy(err.message), logs: logs }); ns.destroy(); return; }',
   '    var run = ns.get("__run");',
@@ -519,6 +524,60 @@ function runPython(code, fn, cases, onCase, onEnd, io) {
   });
   return () => end({ cancelled: true });
 }
+// Program mode (the Start here track): run a whole program and collect what it prints. No function is called.
+// stdin is a list of lines; input() in Python and prompt() in JavaScript hand out the next one. Each answer is
+// printed as PROGRAM_IN + question + PROGRAM_SEP + answer, so the page can show it like a terminal and leave it
+// out when it compares output. The JS prelude stays one line and opens a try block, so error line numbers are
+// the learner's line + 1, as in function mode.
+const PROGRAM_IN = '\u0000in';
+const PROGRAM_SEP = '\u0001';
+const PROGRAM_NO_INPUT = 'EOFError: the program asked for more input than it was given. Add another line in the Input box.';
+function jsProgramSource(code, stdin) {
+  const prelude = 'var __logs = [], __in = ' + JSON.stringify((stdin || []).map(String)) + '; (function () { var fmt = function (a) { if (typeof a === "string") return a; if (a === undefined) return "undefined"; try { var s = JSON.stringify(a); return s === undefined ? String(a) : s; } catch (e) { return String(a); } }; var log = function () { if (__logs.length < 500) __logs.push(Array.prototype.map.call(arguments, fmt).join(" ")); }; console.log = console.info = console.warn = console.error = console.debug = log; ["fetch", "XMLHttpRequest", "WebSocket", "EventSource", "importScripts", "indexedDB", "caches"].forEach(function (k) { try { self[k] = undefined; } catch (e) {} }); self.prompt = function (q) { if (!__in.length) { var x = new Error(' + JSON.stringify(PROGRAM_NO_INPUT.replace(/^EOFError: /, '')) + '); x.name = "EOFError"; throw x; } var v = __in.shift(); __logs.push(' + JSON.stringify(PROGRAM_IN) + ' + (q == null ? "" : String(q)) + ' + JSON.stringify(PROGRAM_SEP) + ' + v); return v; }; })(); try {';
+  const tail = '\n} catch (__e) { var __s = String((__e && __e.stack) || ""), __f = __s.split(String.fromCharCode(10)).filter(function (l) { return l.indexOf("blob:") >= 0 || l.indexOf("<anonymous>") >= 0; })[0] || "", __p = __f.replace(")", "").trim().split(":"), __n = Number(__p[__p.length - 2]); self.postMessage({ type: "fatal", error: (__e && __e.name ? __e.name + ": " : "") + (__e && __e.message ? __e.message : String(__e)) + (__n > 1 ? " (line " + (__n - 1) + ")" : ""), logs: __logs }); }\nself.postMessage({ type: "done", logs: __logs });\n';
+  return prelude + '\n' + code + tail;
+}
+function pyProgramPrelude(stdin) {
+  return ['__ds_in = ' + JSON.stringify((stdin || []).map(String)),
+    'def input(prompt=""):',
+    '    if not __ds_in:',
+    '        raise EOFError(' + JSON.stringify(PROGRAM_NO_INPUT.replace(/^EOFError: /, '')) + ')',
+    '    v = __ds_in.pop(0)',
+    '    print(' + JSON.stringify(PROGRAM_IN) + ' + str(prompt) + ' + JSON.stringify(PROGRAM_SEP) + ' + v)',
+    '    return v', ''].join('\n');
+}
+// Run a program. onEnd({ logs, fatal, timeout, cancelled }). Returns a cancel function.
+function runProgram(lang, code, stdin, onEnd) {
+  let ended = false, timer = null, w = null;
+  const end = (r) => { if (ended) return; ended = true; clearTimeout(timer); if (lang !== 'py') killWorker(w); onEnd(r || {}); };
+  if (lang !== 'py') {
+    try { w = blobWorker(jsProgramSource(code, stdin)); } catch (e) { onEnd({ fatal: 'This browser blocked the code runner: ' + e.message }); return () => {}; }
+    timer = setTimeout(() => end({ timeout: true }), JS_TIME_LIMIT);
+    w.onmessage = (e) => { const d = e.data || {}; if (d.type === 'fatal') end({ fatal: d.error, logs: d.logs }); else if (d.type === 'done') end({ logs: d.logs }); };
+    w.onerror = (e) => {
+      if (e.preventDefault) e.preventDefault();
+      const line = e.lineno ? e.lineno - 1 : 0;
+      end({ fatal: String(e.message || 'Your code could not run.').replace(/^Uncaught /, '') + (line > 0 ? ' (line ' + line + ')' : ''), logs: [] });
+    };
+    return () => end({ cancelled: true });
+  }
+  loadPython((state, msg) => {
+    if (ended) return;
+    if (state !== 'ready') { end({ fatal: msg || 'Python could not load.' }); return; }
+    const pw = PY.worker;
+    timer = setTimeout(() => { killWorker(pw); PY.worker = null; PY.state = 'off'; end({ timeout: true }); }, PY_TIME_LIMIT);
+    pw.onmessage = (e) => { const d = e.data || {}; if (d.type === 'fatal') end({ fatal: d.error, logs: d.logs }); else if (d.type === 'done') end({ logs: d.logs }); };
+    pw.postMessage({ type: 'run', program: true, url: PYODIDE_URL, prelude: pyProgramPrelude(stdin), code, cases: [] });
+  });
+  return () => end({ cancelled: true });
+}
+// Printed lines without the echoed input answers, trimmed at the end of each line and of the whole output.
+function programOutput(logs) {
+  const lines = [];
+  (logs || []).forEach((chunk) => String(chunk).split('\n').forEach((l) => { if (l.indexOf(PROGRAM_IN) !== 0) lines.push(l.replace(/\s+$/, '')); }));
+  while (lines.length && lines[lines.length - 1] === '') lines.pop();
+  return lines.join('\n');
+}
 function stopPython() { killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters = []; }
-if (typeof module !== 'undefined' && module.exports) module.exports = { jsWorkerSource, JS_TIME_LIMIT, PY_HARNESS, IO_NODES, __ioCall, __ioMake, __ioRead, DRIVE_WAIT, DRIVE_STUCK };
+if (typeof module !== 'undefined' && module.exports) module.exports = { jsWorkerSource, JS_TIME_LIMIT, PY_HARNESS, IO_NODES, __ioCall, __ioMake, __ioRead, DRIVE_WAIT, DRIVE_STUCK, jsProgramSource, pyProgramPrelude, programOutput, PROGRAM_IN, PROGRAM_SEP };
 // @@END-RUNNER@@

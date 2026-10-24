@@ -6,6 +6,6 @@ New reference sources from the owner. Structure, topic order, problem ideas and 
 |---|---|---|
 | Google Sheet 1hXser (DSA 375-question sheet) | gsheet-1hXser.md | done, public export reachable |
 | Google Doc 1beID4 | gdoc-1beID4.md | needs access (HTTP 401 on export) |
-| blog.algomaster.io | algomaster-blog.md | not crawled: robots.txt disallows ClaudeBot, anthropic-ai, Claude-Web by name |
+| blog.algomaster.io | algomaster-blog.md | not crawled: robots.txt disallows ClaudeBot, anthropic-ai, Claude-Web by name (owner decision needed) |
 
 Problem ideas: candidates.md.

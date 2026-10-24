@@ -41,7 +41,10 @@ def main():
     for name in ['Revisit', 'Profile', 'Welcome']:
         bodies[name] = ('src', 'pages', name.lower() + '_body.html')
         scripts[name] = ('src', 'pages', name.lower() + '.js')
-    story_engine = ''.join(read('src', 'story', f) for f in ['scenes_tp.js', 'scenes_sw.js', 'scenes_hm.js', 'tail.js', 'comp.js'])
+    # The three original scene files first (scenes_tp.js opens the engine), then any newer scenes_*.js in name order.
+    first = ['scenes_tp.js', 'scenes_sw.js', 'scenes_hm.js']
+    more = sorted(f for f in os.listdir(os.path.join(ROOT, 'src', 'story')) if f.startswith('scenes_') and f.endswith('.js') and f not in first)
+    story_engine = ''.join(read('src', 'story', f) for f in first + more + ['tail.js', 'comp.js'])
 
     for f in sorted(os.listdir(PAGES)):
         if not f.endswith('.dc.html'):

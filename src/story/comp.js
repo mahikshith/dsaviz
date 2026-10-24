@@ -193,6 +193,8 @@ class Component extends DCLogic {
         Object.assign(actorAt(st.L, { label: S.actorLabels[0], color: t.right, rx: 8, eye: 0, mouth: '', size: 26 }), { x: st.L * pitch + tileW / 2 - 28 + lx }),
         actorAt(st.R, { label: S.actorLabels[1], color: t.left, rx: 25, extra: 'M50 24 L58 28 L50 32 Z M10 30 Q2 22 8 16 Q14 22 14 30 Z', extraFill: t.sceneText })
       ];
+    } else if (S.actorLabels.length > 1) {
+      actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 25 }), actorAt(st.R, { label: S.actorLabels[1], color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
     } else {
       actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 18, extra: 'M12 14 L44 14 L40 2 L16 2 Z', extraFill: t.sceneText })];
     }
@@ -204,6 +206,7 @@ class Component extends DCLogic {
       cleo: { name: 'Cleo', initial: 'C', color: t.left, radius: '10px' },
       hoot: { name: 'Old Hoot', initial: 'H', color: t.muted, radius: '6px' }
     };
+    Object.keys(STORY_CAST).forEach((k) => { const c = STORY_CAST[k]; who[k] = Object.assign({}, c, { color: t[c.color] || c.color }); });
     const toneBg = { plain: t.sunk, warn: t.warnBg, cool: t.coolBg, ok: t.okBg };
     const toneBar = { plain: t.muted, warn: t.left, cool: t.right, ok: t.ok };
     const activeLine = ch === 2 ? lines[st.kind] || 0 : ch === 3 && this.state.focus ? lines[this.state.focus] || 0 : 0;
@@ -310,7 +313,7 @@ class Component extends DCLogic {
       exampleIn: S.example[0], exampleOut: S.example[1],
       clues: S.clues.map((c, i) => 'Clue ' + (i + 1) + ' · ' + c),
       spotAsk: kit.ask,
-      quiz: QUIZ.map(([title, story], i) => {
+      quiz: (kit.quiz || QUIZ).map(([title, story], i) => {
         const on = this.state.pick === i, right = i === kit.right;
         return { title, story, on, border: on ? (right ? t.ok : t.accent) : t.line, bg: on ? (right ? t.okBg : t.warnBg) : t.surface, pick: () => this.setState({ pick: i }) };
       }),

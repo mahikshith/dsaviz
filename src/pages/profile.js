@@ -261,8 +261,8 @@ class Component extends DCLogic {
         meta: earned ? c[4] + ' · ID ' + c[5] : soon ? 'Coming soon' : c[2] + ' of ' + c[3] + ' core stories walked',
         linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=DSAMaxxing&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
         whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story.'),
-        cta: soon ? 'Read ' + nextP.story : c[2] ? 'Continue: ' + nextP.story : 'Start with ' + nextP.story,
-        nextHref: nextP.animated ? 'Story.dc.html' : 'Briefing.dc.html',
+        cta: (c[2] ? 'Continue: ' : 'Start: ') + nextP.title,
+        nextHref: solveHref(nextP.id),
         go: () => saveProblem(nextP.id),
         help: earned ? 'Recruiters can check the ID. It lists the stories you walked and your exam score.' : 'Certificates list exactly what you practised, so they mean something on a CV.'
       },

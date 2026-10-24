@@ -605,6 +605,9 @@ const COMPANY_TABS = [
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
+function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }
+function resumeLabel(p) { return resumeVerb(p) + ': ' + p.title; }
 // "Use it when": one line per pattern and sheet group, shown when a Revisit card is revealed.
 const PATTERN_WHEN = {
   "Two Pointers": "Use it when the input is sorted or symmetric and a pair from both ends can rule things out.",
@@ -1309,10 +1312,17 @@ function drawerVals(cmp, t, themeKey) {
     drawerStreak: st.current ? st.current + '-day streak' : 'No streak yet',
     drawerStreakLine: st.activeToday ? 'Today counts. Come back tomorrow.' : st.current ? 'Finish a story today to make it ' + (st.current + 1) : 'Finish one story to start your streak',
     themeBtns: themeButtons(cmp, themeKey, t),
-    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => ({
+    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => {
+      // "Continue the story" becomes "Continue: <problem title>" (or "Start: ...") and opens that problem.
+      if (href === 'Story.dc.html' && typeof loadProblem === 'function' && typeof PROBLEMS !== 'undefined') {
+        const cur = loadProblem() || PROBLEMS[0];
+        if (cur) { label = resumeLabel(cur); href = solveHref(cur.id); }
+      }
+      return {
       href, label, sub,
       go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
-    }))
+      };
+    })
   };
 }
 // @@END-DRAWER@@
@@ -1916,8 +1926,8 @@ class Component extends DCLogic {
         meta: earned ? c[4] + ' · ID ' + c[5] : soon ? 'Coming soon' : c[2] + ' of ' + c[3] + ' core stories walked',
         linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=DSAMaxxing&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
         whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story.'),
-        cta: soon ? 'Read ' + nextP.story : c[2] ? 'Continue: ' + nextP.story : 'Start with ' + nextP.story,
-        nextHref: nextP.animated ? 'Story.dc.html' : 'Briefing.dc.html',
+        cta: (c[2] ? 'Continue: ' : 'Start: ') + nextP.title,
+        nextHref: solveHref(nextP.id),
         go: () => saveProblem(nextP.id),
         help: earned ? 'Recruiters can check the ID. It lists the stories you walked and your exam score.' : 'Certificates list exactly what you practised, so they mean something on a CV.'
       },

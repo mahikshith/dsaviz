@@ -201,7 +201,9 @@ class Component extends DCLogic {
     const stories = DS.stories();
     const sheet = DS.sheet();
     const pats = DS.patterns(PROBLEMS, PATTERNS).filter((p) => p.total);
-    const top = pats.slice().sort((a, b) => b.pct - a.pct || pats.indexOf(a) - pats.indexOf(b)).slice(0, 4);
+    // Start here, once begun, is the first ring.
+    const sr = DS.startRing();
+    const top = (sr ? [sr] : []).concat(pats.slice().sort((a, b) => b.pct - a.pct || pats.indexOf(a) - pats.indexOf(b))).slice(0, 4);
     const ringColors = [t.accent, t.right, t.flame, t.ok];
     const buddyData = DS.buddies();
     const who = me.name || 'A DSAMaxxing learner';
@@ -227,6 +229,7 @@ class Component extends DCLogic {
         { icon: 'flame', color: t.medFg, value: st.longest, unit: st.longest === 1 ? 'day' : 'days', label: 'Longest streak', pct: null },
         { icon: 'story', color: t.accent, value: stories.count, unit: '/ ' + PROBLEMS.length, label: 'Stories finished', pct: (stories.count / PROBLEMS.length) * 100 },
         { icon: 'sheet', color: t.right, value: sheet.ticked, unit: '/ ' + sheet.total, label: 'Sheet ticked', pct: (sheet.ticked / sheet.total) * 100 },
+        { icon: 'learn', color: t.text2, value: sr ? sr.done : 0, unit: '/ ' + (sr ? sr.total : DS.startMedals().reduce((n, g) => n + g.total, 0)), label: 'Start here lessons', pct: sr ? sr.pct : 0 },
         { icon: 'bolt', color: t.ok, value: xp.total.toLocaleString('en-US'), unit: 'XP', label: 'Level ' + xp.level, pct: xp.pct }
       ]),
       shelf: medalShelf(t, DS.medals(PROBLEMS, PATTERNS), 20, this.fresh),

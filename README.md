@@ -122,7 +122,7 @@ A track for people who have never written code, in Python (JavaScript too). The 
 | `src/start/needs.js` | What each easy runnable problem needs, so a lesson's "First problems" only lists what has been taught. |
 | `src/start/tracer.py` | Runs a program line by line and records the stack, every variable and the output. The build traces each lesson's watch program into `src/start/traces.js`; the page runs the same file in Pyodide to trace the learner's own code. |
 
-The code pane runs whole programs too (`runProgram` in `shared/runner.js`, with `input()` / `prompt()` reading the Input box). Progress lives in `dsaviz-start-v1` through `DS` and counts for the streak and XP.
+The code pane runs whole programs too (`runProgram` in `shared/runner.js`, with `input()` / `prompt()` reading the Input box). Progress lives in `dsaviz-start-v1` through `DS` and counts for the streak and XP. Finished lessons come back as Revisit cards, each Level 1 chapter has a medal (with the pattern medals on Home and Profile), Level 1 is a ring on Home and Profile, and Home shows a Start here card to new learners and to learners part way through. Home loads the lessons through the lighter `// @@START-LITE@@` block.
 
 ### Add a lesson
 

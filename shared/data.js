@@ -7,7 +7,10 @@ const DS = (function () {
   const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5, mock: 20, start: 10 };
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock], ['Passing a Start here exercise', XP.start]];
   const LEVEL_XP = 500;
-  const SHEET_SIZE = /*@@SHEET-SIZE@@*/216; // rows in the master sheet; the build fills in the count from shared/sheet.js
+  const SHEET_SIZE = /*@@SHEET-SIZE@@*/216;
+  // Start here, Level 1, one medal per chapter and one for the bridge: { part, label, mark, lessons: [ids], exercises: [ids] }.
+  // The build fills it in from src/start (scripts/build_start.js).
+  const START_MEDALS = /*@@START-MEDALS@@*/[]; // rows in the master sheet; the build fills in the count from shared/sheet.js
   const DAY = 86400000;
   let now = () => Date.now();
 
@@ -174,6 +177,9 @@ const DS = (function () {
   // -- medals: bronze = first story in the pattern, silver = half its stories, gold = all of them and each rated in Revisit
   const TIERS = ['bronze', 'silver', 'gold'];
   function medals(list, pats) {
+    return patternMedals(list, pats).concat(startMedals());
+  }
+  function patternMedals(list, pats) {
     const deck = json(KEY.deck, {});
     const seen = json(KEY.medals, {});
     return patterns(list, pats).filter((p) => p.total > 0).map((p) => {
@@ -190,6 +196,31 @@ const DS = (function () {
       const key = p.name + ':' + tier;
       return { pattern: p.name, mark: p.name.split(/[\s&-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), tier, next, fresh: !!tier && !seen[key], key, done: p.done, total: p.total };
     });
+  }
+  // The beginner medal set: bronze for one lesson of the chapter, silver for half, gold for every lesson and exercise.
+  function startMedals() {
+    const S = readStart(), seen = json(KEY.medals, {});
+    return START_MEDALS.map((g) => {
+      const done = g.lessons.filter((id) => S.done[id]).length, total = g.lessons.length;
+      const ex = g.exercises.filter((id) => S.ex[id]).length;
+      const half = Math.ceil(total / 2);
+      const tier = done === total && ex === g.exercises.length ? 'gold' : done >= half ? 'silver' : done >= 1 ? 'bronze' : null;
+      const nextTier = tier === 'gold' ? null : TIERS[tier ? TIERS.indexOf(tier) + 1 : 0];
+      const next = !nextTier ? null : nextTier === 'bronze' ? { tier: nextTier, have: 0, need: 1, unit: 'lesson' }
+        : nextTier === 'silver' ? { tier: nextTier, have: done, need: half, unit: 'lessons' }
+        : done < total ? { tier: nextTier, have: done, need: total, unit: 'lessons' } : { tier: nextTier, have: ex, need: g.exercises.length, unit: 'exercises' };
+      if (next) next.pct = Math.round((next.have / Math.max(1, next.need)) * 100);
+      const key = 'start:' + g.part + ':' + tier;
+      return { pattern: g.label, mark: g.mark, tier, next, fresh: !!tier && !seen[key], key, done, total, start: true };
+    });
+  }
+  // Level 1 of Start here as one ring: lessons done (or marked known) out of all of them. null before the learner starts.
+  function startRing() {
+    const S = readStart();
+    const ids = [].concat(...START_MEDALS.map((g) => g.lessons));
+    const done = ids.filter((id) => S.done[id] || S.skip[id]).length;
+    if (!ids.length || (!done && !Object.keys(S.ex).length && !S.last)) return null;
+    return { name: 'Start here', done, total: ids.length, pct: Math.round((done / ids.length) * 100) };
   }
   function markMedalsSeen(list) {
     const seen = Object.assign({}, json(KEY.medals, {}));
@@ -249,6 +280,8 @@ const DS = (function () {
         name: c.name || '', pattern: c.pattern || '', rule: c.rule || '', hint: c.hint || '', story: c.story || '' });
     };
     Object.keys(log.stories).forEach((id) => add(id, 'story', Number(log.stories[id]) || now()));
+    // Finished Start here lessons come back as cards too: 'start:<lesson>'.
+    Object.keys(log.lessons).filter((id) => id.indexOf('start:') === 0).forEach((id) => add(id, 'start', Number(log.lessons[id]) || now()));
     Object.keys(sh.done).forEach((slug) => {
       const c = rev.cards['sheet:' + slug];
       if (slug in log.stories || (c && c.story && c.story in log.stories)) return; // the story card already covers this problem
@@ -615,7 +648,7 @@ const DS = (function () {
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
     predict, logPredict,
-    start, startPass, startFinish, startVisit, startPlace,
+    start, startPass, startFinish, startVisit, startPlace, startMedals, startRing,
     MOCK_LENGTHS, MOCK_MIX, MOCK_AREAS, MOCK_HINT_COST, MOCK_BANDS, mockPick, mockStart, mockSession, mockRecord, mockHint, mockNotes, mockExtend, mockEnd, mockAbandon, mockScore, mockSave, mockHistory,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,

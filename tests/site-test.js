@@ -23,7 +23,7 @@ try { ({ chromium } = require('playwright')); } catch (e) {
 }
 const CHANNEL = process.env.DS_BROWSER || '';
 
-const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Contests'];
+const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Start', 'Chapter', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Contests'];
 // Runs in the page: sideways overflow and text under 12px inside the page root.
 const measure = () => {
   const de = document.documentElement, body = document.body, W = window.innerWidth;

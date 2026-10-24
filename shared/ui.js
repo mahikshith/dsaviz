@@ -3,6 +3,7 @@
 // Every builder takes the theme tokens `t` first, so all four themes work.
 const ICONS = {
   home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+  start: 'M5 21V4M5 4h11l-2 4 2 4H5',
   learn: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
   sheet: 'M10 6h10M10 12h10M10 18h10M3.5 6l1.5 1.5 2.5-3M3.5 12l1.5 1.5 2.5-3M3.5 18l1.5 1.5 2.5-3',
   code: 'M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16',

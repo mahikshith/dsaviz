@@ -1,11 +1,10 @@
 // ---- page ----
 const PREFS_KEY = 'dsaviz-prefs';
-const PREF_DEFAULT = { goal: '20', time: '21:30', channel: 'WhatsApp', depth: 'Builder', lang: 'Python' };
+const PREF_DEFAULT = { goal: '20', time: '21:30', channel: 'WhatsApp', lang: 'Python' };
 const PREF_GROUPS = [
   ['goal', 'Daily goal', 'Minutes a day you promise yourself', [['5', '5 min · casual'], ['10', '10 min · regular'], ['20', '20 min · serious'], ['40', '40 min · intense']]],
-  ['time', 'Reminder time', 'Old Hoot nudges you once a day', [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'], ['21:30', '9:30 PM']]],
+  ['time', 'Reminder time', 'Saved now. Reminders start when accounts launch', [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'], ['21:30', '9:30 PM']]],
   ['channel', 'Remind me on', 'Pick the one you actually check', [['WhatsApp', 'WhatsApp'], ['Email', 'Email'], ['Push', 'App notification'], ['Off', 'No reminders']]],
-  ['depth', 'Start stories at', 'You can always switch inside a story', [['Kid', 'Kid depth'], ['Builder', 'Builder depth'], ['Expert', 'Expert depth']]],
   ['lang', 'Code in', 'Every story shows this language first', [['Python', 'Python'], ['Java', 'Java'], ['C++', 'C++'], ['JS', 'JavaScript'], ['Go', 'Go']]]
 ];
 // Certificates: walk a pattern's core (animated) stories, then pass its 10-minute exam.
@@ -198,7 +197,7 @@ class Component extends DCLogic {
         cta: me.name ? 'Change my goals' : 'Set your name and goals'
       },
       chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
-      pageH: 2040 + (this.state.share ? 392 : 0),
+      pageH: 2080 + (this.state.share ? 392 : 0),
       shareProfile: () => this.shareProgress(),
       shareOpen: !!this.state.share, shareUrl: this.state.share ? this.state.share.url : '', shareAlt: this.state.share ? this.state.share.alt : '',
       shareMsg: this.state.shareMsg, canCopy: canCopyImage(),
@@ -235,7 +234,7 @@ class Component extends DCLogic {
       cert: {
         earned, locked: !earned, color: earned ? t.ok : t.muted, bg: earned ? t.okBg : t.sunk,
         title: earned ? c[0] : c[0] + ' — not yet',
-        line: earned ? who + ' walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories to unlock the 10-minute pattern exam. ' + pattern[2] + ' is waiting.',
+        line: earned ? who + ' walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories. The 10-minute pattern exam opens when accounts launch.',
         meta: earned ? c[4] + ' · ID ' + c[5] : soon ? 'Coming soon' : c[2] + ' of ' + c[3] + ' core stories walked',
         linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=DSAMaxxing&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
         whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story.'),
@@ -261,9 +260,9 @@ class Component extends DCLogic {
         };
       }),
       deleting: this.state.del === 1, notDeleting: this.state.del !== 1,
-      deleteLabel: this.state.del === 2 ? 'Deletion requested — check your email to confirm' : 'Delete my account',
+      deleteLabel: this.state.del === 2 ? 'Progress erased from this browser' : 'Erase my progress',
       askDelete: () => { if (this.state.del !== 2) this.setState({ del: 1 }); },
-      confirmDelete: () => this.setState({ del: 2 }),
+      confirmDelete: () => { DS.eraseProgress(); this.setState({ del: 2 }); },
       cancelDelete: () => this.setState({ del: 0 }),
       inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on DSAMaxxing. Every problem is a story you watch step by step.'),
     };

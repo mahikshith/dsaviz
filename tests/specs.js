@@ -21,7 +21,7 @@ for (const p of PROBLEMS.filter((x) => x.animated)) if (!TEST_SPECS[p.id]) fail(
 const CMPS = ['exact', 'unordered', 'unordered-deep', 'float', 'any'];
 const KINDS = [null, undefined, 'list', 'lists', 'cycle', 'tree', 'graph'];
 const DIFFS = ['Starter', 'Easy', 'Medium', 'Hard'];
-const GROUPS = PATTERNS.map((p) => p[0]).concat(['Trees', 'Graphs', 'Tries', 'Bit Manipulation', 'Math']);
+const GROUPS = PATTERNS.map((p) => p[0]).concat(['Linked Lists', 'Monotonic Stack & Queue', 'Trees', 'Graphs', 'Tries', 'Sorting', 'Design', 'String Algorithms', 'Bit Manipulation', 'Math']);
 
 function harness(code, fn, cases, io) {
   const out = [];

@@ -5,7 +5,7 @@
 // Each item is [type, id, title, sub, keywords]. Types, in the order results are grouped when scores tie:
 //   story    an animated story (catalog problem with animated: true)  -> Story page
 //   pattern  one of the 16 patterns                                   -> Library, pattern view
-//   problem  a problem with runnable tests (TEST_SPECS)               -> Code page
+//   problem  a problem with runnable tests (TEST_SPECS and SQL_SPECS) -> Code page
 //   git      a Git lesson                                             -> Git page
 //   sd       a system design lesson                                   -> SDLesson page
 //   ai       an AI & ML lesson                                        -> AILesson page
@@ -24,6 +24,7 @@ function load() {
     '\nreturn { PATTERNS, PROBLEMS, SHEET };')(win);
   const spec = new Function('module', 'window', read('shared', 'catalog.js') + '\n' + read('shared', 'tests_spec.js') +
     '\nreturn { TEST_SPECS, specInfo };')({}, win);
+  const sql = new Function('module', read('shared', 'sql_spec.js') + '\nreturn SQL_SPECS;')({});
   const git = new Function(read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '\nreturn GIT_LESSONS;')();
   const sd = new Function('window', read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '\nreturn SD_LESSONS;')(win);
   const ai = new Function(read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '\nreturn { AI_LESSONS, AI_TRACKS };')();
@@ -33,7 +34,7 @@ function load() {
   const b = gloss.indexOf('\n];', a) + 3;
   if (a < 0 || b < 3) throw new Error('KEYWORDS not found in pages/Glossary.dc.html');
   const KEYWORDS = new Function(gloss.slice(a, b) + '\nreturn KEYWORDS;')();
-  return Object.assign(data, spec, { git, sd, ai, KEYWORDS });
+  return Object.assign(data, spec, { sql, git, sd, ai, KEYWORDS });
 }
 
 function build() {
@@ -48,6 +49,7 @@ function build() {
     const P = D.specInfo(id);
     add('problem', id, P.title, P.pattern + ' · ' + P.diff, [String(P.n)]);
   });
+  Object.keys(D.sql).forEach((id) => add('problem', id, D.sql[id].title, 'SQL · ' + D.sql[id].diff, [String(D.sql[id].n), 'sql']));
   D.git.forEach((L) => add('git', L.id, L.title, L.tag, ['git']));
   D.sd.forEach((L) => add('sd', L.id, L.title, (L.track === 'lld' ? 'LLD' : 'HLD') + ' · ' + L.tag));
   const track = {};
@@ -58,7 +60,7 @@ function build() {
   const patterns = new Set(animated.map((p) => p.pattern));
   const counts = {
     stories: animated.length, storyPatterns: patterns.size, patterns: D.PATTERNS.length, catalog: D.PROBLEMS.length,
-    sheet: D.SHEET.length, runnable: Object.keys(D.TEST_SPECS).length,
+    sheet: D.SHEET.length, runnable: Object.keys(D.TEST_SPECS).length, sql: Object.keys(D.sql).length,
     git: D.git.length, sd: D.sd.length, ai: D.ai.AI_LESSONS.length, terms: D.KEYWORDS.length
   };
   return { items, counts };

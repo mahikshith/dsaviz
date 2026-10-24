@@ -11,10 +11,11 @@ import { javascript } from '@codemirror/lang-javascript';
 import { java } from '@codemirror/lang-java';
 import { cpp } from '@codemirror/lang-cpp';
 import { go } from '@codemirror/lang-go';
+import { sql, SQLite } from '@codemirror/lang-sql';
 import { tags } from '@lezer/highlight';
 
-const MODES = { py: python, js: javascript, java, cpp, go };
-const UNITS = { py: '    ', js: '  ', java: '    ', cpp: '    ', go: '    ' };
+const MODES = { py: python, js: javascript, java, cpp, go, sql: () => sql({ dialect: SQLite }) };
+const UNITS = { py: '    ', js: '  ', java: '    ', cpp: '    ', go: '    ', sql: '  ' };
 
 // t: theme tokens from THEMES (codeBg, line, text, muted, accent, right, medFg, ok, hl, mono)
 function themeFor(t) {
@@ -52,14 +53,15 @@ function create(parent, opts) {
     state: EditorState.create({
       doc: opts.doc || '',
       extensions: [
+        opts.wrap ? EditorView.lineWrapping : [],
         lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), drawSelection(),
         history(), indentOnInput(), bracketMatching(), closeBrackets(),
-        keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, indentWithTab]),
+        keymap.of([...(opts.onRun ? [{ key: 'Mod-Enter', run: () => { opts.onRun(); return true; } }] : []), ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, indentWithTab]),
         EditorState.tabSize.of(4),
         unit.of(indentUnit.of(UNITS[opts.lang] || '    ')),
         lang.of((MODES[opts.lang] || python)()),
         theme.of(themeFor(opts.theme)),
-        EditorView.contentAttributes.of({ 'aria-label': 'Code editor', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
+        EditorView.contentAttributes.of({ 'aria-label': opts.label || 'Code editor', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
         EditorView.updateListener.of((u) => { if (u.docChanged && !quiet && opts.onChange) opts.onChange(u.state.doc.toString()); })
       ]
     })

@@ -10,7 +10,7 @@ let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };
 
 // Generated script blocks: their sources (shared/, src/) are scanned on their own below.
-const BLOCKS = ['THEMES', 'CATALOG', 'SHEET', 'SHEET-COUNT', 'DATA', 'DRAWER', 'UI', 'SEARCH', 'FIND', 'NAV', 'TESTS-SPEC', 'RUNNER', 'CODE-PANE', 'GITSIM', 'SDLESSONS', 'AILESSONS'];
+const BLOCKS = ['THEMES', 'CATALOG', 'SHEET', 'SHEET-COUNT', 'DATA', 'DRAWER', 'UI', 'SEARCH', 'FIND', 'NAV', 'TESTS-SPEC', 'RUNNER', 'CODE-PANE', 'SQL-SPEC', 'SQL-PANE', 'GITSIM', 'SDLESSONS', 'AILESSONS'];
 function stripBlocks(s) {
   BLOCKS.forEach((b) => {
     const start = '// @@' + b + '@@', end = b === 'CATALOG' ? '// @@END@@' : '// @@END-' + b + '@@';

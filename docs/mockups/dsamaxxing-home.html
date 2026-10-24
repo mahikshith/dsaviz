@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSAMaxxing home mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0A0B;--card:#151518;--card2:#1F1F23;--line:#26262C;--text:#F5F5F7;--muted:#8E8E93;--dim:#55555C;--label:#B4B4BA;--accent:#C5F04A;--ink:#0A0A0A;--warm:#FF8A3D;--pink:#FF5C8A;--blue:#5AC8FA;--ok:#30D158;--med:#FF9F0A;--hard:#FF453A;--violet:#BF8CFF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Outfit,system-ui,sans-serif;width:1440px}
+.wrap{padding:24px 48px 56px}
+.disp{font-family:Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.lbl{font-weight:600;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:var(--label)}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.ib{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex:none}
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 10px 0 22px;border-radius:32px;background:rgba(24,24,27,.9);border:1px solid var(--line)}
+.logo{font-size:26px}.logo b{color:var(--accent);font-weight:400}
+.tabs{display:flex;gap:6px}
+.tab{height:44px;padding:0 18px;border-radius:22px;display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600;font-size:15px}
+.tab.on{background:var(--accent);color:var(--ink)}
+.right{display:flex;gap:10px;align-items:center}
+.pill{height:40px;padding:0 14px;border-radius:20px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.av{width:40px;height:40px;border-radius:20px;background:var(--accent);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700}
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;margin-top:32px}
+.h1{font-size:76px;line-height:.98}
+.h1 em{font-style:normal;color:var(--accent)}
+.sub{font-size:19px;line-height:1.45;color:var(--label);margin-top:18px;max-width:600px}
+.btns{display:flex;gap:12px;margin-top:26px}
+.btn{height:56px;border-radius:28px;padding:0 28px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
+.btn.p{background:var(--accent);color:var(--ink)}
+.btn.g{background:var(--card2);border:1px solid var(--line)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
+.tile .v{font-weight:700;font-size:26px;margin-top:12px}.tile .v small{font-size:13px;color:var(--muted);font-weight:500}
+.bar{height:4px;border-radius:2px;background:var(--card2);margin-top:10px;overflow:hidden}.bar i{display:block;height:4px;border-radius:2px}
+/* visualizer */
+.viz{padding:20px;position:relative;overflow:hidden}
+.viz .top{display:flex;justify-content:space-between;align-items:center}
+.chip{height:28px;padding:0 12px;border-radius:14px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.arr{display:flex;gap:10px;margin:34px 0 8px;justify-content:center}
+.cell{width:62px;height:62px;border-radius:14px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:22px;position:relative}
+.cell.l{border:2px solid var(--accent);background:rgba(197,240,74,.12);color:var(--accent)}
+.cell.r{border:2px solid var(--blue);background:rgba(90,200,250,.12);color:var(--blue)}
+.cell.x{opacity:.35}
+.ptr{position:absolute;top:-26px;font-size:12px;font-weight:700;font-family:Outfit}
+.idx{display:flex;gap:10px;justify-content:center}.idx span{width:62px;text-align:center;font-size:12px;color:var(--dim);font-family:'JetBrains Mono'}
+.say{margin-top:22px;display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:14px;padding:14px}
+.code{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;background:#0E0E10;border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:#C9C9CF}
+.code .hl{background:rgba(197,240,74,.14);display:block;margin:0 -14px;padding:0 14px;border-left:3px solid var(--accent);color:var(--text)}
+.k{color:var(--pink)}.f{color:var(--blue)}.n{color:var(--med)}
+.ctrl{display:flex;gap:8px;margin-top:14px;align-items:center}
+.cb{width:44px;height:44px;border-radius:22px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700}
+.cb.p{background:var(--accent);color:var(--ink);border:0}
+.scrub{flex:1;height:6px;border-radius:3px;background:var(--card2);overflow:hidden}.scrub i{display:block;width:42%;height:6px;background:var(--accent)}
+/* sections */
+.sec{margin-top:44px}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sh h2{font-size:24px;font-weight:700}
+.act{height:28px;padding:0 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--accent);font-size:14px;font-weight:500;display:flex;align-items:center}
+.grid3{display:grid;grid-template-columns:1.1fr 1.6fr 1fr;gap:16px}
+/* daily */
+.daily{background:linear-gradient(140deg,#1d2410 0%,var(--card) 55%);border-color:#3a4a1a}
+.daily h3{font-size:30px;margin-top:12px;line-height:1.05}
+.meta{font-size:14px;color:var(--muted);margin-top:8px}
+.week{display:flex;gap:8px;margin-top:20px}
+.d{flex:1;height:54px;border-radius:12px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;color:var(--muted);gap:4px}
+.d b{width:10px;height:10px;border-radius:5px;background:var(--dim)}
+.d.done b{background:var(--warm)}.d.today{border:1px solid var(--accent);color:var(--text)}
+/* patterns */
+.pats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pat{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.pat .nm{font-weight:600;font-size:15px}
+.pat .c{font-size:12px;color:var(--muted)}
+.ring{width:38px;height:38px}
+.prow{display:flex;justify-content:space-between;align-items:center}
+/* sheet */
+.row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;background:var(--card2);border:1px solid var(--line);margin-bottom:8px}
+.chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--dim);flex:none}
+.chk.on{background:var(--ok);border-color:var(--ok);color:var(--ink);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.row .t{flex:1;font-weight:600;font-size:15px}
+.row .t small{display:block;font-weight:500;color:var(--muted);font-size:12px;margin-top:2px}
+.e{background:rgba(48,209,88,.14);color:var(--ok)}.m{background:rgba(255,159,10,.14);color:var(--med)}.h{background:rgba(255,69,58,.14);color:var(--hard)}
+.star{color:var(--med);font-size:16px}
+/* medals */
+.medals{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
+.hex{width:62px;height:70px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:flex;align-items:center;justify-content:center;font-family:Anton;font-size:20px;color:#2a1a0a}
+.gold{background:linear-gradient(160deg,#FFEAA8,#E0B04A 55%,#8E6618)}
+.silver{background:linear-gradient(160deg,#F7F8FA,#B8BCC6 55%,#62666F)}
+.bronze{background:linear-gradient(160deg,#F2BE95,#B97A4E 55%,#6E3F22)}
+.lock{background:var(--card2);color:var(--dim);font-family:Outfit;font-size:20px}
+.ml{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted);width:70px;text-align:center}
+.heat{display:grid;grid-template-columns:repeat(26,1fr);gap:4px;margin-top:16px}
+.heat i{aspect-ratio:1;border-radius:3px;background:var(--card2)}
+.foot{margin-top:40px;display:flex;justify-content:space-between;color:var(--dim);font-size:13px}
+</style>
+</head>
+<body><div class="wrap">
+
+<div class="nav">
+  <div class="logo disp">DSA<b>MAXXING</b></div>
+  <div class="tabs">
+    <div class="tab on">⚡ Today</div><div class="tab">Patterns</div><div class="tab">Sheet</div><div class="tab">Visualizers</div><div class="tab">System design</div><div class="tab">AI / ML</div><div class="tab">Interview</div>
+  </div>
+  <div class="right"><div class="pill">⌘K Search</div><div class="pill" style="color:var(--warm)">🔥 12</div><div class="av">M</div></div>
+</div>
+
+<div class="hero">
+  <div>
+    <div class="lbl" style="color:var(--accent)">DSA · System design · AI / ML</div>
+    <div class="disp h1" style="margin-top:14px">Stop grinding.<br><em>Start maxxing.</em></div>
+    <div class="sub">Every problem is a story you can watch, step by step. Learn the 16 patterns, track the sheet, keep your streak.</div>
+    <div class="btns"><div class="btn p">▶ Continue: Two Sum II</div><div class="btn g">Take the pattern quiz</div></div>
+    <div class="tiles">
+      <div class="card tile"><div class="ib" style="background:rgba(255,138,61,.14);color:var(--warm)">🔥</div><div class="v">12 <small>days</small></div><div class="muted" style="font-size:14px">Streak</div><div class="bar"><i style="width:60%;background:var(--warm)"></i></div></div>
+      <div class="card tile"><div class="ib" style="background:rgba(197,240,74,.14);color:var(--accent)">✓</div><div class="v">87 <small>/ 250</small></div><div class="muted" style="font-size:14px">Solved</div><div class="bar"><i style="width:35%;background:var(--accent)"></i></div></div>
+      <div class="card tile"><div class="ib" style="background:rgba(90,200,250,.14);color:var(--blue)">◆</div><div class="v">4,320 <small>XP</small></div><div class="muted" style="font-size:14px">Level 7</div><div class="bar"><i style="width:72%;background:var(--blue)"></i></div></div>
+      <div class="card tile"><div class="ib" style="background:rgba(255,92,138,.14);color:var(--pink)">↻</div><div class="v">6 <small>due</small></div><div class="muted" style="font-size:14px">Revise today</div><div class="bar"><i style="width:30%;background:var(--pink)"></i></div></div>
+    </div>
+  </div>
+
+  <div class="card viz">
+    <div class="top"><div><div class="lbl">Live visualizer</div><div style="font-weight:700;font-size:20px;margin-top:4px">Two Sum II · target 9</div></div>
+      <span class="chip m">Medium</span></div>
+    <div class="arr">
+      <div class="cell x">1</div>
+      <div class="cell l"><span class="ptr" style="color:var(--accent)">L</span>2</div>
+      <div class="cell">3</div><div class="cell">4</div><div class="cell">6</div>
+      <div class="cell r"><span class="ptr" style="color:var(--blue)">R</span>7</div>
+      <div class="cell x">11</div>
+    </div>
+    <div class="idx"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+    <div class="say"><div class="ib" style="background:rgba(197,240,74,.14);color:var(--accent);width:36px;height:36px">🦉</div>
+      <div style="font-size:15px;line-height:1.45"><b>2 + 7 = 9.</b> <span class="muted">Lumi and Roo meet the target. The sum was too big a step ago, so Roo moved left.</span></div></div>
+    <div class="code"><span><span class="k">while</span> l &lt; r:</span><br><span class="hl">&nbsp;&nbsp;s = nums[l] + nums[r]</span><span>&nbsp;&nbsp;<span class="k">if</span> s == target: <span class="k">return</span> [l, r]</span><br><span>&nbsp;&nbsp;<span class="k">elif</span> s &lt; target: l += <span class="n">1</span></span></div>
+    <div class="ctrl"><div class="cb">⏮</div><div class="cb p">▶</div><div class="cb">⏭</div><div class="scrub"><i></i></div><div class="pill">Step 4 / 9</div><div class="pill">1×</div></div>
+  </div>
+</div>
+
+<div class="sec grid3">
+  <div class="card daily">
+    <div class="lbl" style="color:var(--accent)">Daily challenge</div>
+    <h3 class="disp">The Train of<br>Unique Faces</h3>
+    <div class="meta">Longest Substring · Sliding Window · 20 min</div>
+    <div class="btns" style="margin-top:18px"><div class="btn p" style="height:48px">Watch the story</div></div>
+    <div class="week"><div class="d done">M<b></b></div><div class="d done">T<b></b></div><div class="d done">W<b></b></div><div class="d done">T<b></b></div><div class="d today">F<b></b></div><div class="d">S<b></b></div><div class="d">S<b></b></div></div>
+  </div>
+
+  <div class="card">
+    <div class="sh" style="margin-bottom:12px"><h2>Patterns</h2><div class="act">All 16 ›</div></div>
+    <div class="pats">
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="#C5F04A" stroke-width="4" stroke-linecap="round" stroke-dasharray="94" stroke-dashoffset="20" transform="rotate(-90 18 18)"/></svg><span class="chip e" style="height:22px">8/10</span></div><div class="nm">Two Pointers</div><div class="c">Lumi &amp; Roo</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="#5AC8FA" stroke-width="4" stroke-linecap="round" stroke-dasharray="94" stroke-dashoffset="47" transform="rotate(-90 18 18)"/></svg><span class="chip m" style="height:22px">5/10</span></div><div class="nm">Sliding Window</div><div class="c">Wren</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="#FF5C8A" stroke-width="4" stroke-linecap="round" stroke-dasharray="94" stroke-dashoffset="60" transform="rotate(-90 18 18)"/></svg><span class="chip m" style="height:22px">3/8</span></div><div class="nm">Hash Map</div><div class="c">Cleo</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="#FF9F0A" stroke-width="4" stroke-linecap="round" stroke-dasharray="94" stroke-dashoffset="80" transform="rotate(-90 18 18)"/></svg><span class="chip h" style="height:22px">1/9</span></div><div class="nm">Binary Search</div><div class="c">Gus</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="#BF8CFF" stroke-width="4" stroke-linecap="round" stroke-dasharray="94" stroke-dashoffset="70" transform="rotate(-90 18 18)"/></svg><span class="chip m" style="height:22px">2/7</span></div><div class="nm">Stack</div><div class="c">Pip</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/></svg><span class="chip" style="height:22px;background:var(--card);color:var(--muted)">0/8</span></div><div class="nm">Heap</div><div class="c">Nia</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/></svg><span class="chip" style="height:22px;background:var(--card);color:var(--muted)">0/12</span></div><div class="nm">Graphs (BFS)</div><div class="c">Rill</div></div>
+      <div class="pat"><div class="prow"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#26262C" stroke-width="4"/></svg><span class="chip" style="height:22px;background:var(--card);color:var(--muted)">0/15</span></div><div class="nm">Dynamic Prog.</div><div class="c">Sol</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sh" style="margin-bottom:6px"><h2>Medals</h2><div class="act">4 of 24 ›</div></div>
+    <div class="medals">
+      <div class="ml"><div class="hex gold">7</div>Week streak</div>
+      <div class="ml"><div class="hex silver">50</div>Fifty solved</div>
+      <div class="ml"><div class="hex bronze">TP</div>Pointer pro</div>
+      <div class="ml"><div class="hex lock">🔒</div>Hard ten</div>
+    </div>
+    <div class="lbl" style="margin-top:18px">Last 6 months</div>
+    <div class="heat" id="heat"></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sh"><h2>Master sheet</h2><div class="act">250 problems ›</div>
+    <div style="margin-left:auto;display:flex;gap:8px"><div class="pill" style="background:var(--accent);color:var(--ink);border:0">All</div><div class="pill">Easy</div><div class="pill">Medium</div><div class="pill">Hard</div><div class="pill">Google</div><div class="pill">Amazon</div><div class="pill">★ Revision</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+    <div>
+      <div class="row"><div class="chk on">✓</div><div class="t">Valid Anagram<small>Hash Map · LC 242 · Amazon, Google</small></div><span class="chip e">Easy</span><span class="star">★</span><span class="pill" style="height:32px">▶ Story</span></div>
+      <div class="row"><div class="chk on">✓</div><div class="t">Valid Palindrome<small>Two Pointers · LC 125 · Meta</small></div><span class="chip e">Easy</span><span class="star" style="color:var(--dim)">☆</span><span class="pill" style="height:32px">▶ Story</span></div>
+      <div class="row"><div class="chk"></div><div class="t">Longest Substring Without Repeating Characters<small>Sliding Window · LC 3 · Amazon, Bloomberg</small></div><span class="chip m">Medium</span><span class="star">★</span><span class="pill" style="height:32px">▶ Story</span></div>
+    </div>
+    <div>
+      <div class="row"><div class="chk"></div><div class="t">Longest Repeating Character Replacement<small>Sliding Window · LC 424 · Google</small></div><span class="chip m">Medium</span><span class="star" style="color:var(--dim)">☆</span><span class="pill" style="height:32px">▶ Story</span></div>
+      <div class="row"><div class="chk"></div><div class="t">Minimum Window Substring<small>Sliding Window · LC 76 · Meta, Uber</small></div><span class="chip h">Hard</span><span class="star" style="color:var(--dim)">☆</span><span class="pill" style="height:32px">▶ Story</span></div>
+      <div class="row"><div class="chk"></div><div class="t">Design a URL shortener<small>System design · Hashing, caching · Classic</small></div><span class="chip m">Medium</span><span class="star" style="color:var(--dim)">☆</span><span class="pill" style="height:32px">▶ Diagram</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="foot"><span>Rough draft · colors and fonts from Gym Buddy (Anton, Outfit, volt lime #C5F04A) · content is placeholder</span><span>DSAMaxxing</span></div>
+</div>
+<script>
+const h=document.getElementById('heat');const cols=['#1F1F23','#3a4a1a','#6b8a26','#9cc23a','#C5F04A'];
+for(let i=0;i<26*7;i++){const e=document.createElement('i');const r=Math.random();const v=i>140?(r<.15?0:Math.ceil(r*4)):(r<.55?0:Math.ceil(r*3));e.style.background=cols[Math.min(4,v)];h.appendChild(e);}
+</script>
+</body></html>

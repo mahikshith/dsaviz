@@ -4,6 +4,7 @@
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
   story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
   problem: ['Runnable problems', 'Code.dc.html', 'dsaviz-problem', 2],
   git: ['Git', 'Git.dc.html', 'dsaviz-git-lesson', 2],

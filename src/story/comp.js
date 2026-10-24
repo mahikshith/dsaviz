@@ -91,7 +91,7 @@ class Component extends DCLogic {
     const level = this.state.level || this.props.level || 'kid';
     const S = SCENES[this.state.scene];
     const P = PROBLEMS.find((p) => p.id === S.id);
-    const kit = KIT[S.pattern];
+    const kit = Object.assign({}, KIT[S.pattern], S.kit || {});   // a story can bring its own quiz when the pattern's default does not fit it
     const steps = S.steps;
     const st = steps[Math.min(this.state.step, steps.length - 1)];
     const ch = this.state.chapter;
@@ -117,8 +117,15 @@ class Component extends DCLogic {
       };
       return L[state] || L.in;
     };
+    const legendOf = (list) => (list || []).map(([state, label]) => {
+      if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '' };
+      const look = cellLook(state);
+      return { label, fill: look.fill, ring: look.ring === 'transparent' ? 'rgba(255,255,255,0.18)' : look.ring, mark: look.mark && look.mark.length <= 2 ? look.mark : '' };
+    });
     let tiles = [];
-    if (S.visual === 'lanterns') {
+    if (S.visual === 'tree') {
+      tiles = [];
+    } else if (S.visual === 'lanterns') {
       tiles = S.items.map((v, i) => {
         const out = i < st.L || i > st.R, isL = i === st.L, isR = i === st.R;
         return {
@@ -198,12 +205,74 @@ class Component extends DCLogic {
         const who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
         grid.actor = { left: padL + st.actorAt[1] * gp - a * 0.55, top: padT + st.actorAt[0] * gp - a * 0.55, size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.round(a * 0.5) + 'px' };
       }
-      grid.legend = (S.legend || []).map(([state, label]) => {
-        if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '' };
-        const look = cellLook(state);
-        return { label, fill: look.fill, ring: look.ring === 'transparent' ? 'rgba(255,255,255,0.18)' : look.ring, mark: look.mark && look.mark.length <= 2 ? look.mark : '' };
-      });
+      grid.legend = legendOf(S.legend);
       grid.hasLegend = grid.legend.length > 0;
+    }
+    // ---- the tree: S.tree (or st.tree, for a step that reshapes it) is [{ id, label, parent, side }], st.nodes maps id → state ----
+    let tree = { w: 0, h: 0, nodes: [], edges: [], label: '', legend: [], hasLegend: false,
+      actor: { left: 0, top: 0, size: 0, op: 0, initial: '', color: 'transparent', font: '10px' } };
+    if (S.visual === 'tree') {
+      const list = st.tree || S.tree, byId = {}, kids = {};
+      list.forEach((n) => { byId[n.id] = n; if (n.parent != null) (kids[n.parent] = kids[n.parent] || []).push(n.id); });
+      const nameOf = (id) => String(st.vals && st.vals[id] != null ? st.vals[id] : byId[id].label);
+      // tidy layout: leaves take the next free column, a parent sits over the middle of its children;
+      // a lone child marked side 'L' or 'R' keeps an empty column for its missing sibling, so binary trees read true
+      const depth = {}, col = {};
+      let next = 0, maxD = 0;
+      const place = (id, d) => {
+        depth[id] = d; maxD = Math.max(maxD, d);
+        let ch = (kids[id] || []).slice().sort((a, b) => (byId[a].side === 'R') - (byId[b].side === 'R'));
+        if (ch.length === 1 && byId[ch[0]].side) ch = byId[ch[0]].side === 'L' ? [ch[0], null] : [null, ch[0]];
+        if (!ch.length) { col[id] = next++; return; }
+        const xs = ch.map((c) => { if (c === null) return next++; place(c, d + 1); return col[c]; });
+        col[id] = (xs[0] + xs[xs.length - 1]) / 2;
+      };
+      list.filter((n) => n.parent == null).forEach((n) => place(n.id, 0));
+      const nh = 30, tagH = 0, fontPx = 13;
+      const wOf = (id) => Math.max(nh + 4, Math.round(nameOf(id).length * fontPx * 0.62 + 18));
+      // a tag (the small note beside a node) widens its footprint, so leave room for the longest one any step shows
+      const tagW = S.tags ? Math.max.apply(null, [0].concat(S.steps.map((x) => Math.max.apply(null, [0].concat(Object.values(x.tags || {}).map((v) => String(v).length)))))) * 7 + 8 : 0;
+      const widest = Math.max.apply(null, list.map((n) => wOf(n.id))) + 2 * tagW;
+      const W = S.treeW || (S.board ? 430 : 560), H = S.treeH || 180;
+      const span = Math.max(1, next - 1);
+      const slot = Math.min(110, (W - widest) / span);
+      const dy = maxD ? Math.min(68, (H - nh - tagH) / maxD) : 0;
+      const cx = (id) => widest / 2 + col[id] * slot, cy = (id) => depth[id] * dy + nh / 2;
+      tree.w = Math.round(widest + (next - 1) * slot); tree.h = Math.round(maxD * dy + nh + tagH);
+      const shown = (id) => !!(st.nodes && st.nodes[id]);
+      tree.edges = list.filter((n) => n.parent != null && byId[n.parent]).map((n) => {
+        const x1 = cx(n.parent), y1 = cy(n.parent) + nh / 2, x2 = cx(n.id), y2 = cy(n.id) - nh / 2;
+        const len = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+        const es = (st.edge && st.edge[n.id]) || '';
+        const thick = es === 'path' ? 5 : 2;
+        return { left: x1, top: y1 - thick / 2, len: Math.round(len), thick, turn: 'rotate(' + ang.toFixed(2) + 'deg)',
+          color: es === 'path' ? t.path : t.treeEdge, op: shown(n.id) && shown(n.parent) ? (es === 'out' ? 0.35 : 1) : 0 };
+      });
+      tree.nodes = list.map((n) => {
+        const state = st.nodes && st.nodes[n.id];
+        const look = Object.assign({}, cellLook(state || 'in'));
+        if (state === 'out') { look.ink = t.sceneMuted; look.op = 1; look.mark = '✗'; look.markColor = t.sceneMuted; }
+        // explored and left: solid and readable (not faded), set apart from 'out' by a visible ring
+        if (state === 'future') { look.fill = t.dead; look.ink = t.sceneText; look.ring = t.treeEdge; look.op = 1; }
+        if (state === 'buy') look.ring = t.sceneText;   // waiting in line: a light dashed ring reads in every theme
+        const w = wOf(n.id), mark = look.mark && look.mark.length <= 2 && look.mark !== '✎' ? look.mark : '';   // the trail line already shows chosen nodes, so no pencil badge
+        const tag = st.tags && st.tags[n.id] != null ? String(st.tags[n.id]) : '';
+        return { v: nameOf(n.id), left: Math.round(cx(n.id) - w / 2), top: Math.round(cy(n.id) - nh / 2), w, h: nh, fill: look.fill, ink: look.ink, ring: look.ring,
+          glow: look.glow || 'none', op: state ? look.op || 1 : 0, grow: state ? 'scale(1)' : 'scale(0.6)', mark, markColor: look.markColor || t.sceneMuted,
+          tag, tagOp: tag ? 1 : 0, markOp: mark ? 1 : 0, ringStyle: state === 'buy' ? 'dashed' : 'solid', font: fontPx + 'px' };
+      });
+      const count = list.filter((n) => shown(n.id)).length;
+      const castName = (STORY_CAST[S.cast] || {}).name || 'The guide';
+      const trailIds = list.filter((n) => st.edge && st.edge[n.id] === 'path').map((n) => n.id);
+      const trailText = trailIds.length ? '. Highlighted: ' + trailIds.map((id) => (byId[id].parent != null ? nameOf(byId[id].parent) + ' to ' : '') + nameOf(id)).join(', ') : '';
+      tree.label = (S.treeLabel || 'Tree') + ', ' + count + (count === 1 ? ' node' : ' nodes') + ' shown. ' + st.verdict.replace(/[.!?]$/, '') + trailText + (st.actorAt != null && byId[st.actorAt] ? '. ' + castName + ' is at ' + nameOf(st.actorAt) : '') + '.';
+      if (st.actorAt != null && byId[st.actorAt]) {
+        const a = 20, who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
+        tree.actor = { left: Math.round(cx(st.actorAt) - wOf(st.actorAt) / 2 - a * 0.55), top: Math.round(cy(st.actorAt) - nh / 2 - a * 0.55), size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: '10px' };
+      }
+      const fixLegend = (x, st8) => (st8 === 'future' ? Object.assign(x, { fill: t.dead, ring: t.treeEdge }) : st8 === 'out' ? Object.assign(x, { fill: t.dead, mark: '' }) : x);
+      tree.legend = legendOf(S.legend).map((x, i) => fixLegend(x, S.legend[i][0])).map((x, i) => Object.assign(x, { mark: x.mark === '✎' ? '' : x.mark, ringStyle: S.legend[i][0] === 'buy' ? 'dashed' : 'solid', ring: S.legend[i][0] === 'buy' ? t.sceneText : x.ring }));
+      tree.hasLegend = tree.legend.length > 0;
     }
     const base = { v: '', pos: 0, fill: 'transparent', ink: t.text, glow: 'none', ring: 'transparent', op: 1, strike: 'none', lift: 'none', mark: '', idxColor: t.sceneMuted, x: 0, h: 0 };
     tiles = tiles.map((x) => Object.assign({}, base, x));
@@ -230,7 +299,7 @@ class Component extends DCLogic {
     const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
     const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - 28, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
     let actors;
-    if (S.visual === 'grid') {
+    if (S.visual === 'grid' || S.visual === 'tree') {
       actors = [];
     } else if (S.cast === 'tp') {
       actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
@@ -318,7 +387,7 @@ class Component extends DCLogic {
       keepProblem: () => saveProblem(S.id),
       shownHints: S.hints.slice(0, this.state.hints), hintCount: this.state.hints, moreHints: this.state.hints < S.hints.length,
       revealHint: () => this.setState({ hints: Math.min(S.hints.length, this.state.hints + 1) }),
-      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid: S.visual === 'grid', showActors: S.visual !== 'grid', grid, sceneJustify: S.visual === 'grid' ? 'center' : 'flex-end',
+      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid: S.visual === 'grid', isTree: S.visual === 'tree', showActors: S.visual !== 'grid' && S.visual !== 'tree', grid, tree, sceneJustify: S.visual === 'grid' || S.visual === 'tree' ? 'center' : 'flex-end',
       hasRow2: !!S.items2, rowLabels: S.rowLabels || ['', ''],
       tiles, tiles2, water, frame, showFrame,
       rowWidth: S.items.length * pitch - (pitch - tileW),

@@ -110,12 +110,12 @@ class CodeRunner {
     try { args = JSON.parse('[' + text + ']'); } catch (e) { return { error: 'Custom input should look like the arguments of a call, in JSON: ' + spec.examples[0][0].map(showValue).join(', ') + '. Strings need double quotes.' }; }
     if (args.length !== spec.params.length) return { error: 'Custom input needs ' + spec.params.length + ' value' + (spec.params.length > 1 ? 's' : '') + ': ' + spec.params.join(', ') + '.' };
     let want;
-    try { want = spec.ref.apply(null, JSON.parse(JSON.stringify(args))); } catch (e) { return { error: 'That custom input is outside what this problem allows.' }; }
+    try { want = runRef(spec, args); } catch (e) { return { error: 'That custom input is outside what this problem allows.' }; }
     return { args, want };
   }
   passCount(out) {
     const spec = this.spec();
-    return out.cases.filter((c, i) => { const r = out.results[i]; return r && !r.error && !r.undef && sameResult(spec.cmp, r.got, c[1]); }).length;
+    return out.cases.filter((c, i) => { const r = out.results[i]; return r && !r.error && !r.undef && judge(spec, c[0], r.got, c[1]); }).length;
   }
   execute(mode) {
     if (this.s.busy) return;
@@ -144,7 +144,7 @@ class CodeRunner {
         const status = end.cancelled ? '' : end.timeout ? 'Stopped after ' + limit + ' seconds' : end.fatal ? 'Could not run' : passed + ' / ' + cases.length + ' passed · ' + (Date.now() - out.t0) + ' ms';
         const solved = mode === 'submit' && passed === cases.length && this.s.solvedIn === null;
         this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn });
-      });
+      }, spec.io);
   }
 
   vals(t) {
@@ -163,9 +163,9 @@ class CodeRunner {
       if (out.mode === 'run') {
         rows = out.cases.map(([args, want], i) => {
           const r = out.results[i];
-          const ok = !!r && !r.error && !r.undef && sameResult(spec.cmp, r.got, want);
+          const ok = !!r && !r.error && !r.undef && judge(spec, args, r.got, want);
           return {
-            title: out.titles[i], input: showArgs(spec, args), expected: showValue(want), failed: !ok,
+            title: out.titles[i], input: showArgs(spec, args), expected: showValue(want) + (spec.cmp === 'any' ? '  (one valid answer)' : ''), failed: !ok,
             got: !r ? (out.done ? 'did not run' : '…') : r.error ? r.error : r.undef ? 'nothing (did you forget to return?)' : showValue(r.got),
             mark: !r ? '·' : ok ? '✓' : '✗', verdict: !r ? (out.done ? 'Skipped' : 'Running') : ok ? 'Passed' : r.error ? 'Error' : 'Wrong answer',
             markColor: !r ? t.muted : ok ? t.ok : fail, gotColor: ok ? t.text : fail, border: ok || !r ? t.line : fail,
@@ -176,7 +176,7 @@ class CodeRunner {
       } else if (out.done) {
         badge = passed + ' / ' + total + ' tests passed'; badgeOk = passed === total;
         if (!out.fatal) {
-          const firstBad = out.cases.findIndex((c, i) => { const r = out.results[i]; return !(r && !r.error && !r.undef && sameResult(spec.cmp, r.got, c[1])); });
+          const firstBad = out.cases.findIndex((c, i) => { const r = out.results[i]; return !(r && !r.error && !r.undef && judge(spec, c[0], r.got, c[1])); });
           if (firstBad < 0) msg = 'Accepted. Every test passed, including ' + spec.hidden.length + ' hidden ones' + (s.solvedIn !== null ? ', in ' + pad2(Math.floor(s.solvedIn / 60)) + ':' + pad2(s.solvedIn % 60) : '') + '.';
           else msg = (msg ? msg + '\n\n' : '') + 'First failing input:\n' + showArgs(spec, out.cases[firstBad][0]);
           msgBg = firstBad < 0 ? t.okBg : t.warnBg; msgMono = firstBad >= 0;

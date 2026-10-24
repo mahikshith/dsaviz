@@ -2,10 +2,11 @@
 
 <header style="height: 64px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid {{t.line}}">
 <a href="Home.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
-<nav aria-label="Breadcrumb" style="display: flex; gap: 8px; align-items: center; font-size: 14px; color: {{t.muted}}; white-space: nowrap"><a href="Patterns.dc.html">Library</a><span aria-hidden="true">/</span><a href="Story.dc.html" onClick="{{keepProblem}}">{{P.pattern}}</a><span aria-hidden="true">/</span><span aria-current="page" style="color: {{t.text}}; font-weight: 600">Code</span></nav>
+<nav aria-label="Breadcrumb" style="display: flex; gap: 8px; align-items: center; font-size: 14px; color: {{t.muted}}; white-space: nowrap"><a href="Patterns.dc.html">Library</a><span aria-hidden="true">/</span><sc-if value="{{hasStory}}"><a href="Story.dc.html" onClick="{{keepProblem}}">{{P.pattern}}</a></sc-if><sc-if value="{{noStory}}"><span>{{P.pattern}}</span></sc-if><span aria-hidden="true">/</span><span aria-current="page" style="color: {{t.text}}; font-weight: 600">Code</span></nav>
 <div style="flex-grow: 1"></div>
+<span id="code-count" style="font-size: 13px; font-weight: 600; color: {{t.muted}}; white-space: nowrap">{{testCount}}</span>
 <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: {{t.muted}}; white-space: nowrap">Problem
-<select aria-label="Problem" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 300px; padding: 0 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: 14px; font-weight: 600; cursor: pointer"><sc-for list="{{problems}}" as="pp" hint-placeholder-count="9"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></select>
+<select aria-label="Problem" aria-describedby="code-count" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 340px; padding: 0 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: 14px; font-weight: 600; cursor: pointer"><sc-for list="{{groups}}" as="gg" hint-placeholder-count="4"><optgroup label="{{gg.label}}"><sc-for list="{{gg.items}}" as="pp" hint-placeholder-count="3"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></optgroup></sc-for></select>
 </label>
 <div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
 <sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="4"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
@@ -16,11 +17,11 @@
 
 <aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow: hidden">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">LeetCode {{P.n}} · {{P.story}}</span>
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{kicker}}</span>
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 26px; line-height: 1.15; font-weight: 600">{{P.title}}</h1>
 <div style="display: flex; flex-wrap: wrap; gap: 6px">
 <span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
-<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span>
+<sc-if value="{{hasTime}}"><span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span></sc-if>
 <span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">{{P.pattern}}</span>
 </div>
 </div>
@@ -34,7 +35,8 @@
 </div>
 </sc-for>
 </div>
-<div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Stuck? Old Hoot walks through it in the story. <a href="Story.dc.html" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Back to {{P.story}}</a></div>
+<sc-if value="{{hasStory}}"><div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Stuck? Old Hoot walks through it in the story. <a href="Story.dc.html" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Back to {{P.story}}</a></div></sc-if>
+<sc-if value="{{noStory}}"><div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">This one has tests but no story yet. Old Hoot explains the {{P.pattern}} idea in the library. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>
 </aside>
 
 <main style="padding: 20px 24px; min-width: 0; min-height: 0">

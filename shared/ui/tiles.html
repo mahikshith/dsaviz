@@ -1,5 +1,5 @@
 <!-- STAT TILES -->
-<div style="display: grid; grid-template-columns: repeat({{tiles.cols}}, minmax(0, 1fr)); gap: 12px">
+<div data-m="two" style="display: grid; grid-template-columns: repeat({{tiles.cols}}, minmax(0, 1fr)); gap: 12px">
 <sc-for list="{{tiles.list}}" as="ti" hint-placeholder-count="4">
 <div data-rise style="padding: 16px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation-delay: {{ti.delay}}">
 <span style="width: 32px; height: 32px; border-radius: 10px; background: {{ti.box}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{ti.fill}}" stroke="{{ti.stroke}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ti.d}}"></path></svg></span>

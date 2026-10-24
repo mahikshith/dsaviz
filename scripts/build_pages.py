@@ -20,6 +20,8 @@ across pages and live in one place; this script copies them back into every page
   The seven script blocks are added after the catalog (or the themes) when a page lacks them.
   shared/pattern_intros.js  -> between // @@INTROS@@ ... // @@END-INTROS@@ (Patterns page), plus SHEET_INDEX built from sheet.js
   shared/tests_spec.js      -> between // @@TESTS-SPEC@@ ... // @@END-TESTS-SPEC@@
+  shared/plans.js           -> between // @@PLANS@@ ... // @@END-PLANS@@ (Code and Story: "Plan it first")
+  shared/hints.js           -> between // @@HINTS@@ ... // @@END-HINTS@@ (Code: the hint ladder and example notes)
   shared/sheet.js hints     -> between // @@MOCK-HINTS@@ ... // @@END-MOCK-HINTS@@ (Interview: the sheet's one-line hint per runnable problem)
   shared/runner.js          -> between // @@RUNNER@@ ... // @@END-RUNNER@@
   shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
@@ -231,6 +233,8 @@ def main():
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
         s = block(s, '// @@INTROS@@', '// @@END-INTROS@@', intros)
         s = block(s, '// @@TESTS-SPEC@@', '// @@END-TESTS-SPEC@@', tests_spec)
+        s = block(s, '// @@PLANS@@', '// @@END-PLANS@@', read('shared', 'plans.js'))
+        s = block(s, '// @@HINTS@@', '// @@END-HINTS@@', read('shared', 'hints.js'))
         s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
         s = block(s, '// @@MOCK-HINTS@@', '// @@END-MOCK-HINTS@@', hints)
         s = block(s, '// @@CODE-PANE@@', '// @@END-CODE-PANE@@', pane_js)

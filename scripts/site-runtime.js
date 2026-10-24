@@ -2,7 +2,7 @@
 (function () {
   const e = React.createElement;
   const HOLE = /\{\{\s*([\w.$]+)\s*\}\}/g;
-  const EVENTS = { onclick: 'onClick', onchange: 'onChange', onmouseenter: 'onMouseEnter', onmouseleave: 'onMouseLeave', ontouchstart: 'onTouchStart', oninput: 'onInput', onkeydown: 'onKeyDown', onsubmit: 'onSubmit', onfocus: 'onFocus', onblur: 'onBlur' };
+  const EVENTS = { onclick: 'onClick', onchange: 'onChange', onmouseenter: 'onMouseEnter', onmouseleave: 'onMouseLeave', ontouchstart: 'onTouchStart', oninput: 'onInput', onkeydown: 'onKeyDown', onsubmit: 'onSubmit', onfocus: 'onFocus', onblur: 'onBlur', ondragstart: 'onDragStart', ondragover: 'onDragOver', ondrop: 'onDrop', ondragend: 'onDragEnd' };
   const HTML_ATTR = { class: 'className', for: 'htmlFor', tabindex: 'tabIndex', maxlength: 'maxLength', readonly: 'readOnly', colspan: 'colSpan', rowspan: 'rowSpan', autocomplete: 'autoComplete', spellcheck: 'spellCheck' };
   const BOOL = new Set(['disabled', 'checked', 'selected', 'readonly', 'required', 'multiple', 'hidden']);
   const VOID = new Set(['input', 'img', 'br', 'hr', 'meta', 'link', 'source', 'area', 'col', 'wbr']);

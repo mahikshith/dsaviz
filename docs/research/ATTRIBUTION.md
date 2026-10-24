@@ -43,3 +43,14 @@ Only repos with a permissive license (MIT, Apache-2.0, CC BY, CC BY-SA). Verifie
 | [donnemartin/system-design-primer](https://github.com/donnemartin/system-design-primer) | CC BY 4.0 | Donne Martin and translators | System design topics, diagrams and the zh-Hans translation, with credit and link to license. |
 | [doocs/leetcode](https://github.com/doocs/leetcode) | CC-BY-SA-4.0 (share-alike) | Doocs community | Possible structure ideas only; adapting text would impose share-alike on our derivative. Problem statements belong to LeetCode. |
 | [doocs/advanced-java](https://github.com/doocs/advanced-java) | CC-BY-SA-4.0, but README states most content is another author's with copyright reserved | Doocs / original author | Do not adapt; provenance conflicts with the license label. |
+
+## System design
+
+Verified on 2026-10-24 from the repo pages via REA. Keep the MIT notice and credit the holder wherever material is adapted. donnemartin/system-design-primer (CC BY 4.0) is already listed above and remains the main HLD seed.
+
+| Repo | License | Holder (as shown) | What could be adapted |
+|---|---|---|---|
+| [binhnguyennus/awesome-scalability](https://github.com/binhnguyennus/awesome-scalability) | MIT | binhnguyennus | Section taxonomy (principle, scalability, availability, stability, performance, intelligence, architecture, interview, organization) and curated "how the real company did it" links, as reading boxes on HLD case studies. Linked articles keep their own copyright. |
+| [kousiknath/LowLevelDesign](https://github.com/kousiknath/LowLevelDesign) | MIT | kousiknath | Java LLD case-study problem set (parking lot, elevator, BookMyShow, blocking queue, thread pool, message broker, chat and others) as seed code for LLD lessons. Check each file header before copying. |
+
+Facts only (no permissive licence): ashishps1/awesome-low-level-design (GPL-3.0), karanpratapsingh/system-design (custom licence, type not shown), tssovi/grokking-the-object-oriented-design-interview, prasadgujar/low-level-design-primer, kilimchoi/engineering-blogs, madhank93/learn-system-design (none shown); hellointerview.com, designgurus.io, refactoring.guru, highscalability.com, dataintensive.net (all rights reserved).

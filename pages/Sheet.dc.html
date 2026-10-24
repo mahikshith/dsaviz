@@ -23,15 +23,15 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,la
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
 <style>
-/* Sheet on phones: the list first, progress after; each row is a compact card (tick, name, difficulty) with the extras behind a tap. */
+/* Sheet on phones: the list first, progress after (rendered in that order, see sheetParts); each row is a compact card (tick, name, difficulty) with the extras behind a tap. */
 @media (max-width: 759px){
 [data-page="Sheet"] [data-sheet-layout]{display:flex!important;flex-direction:column}
-[data-page="Sheet"] [data-sheet-layout]>aside{order:2;border-right:0!important;overflow:visible!important;padding:0 16px 24px!important}
+[data-page="Sheet"] [data-sheet-layout]>aside{border-right:0!important;overflow:visible!important;padding:0 16px 24px!important}
 [data-page="Sheet"] [data-sheet-layout]>main{padding:16px!important;gap:12px!important}
 [data-page="Sheet"] [data-sheet-head]{flex-wrap:wrap;gap:8px 12px!important}
-[data-page="Sheet"] [data-sheet-head]>div:nth-child(2){flex-basis:100%;order:-1}
+[data-page="Sheet"] [data-sheet-title]{flex-basis:100%}
 [data-page="Sheet"] [data-sheet-head] p{white-space:normal!important}
-[data-page="Sheet"] [data-sheet-head]>div:first-child{border-right:0!important;padding-right:0!important;flex-basis:100%}
+[data-page="Sheet"] [data-sheet-total]{border-right:0!important;padding-right:0!important;flex-basis:100%}
 [data-page="Sheet"] [data-sheet-head]>button:last-child{flex-grow:1;justify-content:center}
 [data-page="Sheet"] [data-sheet-filters]{height:auto!important;flex-wrap:wrap}
 [data-page="Sheet"] [data-sheet-filters]>div:first-child{flex-basis:100%;height:44px!important}
@@ -136,6 +136,11 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,la
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]),[data-page] select,[data-page] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
 [data-page] a[style^="height:"],[data-page] a[style*="; height:"],[data-page] a[style*="min-height:"]{min-height:44px;height:auto!important}
+/* Inline links in breadcrumbs and footers: padding grows the tap area to 44px (side margins keep the text where it was);
+   footer link lists drop their gap, since each link now brings its own. */
+[data-page] nav[aria-label="Breadcrumb"] a,[data-page] footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
+[data-page] footer nav[style*="flex-direction: column"]{gap:0!important}
+[data-page] nav[aria-label="Breadcrumb"]{align-items:center}
 }
 </style>
 <!-- /PHONE CSS -->
@@ -269,6 +274,9 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- /PILL NAV -->
 <div data-sheet-layout style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 340px minmax(0, 1fr)">
 
+<!-- Phones show the list first and progress after it; the markup follows suit (phoneOrder), so tab order matches. -->
+<sc-for list="{{sheetParts}}" as="sheetPart" hint-placeholder-count="2">
+<sc-if value="{{sheetPart.aside}}" hint-placeholder-val="{{ true }}">
 <!-- LEFT: progress, rings, today's picks, backup -->
 <aside aria-label="Progress" style="border-right: 1px solid {{t.line}}; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; min-height: 0">
 <section style="padding: 14px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
@@ -324,15 +332,20 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span role="status" style="font-size: 12px; line-height: 1.4; color: {{t.muted}}">{{msg}}</span>
 </section>
 </aside>
-
+</sc-if>
+<sc-if value="{{sheetPart.main}}" hint-placeholder-val="{{ true }}">
 <!-- RIGHT: title, filters, groups -->
 <main style="padding: 16px 20px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0">
 <div data-sheet-head style="display: flex; align-items: center; gap: 12px">
-<div aria-label="{{totalAria}}" style="flex-shrink: 0; display: flex; align-items: baseline; gap: 6px; padding-right: 14px; margin-right: 2px; border-right: 1px solid {{t.line}}"><span style="font-family: {{t.mono}}; font-size: 46px; font-weight: 800; line-height: 1; color: {{t.accent}}">{{total}}</span><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">problems</span></div>
-<div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1; min-width: 0">
+<sc-for list="{{headParts}}" as="headPart" hint-placeholder-count="2">
+<sc-if value="{{headPart.total}}" hint-placeholder-val="{{ true }}"><div data-sheet-total aria-label="{{totalAria}}" style="flex-shrink: 0; display: flex; align-items: baseline; gap: 6px; padding-right: 14px; margin-right: 2px; border-right: 1px solid {{t.line}}"><span style="font-family: {{t.mono}}; font-size: 46px; font-weight: 800; line-height: 1; color: {{t.accent}}">{{total}}</span><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">problems</span></div></sc-if>
+<sc-if value="{{headPart.title}}" hint-placeholder-val="{{ true }}">
+<div data-sheet-title style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1; min-width: 0">
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 36px; font-weight: 700; line-height: 1.05">Master sheet</h1>
 <p style="margin: 0; font-size: 14px; color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{subLine}}</p>
 </div>
+</sc-if>
+</sc-for>
 <button onClick="{{expandAll}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Open all</button>
 <button onClick="{{collapseAll}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Close all</button>
 <button onClick="{{randomPick}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path></svg>Random unsolved</button>
@@ -424,6 +437,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{noGroups}}" hint-placeholder-val="{{ false }}"><div style="padding: 20px; font-size: 14px; color: {{t.muted}}">No problems match these filters.</div></sc-if>
 </div>
 </main>
+</sc-if>
+</sc-for>
 </div>
 
 </div>
@@ -1817,6 +1832,12 @@ const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
 // True while the page shows its phone layout (below 760px; the runtime sets html[data-phone] and
 // re-renders the page when it flips). Use it only for content changes; layout belongs in CSS.
 function dsPhone() { try { return typeof document !== 'undefined' && document.documentElement.hasAttribute('data-phone'); } catch (e) { return false; } }
+// Blocks that sit in a different order on phones are rendered in that order, so keyboard and screen-reader
+// order follow what is seen (CSS `order` would only move the pixels). In markup:
+//   <sc-for list="{{parts}}" as="part"><sc-if value="{{part.aside}}">…</sc-if><sc-if value="{{part.main}}">…</sc-if></sc-for>
+// with parts: phoneOrder(['aside', 'main'], ['main', 'aside']).
+// Every item names every part (true for its own), so a template check on the first item sees them all.
+function phoneOrder(desk, phone) { return (dsPhone() ? phone : desk).map((k) => Object.assign(...desk.map((d) => ({ [d]: d === k })))); }
 function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
 function iconVals(name, color) {
   const filled = !!ICON_FILLED[name];
@@ -2361,6 +2382,8 @@ class Component extends DCLogic {
       todayEmpty: today.length === 0,
       todayLine: todayDone + '/' + today.length + ' · ' + utcDay(now),
       subLine: total + ' problems in ' + SHEET_GROUPS.length + ' groups. Each group runs from the easiest idea to the hardest.',
+      // phones: the list before progress, and the title before the count (see phoneOrder in shared/ui.js)
+      sheetParts: phoneOrder(['aside', 'main'], ['main', 'aside']), headParts: phoneOrder(['total', 'title'], ['title', 'total']),
       query: s.query,
       onQuery: (e) => this.setState({ query: (e && e.target && e.target.value) || '', open: {} }),
       diffBtns: ['All'].concat(SHEET_DIFFS).map((k) => Object.assign({ label: k, on: s.diff === k, pick: () => this.setState({ diff: k, open: {} }) }, seg(s.diff === k))),

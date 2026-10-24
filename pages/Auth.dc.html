@@ -19,10 +19,6 @@ button,input{font:inherit}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes glow{0%,100%{box-shadow:0 0 18px hsla(42,95%,60%,0.35)}50%{box-shadow:0 0 34px hsla(42,95%,60%,0.7)}}
 </style>
-<style>
-/* Sign-up on phones: the form first, the learner quote after it. */
-@media (max-width: 759px){[data-page="Auth"]>div:first-child{order:2}}
-</style>
 <!-- PHONE CSS -->
 <style>
 /* Shared phone layout (shared/ui/phone.html, copied into every page's helmet by the build).
@@ -99,12 +95,20 @@ button,input{font:inherit}
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]),[data-page] select,[data-page] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
 [data-page] a[style^="height:"],[data-page] a[style*="; height:"],[data-page] a[style*="min-height:"]{min-height:44px;height:auto!important}
+/* Inline links in breadcrumbs and footers: padding grows the tap area to 44px (side margins keep the text where it was);
+   footer link lists drop their gap, since each link now brings its own. */
+[data-page] nav[aria-label="Breadcrumb"] a,[data-page] footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
+[data-page] footer nav[style*="flex-direction: column"]{gap:0!important}
+[data-page] nav[aria-label="Breadcrumb"]{align-items:center}
 }
 </style>
 <!-- /PHONE CSS -->
 </helmet>
 <div data-fluid="true" data-page="Auth" style="width: 1440px; height: 960px; box-sizing: border-box; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); font-family: {{t.body}}; color: {{t.text}}">
 
+<!-- Phones show the form first and the quote after it; the markup follows suit (phoneOrder), so tab order matches. -->
+<sc-for list="{{sides}}" as="side" hint-placeholder-count="2">
+<sc-if value="{{side.story}}" hint-placeholder-val="{{ true }}">
 <!-- story side (always night) -->
 <div style="background: #1B1E26; color: #F3F0E8; padding: 56px 72px; display: flex; flex-direction: column; gap: 40px">
 <a href="Main.dc.html" style="font-family: 'Fraunces', Georgia, serif; font-size: 24px; font-weight: 700">DSAMaxxing</a>
@@ -124,7 +128,8 @@ button,input{font:inherit}
 <span>{{patternLine}}</span><span>5 languages</span><span>4 themes</span>
 </div>
 </div>
-
+</sc-if>
+<sc-if value="{{side.form}}" hint-placeholder-val="{{ true }}">
 <!-- form side -->
 <div style="background: {{t.bg}}; padding: 40px 96px 48px; display: flex; flex-direction: column; gap: 18px; transition: background 0.3s">
 <div style="display: flex; justify-content: flex-end">
@@ -173,6 +178,8 @@ button,input{font:inherit}
 <a href="{{ctaHref}}" onClick="{{signIn}}" style="height: 54px; flex-shrink: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">{{cta}}</a>
 <span style="font-size: 13px; color: {{t.muted}}; line-height: 1.5; text-align: center">{{finePrint}} <a href="About.dc.html" onClick="{{toFine}}" style="color: {{t.accent}}; font-weight: 600; text-decoration: underline">terms and privacy, in plain words</a>.</span>
 </div>
+</sc-if>
+</sc-for>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":960}}'>
@@ -741,6 +748,12 @@ const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
 // True while the page shows its phone layout (below 760px; the runtime sets html[data-phone] and
 // re-renders the page when it flips). Use it only for content changes; layout belongs in CSS.
 function dsPhone() { try { return typeof document !== 'undefined' && document.documentElement.hasAttribute('data-phone'); } catch (e) { return false; } }
+// Blocks that sit in a different order on phones are rendered in that order, so keyboard and screen-reader
+// order follow what is seen (CSS `order` would only move the pixels). In markup:
+//   <sc-for list="{{parts}}" as="part"><sc-if value="{{part.aside}}">…</sc-if><sc-if value="{{part.main}}">…</sc-if></sc-for>
+// with parts: phoneOrder(['aside', 'main'], ['main', 'aside']).
+// Every item names every part (true for its own), so a template check on the first item sees them all.
+function phoneOrder(desk, phone) { return (dsPhone() ? phone : desk).map((k) => Object.assign(...desk.map((d) => ({ [d]: d === k })))); }
 function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
 function iconVals(name, color) {
   const filled = !!ICON_FILLED[name];
@@ -1070,6 +1083,8 @@ class Component extends DCLogic {
         pick: () => this.setState({ start: k })
       })),
       startNote: st[3],
+      // phones: the form first, the learner quote after it (see phoneOrder in shared/ui.js)
+      sides: phoneOrder(['story', 'form'], ['form', 'story']),
       cta: signup ? 'Start free' : 'Log in',
       signIn: () => {
         saveUser(true);

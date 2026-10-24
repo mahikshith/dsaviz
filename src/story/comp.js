@@ -28,6 +28,59 @@ function storyKeyRule(id) {
   return fb.replace(/^[^:“"]*:\s*/, '').replace(/^[“"]|[”"]$/g, '').replace(/^(Yes|Right|Exactly)[!.,]?\s*(—\s*)?/i, '').trim();
 }
 
+// ---- Phones: the storyboard at real size ----
+// Below 760px the stage is laid out again for the screen instead of being shrunk as one picture: a row of up to
+// 9 tiles fits the width (35px tiles or more at 390px), grids and trees size to the width with 12px labels, the
+// notebook and the legend sit under the picture, and actors whose labels would collide stack on two lines.
+// Desktop never calls these, so its layout stays as it was.
+function stageWidth() {
+  const w = typeof window !== 'undefined' && window.innerWidth ? Math.min(window.innerWidth, 759) : 390;
+  return Math.max(256, w - 32 - 2 - 8);   // page gutters, the stage border, 4px inside each edge
+}
+function phoneScene(S0) {
+  const AV = stageWidth();
+  const S = Object.assign({}, S0, { phone: true, AV });
+  if (S0.visual === 'grid' || S0.visual === 'tree') return S;
+  const n = Math.max(S0.items.length, (S0.items2 || []).length);
+  const pitch = Math.min(S0.pitch, Math.floor((AV + 4) / n));
+  const tile = S0.visual === 'planks' ? Math.max(12, Math.round(S0.tile * pitch / S0.pitch))
+    : pitch - Math.min(S0.pitch - S0.tile, Math.max(4, Math.round(pitch * 0.1)));
+  const k = tile / S0.tile;
+  Object.assign(S, { pitch, tile, width: (n - 1) * pitch + tile });
+  if (S0.tileH) S.tileH = Math.max(tile, Math.round(S0.tileH * Math.max(k, 0.7)));
+  if (S0.font) {
+    const longest = Math.max.apply(null, S0.items.concat(S0.items2 || []).map((x) => String(x).length));
+    S.font = Math.max(14, Math.min(Math.round(S0.font * Math.max(k, 0.65)), Math.floor((tile - 8) / (0.55 * longest))));
+  }
+  return S;
+}
+// The notebook under a phone stage: as many columns as its longest line allows, and room for its fullest step,
+// so the picture above it holds still. Read by the phone CSS; desktop ignores the variables.
+function boardVars(S) {
+  if (!S.phone || !S.board) return '';
+  const rows = S.steps.map((x) => x.board || []);
+  const chars = Math.max.apply(null, [6].concat(...rows.map((r) => r.map(([k, v]) => String(k).length + String(v).length + 1))));
+  const cols = Math.max(1, Math.min(3, Math.floor((S.AV - 16 + 6) / (chars * 8 + 16 + 6))));
+  const most = Math.max.apply(null, [1].concat(rows.map((r) => r.length)));
+  return '--pp-bcols: ' + cols + '; --pp-bh: ' + (18 + 4 + Math.ceil(most / cols) * 28) + 'px';
+}
+// Actor labels on a phone row: keep each label inside the stage, and drop an actor to a second line when its
+// label or body would touch the one before it. Returns true when any actor was dropped.
+function phoneCast(list, S) {
+  const slack = (S.AV - S.width) / 2;
+  let lastRight = -Infinity, lastMid = -Infinity, stacked = false;
+  list.map((a, i) => ({ a, i })).sort((p, q) => p.a.x - q.a.x || p.i - q.i).forEach(({ a }) => {
+    a.x = Math.max(-slack, Math.min(S.width + slack - 28, a.x));   // the 28px box, half-steps (±0.5) included, stays on stage
+    const w = Math.round(a.label.length * 7) + 4, mid = a.x + 14;
+    const left = Math.max(-slack, Math.min(S.width + slack - w, mid - w / 2));
+    a.shift = 'translateX(' + Math.round(left - (mid - w / 2)) + 'px)';
+    const drop = left < lastRight + 4 || mid - lastMid < 32;
+    a.y = drop ? 46 : 0;
+    if (drop) stacked = true; else { lastRight = left + w; lastMid = mid; }
+  });
+  return stacked;
+}
+
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -41,8 +94,14 @@ class Component extends DCLogic {
   componentDidMount() {
     listenTheme(this);
     this.runner.mount();
+    // On a phone the stage is laid out for the screen width, so a resize (or turning the phone) lays it out again.
+    this.onResize = () => { if (dsPhone() && window.innerWidth !== this.vw) { this.vw = window.innerWidth; this.setState({}); } };
+    if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('resize', this.onResize);
   }
-  componentWillUnmount() { clearTimeout(this.timer); this.runner.unmount(); unlistenTheme(this); }
+  componentWillUnmount() {
+    clearTimeout(this.timer); this.runner.unmount(); unlistenTheme(this);
+    if (typeof window !== 'undefined' && window.removeEventListener) window.removeEventListener('resize', this.onResize);
+  }
   // The scene on stage: a custom run when the learner applied their own input, else the story.
   scene() { return this.state.run || SCENES[this.state.scene]; }
   steps() { return this.scene().steps; }
@@ -251,7 +310,7 @@ class Component extends DCLogic {
   gridAt(S, st, t) {
     const vals = st.vals || S.items, R = vals.length, C = vals[0].length;
     const gap = 6, padL = S.rowHeads ? 52 : 20, padT = 18;
-    const maxW = (S.board ? 380 : 470) - padL, maxH = 214 - padT;
+    const maxW = (S.phone ? S.AV - 8 : S.board ? 380 : 470) - padL, maxH = (S.phone ? 300 : 214) - padT;
     const gp = Math.floor(Math.min(S.maxTile || 58, maxH / R, maxW / C)), size = gp - gap;
     const at = (r, c) => [padL + c * gp + size / 2, padT + r * gp + size / 2];
     const onPath = new Set((st.path || []).map(([r, c]) => r + ',' + c));
@@ -273,9 +332,9 @@ class Component extends DCLogic {
     grid.lineOp = (st.path || []).length > 1 ? 0.9 : 0;
     grid.actor = { move: 'translate(0px, 0px)', size: 0, op: 0, initial: '', color: 'transparent', font: '10px' };
     if (st.actorAt) {
-      const a = Math.max(18, Math.min(22, Math.round(size * 0.5)));
+      const a = S.phone ? 24 : Math.max(18, Math.min(22, Math.round(size * 0.5)));
       const who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
-      grid.actor = { move: 'translate(' + (padL + st.actorAt[1] * gp - a * 0.55) + 'px, ' + (padT + st.actorAt[0] * gp - a * 0.55) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.round(a * 0.5) + 'px' };
+      grid.actor = { move: 'translate(' + (padL + st.actorAt[1] * gp - a * 0.55) + 'px, ' + (padT + st.actorAt[0] * gp - a * 0.55) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: (S.phone ? 12 : Math.round(a * 0.5)) + 'px' };
     }
     grid.legend = (S.legend || []).map(([state, label]) => {
       if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '' };
@@ -306,15 +365,17 @@ class Component extends DCLogic {
     };
     list.filter((n) => n.parent == null).forEach((n) => place(n.id, 0));
     const nh = 30, fontPx = 13;
-    const wOf = (id) => Math.max(nh + 4, Math.round(nameOf(id).length * fontPx * 0.62 + 18));
+    // phones: slimmer pills (the label still sets at 13px) and tags measured at their 12px phone size
+    const wOf = (id) => Math.max(nh + 4, Math.round(nameOf(id).length * fontPx * 0.62 + (S.phone ? 12 : 18)));
     // a tag (the short note beside a node) widens its footprint, so leave room for the longest one any step shows
-    const tagW = S.tags ? Math.max.apply(null, [0].concat(S.steps.map((x) => Math.max.apply(null, [0].concat(Object.values(x.tags || {}).map((v) => String(v).length)))))) * 7 + 8 : 0;
-    const widest = Math.max.apply(null, list.map((n) => wOf(n.id))) + 2 * tagW;
-    const W = S.treeW || (S.board ? 430 : 560), H = S.treeH || 162;
+    const tagW = S.tags ? Math.max.apply(null, [0].concat(S.steps.map((x) => Math.max.apply(null, [0].concat(Object.values(x.tags || {}).map((v) => String(v).length)))))) * (S.phone ? 7.5 : 7) + 8 : 0;
+    // phones put the tag under its node (there is no room beside it), so a node takes the wider of the two
+    const widest = S.phone ? Math.max.apply(null, list.map((n) => Math.max(wOf(n.id), tagW))) : Math.max.apply(null, list.map((n) => wOf(n.id))) + 2 * tagW;
+    const W = S.phone ? S.AV - 8 : S.treeW || (S.board ? 430 : 560), H = S.phone ? nh + 56 * Math.max(1, maxD) : S.treeH || 162;
     const slot = Math.min(110, (W - widest) / Math.max(1, next - 1));
     const dy = maxD ? Math.min(66, (H - nh) / maxD) : 0;
     const cx = (id) => widest / 2 + col[id] * slot, cy = (id) => depth[id] * dy + nh / 2;
-    const tree = { w: Math.round(widest + (next - 1) * slot), h: Math.round(maxD * dy + nh) };
+    const tree = { w: Math.round(widest + (next - 1) * slot), h: Math.round(maxD * dy + nh + (S.phone && tagW ? 18 : 0)) };
     const shown = (id) => !!(st.nodes && st.nodes[id]);
     tree.edges = list.filter((n) => n.parent != null && byId[n.parent]).map((n) => {
       const x1 = cx(n.parent), y1 = cy(n.parent) + nh / 2, x2 = cx(n.id), y2 = cy(n.id) - nh / 2;
@@ -345,8 +406,8 @@ class Component extends DCLogic {
     tree.label = (S.treeLabel || 'Tree') + ', ' + count + (count === 1 ? ' node' : ' nodes') + ' shown. ' + st.verdict.replace(/[.!?]$/, '') + trailText + (st.actorAt != null && byId[st.actorAt] ? '. ' + castName + ' is at ' + nameOf(st.actorAt) : '') + '.';
     tree.actor = { move: 'translate(0px, 0px)', size: 0, op: 0, initial: '', color: 'transparent', font: '10px' };
     if (st.actorAt != null && byId[st.actorAt]) {
-      const a = 20, who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
-      tree.actor = { move: 'translate(' + Math.round(cx(st.actorAt) - wOf(st.actorAt) / 2 - a * 0.55) + 'px, ' + Math.round(cy(st.actorAt) - nh / 2 - a * 0.55) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: '10px' };
+      const a = S.phone ? 22 : 20, who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
+      tree.actor = { move: 'translate(' + Math.round(cx(st.actorAt) - wOf(st.actorAt) / 2 - a * 0.55) + 'px, ' + Math.round(cy(st.actorAt) - nh / 2 - a * 0.55) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: S.phone ? '12px' : '10px' };
     }
     tree.legend = (S.legend || []).map(([state, label]) => {
       if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '', ringStyle: 'solid' };
@@ -361,10 +422,37 @@ class Component extends DCLogic {
     return tree;
   }
 
+  // The actors under a row of tiles for one step (none for grids and trees).
+  castAt(S, st, t) {
+    const pitch = S.pitch || 0, tileW = S.tile || 0, found = st.done, boxed = S.visual === 'grid' || S.visual === 'tree';
+    const half = S.phone ? 14 : 28;   // half the actor box: 56px on desktop, 28px on phones (labels overflow it, centred)
+    const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
+    const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - half, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
+    let actors;
+    if (boxed) {
+      actors = [];
+    } else if (S.cast === 'tp') {
+      actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
+    } else if (S.cast === 'sw') {
+      const lx = st.L === st.R ? (S.phone ? -12 : -18) : 0;
+      actors = [
+        Object.assign(actorAt(st.L, { label: S.actorLabels[0], color: t.right, rx: 8, eye: 0, mouth: '', size: 26 }), { x: st.L * pitch + tileW / 2 - half + lx }),
+        actorAt(st.R, { label: S.actorLabels[1], color: t.left, rx: 25, extra: 'M50 24 L58 28 L50 32 Z M10 30 Q2 22 8 16 Q14 22 14 30 Z', extraFill: t.sceneText })
+      ];
+    } else if (S.actorLabels.length > 1) {
+      actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 25 }), actorAt(st.R, { label: S.actorLabels[1], color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
+    } else {
+      actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 18, extra: 'M12 14 L44 14 L40 2 L16 2 Z', extraFill: t.sceneText })];
+    }
+    // phones: smaller bodies, so two of them fit side by side on a 39px pitch
+    if (S.phone) actors.forEach((a) => { a.size = Math.round(a.size * 0.7); });
+    return actors.map((a) => Object.assign(a, { move: 'translateX(' + a.x + 'px)', shift: 'none', y: 0 }));
+  }
+
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = Object.assign({}, THEMES[themeKey] || THEMES.max, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
-    const S = this.scene();
+    const S = dsPhone() ? phoneScene(this.scene()) : this.scene();   // phones: the stage laid out for the screen
     const P = PROBLEMS.find((p) => p.id === S.id);
     const spec = SCENE_INPUT[S.id];
     const ask = this.state.ask, fb = this.state.fb && this.state.fb.at === this.state.step ? this.state.fb : null;
@@ -434,7 +522,7 @@ class Component extends DCLogic {
     const showFrame = S.cast === 'sw' && !st.noFrame;
     const fLeft = fr[0] * pitch - 7, fWidth = (fr[1] - fr[0]) * pitch + tileW + 14;
     const frame = {
-      op: showFrame ? 1 : 0,
+      op: showFrame ? 1 : 0, vis: S.cast === 'sw' ? 'visible' : 'hidden',   // stories without a window never show it, even sliding off stage
       left: 'translateX(' + fLeft + 'px)',
       right: 'translateX(' + (fLeft + fWidth - 16) + 'px)',
       bar: 'translateX(' + (fLeft + 16) + 'px) scaleX(' + Math.max(0, fWidth - 32) + ')',
@@ -448,25 +536,14 @@ class Component extends DCLogic {
     }));
 
     // ---- the cast ----
-    const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
-    const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - 28, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
-    let actors;
-    if (boxed) {
-      actors = [];
-    } else if (S.cast === 'tp') {
-      actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
-    } else if (S.cast === 'sw') {
-      const lx = st.L === st.R ? -18 : 0;
-      actors = [
-        Object.assign(actorAt(st.L, { label: S.actorLabels[0], color: t.right, rx: 8, eye: 0, mouth: '', size: 26 }), { x: st.L * pitch + tileW / 2 - 28 + lx }),
-        actorAt(st.R, { label: S.actorLabels[1], color: t.left, rx: 25, extra: 'M50 24 L58 28 L50 32 Z M10 30 Q2 22 8 16 Q14 22 14 30 Z', extraFill: t.sceneText })
-      ];
-    } else if (S.actorLabels.length > 1) {
-      actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 25 }), actorAt(st.R, { label: S.actorLabels[1], color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
-    } else {
-      actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 18, extra: 'M12 14 L44 14 L40 2 L16 2 Z', extraFill: t.sceneText })];
+    let actors = this.castAt(S, st, t), actorRowH = 60;
+    if (S.phone && actors.length) {
+      // the row keeps one height for the whole story, so the picture does not jump between steps
+      const twoLines = steps.some((x) => phoneCast(this.castAt(S, x, t), S));
+      phoneCast(actors, S);
+      actors.forEach((a) => { a.move = 'translate(' + a.x + 'px, ' + a.y + 'px)'; });
+      actorRowH = twoLines ? 92 : 46;
     }
-    actors = actors.map((a) => Object.assign(a, { move: 'translateX(' + a.x + 'px)' }));
 
     const who = {
       lumi: { name: 'Lumi', initial: 'L', color: t.left, radius: '999px' },
@@ -503,8 +580,8 @@ class Component extends DCLogic {
       tileW, tileH: S.tileH || 84, tileGap: pitch - tileW, tileFont: (S.font || 34) + 'px',
       lanternH: Math.round(tileW * 104 / 88), lanternFont: Math.round(tileW * 38 / 88) + 'px',
       hasBoard: !!S.board, boardTitle: S.boardTitle || '', board, boardEmpty: board.length === 0,
-      boardPad: S.board ? 170 : 0,
-      actors, move: MOVE, settle: SETTLE,
+      boardPad: S.board && !S.phone ? 170 : 0, boardVars: boardVars(S),
+      actors, actorRowH, actorBoxW: S.phone ? 28 : 56, move: MOVE, settle: SETTLE,
       statusText: found ? S.status[1] : S.status[0],
       statusColor: found ? t.ok : t.sceneMuted,
       meter: { text: st.meter.text, scale: 'scaleX(' + (pct / 100).toFixed(3) + ')', markAt: Math.max(0, Math.min(100, st.meter.mark)) + '%', markLabel: st.meter.markLabel, markShift: st.meter.mark > 85 ? 'translateX(-100%)' : st.meter.mark < 15 ? 'none' : 'translateX(-50%)' },

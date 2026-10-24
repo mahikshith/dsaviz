@@ -4,9 +4,9 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 
 ## Workflow
 
-- Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@RUNNER@@`, `@@CODE-PANE@@`, `@@GITSIM@@` (from `src/git/`), `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
+- Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@RUNNER@@`, `@@CODE-PANE@@`, `@@GITSIM@@` (from `src/git/`), `@@SDLESSONS@@` (from `src/sd/`), `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
 - Other page markup and page-specific scripts are edited directly in `pages/*.dc.html`.
-- After any change: `npm run build && npm test`. The tests must print "all clear", "all scenes clean" and "all specs pass", "sheet clean" and "all git steps consistent".
+- After any change: `npm run build && npm test`. The tests must print "all clear", "all scenes clean" and "all specs pass", "sheet clean", "all git steps consistent" and "all system design lessons consistent".
 - `dist/index.html` is generated and committed so the site opens without a build. Rebuild it before committing.
 
 ## Conventions

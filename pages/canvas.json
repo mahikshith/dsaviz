@@ -137,6 +137,22 @@
       "w": 1440,
       "x": 6080,
       "y": 5160
+    },
+    "SystemDesign.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "System design hub · HLD and LLD tracks, progress, the 4-step method",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "SDLesson.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "System design lesson · animated diagram, numbers strip, 12 lessons",
+      "w": 1440,
+      "x": 9120,
+      "y": 1020
     }
   },
   "createdOnFiles": {
@@ -209,7 +225,9 @@
     "Story.dc.html",
     "Code.dc.html",
     "Glossary.dc.html",
-    "Basics.dc.html"
+    "Basics.dc.html",
+    "SystemDesign.dc.html",
+    "SDLesson.dc.html"
   ],
   "pages": [],
   "title": "DSA Story Studio"

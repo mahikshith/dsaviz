@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 17 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, a step-by-step Git visual, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 19 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, a step-by-step Git visual, a System design section (12 animated HLD and LLD lessons), and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -19,7 +19,7 @@ Requirements: Node 18+ and Python 3.
 ```bash
 npm install          # React, CodeMirror and esbuild, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # back-test of every page, every animated story, every test spec, the sheet and every Git lesson step
+npm test             # back-test of every page, every animated story, every test spec, the sheet, every Git lesson step and every system design lesson
 npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
 ```
 
@@ -41,7 +41,8 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
-| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `site-test.js`. |
+| `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (9 HLD and 3 LLD lessons as data: nodes, links, steps). Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
+| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -81,9 +82,16 @@ For maps, floors and tables use `visual: 'grid'` (see `scenes_mx.js`, `scenes_df
 2. If a command is new, teach it to `gitRun` in `src/git/sim.js`.
 3. Run `npm run build && npm test`. `gitcheck.js` fails if Git would refuse a step, if a commit saves something that was not staged, or if a caption runs long.
 
+## Add a system design lesson
+
+1. Add an entry to `SD_LESSONS` in `src/sd/lessons.js`: `nodes` (box centres on a 1080 × 440 canvas; kinds `client`, `lb`, `server`, `cache`, `db`, `queue`, `cdn`, `dns`, `worker`, `limiter`, `car`, or `class`/`iface` with `lines`), `links`, and 8 to 15 steps. Each step has a `cmd`, one `say` caption (140 characters at most) and one `focus`, plus any of `add`, `drop`, `mark`, `sub`, `go` (requests along links), `nums` and `math`.
+2. Put the arithmetic behind a number in `check` (`qps`, `gb`, `ms`, `cap`, `b62`) so the test recomputes it.
+3. HLD lessons adapted from the System Design Primer set `credit: 'sdp'`, which shows the CC BY 4.0 credit on the lesson. Write every word yourself.
+4. Run `npm run build && npm test`. `sdcheck.js` fails if a step names a missing or hidden node, a request skips a drawn link, boxes overlap, a caption runs long, or a number disagrees with its check.
+
 ## State
 
-Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, and `dsaviz-code-v1` (code per problem and language). The master sheet keeps ticks and stars in `dsaviz-sheet-v1` as `{ v: 1, done: { id: timestamp }, star: { id: 1 } }`, and can export or import that as a JSON file. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
+Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, `dsaviz-code-v1` (code per problem and language), and `dsaviz-sd-progress` / `dsaviz-sd-lesson` (furthest step per system design lesson, and the lesson to open). The master sheet keeps ticks and stars in `dsaviz-sheet-v1` as `{ v: 1, done: { id: timestamp }, star: { id: 1 } }`, and can export or import that as a JSON file. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
 
 ## Add a coding problem
 

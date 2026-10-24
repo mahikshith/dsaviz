@@ -33,7 +33,9 @@ class Component extends DCLogic {
     super(props);
     const scene = sceneIdFor(loadProblem());
     this.state = { theme: loadTheme(), scene, step: 0, playing: false, played: false, tab: 'solution', codeOpened: false,
-      hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null, notesOpen: false, note: DS.note(scene), noteSaved: false };
+      hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null, notesOpen: false, note: DS.note(scene), noteSaved: false,
+      // your own input: run is the re-simulated scene (null = the story's own example); predict: the toggle, the open question and the last feedback
+      customOpen: false, run: null, runText: '', runMsg: '', runBad: false, predict: false, ask: null, fb: null, lastAsk: -9 };
     this.runner = new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true });
   }
   componentDidMount() {
@@ -41,7 +43,9 @@ class Component extends DCLogic {
     this.runner.mount();
   }
   componentWillUnmount() { clearTimeout(this.timer); this.runner.unmount(); unlistenTheme(this); }
-  steps() { return SCENES[this.state.scene].steps; }
+  // The scene on stage: a custom run when the learner applied their own input, else the story.
+  scene() { return this.state.run || SCENES[this.state.scene]; }
+  steps() { return this.scene().steps; }
   go(i) {
     const n = this.steps().length;
     const step = Math.max(0, Math.min(n - 1, i));
@@ -59,6 +63,7 @@ class Component extends DCLogic {
     this.timer = setTimeout(() => {
       if (!this.state.playing) return;
       if (this.state.step >= this.steps().length - 1) { this.stop(); return; }
+      if (this.askBefore(this.state.step + 1, true)) return;
       this.go(this.state.step + 1);
       if (this.state.playing) this.tick();
     }, this.pace());
@@ -68,11 +73,44 @@ class Component extends DCLogic {
     this.setState({ playing: true, played: true });
     this.tick();
   }
-  togglePlay() { if (this.state.playing) this.stop(); else this.play(); }
+  togglePlay() { if (this.state.ask) return; if (this.state.playing) this.stop(); else this.play(); }
+  // ---- predict the next step: before some steps the player pauses and asks which rule fires next ----
+  // Asks at most every other step, only when the toggle is on. resume: play on after the pick.
+  askBefore(j, resume) {
+    if (!this.state.predict || j - this.state.lastAsk < 2) return false;
+    const q = predictQuestion(this.scene(), j);
+    if (!q) return false;
+    clearTimeout(this.timer); this.timer = null;
+    this.setState({ ask: Object.assign({ resume }, q), playing: false, fb: null, lastAsk: j });
+    return true;
+  }
+  answer(i) {
+    const q = this.state.ask;
+    if (!q || !q.choices[i]) return;
+    const ok = q.choices[i].right;
+    const p = DS.logPredict(ok);
+    const fb = { ok, at: q.at, text: ok ? 'Right: ' + q.answer + '. ' + (p.streak > 1 ? p.streak + ' in a row.' : 'Nice.') : 'Not quite. It was: ' + q.answer + '.' };
+    this.setState({ ask: null, fb });
+    this.go(q.at);
+    if (q.resume && q.at < this.steps().length - 1) { this.setState({ playing: true }); this.tick(); }
+  }
+  // Skip the question: show the step, score nothing.
+  skipAsk() { const q = this.state.ask; if (!q) return; this.setState({ ask: null, fb: null }); this.go(q.at); }
+  stepNext() {
+    this.stop();
+    if (this.state.ask) { this.skipAsk(); return; }
+    if (this.askBefore(this.state.step + 1, false)) return;
+    this.setState({ fb: null });
+    this.go(this.state.step + 1);
+  }
+  togglePredict() { this.setState({ predict: !this.state.predict, ask: null, fb: null, lastAsk: -9 }); }
   key(e) {
     const k = e && e.key;
-    if (k === 'ArrowRight') { this.stop(); this.go(this.state.step + 1); }
-    else if (k === 'ArrowLeft') { this.stop(); this.go(this.state.step - 1); }
+    const tag = e && e.target && e.target.tagName;
+    if ((k === ' ' || k === 'Enter') && (tag === 'BUTTON' || tag === 'INPUT' || tag === 'A')) return;   // let the focused control act
+    if (this.state.ask && /^[1-3]$/.test(k || '')) { this.answer(Number(k) - 1); if (e.preventDefault) e.preventDefault(); return; }
+    if (k === 'ArrowRight') this.stepNext();
+    else if (k === 'ArrowLeft') { this.stop(); this.setState({ ask: null, fb: null }); this.go(this.state.step - 1); }
     else if (k === ' ' || k === 'k') this.togglePlay();
     else return;
     if (e.preventDefault) e.preventDefault();
@@ -82,7 +120,28 @@ class Component extends DCLogic {
     this.stop();
     saveProblem(id);
     this.runner.setProblem(id);
-    this.setState({ scene: id, step: 0, played: false, hints: 0, pick: null, rated: null, note: DS.note(id), noteSaved: false });
+    this.setState({ scene: id, step: 0, played: false, hints: 0, pick: null, rated: null, note: DS.note(id), noteSaved: false,
+      run: null, runText: '', runMsg: '', runBad: false, ask: null, fb: null, lastAsk: -9 });
+  }
+  // ---- try your own input: parse, check, re-run the simulation, restart the storyboard ----
+  applyRun(text) {
+    const res = runFromText(this.state.scene, text);
+    if (res.error) { this.setState({ runText: text, runMsg: res.error, runBad: true }); return; }
+    this.stop();
+    this.setState({ run: res.scene, runText: text, runMsg: 'Running your input: ' + res.scene.steps.length + ' steps. Answer: ' + res.scene.example[1].replace(/^(answer|after)\s*=\s*/, '') + '.', runBad: false,
+      step: 0, ask: null, fb: null, lastAsk: -9, played: false });
+    this.play();
+  }
+  usePreset(i) {
+    const spec = SCENE_INPUT[this.state.scene];
+    const p = spec && spec.presets[i];
+    if (!p) return;
+    if (i === 0) { this.resetRun(spec.show(p[1]())); return; }
+    this.applyRun(spec.show(p[1]()));
+  }
+  resetRun(text) {
+    this.stop();
+    this.setState({ run: null, runText: text || '', runMsg: text ? 'Back to the story example.' : '', runBad: false, step: 0, ask: null, fb: null, lastAsk: -9, played: false });
   }
   openCode() { this.stop(); this.setState({ tab: 'code', codeOpened: true }); }
   // Rating a finished story schedules its Revisit card (DS.review). Changing your mind re-rates it from the same starting point.
@@ -121,11 +180,12 @@ class Component extends DCLogic {
     if (S.visual === 'lanterns') {
       tiles = S.items.map((v, i) => {
         const out = i < st.L || i > st.R, isL = i === st.L, isR = i === st.R;
+        const g = v * (S.glow || 1);   // a custom run with bright lanterns scales the glow so the ink stays readable
         return {
           v, pos: i + 1,
-          fill: out ? t.dead : 'hsl(' + t.hue + ',' + t.sat + '%,' + (95 - v * 2.8) + '%)',
+          fill: out ? t.dead : 'hsl(' + t.hue + ',' + t.sat + '%,' + +(95 - g * 2.8).toFixed(1) + '%)',
           ink: out ? t.deadInk : '#1D1B18',
-          glow: out ? 'none' : '0 0 ' + (8 + v * 3) + 'px hsla(' + t.hue + ',95%,60%,' + (0.18 + v * 0.045).toFixed(2) + ')',
+          glow: out ? 'none' : '0 0 ' + Math.round(8 + g * 3) + 'px hsla(' + t.hue + ',95%,60%,' + (0.18 + g * 0.045).toFixed(2) + ')',
           ring: found && (isL || isR) ? t.ok : isL ? t.left : isR ? t.right : 'transparent',
           op: out ? 0.55 : 1, strike: out ? 'line-through' : 'none'
         };
@@ -292,8 +352,11 @@ class Component extends DCLogic {
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = Object.assign({}, THEMES[themeKey] || THEMES.max, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
-    const S = SCENES[this.state.scene];
+    const S = this.scene();
     const P = PROBLEMS.find((p) => p.id === S.id);
+    const spec = SCENE_INPUT[S.id];
+    const ask = this.state.ask, fb = this.state.fb && this.state.fb.at === this.state.step ? this.state.fb : null;
+    const streak = this.state.predict ? DS.predict().streak : 0;
     const kit = Object.assign({}, KIT[S.pattern], S.kit || {});   // a story can bring its own quiz when the pattern's default is about another problem
     const steps = S.steps;
     const si = Math.min(this.state.step, steps.length - 1);
@@ -419,13 +482,14 @@ class Component extends DCLogic {
       clock: cr.clock, clockLabel: cr.clockLabel,
       // the problem
       task: STORY_TASKS[S.id] || S.quest.join(' '),
-      exampleIn: S.example[0], exampleOut: S.example[1].replace(/^(answer|after)\s*=\s*/, ''),
+      exampleIn: SCENES[S.id].example[0], exampleOut: SCENES[S.id].example[1].replace(/^(answer|after)\s*=\s*/, ''),
       // storyboard
       storyName: P.story, goal: S.goal,
       isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid, isTree, showActors: !boxed, grid, tree,
       hasRow2: !!S.items2, rowLabels: S.rowLabels || ['', ''],
       tiles, tiles2, water, frame, showFrame, frameBottom: S.visual === 'planks' ? '0' : '3px', frameBar2: S.visual === 'planks' ? 0 : 1,
       tileW, tileH: S.tileH || 84, tileGap: pitch - tileW, tileFont: (S.font || 34) + 'px',
+      lanternH: Math.round(tileW * 104 / 88), lanternFont: Math.round(tileW * 38 / 88) + 'px',
       hasBoard: !!S.board, boardTitle: S.boardTitle || '', board, boardEmpty: board.length === 0,
       boardPad: S.board ? 170 : 0,
       actors, move: MOVE, settle: SETTLE,
@@ -441,8 +505,30 @@ class Component extends DCLogic {
       onKey: (e) => this.key(e),
       atStart: si === 0, atEnd,
       prev: () => { this.stop(); this.go(si - 1); },
-      next: () => { this.stop(); this.go(si + 1); },
+      next: () => this.stepNext(),
+      nextOff: atEnd && !ask,
       playing: this.state.playing, paused: !this.state.playing,
+      // predict the next step (off by default)
+      predictOn: this.state.predict, predictX: this.state.predict ? 'true' : 'false', togglePredict: () => this.togglePredict(),
+      predictLabel: this.state.predict && streak > 0 ? 'Predict · ' + streak + ' in a row' : 'Predict',
+      predictBtn: { bg: this.state.predict ? t.hl : 'transparent', border: this.state.predict ? t.accent : t.line2 },
+      asking: !!ask, notAsking: !ask,
+      askCue: ask ? 'Next: ' + ask.cue.replace(/[.!?]$/, '') + '. What happens?' : '',
+      askChoices: ask ? ask.choices.map((c, i) => ({ label: c.label, key: String(i + 1), pick: () => this.answer(i) })) : [],
+      skipAsk: () => this.skipAsk(),
+      hasFeedback: !!fb, feedback: fb ? fb.text : '', feedbackBg: fb && fb.ok ? t.okBg : t.warnBg,
+      // try your own input (folded by default; hidden when the story has no make(input))
+      hasCustom: !!spec, customOpen: !!spec && this.state.customOpen, customX: this.state.customOpen ? 'true' : 'false',
+      toggleCustom: () => this.setState({ customOpen: !this.state.customOpen, runText: this.state.runText || (spec ? spec.example : '') }),
+      customSummary: this.state.run ? 'running your input' : 'presets or your own values',
+      customHint: spec ? spec.hint + ', like ' + spec.example : '',
+      customText: this.state.runText, onCustomText: (e) => this.setState({ runText: e && e.target ? e.target.value : '', runBad: false }),
+      onCustomKey: (e) => { if (e && e.key === 'Enter') { if (e.preventDefault) e.preventDefault(); this.applyRun(this.state.runText); } },
+      applyCustom: () => this.applyRun(this.state.runText),
+      customPresets: spec ? spec.presets.map(([label], i) => ({ label, pick: () => this.usePreset(i) })) : [],
+      customMsg: this.state.runMsg, customBad: this.state.runBad ? 'true' : 'false', customMsgColor: this.state.runBad ? t.text : t.muted, customMsgBg: this.state.runBad ? t.warnBg : 'transparent', customMsgPad: this.state.runBad ? '8px 12px' : '0',
+      customActive: !!this.state.run, resetCustom: () => this.resetRun(spec ? spec.example : ''),
+      runTag: this.state.run ? ' · your input' : '',
       playLabel: this.state.playing ? 'Pause' : atEnd && this.state.played ? 'Replay' : 'Play',
       togglePlay: () => this.togglePlay(),
       playBtn: btn(playPrimary),

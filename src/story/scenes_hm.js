@@ -168,3 +168,155 @@ function scrabbleScene() {
     steps
   };
 }
+
+// ---------- Your own input (see practice.js) ----------
+function coatRun(input) {
+  const v = input || SCENE_INPUT['two-sum'].default;
+  const nums = v.nums.slice(), T = v.target, n = nums.length;
+  const seen = {}, steps = [];
+  const book = (fresh, hit) => Object.keys(seen).map((k) => [k, 'seat ' + seen[k], Number(k) === hit ? 'hit' : Number(k) === fresh ? 'fresh' : '']);
+  let ans = [];
+  steps.push(runStep('intro', { L: 0, board: [], need: '—' }, [say('hoot', n + ' guests arrive. Two of them add up to ' + T + '. Find them.'), say('cleo', 'I’ll keep a ticket book of everyone I’ve seen.')],
+    'Cleo writes every guest in her ticket book, so she can find a partner in a blink.', 'seen = {}. need = target − nums[i].', 'One pass with quick lookups: O(n) time, O(n) space.'));
+  for (let i = 0; i < n; i++) {
+    const x = nums[i], need = T - x;
+    if (need in seen) {
+      ans = [seen[need], i];
+      steps.push(runStep('found', { L: i, need, partner: seen[need], board: book(-1, need), done: true }, [say('cleo', 'Guest ' + x + ' needs ' + need + ', and ' + need + ' is in my book!'), say('hoot', 'Seats ' + seen[need] + ' and ' + i + '.')],
+        'Guest ' + x + ' needs a ' + need + ', and ' + need + ' is in the book at seat ' + seen[need] + '. The answer is [' + seen[need] + ', ' + i + '].', need + ' in seen → return [' + seen[need] + ', ' + i + '].', 'Found after ' + (i + 1) + ' of ' + n + ' guests.'));
+      break;
+    }
+    seen[x] = i;
+    steps.push(runStep('store', { L: i, need, board: book(x, -1) }, [say('cleo', 'Guest ' + x + ' needs ' + need + '. Not in my book yet.'), say('cleo', 'I write down ' + x + ' → seat ' + i + '.')],
+      'Guest ' + x + ' needs a ' + need + '. Nobody like that has come yet, so Cleo writes ' + x + ' down.', need + ' not in seen → seen[' + x + '] = ' + i + '.', 'Check first, then write, so a guest never pairs with themselves.'));
+  }
+  runFinish(steps, { intro: ['Empty ticket book', 'plain'], store: ['No partner yet → write a ticket', 'cool'], found: ['Partner found → ' + showList(ans), 'ok'] }, (st) => {
+    st.cells = nums.map((_, i) => (st.kind === 'intro' ? 'future' : st.done && (i === st.L || i === st.partner) ? 'ok' : i < st.L ? 'stored' : i === st.L ? 'cur' : 'future'));
+    const k = st.kind === 'intro' ? 0 : st.L + 1;
+    st.meter = { text: st.kind === 'intro' ? 'target = ' + T : 'need = ' + T + ' − ' + nums[st.L] + ' = ' + st.need, pct: (k / n) * 100, mark: 100, markLabel: 'guests checked ' + k + ' / ' + n };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['nums[i]', st.kind === 'intro' ? '—' : nums[st.L], 'left'], ['need', st.need, 'right'], ['need in seen', st.done ? 'True' : st.kind === 'intro' ? '—' : 'False', st.done ? 'ok' : 'text'], ['len(seen)', st.board.length, 'text'], ['answer', st.done ? showList(ans) : '…', st.done ? 'ok' : 'text']];
+  });
+  return runScene('two-sum', Object.assign(fitRow({ pitch: 72, tile: 56, tileH: 70, font: 28 }, n, 440), {
+    items: nums.map(String), goal: 'Find the two guests whose numbers make ' + T,
+    example: ['nums = ' + showList(nums) + '   target = ' + T, 'answer = ' + showList(ans)],
+    answer: ans, input: { nums, target: T }
+  }), steps);
+}
+SCENE_INPUT['two-sum'] = {
+  hint: 'a list in brackets, then the target', example: '[4, 9, 2, 7, 5], 12',
+  default: { nums: [4, 9, 2, 7, 5], target: 12 },
+  presets: [['Story example', () => ({ nums: [4, 9, 2, 7, 5], target: 12 })], ['Random', () => randOnePair(false, rint(4, 8), 0, 30)], ['Sorted', () => ({ nums: [1, 4, 6, 10, 15], target: 25 })], ['Pair at once', () => ({ nums: [3, 3, 8], target: 6 })]],
+  random: () => randOnePair(false, rint(3, 9), 0, 99),
+  parse: parseNumsTarget, show: showNumsTarget,
+  check: (v) => checkCount(v.nums, 3, 9, 'guests') || checkRange(v.nums, 0, 99, 'Guest numbers') || checkOnePair(v.nums, v.target),
+  make: coatRun
+};
+
+function guestRun(input) {
+  const nums = (input || SCENE_INPUT['contains-duplicate'].default).nums.slice(), n = nums.length;
+  const seen = [], steps = [];
+  const list = (fresh, hit) => seen.map((k) => [String(k), 'on list', k === hit ? 'hit' : k === fresh ? 'fresh' : '']);
+  let answer = false;
+  steps.push(runStep('intro', { L: 0, board: [] }, [say('hoot', n + ' guests at the door. Did anyone come twice?'), say('cleo', 'I check my list first, then add each guest.')],
+    'Cleo starts with an empty guest list. A guest already on it came twice.', 'seen = set(). For each x: x in seen → True, else add it.', 'Set lookups are quick, so one pass is O(n).'));
+  for (let i = 0; i < n; i++) {
+    const x = nums[i];
+    if (seen.includes(x)) {
+      answer = true;
+      steps.push(runStep('found', { L: i, first: nums.indexOf(x), board: list(-1, x), done: true }, [say('cleo', x + ' is already on my list!'), say('hoot', 'Someone came twice. The answer is True.')],
+        'Guest ' + x + ' is already on the list. Somebody came twice!', x + ' in seen → return True.', 'Stop at the first repeat. The rest is never read.'));
+      break;
+    }
+    seen.push(x);
+    steps.push(runStep('add', { L: i, board: list(x, -1) }, [say('cleo', 'Guest ' + x + '. Not on my list. Added.')],
+      'Guest ' + x + ' is new, so Cleo writes them on the list.', x + ' not in seen → seen.add(' + x + ').', 'The list now holds ' + seen.length + ' different numbers.'));
+  }
+  if (!answer) {
+    steps.push(runStep('none', { L: n - 1, board: list(-1, -1), done: true }, [say('cleo', 'That was the last guest.'), say('hoot', 'Nobody came twice. The answer is False.')],
+      'Every guest was new. Nobody came twice.', 'loop ends → return False.', n + ' lookups, one per guest.'));
+  }
+  runFinish(steps, { intro: ['Empty guest list', 'plain'], add: ['New guest → add to the list', 'cool'], found: ['Already on the list → True', 'ok'], none: ['Everyone was new → False', 'ok'] }, (st) => {
+    st.cells = nums.map((_, i) => (st.kind === 'intro' ? 'future' : st.kind === 'none' ? 'stored' : st.kind === 'found' && (i === st.L || i === st.first) ? 'hit' : i < st.L ? 'stored' : i === st.L ? 'cur' : 'future'));
+    const k = st.kind === 'intro' ? 0 : st.L + 1;
+    st.meter = { text: st.kind === 'intro' ? 'list = {}' : st.kind === 'none' ? 'no repeats' : 'is ' + nums[st.L] + ' on the list?', pct: (k / n) * 100, mark: 100, markLabel: 'guests checked ' + k + ' / ' + n };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['x', st.kind === 'intro' ? '—' : nums[st.L], 'left'], ['x in seen', st.kind === 'found' ? 'True' : st.kind === 'intro' ? '—' : 'False', st.kind === 'found' ? 'ok' : 'text'], ['len(seen)', st.board.length, 'text'], ['seen', '{' + st.board.map((r) => r[0]).join(', ') + '}', 'text'], ['result', st.kind === 'found' ? 'True' : st.kind === 'none' ? 'False' : '…', st.done ? 'ok' : 'text']];
+  });
+  const base = SCENES['contains-duplicate'];
+  return runScene('contains-duplicate', Object.assign(fitRow({ pitch: 72, tile: 56, tileH: 70, font: 28 }, n, 440), {
+    items: nums.map(String), status: ['At the door…', answer ? 'Repeat spotted' : 'No repeats'],
+    lines: runLines(base, { none: /return false/i }), rules: base.rules.concat([['Everyone checked → nobody came twice', 'none']]),
+    example: ['nums = ' + showList(nums), 'answer = ' + (answer ? 'True' : 'False')],
+    answer, input: { nums }
+  }), steps);
+}
+SCENE_INPUT['contains-duplicate'] = {
+  hint: 'numbers from 0 to 99', example: '3, 8, 4, 6, 8',
+  default: { nums: [3, 8, 4, 6, 8] },
+  presets: [['Story example', () => ({ nums: [3, 8, 4, 6, 8] })], ['Random', () => ({ nums: rlist(rint(4, 8), 1, 12) })], ['All different', () => ({ nums: [1, 2, 3, 4, 5] })], ['Twice at once', () => ({ nums: [7, 7, 1] })]],
+  random: () => ({ nums: rlist(rint(3, 9), 0, rpick([9, 20, 99])) }),
+  parse: (t) => ({ nums: parseNums(t) }), show: (v) => v.nums.join(', '),
+  check: (v) => checkCount(v.nums, 3, 9, 'guests') || checkRange(v.nums, 0, 99, 'Guest numbers'),
+  make: guestRun
+};
+
+function scrabbleRun(input) {
+  const v = input || SCENE_INPUT['valid-anagram'].default;
+  const s = v.s.split(''), u = v.t.split(''), n = s.length;
+  const count = {}, order = [], steps = [];
+  const tally = (a, b) => order.map((k) => [k, (count[k] > 0 ? '+' : '') + count[k], (k === a || k === b) ? (count[k] === 0 ? 'hit' : 'fresh') : count[k] === 0 ? 'zero' : '']);
+  steps.push(runStep('intro', { L: 0, board: [] }, [say('hoot', 'Bag one spells “' + v.s + '”, bag two spells “' + v.t + '”. Same tiles?'), say('cleo', 'Bag one adds 1, bag two takes 1 away. All zeros means yes.')],
+    'Cleo draws one tile from each bag at a time. Bag one adds, bag two takes away. If all counts end at zero, the tiles match.', 'Lengths match. count = {}. count[s[i]] += 1, count[t[i]] −= 1.', 'One pass and at most 26 counters: O(n) time, O(1) space.'));
+  for (let i = 0; i < n; i++) {
+    const a = s[i], b = u[i];
+    [a, b].forEach((k) => { if (!(k in count)) { count[k] = 0; order.push(k); } });
+    count[a]++; count[b]--;
+    const zeroed = [a, b].filter((k) => count[k] === 0 && a !== b);
+    const both = zeroed.length > 1 ? '“' + zeroed.join('” and “') + '” are' : '“' + zeroed[0] + '” is';
+    if (zeroed.length) {
+      steps.push(runStep('cancel', { L: i, board: tally(a, b) }, [say('cleo', 'Bag one gives “' + a + '”, bag two gives “' + b + '”.'), say('hoot', both + ' back to zero.')],
+        '“' + a + '” adds one and “' + b + '” takes one away. ' + both + ' back to zero.', 'count["' + a + '"] = ' + count[a] + ', count["' + b + '"] = ' + count[b] + '.', 'A count back at zero means that letter balances so far.'));
+    } else {
+      steps.push(runStep('tally', { L: i, board: tally(a, b) }, [say('cleo', 'Bag one gives “' + a + '” (+1), bag two gives “' + b + '” (−1).'), say('hoot', a === b ? 'The same letter from both bags cancels at once.' : 'Nothing balances yet.')],
+        '“' + a + '” adds one and “' + b + '” takes one away.', 'count["' + a + '"] = ' + count[a] + ', count["' + b + '"] = ' + count[b] + '.', 'Order never matters, only the counts.'));
+    }
+  }
+  const off = order.filter((k) => count[k] !== 0);
+  const answer = off.length === 0;
+  steps.push(answer
+    ? runStep('found', { L: n - 1, board: order.map((k) => [k, '0', 'zero']), done: true }, [say('cleo', 'Every letter in my tally is 0.'), say('hoot', 'Same tiles. It is an anagram: True.')],
+      'Every letter came out even. The two bags hold exactly the same tiles.', 'all counts are 0 → return True.', '2n updates, then one look at each counter.')
+    : runStep('differ', { L: n - 1, board: tally(off[0], off[0]), done: true }, [say('cleo', '“' + off[0] + '” is still at ' + (count[off[0]] > 0 ? '+' : '') + count[off[0]] + '.'), say('hoot', 'The tiles differ. Not an anagram: False.')],
+      'Some letters did not cancel, like “' + off[0] + '”. The bags hold different tiles.', 'count["' + off[0] + '"] = ' + count[off[0]] + ' != 0 → return False.', 'One counter that is not zero is proof enough.'));
+  runFinish(steps, { intro: ['Empty tally', 'plain'], tally: ['+1 for bag one, −1 for bag two', 'cool'], cancel: ['A letter balances back to 0', 'warn'], found: ['All zero → anagram', 'ok'], differ: ['A letter is left over → False', 'ok'] }, (st) => {
+    st.cells = s.map((_, i) => (st.kind === 'intro' ? 'future' : st.done ? (answer ? 'ok' : 'stored') : i < st.L ? 'stored' : i === st.L ? 'cur' : 'future'));
+    st.cells2 = st.cells.slice();
+    const nz = st.board.filter((r) => r[1] !== '0').length, drawn = st.kind === 'intro' ? 0 : st.L + 1;
+    st.meter = { text: st.kind === 'found' ? 'all counts = 0' : 'letters off balance: ' + nz, pct: (drawn / n) * 100, mark: 100, markLabel: 'tiles drawn ' + drawn + ' / ' + n };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['s[i]', st.kind === 'intro' ? '—' : '“' + s[st.L] + '”', 'left'], ['t[i]', st.kind === 'intro' ? '—' : '“' + u[st.L] + '”', 'right'], ['non-zero', nz, 'text'], ['letters', st.board.length, 'text'], ['result', st.kind === 'found' ? 'True' : st.kind === 'differ' ? 'False' : '…', st.done ? 'ok' : 'text']];
+  });
+  const base = SCENES['valid-anagram'];
+  return runScene('valid-anagram', Object.assign(fitRow({ pitch: 58, tile: 46, tileH: 48, font: 22 }, n, 420), {
+    items: s, items2: u, status: ['Tallying…', answer ? 'Same tiles' : 'Different tiles'],
+    lines: runLines(base, { differ: /return all|return Object\.values|if \(c != 0\)|^\s*return false\s*$/ }), rules: base.rules.concat([['A letter left over → not an anagram', 'differ']]),
+    example: ['s = "' + v.s + '"   t = "' + v.t + '"', 'answer = ' + (answer ? 'True' : 'False')],
+    answer, input: { s: v.s, t: v.t }
+  }), steps);
+}
+function randAnagram() {
+  const w = Array.from({ length: rint(3, 7) }, () => rpick('abcdeilnorst'.split('')));
+  const t = w.slice();
+  for (let i = t.length - 1; i > 0; i--) { const j = rint(0, i); [t[i], t[j]] = [t[j], t[i]]; }
+  if (Math.random() < 0.4) t[rint(0, t.length - 1)] = rpick('abcdeilnorst'.split(''));
+  return { s: w.join(''), t: t.join('') };
+}
+SCENE_INPUT['valid-anagram'] = {
+  hint: 'two words of the same length', example: 'listen, silent',
+  default: { s: 'listen', t: 'silent' },
+  presets: [['Story example', () => ({ s: 'listen', t: 'silent' })], ['Random', randAnagram], ['Not an anagram', () => ({ s: 'rat', t: 'car' })], ['Repeats', () => ({ s: 'aab', t: 'abb' })]],
+  random: randAnagram,
+  parse: parseWords, show: (v) => v.s + ', ' + v.t,
+  check: (v) => (!/^[a-z]+$/.test(v.s + v.t) ? 'Use lowercase letters a to z only.'
+    : v.s.length !== v.t.length ? 'Use two words of the same length. Words of different lengths are never anagrams.'
+    : v.s.length < 3 || v.s.length > 9 ? 'Use words of 3 to 9 letters, so every tile stays readable.' : ''),
+  make: scrabbleRun
+};

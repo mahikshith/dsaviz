@@ -7,8 +7,8 @@ const store = {};
 const f = new Function('store', `const window = { localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } }, addEventListener(){}, removeEventListener(){} };
 const setInterval = () => 1, clearInterval = () => {};
 class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, o); } }
-${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS };`);
-const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS } = f(store);
+${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS, SCENE_INPUT, runFromText, predictQuestion, predictKind };`);
+const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS, SCENE_INPUT, runFromText, predictQuestion, predictKind } = f(store);
 let bad = 0;
 for (const id of SCENE_ORDER) {
   const S = SCENES[id];
@@ -104,5 +104,148 @@ for (const id of SCENE_ORDER) {
   }
   console.log(id, S.steps.length, 'steps ok;', renders, 'renders; more:', c.renderVals().moreStories.map((x) => x.story).join(' / '));
 }
+// ---- Try your own input: every scene with make(input) runs its presets and 20 random inputs. The answer must match
+// a reference solver written here (not the scene's own code), every step must render with no undefined or NaN, and
+// every step kind needs a code line. Then a few bad inputs must give a plain error, not a crash.
+const pairs = (a, t) => { const out = []; for (let i = 0; i < a.length; i++) for (let j = i + 1; j < a.length; j++) if (a[i] + a[j] === t) out.push([i, j]); return out; };
+const levelKids = (arr) => {   // LeetCode level order → { val, left, right } nodes
+  if (!arr.length || arr[0] == null) return null;
+  const root = { v: arr[0] }, q = [root];
+  let i = 1;
+  while (q.length && i < arr.length) {
+    const nd = q.shift();
+    for (const side of ['l', 'r']) { if (i >= arr.length) break; const x = arr[i++]; if (x != null) { nd[side] = { v: x }; q.push(nd[side]); } }
+  }
+  return root;
+};
+const REF = {
+  'two-sum-ii': (v) => { const [[i, j]] = pairs(v.nums, v.target); return [i + 1, j + 1]; },
+  'valid-palindrome': (v) => { const c = v.s.toLowerCase().replace(/[^a-z0-9]/g, ''); return c === c.split('').reverse().join(''); },
+  container: (v) => { let b = 0; for (let i = 0; i < v.nums.length; i++) for (let j = i + 1; j < v.nums.length; j++) b = Math.max(b, Math.min(v.nums[i], v.nums[j]) * (j - i)); return b; },
+  'longest-substring': (v) => { let b = 0; for (let i = 0; i < v.s.length; i++) for (let j = i; j < v.s.length; j++) { const w = v.s.slice(i, j + 1); if (new Set(w).size === w.length) b = Math.max(b, w.length); } return b; },
+  'best-time-stock': (v) => { let b = 0; for (let i = 0; i < v.nums.length; i++) for (let j = i + 1; j < v.nums.length; j++) b = Math.max(b, v.nums[j] - v.nums[i]); return b; },
+  'two-sum': (v) => pairs(v.nums, v.target)[0],
+  'contains-duplicate': (v) => new Set(v.nums).size !== v.nums.length,
+  'valid-anagram': (v) => v.s.split('').sort().join('') === v.t.split('').sort().join(''),
+  'binary-search': (v) => v.nums.indexOf(v.target),
+  'search-rotated': (v) => v.nums.indexOf(v.target),
+  'find-min-rotated': (v) => Math.min.apply(null, v.nums),
+  'unique-paths': (v) => { const [m, n] = v.size; let r = 1; for (let k = 1; k <= m - 1; k++) r = (r * (n - 1 + k)) / k; return Math.round(r); },
+  'climbing-stairs': (v) => { const f = [1, 1]; for (let i = 2; i <= v.n; i++) f[i] = f[i - 1] + f[i - 2]; return f[v.n]; },
+  'house-robber': (v) => { let best = 0; const n = v.nums.length; for (let mask = 0; mask < 1 << n; mask++) { if (mask & (mask >> 1)) continue; let s = 0; for (let i = 0; i < n; i++) if (mask & (1 << i)) s += v.nums[i]; best = Math.max(best, s); } return best; },
+  'number-of-islands': (v) => {
+    const g = v.grid.map((r) => r.slice()), R = g.length, C = g[0].length;
+    let n = 0;
+    for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) if (g[r][c] === '1') { n++; const q = [[r, c]]; g[r][c] = '0'; while (q.length) { const [a, b] = q.pop(); [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => { const x = a + dr, y = b + dc; if (x >= 0 && y >= 0 && x < R && y < C && g[x][y] === '1') { g[x][y] = '0'; q.push([x, y]); } }); } }
+    return n;
+  },
+  'max-depth': (v) => { const d = (nd) => (nd ? 1 + Math.max(d(nd.l), d(nd.r)) : 0); return d(levelKids(v.arr)); }
+};
+const BAD = ['', '[1, 2', 'hello world and more', '1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12', '[[1, 2], 3', 'null', '1 / 22 / 333'];
+let runs = 0;
+const clean = (x) => JSON.stringify(x, (k, y) => (typeof y === 'function' ? undefined : y));
+for (const id of Object.keys(SCENE_INPUT)) {
+  const spec = SCENE_INPUT[id];
+  if (!SCENES[id]) { console.log('custom input for unknown scene', id); bad++; continue; }
+  if (!REF[id]) { console.log(id, 'has make(input) but no reference solver in scenecheck.js'); bad++; continue; }
+  for (const k of ['hint', 'example', 'presets', 'random', 'parse', 'show', 'check', 'make']) if (!spec[k]) { console.log(id, 'custom input is missing', k); bad++; }
+  if (spec.presets.length < 3 || spec.presets.length > 4) { console.log(id, 'needs 3 or 4 presets'); bad++; }
+  const inputs = spec.presets.map(([label, fn]) => [label, fn()]).concat(Array.from({ length: 20 }, (_, i) => ['random ' + (i + 1), spec.random()]));
+  inputs.push(['the box example', spec.parse(spec.example)]);
+  store['dsaviz-problem'] = id;
+  const c = new Component({});
+  for (const [label, input] of inputs) {
+    const where = id + ' [' + label + '] ' + JSON.stringify(input);
+    const err = spec.check(input);
+    if (err) { console.log(where, 'a preset or random input fails its own check:', err); bad++; continue; }
+    const text = spec.show(input);
+    let back;
+    try { back = spec.parse(text); } catch (e) { console.log(where, 'show() text does not parse back:', text, e.message); bad++; continue; }
+    if (clean(back) !== clean(input)) { console.log(where, 'parse(show(input)) differs:', clean(back)); bad++; }
+    const res = runFromText(id, text);
+    if (res.error) { console.log(where, 'runFromText failed:', res.error); bad++; continue; }
+    const S = res.scene;
+    runs++;
+    const want = REF[id](input);
+    if (clean(S.answer) !== clean(want)) { console.log(where, 'answer', clean(S.answer), 'but the reference says', clean(want)); bad++; }
+    if (!S.custom || !S.steps.length || S.steps[0].kind !== 'intro' || !S.steps[S.steps.length - 1].done) { console.log(where, 'a run starts with intro and ends on a done step'); bad++; }
+    if (S.visual === 'grid') {
+      const R = S.items.length, C = S.items[0].length;
+      if (R > 6 && C > 1 || C > 9) { console.log(where, 'grid too big', R, C); bad++; }
+      S.steps.forEach((st, i) => { if (!Array.isArray(st.cells) || st.cells.length !== R || st.cells.some((row) => row.length !== C)) { console.log(where, i, 'cells do not match items'); bad++; } });
+    } else if (S.visual === 'tree') {
+      if (S.tree.length > 15) { console.log(where, 'tree has more than 15 nodes'); bad++; }
+    } else if (S.items.length > 9) { console.log(where, 'more than 9 items'); bad++; }
+    if (S.width && S.width > 640) { console.log(where, 'row is too wide for the stage:', S.width); bad++; }
+    S.steps.forEach((st, i) => {
+      if (/undefined|NaN/.test(clean(st))) { console.log(where, 'step', i, 'has undefined or NaN', clean(st).slice(0, 160)); bad++; }
+      for (const lv of ['kid', 'builder', 'expert']) if (!st.nar[lv]) { console.log(where, i, 'no text at', lv); bad++; }
+      if (!st.meter || st.watch.length !== 6 || !st.verdict) { console.log(where, i, 'meter, watch or verdict'); bad++; }
+    });
+    const langs = label === 'random 1' || !label.startsWith('random') ? ['py', 'java', 'cpp', 'js', 'go'] : ['py'];
+    for (const lang of langs) {
+      c.runner.setLang(lang);
+      const lines = S.lines[lang] || S.lines.py;
+      for (let i = 0; i < S.steps.length; i++) {
+        if (!lines[S.steps[i].kind]) { console.log(where, lang, 'no code line for', S.steps[i].kind); bad++; break; }
+        c.setState({ run: S, step: i, tab: 'solution', deeper: true, customOpen: true });
+        const v = c.renderVals();
+        const txt = clean(v);
+        if (/undefined|NaN/.test(txt)) { const m = txt.match(/.{60}(undefined|NaN).{40}/); console.log(where, lang, 'render step', i, m && m[0]); bad++; break; }
+        if (v.lineMarkOp !== 1 || v.stepLabel !== 'Step ' + (i + 1) + ' of ' + S.steps.length || !v.customActive) { console.log(where, lang, 'step', i, 'line or label'); bad++; break; }
+      }
+    }
+  }
+  for (const text of BAD) {
+    const res = runFromText(id, text);
+    if (!res.error && !res.scene) { console.log(id, 'bad input gave neither a scene nor an error:', text); bad++; }
+    if (res.error && (/undefined|NaN|TypeError|of null/.test(res.error) || !/[.?]$/.test(res.error))) { console.log(id, 'error is not plain:', res.error); bad++; }
+  }
+  c.setState({ run: null, step: 0 });
+}
+// Stories without custom input hide the fold.
+for (const id of SCENE_ORDER.filter((x) => !SCENE_INPUT[x]).slice(0, 3)) {
+  store['dsaviz-problem'] = id;
+  if (new Component({}).renderVals().hasCustom) { console.log(id, 'shows the custom input fold without make(input)'); bad++; }
+}
+console.log(Object.keys(SCENE_INPUT).length + ' stories take your own input; ' + runs + ' runs checked against reference solvers');
+
+// ---- Predict the next step: every question, on every story and on custom runs, has 2 or 3 different choices and exactly one right one,
+// and the right one is the next step's kind.
+let asked = 0;
+const predictCheck = (S, where) => {
+  S.steps.forEach((st, j) => {
+    const q = predictQuestion(S, j);
+    if (!q) return;
+    asked++;
+    const right = q.choices.filter((x) => x.right);
+    if (q.choices.length < 2 || q.choices.length > 3) { console.log(where, j, 'predict needs 2 or 3 choices', q.choices.length); bad++; }
+    if (right.length !== 1) { console.log(where, j, 'predict has', right.length, 'right choices'); bad++; }
+    if (new Set(q.choices.map((x) => x.label)).size !== q.choices.length) { console.log(where, j, 'predict choices repeat'); bad++; }
+    const rule = S.rules.find(([, k]) => k === predictKind(S, st.kind));
+    if (!rule || !right[0] || !rule[0].endsWith(right[0].label.slice(1))) { console.log(where, j, 'the right choice is not the next step’s rule', right[0] && right[0].label); bad++; }
+    if (!q.cue || /undefined|NaN/.test(q.cue)) { console.log(where, j, 'predict cue missing'); bad++; }
+  });
+};
+SCENE_ORDER.forEach((id) => predictCheck(SCENES[id], id));
+Object.keys(SCENE_INPUT).forEach((id) => { const spec = SCENE_INPUT[id]; for (let k = 0; k < 5; k++) predictCheck(spec.make(spec.random()), id + ' (custom)'); });
+// The player asks, takes an answer, logs it in DS and moves on.
+{
+  store['dsaviz-problem'] = 'two-sum-ii';
+  const c = new Component({});
+  c.togglePredict();
+  c.stepNext();
+  if (!c.state.ask) { console.log('predict: Next did not ask before step 1'); bad++; }
+  else {
+    const q = c.state.ask, i = q.choices.findIndex((x) => x.right);
+    c.answer(i);
+    if (c.state.step !== q.at || !c.state.fb || !c.state.fb.ok) { console.log('predict: a right answer did not move on with feedback'); bad++; }
+    if (!/^Right/.test(c.renderVals().feedback)) { console.log('predict: feedback line missing'); bad++; }
+    c.stepNext();
+    if (c.state.ask) { console.log('predict: asked twice in a row'); bad++; }
+  }
+  if (!(JSON.parse(store['dsaviz-predict-v1'] || '{}').total >= 1)) { console.log('predict: the pick was not logged in DS'); bad++; }
+}
+console.log(asked + ' predict questions checked');
 console.log(bad ? bad + ' problems' : 'all scenes clean');
 if (bad) process.exitCode = 1;

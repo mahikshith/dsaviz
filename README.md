@@ -32,7 +32,7 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `pages/*.dc.html` | One file per page: markup template, then a `<script type="text/x-dc">` with a `Component` class whose `renderVals()` fills the `{{holes}}`. |
 | `pages/canvas.json` | Board positions for the design-canvas view. |
 | `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the problem catalog (`catalog.js`), the master sheet (`sheet.js`, Sheet page only), the data layer `DS` (`data.js`), the pill nav and menu (`nav.js`, `drawer.js`, `ui/nav.html`) and the shared components (`ui.js`, `ui/tiles.html`, `ui/rings.html`, `ui/medals.html`). |
-| `src/story/` | The story engine: `scenes_tp.js` (Two Pointers, engine header), `scenes_sw.js`, `scenes_hm.js`, and one `scenes_<code>.js` per newer pattern; `tail.js` (scene registry and quiz kits), `tasks.js` (each problem in plain words), `comp.js` (the problem page), `story_body.html` (its markup). |
+| `src/story/` | The story engine: `scenes_tp.js` (Two Pointers, engine header), `scenes_sw.js`, `scenes_hm.js`, and one `scenes_<code>.js` per newer pattern; `practice.js` (your own input and predict-the-next-step helpers), `tail.js` (scene registry and quiz kits), `tasks.js` (each problem in plain words), `comp.js` (the problem page), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
 | `src/git/` | The Git page's model: `sim.js` (a small Git: files, staging area, commits, branches, origin, stash) and `lessons.js` (8 lessons, one command and one caption per step). |
@@ -74,6 +74,12 @@ PATTERN_KITS['Binary Search'] = { right: 1, spot: 'Why halve, not walk?', ask: '
   quiz: [['Check every number', '…'], ['Halve the doubt', '…'], ['…', '…'], ['…', '…']] };
 STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' };  // color: a theme key or a hex
 ```
+
+### Your own input and Predict
+
+A story can also take the learner's own values. Below the scene function, register `SCENE_INPUT['my-id'] = { hint, example, presets, random, parse, show, check, make }` (see `src/story/practice.js` for the parsers, checks and `fitRow`). `make(input)` re-runs the simulation and returns the same scene shape: it keeps the story's code and rules and rebuilds `items`, `steps`, `example` and `answer`, with short template captions per step kind. `check` keeps visuals readable (3 to 9 items, grids up to 6 by 6, trees up to 15 nodes) and returns one plain sentence when the input is wrong. Stories without an entry hide the "Try your own input" fold. A step kind the story never needed (such as "not found") gets its code line from `runLines(base, { kind: /regex/ })` and a rule. Add a reference solver for the id to `REF` in `tests/scenecheck.js`: it runs every preset and 20 random inputs against it.
+
+The Predict toggle builds each question from `rules`: the words after "→" are the choices and the next step's kind is the right one. Use `predictAlias` to fold kinds that share a rule, `predictFull: true` when the short forms sound alike, and `predictCue(step)` when the meter text would give the answer away. Picks are counted by `DS.logPredict`.
 
 Add the problem in plain words to `STORY_TASKS` in `src/story/tasks.js` (two to four short sentences: the real task first, then the characters). `scenecheck.js` fails without it.
 

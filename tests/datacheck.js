@@ -13,7 +13,7 @@ const check = (cond, msg) => { if (!cond) { problems++; console.log('  ✗', msg
 // A fresh DS over its own store and clock. withCatalog binds the 58-problem catalog like a page does.
 function load(withCatalog) {
   const store = {};
-  const window = { localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } } };
+  const window = { localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } } };
   const body = (withCatalog ? catalogSrc : '') + '\n' + dataSrc + '\nreturn { DS, PROBLEMS: typeof PROBLEMS !== "undefined" ? PROBLEMS : null, PATTERNS: typeof PATTERNS !== "undefined" ? PATTERNS : null };';
   const out = new Function('window', body)(window);
   let now = new Date(2026, 9, 21, 20, 0, 0).getTime(); // Wed 21 Oct 2026, 8 pm local
@@ -244,6 +244,26 @@ console.log('notes and the backup file');
   check(fresh.DS.importBackup({ v: 2 }) === null && fresh.DS.importBackup(null) === null, 'a file that is not a backup is refused');
   const old = fresh.DS.importBackup({ v: 1, done: { 'reverse-string': 3000 } });
   check(old.ticks === 1 && old.notes === 0, 'an older backup without notes still imports');
+}
+
+console.log('predict the next step');
+{
+  const { DS, store } = load(false);
+  const p0 = DS.predict();
+  check(p0.streak === 0 && p0.best === 0 && p0.total === 0, 'predict starts empty');
+  DS.logPredict(true); DS.logPredict(true);
+  check(DS.predict().streak === 2 && DS.predict().best === 2, 'two right picks make a streak of 2');
+  DS.logPredict(false);
+  const p1 = DS.predict();
+  check(p1.streak === 0 && p1.best === 2 && p1.right === 2 && p1.total === 3, 'a wrong pick resets the streak and keeps the best: ' + JSON.stringify(p1));
+  check(JSON.parse(store['dsaviz-predict-v1']).v === 1, 'predict is versioned in dsaviz-predict-v1');
+  store['dsaviz-predict-v1'] = '{broken';
+  check(DS.predict().streak === 0, 'a broken predict record reads as empty');
+  store['dsaviz-predict-v1'] = JSON.stringify({ v: 1, streak: 9, best: 1, right: 3, total: 2 });
+  const p2 = DS.predict();
+  check(p2.right <= p2.total && p2.streak <= p2.right && p2.best >= p2.streak, 'impossible counts are clamped: ' + JSON.stringify(p2));
+  DS.eraseProgress();
+  check(DS.predict().total === 0, 'erasing progress clears the predict streak');
 }
 
 console.log(problems ? problems + ' problem(s)' : 'data clean');

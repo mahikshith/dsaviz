@@ -95,3 +95,67 @@ SCENE_REGISTRY.push(islandsScene);
 PATTERN_KITS['Depth-First Search'] = { right: 2, spot: 'Why chalk, not count?', ask: 'How should Moss count the islands?',
   quiz: [['Count every land square', 'Each 1 on the map is an island'], ['Count runs in each row', 'An island is a stretch of land in one row'], ['Chalk each island you find', 'Explore all of it at once, so it is never counted again'], ['Compare every pair of squares', 'Check which land squares touch which']] };
 STORY_CAST.moss = { name: 'Moss', initial: 'M', color: 'left', radius: '999px' };
+
+// ---------- Your own input (see practice.js) ----------
+function islandsRun(input) {
+  const map = (input || SCENE_INPUT['number-of-islands'].default).grid.map((row) => row.slice());
+  const R = map.length, C = map[0].length;
+  const g = map.map((row) => row.slice()), owner = map.map((row) => row.map(() => -1));
+  const land = map.flat().filter((x) => x === '1').length;
+  const where = (r, c) => 'row ' + r + ', column ' + c;
+  const dirName = (a, b) => (b[0] > a[0] ? 'down' : b[0] < a[0] ? 'up' : b[1] > a[1] ? 'right' : 'left');
+  const steps = [], trail = [];
+  let islands = 0, size = 0, chalked = 0;
+  const snap = (kind, r, c, extra) => Object.assign({ r, c, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: trail.map((p) => p.slice()), actorAt: [r === '—' ? 0 : r, c === '—' ? 0 : c] }, extra);
+  steps.push(runStep('intro', snap('intro', '—', '—'), [say('hoot', 'A ' + R + ' by ' + C + ' map. 1 is land, 0 is water. How many islands?'), say('moss', 'Land that touches up, down, left or right is one island.')],
+    'Moss reads the map row by row. New land means a new island, and he chalks all of it so it is never counted twice.', 'Scan every square. On unchalked land: islands += 1, then chalk(r, c).', 'Count connected groups: one search per group, O(R·C) in total.'));
+  const visit = (r, c) => {
+    if (r < 0 || c < 0 || r >= R || c >= C || g[r][c] !== '1') return;
+    g[r][c] = '#'; owner[r][c] = islands - 1; size++; chalked++;
+    trail.push([r, c]);
+    const first = trail.length === 1, parent = first ? null : trail[trail.length - 2];
+    if (first) {
+      steps.push(runStep('found', snap('found', r, c), [say('moss', 'Land at ' + where(r, c) + ', no chalk on it.'), say('hoot', 'A new island. That makes ' + islands + '.')],
+        'Moss finds land with no chalk. That is island number ' + islands + '. He chalks it.', 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', chalk(' + r + ', ' + c + ').', 'Each island is counted once, at its first square in reading order.'));
+    } else {
+      const dir = dirName(parent, [r, c]);
+      steps.push(runStep('chalk', snap('chalk', r, c), [say('moss', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('hoot', 'Chalk it and keep going.')],
+        'Moss steps ' + dir + ' and finds more land on the same island. He chalks it.', 'chalk(' + r + ', ' + c + '): "1" → "#". This island has ' + size + ' squares so far.', 'Mark first, then try the neighbours, so no square is entered twice.'));
+    }
+    visit(r + 1, c); visit(r - 1, c); visit(r, c + 1); visit(r, c - 1);
+    trail.pop();
+  };
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) if (g[r][c] === '1') { islands++; size = 0; visit(r, c); }
+  steps.push(runStep('done', snap('done', R - 1, C - 1, { done: true }), [say('moss', 'I read the last square.'), say('hoot', islands === 1 ? 'There is 1 island.' : 'There are ' + islands + ' islands.')],
+    islands === 1 ? 'The whole map is read. There is 1 island.' : 'The whole map is read. There are ' + islands + ' islands.', 'The scan ends → return islands = ' + islands + '.', 'Every square is read once and chalked at most once: O(R·C).'));
+  runFinish(steps, { intro: ['Ready to read the map', 'plain'], found: ['New land → new island', 'warn'], chalk: ['Land next door → chalk it', 'cool'], done: [islands + (islands === 1 ? ' island found' : ' islands found'), 'ok'] }, (st) => {
+    const cur = st.islands - 1;
+    st.cells = st.vals.map((row, r) => row.map((x, c) => {
+      if (x === '0') return 'out';
+      if (x === '1') return 'in';
+      if (st.done) return 'stored';
+      if (st.kind !== 'intro' && r === st.r && c === st.c) return st.kind === 'found' ? 'hit' : 'cur';
+      return st.owner[r][c] === cur ? 'ok' : 'stored';
+    }));
+    st.path = st.trail.length > 1 ? st.trail : null;
+    st.meter = { text: 'land chalked: ' + st.chalked + ' / ' + land, pct: land ? (st.chalked / land) * 100 : 100, mark: 100, markLabel: 'all ' + land + ' land squares' };
+    st.watch = [['r', st.r, 'left'], ['c', st.c, 'left'], ['grid[r][c]', st.kind === 'intro' ? '—' : st.done ? '"' + st.vals[st.r][st.c] + '"' : '"#"', 'right'], ['islands', st.islands, st.done ? 'ok' : 'text'], ['this island', st.kind === 'intro' ? 0 : st.size, 'text'], ['trail depth', st.trail.length, 'right']];
+    if (!st.path) delete st.path;
+    ['owner', 'trail', 'islands', 'size', 'chalked', 'r', 'c'].forEach((k) => delete st[k]);
+  });
+  return runScene('number-of-islands', {
+    items: map, status: ['Reading the map…', islands + (islands === 1 ? ' island' : ' islands')],
+    example: ['grid = ' + map.map((row) => row.join('')).join(' / '), 'answer = ' + islands], answer: islands, input: { grid: map }
+  }, steps);
+}
+SCENE_INPUT['number-of-islands'] = {
+  hint: 'rows of 0 and 1, split by /', example: '11000 / 11011 / 00010 / 01000 / 11101',
+  default: { grid: ['11000', '11011', '00010', '01000', '11101'].map((r) => r.split('')) },
+  presets: [['Story example', () => SCENE_INPUT['number-of-islands'].default], ['Random', () => SCENE_INPUT['number-of-islands'].random()], ['All water', () => ({ grid: ['000', '000'].map((r) => r.split('')) })], ['Checkerboard', () => ({ grid: ['1010', '0101', '1010'].map((r) => r.split('')) })]],
+  random: () => { const R = rint(2, 6), C = rint(2, 6); return { grid: Array.from({ length: R }, () => Array.from({ length: C }, () => (Math.random() < 0.45 ? '1' : '0'))) }; },
+  parse: parseGrid, show: showGrid,
+  check: (v) => (v.grid.length < 2 || v.grid.length > 6 ? 'Use 2 to 6 rows, so the map stays readable.'
+    : !v.grid.every((row) => row.length === v.grid[0].length) ? 'Every row needs the same number of squares.'
+    : v.grid[0].length < 2 || v.grid[0].length > 6 ? 'Use 2 to 6 squares per row, so the map stays readable.' : ''),
+  make: islandsRun
+};

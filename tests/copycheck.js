@@ -28,7 +28,7 @@ const ANY = [
   [/like (you'?re|you’re|I'?m|I’m) a kid/i, 'old "explain like a kid" wording'],
   [/\b(video lessons?|narrated|narration|voice-?over)\b/i, 'video or narration (there is none)'],
   [/trial is running|start 3-day free trial|no card for the trial|3 days free|you both get 7 more days/i, 'trial copy that contradicts free early access'],
-  [/predict mode|rebuild the code|shuffled lines|three small quests/i, 'a feature that does not exist']
+  [/rebuild the code|shuffled lines|three small quests/i, 'a feature that does not exist']
 ];
 // Rules for visible markup only.
 const MARKUP = [

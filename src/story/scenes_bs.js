@@ -114,7 +114,7 @@ function shelfScene() {
   });
   const L5 = { intro: 2, found: 5, leftIn: 7, leftOut: 8, rightIn: 10, rightOut: 11 };
   return {
-    id: 'search-rotated', pattern: 'Binary Search', cast: 'bs', short: 'Spun Shelf', visual: 'letters', items: nums.map(String), pitch: 64, tile: 52, tileH: 66, gap: 12, font: 26, width: 500,
+    id: 'search-rotated', pattern: 'Binary Search', cast: 'bs', predictFull: true, short: 'Spun Shelf', visual: 'letters', items: nums.map(String), pitch: 64, tile: 52, tileH: 66, gap: 12, font: 26, width: 500,
     actorLabels: ['Gus · mid'],
     goal: 'Find book 6 on the moved shelf', status: ['Searching…', 'Found it'],
     lines: { py: { intro: 2, found: 6, leftIn: 9, leftOut: 11, rightIn: 14, rightOut: 16 }, java: L5, cpp: L5, js: L5, go: { intro: 2, found: 6, leftIn: 10, leftOut: 12, rightIn: 16, rightOut: 18 } },
@@ -199,3 +199,130 @@ SCENE_REGISTRY.push(guessScene, shelfScene, stepScene);
 PATTERN_KITS['Binary Search'] = { right: 1, spot: 'Why halve, not walk?', ask: 'How should Gus search?',
   quiz: [['Check every one', 'Walk the row from the start'], ['Halve the doubt', 'Look at the middle, drop the wrong half'], ['Keep a running total', 'Write the sum so far at every step'], ['A notebook of everything seen', 'Write down every value you pass']] };
 STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'right', radius: '999px' };
+
+// ---------- Your own input (see practice.js) ----------
+// Binary search and the spun shelf share one walk; only the "which half" rule differs.
+function bsRun(id, input) {
+  const rotated = id === 'search-rotated';
+  const v = input || SCENE_INPUT[id].default;
+  const nums = v.nums.slice(), T = v.target, n = nums.length;
+  const what = rotated ? 'book' : 'card';
+  const steps = [];
+  let lo = 0, hi = n - 1, ans = -1;
+  steps.push(runStep('intro', { L: (n - 1) >> 1, lo, hi, mid: null }, [say('hoot', n + ' ' + what + 's. Find the one that shows ' + T + '.'), say('gus', rotated ? 'One side of the middle is always in order. I’ll use that side.' : 'I’ll look at the middle ' + what + ' first.')],
+    rotated ? 'The shelf goes up, drops once, then goes up again. Gus checks the middle book and the side of it that is in order.' : 'The cards are in order. Gus looks at the middle card, and each look rules out half of the rest.',
+    'lo = 0, hi = ' + (n - 1) + '. While lo ≤ hi: mid = (lo + hi) // 2.', 'Each look halves what is left: O(log n).'));
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1, x = nums[mid];
+    if (x === T) {
+      ans = mid;
+      steps.push(runStep('found', { L: mid, lo, hi, mid, done: true }, [say('gus', 'The middle ' + what + ' shows ' + x + '. Found it!'), say('hoot', 'It is at position ' + mid + '.')],
+        'The middle ' + what + ' is ' + x + '. Gus found it at position ' + mid + '.', 'nums[' + mid + '] == ' + T + ' → return ' + mid + '.', steps.length + ' looks for ' + n + ' ' + what + 's.'));
+      break;
+    }
+    if (!rotated) {
+      const up = x < T;
+      steps.push(runStep(up ? 'up' : 'down', { L: mid, lo, hi, mid }, [say('gus', 'Card ' + mid + ' shows ' + x + '. Too ' + (up ? 'small' : 'big') + '.'), say('gus', 'I drop it and everything to its ' + (up ? 'left' : 'right') + '.')],
+        x + ' is ' + (up ? 'smaller' : 'bigger') + ' than ' + T + ', so ' + T + ' can only be to the ' + (up ? 'right' : 'left') + '. Gus drops the other half.',
+        'nums[' + mid + '] = ' + x + (up ? ' < ' : ' > ') + T + ' → ' + (up ? 'lo = ' + (mid + 1) : 'hi = ' + (mid - 1)) + '.', 'The list is sorted, so one look settles a whole half.'));
+      if (up) lo = mid + 1; else hi = mid - 1;
+      continue;
+    }
+    const leftSorted = nums[lo] <= x;
+    const fits = leftSorted ? nums[lo] <= T && T < x : x < T && T <= nums[hi];
+    const kind = leftSorted ? (fits ? 'leftIn' : 'leftOut') : (fits ? 'rightIn' : 'rightOut');
+    const range = leftSorted ? nums[lo] + ' to ' + x : x + ' to ' + nums[hi];
+    const goLeft = kind === 'leftIn' || kind === 'rightOut';
+    steps.push(runStep(kind, { L: mid, lo, hi, mid }, [say('gus', 'The middle book is ' + x + '. Books ' + range + ' are in order.'), say('gus', T + (fits ? ' fits in there. I keep that side.' : ' does not fit there. I drop that side.'))],
+      'The ' + (leftSorted ? 'left' : 'right') + ' side runs ' + range + ' with no drop. ' + (fits ? T + ' fits in there, so Gus keeps it.' : T + ' cannot be in there, so Gus searches the other side.'),
+      (leftSorted ? 'nums[lo] ≤ nums[mid]' : 'nums[lo] > nums[mid]') + ' → ' + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', 'The side in order tells for sure if the target can be there.'));
+    if (goLeft) hi = mid - 1; else lo = mid + 1;
+  }
+  if (ans < 0) {
+    steps.push(runStep('missing', { L: Math.min(Math.max(lo, 0), n - 1), lo, hi, mid: null, done: true }, [say('gus', 'Nothing is left to look at.'), say('hoot', T + ' is not here. The answer is −1.')],
+      'Every ' + what + ' that could hold ' + T + ' has been ruled out. It is not there.', 'lo > hi → return -1.', (steps.length - 1) + ' looks to prove it is missing.'));
+  }
+  const T5 = rotated
+    ? { intro: ['All ' + n + ' books are still possible', 'plain'], leftIn: ['Left side in order and it fits → keep left', 'warn'], leftOut: ['Left side in order, it doesn’t fit → go right', 'warn'], rightIn: ['Right side in order and it fits → keep right', 'cool'], rightOut: ['Right side in order, it doesn’t fit → go left', 'cool'], found: ['Found ' + T + ' at position ' + ans, 'ok'], missing: [T + ' is not on the shelf → −1', 'ok'] }
+    : { intro: ['All ' + n + ' cards are still possible', 'plain'], up: ['Too small → drop the left half', 'warn'], down: ['Too big → drop the right half', 'cool'], found: ['Found ' + T + ' at position ' + ans, 'ok'], missing: [T + ' is not there → −1', 'ok'] };
+  runFinish(steps, T5, (st) => {
+    st.cells = st.kind === 'missing' ? nums.map(() => 'out') : bsCells(n, st.lo, st.hi, st.mid, st.kind);
+    const left = st.kind === 'found' ? 1 : st.kind === 'missing' ? 0 : st.hi - st.lo + 1, g = st.mid === null;
+    st.meter = { text: st.kind === 'missing' ? 'nothing left: not found' : g ? 'looking for ' + T : st.done ? nums[st.mid] + ' = ' + T : rotated ? 'middle = ' + nums[st.mid] : nums[st.mid] + (nums[st.mid] < T ? ' < ' : ' > ') + T, pct: (left / n) * 100, mark: 100, markLabel: what + 's still possible ' + left + ' / ' + n };
+    st.watch = [['lo', st.lo, 'right'], ['hi', st.hi, 'right'], ['mid', g ? '—' : st.mid, 'left'], ['nums[mid]', g ? '—' : nums[st.mid], 'left'], ['target', T, 'text'], ['result', st.kind === 'found' ? st.mid : st.kind === 'missing' ? -1 : '…', st.done ? 'ok' : 'text']];
+  });
+  const base = SCENES[id];
+  return runScene(id, Object.assign(fitRow({ pitch: 64, tile: 52, tileH: 66, font: 26 }, n, 600), {
+    items: nums.map(String), goal: rotated ? 'Find book ' + T + ' on the moved shelf' : 'Find the card that shows ' + T,
+    status: ['Searching…', ans >= 0 ? 'Found it' : 'Not there'],
+    lines: runLines(base, { missing: /return -1/ }), rules: base.rules.concat([['Nothing left to search → −1', 'missing']]),
+    example: ['nums = ' + showList(nums) + '   target = ' + T, 'answer = ' + ans],
+    answer: ans, input: { nums, target: T }
+  }), steps);
+}
+function randSortedSearch(rot) {
+  const nums = rdistinct(rint(3, 9), 1, 60).sort((a, b) => a - b);
+  const cut = rot ? rint(0, nums.length - 1) : 0;
+  const list = nums.slice(cut).concat(nums.slice(0, cut));
+  return { nums: list, target: Math.random() < 0.75 ? rpick(list) : rint(0, 61) };
+}
+SCENE_INPUT['binary-search'] = {
+  hint: 'a sorted list in brackets, then the target', example: '[3, 7, 11, 15, 19, 24, 30, 36], 11',
+  default: { nums: [3, 7, 11, 15, 19, 24, 30, 36], target: 11 },
+  presets: [['Story example', () => ({ nums: [3, 7, 11, 15, 19, 24, 30, 36], target: 11 })], ['Random', () => randSortedSearch(false)], ['Not there', () => ({ nums: [2, 4, 6, 8, 10], target: 7 })], ['Last card', () => ({ nums: [1, 5, 9, 13, 17, 21, 25, 29, 33], target: 33 })]],
+  random: () => randSortedSearch(false),
+  parse: parseNumsTarget, show: showNumsTarget,
+  check: (v) => checkCount(v.nums, 3, 9, 'cards') || checkRange(v.nums.concat([v.target]), 0, 99, 'Numbers') || checkSorted(v.nums, true),
+  make: (v) => bsRun('binary-search', v)
+};
+SCENE_INPUT['search-rotated'] = {
+  hint: 'a sorted list cut once and swapped, then the target', example: '[12, 15, 18, 20, 25, 3, 6, 9], 6',
+  default: { nums: [12, 15, 18, 20, 25, 3, 6, 9], target: 6 },
+  presets: [['Story example', () => ({ nums: [12, 15, 18, 20, 25, 3, 6, 9], target: 6 })], ['Random', () => randSortedSearch(true)], ['Not cut', () => ({ nums: [1, 3, 5, 7, 9], target: 7 })], ['Not there', () => ({ nums: [8, 9, 2, 4, 6], target: 5 })]],
+  random: () => randSortedSearch(true),
+  parse: parseNumsTarget, show: showNumsTarget,
+  check: (v) => checkCount(v.nums, 3, 9, 'books') || checkRange(v.nums.concat([v.target]), 0, 99, 'Numbers') || checkRotated(v.nums),
+  make: (v) => bsRun('search-rotated', v)
+};
+
+function lowestRun(input) {
+  const h = (input || SCENE_INPUT['find-min-rotated'].default).nums.slice(), n = h.length;
+  const steps = [];
+  let lo = 0, hi = n - 1;
+  steps.push(runStep('intro', { L: 0, lo, hi, mid: null }, [say('hoot', n + ' steps that climb, maybe drop once, then climb again. Find the lowest.'), say('gus', 'I’ll compare the middle step with the last one.')],
+    'The lowest step comes right after the drop. Gus compares the middle step with the last step to see which side the drop is on.', 'lo = 0, hi = ' + (n - 1) + '. While lo < hi: mid = (lo + hi) // 2.', 'Each look halves what is left: O(log n).'));
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (h[mid] > h[hi]) {
+      steps.push(runStep('goRight', { L: mid, lo, hi, mid }, [say('gus', 'Middle ' + h[mid] + ' is higher than last ' + h[hi] + '.'), say('hoot', 'So the drop is to the right.')],
+        'The middle step (' + h[mid] + ') is higher than the last (' + h[hi] + '). The drop must be to the right, so Gus looks there.', 'h[' + mid + '] = ' + h[mid] + ' > h[' + hi + '] = ' + h[hi] + ' → lo = ' + (mid + 1) + '.', 'The middle step cannot be the lowest: a lower one comes after it.'));
+      lo = mid + 1;
+    } else {
+      steps.push(runStep('goLeft', { L: mid, lo, hi, mid }, [say('gus', 'Middle ' + h[mid] + ' is not higher than last ' + h[hi] + '.'), say('hoot', 'So the lowest is here or to the left.')],
+        'The middle step (' + h[mid] + ') is not higher than the last (' + h[hi] + '). No drop on the right, so the lowest is here or to the left.', 'h[' + mid + '] = ' + h[mid] + ' ≤ h[' + hi + '] = ' + h[hi] + ' → hi = ' + mid + '.', 'Keep the middle: it might be the lowest step itself.'));
+      hi = mid;
+    }
+  }
+  steps.push(runStep('found', { L: lo, lo, hi, mid: lo, done: true }, [say('gus', 'Only one step is left: ' + h[lo] + '.'), say('hoot', 'The lowest step is ' + h[lo] + '.')],
+    'Only one step is left. The lowest step is ' + h[lo] + '.', 'lo == hi → return h[' + lo + '] = ' + h[lo] + '.', (steps.length - 1) + ' looks for ' + n + ' steps.'));
+  runFinish(steps, { intro: ['All ' + n + ' steps are still possible', 'plain'], goRight: ['Middle higher than last → drop is to the right', 'warn'], goLeft: ['Middle not higher → lowest is here or left', 'cool'], found: ['Lowest step: ' + h[lo], 'ok'] }, (st) => {
+    st.cells = bsCells(n, st.lo, st.hi, st.mid, st.kind);
+    const left = st.done ? 1 : st.hi - st.lo + 1, g = st.mid === null;
+    st.meter = { text: g ? 'compare middle with last' : st.done ? 'lowest = ' + h[st.mid] : h[st.mid] + (h[st.mid] > h[st.hi] ? ' > ' : ' ≤ ') + h[st.hi], pct: (left / n) * 100, mark: 100, markLabel: 'steps still possible ' + left + ' / ' + n };
+    st.watch = [['lo', st.lo, 'right'], ['hi', st.hi, 'right'], ['mid', g ? '—' : st.mid, 'left'], ['nums[mid]', g ? '—' : h[st.mid], 'left'], ['nums[hi]', h[st.hi], 'text'], ['result', st.done ? h[st.mid] : '…', st.done ? 'ok' : 'text']];
+  });
+  return runScene('find-min-rotated', Object.assign(fitPlanks({ pitch: 64, tile: 44, unit: 6 }, h, 600), {
+    items: h, unit: Math.min(18, Math.floor(150 / Math.max.apply(null, h))), status: ['Searching…', 'Lowest: ' + h[lo]],
+    example: ['nums = ' + showList(h), 'answer = ' + h[lo]],
+    answer: h[lo], input: { nums: h }
+  }), steps);
+}
+SCENE_INPUT['find-min-rotated'] = {
+  hint: 'step heights from 1 to 30, sorted then cut once', example: '14, 16, 18, 20, 22, 8, 10, 12',
+  default: { nums: [14, 16, 18, 20, 22, 8, 10, 12] },
+  presets: [['Story example', () => ({ nums: [14, 16, 18, 20, 22, 8, 10, 12] })], ['Random', () => SCENE_INPUT['find-min-rotated'].random()], ['Not cut', () => ({ nums: [2, 4, 6, 8, 10] })], ['Drop at the end', () => ({ nums: [5, 9, 12, 20, 1] })]],
+  random: () => { const a = rdistinct(rint(3, 9), 1, 30).sort((x, y) => x - y), c = rint(0, a.length - 1); return { nums: a.slice(c).concat(a.slice(0, c)) }; },
+  parse: (t) => ({ nums: parseNums(t) }), show: (v) => v.nums.join(', '),
+  check: (v) => checkCount(v.nums, 3, 9, 'steps') || checkRange(v.nums, 1, 30, 'Heights') || checkRotated(v.nums),
+  make: lowestRun
+};

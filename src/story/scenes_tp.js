@@ -12,8 +12,10 @@ const say = (who, text) => [who, text];
 //   SCENE_REGISTRY.push(myScene);                 a function returning the scene
 //   PATTERN_KITS['Binary Search'] = { right, spot, ask, quiz: [[title, story] x4] };
 //   STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' };   color is a theme key
+//   SCENE_INPUT['my-id'] = { ... make(input) };    optional: lets learners re-run the story on their own values (see practice.js)
 const SCENE_REGISTRY = [];
 const PATTERN_KITS = {};
+const SCENE_INPUT = {};
 const STORY_CAST = {};
 
 // ---------- The Lantern Bridge (hand-written) ----------
@@ -186,3 +188,173 @@ function waterScene() {
   };
 }
 
+
+// ---------- Your own input: the same three stories on new values (see practice.js) ----------
+function lanternRun(input) {
+  const v = input || SCENE_INPUT['two-sum-ii'].default;
+  const nums = v.nums.slice(), T = v.target, n = nums.length;
+  const steps = [];
+  let L = 0, R = n - 1, checks = 0;
+  steps.push(runStep('intro', { L, R }, [say('hoot', n + ' lanterns, dimmest to brightest. Find two that glow ' + T + ' together.'), say('lumi', 'I’ll take the dimmest end.'), say('roo', 'And I’ll take the brightest.')],
+    'Lumi and Roo start at the two ends. They look for two lanterns that add up to ' + T + '.', 'left = 0, right = ' + (n - 1) + '.', 'The row is sorted, so one look at the two ends rules out one lantern each step.'));
+  while (L < R) {
+    const a = nums[L], b = nums[R], s = a + b;
+    checks++;
+    if (s === T) {
+      steps.push(runStep('found', { L, R, done: true }, [say('lumi', a + ' + ' + b + ' = ' + T + '!'), say('hoot', 'The gate opens. Lanterns #' + (L + 1) + ' and #' + (R + 1) + '.')],
+        a + ' + ' + b + ' = ' + T + '. The gate opens. The answer is lantern #' + (L + 1) + ' and lantern #' + (R + 1) + '.', 'total == target → return [' + (L + 1) + ', ' + (R + 1) + '].', checks + ' checks for ' + n + ' lanterns: O(n) time, O(1) space.'));
+      break;
+    }
+    if (s > T) {
+      steps.push(runStep('over', { L, R }, [say('lumi', a + ' + ' + b + ' = ' + s + '.'), say('roo', 'Too bright. I step left.')],
+        a + ' + ' + b + ' = ' + s + '. That is more than ' + T + ', so Roo steps left to a dimmer lantern.', 'total = ' + s + ' > ' + T + ' → right -= 1.', 'Even the dimmest lantern left makes ' + s + ' with ' + b + ', so ' + b + ' is out for good.'));
+      R--;
+    } else {
+      steps.push(runStep('under', { L, R }, [say('roo', a + ' + ' + b + ' = ' + s + '.'), say('lumi', 'Too dim. I step right.')],
+        a + ' + ' + b + ' = ' + s + '. That is less than ' + T + ', so Lumi steps right to a brighter lantern.', 'total = ' + s + ' < ' + T + ' → left += 1.', 'Even the brightest lantern left makes only ' + s + ' with ' + a + ', so ' + a + ' is out for good.'));
+      L++;
+    }
+  }
+  const last = steps[steps.length - 1];
+  const ans = last.kind === 'found' ? [last.L + 1, last.R + 1] : [];
+  runFinish(steps, { intro: ['Ready at both ends', 'plain'], over: ['Too bright → Roo steps left', 'warn'], under: ['Too dim → Lumi steps right', 'cool'], found: ['Exactly ' + T + ', the gate opens', 'ok'] }, (st) => {
+    const sum = nums[st.L] + nums[st.R];
+    st.meter = { text: nums[st.L] + ' + ' + nums[st.R] + ' = ' + sum, pct: Math.min(100, (sum / (2 * T)) * 100), mark: 50, markLabel: 'target ' + T };
+    st.watch = [['left', st.L, 'left'], ['right', st.R, 'right'], ['target', T, 'text'], ['numbers[left]', nums[st.L], 'left'], ['numbers[right]', nums[st.R], 'right'], ['total', sum, st.done ? 'ok' : 'text']];
+  });
+  return runScene('two-sum-ii', Object.assign(fitRow({ pitch: 106, tile: 88 }, n, 640), {
+    items: nums, glow: Math.min(1, 11 / Math.max.apply(null, nums)),
+    goal: 'Gate opens when two lanterns glow exactly ' + T,
+    rules: [['Start one friend at each end', 'intro'], ['Exactly ' + T + '? Open the gate', 'found'], ['Too bright → Roo steps left', 'over'], ['Too dim → Lumi steps right', 'under']],
+    example: ['numbers = ' + showList(nums) + '   target = ' + T, 'answer  = ' + showList(ans)],
+    answer: ans, input: { nums, target: T }
+  }), steps);
+}
+SCENE_INPUT['two-sum-ii'] = {
+  hint: 'a sorted list in brackets, then the target', example: '[1, 3, 4, 6, 8, 11], 10',
+  default: { nums: [1, 3, 4, 6, 8, 11], target: 10 },
+  presets: [['Story example', () => ({ nums: [1, 3, 4, 6, 8, 11], target: 10 })], ['Random', () => randOnePair(true, rint(4, 8), 1, 20)], ['Smallest', () => ({ nums: [1, 2, 3], target: 5 })], ['Repeats', () => ({ nums: [1, 3, 3, 7, 9], target: 6 })]],
+  random: () => randOnePair(true, rint(3, 9), 1, 30),
+  parse: parseNumsTarget, show: showNumsTarget,
+  check: (v) => checkCount(v.nums, 3, 9, 'lanterns') || checkRange(v.nums, 1, 30, 'Lantern glows') || checkSorted(v.nums) || checkOnePair(v.nums, v.target),
+  make: lanternRun
+};
+
+function mirrorRun(input) {
+  const text = (input || SCENE_INPUT['valid-palindrome'].default).s;
+  const s = text.split(''), n = s.length;
+  const ok = (c) => /[a-z0-9]/i.test(c), lo = (c) => c.toLowerCase();
+  const shown = (c) => (c === ' ' ? 'a space' : '“' + c + '”');
+  const pairsAll = Math.max(1, Math.floor(s.filter(ok).length / 2));
+  const steps = [];
+  let L = 0, R = n - 1, pairs = 0, answer = true;
+  steps.push(runStep('intro', { L, R }, [say('hoot', 'The hallway reads “' + text + '”. Does it read the same both ways?'), say('lumi', 'I’ll start at the first letter.'), say('roo', 'And I’ll take the last.')],
+    'Lumi and Roo start at the two ends. They compare letters as they walk toward each other.', 'left = 0, right = ' + (n - 1) + '. Skip anything that is not a letter or digit.', 'Each character is looked at once: O(n) time, O(1) space.'));
+  while (L < R) {
+    if (!ok(s[L])) {
+      steps.push(runStep('skipL', { L, R }, [say('lumi', 'Just ' + shown(s[L]) + ' here. It doesn’t count.')], 'Lumi stands on ' + shown(s[L]) + '. It is not a letter, so Lumi steps past it.', 's[left] is not a letter or digit → left += 1.', 'Skipping never moves a pointer back, so the work stays O(n).'));
+      L++; continue;
+    }
+    if (!ok(s[R])) {
+      steps.push(runStep('skipR', { L, R }, [say('roo', 'Just ' + shown(s[R]) + ' here. It doesn’t count.')], 'Roo stands on ' + shown(s[R]) + '. It is not a letter, so Roo steps past it.', 's[right] is not a letter or digit → right -= 1.', 'Skipping never moves a pointer back, so the work stays O(n).'));
+      R--; continue;
+    }
+    if (lo(s[L]) !== lo(s[R])) {
+      answer = false;
+      steps.push(runStep('mismatch', { L, R, done: true }, [say('lumi', 'I see ' + shown(s[L]) + '.'), say('roo', 'I see ' + shown(s[R]) + '.'), say('hoot', 'They differ. Not a mirror.')],
+        shown(s[L]) + ' and ' + shown(s[R]) + ' differ. The hallway is not a mirror.', 's[left] != s[right] → return False.', 'One mismatch is proof enough. The rest is never read.'));
+      break;
+    }
+    pairs++;
+    steps.push(runStep('match', { L, R, pairs }, [say('lumi', 'I see ' + shown(s[L]) + '.'), say('roo', 'Me too. A match!')],
+      shown(s[L]) + ' and ' + shown(s[R]) + ' match, so both friends step inward.', 's[left] == s[right] → left += 1, right -= 1.', 'Everything outside the two friends already mirrors.'));
+    L++; R--;
+  }
+  if (answer) {
+    const m = Math.min(L, n - 1);
+    steps.push(runStep('found', { L: m, R: Math.max(m, R), pairs, done: true }, [say('lumi', 'We met in the middle!'), say('hoot', 'Every pair matched. It is a mirror.')],
+      'They met in the middle and every pair matched. The hallway is a mirror!', 'left >= right → return True.', pairs + ' comparisons, O(1) extra space.'));
+  }
+  let matched = 0;
+  runFinish(steps, { intro: ['Ready at both ends', 'plain'], skipL: ['Not a letter → Lumi skips', 'cool'], skipR: ['Not a letter → Roo skips', 'cool'], match: ['Match → both step in', 'warn'], mismatch: ['Mismatch → not a mirror', 'warn'], found: ['Mirror! Door opens', 'ok'] }, (st) => {
+    if (st.kind === 'match') matched = st.pairs;
+    st.cells = s.map((c, i) => {
+      if (st.kind === 'found') return ok(c) ? 'ok' : 'out';
+      if (st.kind === 'mismatch' && (i === st.L || i === st.R)) return 'hit';
+      if (i === st.L || i === st.R) return st.kind === 'intro' ? 'in' : 'cur';
+      if (i < st.L || i > st.R) return ok(c) ? 'ok' : 'out';
+      return 'in';
+    });
+    const a = s[st.L] === ' ' ? '␣' : s[st.L], b = s[st.R] === ' ' ? '␣' : s[st.R];
+    st.meter = { text: '‘' + a + '’ vs ‘' + b + '’', pct: Math.min(100, (matched / pairsAll) * 100), mark: 100, markLabel: 'pairs matched ' + matched + ' / ' + pairsAll };
+    st.watch = [['left', st.L, 'left'], ['right', st.R, 'right'], ['pairs', matched, 'text'], ['s[left]', '“' + a + '”', 'left'], ['s[right]', '“' + b + '”', 'right'], ['result', st.kind === 'found' ? 'True' : st.kind === 'mismatch' ? 'False' : '…', st.done ? 'ok' : 'text']];
+  });
+  return runScene('valid-palindrome', Object.assign(fitRow({ pitch: 78, tile: 64, tileH: 84, font: 34 }, n, 600), {
+    items: s.map((c) => (c === ' ' ? '␣' : c)),
+    status: ['Door shut', answer ? 'Door open' : 'Not a mirror'],
+    example: ['s = "' + text + '"', 'answer = ' + (answer ? 'True' : 'False')],
+    answer, input: { s: text }
+  }), steps);
+}
+function randMirror() {
+  const abc = 'abcdeilmnorst'.split('');
+  const half = Array.from({ length: rint(2, 4) }, () => rpick(abc));
+  const mid = Math.random() < 0.5 ? [rpick(abc)] : [];
+  const w = half.concat(mid, half.slice().reverse());
+  if (Math.random() < 0.4) w[rint(0, w.length - 1)] = rpick(abc);
+  if (Math.random() < 0.4 && w.length < 9) w.splice(rint(1, w.length - 1), 0, ' ');
+  return { s: w.join('') };
+}
+SCENE_INPUT['valid-palindrome'] = {
+  hint: 'a word or a short sentence', example: 'taco cat',
+  default: { s: 'taco cat' },
+  presets: [['Story example', () => ({ s: 'taco cat' })], ['Random', randMirror], ['Not a mirror', () => ({ s: 'rocket' })], ['Punctuation', () => ({ s: 'No, on!' })]],
+  random: randMirror,
+  parse: parseText, show: (v) => v.s,
+  check: (v) => (v.s.length < 3 || v.s.length > 9 ? 'Use 3 to 9 characters, so every tile stays readable. You have ' + v.s.length + '.'
+    : !/^[a-z0-9 ,.!?'-]+$/i.test(v.s) ? 'Use letters, digits, spaces and simple punctuation like , . ! or ?'
+    : v.s.replace(/[^a-z0-9]/gi, '').length < 2 ? 'Use at least two letters or digits.' : ''),
+  make: mirrorRun
+};
+
+function waterRun(input) {
+  const h = (input || SCENE_INPUT.container.default).nums.slice(), n = h.length;
+  const bound = Math.max(1, (n - 1) * Math.max.apply(null, h));
+  const steps = [];
+  let L = 0, R = n - 1, best = 0, moves = 0;
+  steps.push(runStep('intro', { L, R, best: 0 }, [say('hoot', n + ' planks. Pick two walls. Water fills up to the shorter one.'), say('lumi', 'I’ll take the first plank.'), say('roo', 'I’ll take the last. Widest barrel first!')],
+    'Lumi and Roo start at the two ends: the widest barrel.', 'left = 0, right = ' + (n - 1) + ', best = 0.', 'Start widest. Each move gives up one unit of width for a chance at a taller wall.'));
+  while (L < R) {
+    const m = Math.min(h[L], h[R]), w = R - L, area = m * w, record = area > best;
+    best = Math.max(best, area);
+    moves++;
+    const left = h[L] < h[R];
+    const who = left ? 'Lumi' : 'Roo', plank = left ? h[L] : h[R];
+    steps.push(runStep(left ? 'moveL' : 'moveR', { L, R, best }, [say('hoot', m + ' × ' + w + ' = ' + area + '.' + (record ? ' A new best!' : '')), say(left ? 'lumi' : 'roo', 'My plank is ' + (left ? 'the shorter one' : 'not taller') + '. I step in.')],
+      'The barrel holds ' + m + ' × ' + w + ' = ' + area + '. ' + who + '’s plank (' + plank + ') is ' + (left ? 'shorter' : 'not taller') + ', so ' + who + ' steps in.',
+      'area = min(' + h[L] + ', ' + h[R] + ') × ' + w + ' = ' + area + '; best = ' + best + '. ' + (left ? 'left += 1.' : 'right -= 1.'),
+      'Any narrower barrel that keeps the ' + plank + ' wall holds at most ' + area + ', so that wall is done.'));
+    if (left) L++; else R--;
+  }
+  steps.push(runStep('found', { L, R, best, done: true }, [say('lumi', 'We bumped into each other!'), say('hoot', 'The best barrel held ' + best + '.')],
+    'The builders met. The best barrel holds ' + best + ' units of rain.', 'left == right → return best = ' + best + '.', moves + ' moves and O(1) space. Trying every pair would take ' + (n * (n - 1)) / 2 + ' checks.'));
+  runFinish(steps, { intro: ['Widest barrel first', 'plain'], moveL: ['Left wall shorter → Lumi steps in', 'warn'], moveR: ['Right wall shorter → Roo steps in', 'cool'], found: ['Best barrel: ' + best, 'ok'] }, (st) => {
+    const m = Math.min(h[st.L], h[st.R]), w = st.R - st.L;
+    st.meter = { text: st.done ? 'best = ' + st.best : 'min(' + h[st.L] + ', ' + h[st.R] + ') × ' + w + ' = ' + m * w, pct: Math.min(100, ((st.done ? st.best : m * w) / bound) * 100), mark: (st.best / bound) * 100, markLabel: 'best so far ' + st.best };
+    st.watch = [['left', st.L, 'left'], ['right', st.R, 'right'], ['width', w, 'text'], ['h[left]', h[st.L], 'left'], ['h[right]', h[st.R], 'right'], ['best', st.best, st.done ? 'ok' : 'text']];
+  });
+  return runScene('container', Object.assign(fitPlanks({ pitch: 70, tile: 40, unit: 18 }, h, 600), {
+    items: h, status: ['Measuring…', 'Best: ' + best],
+    example: ['height = ' + showList(h), 'answer = ' + best],
+    answer: best, input: { nums: h }
+  }), steps);
+}
+SCENE_INPUT.container = {
+  hint: 'plank heights from 1 to 9', example: '1, 8, 6, 2, 5, 4, 8, 3, 7',
+  default: { nums: [1, 8, 6, 2, 5, 4, 8, 3, 7] },
+  presets: [['Story example', () => ({ nums: [1, 8, 6, 2, 5, 4, 8, 3, 7] })], ['Random', () => ({ nums: rlist(rint(4, 9), 1, 9) })], ['Sorted', () => ({ nums: [1, 2, 3, 4, 5, 6, 7] })], ['All equal', () => ({ nums: [5, 5, 5, 5] })]],
+  random: () => ({ nums: rlist(rint(3, 9), 1, 9) }),
+  parse: (t) => ({ nums: parseNums(t) }), show: (v) => v.nums.join(', '),
+  check: (v) => checkCount(v.nums, 3, 9, 'planks') || checkRange(v.nums, 1, 9, 'Heights'),
+  make: waterRun
+};

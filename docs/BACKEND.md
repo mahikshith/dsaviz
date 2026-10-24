@@ -17,6 +17,7 @@ There is no server yet. `DS` has two kinds of functions:
 | `dsaviz-sheet-v1` | Sheet page | `{ v: 1, done: { slug: ts }, star: { slug: 1 } }`. DS only reads it. |
 | `dsaviz-deck` | older Story and Revisit pages | `{ id: { due, rated } }`. Legacy: only read for medals. |
 | `dsaviz-review-v1` | `DS.review`, `DS.addCard` | `{ v: 1, cards: { id: { due: 'YYYY-MM-DD', interval, ease, reps, lapses, last, grade, prev, name, pattern, rule, hint, story } }, log: [{ id, at, grade }] }`. Sheet cards are `sheet:<slug>`. |
+| `dsaviz-predict-v1` | `DS.logPredict` | `{ v: 1, streak, best, right, total }`: the Predict toggle on the story player. A wrong pick resets `streak`. |
 | `dsaviz-notes-v1` | `DS.setNote`, `DS.importBackup` | `{ v: 1, notes: { id: { text, at } } }`. Story ids, or the sheet slug for rows without a story. Max 2000 characters. |
 | `dsaviz-onboard` | Welcome page | `{ name, reason, level, goal, lang, time, channel, date }` |
 | `dsaviz-prefs` | Profile and Welcome pages | `{ goal, time, channel, lang }` (older saves may also hold `depth`, which is ignored) |
@@ -57,11 +58,12 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | `medals(PROBLEMS, PATTERNS)` | `[{ pattern, mark, tier, next: { tier, have, need, unit, pct } or null, fresh, key, done, total }]`. Bronze: first story in the pattern. Silver: half its stories. Gold: every story done and rated in Revisit. | `GET /me/medals`, with `fresh` set by the server |
 | `markMedalsSeen(medals)` | nothing | `POST /me/medals/seen` |
 | `profile()` | `{ name, initials, signedIn, isNew, lang, goal, reason, date, demo: false }` | `GET /me` |
-| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit cards (`dsaviz-review-v1` and the old deck), seen medals, saved stories, saved code and system design progress from this browser. Notes, theme, profile and settings stay. | `DELETE /me/progress` |
+| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit cards (`dsaviz-review-v1` and the old deck), seen medals, the predict streak, saved stories, saved code and system design progress from this browser. Notes, theme, profile and settings stay. | `DELETE /me/progress` |
 | `schedule(card, grade, ts)` | the pure SM-2-style scheduler. Grade 1 Again, 2 Hard, 3 Good, 4 Easy. First review: 1 / 3 / 6 days; then x1.2 (Hard), x ease (Good), x ease x 1.3 (Easy), at least +1 day, capped at 365. Again: tomorrow, reps reset, ease -0.2. Ease 1.3 to 3.0, starts at 2.5. | server-side scheduler |
 | `reviewCards()`, `reviewDue()`, `reviewUpcoming(days = 7)` | every finished story and ticked sheet problem as a card `{ id, kind, due, isDue, late, inDays, interval, ease, reps, name, pattern, rule, hint }`; a card never rated is due the day after it was earned. Upcoming adds `counts: [{ date, n }]` from tomorrow. | `GET /me/revisions?due=today` |
 | `review(id, grade, { redo })`, `reviewPreview(id)`, `addCard(id, meta)`, `whenLabel(days)` | rate a card; what each grade would do; store card details | `POST /me/revisions/{id}` |
 | `retention(days = 30)` | `{ pct, reviews, recalled, today }`: share of reviews not rated Again; `pct` is null before the first review | `GET /me/retention` |
+| `predict()`, `logPredict(ok)` | `{ streak, best, right, total }` for predict-the-next-step picks; `logPredict` returns the new counts | `GET/POST /me/predict` |
 | `note(id)`, `notes()`, `setNote(id, text)`, `mergeNotes(map)` | notes per problem | `GET/PUT /me/notes/{id}` |
 | `exportBackup()`, `importBackup(file)` | the sheet backup file `{ v: 1, done, star, notes }`; import merges (earliest tick wins, a note is replaced only by a newer one) and returns `{ ticks, notes }` or null | `GET/POST /me/backup` |
 | `dayKey(ts)`, `setClock(fn)` | helpers; `setClock` is for tests | none |

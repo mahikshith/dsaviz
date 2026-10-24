@@ -1,21 +1,15 @@
 // ---- page ----
 // Code page: the problem on the left, the shared code pane (CodeRunner) on the right.
 // Opened with ?problem=<id>, or with the problem last chosen anywhere on the site.
-// The picker lists every problem with a spec, grouped by pattern in library order, easiest first, then the SQL
-// problems: those swap the left side for the schema panel and the code pane for the SQL pane (shared/sql_pane.*).
-const CODE_GROUP_ORDER = PATTERNS.map((p) => p[0]).concat(['Linked Lists', 'Monotonic Stack & Queue', 'Trees', 'Graphs', 'Tries', 'Sorting', 'Design', 'String Algorithms', 'Bit Manipulation', 'Math']);
-const CODE_DIFF_ORDER = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };
-const CODE_GROUPS = CODE_GROUP_ORDER.map((name) => ({
-  name,
-  items: Object.keys(TEST_SPECS).map(specInfo).filter((p) => p.pattern === name)
-    .sort((a, b) => CODE_DIFF_ORDER[a.diff] - CODE_DIFF_ORDER[b.diff] || a.title.localeCompare(b.title))
-})).filter((g) => g.items.length);
-// SQL problems (shared/sql_spec.js) come last, in the master sheet's order, and open the SQL mode.
-CODE_GROUPS.push({ name: 'SQL', items: Object.keys(SQL_SPECS).map(sqlInfo) });
-const CODE_COUNT = Object.keys(TEST_SPECS).length;
-const SQL_COUNT = Object.keys(SQL_SPECS).length;
-function sqlInfo(id) { const q = SQL_SPECS[id]; return { id, title: q.title, n: q.n, diff: q.diff, pattern: 'SQL', story: null, time: null }; }
+// The picker lists every master sheet problem, grouped and ordered as the sheet is. A row opens the problem
+// by its pid (shared/sheet.js). SQL problems (shared/sql_spec.js) swap the left side for the schema panel and
+// the code pane for the SQL pane (shared/sql_pane.*).
+function sqlInfo(id) { const q = SQL_SPECS[id]; return { id, title: q.title, diff: q.diff, pattern: 'SQL', story: null, time: null }; }
 const knownProblem = (id) => !!(id && (TEST_SPECS[id] || SQL_SPECS[id]));
+const CODE_GROUPS = SHEET_GROUPS.map(([name]) => ({ name, items: SHEET.filter((r) => r.pattern === name && knownProblem(r.pid)).map((r) => ({ id: r.pid, title: r.name })) }))
+  .filter((g) => g.items.length);
+const CODE_SOLVABLE = CODE_GROUPS.reduce((n, g) => n + g.items.length, 0);
+const CODE_COUNT_LINE = SHEET.length + ' problems, ' + (CODE_SOLVABLE === SHEET.length ? 'all solvable here' : CODE_SOLVABLE + ' solvable here');
 function queryProblem() {
   try { const q = new URLSearchParams(window.location.search).get('problem'); return knownProblem(q) ? q : null; } catch (e) { return null; }
 }
@@ -69,10 +63,10 @@ class Component extends DCLogic {
       P, ask: isSql ? SQL_SPECS[this.state.pid].ask : spec.ask, diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2],
       keepProblem: () => saveProblem(this.state.pid),
       pid: this.state.pid,
-      groups: CODE_GROUPS.map((g) => ({ label: g.name + ' (' + g.items.length + ')', items: g.items.map((p) => ({ id: p.id, label: p.title + (p.story || p.pattern === 'SQL' ? '' : ' · no story yet') })) })),
-      testCount: 'Runnable tests: ' + CODE_COUNT + ' problems + ' + SQL_COUNT + ' SQL',
+      groups: CODE_GROUPS.map((g) => ({ label: g.name + ' (' + g.items.length + ')', items: g.items.map((p) => ({ id: p.id, label: p.title })) })),
+      testCount: CODE_COUNT_LINE,
       hasStory: !!P.story, noStory: !P.story, hasTime: !!P.time,
-      kicker: 'LeetCode ' + P.n + (P.story ? ' · ' + P.story : isSql ? ' · SQLite' : ''),
+      kicker: P.story ? 'Story · ' + P.story : isSql ? 'SQL · SQLite' : P.pattern,
       pickProblem: (e) => this.pickProblem(e && e.target ? e.target.value : e),
       examples: isSql ? [] : spec.examples.map(([args, want]) => ({ input: showArgs(spec, args), output: showValue(want) }))
     };

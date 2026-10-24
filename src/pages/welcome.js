@@ -9,7 +9,7 @@ const REASONS = [
 const LEVELS = [
   ['zero', '✏️', 'I’ve never really written code', 'We’ll start with language basics, then the gentlest stories', 'Basics.dc.html', 'strings'],
   ['lang', '🧩', 'I know a language, but not DSA', 'Start the learning path at Strings — two friends on a hallway', 'Story.dc.html', 'strings'],
-  ['some', '⚙️', 'I’ve solved some LeetCode problems', 'Jump to patterns: Two Pointers, Sliding Window, Hash Map', 'Story.dc.html', 'arrays'],
+  ['some', '⚙️', 'I’ve solved some practice problems', 'Jump to patterns: Two Pointers, Sliding Window, Hash Map', 'Story.dc.html', 'arrays'],
   ['ready', '🚀', 'Interview-ready, just need a refresh', 'Revisit daily, then mock interviews and company tracks', 'Interview.dc.html', 'arrays']
 ];
 const GOALS = [['5', '☕', '5 minutes', 'Casual · one story step set'], ['10', '🚶', '10 minutes', 'Regular · most people pick this'], ['20', '🏃', '20 minutes', 'Serious · a story a day'], ['40', '🔥', '40 minutes', 'Intense · placement season mode']];

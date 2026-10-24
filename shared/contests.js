@@ -6,15 +6,12 @@
 // Fields: id, platform, name, start (one known start, UTC), rrule (FREQ=WEEKLY with optional INTERVAL;
 // null when there is no fixed day), minutes, link, note.
 const CONTESTS = [
-  { id: 'lc-weekly', platform: 'LeetCode', name: 'Weekly Contest', start: '2024-09-29T02:30:00Z', rrule: 'FREQ=WEEKLY', minutes: 90, link: 'https://leetcode.com/contest/' },
-  // Biweekly anchor: Biweekly Contest 194, Sat 24 Oct 2026, as listed on clist.by (checked 2026-10-24). LeetCode's own page sits behind a bot check.
-  { id: 'lc-biweekly', platform: 'LeetCode', name: 'Biweekly Contest', start: '2026-10-24T14:30:00Z', rrule: 'FREQ=WEEKLY;INTERVAL=2', minutes: 90, link: 'https://leetcode.com/contest/' },
   { id: 'atcoder-abc', platform: 'AtCoder', name: 'Beginner Contest (ABC)', start: '2024-09-28T12:00:00Z', rrule: 'FREQ=WEEKLY', minutes: 100, link: 'https://atcoder.jp/contests/' },
   { id: 'codechef-starters', platform: 'CodeChef', name: 'Starters', start: '2024-09-25T14:30:00Z', rrule: 'FREQ=WEEKLY', minutes: 120, link: 'https://www.codechef.com/contests' },
   { id: 'codeforces', platform: 'Codeforces', name: 'Codeforces rounds', start: null, rrule: null, minutes: 120, link: 'https://codeforces.com/calendar',
     note: 'Rounds run most weeks, on no fixed day. Their calendar has the dates.' }
 ];
-const CONTEST_PLATFORMS = ['LeetCode', 'Codeforces', 'AtCoder', 'CodeChef'];
+const CONTEST_PLATFORMS = ['Codeforces', 'AtCoder', 'CodeChef'];
 const CONTEST_DAY = 86400000;
 
 // { freq, interval } from an RRULE string. Only weekly rules are used.

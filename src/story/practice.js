@@ -51,7 +51,7 @@ function parseGrid(text) {
   return { grid };
 }
 function showGrid(v) { return v.grid.map((r) => r.join('')).join(' / '); }
-// A tree in level order, the LeetCode way: [8, 3, 10, null, 6].
+// A tree in level order, null for a gap: [8, 3, 10, null, 6].
 function parseTree(text) {
   const body = String(text || '').trim().replace(/^\[/, '').replace(/\]$/, '').trim();
   const parts = body.split(/[\s,]+/).filter(Boolean);

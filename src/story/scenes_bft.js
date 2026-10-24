@@ -1,7 +1,7 @@
 // ---------- Breadth-First Search on trees: Rill visits one floor at a time ----------
 // These stories use visual: 'tree' and join the Breadth-First Search kit from scenes_bf.js, each with its own quiz (kit).
 
-// Builds a tree list from LeetCode's level-order array (null = an empty spot). Shared with scenes_dft.js.
+// Builds a tree list from a level-order array (null = an empty spot). Shared with scenes_dft.js.
 function levelTree(arr) {
   const list = [];
   if (!arr.length || arr[0] == null) return list;

@@ -14,7 +14,7 @@ const MENU = [
   ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
   ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
-  ['Contests.dc.html', 'Contest calendar', 'LeetCode, AtCoder, CodeChef and Codeforces in your time', null],
+  ['Contests.dc.html', 'Contest calendar', 'AtCoder, CodeChef and Codeforces in your time', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];

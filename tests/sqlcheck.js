@@ -1,7 +1,7 @@
 // Check shared/sql_spec.js on real SQLite (sql.js from node_modules, the same build the page loads from jsDelivr):
 // every spec is complete and matches a master sheet SQL row, its CREATE TABLE lines build the tables the schema
 // panel shows, the reference query gives the expected rows on every dataset, and the spec's tempting wrong
-// query (trap) fails on at least one dataset. Table names must be our own, not LeetCode's.
+// query (trap) fails on at least one dataset. Table names must be our own, not the ones common practice sets use.
 const fs = require('fs');
 const path = require('path');
 const { SQL_SPECS, sqlTables, sqlSetup, sqlExec, sqlJudge, sqlShow } = require('../shared/sql_spec.js');
@@ -9,16 +9,16 @@ const { SQL_SPECS, sqlTables, sqlSetup, sqlExec, sqlJudge, sqlShow } = require('
 let bad = 0;
 const fail = (id, msg) => { bad++; console.log('  ✗', id, msg); };
 const DIFFS = ['Easy', 'Medium', 'Hard'];
-// LeetCode's own table names for this problem set: our schemas use different ones.
+// The table names common practice sets use for these problems: our schemas use different ones.
 const THEIRS = ['world', 'person', 'address', 'employee', 'employees', 'employeeuni', 'customer', 'customers', 'orders', 'weather',
   'activity', 'seat', 'stadium', 'trips', 'users', 'department', 'logs', 'scores', 'products', 'tweets', 'queries', 'views',
   'visits', 'transactions', 'signups', 'confirmations', 'prices', 'unitssold', 'patients', 'salary'];
 
-// The master sheet's SQL rows: id -> [n, name].
+// The master sheet's SQL rows: id -> name.
 const sheetSrc = fs.readFileSync(path.join(__dirname, '..', 'shared', 'sheet.js'), 'utf8');
 const sqlBlock = sheetSrc.slice(sheetSrc.indexOf('  "SQL": ['), sheetSrc.indexOf('\n  ],', sheetSrc.indexOf('  "SQL": [')));
 const SHEET_SQL = {};
-for (const m of sqlBlock.matchAll(/\["([a-z0-9-]+)", (\d+), "((?:[^"\\]|\\.)*)"/g)) SHEET_SQL[m[1]] = [Number(m[2]), m[3]];
+for (const m of sqlBlock.matchAll(/\["([a-z0-9-]+)", "((?:[^"\\]|\\.)*)"/g)) SHEET_SQL[m[1]] = m[2];
 
 require('sql.js')({ locateFile: (f) => path.join(__dirname, '..', 'node_modules', 'sql.js', 'dist', f) }).then((SQL) => {
   const ids = Object.keys(SQL_SPECS);
@@ -26,7 +26,7 @@ require('sql.js')({ locateFile: (f) => path.join(__dirname, '..', 'node_modules'
   for (const id of ids) {
     const spec = SQL_SPECS[id];
     if (!SHEET_SQL[id]) fail(id, 'is not a row in the sheet\'s SQL group');
-    else if (SHEET_SQL[id][0] !== spec.n || SHEET_SQL[id][1] !== spec.title) fail(id, 'title or number differs from the sheet: ' + SHEET_SQL[id].join(' '));
+    else if (SHEET_SQL[id] !== spec.title) fail(id, 'title differs from the sheet: ' + SHEET_SQL[id]);
     if (!DIFFS.includes(spec.diff)) fail(id, 'bad difficulty ' + spec.diff);
     if (!spec.ask || spec.ask.length < 40) fail(id, 'no problem statement');
     for (const c of spec.cols || []) if (!spec.ask.includes(c)) fail(id, 'the statement never names the output column ' + c);
@@ -36,7 +36,7 @@ require('sql.js')({ locateFile: (f) => path.join(__dirname, '..', 'node_modules'
     if (!Array.isArray(spec.sets) || spec.sets.length < 4 || spec.sets.length > 6) { fail(id, 'needs 1 visible and 3 to 5 hidden datasets'); continue; }
     let tables;
     try { tables = sqlTables(spec); } catch (e) { fail(id, e.message); continue; }
-    for (const tb of tables) if (THEIRS.includes(tb.name.toLowerCase())) fail(id, 'table ' + tb.name + ' is LeetCode\'s name; use our own');
+    for (const tb of tables) if (THEIRS.includes(tb.name.toLowerCase())) fail(id, 'table ' + tb.name + ' is the common practice-set name; use our own');
     // The schema panel's parse agrees with SQLite's own view of the tables.
     const db = new SQL.Database();
     try {

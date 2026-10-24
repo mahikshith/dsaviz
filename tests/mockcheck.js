@@ -40,7 +40,7 @@ const tick = (c) => timers.forEach((fn) => fn());
 
 console.log('problem pool');
 {
-  check(MOCK_CANDS.length === Object.keys(TEST_SPECS).length && MOCK_CANDS.every((c) => ['Easy', 'Medium', 'Hard'].includes(c.diff) && c.pattern && c.total > 0), 'every runnable problem can be picked, with a difficulty, a pattern and a test count');
+  check(MOCK_CANDS.length === Object.keys(TEST_SPECS).filter((id) => !TEST_SPECS[id].langs).length && MOCK_CANDS.every((c) => !TEST_SPECS[c.id].langs) && MOCK_CANDS.every((c) => ['Easy', 'Medium', 'Hard'].includes(c.diff) && c.pattern && c.total > 0), 'every runnable problem can be picked, with a difficulty, a pattern and a test count');
   const short = MOCK_CANDS.filter((c) => mockHints(c).length !== 3).map((c) => c.id + ' (' + c.pattern + ')');
   check(short.length === 0, 'every runnable problem has three hints' + (short.length ? ': ' + short.slice(0, 5).join(', ') : ''));
 }

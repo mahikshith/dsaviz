@@ -43,20 +43,20 @@ function build() {
   const add = (type, id, title, sub, kw) => items.push([type, id, title, sub, [...new Set((kw || []).filter(Boolean))].join(' ')]);
   const animated = D.PROBLEMS.filter((p) => p.animated);
   // sub is the second line of a result; the group header already names the type. kw holds extra words to match.
-  animated.forEach((p) => add('story', p.id, p.title, p.story + ' · ' + p.pattern, [String(p.n)]));
+  animated.forEach((p) => add('story', p.id, p.title, p.story + ' · ' + p.pattern));
   D.PATTERNS.forEach(([name, tag, cast]) => add('pattern', name, name, tag, [cast]));
   Object.keys(D.TEST_SPECS).forEach((id) => {
     const P = D.specInfo(id);
-    add('problem', id, P.title, P.pattern + ' · ' + P.diff, [String(P.n)]);
+    add('problem', id, P.title, P.pattern + ' · ' + P.diff);
   });
-  Object.keys(D.sql).forEach((id) => add('problem', id, D.sql[id].title, 'SQL · ' + D.sql[id].diff, [String(D.sql[id].n), 'sql']));
+  Object.keys(D.sql).forEach((id) => add('problem', id, D.sql[id].title, 'SQL · ' + D.sql[id].diff, ['sql']));
   D.git.forEach((L) => add('git', L.id, L.title, L.tag, ['git']));
   D.sd.forEach((L) => add('sd', L.id, L.title, (L.track === 'lld' ? 'LLD' : 'HLD') + ' · ' + L.tag));
   const track = {};
   D.ai.AI_TRACKS.forEach((t) => { track[t.id] = t.short; });
   D.ai.AI_LESSONS.forEach((L) => add('ai', L.id, L.title, track[L.track] + ' · ' + L.tag));
   D.KEYWORDS.forEach((k) => add('term', k.id, k.id, k.gist, [k.cat]));
-  D.SHEET.forEach((r) => add('sheet', r.id, r.name, r.pattern + ' · ' + r.diff, [String(r.n)]));
+  D.SHEET.forEach((r) => add('sheet', r.id, r.name, r.pattern + ' · ' + r.diff));
   // only the 16 patterns count here; stories in sheet groups (Graphs, Tries) are extra
   const names = new Set(D.PATTERNS.map((p) => p[0]));
   const patterns = new Set(animated.map((p) => p.pattern).filter((x) => names.has(x)));

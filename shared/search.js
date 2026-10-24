@@ -5,7 +5,7 @@
 const SEARCH_TYPES = {
   story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
-  problem: ['Runnable problems', 'Code.dc.html', 'dsaviz-problem', 2],
+  problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
   git: ['Git', 'Git.dc.html', 'dsaviz-git-lesson', 2],
   sd: ['System design', 'SDLesson.dc.html', 'dsaviz-sd-lesson', 2],
   ai: ['AI & ML', 'AILesson.dc.html', 'dsaviz-ai-lesson', 2],

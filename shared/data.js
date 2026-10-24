@@ -3,7 +3,7 @@
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1' };
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1' };
   const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5 };
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
   const LEVEL_XP = 500;
@@ -409,11 +409,27 @@ const DS = (function () {
       .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
   }
 
+  // -- predict the next step: dsaviz-predict-v1 = { v: 1, streak, best, right, total }. A wrong pick resets the streak.
+  function predict() {
+    const o = json(KEY.predict, null);
+    const n = (x) => Math.max(0, Math.floor(Number(x) || 0));
+    if (!o || o.v !== 1) return { streak: 0, best: 0, right: 0, total: 0 };
+    const total = n(o.total), right = Math.min(n(o.right), total), streak = Math.min(n(o.streak), right);
+    return { streak, best: Math.max(streak, Math.min(n(o.best), right)), right, total };
+  }
+  function logPredict(ok) {
+    const p = predict();
+    const streak = ok ? p.streak + 1 : 0;
+    const next = { v: 1, streak, best: Math.max(p.best, streak), right: p.right + (ok ? 1 : 0), total: p.total + 1 };
+    set(KEY.predict, JSON.stringify(next));
+    return { streak: next.streak, best: next.best, right: next.right, total: next.total };
+  }
+
   // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
@@ -421,6 +437,7 @@ const DS = (function () {
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
+    predict, logPredict,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,
     setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }

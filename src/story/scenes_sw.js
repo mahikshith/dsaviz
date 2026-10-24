@@ -162,7 +162,7 @@ function stockScene() {
     st.watch = [['buy', st.L, 'right'], ['day', st.R, 'left'], ['prices[buy]', p[st.L], 'right'], ['prices[day]', p[st.R], 'left'], ['profit', st.profit, 'text'], ['best', st.best, st.done ? 'ok' : 'text']];
   });
   return {
-    id: 'best-time-stock', pattern: 'Sliding Window', cast: 'sw', short: 'Market Stall', visual: 'planks', items: p, pitch: 84, tile: 44, width: 464, unit: 18,
+    id: 'best-time-stock', pattern: 'Sliding Window', cast: 'sw', short: 'Market Stall', predictCue: (st) => 'Day ' + (st.R + 1) + ' costs ' + st.watch[3][1], visual: 'planks', items: p, pitch: 84, tile: 44, width: 464, unit: 18,
     actorLabels: ['buy · L', 'Wren · today'],
     goal: 'Buy on one morning, sell on a later one', status: ['Watching prices…', 'Best deal found'],
     lines: { py: { intro: 2, cheaper: 5, profit: 7, found: 8 }, java: { intro: 2, cheaper: 5, profit: 7, found: 9 }, cpp: { intro: 2, cheaper: 5, profit: 7, found: 9 }, js: { intro: 2, cheaper: 5, profit: 7, found: 9 }, go: { intro: 2, cheaper: 5, profit: 7, found: 10 } },
@@ -183,3 +183,100 @@ function stockScene() {
     steps
   };
 }
+
+// ---------- Your own input (see practice.js) ----------
+function facesRun(input) {
+  const text = (input || SCENE_INPUT['longest-substring'].default).s;
+  const s = text.split(''), n = s.length;
+  const steps = [], last = {};
+  let L = 0, best = 0, bestL = 0, bestR = 0;
+  const book = (c, flag) => Object.keys(last).sort().map((k) => [k, String(last[k]), k === c ? flag : '']);
+  steps.push(runStep('intro', { L: 0, R: 0, noFrame: true, best: 0, board: [] }, [say('hoot', n + ' passengers board: ' + s.join(', ') + '. Find the longest run with no repeated badge.'), say('wren', 'I’ll grow my window one passenger at a time.')],
+    'Wren’s window grows at the front. If a badge repeats, the back of the window jumps forward.', 'left = 0, best = 0, last = {}.', 'Each passenger enters and leaves the window once: O(n).'));
+  s.forEach((c, R) => {
+    const seenAt = c in last ? last[c] : -1, jump = seenAt >= L;
+    if (jump) L = seenAt + 1;
+    last[c] = R;
+    const size = R - L + 1, record = size > best;
+    if (record) { best = size; bestL = L; bestR = R; }
+    const w = s.slice(L, R + 1).join('');
+    const cells = s.map((_, i) => (i < L ? 'out' : i > R ? 'future' : i === R ? (jump ? 'hit' : 'cur') : 'in'));
+    if (jump) cells[seenAt] = 'dup';
+    if (jump) {
+      steps.push(runStep('jump', { L, R, best, cells, board: book(c, 'hit') }, [say('wren', 'Another “' + c + '”!'), say('hoot', 'The old one sat at ' + seenAt + '. The back jumps to ' + L + '.')],
+        '“' + c + '” was already in the window, so the back jumps past the old “' + c + '”. Now the window is “' + w + '”.', 'last["' + c + '"] = ' + seenAt + ' ≥ left → left = ' + L + '. best = ' + best + '.', 'The back jumps straight past the repeat instead of creeping one step at a time.'));
+    } else {
+      steps.push(runStep('grow', { L, R, best, cells, board: book(c, 'fresh') }, [say('wren', '“' + c + '” is new. Come in!'), say('hoot', 'Window “' + w + '”: ' + size + (size === 1 ? ' badge.' : ' different badges.') + (record ? ' A new record!' : ''))],
+        '“' + c + '” is not in the window yet, so the window grows to ' + size + '.' + (record ? ' That is the longest so far.' : ''), 'last["' + c + '"] = ' + R + '; size = ' + size + ', best = ' + best + '.', 'Every badge between left and right is different.'));
+    }
+  });
+  const bestW = s.slice(bestL, bestR + 1).join('');
+  steps.push(runStep('found', { L: bestL, R: bestR, best, frameAt: [bestL, bestR], board: book('', ''), cells: s.map((_, i) => (i >= bestL && i <= bestR ? 'ok' : 'out')), done: true },
+    [say('wren', 'That is the last passenger.'), say('hoot', 'The longest run is ' + best + ': “' + bestW + '”.')],
+    'The train has passed. The longest run with no repeat is “' + bestW + '”, ' + best + (best === 1 ? ' passenger.' : ' passengers.'), 'return best = ' + best + '.', 'One pass over ' + n + ' passengers and one notebook line per badge.'));
+  runFinish(steps, { intro: ['Window closed, ready to grow', 'plain'], grow: ['New face → window grows', 'cool'], jump: ['Repeat → back of window jumps', 'warn'], found: ['Longest run: ' + best, 'ok'] }, (st) => {
+    const size = st.noFrame ? 0 : st.R - st.L + 1, win = st.noFrame ? '' : s.slice(st.L, st.R + 1).join('');
+    st.meter = { text: st.noFrame ? 'window = “”' : st.done ? 'best = “' + win + '” = ' + size : 'window “' + win + '” = ' + size, pct: (size / n) * 100, mark: (st.best / n) * 100, markLabel: 'best so far ' + st.best };
+    st.watch = [['left', st.L, 'right'], ['right', st.noFrame ? '—' : st.R, 'left'], ['s[right]', st.noFrame ? '—' : '“' + s[st.R] + '”', 'left'], ['window', '“' + win + '”', 'text'], ['size', size, 'text'], ['best', st.best, st.done ? 'ok' : 'text']];
+  });
+  return runScene('longest-substring', Object.assign(fitRow({ pitch: 56, tile: 46, tileH: 62, font: 24 }, n, 440), {
+    items: s, status: ['Watching…', 'Longest run: ' + best],
+    example: ['s = "' + text + '"', 'answer = ' + best + '   ("' + bestW + '")'],
+    answer: best, input: { s: text }
+  }), steps);
+}
+const randWord = (lo, hi, abc) => ({ s: Array.from({ length: rint(lo, hi) }, () => rpick((abc || 'abcde').split(''))).join('') });
+SCENE_INPUT['longest-substring'] = {
+  hint: 'lowercase letters, no spaces', example: 'abcabcbb',
+  default: { s: 'abcabcbb' },
+  presets: [['Story example', () => ({ s: 'abcabcbb' })], ['Random', () => randWord(5, 9, 'abcd')], ['All the same', () => ({ s: 'aaaa' })], ['All different', () => ({ s: 'abcdefg' })]],
+  random: () => randWord(3, 9, rpick(['ab', 'abc', 'abcde', 'abcdefgh'])),
+  parse: parseText, show: (v) => v.s,
+  check: (v) => (v.s.length < 3 || v.s.length > 9 ? 'Use 3 to 9 letters, so every tile stays readable. You have ' + v.s.length + '.' : /^[a-z]+$/.test(v.s) ? '' : 'Use lowercase letters a to z only, with no spaces.'),
+  make: facesRun
+};
+
+function stockRun(input) {
+  const p = (input || SCENE_INPUT['best-time-stock'].default).nums.slice(), n = p.length;
+  const top = Math.max.apply(null, p);
+  const steps = [];
+  let buy = 0, best = 0, bestBuy = -1, bestSell = -1;
+  steps.push(runStep('intro', { L: 0, R: 0, best: 0, profit: 0 }, [say('hoot', n + ' mornings of prices. Buy once, then sell once on a later morning.'), say('wren', 'The back of my window is the cheapest morning so far. The front is today.')],
+    'Wren keeps the cheapest morning so far as the back of her window. The front is today.', 'buy = 0, best = 0.', 'Only the cheapest morning so far matters: O(n) time, O(1) space.'));
+  for (let d = 1; d < n; d++) {
+    if (p[d] < p[buy]) {
+      const old = p[buy];
+      buy = d;
+      steps.push(runStep('cheaper', { L: buy, R: d, best, profit: 0 }, [say('wren', 'Only ' + p[d] + ' today. Cheaper than ' + old + '!'), say('hoot', 'Then buy here instead.')],
+        p[d] + ' is the cheapest so far, so Wren moves her buy day to day ' + (d + 1) + '.', 'prices[' + d + '] = ' + p[d] + ' < ' + old + ' → buy = ' + d + '.', 'A cheaper buy day beats the old one for every later sale.'));
+    } else {
+      const profit = p[d] - p[buy], record = profit > best;
+      if (record) { best = profit; bestBuy = buy; bestSell = d; }
+      steps.push(runStep('profit', { L: buy, R: d, best, profit }, [say('wren', 'Bought at ' + p[buy] + ', sold today at ' + p[d] + ': ' + profit + '.'), say('hoot', record ? 'A new best!' : 'The best is still ' + best + '.')],
+        'Bought at ' + p[buy] + ' and sold today at ' + p[d] + ', Wren makes ' + profit + '.' + (record ? ' Her best yet.' : ' Her best is still ' + best + '.'), 'profit = ' + p[d] + ' − ' + p[buy] + ' = ' + profit + '; best = ' + best + '.', 'One sale per day matters: today against the cheapest morning before it.'));
+    }
+  }
+  const made = bestBuy >= 0;
+  steps.push(runStep('found', { L: made ? bestBuy : buy, R: made ? bestSell : buy, best, profit: best, done: true },
+    [say('wren', 'The week is over.'), say('hoot', made ? 'Buy at ' + p[bestBuy] + ', sell at ' + p[bestSell] + '. Best profit: ' + best + '.' : 'No later morning was dearer. The best profit is 0.')],
+    made ? 'The best plan: buy at ' + p[bestBuy] + ' and sell at ' + p[bestSell] + '. That makes ' + best + '.' : 'Prices never went up after a buy, so no trade makes money. The answer is 0.', 'return best = ' + best + '.', (n - 1) + ' comparisons, O(1) space.'));
+  runFinish(steps, { intro: ['Day 1: nothing to sell yet', 'plain'], cheaper: ['Cheaper morning → move the buy day', 'cool'], profit: ['Sell today? Check the profit', 'warn'], found: ['Best profit: ' + best, 'ok'] }, (st) => {
+    st.cells = p.map((_, i) => (st.done ? (made && (i === bestBuy || i === bestSell) ? 'best' : 'out') : i < st.L ? 'out' : i > st.R ? 'future' : i === st.L ? 'buy' : i === st.R ? 'cur' : 'in'));
+    st.meter = { text: st.done ? 'best = ' + best : st.kind === 'profit' ? 'sell ' + p[st.R] + ' − buy ' + p[st.L] + ' = ' + st.profit : 'buy at ' + p[st.L], pct: (st.profit / top) * 100, mark: (st.best / top) * 100, markLabel: 'best so far ' + st.best };
+    st.watch = [['buy', st.L, 'right'], ['day', st.R, 'left'], ['prices[buy]', p[st.L], 'right'], ['prices[day]', p[st.R], 'left'], ['profit', st.profit, 'text'], ['best', st.best, st.done ? 'ok' : 'text']];
+  });
+  return runScene('best-time-stock', Object.assign(fitPlanks({ pitch: 84, tile: 44, unit: 18 }, p, 600), {
+    items: p, status: ['Watching prices…', 'Best profit: ' + best],
+    example: ['prices = ' + showList(p), 'answer = ' + best],
+    answer: best, input: { nums: p }
+  }), steps);
+}
+SCENE_INPUT['best-time-stock'] = {
+  hint: 'prices from 1 to 9, one per morning', example: '7, 1, 5, 3, 6, 4',
+  default: { nums: [7, 1, 5, 3, 6, 4] },
+  presets: [['Story example', () => ({ nums: [7, 1, 5, 3, 6, 4] })], ['Random', () => ({ nums: rlist(rint(4, 9), 1, 9) })], ['Rising', () => ({ nums: [1, 2, 4, 6, 9] })], ['Falling', () => ({ nums: [9, 7, 5, 3, 1] })]],
+  random: () => ({ nums: rlist(rint(3, 9), 1, 9) }),
+  parse: (t) => ({ nums: parseNums(t) }), show: (v) => v.nums.join(', '),
+  check: (v) => checkCount(v.nums, 3, 9, 'prices') || checkRange(v.nums, 1, 9, 'Prices'),
+  make: stockRun
+};

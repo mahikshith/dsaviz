@@ -276,3 +276,140 @@ SCENE_REGISTRY.push(gridWalkerScene, staircaseScene, nightWalkScene, changeScene
 PATTERN_KITS['Dynamic Programming'] = { right: 3, spot: 'Why notes, not every path?', ask: 'How should Sol work it out?',
   quiz: [['Try every possibility', 'List every route or mix, one by one'], ['Take the best-looking move', 'Grab the biggest step each time'], ['Two friends from both ends', 'One at each end, walking inward'], ['Write small answers down', 'Solve smaller versions first and reuse the notes']] };
 STORY_CAST.sol = { name: 'Sol', initial: 'S', color: 'right', radius: '8px' };
+
+// ---------- Your own input (see practice.js) ----------
+function gridWalkerRun(input) {
+  const [m, n] = (input || SCENE_INPUT['unique-paths'].default).size;
+  const ways = [...Array(m)].map(() => Array(n).fill(0));
+  const shown = [...Array(m)].map(() => Array(n).fill(''));
+  const snap = () => shown.map((row) => row.slice());
+  const total = m * n, steps = [];
+  let written = 0;
+  steps.push(runStep('intro', { vals: snap(), at: null, from: [], written, r: '—', c: '—', up: '—', left: '—', actorAt: [0, 0] }, [say('hoot', 'A ' + m + ' by ' + n + ' floor. The robot moves only right or down.'), say('sol', 'I’ll write the number of routes into every square.')],
+    'Sol writes, in each square, how many ways the robot can reach it.', 'ways[r][c] = routes from the top-left to (r, c). The answer is ways[' + (m - 1) + '][' + (n - 1) + '].', 'Every route into a square comes from above or from the left.'));
+  for (let c = 0; c < n; c++) { ways[0][c] = 1; shown[0][c] = 1; written++; }
+  steps.push(runStep('edge', { vals: snap(), at: null, from: [], written, r: 0, c: '0..' + (n - 1), up: '—', left: '—', actorAt: [0, n - 1] }, [say('sol', 'The top row: the robot can only keep going right.'), say('hoot', 'So 1 way into each.')],
+    'Any square in the top row has just 1 way in: keep going right.', 'ways[0][c] = 1 for every c.', 'Base case: one straight route.'));
+  for (let r = 0; r < m; r++) { if (!shown[r][0]) written++; ways[r][0] = 1; shown[r][0] = 1; }
+  steps.push(runStep('side', { vals: snap(), at: null, from: [], written, r: '0..' + (m - 1), c: 0, up: '—', left: '—', actorAt: [m - 1, 0] }, [say('sol', 'The left column: the robot can only keep going down.'), say('hoot', '1 way into each of those too.')],
+    'Any square in the left column has just 1 way in: keep going down.', 'ways[r][0] = 1 for every r.', 'Second base case: the first column.'));
+  for (let r = 1; r < m; r++) for (let c = 1; c < n; c++) {
+    const up = ways[r - 1][c], left = ways[r][c - 1];
+    ways[r][c] = up + left; shown[r][c] = ways[r][c]; written++;
+    steps.push(runStep('fill', { vals: snap(), at: [r, c], from: [[r - 1, c], [r, c - 1]], written, r, c, up, left, actorAt: [r, c] }, [say('sol', 'From above: ' + up + '. From the left: ' + left + '.'), say('hoot', up + ' + ' + left + ' = ' + ways[r][c] + '.')],
+      'The robot arrives from above or from the left. Sol adds their notes: ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', 'ways[' + r + '][' + c + '] = ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', 'Both notes were written earlier, so each square takes one addition.'));
+  }
+  const answer = ways[m - 1][n - 1];
+  const route = [];
+  for (let c = 0; c < n; c++) route.push([0, c]);
+  for (let r = 1; r < m; r++) route.push([r, n - 1]);
+  steps.push(runStep('done', { vals: snap(), at: [m - 1, n - 1], from: [], written, r: m - 1, c: n - 1, up: ways[m - 2][n - 1], left: ways[m - 1][n - 2], actorAt: [m - 1, n - 1], path: route, done: true }, [say('sol', 'The bottom-right square says ' + answer + '.'), say('hoot', 'The line is one of those ' + answer + ' routes.')],
+    'The last square says ' + answer + '. There are ' + answer + ' different routes.', 'return ways[' + (m - 1) + '][' + (n - 1) + '] = ' + answer + '.', 'One addition per square: O(m·n) time.'));
+  runFinish(steps, { intro: ['Empty notebook', 'plain'], edge: ['Top row → 1 way each', 'cool'], side: ['Left column → 1 way each', 'cool'], fill: ['Above + left', 'warn'], done: [answer + ' routes', 'ok'] }, (st) => {
+    const from = new Set(st.from.map(([r, c]) => r + ',' + c));
+    st.cells = st.vals.map((row, r) => row.map((v, c) => {
+      if (st.done) return r === m - 1 && c === n - 1 ? 'ok' : 'stored';
+      if (st.at && st.at[0] === r && st.at[1] === c) return 'cur';
+      if (from.has(r + ',' + c)) return 'buy';
+      if (st.kind === 'edge' && r === 0) return 'cur';
+      if (st.kind === 'side' && c === 0 && r > 0) return 'cur';
+      return v === '' ? 'future' : 'stored';
+    }));
+    st.meter = { text: 'notes written: ' + st.written + ' / ' + total, pct: (st.written / total) * 100, mark: 100, markLabel: 'all ' + total + ' squares' };
+    st.watch = [['r', st.r, 'left'], ['c', st.c, 'left'], ['ways[r-1][c]', st.up, 'right'], ['ways[r][c-1]', st.left, 'right'], ['ways[r][c]', st.kind === 'fill' || st.done ? st.vals[st.at[0]][st.at[1]] : st.kind === 'intro' ? '—' : 1, 'text'], ['answer', st.done ? answer : '…', st.done ? 'ok' : 'text']];
+    ['at', 'from', 'written', 'r', 'c', 'up', 'left'].forEach((k) => delete st[k]);
+  });
+  return runScene('unique-paths', {
+    items: shown.map((row) => row.map(() => '')), goal: 'How many routes across a ' + m + ' by ' + n + ' floor?', status: ['Filling the notebook…', answer + ' routes'],
+    example: ['m = ' + m + ', n = ' + n, 'answer = ' + answer], answer, input: { size: [m, n] }
+  }, steps);
+}
+SCENE_INPUT['unique-paths'] = {
+  hint: 'rows and columns, each from 2 to 6', example: '4, 4',
+  default: { size: [4, 4] },
+  presets: [['Story example', () => ({ size: [4, 4] })], ['Random', () => ({ size: [rint(2, 6), rint(2, 6)] })], ['One long row', () => ({ size: [2, 6] })], ['Largest', () => ({ size: [6, 6] })]],
+  random: () => ({ size: [rint(2, 6), rint(2, 6)] }),
+  parse: (t) => ({ size: parseInts(t, 2, '3, 4') }), show: (v) => v.size.join(', '),
+  check: (v) => (v.size.every((x) => x >= 2 && x <= 6) ? '' : 'Use 2 to 6 rows and 2 to 6 columns, so the notebook stays readable.'),
+  make: gridWalkerRun
+};
+
+function staircaseRun(input) {
+  const n = (input || SCENE_INPUT['climbing-stairs'].default).n;
+  const ways = Array(n + 1).fill(0), shown = Array(n + 1).fill(''), steps = [];
+  const row = () => [shown.slice()];
+  steps.push(runStep('intro', { vals: row(), i: '—', a: '—', b: '—', at: -1, from: [], actorAt: [0, 0] }, [say('hoot', n + ' stairs. Climb one or two at a time.'), say('sol', 'I’ll note the number of ways to reach each stair.')],
+    'Sol makes one note per stair: how many ways there are to reach it.', 'ways[i] = ways to reach stair i. The answer is ways[' + n + '].', 'Each stair depends only on the two below it.'));
+  ways[0] = 1; ways[1] = 1; shown[0] = 1; shown[1] = 1;
+  steps.push(runStep('base', { vals: row(), i: '0, 1', a: '—', b: '—', at: 1, from: [], actorAt: [0, 1] }, [say('sol', 'The bottom counts as 1 way. Stair 1 has 1 way: one small step.')],
+    'Stair 0 has 1 way (you are there). Stair 1 has 1 way: one small step.', 'ways[0] = 1 and ways[1] = 1.', 'Base cases. ways[0] = 1 makes the sum work for stair 2.'));
+  for (let i = 2; i <= n; i++) {
+    ways[i] = ways[i - 1] + ways[i - 2]; shown[i] = ways[i];
+    steps.push(runStep('fill', { vals: row(), i, a: ways[i - 1], b: ways[i - 2], at: i, from: [i - 1, i - 2], actorAt: [0, i] }, [say('sol', 'Stair ' + i + ' comes from stair ' + (i - 1) + ' or stair ' + (i - 2) + '.'), say('hoot', ways[i - 1] + ' + ' + ways[i - 2] + ' = ' + ways[i] + '.')],
+      'You reach stair ' + i + ' from stair ' + (i - 1) + ' or ' + (i - 2) + '. Add their notes: ' + ways[i - 1] + ' + ' + ways[i - 2] + ' = ' + ways[i] + '.', 'ways[' + i + '] = ' + ways[i - 1] + ' + ' + ways[i - 2] + ' = ' + ways[i] + '.', 'The last move splits the climbs into two groups that never overlap.'));
+  }
+  steps.push(runStep('done', { vals: row(), i: n, a: ways[n - 1], b: ways[n - 2], at: n, from: [], actorAt: [0, n], done: true }, [say('sol', 'Stair ' + n + ' says ' + ways[n] + '.')],
+    'Stair ' + n + ' says ' + ways[n] + '. There are ' + ways[n] + ' ways to the top.', 'return ways[' + n + '] = ' + ways[n] + '.', (n - 1) + ' additions: O(n) time.'));
+  runFinish(steps, { intro: ['Empty notes', 'plain'], base: ['Bottom and stair 1 → 1 way', 'cool'], fill: ['One back + two back', 'warn'], done: [ways[n] + ' ways up', 'ok'] }, (st) => {
+    st.cells = [st.vals[0].map((v, c) => (st.done ? (c === n ? 'ok' : 'stored') : st.kind === 'base' && c <= 1 ? 'cur' : c === st.at ? 'cur' : st.from.includes(c) ? 'buy' : v === '' ? 'future' : 'stored'))];
+    const k = st.vals[0].filter((v) => v !== '').length;
+    st.meter = { text: 'stairs noted: ' + k + ' / ' + (n + 1), pct: (k / (n + 1)) * 100, mark: 100, markLabel: 'top stair' };
+    st.watch = [['i', st.i, 'left'], ['ways[i-1]', st.a, 'right'], ['ways[i-2]', st.b, 'right'], ['ways[i]', st.kind === 'fill' || st.done ? st.vals[0][st.at] : '—', 'left'], ['n', n, 'text'], ['answer', st.done ? ways[n] : '…', st.done ? 'ok' : 'text']];
+    ['i', 'a', 'b', 'at', 'from'].forEach((k2) => delete st[k2]);
+  });
+  return runScene('climbing-stairs', {
+    items: [shown.map(() => '')], gridLabel: 'Notes for stairs 0 to ' + n, goal: 'How many ways to climb ' + n + ' stairs, 1 or 2 at a time?', status: ['Climbing…', ways[n] + ' ways'],
+    example: ['n = ' + n, 'answer = ' + ways[n]], answer: ways[n], input: { n }
+  }, steps);
+}
+SCENE_INPUT['climbing-stairs'] = {
+  hint: 'how many stairs, from 2 to 8', example: '6',
+  default: { n: 6 },
+  presets: [['Story example', () => ({ n: 6 })], ['Random', () => ({ n: rint(2, 8) })], ['Fewest', () => ({ n: 2 })], ['Most', () => ({ n: 8 })]],
+  random: () => ({ n: rint(2, 8) }),
+  parse: (t) => ({ n: parseInts(t, 1, '6')[0] }), show: (v) => String(v.n),
+  check: (v) => (v.n >= 2 && v.n <= 8 ? '' : 'Use 2 to 8 stairs, so every note stays readable.'),
+  make: staircaseRun
+};
+
+function nightWalkRun(input) {
+  const loot = (input || SCENE_INPUT['house-robber'].default).nums.slice(), n = loot.length;
+  const best = Array(n).fill(''), steps = [];
+  const grid = () => [loot.slice(), best.slice()];
+  steps.push(runStep('intro', { vals: grid(), i: '—', take: '—', skip: '—', at: -1, from: [], actorAt: [0, 0] }, [say('hoot', n + ' houses left treats. Never take from two side by side.'), say('sol', 'Under each house I note the most I could carry by then.')],
+    'Sol walks the street. Under each house he notes the most treats he could have by then.', 'best[i] = most from houses 0..i with no two neighbours.', 'best[i] only needs best[i−1] and best[i−2].'));
+  best[0] = loot[0];
+  steps.push(runStep('first', { vals: grid(), i: 0, take: loot[0], skip: 0, at: 0, from: [], actorAt: [1, 0] }, [say('sol', 'One house so far. Take its ' + loot[0] + '.')],
+    'With only the first house, take its ' + loot[0] + '.', 'best[0] = loot[0] = ' + loot[0] + '.', 'Base case: a one-house street.'));
+  for (let i = 1; i < n; i++) {
+    const back2 = i > 1 ? best[i - 2] : 0, take = loot[i] + back2, skip = best[i - 1], took = take > skip;
+    best[i] = took ? take : skip;
+    steps.push(runStep(took ? 'take' : 'skip', { vals: grid(), i, take, skip, at: i, from: took ? (i > 1 ? [i - 2] : []) : [i - 1], actorAt: [1, i] },
+      took ? [say('sol', loot[i] + ' + ' + back2 + ' = ' + take + '.'), say('hoot', 'That beats ' + skip + '. Take it.')] : [say('sol', loot[i] + ' + ' + back2 + ' = ' + take + '.'), say('hoot', 'Skipping keeps ' + skip + '. Walk past.')],
+      took ? 'Take this house (' + loot[i] + ') plus the best from two back (' + back2 + '): ' + take + '. That beats ' + skip + '.' : 'Taking this house gives only ' + take + '. Skipping keeps ' + skip + ', so Sol skips it.',
+      'take = ' + take + ', skip = ' + skip + ' → best[' + i + '] = ' + best[i] + '.', took ? 'Taking house ' + i + ' rules out house ' + (i - 1) + '.' : 'A skip copies the last note forward.'));
+  }
+  const answer = best[n - 1];
+  steps.push(runStep('done', { vals: grid(), i: n - 1, take: '—', skip: '—', at: n - 1, from: [], actorAt: [1, n - 1], done: true }, [say('sol', 'The last note says ' + answer + '.')],
+    'The last note says ' + answer + '. That is the most Sol can carry home.', 'return best[' + (n - 1) + '] = ' + answer + '.', 'One choice per house: O(n) time.'));
+  runFinish(steps, { intro: ['Empty notes', 'plain'], first: ['One house → take it', 'cool'], take: ['Take it + two back', 'warn'], skip: ['Skip it → copy the last note', 'cool'], done: ['Most treats: ' + answer, 'ok'] }, (st) => {
+    st.cells = [loot.map((_, c) => (c === st.at && !st.done ? 'cur' : 'in')), st.vals[1].map((v, c) => (st.done ? (c === n - 1 ? 'ok' : 'stored') : c === st.at ? 'cur' : st.from.includes(c) ? 'buy' : v === '' ? 'future' : 'stored'))];
+    const k = st.vals[1].filter((v) => v !== '').length;
+    st.meter = { text: 'houses noted: ' + k + ' / ' + n, pct: (k / n) * 100, mark: 100, markLabel: 'end of the street' };
+    st.watch = [['i', st.i, 'left'], ['loot[i]', st.at >= 0 ? loot[st.at] : '—', 'left'], ['take', st.take, 'right'], ['skip', st.skip, 'right'], ['best[i]', st.at >= 0 ? st.vals[1][st.at] : '—', 'text'], ['answer', st.done ? answer : '…', st.done ? 'ok' : 'text']];
+    ['i', 'take', 'skip', 'at', 'from'].forEach((k2) => delete st[k2]);
+  });
+  return runScene('house-robber', {
+    items: [loot.slice(), loot.map(() => '')], gridLabel: n + ' houses: treats left, and Sol’s best so far', status: ['Walking the street…', answer + ' treats'],
+    example: ['loot = ' + showList(loot), 'answer = ' + answer], answer, input: { nums: loot }
+  }, steps);
+}
+SCENE_INPUT['house-robber'] = {
+  hint: 'treats per house, from 0 to 20', example: '2, 7, 9, 3, 1, 5',
+  default: { nums: [2, 7, 9, 3, 1, 5] },
+  presets: [['Story example', () => ({ nums: [2, 7, 9, 3, 1, 5] })], ['Random', () => ({ nums: rlist(rint(4, 9), 0, 20) })], ['Greedy trap', () => ({ nums: [3, 4, 3] })], ['All equal', () => ({ nums: [5, 5, 5, 5, 5] })]],
+  random: () => ({ nums: rlist(rint(3, 9), 0, 20) }),
+  parse: (t) => ({ nums: parseNums(t) }), show: (v) => v.nums.join(', '),
+  check: (v) => checkCount(v.nums, 3, 9, 'houses') || checkRange(v.nums, 0, 20, 'Treats'),
+  make: nightWalkRun
+};

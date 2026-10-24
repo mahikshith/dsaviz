@@ -232,3 +232,79 @@ function orchardScene() {
 }
 
 SCENE_REGISTRY.push(tallestScene, mirrorGardenScene, orchardScene);
+
+// ---------- Your own input (see practice.js) ----------
+function treeDepthOf(list) {
+  const byId = {};
+  list.forEach((x) => { byId[x.id] = x; });
+  return Math.max.apply(null, list.map((x) => { let d = 1, at = x; while (at.parent != null) { at = byId[at.parent]; d++; } return d; }));
+}
+function tallestRun(input) {
+  const arr = (input || SCENE_INPUT['max-depth'].default).arr.slice();
+  const list = levelTree(arr);
+  const val = (id) => list.find((x) => x.id === id).label;
+  const fate = {}, tags = {}, trail = [], steps = [];
+  let best = 0, done = 0;
+  const snap = (at, extra) => {
+    const nodes = {};
+    list.forEach((x) => { nodes[x.id] = fate[x.id] || 'in'; });
+    trail.forEach((id, i) => { nodes[id] = i === trail.length - 1 ? 'cur' : 'paint'; });
+    return Object.assign({ nodes, edge: mossTrail(trail, list), tags: Object.assign({}, tags), actorAt: at, depthNow: trail.length, best, finished: done }, extra);
+  };
+  steps.push(runStep('intro', snap(list[0].id, { node: '—', l: '—', r: '—', ans: '—' }), [say('hoot', 'How tall is this tree of ' + list.length + (list.length === 1 ? ' branch?' : ' branches?')), say('moss', 'I’ll ask each branch how deep it goes.')],
+    'Moss starts at the top branch, ' + val(list[0].id) + '. Each branch answers after its children do.', 'maxDepth(node) = 1 + max(maxDepth(left), maxDepth(right)). Empty answers 0.', 'Children first, then the parent: every branch answers once.'));
+  const visit = (id) => {
+    trail.push(id);
+    const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
+    if (!L && !R) {
+      fate[id] = trail.length === 1 ? 'ok' : 'stored'; tags[id] = '↑1'; done++; best = Math.max(best, trail.length);
+      steps.push(runStep('leaf', snap(id, { node: val(id), l: 0, r: 0, ans: 1 }), [say('moss', 'Branch ' + val(id) + ' has no children.'), say('hoot', 'So it is 1 deep.')],
+        'Branch ' + val(id) + ' is a tip. Nothing grows below it, so it answers 1.', 'maxDepth(' + val(id) + ') = 1 + max(0, 0) = 1.', 'The smallest case needs no more calls. Open calls: ' + trail.length + '.'));
+      trail.pop();
+      return 1;
+    }
+    steps.push(runStep('ask', snap(id, { node: val(id), l: '?', r: '?', ans: '?' }), [say('moss', 'Branch ' + val(id) + ', how deep do you go?'), say('hoot', 'It asks ' + (L && R ? 'its two children' : 'its one child') + ' first.')],
+      'Branch ' + val(id) + ' does not know yet, so it asks the branches below it first.', 'maxDepth(' + val(id) + ') calls its children and waits.', 'This call waits. Open calls: ' + trail.length + '.'));
+    const a = L ? visit(L) : 0, b = R ? visit(R) : 0, ans = 1 + Math.max(a, b);
+    const isRoot = trail.length === 1;
+    fate[id] = isRoot ? 'ok' : 'stored'; tags[id] = '↑' + ans; done++;
+    steps.push(runStep('report', snap(id, { node: val(id), l: a, r: b, ans }), [say('moss', 'Branch ' + val(id) + ' heard ' + a + ' and ' + b + '.'), say('hoot', 'The bigger one plus 1: ' + ans + '.')],
+      'The answers are ' + a + ' and ' + b + '. Branch ' + val(id) + ' takes the bigger, adds 1, and answers ' + ans + '.', 'maxDepth(' + val(id) + ') = 1 + max(' + a + ', ' + b + ') = ' + ans + '.', isRoot ? 'The top branch closes last, so its answer is the height.' : 'The call returns and the trail gets shorter.'));
+    trail.pop();
+    return ans;
+  };
+  const height = visit(list[0].id);
+  steps.push(runStep('done', snap(list[0].id, { node: val(list[0].id), l: '—', r: '—', ans: height, done: true }), [say('moss', 'The top branch says ' + height + '.')],
+    'The answer reached the top. The tree is ' + height + (height === 1 ? ' branch' : ' branches') + ' deep.', 'maxDepth(root) returns ' + height + '.', 'Every branch answered once: O(n) time, O(h) for the trail.'));
+  runFinish(steps, { intro: ['How deep is the tree?', 'plain'], ask: ['Not sure yet → ask the children', 'cool'], leaf: ['A tip → answer 1', 'warn'], report: ['Answer = 1 + the deeper child', 'warn'], done: ['The tree is ' + height + ' deep', 'ok'] }, (st) => {
+    st.meter = { text: 'branches answered: ' + st.finished + ' / ' + list.length, pct: (st.finished / list.length) * 100, mark: 100, markLabel: 'all ' + list.length + ' branches' };
+    st.watch = [['node', st.node, 'left'], ['left answer', st.l, 'right'], ['right answer', st.r, 'right'], ['answer', st.ans, st.done ? 'ok' : 'text'], ['deepest tip', st.best, 'text'], ['open calls', st.done ? 0 : st.depthNow, 'text']];
+    ['node', 'l', 'r', 'ans', 'best', 'depthNow', 'finished'].forEach((k) => delete st[k]);
+  });
+  return runScene('max-depth', {
+    tree: list, status: ['Asking branches…', height + ' deep'],
+    example: ['root = ' + showTree({ arr }), 'answer = ' + height], answer: height, input: { arr }
+  }, steps);
+}
+function randTreeArr() {
+  const n = rint(1, 15), arr = [rint(1, 20)];
+  for (let i = 1; arr.filter((x) => x != null).length < n && i < 40; i++) arr.push(Math.random() < 0.3 ? null : rint(1, 20));
+  while (arr.length && arr[arr.length - 1] == null) arr.pop();
+  const list = levelTree(arr);
+  return list.length <= 15 && treeDepthOf(list) <= 4 ? { arr } : { arr: [rint(1, 9), rint(1, 9), rint(1, 9)] };
+}
+SCENE_INPUT['max-depth'] = {
+  hint: 'level by level, null for a gap', example: '[8, 3, 10, 1, 6, null, 14, null, null, 4]',
+  default: { arr: [8, 3, 10, 1, 6, null, 14, null, null, 4] },
+  presets: [['Story example', () => ({ arr: [8, 3, 10, 1, 6, null, 14, null, null, 4] })], ['Random', randTreeArr], ['Full tree', () => ({ arr: [1, 2, 3, 4, 5, 6, 7] })], ['A single line', () => ({ arr: [1, 2, null, 3, null, 4] })]],
+  random: randTreeArr,
+  parse: parseTree, show: showTree,
+  check: (v) => {
+    if (v.arr[0] == null) return 'The first value is the top branch, so it cannot be null.';
+    if (!v.arr.every((x) => x == null || (x >= -99 && x <= 99))) return 'Values must be whole numbers from −99 to 99.';
+    const list = levelTree(v.arr);
+    if (list.length > 15) return 'Use at most 15 branches, so the tree stays readable.';
+    return treeDepthOf(list) > 4 ? 'Keep the tree 4 levels deep or less, so it fits the stage.' : '';
+  },
+  make: tallestRun
+};

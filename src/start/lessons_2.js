@@ -134,3 +134,69 @@ START_LESSON('and-or-not', {
       ['When both are False', false, 'Two False sides give False.'],
       ['Always', false, 'and depends on both sides.']] }
 });
+
+// ---------- L11. What could go wrong? ----------
+const ST11_CODE = {
+  py: ['cups = int(input("Cups? "))', 'if cups <= 0:', '    print("Order at least one cup")', 'elif cups >= 10:', '    print("Discount!")', 'else:', '    print("Coming up")'],
+  js: ['let cups = Number(prompt("Cups? "));', 'if (cups <= 0) {', '  console.log("Order at least one cup");', '} else if (cups >= 10) {', '  console.log("Discount!");', '} else {', '  console.log("Coming up"); }']
+};
+function st11Story() {
+  const cast = st1Cast([['hoot', 60], ['bolt', 320], ['dot', 580]]);
+  const order = (n, say, bad) => ({ boxes: [stVar('cups', 'cups', String(n), 140, 170, { w: 130, c: bad ? 'bad' : 'l' })], tokens: [{ id: 'say', x: 440, y: 202, text: say, solid: !bad, c: bad ? 'bad' : 'l' }] });
+  const card = (cur) => st1Card('card', 40, 124, 560, ST11_CODE.py.slice(1, 5), (cur || []).map((i) => i - 1));
+  const tests = (ids) => ({ tokens: ids.map(([t, ok], i) => ({ id: 't' + i, x: 120 + i * 100, y: 220, text: t, w: 80, solid: ok })) });
+  return [
+    stBeat('dot', 'My lemonade stand gives a discount for 10 cups or more. Bolt takes the orders.', stScene(cast, order(3, '?')), ['cups', 'cast:dot']),
+    stBeat('bolt', 'Order: 3 cups. Coming up.', stScene(cast, order(3, 'Coming up')), ['say', 'cast:bolt']),
+    stBeat('bolt', 'Order: -3 cups. Coming up. Minus three cups of lemonade, please wait.', stScene(cast, order(-3, 'Coming up', true)), ['cups', 'say']),
+    stBeat('hoot', 'Programs break at the odd cases. Before you trust one, try zero, a negative and the exact edge.', stScene(cast, tests([['0', false], ['-3', false], ['10', false]])), ['t0', 't1', 't2']),
+    stBeat('hoot', 'Ask about the strange cases first: if cups <= 0, say so and do nothing else.', stScene(cast, card([1, 2])), ['card'], [1, 2]),
+    stBeat('dot', 'At first I wrote cups > 10, so an order of exactly 10 missed the discount!', stScene(cast, { tokens: [{ id: 'bad', x: 200, y: 210, text: 'cups > 10', c: 'bad' }, { id: 'good', x: 440, y: 210, text: 'cups >= 10', solid: true }] }), ['bad', 'cast:dot']),
+    stBeat('hoot', 'The rule says 10 or more, so the edge counts: use >=. "At least" means the same.', stScene(cast, card([3, 4])), ['card'], [3, 4]),
+    stBeat('dot', 'Test -1, 0, 9, 10 and 11. If those all work, the middle usually does too.', stScene(cast, tests([['-1', true], ['0', true], ['9', true], ['10', true], ['11', true]])), ['t0', 't1', 't2', 't3', 't4'])
+  ];
+}
+START_LESSON('edge-cases', {
+  code: ST11_CODE, story: st11Story(),
+  watch: { code: 'cups = int(input("Cups? "))\nif cups <= 0:\n    print("Order at least one cup")\nelif cups >= 10:\n    print("Discount!")\nelse:\n    print("Coming up")\n', stdin: ['10'] },
+  tryit: { py: ST11_CODE.py.join('\n') + '\n', js: 'let cups = Number(prompt("Cups? "));\nif (cups <= 0) {\n  console.log("Order at least one cup");\n} else if (cups >= 10) {\n  console.log("Discount!");\n} else {\n  console.log("Coming up");\n}\n',
+    stdin: ['10'], goals: ['Press Run with 10 cups.', 'Now try 0, -3, 9 and 11 in the Input box.', 'Add a rule: more than 50 cups is "Too many, sorry".'] },
+  check: { q: 'Why test zero, negatives and the exact edge first?',
+    choices: [['Programs most often break at those odd cases', true, 'Right. The middle of the range usually works; the edges are where mistakes hide.'],
+      ['They are the easiest numbers to type', false, 'They are chosen because they are risky, not easy.'],
+      ['Python only accepts those numbers', false, 'Python accepts any number. The point is to find bugs.'],
+      ['Big numbers are not allowed', false, 'Big numbers are fine. The edges are the risky part.']] }
+});
+
+// ---------- L12. Project: choose your path ----------
+const ST12_CODE = {
+  py: ['door = input("Left or right? ")', 'if door == "left":', '    print("A dark river.")', 'else:', '    print("A sleepy dragon.")'],
+  js: ['let door = prompt("Left or right? ");', 'if (door === "left") {', '  console.log("A dark river.");', '} else {', '  console.log("A sleepy dragon."); }']
+};
+function st12Story() {
+  const cast = st1Cast([['hoot', 60], ['dot', 580]]);
+  const node = (id, x, y, t, o) => Object.assign({ id, x, y, w: 150, h: 48, text: t, size: 16, mono: false }, o || {});
+  const tree = (lit) => ({ boxes: [node('start', 245, 112, 'Cave mouth', { solid: lit.includes('start') }), node('left', 90, 196, 'River', { solid: lit.includes('left') }), node('right', 400, 196, 'Dragon', { solid: lit.includes('right') }),
+      node('swim', 20, 290, 'Treasure!', { w: 130, solid: lit.includes('swim') }), node('wait', 170, 290, 'Tide comes in', { w: 150, solid: lit.includes('wait') })],
+    arrows: [{ id: 'a1', from: [290, 160], to: [190, 196], c: 'm', label: 'left', lx: -24 }, { id: 'a2', from: [350, 160], to: [450, 196], c: 'm', label: 'right', lx: 24 }, { id: 'a3', from: [140, 244], to: [90, 290], c: 'm', label: 'swim', lx: -26 }, { id: 'a4', from: [190, 244], to: [240, 290], c: 'm', label: 'wait', lx: 24 }] });
+  return [
+    stBeat('dot', 'I want to make a tiny cave game. You pick a path and get one of three endings.', stScene(cast, tree([])), ['cast:dot']),
+    stBeat('hoot', 'Draw it first. Each question is a fork, and each answer is a branch.', stScene(cast, tree(['start'])), ['start', 'a1', 'a2']),
+    stBeat('hoot', 'One fork is one input and one if. Left goes to the river, anything else to the dragon.', stScene(cast, tree(['start', 'left', 'right'])), ['left', 'right']),
+    stBeat('dot', 'At the river I ask again: swim or wait? That is an if inside an if.', stScene(cast, tree(['left'])), ['swim', 'wait', 'a3', 'a4']),
+    stBeat('hoot', 'Exactly. Build it one fork at a time, and run it after each one.', stScene(cast, tree(['start', 'left', 'swim'])), ['swim']),
+    stBeat('dot', 'Three endings, three test runs: left then swim, left then wait, and right.', stScene(cast, tree(['swim', 'wait', 'right'])), ['swim', 'wait', 'right'])
+  ];
+}
+START_LESSON('path-project', {
+  code: ST12_CODE, story: st12Story(),
+  watch: { code: 'door = input("Left or right? ")\nif door == "left":\n    print("A dark river.")\n    choice = input("Swim or wait? ")\n    if choice == "swim":\n        print("You find treasure!")\n    else:\n        print("The tide comes in. Try again.")\nelse:\n    print("A sleepy dragon. You tiptoe home.")\n', stdin: ['left', 'swim'] },
+  tryit: { py: 'door = input("Left or right? ")\nif door == "left":\n    print("A dark river.")\n    choice = input("Swim or wait? ")\n    if choice == "swim":\n        print("You find treasure!")\n    else:\n        print("The tide comes in. Try again.")\nelse:\n    print("A sleepy dragon. You tiptoe home.")\n',
+    js: 'let door = prompt("Left or right? ");\nif (door === "left") {\n  console.log("A dark river.");\n  let choice = prompt("Swim or wait? ");\n  if (choice === "swim") {\n    console.log("You find treasure!");\n  } else {\n    console.log("The tide comes in. Try again.");\n  }\n} else {\n  console.log("A sleepy dragon. You tiptoe home.");\n}\n',
+    stdin: ['left', 'swim'], goals: ['Press Run. Then change the Input box to left and wait.', 'Try right. Which ending do you get?', 'Add a fourth ending: at the dragon, ask "sneak or run?"'] },
+  check: { q: 'How many test runs does a game with three endings need, at least?',
+    choices: [['One, if it works once', false, 'One run only checks one path. The other endings might be broken.'],
+      ['Three: one for each ending', true, 'Right. Every path through the forks should run at least once.'],
+      ['None: if it looks right it is right', false, 'Code that looks right can still go down the wrong branch.'],
+      ['Ten', false, 'More is fine, but three is the least that reaches every ending.']] }
+});

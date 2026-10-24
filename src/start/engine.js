@@ -212,7 +212,8 @@ function stScene() {
 function stFlatten(scene, C, focus) {
   const R = [], P = [], O = [], T = [], H = [];
   const F = {}; (focus || []).forEach((f) => { F[f] = 1; });
-  const hasF = (focus || []).length > 0;
+  // A focus on characters alone only rings them; a focus on scene items dims everything else.
+  const hasF = (focus || []).some((f) => f.indexOf('cast:') !== 0);
   const dim = (id) => (hasF && !F[id] ? 0.38 : 1);
   const dimT = (id) => (hasF && !F[id] ? 0.6 : 1);
   const col = (c, d) => C[c] || C[d] || C.t;

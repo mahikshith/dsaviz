@@ -66,3 +66,62 @@ Grouped: Fundamentals (Big O, Recursion Guide, Nested Loop Complexity); Data Str
 
 ## Problem ideas (names and concepts only)
 Added to candidates.md: pair sum in sorted array, longest run without repeats, balanced brackets, min stack, reverse list in place, tree depth, level-order walk, prefix tree, kth largest via heap, subsets, permutations, combination sum, course ordering (topological), climbing stairs, coin change, non-adjacent loot, jump reach, lone number via XOR, count set bits.
+
+---
+
+# Pass 2 (2026-10-25): standalone lessons and remaining cheatsheets
+Method: REA, 21 pages in 5 calls. Structure, ordering and teaching devices only; no wording recorded (their terms bar derivatives).
+
+## Gating: most cheatsheets are Pro-only
+Pro-locked (page shows only an "available for NeetCode Pro members" notice, so no content): Nested Loop Complexity, Tree, Heap and Graph crash courses, Graph Input Types, Data Structures in the Real World, Coding Patterns List, Patterns Explained. Readable free: Recursion Guide, Hash Map Crash Course, Big-O, Sorting. Free pages carry an ad block (Carbon), so our product should stay ad-free. The 20 System Design Concepts and 30-Day JavaScript lessons rendered empty (likely gated). Locked titles still hint at content: tree/heap/graph "crash courses", how graph problems present their input (edge list, adjacency list, matrix), and a patterns list.
+
+## Free cheatsheets: teaching devices
+- **Recursion Guide for Beginners:** analogy first (a gift box holding either a value or smaller boxes) mapping to base case vs recursive case; one worked example (Fibonacci) reusing the same two subheadings; ends with a three-item checklist (can it shrink into similar smaller problems, are base cases clear, does each call move toward a base case). Mentions stack overflow when a base case is missing. Order: analogy, vocabulary, example, checklist.
+- **Hash Map Crash Course:** food-themed mnemonic for "hash" and "map", then the O(1) promise. Three numbered parts: operations (add/remove, check key, check value, access, iterate), common use cases (pair sum, duplicate detection, counting), under the hood (hashing, hash functions, resize and rehash, open addressing, chaining). Notes: O(1) is average case, bad hash functions hurt, avoid when order matters. Arrow-bullet outline style.
+- **Page furniture:** "On This Page" side list, Progress marker, NOTES block at the bottom.
+
+## Standalone lessons (/courses/lessons/*)
+Each has an "Updated" date and author byline, a code-language tab strip (Python, Java, C++, JavaScript) and code blocks.
+| lesson | sections in order | device |
+|---|---|---|
+| How to Use NeetCode Effectively | Prerequisites (1 a programming language, 2 data structures and algorithms, 3 optional advanced algorithms and math), then How to Practice (just start; what if you cannot solve it; am I ready; which topics matter most; other resources) | prerequisites then practice; do/don't lists with time boxes (look at a solution after about 15-20 min, try something easier after 45-60 min); readiness rule: solve unseen mediums in 20-25 min; top four topics: arrays, hash maps, trees, graphs |
+| Big-O Notation (lesson) | O(1), O(n), O(n^2), O(n*m), O(n^3), O(log n), O(n log n), O(2^n), O(c^n), O(n!), O(sqrt n) | 11 classes, each a short description plus code; says Big-O is the worst case; links to the beginners course. Order differs from the cheatsheet (cheatsheet runs by growth; lesson groups by loop shape) |
+| 8 Data Structures | Arrays, Linked Lists, HashMaps, Queues, Trees, Prefix Trees, Heaps, Graphs | 1-2 sentence blurb each plus "Learn more" link; notes linked lists and trees are special graphs |
+| Sorting Algorithms | Insertion, Merge, Quick, Bucket | prose + code per algorithm, language tabs |
+| 5 Graph Algorithms | DFS, BFS, Union-Find, Topological Sort, Dijkstra | five graph tools in rising difficulty |
+| Python Cheat Sheet | Variables, If, Loops, Math, Arrays, Strings, Queues, HashSets, HashMaps, Tuples, Heaps, Functions, Classes | language reference ordered like the data-structure ladder |
+| 8 Design Patterns | Creational (Factory, Builder, Singleton), Behavioural (Observer/PubSub, Iterator, Strategy), Structural (Facade, Adapter) | grouped by family |
+| MongoDB Crash Course | Setup, shell, collections, CRUD, aggregation, indexes, operators, ACID, references | task-by-task |
+| Design a YouTube Clone | Introduction, Background, Requirements, High Level Design (7 components), Detailed Design (sign up, upload, processing), Limitations and Future Work, References | worked design write-up template |
+
+## What this adds for DSAMaxxing
+- Their must-know core: structures = arrays, linked lists, stacks, queues, binary trees, hash maps, heaps, graphs; algorithms = binary search, tree traversals, merge/quick sort, BFS, DFS; top-4 priority = arrays, hash maps, trees, graphs. Good basis for a marked "core" path in our track.
+- Neither their roadmap nor lessons includes a "what is a program / variables / loops" on-ramp (separate Python course). Our Start here can be one connected path.
+- Free-vs-Pro gap we can beat: nested-loop complexity, tree/heap/graph crash courses and pattern lists are Pro there; free, visual, interactive versions are a differentiator.
+- Devices worth borrowing as ideas (written our own way): analogy-first recursion with one reused example and a three-line checklist; do/don't practice rules with time boxes; a "when to peek at the solution" rule; a readiness rule of thumb; language-tab code blocks; "Updated" bylines; a mini outline at the top of every guide.
+
+## Links (pass 2)
+| URL | date | status | note |
+|---|---|---|---|
+| https://neetcode.io/cheatsheets/recursion-guide | 2026-10-25 | read | free |
+| https://neetcode.io/cheatsheets/hashmap-crash-course | 2026-10-25 | read | free |
+| https://neetcode.io/cheatsheets/nested-loop-complexity | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/tree-crash-course | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/heap-crash-course | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/graph-crash-course | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/graph-input-types | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/12-data-structures-in-the-real-world | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/24-patterns-list | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/cheatsheets/patterns-explained | 2026-10-25 | Pro-locked | no content |
+| https://neetcode.io/courses/lessons/how-to-use-neetcode-effectively | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/big-o-notation | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/8-data-structures | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/sorting-algorithms | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/5-graph-algorithms | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/python-for-coding-interviews | 2026-10-25 | read | titled Python Cheat Sheet |
+| https://neetcode.io/courses/lessons/8-design-patterns | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/mongodb | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/design-youtube | 2026-10-25 | read | free |
+| https://neetcode.io/courses/lessons/20-sysdes-concepts | 2026-10-25 | empty render | likely gated |
+| https://neetcode.io/courses/lessons/30-day-javascript-challenge | 2026-10-25 | empty render | likely gated |
+| other cheatsheets (binary-search-course, binary-variations, sliding-window-variations, monotonic-stack, top-k-pattern, backtracking-patterns, 76-interview-terms) | 2026-10-25 | not opened | likely Pro-locked like siblings |

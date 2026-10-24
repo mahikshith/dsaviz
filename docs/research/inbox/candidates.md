@@ -140,3 +140,13 @@
 | DS/ML round: spot overfitting from train vs validation curves | ds-interview-questions | future DS/ML section | medium | new? |
 | DS/ML round: smooth a noisy series with a moving average | ds-interview-questions | future DS/ML section | easy | new? |
 | DS/ML round: TF-IDF weights on small sentences | ds-interview-questions | future DS/ML section | medium | new? |
+| Fibonacci via recursion with base cases | neetcode recursion guide | recursion | easy | new? |
+| Count distinct items with a frequency map | neetcode hashmap guide | hash map counting | easy | new? |
+| Detect any duplicate in a list | neetcode hashmap guide | hash set | easy | new? |
+| Pair that sums to a target (unsorted) | neetcode hashmap guide | hash map | easy | new? |
+| Sort by merging two sorted halves | neetcode sorting lesson | divide and conquer | medium | new? |
+| Partition around a pivot (quick sort) | neetcode sorting lesson | sorting | medium | new? |
+| Sort small-range values by bucket | neetcode sorting lesson | bucket sort | medium | new? |
+| Group nodes into connected sets | neetcode 5 graph algorithms | union-find | medium | new? |
+| Cheapest path with weighted edges | neetcode 5 graph algorithms | shortest path (Dijkstra) | medium-hard | new? |
+| Count nested-loop steps for n*m vs n*n | neetcode big-o lesson | complexity analysis | easy | new? |

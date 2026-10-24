@@ -187,7 +187,13 @@
     tmp.innerHTML = window.DS_BOARDS[name].helmet || '';
     for (const el of [...tmp.children]) { const k = el.outerHTML; if (seen.has(k)) continue; seen.add(k); document.head.appendChild(el); }
   }
-  function fit() { document.documentElement.style.zoom = Math.max(0.25, Math.min(1.6, window.innerWidth / 1440)); }
+  // Pages are drawn at 1440px and scaled to the window. A page whose root carries data-fluid
+  // (the problem page) has its own phone layout below 760px, so it is shown there at zoom 1.
+  function fit() {
+    const fluid = document.querySelector('#app > [data-fluid]');
+    const z = fluid && window.innerWidth < 760 ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / 1440));
+    if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
+  }
   function paint() {
     const r = document.querySelector('#app > div');
     if (!r) return;
@@ -195,5 +201,6 @@
     if (bg && bg !== 'rgba(0, 0, 0, 0)') { document.documentElement.style.background = bg; document.body.style.background = bg; }
   }
   fit(); window.addEventListener('resize', fit); setInterval(paint, 400);
+  try { new MutationObserver(fit).observe(document.getElementById('app'), { childList: true }); } catch (e) {}
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));
 })();

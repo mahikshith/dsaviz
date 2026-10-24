@@ -5,7 +5,6 @@ New reference sources from the owner. Structure, topic order, problem ideas and 
 | source | file | status |
 |---|---|---|
 | Google Sheet 1hXser (DSA 375-question sheet) | gsheet-1hXser.md | done, public export reachable |
-| Google Doc 1beID4 | gdoc-1beID4.md | needs access (HTTP 401 on export) |
 | blog.algomaster.io | algomaster-blog.md | not crawled: robots.txt disallows ClaudeBot, anthropic-ai, Claude-Web by name (owner decision needed) |
 | neetcode.io (courses, Big-O, roadmap, sorting, terms; pass 2 lessons and cheatsheets) | neetcode.md | done, 27 pages; robots allow all; all rights reserved (facts only); 8 cheatsheets Pro-locked |
 | geeksforgeeks.org (explore, DSA tutorial, data science, ML intro) | geeksforgeeks.md | limited by robots.txt: anthropic-ai disallowed site-wide, no content pages read (owner decision needed) |

@@ -9,6 +9,12 @@ function shuffled(arr, seed) {
   if (a.every((x, i) => x === arr[i]) && a.length > 1) [a[0], a[1]] = [a[1], a[0]];
   return a;
 }
+// Code lines may carry a third element naming the step kinds they serve ('fill|edge'); this builds the lines map from those tags.
+function tagLines(code) {
+  const out = {};
+  Object.keys(code).forEach((lang) => { out[lang] = {}; code[lang].forEach(([, , tag], i) => { (tag || '').split('|').filter(Boolean).forEach((k) => { if (!out[lang][k]) out[lang][k] = i + 1; }); }); });
+  return out;
+}
 const isBrace = (c) => /^[\s})\]]*$/.test(c) || /^\s*}\s*(else\s*{)?\s*$/.test(c);
 
 class Component extends DCLogic {
@@ -91,7 +97,7 @@ class Component extends DCLogic {
     const ch = this.state.chapter;
     const lines = S.lines[this.state.lang] || S.lines.py;
     const found = st.done;
-    const pitch = S.pitch, tileW = S.tile;
+    const pitch = S.pitch || 0, tileW = S.tile || 0;
 
     // ---- the row of things the cast walks along ----
     const cellLook = (state) => {
@@ -160,6 +166,45 @@ class Component extends DCLogic {
         };
       });
     }
+    // ---- the 2D grid: S.items (or st.vals) is rows of values, st.cells the matching rows of states ----
+    let grid = { tiles: [], cols: [], rows: [], w: 0, h: 0, line: '', lineOp: 0, label: '', legend: [], hasLegend: false,
+      actor: { left: 0, top: 0, size: 0, op: 0, initial: '', color: 'transparent', font: '10px' } };
+    if (S.visual === 'grid') {
+      const vals = st.vals || S.items, R = vals.length, C = vals[0].length;
+      const gap = 6, padL = S.rowHeads ? 52 : 20, padT = 18;
+      const maxW = (S.board ? 380 : 470) - padL, maxH = 214 - padT;
+      const gp = Math.floor(Math.min(S.maxTile || 58, maxH / R, maxW / C)), size = gp - gap;
+      const at = (r, c) => [padL + c * gp + size / 2, padT + r * gp + size / 2];
+      const onPath = new Set((st.path || []).map(([r, c]) => r + ',' + c));
+      grid.w = padL + C * gp - gap; grid.h = padT + R * gp - gap;
+      grid.label = (S.gridLabel || 'Grid') + ', ' + R + ' rows by ' + C + ' columns. ' + st.verdict + (st.actorAt ? '. ' + ((STORY_CAST[S.cast] || {}).name || 'The guide') + ' is at row ' + st.actorAt[0] + ', column ' + st.actorAt[1] : '') + '.';
+      grid.tiles = [];
+      for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+        const look = Object.assign({}, cellLook(st.cells[r][c]));
+        if (st.cells[r][c] === 'out') { look.ink = t.sceneMuted; look.op = 1; }
+        const v = vals[r][c] == null ? '' : String(vals[r][c]);
+        const mark = look.mark && look.mark.length <= 2 ? look.mark : '';
+        const ring = onPath.has(r + ',' + c) && look.ring === 'transparent' ? t.path : look.ring;
+        grid.tiles.push({ v, left: padL + c * gp, top: padT + r * gp, size, fill: look.fill, ink: look.ink, ring, op: look.op || 1, glow: look.glow || 'none',
+          font: Math.max(12, Math.min(22, Math.round(size * (v.length > 2 ? 0.34 : 0.44)))) + 'px', mark, markColor: look.markColor || t.sceneMuted });
+      }
+      const heads = (list, n) => Array.from({ length: n }, (_, i) => (list ? String(list[i]) : String(i)));
+      grid.cols = heads(S.colHeads, C).map((label, c) => ({ label, x: padL + c * gp, w: size }));
+      grid.rows = heads(S.rowHeads, R).map((label, r) => ({ label, y: padT + r * gp, h: size, w: padL - 8 }));
+      grid.line = (st.path || []).map(([r, c]) => at(r, c).join(',')).join(' ');
+      grid.lineOp = (st.path || []).length > 1 ? 0.9 : 0;
+      if (st.actorAt) {
+        const a = Math.max(18, Math.min(22, Math.round(size * 0.5)));
+        const who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
+        grid.actor = { left: padL + st.actorAt[1] * gp - a * 0.55, top: padT + st.actorAt[0] * gp - a * 0.55, size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.round(a * 0.5) + 'px' };
+      }
+      grid.legend = (S.legend || []).map(([state, label]) => {
+        if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '' };
+        const look = cellLook(state);
+        return { label, fill: look.fill, ring: look.ring === 'transparent' ? 'rgba(255,255,255,0.18)' : look.ring, mark: look.mark && look.mark.length <= 2 ? look.mark : '' };
+      });
+      grid.hasLegend = grid.legend.length > 0;
+    }
     const base = { v: '', pos: 0, fill: 'transparent', ink: t.text, glow: 'none', ring: 'transparent', op: 1, strike: 'none', lift: 'none', mark: '', idxColor: t.sceneMuted, x: 0, h: 0 };
     tiles = tiles.map((x) => Object.assign({}, base, x));
     const tiles2 = (S.items2 || []).map((c, i) => {
@@ -185,7 +230,9 @@ class Component extends DCLogic {
     const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
     const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - 28, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
     let actors;
-    if (S.cast === 'tp') {
+    if (S.visual === 'grid') {
+      actors = [];
+    } else if (S.cast === 'tp') {
       actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
     } else if (S.cast === 'sw') {
       const lx = st.L === st.R ? -18 : 0;
@@ -271,7 +318,7 @@ class Component extends DCLogic {
       keepProblem: () => saveProblem(S.id),
       shownHints: S.hints.slice(0, this.state.hints), hintCount: this.state.hints, moreHints: this.state.hints < S.hints.length,
       revealHint: () => this.setState({ hints: Math.min(S.hints.length, this.state.hints + 1) }),
-      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks',
+      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid: S.visual === 'grid', showActors: S.visual !== 'grid', grid, sceneJustify: S.visual === 'grid' ? 'center' : 'flex-end',
       hasRow2: !!S.items2, rowLabels: S.rowLabels || ['', ''],
       tiles, tiles2, water, frame, showFrame,
       rowWidth: S.items.length * pitch - (pitch - tileW),

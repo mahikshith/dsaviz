@@ -1,0 +1,40 @@
+<!-- SQL PANE --> <!-- generated from shared/sql_pane.html: SQL editor, Run/Submit and result grids. Holes under sq.* come from SqlRunner.vals(t). -->
+<section aria-label="SQL" style="height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+<div data-m="wrap" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<span style="height: 34px; padding: 0 12px; border-radius: 8px; background: {{t.sunk}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: 12px; font-weight: 700">SQLite</span>
+<div style="flex-grow: 1"></div>
+<button onClick="{{sq.copy}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.copyLabel}}</button>
+<button onClick="{{sq.reset}}" aria-label="{{sq.resetAria}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{sq.resetBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.resetLabel}}</button>
+</div>
+<div ref="{{sq.ref}}" style="flex: 1 1 0; min-height: 180px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: hidden"></div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex-shrink: 0">
+<button onClick="{{sq.run}}" disabled="{{sq.busy}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>Run</button>
+<button onClick="{{sq.submit}}" disabled="{{sq.busy}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Submit</button>
+<span role="status" style="font-size: 13px; color: {{sq.statusColor}}">{{sq.statusText}}</span>
+</div>
+<div aria-label="Output" role="region" style="flex: 1 1 0; min-height: 160px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 38px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output</span>
+<sc-if value="{{sq.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{sq.badgeBg}}; color: {{sq.badgeFg}}">{{sq.badge}}</span></sc-if>
+</div>
+<div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; min-height: 0">
+<sc-if value="{{sq.showHint}}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{sq.hint}}</span></sc-if>
+<sc-if value="{{sq.hasMsg}}" hint-placeholder-val="{{ false }}"><div style="padding: 10px 12px; border-radius: 10px; background: {{sq.msgBg}}; font-size: 14px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; font-family: {{sq.msgFont}}">{{sq.msg}}</div></sc-if>
+<sc-for list="{{sq.panels}}" as="g" hint-placeholder-count="1">
+<div style="flex-shrink: 0; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 700">{{g.title}}</span>
+<div style="overflow-x: auto; border-radius: 10px; border: 1px solid {{t.line}}">
+<div role="table" aria-label="{{g.title}}" style="display: table; border-collapse: collapse; font-family: {{t.mono}}; font-size: 13px; line-height: 1.4; font-variant-ligatures: none">
+<div role="row" style="display: table-row"><sc-for list="{{g.cols}}" as="hc"><div role="columnheader" style="display: table-cell; text-align: left; padding: 6px 10px; background: {{t.sunk}}; color: {{t.muted}}; font-weight: 700; white-space: nowrap">{{hc.c}}</div></sc-for><sc-if value="{{g.hasMark}}"><div role="columnheader" style="display: table-cell; text-align: left; padding: 6px 10px; background: {{t.sunk}}; color: {{t.muted}}; font-family: {{t.body}}; font-weight: 700">note</div></sc-if></div>
+<sc-for list="{{g.rows}}" as="gr"><div role="row" style="display: table-row; background: {{gr.bg}}; border-top: 1px solid {{t.line}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="display: table-cell; padding: 6px 10px; white-space: nowrap; color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for>
+</div>
+<sc-if value="{{g.empty}}"><div style="padding: 8px 10px; font-size: 13px; color: {{t.muted}}">{{g.emptyText}}</div></sc-if>
+</div>
+<sc-if value="{{g.more}}"><span style="font-size: 12px; color: {{t.muted}}">{{g.moreText}}</span></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{sq.canShowSet}}" hint-placeholder-val="{{ false }}"><button onClick="{{sq.toggleSet}}" aria-expanded="{{sq.setOpen}}" style="align-self: flex-start; flex-shrink: 0; height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.setLabel}}</button></sc-if>
+</div>
+</div>
+</section>
+<!-- /SQL PANE -->

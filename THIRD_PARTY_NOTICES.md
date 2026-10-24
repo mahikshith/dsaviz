@@ -21,6 +21,7 @@ The build inlines these into the single-file site.
 | [@codemirror/lang-java](https://github.com/codemirror/lang-java) | 6.0.1 | MIT | Marijn Haverbeke and others | Java highlighting |
 | [@codemirror/lang-cpp](https://github.com/codemirror/lang-cpp) | 6.0.2 | MIT | Marijn Haverbeke and others | C++ highlighting |
 | [@codemirror/lang-go](https://github.com/codemirror/lang-go) | 6.0.1 | MIT | Marijn Haverbeke and others | Go highlighting |
+| [@codemirror/lang-sql](https://github.com/codemirror/lang-sql) | 6.8.0 | MIT | Marijn Haverbeke and others | SQL highlighting (SQLite dialect) on the Code page's SQL mode; its grammar is built in, on @lezer/lr |
 | [@lezer/common](https://github.com/lezer-parser/common) | 1.5.4 | MIT | Marijn Haverbeke | Parser runtime |
 | [@lezer/lr](https://github.com/lezer-parser/lr) | 1.4.11 | MIT | Marijn Haverbeke | Parser runtime |
 | [@lezer/highlight](https://github.com/lezer-parser/highlight) | 1.2.1 | MIT | Marijn Haverbeke | Highlight tags |
@@ -41,6 +42,7 @@ The build inlines these into the single-file site.
 | Component | Version | Licence | Where from | Used for |
 | --- | --- | --- | --- | --- |
 | [Pyodide](https://github.com/pyodide/pyodide) | 0.26.4 | MPL-2.0 | `https://cdn.jsdelivr.net/pyodide/v0.26.4/full/` | Running Python on the Code page. It loads only when a learner runs Python. Pyodide includes CPython, which is under the [PSF License](https://docs.python.org/3/license.html); see Pyodide's own notices for the packages it bundles. |
+| [sql.js](https://github.com/sql-js/sql.js) | 1.14.2 | MIT | `https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist/` (`sql-wasm.js` and `sql-wasm.wasm`) | Running SQL on the Code page. SQLite compiled to WebAssembly; it loads in a worker only when a learner runs a query. SQLite itself is in the [public domain](https://www.sqlite.org/copyright.html). |
 | [Anton](https://fonts.google.com/specimen/Anton) | Google Fonts | SIL Open Font License 1.1 | `fonts.googleapis.com` | Display type (Max theme) |
 | [Outfit](https://fonts.google.com/specimen/Outfit) | Google Fonts | SIL Open Font License 1.1 | `fonts.googleapis.com` | Body type (Max theme) |
 | [Fraunces](https://fonts.google.com/specimen/Fraunces) | Google Fonts | SIL Open Font License 1.1 | `fonts.googleapis.com` | Display type (light and dark themes) |
@@ -51,6 +53,7 @@ The build inlines these into the single-file site.
 
 | Component | Version | Licence | Used for |
 | --- | --- | --- | --- |
+| [sql.js](https://github.com/sql-js/sql.js) | 1.14.2 | MIT | `tests/sqlcheck.js`: runs every SQL reference query on every dataset in Node, with the same SQLite build the page loads |
 | [esbuild](https://github.com/evanw/esbuild) | 0.24.2 | MIT | Bundling the CodeMirror editor at build time. Its platform binary (`@esbuild/*`, 0.24.2, MIT) is installed alongside it. |
 | [loose-envify](https://github.com/zertosh/loose-envify) | 1.4.0 | MIT | Installed as a dependency of React. The site uses React's prebuilt UMD files, so this is not used. |
 | [js-tokens](https://github.com/lydell/js-tokens) | 4.0.0 | MIT | Dependency of loose-envify |
@@ -58,7 +61,7 @@ The build inlines these into the single-file site.
 
 ## Content
 
-The problems link to LeetCode by number and title only. Every problem statement, story, hint and test input on the site is written for DSAMaxxing. No problem text or examples are copied from LeetCode.
+The problems link to LeetCode by number and title only. Every problem statement, story, hint and test input on the site is written for DSAMaxxing. The SQL problems use our own tables, columns, rows and wording; `tests/sqlcheck.js` fails if a schema uses one of LeetCode's table names. No problem text or examples are copied from LeetCode.
 
 ### Attribution for adapted lesson material
 

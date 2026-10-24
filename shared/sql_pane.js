@@ -120,6 +120,16 @@ class SqlRunner {
     this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|');
   }
   stopRun() { if (this.cancel) { const c = this.cancel; this.cancel = null; c(); } }
+  // "Insert plan as comments": the plan's clause steps go on top of the query as -- lines.
+  insertPlan(plan) {
+    if (!plan) return;
+    const now = this.editor ? this.editor.getDoc() : this.s.code;
+    const code = insertPlanComments(now, plan, 'sql', '');
+    if (code === now) return;
+    if (this.editor) this.editor.setDoc(code);
+    storeCode(this.pid, 'sql', code);
+    this.set({ code });
+  }
   setProblem(pid) {
     if (!SQL_SPECS[pid] || pid === this.pid) return;
     this.stopRun();

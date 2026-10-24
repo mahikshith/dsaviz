@@ -114,6 +114,7 @@ class CodeRunner {
     const spec = this.spec();
     const text = this.s.custom.trim();
     if (!text) return null;
+    if (spec.drive) return { error: 'Custom input is off for this problem: its tests start several tasks at once. Run checks the examples.' };
     let args;
     try { args = JSON.parse('[' + text + ']'); } catch (e) { return { error: 'Custom input should look like the arguments of a call, in JSON: ' + spec.examples[0][0].map(showValue).join(', ') + '. Strings need double quotes.' }; }
     if (args.length !== spec.params.length) return { error: 'Custom input needs ' + spec.params.length + ' value' + (spec.params.length > 1 ? 's' : '') + ': ' + spec.params.join(', ') + '.' };
@@ -128,7 +129,7 @@ class CodeRunner {
   execute(mode) {
     if (this.s.busy) return;
     const spec = this.spec(), lang = this.s.lang;
-    if (!spec || !RUNNABLE[lang]) return;
+    if (!spec || !specRuns(spec, lang)) return;
     const code = this.editor ? this.editor.getDoc() : this.s.code;
     let cases = mode === 'submit' ? spec.examples.concat(spec.hidden) : spec.examples.slice();
     const titles = cases.map((c, i) => (i < spec.examples.length ? 'Example ' + (i + 1) : 'Hidden ' + (i - spec.examples.length + 1)));
@@ -154,7 +155,7 @@ class CodeRunner {
         if (solved && typeof DS !== 'undefined') DS.passCode(this.pid);
         if (this.opts.onResult && !end.cancelled) { try { this.opts.onResult(this.pid, mode, end.fatal || end.timeout ? 0 : passed, cases.length); } catch (e) {} }
         this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn });
-      }, spec.io);
+      }, spec.io, lang === 'js' && spec.drive ? spec.drive.toString() : null);
   }
 
   vals(t) {
@@ -164,7 +165,7 @@ class CodeRunner {
     const s = this.s, spec = this.spec(), lang = s.lang;
     const out = spec ? s.out : null;
     const hasTests = !!spec;
-    const runnable = hasTests && !!RUNNABLE[lang];
+    const runnable = hasTests && specRuns(spec, lang);
     const fail = t.diff.Hard[2];
     const limit = (lang === 'py' ? PY_TIME_LIMIT : JS_TIME_LIMIT) / 1000;
     let rows = [], badge = '', badgeOk = false, msg = '', msgBg = t.sunk, msgMono = false;
@@ -206,9 +207,10 @@ class CodeRunner {
       reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset', resetBorder: s.confirmReset ? t.accent : t.line,
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
       runnable, notRunnable: hasTests && !runnable, busy: s.busy,
+      notRunnableMsg: hasTests && spec.langs && RUNNABLE[lang] ? spec.langNote || 'This one runs in ' + spec.langs.map((k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1]).join(' and ') + ' here. Switch language to run it.' : 'Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.',
       run: () => this.execute('run'), submit: () => this.execute('submit'),
       custom: s.custom, setCustom: (e) => this.set({ custom: e && e.target ? e.target.value : '' }),
-      customHint: spec ? 'Custom input, e.g. ' + spec.examples[0][0].map(showValue).join(', ') : '',
+      customHint: !spec ? '' : spec.drive ? 'Custom input is off for this problem' : 'Custom input, e.g. ' + spec.examples[0][0].map(showValue).join(', '),
       statusText: s.status || (runnable ? (lang === 'py' && PY.state !== 'ready' ? 'Python loads on your first run' : 'Runs in your browser') : ''),
       statusColor: s.busy ? t.accent : t.muted,
       hasBadge: !!badge, badge, badgeBg: badgeOk ? t.okBg : t.warnBg, badgeFg: badgeOk ? t.ok : fail,

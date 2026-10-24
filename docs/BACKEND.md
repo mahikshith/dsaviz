@@ -89,11 +89,11 @@ The Contests page does not fetch anything. `shared/contests.js` (copied into the
 
 This is a stand-in until there is a backend. A real one would:
 
-- `GET /contests?from=&to=`: fetch each platform's published schedule on a timer (LeetCode, Codeforces, AtCoder and CodeChef all list upcoming contests), store them as `{ id, platform, name, start, end, link }` in UTC, and serve the next few weeks. Codeforces rounds would then show up on the calendar.
+- `GET /contests?from=&to=`: fetch each platform's published schedule on a timer (Codeforces, AtCoder and CodeChef all list upcoming contests), store them as `{ id, platform, name, start, end, link }` in UTC, and serve the next few weeks. Codeforces rounds would then show up on the calendar.
 - Keep the same run shape (`{ c, start, end }`), so `contestDays` and `contestIcs` work on fetched runs unchanged. Fall back to the rules when the request fails or the site is offline.
 - Later: reminders (`POST /me/contest-reminders`) and a subscribable calendar feed (`GET /me/contests.ics`), which need accounts.
 
-The selected platform chip is kept in `dsaviz-contest-filter` (`All`, `LeetCode`, `Codeforces`, `AtCoder` or `CodeChef`).
+The selected platform chip is kept in `dsaviz-contest-filter` (`All`, `Codeforces`, `AtCoder` or `CodeChef`; an older saved value falls back to `All`).
 
 ## Shared components
 

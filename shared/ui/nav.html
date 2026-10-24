@@ -62,7 +62,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <div data-pn-results style="max-height: 480px; overflow-y: auto; box-sizing: border-box; padding: 8px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}">
 <sc-if value="{{nav.srch.hasHint}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; padding: 8px 12px; font-size: 13px; line-height: 1.5; color: {{t.muted}}">{{nav.srch.hint}}. Use the arrow keys and Enter to open one.</p></sc-if>
-<sc-if value="{{nav.srch.none}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 8px 12px; font-size: 13px; line-height: 1.5; color: {{t.muted}}">No matches. Try a problem name, a pattern or a LeetCode number.</p></sc-if>
+<sc-if value="{{nav.srch.none}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 8px 12px; font-size: 13px; line-height: 1.5; color: {{t.muted}}">No matches. Try a problem name, a pattern or a topic.</p></sc-if>
 <div id="pn-results" role="listbox" aria-label="Search results">
 <sc-for list="{{nav.srch.groups}}" as="pnsg" hint-placeholder-count="2">
 <div role="group" aria-labelledby="{{pnsg.gid}}">

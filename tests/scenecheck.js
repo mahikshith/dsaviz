@@ -156,7 +156,7 @@ for (const id of SCENE_ORDER) {
 // a reference solver written here (not the scene's own code), every step must render with no undefined or NaN, and
 // every step kind needs a code line. Then a few bad inputs must give a plain error, not a crash.
 const pairs = (a, t) => { const out = []; for (let i = 0; i < a.length; i++) for (let j = i + 1; j < a.length; j++) if (a[i] + a[j] === t) out.push([i, j]); return out; };
-const levelKids = (arr) => {   // LeetCode level order → { val, left, right } nodes
+const levelKids = (arr) => {   // level order → { val, left, right } nodes
   if (!arr.length || arr[0] == null) return null;
   const root = { v: arr[0] }, q = [root];
   let i = 1;

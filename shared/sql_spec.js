@@ -1,7 +1,7 @@
 // @@SQL-SPEC@@ — generated block (from shared/sql_spec.js), used by the Code page's SQL mode and tests/sqlcheck.js.
 // SQL practice that runs in the browser on SQLite (sql.js). Every table, row and sentence here was written for
-// DSAMaxxing; the problems share only their name and number with LeetCode's database set.
-//   title, n, diff  name, LeetCode number and difficulty (the id is the LeetCode slug, as on the master sheet)
+// DSAMaxxing; the problems share only their common name with well-known practice sets.
+//   title, diff  name and difficulty (the id is the title in kebab case, as on the master sheet)
 //   ask       the task in plain words, naming the output columns
 //   schema    one CREATE TABLE per table, in our own names
 //   cols      the output columns, in order (checked without case)
@@ -13,7 +13,7 @@
 //   trap      a tempting wrong query; tests/sqlcheck.js checks that some set catches it
 const SQL_SPECS = {
   'recyclable-and-low-fat-products': {
-    title: 'Recyclable and Low Fat Products', n: 1757, diff: 'Easy',
+    title: 'Recyclable and Low Fat Products', diff: 'Easy',
     ask: 'A corner shop tags each snack: is_light is Y when it is low in fat, and green_pack is Y when its wrapper can be recycled. Return the snack_id of every snack that is both. Any order.',
     schema: ['CREATE TABLE Snacks (snack_id INTEGER PRIMARY KEY, is_light TEXT, green_pack TEXT)'],
     cols: ['snack_id'], order: false,
@@ -27,7 +27,7 @@ const SQL_SPECS = {
     trap: "SELECT snack_id FROM Snacks WHERE is_light = 'Y' OR green_pack = 'Y'"
   },
   'find-customer-referee': {
-    title: 'Find Customer Referee', n: 584, diff: 'Easy',
+    title: 'Find Customer Referee', diff: 'Easy',
     ask: 'Each club member was invited by another member (invited_by holds their id) or joined alone (invited_by is NULL). Return the name of every member who was not invited by member 2. People who joined alone count. Any order.',
     schema: ['CREATE TABLE Members (member_id INTEGER PRIMARY KEY, name TEXT, invited_by INTEGER)'],
     cols: ['name'], order: false,
@@ -41,7 +41,7 @@ const SQL_SPECS = {
     trap: 'SELECT name FROM Members WHERE invited_by <> 2'
   },
   'big-countries': {
-    title: 'Big Countries', n: 595, diff: 'Easy',
+    title: 'Big Countries', diff: 'Easy',
     ask: 'A nation is big when its area is at least 2000000 square km or it has at least 40000000 people. Return name, people and area for every big nation. Any order.',
     schema: ['CREATE TABLE Nations (name TEXT PRIMARY KEY, region TEXT, area INTEGER, people INTEGER)'],
     cols: ['name', 'people', 'area'], order: false,
@@ -55,7 +55,7 @@ const SQL_SPECS = {
     trap: 'SELECT name, people, area FROM Nations WHERE area > 2000000 OR people > 40000000'
   },
   'article-views-i': {
-    title: 'Article Views I', n: 1148, diff: 'Easy',
+    title: 'Article Views I', diff: 'Easy',
     ask: 'Each row says a reader opened a post on a day. Return, as writer, the id of every writer who read at least one of their own posts. List each writer once, smallest id first.',
     schema: ['CREATE TABLE Reads (post_id INTEGER, writer_id INTEGER, reader_id INTEGER, seen_on TEXT)'],
     cols: ['writer'], order: true,
@@ -69,7 +69,7 @@ const SQL_SPECS = {
     trap: 'SELECT writer_id AS writer FROM Reads WHERE writer_id = reader_id ORDER BY writer'
   },
   'invalid-tweets': {
-    title: 'Invalid Tweets', n: 1683, diff: 'Easy',
+    title: 'Invalid Tweets', diff: 'Easy',
     ask: 'A noticeboard only takes notes of 20 characters or fewer. Return the note_id of every note that is too long. Any order.',
     schema: ['CREATE TABLE Notes (note_id INTEGER PRIMARY KEY, body TEXT)'],
     cols: ['note_id'], order: false,
@@ -83,7 +83,7 @@ const SQL_SPECS = {
     trap: 'SELECT note_id FROM Notes WHERE LENGTH(body) >= 20'
   },
   'combine-two-tables': {
-    title: 'Combine Two Tables', n: 175, diff: 'Easy',
+    title: 'Combine Two Tables', diff: 'Easy',
     ask: 'Return first_name, last_name, city and region for every person. Someone with no row in Homes still appears, with NULL city and region. Each person has at most one home. Any order.',
     schema: ['CREATE TABLE People (person_id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT)', 'CREATE TABLE Homes (home_id INTEGER PRIMARY KEY, person_id INTEGER, city TEXT, region TEXT)'],
     cols: ['first_name', 'last_name', 'city', 'region'], order: false,
@@ -97,7 +97,7 @@ const SQL_SPECS = {
     trap: 'SELECT p.first_name, p.last_name, h.city, h.region FROM People p JOIN Homes h ON h.person_id = p.person_id'
   },
   'replace-employee-id-with-the-unique-identifier': {
-    title: 'Replace Employee ID With The Unique Identifier', n: 1378, diff: 'Easy',
+    title: 'Replace Employee ID With The Unique Identifier', diff: 'Easy',
     ask: 'Some staff have a door badge number in Badges. Return badge_no and name for every member of staff, with NULL badge_no for anyone without a badge. Any order.',
     schema: ['CREATE TABLE Staff (staff_id INTEGER PRIMARY KEY, name TEXT)', 'CREATE TABLE Badges (staff_id INTEGER PRIMARY KEY, badge_no INTEGER)'],
     cols: ['badge_no', 'name'], order: false,
@@ -111,7 +111,7 @@ const SQL_SPECS = {
     trap: 'SELECT b.badge_no, s.name FROM Staff s JOIN Badges b ON b.staff_id = s.staff_id'
   },
   'customer-who-visited-but-did-not-make-any-transactions': {
-    title: 'Customer Who Visited but Did Not Make Any Transactions', n: 1581, diff: 'Easy',
+    title: 'Customer Who Visited but Did Not Make Any Transactions', diff: 'Easy',
     ask: 'Shoppers visit a market stall; some visits end in a payment. For each shopper with at least one visit that had no payment, return shopper_id and count_no_pay, the number of such visits. Any order.',
     schema: ['CREATE TABLE StallVisits (visit_id INTEGER PRIMARY KEY, shopper_id INTEGER)', 'CREATE TABLE Payments (payment_id INTEGER PRIMARY KEY, visit_id INTEGER, amount INTEGER)'],
     cols: ['shopper_id', 'count_no_pay'], order: false,
@@ -125,7 +125,7 @@ const SQL_SPECS = {
     trap: 'SELECT v.shopper_id, COUNT(*) AS count_no_pay FROM StallVisits v LEFT JOIN Payments p ON p.visit_id = v.visit_id GROUP BY v.shopper_id'
   },
   'employees-earning-more-than-their-managers': {
-    title: 'Employees Earning More Than Their Managers', n: 181, diff: 'Easy',
+    title: 'Employees Earning More Than Their Managers', diff: 'Easy',
     ask: 'On a ship, boss_id points to the crew member each sailor reports to (NULL for the captain). Return, as crew, the name of everyone paid more than their boss. Any order.',
     schema: ['CREATE TABLE Crew (crew_id INTEGER PRIMARY KEY, name TEXT, pay INTEGER, boss_id INTEGER)'],
     cols: ['crew'], order: false,
@@ -139,7 +139,7 @@ const SQL_SPECS = {
     trap: 'SELECT c.name AS crew FROM Crew c JOIN Crew b ON b.crew_id = c.boss_id WHERE c.pay >= b.pay'
   },
   'customers-who-never-order': {
-    title: 'Customers Who Never Order', n: 183, diff: 'Easy',
+    title: 'Customers Who Never Order', diff: 'Easy',
     ask: 'Return, as buyer, the name of every buyer who has never placed an order. Any order.',
     schema: ['CREATE TABLE Buyers (buyer_id INTEGER PRIMARY KEY, name TEXT)', 'CREATE TABLE Purchases (order_id INTEGER PRIMARY KEY, buyer_id INTEGER)'],
     cols: ['buyer'], order: false,
@@ -153,7 +153,7 @@ const SQL_SPECS = {
     trap: 'SELECT b.name AS buyer FROM Buyers b JOIN Purchases o ON o.buyer_id <> b.buyer_id GROUP BY b.buyer_id'
   },
   'duplicate-emails': {
-    title: 'Duplicate Emails', n: 182, diff: 'Easy',
+    title: 'Duplicate Emails', diff: 'Easy',
     ask: 'A newsletter list has the same email signed up more than once. Return each email that appears two or more times, once. Any order.',
     schema: ['CREATE TABLE Subscribers (signup_id INTEGER PRIMARY KEY, email TEXT)'],
     cols: ['email'], order: false,
@@ -167,7 +167,7 @@ const SQL_SPECS = {
     trap: 'SELECT DISTINCT email FROM Subscribers'
   },
   'rising-temperature': {
-    title: 'Rising Temperature', n: 197, diff: 'Easy',
+    title: 'Rising Temperature', diff: 'Easy',
     ask: 'A weather station logs one reading per day, but some days are missing. Return the reading_id of every day that was warmer than the calendar day right before it. A day after a gap has nothing to compare with. Dates are text like 2026-05-01. Any order.',
     schema: ['CREATE TABLE Readings (reading_id INTEGER PRIMARY KEY, day TEXT, temp INTEGER)'],
     cols: ['reading_id'], order: false,
@@ -181,7 +181,7 @@ const SQL_SPECS = {
     trap: 'SELECT b.reading_id FROM Readings a JOIN Readings b ON b.reading_id = a.reading_id + 1 WHERE b.temp > a.temp'
   },
   'delete-duplicate-emails': {
-    title: 'Delete Duplicate Emails', n: 196, diff: 'Easy',
+    title: 'Delete Duplicate Emails', diff: 'Easy',
     ask: 'Clean up the newsletter list: delete rows from Subscribers so that each email keeps only its row with the smallest signup_id. Write a DELETE, not a SELECT. The checker then reads Subscribers by signup_id.',
     schema: ['CREATE TABLE Subscribers (signup_id INTEGER PRIMARY KEY, email TEXT)'],
     after: 'SELECT signup_id, email FROM Subscribers ORDER BY signup_id',
@@ -196,7 +196,7 @@ const SQL_SPECS = {
     trap: 'DELETE FROM Subscribers WHERE signup_id NOT IN (SELECT MAX(signup_id) FROM Subscribers GROUP BY email)'
   },
   'average-selling-price': {
-    title: 'Average Selling Price', n: 1251, diff: 'Easy',
+    title: 'Average Selling Price', diff: 'Easy',
     ask: 'A bakery changes prices over time; each PriceTags row holds from from_day to to_day, both included. For each item_id in PriceTags, return avg_price: the money taken divided by the units sold, rounded to 2 places. An item that never sold gets 0. Any order.',
     schema: ['CREATE TABLE PriceTags (item_id INTEGER, from_day TEXT, to_day TEXT, price INTEGER)', 'CREATE TABLE Sales (item_id INTEGER, sold_on TEXT, units INTEGER)'],
     cols: ['item_id', 'avg_price'], order: false,
@@ -210,7 +210,7 @@ const SQL_SPECS = {
     trap: 'SELECT p.item_id, ROUND(AVG(p.price), 2) AS avg_price FROM PriceTags p GROUP BY p.item_id'
   },
   'queries-quality-and-percentage': {
-    title: 'Queries Quality and Percentage', n: 1211, diff: 'Easy',
+    title: 'Queries Quality and Percentage', diff: 'Easy',
     ask: 'A search box logs each result it showed: the term, the link, its spot in the list (1 is the top) and stars from 1 to 5. For each term return quality, the average of stars divided by spot, and poor_pct, the percent of rows with fewer than 3 stars. Round both to 2 places. Watch out: in SQLite 5 / 2 is 2. Any order.',
     schema: ['CREATE TABLE Results (term TEXT, link TEXT, spot INTEGER, stars INTEGER)'],
     cols: ['term', 'quality', 'poor_pct'], order: false,
@@ -224,7 +224,7 @@ const SQL_SPECS = {
     trap: 'SELECT term, ROUND(AVG(stars / spot), 2) AS quality, ROUND(AVG(CASE WHEN stars < 3 THEN 100.0 ELSE 0 END), 2) AS poor_pct FROM Results GROUP BY term'
   },
   'patients-with-a-condition': {
-    title: 'Patients With a Condition', n: 1527, diff: 'Easy',
+    title: 'Patients With a Condition', diff: 'Easy',
     ask: 'A vet stores each pet\'s health tags as one text of codes split by single spaces, like VAX2 ALG1. Allergy codes start with ALG. Return pet_id, name and tags for every pet with at least one allergy code. A code like MALG3 is not an allergy. Any order.',
     schema: ['CREATE TABLE Pets (pet_id INTEGER PRIMARY KEY, name TEXT, tags TEXT)'],
     cols: ['pet_id', 'name', 'tags'], order: false,
@@ -238,7 +238,7 @@ const SQL_SPECS = {
     trap: "SELECT pet_id, name, tags FROM Pets WHERE tags LIKE '%ALG%'"
   },
   'second-highest-salary': {
-    title: 'Second Highest Salary', n: 176, diff: 'Medium',
+    title: 'Second Highest Salary', diff: 'Medium',
     ask: 'Return second_wage: the second highest different wage in Wages. Equal wages count once. When there is no second wage, return one row holding NULL.',
     schema: ['CREATE TABLE Wages (worker_id INTEGER PRIMARY KEY, wage INTEGER)'],
     cols: ['second_wage'], order: true,
@@ -253,7 +253,7 @@ const SQL_SPECS = {
     trap: 'SELECT wage AS second_wage FROM Wages ORDER BY wage DESC LIMIT 1 OFFSET 1'
   },
   'nth-highest-salary': {
-    title: 'Nth Highest Salary', n: 177, diff: 'Medium',
+    title: 'Nth Highest Salary', diff: 'Medium',
     ask: 'The one-row table Pick holds n. Return nth_wage: the n-th highest different wage in Wages, with equal wages counted once. When there are fewer than n different wages, return one row holding NULL.',
     schema: ['CREATE TABLE Wages (worker_id INTEGER PRIMARY KEY, wage INTEGER)', 'CREATE TABLE Pick (n INTEGER)'],
     cols: ['nth_wage'], order: true,
@@ -268,7 +268,7 @@ const SQL_SPECS = {
     trap: 'SELECT MAX(wage) AS nth_wage FROM (SELECT wage, ROW_NUMBER() OVER (ORDER BY wage DESC) AS r FROM Wages) WHERE r = (SELECT n FROM Pick)'
   },
   'rank-scores': {
-    title: 'Rank Scores', n: 178, diff: 'Medium',
+    title: 'Rank Scores', diff: 'Medium',
     ask: 'Return score and place for every quiz entry, highest score first. The top score is place 1, equal scores share a place, and the next lower score takes the next whole number with no gaps.',
     schema: ['CREATE TABLE Entries (entry_id INTEGER PRIMARY KEY, score REAL)'],
     cols: ['score', 'place'], order: true,
@@ -282,7 +282,7 @@ const SQL_SPECS = {
     trap: 'SELECT score, RANK() OVER (ORDER BY score DESC) AS place FROM Entries ORDER BY score DESC'
   },
   'consecutive-numbers': {
-    title: 'Consecutive Numbers', n: 180, diff: 'Medium',
+    title: 'Consecutive Numbers', diff: 'Medium',
     ask: 'A die is rolled again and again; roll_id goes 1, 2, 3 with no gaps. Return each face that came up at least three times in a row, once. Any order.',
     schema: ['CREATE TABLE Rolls (roll_id INTEGER PRIMARY KEY, face INTEGER)'],
     cols: ['face'], order: false,
@@ -296,7 +296,7 @@ const SQL_SPECS = {
     trap: 'SELECT face FROM Rolls GROUP BY face HAVING COUNT(*) >= 3'
   },
   'department-highest-salary': {
-    title: 'Department Highest Salary', n: 184, diff: 'Medium',
+    title: 'Department Highest Salary', diff: 'Medium',
     ask: 'For each team, find the people paid the most in that team (all of them when there is a tie). Return team (the team_name), member (the name) and pay. Any order.',
     schema: ['CREATE TABLE Teams (team_id INTEGER PRIMARY KEY, team_name TEXT)', 'CREATE TABLE Members (member_id INTEGER PRIMARY KEY, name TEXT, pay INTEGER, team_id INTEGER)'],
     cols: ['team', 'member', 'pay'], order: false,
@@ -310,7 +310,7 @@ const SQL_SPECS = {
     trap: 'SELECT t.team_name AS team, m.name AS member, m.pay FROM Members m JOIN Teams t ON t.team_id = m.team_id WHERE m.pay = (SELECT MAX(pay) FROM Members)'
   },
   'managers-with-at-least-5-direct-reports': {
-    title: 'Managers with at Least 5 Direct Reports', n: 570, diff: 'Medium',
+    title: 'Managers with at Least 5 Direct Reports', diff: 'Medium',
     ask: 'lead_id points to the person each worker reports to directly (NULL for nobody). Return, as lead, the name of everyone with five or more direct reports. Any order.',
     schema: ['CREATE TABLE Workers (worker_id INTEGER PRIMARY KEY, name TEXT, lead_id INTEGER)'],
     cols: ['lead'], order: false,
@@ -324,7 +324,7 @@ const SQL_SPECS = {
     trap: 'SELECT w.name AS lead FROM Workers w JOIN (SELECT lead_id FROM Workers GROUP BY lead_id HAVING COUNT(*) > 5) r ON r.lead_id = w.worker_id'
   },
   'confirmation-rate': {
-    title: 'Confirmation Rate', n: 1934, diff: 'Medium',
+    title: 'Confirmation Rate', diff: 'Medium',
     ask: 'Each account may be sent sign-in codes; a code ends as confirmed or expired. Return account_id and rate for every account: confirmed codes divided by all codes sent, rounded to 2 places. An account that was never sent a code has rate 0. Any order.',
     schema: ['CREATE TABLE Accounts (account_id INTEGER PRIMARY KEY, joined TEXT)', 'CREATE TABLE Codes (account_id INTEGER, sent_at TEXT, status TEXT)'],
     cols: ['account_id', 'rate'], order: false,
@@ -338,7 +338,7 @@ const SQL_SPECS = {
     trap: "SELECT c.account_id, ROUND(AVG(CASE WHEN c.status = 'confirmed' THEN 1.0 ELSE 0 END), 2) AS rate FROM Codes c GROUP BY c.account_id"
   },
   'monthly-transactions-i': {
-    title: 'Monthly Transactions I', n: 1193, diff: 'Medium',
+    title: 'Monthly Transactions I', diff: 'Medium',
     ask: 'For each month (text like 2026-07) and country, return month, country, tx_count (all payments), ok_count (approved ones), tx_total (all amounts) and ok_total (approved amounts). paid_on is text like 2026-07-14. Any order.',
     schema: ['CREATE TABLE Payments (pay_id INTEGER PRIMARY KEY, country TEXT, state TEXT, amount INTEGER, paid_on TEXT)'],
     cols: ['month', 'country', 'tx_count', 'ok_count', 'tx_total', 'ok_total'], order: false,
@@ -352,7 +352,7 @@ const SQL_SPECS = {
     trap: "SELECT substr(paid_on, 1, 7) AS month, country, COUNT(*) AS tx_count, SUM(state = 'approved') AS ok_count, SUM(amount) AS tx_total, SUM(amount) AS ok_total FROM Payments GROUP BY month, country"
   },
   'game-play-analysis-iv': {
-    title: 'Game Play Analysis IV', n: 550, diff: 'Medium',
+    title: 'Game Play Analysis IV', diff: 'Medium',
     ask: 'Each row is a player\'s play on one day (one row per player per day). Return fraction: the share of players who played again on the day right after their first day, rounded to 2 places. Days are text like 2026-03-01.',
     schema: ['CREATE TABLE Plays (player_id INTEGER, device_id INTEGER, day TEXT, games INTEGER)'],
     cols: ['fraction'], order: true,
@@ -366,7 +366,7 @@ const SQL_SPECS = {
     trap: "SELECT ROUND(COUNT(DISTINCT a.player_id) * 1.0 / (SELECT COUNT(DISTINCT player_id) FROM Plays), 2) AS fraction FROM Plays a JOIN Plays b ON b.player_id = a.player_id AND b.day = date(a.day, '+1 day')"
   },
   'exchange-seats': {
-    title: 'Exchange Seats', n: 626, diff: 'Medium',
+    title: 'Exchange Seats', diff: 'Medium',
     ask: 'Chairs are numbered 1, 2, 3 with no gaps. Swap the guests in each pair of chairs: 1 with 2, 3 with 4, and so on. When the count is odd the last guest stays put. Return chair_id and guest after the swap, by chair_id.',
     schema: ['CREATE TABLE Chairs (chair_id INTEGER PRIMARY KEY, guest TEXT)'],
     cols: ['chair_id', 'guest'], order: true,
@@ -380,7 +380,7 @@ const SQL_SPECS = {
     trap: 'SELECT CASE WHEN chair_id % 2 = 1 THEN chair_id + 1 ELSE chair_id - 1 END AS chair_id, guest FROM Chairs ORDER BY 1'
   },
   'department-top-three-salaries': {
-    title: 'Department Top Three Salaries', n: 185, diff: 'Hard',
+    title: 'Department Top Three Salaries', diff: 'Hard',
     ask: 'A team\'s top earners are the people whose pay is among the three highest different pays in that team. Return team (the team_name), member (the name) and pay for every top earner in every team. Any order.',
     schema: ['CREATE TABLE Teams (team_id INTEGER PRIMARY KEY, team_name TEXT)', 'CREATE TABLE Members (member_id INTEGER PRIMARY KEY, name TEXT, pay INTEGER, team_id INTEGER)'],
     cols: ['team', 'member', 'pay'], order: false,
@@ -394,7 +394,7 @@ const SQL_SPECS = {
     trap: 'SELECT t.team_name AS team, r.name AS member, r.pay FROM (SELECT name, pay, team_id, ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY pay DESC) AS k FROM Members) r JOIN Teams t ON t.team_id = r.team_id WHERE r.k <= 3'
   },
   'trips-and-users': {
-    title: 'Trips and Users', n: 262, diff: 'Hard',
+    title: 'Trips and Users', diff: 'Hard',
     ask: 'A ride app logs rides: status is done, rider_cancel or driver_cancel. People holds every rider and driver, with banned Y or N. For each day from 2026-06-01 to 2026-06-03, look only at rides where neither the rider nor the driver is banned, and return day and cancel_rate: the share of those rides that were cancelled either way, rounded to 2 places. Leave out days with no such rides. Any order.',
     schema: ['CREATE TABLE Rides (ride_id INTEGER PRIMARY KEY, rider_id INTEGER, driver_id INTEGER, status TEXT, day TEXT)', 'CREATE TABLE People (person_id INTEGER PRIMARY KEY, banned TEXT, role TEXT)'],
     cols: ['day', 'cancel_rate'], order: false,
@@ -408,7 +408,7 @@ const SQL_SPECS = {
     trap: "SELECT r.day, ROUND(AVG(CASE WHEN r.status <> 'done' THEN 1.0 ELSE 0 END), 2) AS cancel_rate FROM Rides r JOIN People a ON a.person_id = r.rider_id AND a.banned = 'N' WHERE r.day BETWEEN '2026-06-01' AND '2026-06-03' GROUP BY r.day"
   },
   'human-traffic-of-stadium': {
-    title: 'Human Traffic of Stadium', n: 601, diff: 'Hard',
+    title: 'Human Traffic of Stadium', diff: 'Hard',
     ask: 'A fair logs one visit_id per day, in date order with no gaps in the ids. Return visit_id, day and crowd for every row that sits in a run of three or more back-to-back ids where each crowd was 100 or more. Sort by day.',
     schema: ['CREATE TABLE Gates (visit_id INTEGER PRIMARY KEY, day TEXT, crowd INTEGER)'],
     cols: ['visit_id', 'day', 'crowd'], order: true,

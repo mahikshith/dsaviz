@@ -436,9 +436,9 @@ const PROBLEMS = [
   ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, false],
   ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, false],
   ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, false],
-  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, false],
-  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, false],
-  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, false],
+  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, true],
+  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, true],
+  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, true],
   ["subsets", 78, "Subsets", "The Picnic Basket Choices", "For every snack, Chalk asks one question: in the basket or not? Two branches per snack, and every path to the bottom is one possible basket.", "Medium", 25, ["Meta", "Amazon"], "Backtracking", "arrays", "todo", 2, 42, false],
   ["permutations", 46, "Permutations", "The Seating Chart", "Seat guests one chair at a time. Try each unseated guest in the next chair, go deeper, then stand them back up and try the next.", "Medium", 25, ["Microsoft", "LinkedIn", "Amazon"], "Backtracking", "arrays", "todo", 3, 43, false],
   ["combination-sum", 39, "Combination Sum", "The Exact Price Basket", "Fill a basket that costs exactly the target, reusing any item as often as you like. Chalk tries items in order so the same basket is never counted twice.", "Medium", 30, ["Amazon", "Airbnb"], "Backtracking", "arrays", "todo", 4, 44, false],
@@ -448,8 +448,8 @@ const PROBLEMS = [
   ["group-anagrams", 49, "Group Anagrams", "The Letter-Sorting Office", "Every word goes into a pigeonhole labelled with its letters in alphabetical order. Words that share a label are anagrams of each other.", "Medium", 25, ["Amazon", "Uber", "Meta"], "Hash Map", "hash", "todo", 2, 10, false],
   ["longest-consecutive", 128, "Longest Consecutive Sequence", "The Missing Page Hunt", "Torn diary pages lie scattered. Cleo only starts counting a run from a page whose previous page is missing, then counts upward — so every page is visited once.", "Medium", 25, ["Google", "Amazon"], "Hash Map", "hash", "todo", 4, 45, false],
 
-  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, false],
-  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, false],
+  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, true],
+  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, true],
   ["min-stack", 155, "Min Stack", "The Plate Pile with a Memory", "Next to every plate, Pip writes the smallest plate in the pile at that moment. Taking a plate off takes its note with it.", "Medium", 15, ["Amazon", "Bloomberg"], "Stack", "stacks", "todo", 3, 46, false],
   ["kth-largest", 215, "Kth Largest Element in an Array", "The Talent Show Top K", "Nia keeps only the k best acts in a small room, weakest at the door. A new act gets in only if it beats the weakest, who then leaves.", "Medium", 25, ["Meta", "Amazon", "Microsoft"], "Heap", "stacks", "todo", 1, 47, false],
   ["top-k-frequent", 347, "Top K Frequent Elements", "The Most-Requested Songs", "Cleo tallies every song request; Nia keeps the k most-requested in her small room. The quieter songs never make it past the door.", "Medium", 25, ["Amazon", "Meta", "Apple"], "Heap", "stacks", "todo", 2, 48, false],
@@ -1044,6 +1044,417 @@ function scrabbleScene() {
     steps
   };
 }
+
+// ---------- Greedy: Jax, the stone-hopper who always leaps as far as he can ----------
+
+// The Stepping Stones — Jump Game
+function stonesScene() {
+  const nums = [1, 2, 0, 1, 3, 0, 2];
+  const last = nums.length - 1;
+  const steps = [];
+  let reach = 0;
+  steps.push({ L: 0, kind: 'intro', reach: 0, prev: 0,
+    dialog: [say('hoot', 'Seven stones cross the river. The number on each stone is the longest leap Jax can make from it.'), say('jax', 'I don’t need to plan every route. I’ll just remember the farthest stone I could reach.'), say('hoot', 'And if you ever stand on a stone past that mark?'), say('jax', 'Then I could never have got there. I’d be stuck.')],
+    nar: { kid: 'Jax hops along the stones from the first one. He keeps one number in his head: the farthest stone he could get to so far.', builder: 'reach = 0. For each stone i: if i > reach, we are stuck. Otherwise reach = max(reach, i + nums[i]). If reach covers the last stone, return True.', expert: 'Every stone at or before reach is reachable, because reach only grows from stones we could stand on. One pass, O(n) time, O(1) space.' } });
+  for (let i = 0; i < nums.length; i++) {
+    if (i > reach) {
+      steps.push({ L: i, kind: 'stuck', reach, prev: reach,
+        dialog: [say('jax', 'Stone ' + i + ' is past my mark of ' + reach + '.'), say('hoot', 'Then nobody can land here. The answer is False.')],
+        nar: { kid: 'Jax can only get as far as stone ' + reach + '. Stone ' + i + ' is out of reach, so he can’t cross.', builder: 'i = ' + i + ' > reach = ' + reach + ' → return False.', expert: 'No reachable stone leaps past ' + reach + ', so every later stone is unreachable too.' } });
+      break;
+    }
+    const prev = reach;
+    reach = Math.max(reach, i + nums[i]);
+    const grew = reach > prev;
+    if (reach >= last) {
+      steps.push({ L: i, kind: 'found', reach, prev,
+        dialog: [say('jax', 'From stone ' + i + ' I can leap ' + nums[i] + ', all the way to stone ' + (i + nums[i]) + '.'), say('hoot', 'That covers the last stone, number ' + last + '. The answer is True.')],
+        nar: { kid: 'From stone ' + i + ', a leap of ' + nums[i] + ' lands at stone ' + (i + nums[i]) + '. That is past the far bank, so Jax can cross!', builder: 'reach = max(' + prev + ', ' + i + ' + ' + nums[i] + ') = ' + reach + ' ≥ ' + last + ' → return True.', expert: 'Stopped after ' + (i + 1) + ' of ' + nums.length + ' stones. Once reach covers the end, the rest of the row can’t change the answer.' } });
+      break;
+    }
+    steps.push(grew
+      ? { L: i, kind: 'grow', reach, prev,
+        dialog: [say('jax', 'Stone ' + i + ' says ' + nums[i] + '. From here I could land on stone ' + (i + nums[i]) + '.'), say('hoot', 'That beats your old mark of ' + prev + '. Your farthest stone is now ' + reach + '.')],
+        nar: { kid: 'A leap of ' + nums[i] + ' from stone ' + i + ' reaches stone ' + (i + nums[i]) + '. That is farther than before, so Jax moves his mark to ' + reach + '.', builder: 'i + nums[i] = ' + i + ' + ' + nums[i] + ' = ' + (i + nums[i]) + ' > ' + prev + ' → reach = ' + reach + '.', expert: 'reach is the maximum of j + nums[j] over every stone j ≤ i. It only ever grows, so one pass is enough.' } }
+      : { L: i, kind: 'hold', reach, prev,
+        dialog: [say('jax', 'Stone ' + i + ' says ' + nums[i] + '. ' + (nums[i] === 0 ? 'I can’t leap at all from here.' : 'That only gets me to stone ' + (i + nums[i]) + '.')), say('hoot', 'No matter. You already know you can reach stone ' + reach + '. Keep the old mark.')],
+        nar: { kid: 'Stone ' + i + ' doesn’t help Jax go any farther. His mark stays at stone ' + reach + ', and he keeps hopping.', builder: 'i + nums[i] = ' + (i + nums[i]) + ' ≤ ' + prev + ' → reach stays ' + reach + '.', expert: 'A weak stone is harmless while i ≤ reach. Only a stone past reach would end the walk.' } });
+  }
+  const T = { intro: ['Mark at stone 0', 'plain'], grow: ['Longer leap → move the mark', 'cool'], hold: ['Shorter leap → keep the mark', 'warn'], stuck: ['Past the mark → stuck', 'warn'], found: ['Mark covers the far bank → True', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
+    st.cells = nums.map((_, i) => {
+      if (st.kind === 'intro') return i === 0 ? 'cur' : 'future';
+      if (st.done) return i <= st.L || i === last ? 'ok' : 'in';
+      if (i === st.L) return st.kind === 'stuck' ? 'hit' : 'cur';
+      if (i < st.L) return 'stored';
+      if (i <= st.reach) return 'in';
+      return 'future';
+    });
+    st.meter = { text: st.kind === 'intro' ? 'reach = 0' : 'reach = max(' + st.prev + ', ' + st.L + ' + ' + nums[st.L] + ') = ' + st.reach, pct: (Math.min(st.reach, last) / last) * 100, mark: 100, markLabel: 'far bank: stone ' + last };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['nums[i]', st.kind === 'intro' ? '—' : nums[st.L], 'left'], ['i + nums[i]', st.kind === 'intro' ? '—' : st.L + nums[st.L], 'right'], ['reach', st.reach, 'right'], ['last', last, 'text'], ['result', st.done ? 'True' : st.kind === 'stuck' ? 'False' : '…', st.done ? 'ok' : 'text']];
+  });
+  return {
+    id: 'jump-game', pattern: 'Greedy', cast: 'gr', short: 'Stones', visual: 'letters', items: nums.map(String), pitch: 66, tile: 54, tileH: 64, gap: 12, font: 28, width: 450,
+    actorLabels: ['Jax · i'],
+    goal: 'Can Jax reach the last stone?', status: ['Hopping…', 'Far bank reached'],
+    lines: { py: { intro: 2, stuck: 5, grow: 6, hold: 6, found: 8 }, java: { intro: 2, stuck: 5, grow: 6, hold: 6, found: 8 }, cpp: { intro: 2, stuck: 5, grow: 6, hold: 6, found: 8 }, js: { intro: 2, stuck: 5, grow: 6, hold: 6, found: 8 }, go: { intro: 2, stuck: 5, grow: 7, hold: 7, found: 9 } },
+    code: {
+      py: [['def canJump(nums):', ''], ['    reach = 0', '  # farthest stone so far'], ['    for i, step in enumerate(nums):', ''], ['        if i > reach:', ''], ['            return False', '  # past the mark: stuck'], ['        reach = max(reach, i + step)', ''], ['        if reach >= len(nums) - 1:', ''], ['            return True', ''], ['    return True', '']],
+      java: [['boolean canJump(int[] nums) {', ''], ['    int reach = 0;', '  // farthest stone so far'], ['    for (int i = 0; i < nums.length; i++) {', ''], ['        if (i > reach)', ''], ['            return false;', '  // past the mark: stuck'], ['        reach = Math.max(reach, i + nums[i]);', ''], ['        if (reach >= nums.length - 1)', ''], ['            return true;', ''], ['    }', ''], ['    return true;', ''], ['}', '']],
+      cpp: [['bool canJump(vector<int>& nums) {', ''], ['    int reach = 0;', '  // farthest stone so far'], ['    for (int i = 0; i < nums.size(); i++) {', ''], ['        if (i > reach)', ''], ['            return false;', '  // past the mark: stuck'], ['        reach = max(reach, i + nums[i]);', ''], ['        if (reach >= (int)nums.size() - 1)', ''], ['            return true;', ''], ['    }', ''], ['    return true;', ''], ['}', '']],
+      js: [['function canJump(nums) {', ''], ['  let reach = 0;', '  // farthest stone so far'], ['  for (let i = 0; i < nums.length; i++) {', ''], ['    if (i > reach)', ''], ['      return false;', '  // past the mark: stuck'], ['    reach = Math.max(reach, i + nums[i]);', ''], ['    if (reach >= nums.length - 1)', ''], ['      return true;', ''], ['  }', ''], ['  return true;', ''], ['}', '']],
+      go: [['func canJump(nums []int) bool {', ''], ['    reach := 0', '  // farthest stone so far'], ['    for i, step := range nums {', ''], ['        if i > reach {', ''], ['            return false', '  // past the mark: stuck'], ['        }', ''], ['        reach = max(reach, i+step)', ''], ['        if reach >= len(nums)-1 {', ''], ['            return true', ''], ['        }', ''], ['    }', ''], ['    return true', ''], ['}', '']]
+    },
+    rules: [['Set the mark at the first stone', 'intro'], ['Leap goes farther → move the mark', 'grow'], ['Leap falls short → keep the mark', 'hold'], ['Standing past the mark → stuck', 'stuck'], ['Mark covers the last stone → True', 'found']],
+    complexity: [['O(n)', 'each stone is looked at once'], ['O(1)', 'one number: the farthest mark']],
+    quest: ['A row of seven stepping stones crosses the river: 1, 2, 0, 1, 3, 0, 2. Each number is the longest leap Jax can make from that stone. He may also leap shorter.', 'Starting on the first stone, can Jax land on the last one?'],
+    example: ['nums = [1, 2, 0, 1, 3, 0, 2]', 'answer = True   (0 → 1 → 3 → 4 → 6)'],
+    hints: ['Old Hoot: “You don’t need the exact route. What single fact would tell you whether a stone can be reached?”', '“Keep the farthest stone you could reach so far. Any stone before that mark is reachable.”', '“At each stone: if you’re past the mark, you’re stuck. Otherwise push the mark to i + nums[i] if that is farther.”'],
+    clues: ['yes or no, not the route', 'a leap may be shorter than the number', 'one pass would be ideal'],
+    quizFb: ['Old Hoot: “Trying every route branches at every stone. With 10,000 stones that never ends.”', 'Old Hoot: “A note for every stone works, but it can cost O(n²) leaps. One number is enough here.”', 'Old Hoot: “Yes! Keep only the farthest mark. If it ever covers the last stone, Jax can cross.”', 'Old Hoot: “Both ends walking inward helps with sorted pairs. Jax must cross from left to right.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(stonesScene);
+PATTERN_KITS['Greedy'] = { right: 2, spot: 'Why one mark, not every route?', ask: 'How should Jax decide?',
+  quiz: [['Try every route', 'Follow each possible leap and back up when it fails'], ['A note for every stone', 'Work out, stone by stone, whether each one can be reached'], ['Keep the farthest mark', 'Remember only the farthest stone reachable so far'], ['Two friends from both ends', 'One at each end, walking inward']] };
+STORY_CAST.jax = { name: 'Jax', initial: 'J', color: 'right', radius: '9px' };
+
+// ---------- Intervals: Iris, the scheduler with the fat diary ----------
+const ivText = (m) => m[0] + '-' + m[1];
+const ivList = (list) => '[' + list.map((m) => '[' + m[0] + ',' + m[1] + ']').join(', ') + ']';
+
+// The Meeting Room Diary — Merge Intervals
+function diaryScene() {
+  const given = [[6, 8], [1, 3], [14, 16], [2, 5], [9, 12], [10, 11]];
+  const meets = given.slice().sort((a, b) => a[0] - b[0]);
+  const steps = [];
+  const merged = [];
+  const owner = [];   // which merged block each meeting went into
+  const rows = (fresh) => merged.map((m, k) => [ivText(m), 'block ' + (k + 1), k === fresh ? 'fresh' : '']);
+  const snap = (o) => Object.assign({ board: rows(o.fresh), merged: merged.map((m) => m.slice()), owner: owner.slice() }, o);
+  steps.push(snap({ L: 0, kind: 'intro', fresh: -1,
+    dialog: [say('hoot', 'Six meetings for one room, written in no order. Some of them overlap.'), say('iris', 'First I sort them by start time: 1-3, 2-5, 6-8, 9-12, 10-11, 14-16.'), say('hoot', 'Then?'), say('iris', 'I walk through once. If a meeting starts before my last block ends, I stretch that block.')],
+    nar: { kid: 'Iris puts the meetings in order of when they start. Then she copies them into her diary, joining any that overlap into one long block.', builder: 'Sort by start. merged = []. For each meeting: if it starts after the last block ends, add a new block; otherwise set last.end = max(last.end, end).', expert: 'After sorting, a meeting can only overlap the most recent block, so one comparison per meeting is enough. O(n log n) for the sort, O(n) for the sweep.' } }));
+  meets.forEach((m, i) => {
+    const lastB = merged[merged.length - 1];
+    if (!lastB || lastB[1] < m[0]) {
+      const before = lastB ? lastB[1] : null;
+      merged.push(m.slice());
+      owner.push(merged.length - 1);
+      steps.push(snap({ L: i, kind: 'add', fresh: merged.length - 1,
+        dialog: lastB
+          ? [say('iris', 'Meeting ' + ivText(m) + ' starts at ' + m[0] + '. My last block ended at ' + before + '.'), say('hoot', 'No overlap. Write it down as a new block.')]
+          : [say('iris', 'Meeting ' + ivText(m) + ' is the first one.'), say('hoot', 'An empty diary, so it starts the first block.')],
+        nar: { kid: lastB ? 'Meeting ' + ivText(m) + ' starts after the last block is over, so Iris writes it as a new block.' : 'The diary is empty, so meeting ' + ivText(m) + ' becomes the first block.', builder: lastB ? 'last.end = ' + before + ' < start = ' + m[0] + ' → merged.append([' + m[0] + ', ' + m[1] + ']).' : 'merged is empty → merged.append([' + m[0] + ', ' + m[1] + ']).', expert: lastB ? 'Every later meeting starts at ' + m[0] + ' or later, so block ' + (merged.length - 1) + ' is final now.' : 'merged = ' + ivList(merged) + '.' } }));
+      return;
+    }
+    const oldEnd = lastB[1];
+    lastB[1] = Math.max(lastB[1], m[1]);
+    owner.push(merged.length - 1);
+    const grew = lastB[1] > oldEnd;
+    steps.push(snap({ L: i, kind: grew ? 'extend' : 'inside', fresh: merged.length - 1,
+      dialog: grew
+        ? [say('iris', 'Meeting ' + ivText(m) + ' starts at ' + m[0] + ', before my block ends at ' + oldEnd + '.'), say('hoot', 'They overlap. Stretch the block to end at ' + lastB[1] + '.')]
+        : [say('iris', 'Meeting ' + ivText(m) + ' starts at ' + m[0] + ', inside my block ' + lastB[0] + '-' + oldEnd + '.'), say('hoot', 'It ends at ' + m[1] + ', before the block does. The block stays ' + ivText(lastB) + '.')],
+      nar: { kid: grew ? 'Meeting ' + ivText(m) + ' begins before the last block is over, so they overlap. Iris stretches the block to ' + ivText(lastB) + '.' : 'Meeting ' + ivText(m) + ' fits completely inside the block ' + ivText(lastB) + ', so the block does not change.', builder: 'start = ' + m[0] + ' ≤ last.end = ' + oldEnd + ' → last.end = max(' + oldEnd + ', ' + m[1] + ') = ' + lastB[1] + '.', expert: grew ? 'Overlap with the newest block only: an older block ended before this block started.' : 'This is why we take the max. Writing last.end = ' + m[1] + ' would shrink the block and lose 11-12.' } }));
+  });
+  steps.push(snap({ L: meets.length - 1, kind: 'found', fresh: -1,
+    dialog: [say('iris', 'That was the last meeting.'), say('hoot', 'The diary holds ' + merged.length + ' blocks: ' + merged.map(ivText).join(', ') + '. That is the answer.')],
+    nar: { kid: 'All six meetings are in the diary. Joined together, they make ' + merged.length + ' blocks: ' + merged.map(ivText).join(', ') + '.', builder: 'return merged = ' + ivList(merged) + '.', expert: 'O(n log n) time for the sort, O(n) extra space for the output. Comparing every pair of meetings would be O(n²).' } }));
+  const T = { intro: ['Sorted by start', 'plain'], add: ['Starts after the block → new block', 'cool'], extend: ['Overlaps → stretch the block', 'warn'], inside: ['Inside the block → keep it', 'warn'], found: [merged.length + ' blocks in the diary', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
+    st.cells = meets.map((_, i) => {
+      if (st.kind === 'intro') return 'future';
+      if (st.done) return 'ok';
+      if (i === st.L) return 'cur';
+      if (i < st.L) return 'stored';
+      return 'future';
+    });
+    const last = st.merged[st.merged.length - 1];
+    const n = st.kind === 'intro' ? 0 : st.L + 1;
+    st.meter = { text: st.kind === 'intro' ? 'diary = []' : st.done ? 'diary = ' + st.merged.length + ' blocks' : 'last block = ' + ivText(last), pct: (n / meets.length) * 100, mark: 100, markLabel: 'meetings placed ' + n + ' / ' + meets.length };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['meeting', st.kind === 'intro' ? '—' : ivText(meets[st.L]), 'left'], ['last block', last ? ivText(last) : '—', 'right'], ['last.end', last ? last[1] : '—', 'right'], ['len(merged)', st.merged.length, 'text'], ['result', st.done ? ivList(st.merged) : '…', st.done ? 'ok' : 'text']];
+  });
+  return {
+    id: 'merge-intervals', pattern: 'Intervals', cast: 'iv', short: 'Diary', visual: 'letters', items: meets.map(ivText), pitch: 68, tile: 58, tileH: 56, gap: 10, font: 18, width: 398,
+    board: true, boardTitle: 'Iris’s diary',
+    actorLabels: ['Iris · i'],
+    goal: 'Join every overlapping meeting into one block', status: ['Writing the diary…', 'Diary tidy'],
+    lines: { py: { intro: 2, add: 6, extend: 8, inside: 8, found: 9 }, java: { intro: 2, add: 7, extend: 9, inside: 9, found: 11 }, cpp: { intro: 2, add: 6, extend: 8, inside: 8, found: 10 }, js: { intro: 2, add: 7, extend: 9, inside: 9, found: 11 }, go: { intro: 2, add: 7, extend: 9, inside: 9, found: 12 } },
+    code: {
+      py: [['def merge(intervals):', ''], ['    intervals.sort(key=lambda m: m[0])', ''], ['    merged = []', ''], ['    for start, end in intervals:', ''], ['        if not merged or merged[-1][1] < start:', ''], ['            merged.append([start, end])', ''], ['        else:', ''], ['            merged[-1][1] = max(merged[-1][1], end)', ''], ['    return merged', '']],
+      java: [['int[][] merge(int[][] intervals) {', ''], ['    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);', '  // by start time'], ['    List<int[]> merged = new ArrayList<>();', ''], ['    for (int[] m : intervals) {', ''], ['        int[] last = merged.isEmpty() ? null : merged.get(merged.size() - 1);', ''], ['        if (last == null || last[1] < m[0])', ''], ['            merged.add(new int[]{m[0], m[1]});', '  // a new block'], ['        else', ''], ['            last[1] = Math.max(last[1], m[1]);', ''], ['    }', ''], ['    return merged.toArray(new int[0][]);', ''], ['}', '']],
+      cpp: [['vector<vector<int>> merge(vector<vector<int>>& intervals) {', ''], ['    sort(intervals.begin(), intervals.end());', '  // by start time'], ['    vector<vector<int>> merged;', ''], ['    for (auto& m : intervals) {', ''], ['        if (merged.empty() || merged.back()[1] < m[0])', ''], ['            merged.push_back(m);', '  // a new block'], ['        else', ''], ['            merged.back()[1] = max(merged.back()[1], m[1]);', ''], ['    }', ''], ['    return merged;', ''], ['}', '']],
+      js: [['function merge(intervals) {', ''], ['  intervals.sort((a, b) => a[0] - b[0]);', '  // by start time'], ['  const merged = [];', ''], ['  for (const [start, end] of intervals) {', ''], ['    const last = merged[merged.length - 1];', ''], ['    if (!last || last[1] < start)', ''], ['      merged.push([start, end]);', '  // a new block'], ['    else', ''], ['      last[1] = Math.max(last[1], end);', ''], ['  }', ''], ['  return merged;', ''], ['}', '']],
+      go: [['func merge(intervals [][]int) [][]int {', ''], ['    sort.Slice(intervals, func(a, b int) bool { return intervals[a][0] < intervals[b][0] })', ''], ['    merged := [][]int{}', ''], ['    for _, m := range intervals {', ''], ['        n := len(merged)', ''], ['        if n == 0 || merged[n-1][1] < m[0] {', ''], ['            merged = append(merged, []int{m[0], m[1]})', '  // a new block'], ['        } else {', ''], ['            merged[n-1][1] = max(merged[n-1][1], m[1])', ''], ['        }', ''], ['    }', ''], ['    return merged', ''], ['}', '']]
+    },
+    rules: [['Sort the meetings by start time', 'intro'], ['Starts after the last block ends → new block', 'add'], ['Overlaps the last block → stretch its end', 'extend'], ['Fits inside the last block → keep the end', 'inside'], ['Every meeting placed → hand over the diary', 'found']],
+    complexity: [['O(n log n)', 'the sort; the sweep is one pass'], ['O(n)', 'the diary can hold every meeting']],
+    quest: ['The meeting room has been double-booked all week. The bookings are 6-8, 1-3, 14-16, 2-5, 9-12 and 10-11, written down in no order.', 'Iris must rewrite the diary so that overlapping meetings become one long block, and nothing overlaps any more.'],
+    example: ['intervals = [[6,8], [1,3], [14,16], [2,5], [9,12], [10,11]]', 'answer = [[1,5], [6,8], [9,12], [14,16]]'],
+    hints: ['Old Hoot: “Meetings in a muddle are hard to compare. What order would make overlaps sit next to each other?”', '“Once they are sorted by start, a meeting can only overlap the last block you wrote.”', '“Starts after the last block ends: new block. Otherwise stretch the end, but only if this meeting ends later.”'],
+    clues: ['overlapping meetings join up', 'the input is not in order', 'one sweep after sorting'],
+    quizFb: ['Old Hoot: “Comparing every pair finds the overlaps, but joining chains of them gets messy, and it costs O(n²).”', 'Old Hoot: “A pile helps with nesting brackets. Here the latest block is all Iris needs, and the diary already keeps it.”', 'Old Hoot: “Marking every hour works for small days, but a booking can run to hour 10,000. Sort and sweep instead.”', 'Old Hoot: “Yes! Sorted by start, each meeting only needs to look at the last block in the diary.”'],
+    steps
+  };
+}
+
+// The Late Booking — Insert Interval
+function bookingScene() {
+  const meets = [[1, 2], [3, 4], [6, 8], [9, 10], [13, 15], [17, 18]];
+  let late = [5, 9];
+  const first = late.slice();
+  const steps = [];
+  const out = [];
+  const status = [];   // per meeting: 'copied' | 'merged'
+  const rows = (fresh) => out.map((m, k) => [ivText(m), m.late ? 'booking' : 'copied', k === fresh ? 'fresh' : '']);
+  const snap = (o) => Object.assign({ board: rows(o.fresh), late: late.slice(), outText: ivList(out), size: out.length, status: status.slice() }, o);
+  steps.push(snap({ L: 0, kind: 'intro', fresh: -1,
+    dialog: [say('hoot', 'The diary is tidy: 1-2, 3-4, 6-8, 9-10, 13-15, 17-18. Then a late booking comes in for 5-9.'), say('iris', 'I copy every meeting that ends before 5. Then I join everything that overlaps the booking.'), say('hoot', 'And the rest?'), say('iris', 'Once the booking is written, the rest are copied as they are.')],
+    nar: { kid: 'Iris has a neat diary and one new meeting to fit in. She copies the early meetings, joins any that clash with the new one, and copies the late ones.', builder: 'Three loops. Copy while end < late.start. Merge while start ≤ late.end, growing late. Append late. Copy the rest.', expert: 'The input is sorted and has no overlaps, so the meetings split into three runs: before, overlapping, after. One pass, O(n).' } }));
+  let i = 0;
+  const n = meets.length;
+  while (i < n && meets[i][1] < late[0]) {
+    out.push(meets[i].slice()); status[i] = 'copied';
+    steps.push(snap({ L: i, kind: 'before', fresh: out.length - 1,
+      dialog: [say('iris', 'Meeting ' + ivText(meets[i]) + ' ends at ' + meets[i][1] + ', before the booking starts at ' + late[0] + '.'), say('hoot', 'No clash. Copy it across as it is.')],
+      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' is over before the new booking begins, so Iris copies it into the new diary.', builder: 'end = ' + meets[i][1] + ' < late.start = ' + late[0] + ' → out.append([' + meets[i][0] + ', ' + meets[i][1] + ']).', expert: 'Everything in this first run ends before the booking, so it can be copied without a check against it again.' } }));
+    i++;
+  }
+  while (i < n && meets[i][0] <= late[1]) {
+    const was = late.slice();
+    late = [Math.min(late[0], meets[i][0]), Math.max(late[1], meets[i][1])];
+    status[i] = 'merged';
+    steps.push(snap({ L: i, kind: 'merge', fresh: -1,
+      dialog: [say('iris', 'Meeting ' + ivText(meets[i]) + ' starts at ' + meets[i][0] + ', before the booking ends at ' + was[1] + '.'), say('hoot', 'They clash. Join them: the booking is now ' + ivText(late) + '.')],
+      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' overlaps the booking ' + ivText(was) + ', so Iris joins them into one: ' + ivText(late) + '.', builder: 'start = ' + meets[i][0] + ' ≤ late.end = ' + was[1] + ' → late = [min(' + was[0] + ', ' + meets[i][0] + '), max(' + was[1] + ', ' + meets[i][1] + ')] = [' + late[0] + ', ' + late[1] + '].', expert: 'Ends touching counts as overlap here (start ≤ end). The booking only grows, so later meetings are tested against the bigger block.' } }));
+    i++;
+  }
+  const placed = late.slice(); placed.late = true;
+  out.push(placed);
+  const at = Math.min(i, n - 1);
+  steps.push(snap({ L: at, kind: 'place', fresh: out.length - 1,
+    dialog: i < n
+      ? [say('iris', 'Meeting ' + ivText(meets[i]) + ' starts at ' + meets[i][0] + ', after the booking ends at ' + late[1] + '.'), say('hoot', 'So nothing else clashes. Write the booking in now: ' + ivText(late) + '.')]
+      : [say('iris', 'No meetings left to check.'), say('hoot', 'Write the booking in now: ' + ivText(late) + '.')],
+    nar: { kid: 'Nothing else overlaps the booking, so Iris writes it into the diary as one block, ' + ivText(late) + '.', builder: 'start = ' + (i < n ? meets[i][0] : '—') + ' > late.end = ' + late[1] + ' → out.append([' + late[0] + ', ' + late[1] + ']).', expert: 'The booking goes in exactly once, after every meeting that ends before it and before every meeting that starts after it. Order is kept with no sort.' } }));
+  while (i < n) {
+    out.push(meets[i].slice()); status[i] = 'copied';
+    steps.push(snap({ L: i, kind: 'after', fresh: out.length - 1,
+      dialog: [say('iris', 'Meeting ' + ivText(meets[i]) + ' comes after the booking.'), say('hoot', 'Copy it across as it is.')],
+      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' starts after the booking is over, so Iris copies it unchanged.', builder: 'Third loop → out.append([' + meets[i][0] + ', ' + meets[i][1] + ']).', expert: 'The rest of the list is already sorted and clash-free, so it is copied with no checks.' } }));
+    i++;
+  }
+  steps.push(snap({ L: n - 1, kind: 'found', fresh: -1,
+    dialog: [say('iris', 'The new diary is done.'), say('hoot', 'It reads ' + out.map(ivText).join(', ') + '. Sorted, and no two meetings clash.')],
+    nar: { kid: 'The late booking is in, joined with the meetings it clashed with. The diary is ' + out.map(ivText).join(', ') + '.', builder: 'return out = ' + ivList(out) + '.', expert: 'Each meeting was looked at once: O(n) time, O(n) space for the new list. No sort was needed.' } }));
+  const T = { intro: ['Late booking: ' + ivText(first), 'plain'], before: ['Ends before the booking → copy it', 'cool'], merge: ['Clashes → join it into the booking', 'warn'], place: ['No more clashes → write the booking', 'ok'], after: ['Starts after the booking → copy it', 'cool'], found: ['Diary rewritten', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
+    st.cells = meets.map((_, k) => {
+      if (st.kind === 'intro') return 'future';
+      if (st.done) return st.status[k] === 'merged' ? 'paint' : 'ok';
+      if (k === st.L && st.kind !== 'place') return st.kind === 'merge' ? 'hit' : 'cur';
+      if (k === st.L) return 'cur';
+      if (st.status[k] === 'merged') return 'paint';
+      if (st.status[k] === 'copied') return 'stored';
+      return 'future';
+    });
+    const n2 = st.kind === 'intro' ? 0 : st.status.filter(Boolean).length;
+    st.meter = { text: st.done ? 'diary = ' + st.size + ' meetings' : 'booking = ' + ivText(st.late), pct: (n2 / meets.length) * 100, mark: 100, markLabel: 'meetings handled ' + n2 + ' / ' + meets.length };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['meeting', st.kind === 'intro' ? '—' : ivText(meets[st.L]), 'left'], ['late', ivText(st.late), 'right'], ['len(out)', st.size, 'text'], ['clash', st.kind === 'merge' ? 'yes' : st.kind === 'intro' || st.done ? '—' : 'no', st.kind === 'merge' ? 'left' : 'text'], ['result', st.done ? st.outText : '…', st.done ? 'ok' : 'text']];
+  });
+  return {
+    id: 'insert-interval', pattern: 'Intervals', cast: 'iv', short: 'Late Booking', visual: 'letters', items: meets.map(ivText), pitch: 68, tile: 58, tileH: 56, gap: 10, font: 18, width: 398,
+    board: true, boardTitle: 'Iris’s new diary',
+    actorLabels: ['Iris · i'],
+    goal: 'Fit the late booking 5-9 into the diary', status: ['Rewriting…', 'Booking fitted'],
+    lines: { py: { intro: 2, before: 4, merge: 6, place: 8, after: 10, found: 11 }, java: { intro: 2, before: 4, merge: 6, place: 9, after: 11, found: 12 }, cpp: { intro: 2, before: 4, merge: 6, place: 9, after: 11, found: 12 }, js: { intro: 2, before: 4, merge: 6, place: 9, after: 11, found: 12 }, go: { intro: 2, before: 4, merge: 7, place: 10, after: 12, found: 14 } },
+    code: {
+      py: [['def insert(intervals, late):', ''], ['    out, i, n = [], 0, len(intervals)', ''], ['    while i < n and intervals[i][1] < late[0]:', ''], ['        out.append(intervals[i]); i += 1', ''], ['    while i < n and intervals[i][0] <= late[1]:', ''], ['        late = [min(late[0], intervals[i][0]), max(late[1], intervals[i][1])]', ''], ['        i += 1', ''], ['    out.append(late)', '  # the booking, joined'], ['    while i < n:', ''], ['        out.append(intervals[i]); i += 1', ''], ['    return out', '']],
+      java: [['int[][] insert(int[][] intervals, int[] late) {', ''], ['    List<int[]> out = new ArrayList<>(); int i = 0, n = intervals.length;', ''], ['    while (i < n && intervals[i][1] < late[0])', ''], ['        out.add(intervals[i++]);', '  // ends before it'], ['    while (i < n && intervals[i][0] <= late[1]) {', ''], ['        late = new int[]{Math.min(late[0], intervals[i][0]), Math.max(late[1], intervals[i][1])};', ''], ['        i++;', ''], ['    }', ''], ['    out.add(late);', '  // the booking, joined'], ['    while (i < n)', ''], ['        out.add(intervals[i++]);', '  // starts after it'], ['    return out.toArray(new int[0][]);', ''], ['}', '']],
+      cpp: [['vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int> late) {', ''], ['    vector<vector<int>> out; int i = 0, n = intervals.size();', ''], ['    while (i < n && intervals[i][1] < late[0])', ''], ['        out.push_back(intervals[i++]);', '  // ends before it'], ['    while (i < n && intervals[i][0] <= late[1]) {', ''], ['        late = {min(late[0], intervals[i][0]), max(late[1], intervals[i][1])};', ''], ['        i++;', ''], ['    }', ''], ['    out.push_back(late);', '  // the booking, joined'], ['    while (i < n)', ''], ['        out.push_back(intervals[i++]);', '  // starts after it'], ['    return out;', ''], ['}', '']],
+      js: [['function insert(intervals, late) {', ''], ['  const out = []; let i = 0; const n = intervals.length;', ''], ['  while (i < n && intervals[i][1] < late[0])', ''], ['    out.push(intervals[i++]);', '  // ends before it'], ['  while (i < n && intervals[i][0] <= late[1]) {', ''], ['    late = [Math.min(late[0], intervals[i][0]), Math.max(late[1], intervals[i][1])];', ''], ['    i++;', ''], ['  }', ''], ['  out.push(late);', '  // the booking, joined'], ['  while (i < n)', ''], ['    out.push(intervals[i++]);', '  // starts after it'], ['  return out;', ''], ['}', '']],
+      go: [['func insert(intervals [][]int, late []int) [][]int {', ''], ['    out, i, n := [][]int{}, 0, len(intervals)', ''], ['    for i < n && intervals[i][1] < late[0] {', ''], ['        out = append(out, intervals[i]); i++', '  // ends before it'], ['    }', ''], ['    for i < n && intervals[i][0] <= late[1] {', ''], ['        late = []int{min(late[0], intervals[i][0]), max(late[1], intervals[i][1])}', ''], ['        i++', ''], ['    }', ''], ['    out = append(out, late)', '  // the booking, joined'], ['    for i < n {', ''], ['        out = append(out, intervals[i]); i++', '  // starts after it'], ['    }', ''], ['    return out', ''], ['}', '']]
+    },
+    rules: [['Start a new, empty diary', 'intro'], ['Ends before the booking → copy it', 'before'], ['Clashes with the booking → join them', 'merge'], ['No more clashes → write the booking in', 'place'], ['Starts after the booking → copy it', 'after'], ['Every meeting handled → hand it over', 'found']],
+    complexity: [['O(n)', 'each meeting is looked at once'], ['O(n)', 'a new diary as long as the old one']],
+    quest: ['Iris’s diary is already sorted and nothing in it clashes: 1-2, 3-4, 6-8, 9-10, 13-15 and 17-18.', 'Then a late booking arrives for 5-9. Iris must fit it in so the diary stays sorted, joining it with anything it clashes with.'],
+    example: ['intervals = [[1,2], [3,4], [6,8], [9,10], [13,15], [17,18]]   late = [5,9]', 'answer = [[1,2], [3,4], [5,10], [13,15], [17,18]]'],
+    hints: ['Old Hoot: “The diary is already sorted. Which meetings can the booking never touch?”', '“Meetings that end before 5 come first, untouched. Meetings that start after the booking ends come last, untouched.”', '“In between, join each clashing meeting into the booking: smallest start, biggest end. Write the booking, then copy the rest.”'],
+    clues: ['the diary is sorted already', 'nothing in it clashes yet', 'only one new meeting'],
+    quizFb: ['Old Hoot: “Checking the booking against every pair of meetings repeats work. The diary is already in order.”', 'Old Hoot: “A pile is for things that close in reverse order. A diary is read straight through.”', 'Old Hoot: “Marking every hour wastes space when meetings run far apart, like 1-2 and 13-15.”', 'Old Hoot: “Yes! Sweep once: copy the early ones, join the clashes, then copy the late ones.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(diaryScene, bookingScene);
+PATTERN_KITS['Intervals'] = { right: 3, spot: 'Why sort first, not compare every pair?', ask: 'How should Iris tidy the diary?',
+  quiz: [['Compare every pair', 'Check each meeting against every other one'], ['A pile of plates', 'Put each meeting on top and lift off the ones it closes'], ['Mark every hour', 'Shade each hour on a chart and read off the shaded runs'], ['Sort and sweep', 'Go through in order of start and keep only the latest block']] };
+STORY_CAST.iris = { name: 'Iris', initial: 'I', color: 'left', radius: '10px' };
+
+// ---------- Stack: Pip, the plate-stacker at the busy canteen ----------
+// Pip's pile is drawn in the side board, top plate first.
+
+// The Stack of Plates — Valid Parentheses
+function platesScene() {
+  const s = ['(', '[', '{', '}', ']', ')', '(', ')'];
+  const opener = { ')': '(', ']': '[', '}': '{' };
+  const steps = [];
+  const pile = [];   // indexes into s
+  const matched = [];
+  const shape = (c) => ({ '(': 'round', ')': 'round', '[': 'square', ']': 'square', '{': 'curly', '}': 'curly' })[c];
+  const pileText = () => (pile.length ? pile.map((j) => s[j]).join(' ') : 'empty');
+  const pileRows = (fresh) => pile.slice().reverse().map((j, k) => [s[j], k === 0 ? 'top · #' + j : '#' + j, j === fresh ? 'fresh' : '']);
+  steps.push({ L: 0, kind: 'intro', board: [], pileText: 'empty', size: 0, top: '—', hits: [], matched: [],
+    dialog: [say('hoot', 'Eight brackets on the order slip: ( [ { } ] ) ( ). Every opener needs its own closer, in the right order.'), say('pip', 'Each opener is a plate. I put it on my pile.'), say('hoot', 'And each closer?'), say('pip', 'It has to match the plate on top. Only the top one can come off.')],
+    nar: { kid: 'Pip stacks plates at the canteen. An opening bracket is a new plate on top. A closing bracket must match the top plate, and then that plate comes off.', builder: 'pile = []. Opener → push it. Closer → the top of the pile must be its partner; pop it. If the pile is empty at the end, every bracket was matched.', expert: 'A closer can only pair with the most recent unmatched opener, which is exactly what a stack returns. One pass, O(n) time, O(n) space in the worst case.' } });
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (!(c in opener)) {
+      pile.push(i);
+      steps.push({ L: i, kind: 'push', board: pileRows(i), pileText: pileText(), size: pile.length, top: c, hits: [], matched: matched.slice(),
+        dialog: [say('pip', 'A ' + shape(c) + ' opener, “' + c + '”. On the pile it goes.'), say('hoot', 'The pile is ' + pile.length + (pile.length === 1 ? ' plate' : ' plates') + ' high. “' + c + '” is on top now.')],
+        nar: { kid: '“' + c + '” opens something, so Pip puts a new plate on top of the pile. Now there ' + (pile.length === 1 ? 'is 1 plate' : 'are ' + pile.length + ' plates') + '.', builder: '“' + c + '” is an opener → pile.append("' + c + '"). pile = [' + pile.map((j) => s[j]).join(', ') + '].', expert: 'Push is O(1). The pile holds exactly the openers that are still waiting for a closer, newest on top.' } });
+      continue;
+    }
+    const topIdx = pile.length ? pile[pile.length - 1] : -1;
+    if (topIdx < 0 || s[topIdx] !== opener[c]) {
+      steps.push({ L: i, kind: 'mismatch', board: pileRows(-1), pileText: pileText(), size: pile.length, top: topIdx < 0 ? '—' : s[topIdx], hits: [i], matched: matched.slice(),
+        dialog: [say('pip', '“' + c + '” wants a “' + opener[c] + '” on top, but it isn’t there.'), say('hoot', 'Then the brackets are out of order. The answer is False.')],
+        nar: { kid: 'The top plate doesn’t match “' + c + '”, so the brackets are not in order.', builder: 'top != "' + opener[c] + '" → return False.', expert: 'The first closer whose partner is not on top proves the string is invalid.' } });
+      break;
+    }
+    pile.pop();
+    matched.push(topIdx, i);
+    steps.push({ L: i, kind: 'pop', board: pileRows(-1), pileText: pileText(), size: pile.length, top: pile.length ? s[pile[pile.length - 1]] : '—', hits: [topIdx, i], matched: matched.slice(),
+      dialog: [say('pip', '“' + c + '” closes a ' + shape(c) + ' one. The top plate is “' + s[topIdx] + '”. A match!'), say('hoot', 'Take that plate off. ' + (pile.length ? 'Now “' + s[pile[pile.length - 1]] + '” is on top.' : 'The pile is empty again.'))],
+      nar: { kid: '“' + c + '” matches the “' + s[topIdx] + '” on top of the pile, so Pip lifts that plate off. ' + (pile.length ? (pile.length === 1 ? '1 plate is' : pile.length + ' plates are') + ' still waiting.' : 'No plates are left.'), builder: 'top == "' + opener[c] + '" → pile.pop(). pile = [' + pile.map((j) => s[j]).join(', ') + '].', expert: 'Brackets ' + topIdx + ' and ' + i + ' pair up. Everything between them was already matched, so the pair nests correctly.' } });
+  }
+  steps.push({ L: s.length - 1, kind: 'found', board: [], pileText: 'empty', size: 0, top: '—', hits: [], matched: matched.slice(),
+    dialog: [say('pip', 'That was the last bracket, and my pile is empty.'), say('hoot', 'Every opener found its closer, in the right order. The answer is True.')],
+    nar: { kid: 'All the plates came off and the pile is empty. Every bracket found its partner!', builder: 'Loop ends with pile = [] → return True.', expert: '8 characters, 4 pushes and 4 pops. A non-empty pile here would mean some opener was never closed.' } });
+  const T = { intro: ['Empty pile', 'plain'], push: ['Opener → new plate on top', 'cool'], pop: ['Closer matches the top → plate off', 'warn'], mismatch: ['Wrong plate on top → False', 'warn'], found: ['Pile empty → True', 'ok'] };
+  steps.forEach((st, n) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
+    st.cells = s.map((_, i) => {
+      if (st.kind === 'intro') return 'future';
+      if (st.done) return 'ok';
+      if (st.hits.includes(i)) return 'hit';
+      if (st.matched.includes(i)) return 'ok';
+      if (i === st.L) return 'cur';
+      if (i < st.L) return 'buy';
+      return 'future';
+    });
+    const read = st.kind === 'intro' ? 0 : st.L + 1;
+    st.meter = { text: 'pile: ' + st.pileText, pct: (read / s.length) * 100, mark: 100, markLabel: 'brackets read ' + read + ' / 8' };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['s[i]', st.kind === 'intro' ? '—' : '“' + s[st.L] + '”', 'left'], ['top', st.top === '—' ? '—' : '“' + st.top + '”', 'right'], ['pile', st.pileText === 'empty' ? 'empty' : st.pileText, 'right'], ['len(pile)', st.size, 'text'], ['result', st.done ? 'True' : st.kind === 'mismatch' ? 'False' : '…', st.done ? 'ok' : 'text']];
+    st.n = n;
+  });
+  return {
+    id: 'valid-parentheses', pattern: 'Stack', cast: 'st', short: 'Plates', visual: 'letters', items: s, pitch: 54, tile: 44, tileH: 60, gap: 10, font: 28, width: 422,
+    board: true, boardTitle: 'Pip’s pile',
+    actorLabels: ['Pip · i'],
+    goal: 'Does every opener get the right closer?', status: ['Stacking plates…', 'All matched'],
+    lines: { py: { intro: 2, push: 6, mismatch: 8, pop: 10, found: 11 }, java: { intro: 2, push: 6, mismatch: 8, pop: 10, found: 12 }, cpp: { intro: 2, push: 6, mismatch: 8, pop: 10, found: 12 }, js: { intro: 2, push: 6, mismatch: 8, pop: 10, found: 12 }, go: { intro: 2, push: 6, mismatch: 8, pop: 10, found: 13 } },
+    code: {
+      py: [['def isValid(s):', ''], ['    pile = []', ''], ['    pairs = {")": "(", "]": "[", "}": "{"}', ''], ['    for c in s:', ''], ['        if c not in pairs:', ''], ['            pile.append(c)', '  # an opener: new plate'], ['        elif not pile or pile[-1] != pairs[c]:', ''], ['            return False', '  # wrong plate on top'], ['        else:', ''], ['            pile.pop()', '  # top plate matches'], ['    return not pile', '']],
+      java: [['boolean isValid(String s) {', ''], ['    Deque<Character> pile = new ArrayDeque<>();', ''], ['    for (char c : s.toCharArray()) {', ''], ['        int k = ")]}".indexOf(c);', ''], ['        if (k < 0)', ''], ['            pile.push(c);', '  // an opener: new plate'], ['        else if (pile.isEmpty() || pile.peek() != "([{".charAt(k))', ''], ['            return false;', '  // wrong plate on top'], ['        else', ''], ['            pile.pop();', '  // top plate matches'], ['    }', ''], ['    return pile.isEmpty();', ''], ['}', '']],
+      cpp: [['bool isValid(string s) {', ''], ['    stack<char> pile;', ''], ['    for (char c : s) {', ''], ['        size_t k = string(")]}").find(c);', ''], ['        if (k == string::npos)', ''], ['            pile.push(c);', '  // an opener: new plate'], ['        else if (pile.empty() || pile.top() != "([{"[k])', ''], ['            return false;', '  // wrong plate on top'], ['        else', ''], ['            pile.pop();', '  // top plate matches'], ['    }', ''], ['    return pile.empty();', ''], ['}', '']],
+      js: [['function isValid(s) {', ''], ['  const pile = [];', ''], ['  for (const c of s) {', ''], ['    const k = ")]}".indexOf(c);', ''], ['    if (k < 0)', ''], ['      pile.push(c);', '  // an opener: new plate'], ['    else if (!pile.length || pile[pile.length - 1] !== "([{"[k])', ''], ['      return false;', '  // wrong plate on top'], ['    else', ''], ['      pile.pop();', '  // top plate matches'], ['  }', ''], ['  return pile.length === 0;', ''], ['}', '']],
+      go: [['func isValid(s string) bool {', ''], ['    pile := []rune{}', ''], ['    for _, c := range s {', ''], ['        k := strings.IndexRune(")]}", c)', ''], ['        if k < 0 {', ''], ['            pile = append(pile, c)', '  // an opener: new plate'], ['        } else if len(pile) == 0 || pile[len(pile)-1] != rune("([{"[k]) {', ''], ['            return false', '  // wrong plate on top'], ['        } else {', ''], ['            pile = pile[:len(pile)-1]', '  // top plate matches'], ['        }', ''], ['    }', ''], ['    return len(pile) == 0', ''], ['}', '']]
+    },
+    rules: [['Start with an empty pile', 'intro'], ['Opener → put a plate on top', 'push'], ['Closer matches the top → lift it off', 'pop'], ['Closer meets the wrong plate → False', 'mismatch'], ['Slip done and pile empty → True', 'found']],
+    complexity: [['O(n)', 'each bracket is read once'], ['O(n)', 'the pile can hold every opener']],
+    quest: ['Lunch rush at the canteen. An order slip comes in covered in brackets: ( [ { } ] ) ( ).', 'Pip must say whether every opening bracket is closed by the right kind, in the right order, using nothing but his pile of plates.'],
+    example: ['s = "([{}])()"', 'answer = True'],
+    hints: ['Old Hoot: “Which opener should a closer be matched with? The first one you saw, or the latest one still open?”', '“The latest one still open sounds like the top of a pile of plates.”', '“Opener: put a plate on. Closer: the top plate must match, then lift it off. An empty pile at the end means True.”'],
+    clues: ['brackets must nest', 'the latest open one closes first', 'one pass through the slip'],
+    quizFb: ['Old Hoot: “Matching every bracket against every other is O(n²), and it still can’t tell “([)]” from “([])”.”', 'Old Hoot: “Yes! The newest open bracket must close first, and that is the top of Pip’s pile.”', 'Old Hoot: “From both ends works for “(())”, but “()()” has its partners side by side, not mirrored.”', 'Old Hoot: “Counting opens and closes misses the order. “)(” has one of each and is still wrong.”'],
+    steps
+  };
+}
+
+// The Weather Watchers — Daily Temperatures
+function weatherScene() {
+  const temps = [73, 70, 68, 71, 69, 75, 72];
+  const steps = [];
+  const pile = [];
+  const answer = temps.map(() => 0);
+  const answered = [];
+  const pileRows = (fresh) => pile.slice().reverse().map((j, k) => ['day ' + j, temps[j] + '°' + (k === 0 ? ' top' : ''), j === fresh ? 'fresh' : '']);
+  const pileText = () => '[' + pile.join(', ') + ']';
+  const snap = (o) => Object.assign({ board: pileRows(o.fresh), pileText: pileText(), size: pile.length, answer: answer.slice(), answered: answered.slice() }, o);
+  steps.push(snap({ L: 0, kind: 'intro', fresh: -1, j: -1,
+    dialog: [say('hoot', 'Seven days of weather: 73, 70, 68, 71, 69, 75, 72. For each day, how long until a warmer one?'), say('pip', 'Each day waits on my pile until a warmer day shows up.'), say('hoot', 'And when one does?'), say('pip', 'Every colder day on top gets its answer and comes off.')],
+    nar: { kid: 'Pip writes each day on a plate and puts it on his pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n, pile = []. For each day i: while the top day is colder than today, pop it and set answer[top] = i − top. Then push i.', expert: 'The pile keeps days with falling temperatures from bottom to top. Each day is pushed once and popped at most once, so the whole pass is O(n).' } }));
+  for (let i = 0; i < temps.length; i++) {
+    while (pile.length && temps[pile[pile.length - 1]] < temps[i]) {
+      const j = pile.pop();
+      answer[j] = i - j;
+      answered.push(j);
+      steps.push(snap({ L: i, kind: 'pop', fresh: -1, j,
+        dialog: [say('pip', 'Today is ' + temps[i] + '°. Day ' + j + ' on top was only ' + temps[j] + '°.'), say('hoot', 'Then day ' + j + ' waited ' + i + ' − ' + j + ' = ' + (i - j) + (i - j === 1 ? ' day' : ' days') + '. Lift that plate off.')],
+        nar: { kid: 'Day ' + i + ' is warmer than day ' + j + ', the plate on top. So day ' + j + ' gets its answer: ' + (i - j) + (i - j === 1 ? ' day' : ' days') + ' of waiting. Pip takes that plate off.', builder: 'temps[' + j + '] = ' + temps[j] + ' < ' + temps[i] + ' → pop ' + j + ', answer[' + j + '] = ' + i + ' − ' + j + ' = ' + (i - j) + '.', expert: 'Day ' + i + ' is the first warmer day after day ' + j + ': every day between them is already off the pile or was colder than day ' + j + '.' } }));
+    }
+    pile.push(i);
+    const below = pile.length > 1 ? pile[pile.length - 2] : -1;
+    steps.push(snap({ L: i, kind: 'push', fresh: i, j: -1,
+      dialog: [say('pip', 'Day ' + i + ', ' + temps[i] + '°. ' + (below < 0 ? 'Nobody else is waiting.' : 'Day ' + below + ' below is ' + temps[below] + '°, not colder.')), say('hoot', 'Day ' + i + ' waits on the pile for a warmer day.')],
+      nar: { kid: 'Day ' + i + ' does not know its answer yet, so Pip puts it on top of the pile to wait. ' + (pile.length === 1 ? 'It is the only plate.' : 'There are ' + pile.length + ' plates now.'), builder: (below < 0 ? 'Pile is empty' : 'temps[' + below + '] = ' + temps[below] + ' ≥ ' + temps[i]) + ' → pile.append(' + i + '). pile = ' + pileText() + '.', expert: 'Temperatures on the pile, bottom to top: ' + pile.map((x) => temps[x]).join(' ≥ ') + '. They never rise toward the top.' } }));
+  }
+  steps.push(snap({ L: temps.length - 1, kind: 'found', fresh: -1, j: -1,
+    dialog: [say('pip', 'The week is over. Days ' + pile.join(' and ') + ' are still on my pile.'), say('hoot', 'No warmer day came for them, so their answer stays 0. The full answer is [' + answer.join(', ') + '].')],
+    nar: { kid: 'The week is done. Days still on the pile never saw a warmer day, so they get 0. Answer: ' + answer.join(', ') + '.', builder: 'Loop ends → return answer = [' + answer.join(', ') + ']. Days ' + pile.join(', ') + ' keep 0.', expert: '7 pushes and 5 pops: O(n) time, O(n) space. Checking every later day for every day would be O(n²).' } }));
+  const T = { intro: ['Empty pile', 'plain'], push: ['No answer yet → wait on the pile', 'cool'], pop: ['Warmer today → top day gets its answer', 'warn'], found: ['Answer: [' + answer.join(', ') + ']', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
+    const onPile = st.board.map((r) => Number(r[0].slice(4)));
+    st.cells = temps.map((_, i) => {
+      if (st.kind === 'intro') return 'future';
+      if (st.done) return st.answered.includes(i) ? 'ok' : 'out';
+      if (i === st.j) return 'hit';
+      if (i === st.L) return 'cur';
+      if (st.answered.includes(i)) return 'ok';
+      if (onPile.includes(i)) return 'buy';
+      return 'future';
+    });
+    const n = st.answered.length;
+    st.meter = { text: st.kind === 'intro' ? 'pile = []' : st.done ? 'answer = [' + st.answer.join(', ') + ']' : 'today ' + temps[st.L] + '°', pct: (n / 5) * 100, mark: 100, markLabel: 'days answered ' + n + ' / 5' };
+    st.watch = [['i', st.kind === 'intro' ? '—' : st.L, 'left'], ['temps[i]', st.kind === 'intro' ? '—' : temps[st.L], 'left'], ['top', st.size ? 'day ' + st.board[0][0].slice(4) : '—', 'right'], ['pile', st.pileText, 'right'], ['answer', '[' + st.answer.join(', ') + ']', 'text'], ['result', st.done ? 'done' : '…', st.done ? 'ok' : 'text']];
+  });
+  return {
+    id: 'daily-temperatures', pattern: 'Stack', cast: 'st', short: 'Weather', visual: 'letters', items: temps.map(String), pitch: 60, tile: 50, tileH: 62, gap: 10, font: 24, width: 410,
+    board: true, boardTitle: 'Pip’s pile',
+    actorLabels: ['Pip · i'],
+    goal: 'For each day, how many days until a warmer one?', status: ['Watching the sky…', 'Every day answered'],
+    lines: { py: { intro: 3, pop: 7, push: 8, found: 9 }, java: { intro: 3, pop: 7, push: 9, found: 11 }, cpp: { intro: 3, pop: 7, push: 9, found: 11 }, js: { intro: 3, pop: 7, push: 9, found: 11 }, go: { intro: 3, pop: 8, push: 10, found: 12 } },
+    code: {
+      py: [['def dailyTemperatures(temps):', ''], ['    answer = [0] * len(temps)', ''], ['    pile = []', '  # days still waiting'], ['    for i, t in enumerate(temps):', ''], ['        while pile and temps[pile[-1]] < t:', ''], ['            j = pile.pop()', ''], ['            answer[j] = i - j', '  # days waited'], ['        pile.append(i)', ''], ['    return answer', '']],
+      java: [['int[] dailyTemperatures(int[] temps) {', ''], ['    int[] answer = new int[temps.length];', ''], ['    Deque<Integer> pile = new ArrayDeque<>();', '  // days still waiting'], ['    for (int i = 0; i < temps.length; i++) {', ''], ['        while (!pile.isEmpty() && temps[pile.peek()] < temps[i]) {', ''], ['            int j = pile.pop();', ''], ['            answer[j] = i - j;', '  // day j waited i - j days'], ['        }', ''], ['        pile.push(i);', ''], ['    }', ''], ['    return answer;', ''], ['}', '']],
+      cpp: [['vector<int> dailyTemperatures(vector<int>& temps) {', ''], ['    vector<int> answer(temps.size(), 0);', ''], ['    stack<int> pile;', '  // days still waiting'], ['    for (int i = 0; i < temps.size(); i++) {', ''], ['        while (!pile.empty() && temps[pile.top()] < temps[i]) {', ''], ['            int j = pile.top(); pile.pop();', ''], ['            answer[j] = i - j;', '  // day j waited i - j days'], ['        }', ''], ['        pile.push(i);', ''], ['    }', ''], ['    return answer;', ''], ['}', '']],
+      js: [['function dailyTemperatures(temps) {', ''], ['  const answer = new Array(temps.length).fill(0);', ''], ['  const pile = [];', '  // days still waiting'], ['  for (let i = 0; i < temps.length; i++) {', ''], ['    while (pile.length && temps[pile[pile.length - 1]] < temps[i]) {', ''], ['      const j = pile.pop();', ''], ['      answer[j] = i - j;', '  // day j waited i - j days'], ['    }', ''], ['    pile.push(i);', ''], ['  }', ''], ['  return answer;', ''], ['}', '']],
+      go: [['func dailyTemperatures(temps []int) []int {', ''], ['    answer := make([]int, len(temps))', ''], ['    pile := []int{}', '  // days still waiting'], ['    for i, t := range temps {', ''], ['        for len(pile) > 0 && temps[pile[len(pile)-1]] < t {', ''], ['            j := pile[len(pile)-1]', ''], ['            pile = pile[:len(pile)-1]', ''], ['            answer[j] = i - j', '  // day j waited i - j days'], ['        }', ''], ['        pile = append(pile, i)', ''], ['    }', ''], ['    return answer', ''], ['}', '']]
+    },
+    rules: [['Start with an empty pile', 'intro'], ['Top day is colder than today → answer it and lift it off', 'pop'], ['Nothing colder on top → today waits on the pile', 'push'], ['Week over → leftovers keep 0', 'found']],
+    complexity: [['O(n)', 'each day goes on and comes off once'], ['O(n)', 'a cold spell can fill the pile']],
+    quest: ['Pip keeps a weather log pinned above the canteen sink. This week reads 73, 70, 68, 71, 69, 75 and 72 degrees.', 'For every day he wants to know how many days pass before a warmer one. If none ever comes, the answer is 0.'],
+    example: ['temps = [73, 70, 68, 71, 69, 75, 72]', 'answer = [5, 2, 1, 2, 1, 0, 0]'],
+    hints: ['Old Hoot: “A day can’t know its answer until a warmer day arrives. Where should it wait?”', '“When a warm day comes, which waiting days does it answer? The newest ones, from the top down, while they are colder.”', '“Pop while the top is colder and write i − top. Then push today. Whatever is left at the end gets 0.”'],
+    clues: ['the next warmer day, for every day', 'days wait until they are answered', 'the newest waiting day is answered first'],
+    quizFb: ['Old Hoot: “Scanning ahead from every day is O(n²). A whole cold month makes that slow.”', 'Old Hoot: “Yes! Waiting days sit on the pile, and a warm day clears colder ones from the top.”', 'Old Hoot: “Two friends from both ends compare far-apart days. Each day needs its nearest warmer day to the right.”', 'Old Hoot: “A running count says how many days passed, but not which day is still waiting. The pile remembers that.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(platesScene, weatherScene);
+PATTERN_KITS['Stack'] = { right: 1, spot: 'Why a pile, not a list?', ask: 'How should Pip keep track?',
+  quiz: [['Check every pair', 'Compare each item with every other one'], ['A pile of plates', 'New things go on top, and the top comes off first'], ['Two friends from both ends', 'One at each end, walking inward'], ['A running count', 'Keep one number and add or subtract as you go']] };
+STORY_CAST.pip = { name: 'Pip', initial: 'P', color: 'left', radius: '999px' };
 
 const SCENE_LIST = [lanternScene(), mirrorScene(), waterScene(), facesScene(), paintScene(), stockScene(), coatScene(), guestScene(), scrabbleScene(), ...SCENE_REGISTRY.map((make) => make())];
 const SCENES = {};

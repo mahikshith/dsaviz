@@ -1,4 +1,5 @@
-// Data check for every animated story: code-line maps, narration at all depths, every step renders, build-it puzzles solve.
+// Data check for every animated story: code-line maps, narration at all depths, a plain-words task, and every step renders
+// on the problem page in every language and both code tabs, with the step's code line lit and its caption filled.
 const fs = require('fs');
 const src = fs.readFileSync(require('path').join(__dirname, '..', 'pages', 'Story.dc.html'), 'utf8');
 const script = src.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
@@ -6,8 +7,8 @@ const store = {};
 const f = new Function('store', `const window = { localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } }, addEventListener(){}, removeEventListener(){} };
 const setInterval = () => 1, clearInterval = () => {};
 class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, o); } }
-${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST };`);
-const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST } = f(store);
+${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS };`);
+const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS } = f(store);
 let bad = 0;
 for (const id of SCENE_ORDER) {
   const S = SCENES[id];
@@ -41,6 +42,8 @@ for (const id of SCENE_ORDER) {
       if (st.actorAt && !inside(st.actorAt)) { console.log(id, i, 'actorAt off the grid'); bad++; }
     });
   }
+  if (!STORY_TASKS[id] || STORY_TASKS[id].split(/[.?!](\s|$)/).filter((x) => x && x.trim()).length > 5) { console.log(id, 'no plain-words task (or more than 5 sentences)'); bad++; }
+  if (!PROBLEMS.find((p) => p.id === id).animated) { console.log(id, 'has a scene but is not marked animated in the catalog'); bad++; }
   // tree stories: node ids unique, every parent exists, one root, no loops; every step's states name real nodes only
   if (S.visual === 'tree') {
     const STATES = new Set(['in', 'out', 'future', 'cur', 'hit', 'dup', 'ok', 'paint', 'stored', 'buy', 'best']);
@@ -80,27 +83,26 @@ for (const id of SCENE_ORDER) {
       if (st.actorAt != null && !ids.has(st.actorAt)) { console.log(id, i, 'actorAt is not a node', st.actorAt); bad++; }
     });
   }
-  // render every step at every level/lang/chapter
+  // render every step in every language, on both code tabs, with every fold open
   store['dsaviz-problem'] = id;
   const c = new Component({});
-  for (let i = 0; i < S.steps.length; i++) for (const ch of [0, 1, 2, 3, 4]) {
-    c.setState({ step: i, chapter: ch, predict: true, ask: i < S.steps.length - 1 });
-    const v = c.renderVals();
-    const txt = JSON.stringify(v, (k, x) => (typeof x === 'function' ? undefined : x));
-    if (/undefined|NaN/.test(txt)) { const m = txt.match(/.{60}(undefined|NaN).{40}/); console.log(id, 'render step', i, 'ch', ch, m && m[0]); bad++; break; }
-  }
-  // parsons: check that the answer is solvable and shows ok
+  if (c.state.scene !== id) { console.log(id, 'page did not open this story'); bad++; continue; }
+  let renders = 0;
   for (const lang of ['py', 'java', 'cpp', 'js', 'go']) {
-    c.setState({ lang, built: [], checked: null, chapter: 3, spellMode: 'build' });
-    let v = c.renderVals();
-    const n = c.spellLines().length;
-    v.showSpell(); v = c.renderVals();
-    if (!v.spellOk) { console.log(id, lang, 'parsons not ok'); bad++; }
-    // wrong order is flagged
-    c.setState({ built: [...Array(n).keys()].reverse(), checked: null }); v = c.renderVals(); v.checkSpell(); v = c.renderVals();
-    if (v.spellOk && n > 1) { console.log(id, lang, 'reverse accepted'); bad++; }
+    c.runner.setLang(lang);
+    const lines = S.lines[lang] || S.lines.py, code = S.code[lang];
+    for (let i = 0; i < S.steps.length; i++) for (const tab of ['solution', 'code']) {
+      c.setState({ step: i, tab, codeOpened: tab === 'code', deeper: true, showHints: true, why: true, hints: S.hints.length, pick: 0 });
+      const v = c.renderVals(); renders++;
+      const txt = JSON.stringify(v, (k, x) => (typeof x === 'function' ? undefined : x));
+      if (/undefined|NaN/.test(txt)) { const m = txt.match(/.{60}(undefined|NaN).{40}/); console.log(id, lang, 'render step', i, tab, m && m[0]); bad++; break; }
+      const want = lines[S.steps[i].kind];
+      if (v.lineMarkOp !== 1 || v.lineMark !== 'translateY(' + (want - 1) * 24 + 'px)' || v.code.length !== code.length) { console.log(id, lang, 'step', i, 'code line not lit', v.lineMark); bad++; }
+      if (!v.caption || !v.expert || !v.task || !v.exampleIn || !v.exampleOut) { console.log(id, lang, 'step', i, 'missing caption, expert note, task or example'); bad++; }
+      if (v.stepLabel !== 'Step ' + (i + 1) + ' of ' + S.steps.length) { console.log(id, 'step label', v.stepLabel); bad++; }
+    }
   }
-  console.log(id, S.steps.length, 'steps ok; tabs:', c.renderVals().sceneTabs.map((x) => x.label).join('/'));
+  console.log(id, S.steps.length, 'steps ok;', renders, 'renders; more:', c.renderVals().moreStories.map((x) => x.story).join(' / '));
 }
 console.log(bad ? bad + ' problems' : 'all scenes clean');
 if (bad) process.exitCode = 1;

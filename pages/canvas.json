@@ -153,6 +153,22 @@
       "w": 1440,
       "x": 9120,
       "y": 1020
+    },
+    "AIML.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "AI & ML hub · two tracks: ML foundations and AI now",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "AILesson.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "AI & ML lesson player · 13 animated lessons, sliders, sources",
+      "w": 1440,
+      "x": 9120,
+      "y": 1020
     }
   },
   "createdOnFiles": {
@@ -227,7 +243,9 @@
     "Glossary.dc.html",
     "Basics.dc.html",
     "SystemDesign.dc.html",
-    "SDLesson.dc.html"
+    "SDLesson.dc.html",
+    "AIML.dc.html",
+    "AILesson.dc.html"
   ],
   "pages": [],
   "title": "DSA Story Studio"

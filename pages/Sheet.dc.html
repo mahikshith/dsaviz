@@ -1806,6 +1806,10 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = { theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), query: '', diff: 'All', status: 'all', pattern: 'All', company: 'All', hidePremium: false, open: {}, hint: {}, noteOpen: {}, pick: null, pickNone: false, msg: 'Download your ticks and notes as a file, or load a file you saved before.' };
+    // The Library's pattern map links here with one group in focus: show only that group, opened.
+    let focus = null;
+    try { focus = window.localStorage.getItem('dsaviz-sheet-focus'); window.localStorage.removeItem('dsaviz-sheet-focus'); } catch (e) {}
+    if (focus && SHEET_GROUPS.some(([n]) => n === focus)) Object.assign(this.state, { pattern: focus, open: { [focus]: true } });
   }
   componentDidMount() {
     listenTheme(this);

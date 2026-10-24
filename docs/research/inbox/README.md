@@ -11,5 +11,6 @@ New reference sources from the owner. Structure, topic order, problem ideas and 
 | doocs/leetcode (GitHub root, shallow clone for structure) | doocs-leetcode.md | done pass 1; licence CC BY-SA 4.0, reference only; 4087 problems with tags and difficulty |
 | gahogg/Leetcode-Solutions (GitHub root, clone) | gahogg-solutions.md | done pass 1; no LICENSE file, reference only; 125 flat problem folders |
 | kirankrish109/interview-question-data-science--master (GitHub root, clone, PDFs read as text) | ds-interview-questions.md | done pass 1; no LICENSE file, topics only; feeds future DS/ML section |
+| Open-source coverage checklist (Python/Java/MDN docs, Wikipedia lists, Open Data Structures, Erickson, OpenDSA), GeeksforGeeks stand-in | coverage-checklist.md | done; top-30 beginner gaps, covered/partial/missing vs default branch; links in links/coverage.md |
 
 Problem ideas: candidates.md.

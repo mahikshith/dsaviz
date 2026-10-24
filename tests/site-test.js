@@ -21,14 +21,20 @@ try { ({ chromium } = require('playwright')); } catch (e) {
 }
 const CHANNEL = process.env.DS_BROWSER || '';
 
-const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson'];
-const html = fs.readFileSync(path.join(__dirname, '..', 'dist', 'index.html'));
+const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Contests'];
+const dist = path.join(__dirname, '..', 'dist');
+const html = fs.readFileSync(path.join(dist, 'index.html'));
+// The offline app files sit next to index.html; any other path gets the page.
+const FILES = { '/sw.js': 'text/javascript', '/manifest.webmanifest': 'application/manifest+json', '/icons/icon-192.png': 'image/png',
+  '/icons/icon-512.png': 'image/png', '/icons/icon-maskable-512.png': 'image/png', '/icons/apple-touch-icon.png': 'image/png' };
 const server = http.createServer((req, res) => {
+  const p = req.url.split('?')[0];
+  if (FILES[p]) { res.writeHead(200, { 'Content-Type': FILES[p] }); res.end(fs.readFileSync(path.join(dist, p.slice(1)))); return; }
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
     // Same spirit as a strict sandbox: no eval, no external scripts. The Code page's
-    // JavaScript runner needs blob: workers.
-    'Content-Security-Policy': "script-src 'unsafe-inline'; worker-src blob:"
+    // JavaScript runner needs blob: workers; the offline app needs its own sw.js.
+    'Content-Security-Policy': "script-src 'unsafe-inline'; worker-src 'self' blob:"
   });
   res.end(html);
 });

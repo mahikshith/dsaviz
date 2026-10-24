@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 15 linked pages, 25 animated stories, a code editor that runs JavaScript and Python in the browser, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 15 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -72,6 +72,8 @@ STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' }; 
 
 Use `visual: 'letters'` with per-step `cells` states (`in`, `out`, `cur`, `hit`, `dup`, `ok`, `paint`, `stored`, `buy`, `best`) or `visual: 'planks'` for bar heights. Give `actorLabels` one name for a single walker or two names for an L/R pair.
 
+For maps, floors and tables use `visual: 'grid'` (see `scenes_mx.js`, `scenes_df.js`, `scenes_bf.js`, `scenes_dp.js`). `items` is a 2D array of values, up to 8 by 8, and every step carries `cells`, a 2D array of the same state names in the same shape. Optional per step: `vals` (the values at that moment, for tables that fill in or tiles that move), `path` (a list of `[r, c]` drawn as a line under the tiles) and `actorAt: [r, c]` (the companion's badge; `cast` must be a `STORY_CAST` key). Optional per scene: `rowHeads`/`colHeads` to replace the faint indices, `legend` as `[[state, label]]` (use `'path'` for the line), and `maxTile`. Code lines can carry a third element naming the step kinds they serve, and `lines: tagLines(code)` builds the lines map. `scenecheck.js` fails if any step's grid is a different shape from `items`.
+
 ## State
 
 Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, and `dsaviz-code-v1` (code per problem and language). There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
@@ -82,7 +84,7 @@ Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself)
 
 ## Known gaps
 
-- 14 of 58 stories are animated (Two Pointers, Sliding Window, Hash Map, Stack, Greedy, Intervals). The rest have story, synopsis and briefing.
+- 32 of 58 stories are animated (Two Pointers, Sliding Window, Hash Map, Binary Search, Fast & Slow Pointers, Greedy, Heap, Intervals, Prefix Sum, In-place Reversal, Stack, Matrix, Depth-First Search, Breadth-First Search, Dynamic Programming). The rest have story, synopsis and briefing.
 - Language basics: only chapter 03 is written.
 - Pages are laid out at 1440px and scaled down on small screens; there is no dedicated mobile layout.
 - Success stories on the landing page are labelled illustrative. Replace them with real, consented stories before launch.

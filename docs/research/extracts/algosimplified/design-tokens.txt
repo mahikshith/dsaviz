@@ -1,0 +1,8 @@
+# REA network capture of live stylesheets; extracted with a token script
+===== as_home 143512
+font-family [('inherit', 6), ('Inter,system-ui,sans-serif', 2), ('ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace', 2)]
+font-face []
+hex [('#fff', 24), ('#111827', 12), ('#0f172a', 12), ('#e5e7eb', 10), ('#9ca3af', 10), ('#334155', 10), ('#374151', 8), ('#d1d5db', 8), ('#cbd5e1', 8), ('#e2e8f0', 8), ('#4b5563', 6), ('#475569', 6), ('#94a3b8', 6), ('#6b7280', 4), ('#64748b', 4), ('#1e293b', 4), ('#1f2937', 2), ('#f3f4f6', 2), ('#f1f5f9', 2), ('#f9f9f9', 2), ('#fffbeb', 2), ('#3b82f6', 2), ('#06b6d4', 2), ('#0891b2', 2), ('#f0fdf4', 2)]
+keyframes []
+radius [('.375rem', 6), ('.3125rem', 4), ('0', 2), ('.25rem', 2), ('1rem', 2), ('1.5rem', 2)]
+transition [('.15s', 10), ('.2s', 2), ('.3s', 2), ('.5s', 2)] [('cubic-bezier(.4,0,.2,1)', 10)]

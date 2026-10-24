@@ -1,0 +1,8 @@
+type	url
+document	https://codolio.com/
+fetch	https://node.codolio.com/api/billing/v1/coupons/user/get
+fetch	https://node.codolio.com/api/config/v1/get-config/announcementBar
+fetch	https://node.codolio.com/api/config/v1/get-config/codolio-promotions
+fetch	https://node.codolio.com/api/config/v1/get-config/maintenance
+stylesheet	https://codolio.com/_next/static/css/525c05ddf161ad3e.css
+stylesheet	https://codolio.com/_next/static/css/b8a3b209b1a3d52b.css

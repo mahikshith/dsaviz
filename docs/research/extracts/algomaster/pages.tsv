@@ -1,0 +1,24 @@
+url	title	headings	links	structure_file
+https://algomaster.io/animations	Interactive Animations | AlgoMaster.io	7	9	pages/animations.md
+https://algomaster.io/courses	Courses | AlgoMaster.io	29	25	pages/courses.md
+https://algomaster.io/faqs	FAQs | AlgoMaster.io	10	5	pages/faqs.md
+https://algomaster.io/	AlgoMaster.io — Master Software Engineering Interviews	29	52	pages/home.md
+https://algomaster.io/interview/coding	Coding Mock Interview | AlgoMaster.io	5	5	pages/interview_coding.md
+https://algomaster.io/interview/low-level-design	Low Level Design Mock Interviews | AlgoMaster.io	25	50	pages/interview_low_level_design.md
+https://algomaster.io/interview/system-design	System Design Mock Interviews | AlgoMaster.io	28	60	pages/interview_system_design.md
+https://algomaster.io/learn/behavioral/what-are-behavioral-interviews	What are Behavioral Interviews? | Behavioral | AlgoMaster.io	15	45	pages/learn_behavioral_what_are_behavioral_interviews.md
+https://algomaster.io/learn/concurrency-interview/introduction-to-concurrency	Introduction to Concurrency | Concurrency Interview | AlgoMaster.io	26	102	pages/learn_concurrency_interview_introduction_to_concurrency.md
+https://algomaster.io/learn/dsa/course-introduction	Course Introduction | DSA | AlgoMaster.io	28	784	pages/learn_dsa_course_introduction.md
+https://algomaster.io/learn/lld/course-introduction	Course Introduction | LLD	25	155	pages/learn_lld_course_introduction.md
+https://algomaster.io/learn/system-design/course-introduction	Course Introduction | System Design	15	194	pages/learn_system_design_course_introduction.md
+https://algomaster.io/learn/system-design-interviews/course-roadmap	Course Roadmap | System Design Interview | AlgoMaster.io	3	116	pages/learn_system_design_interviews_course_roadmap.md
+https://algomaster.io/login	AlgoMaster.io - Master Software Engineering Interviews	2	5	pages/login.md
+https://algomaster.io/mobile	AlgoMaster Mobile App — Master Coding Interviews On the Go | AlgoMaster.io	9	5	pages/mobile.md
+https://algomaster.io/practice/company/google	Google Coding Interview Questions | AlgoMaster.io	1	65	pages/practice_company_google.md
+https://algomaster.io/practice/concurrency	Concurrency Practice | AlgoMaster.io	17	34	pages/practice_concurrency.md
+https://algomaster.io/practice/dsa-patterns	Master DSA Patterns | AlgoMaster.io	10	274	pages/practice_dsa_patterns.md
+https://algomaster.io/practice/low-level-design	Low-Level Design Practice | AlgoMaster.io	17	88	pages/practice_low_level_design.md
+https://algomaster.io/practice/system-design	System Design Practice | AlgoMaster.io	17	93	pages/practice_system_design.md
+https://algomaster.io/premium	AlgoMaster Premium | AlgoMaster.io	12	7	pages/premium.md
+https://algomaster.io/resume/build	AI Resume Builder — algomaster.io	1	6	pages/resume_build.md
+https://algomaster.io/roadmaps	Learning Roadmaps | AlgoMaster.io	35	31	pages/roadmaps.md

@@ -1,0 +1,15 @@
+url	title	headings	links	structure_file
+https://algosimplified.dev/blind-75/	Blind 75 Problems - Coding Interview Practice List | AlgoSimplified	36	91	pages/blind_75.md
+https://algosimplified.dev/category/coding	AlgoSimplified - Systems, DSA, and Backend Courses	16	16	pages/category_coding.md
+https://algosimplified.dev/courses/	Engineering Courses - Backend, Databases, Kafka, and Systems | AlgoSimplified	9	18	pages/courses.md
+https://algosimplified.dev/courses/go-database/	Build a Key-Value Database in Go: From Scratch to Production | AlgoSimplified	15	31	pages/courses_go_database.md
+https://algosimplified.dev/courses/kafka-mastery/	Apache Kafka Mastery: Complete Course from Fundamentals to Production | AlgoSimplified	13	26	pages/courses_kafka_mastery.md
+https://algosimplified.dev/dsa-master-sheet/	DSA Master Sheet - Algo Master DSA Practice Problems | AlgoSimplified	42	220	pages/dsa_master_sheet.md
+https://algosimplified.dev/hld-sheet/	HLD Sheet - High Level Design System Design Practice | AlgoSimplified	28	17	pages/hld_sheet.md
+https://algosimplified.dev/	AlgoSimplified - Systems, DSA, and Backend Courses	16	16	pages/home.md
+https://algosimplified.dev/leetcode-150/	LeetCode 150 Problems - LeetCode150 Interview Practice Sheet | AlgoSimplified	47	166	pages/leetcode_150.md
+https://algosimplified.dev/lld-sheet/	LLD Sheet - Low Level Design Problems for Interviews | AlgoSimplified	27	27	pages/lld_sheet.md
+https://algosimplified.dev/posts/	Engineering Articles, Tutorials, and Architecture Notes | AlgoSimplified	17	24	pages/posts.md
+https://algosimplified.dev/posts/kafka-streams-tutorial/	Kafka Streams Tutorial: Real-Time Data Processing with Java | AlgoSimplified	43	20	pages/posts_kafka_streams_tutorial.md
+https://algosimplified.dev/search/	Search Posts & Courses - Find Programming Content | AlgoSimplified	17	26	pages/search.md
+https://algosimplified.dev/top-concurrency/	Top Concurrency 2024 - Advanced Multithreading & Parallel Programming Practice | AlgoSimplified	28	24	pages/top_concurrency.md

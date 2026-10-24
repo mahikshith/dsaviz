@@ -1,0 +1,11 @@
+type	url
+document	https://prachub.com/
+document	https://prachub.com/_next/static/css/5c3d9296c95b337c.css
+document	https://prachub.com/_next/static/css/6c6e88bad9f0edcf.css
+document	https://prachub.com/_next/static/css/855839dccfe499d1.css
+document	https://prachub.com/_next/static/css/bfb1a1ab80d752ad.css
+fetch	https://featureassets.org/v1/initialize?…
+fetch	https://prodregistryv2.org/v1/rgstr?…
+stylesheet	https://prachub.com/_next/static/css/6c6e88bad9f0edcf.css
+stylesheet	https://prachub.com/_next/static/css/855839dccfe499d1.css
+stylesheet	https://prachub.com/_next/static/css/bfb1a1ab80d752ad.css

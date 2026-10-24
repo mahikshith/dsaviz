@@ -326,3 +326,10 @@ Cast: **Phone** with a tiny brain meter. Step-through: slider of precision 16-bi
 - Many 'what it adds' lines come from titles and arXiv abstract-page metadata, not full-paper reading. Verify against the paper when building the lesson.
 - Anthropic's agents post carries a note that its tooling picture has changed; re-check before teaching specifics.
 - Source count: 43 distinct arXiv abs pages, 17 lab/docs/blog pages (Meta 3, Anthropic 3, MCP 2, Hugging Face 6 incl. one Space, DeepMind 3), plus index/robots pages (see links file).
+
+### Added during build (2026-10-24)
+
+| Title | Authors/org | Date | Link | What it adds | License |
+|---|---|---|---|---|---|
+| Neural Machine Translation of Rare Words with Subword Units (BPE for NLP) | Sennrich, Haddow, Birch | 2015-08 (arXiv) | <https://arxiv.org/abs/1508.07909> | Introduces byte-pair encoding as a subword tokenizer; source for the tokens lesson. | arXiv licence (verify) |
+| Attention Is All You Need | Vaswani et al. (Google) | 2017-06-12 (arXiv) | <https://arxiv.org/abs/1706.03762> | The transformer; source for the attention lesson. | arXiv licence (verify) |

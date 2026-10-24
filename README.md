@@ -54,6 +54,20 @@ Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrit
 3. Set its `animated` flag to `true` in `shared/catalog.js`.
 4. Run `npm run build && npm test`. `scenecheck.js` fails if a step kind has no code line or a narration is missing.
 
+### A story for a new pattern
+
+Patterns other than Two Pointers, Sliding Window and Hash Map live in their own file, `src/story/scenes_<code>.js`. The build picks up every `scenes_*.js` file, and the file registers itself, so `tail.js` and `comp.js` stay untouched:
+
+```js
+function guessScene() { /* same shape as lanternScene() */ }
+SCENE_REGISTRY.push(guessScene);
+PATTERN_KITS['Binary Search'] = { right: 1, spot: 'Why halve, not walk?', ask: 'How should Gus search?',
+  quiz: [['Check every number', '…'], ['Halve the doubt', '…'], ['…', '…'], ['…', '…']] };
+STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' };  // color: a theme key or a hex
+```
+
+Use `visual: 'letters'` with per-step `cells` states (`in`, `out`, `cur`, `hit`, `dup`, `ok`, `paint`, `stored`, `buy`, `best`) or `visual: 'planks'` for bar heights. Give `actorLabels` one name for a single walker or two names for an L/R pair.
+
 ## State
 
 Progress lives in the browser's `localStorage` under `dsaviz-*` keys: theme, user, problem, lang, saved, deck, prefs, onboard. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.

@@ -3437,6 +3437,13 @@ const STORY_EXTRA = {
   field: { btnBg: '#9FE870', btnFg: '#0C110B', activeBg: '#9FE870', activeFg: '#0C110B', scene: '#070B06', sceneText: '#C9EBB4', sceneMuted: '#6E8A60', dead: '#131B11', deadInk: '#435A38', hue: 95, sat: 70, water: 'rgba(159,232,112,0.28)', waterTop: '#9FE870' }
 };
 const say = (who, text) => [who, text];
+// Newer patterns register themselves from their own scenes_*.js file, so adding one never touches tail.js or comp.js:
+//   SCENE_REGISTRY.push(myScene);                 a function returning the scene
+//   PATTERN_KITS['Binary Search'] = { right, spot, ask, quiz: [[title, story] x4] };
+//   STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' };   color is a theme key
+const SCENE_REGISTRY = [];
+const PATTERN_KITS = {};
+const STORY_CAST = {};
 
 // ---------- The Lantern Bridge (hand-written) ----------
 function lanternScene() {
@@ -3964,7 +3971,7 @@ function scrabbleScene() {
   };
 }
 
-const SCENE_LIST = [lanternScene(), mirrorScene(), waterScene(), facesScene(), paintScene(), stockScene(), coatScene(), guestScene(), scrabbleScene()];
+const SCENE_LIST = [lanternScene(), mirrorScene(), waterScene(), facesScene(), paintScene(), stockScene(), coatScene(), guestScene(), scrabbleScene(), ...SCENE_REGISTRY.map((make) => make())];
 const SCENES = {};
 SCENE_LIST.forEach((sc) => { SCENES[sc.id] = sc; });
 const SCENE_ORDER = SCENE_LIST.map((sc) => sc.id);
@@ -3972,7 +3979,8 @@ const SCENE_ORDER = SCENE_LIST.map((sc) => sc.id);
 const KIT = {
   'Two Pointers': { right: 1, spot: 'Why two friends, not one?', ask: 'How should Lumi and Roo search?' },
   'Sliding Window': { right: 2, spot: 'Why a window, not every stretch?', ask: 'How should Wren search?' },
-  'Hash Map': { right: 3, spot: 'Why a notebook, not a second loop?', ask: 'How should Cleo search?' }
+  'Hash Map': { right: 3, spot: 'Why a notebook, not a second loop?', ask: 'How should Cleo search?' },
+  ...PATTERN_KITS
 };
 const QUIZ = [['Check every pair', 'Try each one with every other'], ['Two friends from both ends', 'One at each end, walking inward'], ['A sliding window', 'A frame glides along neighbours'], ['A notebook of everything seen', 'Write down every value you pass']];
 const CHAPTERS = [['The quest', 'What are we looking for?'], ['Spot the pattern', ''], ['Walk it', 'Step through every move'], ['Write the spell', 'Story rules become code'], ['Side quests', 'Same plot, new props']];
@@ -4171,6 +4179,8 @@ class Component extends DCLogic {
         Object.assign(actorAt(st.L, { label: S.actorLabels[0], color: t.right, rx: 8, eye: 0, mouth: '', size: 26 }), { x: st.L * pitch + tileW / 2 - 28 + lx }),
         actorAt(st.R, { label: S.actorLabels[1], color: t.left, rx: 25, extra: 'M50 24 L58 28 L50 32 Z M10 30 Q2 22 8 16 Q14 22 14 30 Z', extraFill: t.sceneText })
       ];
+    } else if (S.actorLabels.length > 1) {
+      actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 25 }), actorAt(st.R, { label: S.actorLabels[1], color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
     } else {
       actors = [actorAt(st.L, { label: S.actorLabels[0], color: t.left, rx: 18, extra: 'M12 14 L44 14 L40 2 L16 2 Z', extraFill: t.sceneText })];
     }
@@ -4182,6 +4192,7 @@ class Component extends DCLogic {
       cleo: { name: 'Cleo', initial: 'C', color: t.left, radius: '10px' },
       hoot: { name: 'Old Hoot', initial: 'H', color: t.muted, radius: '6px' }
     };
+    Object.keys(STORY_CAST).forEach((k) => { const c = STORY_CAST[k]; who[k] = Object.assign({}, c, { color: t[c.color] || c.color }); });
     const toneBg = { plain: t.sunk, warn: t.warnBg, cool: t.coolBg, ok: t.okBg };
     const toneBar = { plain: t.muted, warn: t.left, cool: t.right, ok: t.ok };
     const activeLine = ch === 2 ? lines[st.kind] || 0 : ch === 3 && this.state.focus ? lines[this.state.focus] || 0 : 0;
@@ -4288,7 +4299,7 @@ class Component extends DCLogic {
       exampleIn: S.example[0], exampleOut: S.example[1],
       clues: S.clues.map((c, i) => 'Clue ' + (i + 1) + ' · ' + c),
       spotAsk: kit.ask,
-      quiz: QUIZ.map(([title, story], i) => {
+      quiz: (kit.quiz || QUIZ).map(([title, story], i) => {
         const on = this.state.pick === i, right = i === kit.right;
         return { title, story, on, border: on ? (right ? t.ok : t.accent) : t.line, bg: on ? (right ? t.okBg : t.warnBg) : t.surface, pick: () => this.setState({ pick: i }) };
       }),

@@ -10,7 +10,7 @@ Lesson names, section order and counts below are facts read from public pages. D
 
 - Tool: REA MCP `capture_browser_scenario`, Edge launch mode, 1280x720, DOM capture after each step. 2-4 pages per call. Parsed with the scratchpad `parse.py`. Date 2026-10-25.
 - robots.txt read first for docs.python.org, freecodecamp.org, exercism.org, codecademy.com, w3schools.com, programiz.com, scrimba.com. No crawl-delay found on any. Nothing I visited is disallowed (Codecademy disallows `/courses/` only; I used `/learn/`). futurecoder.io and cs50.harvard.edu return no robots file (404 / not-found page). github.com and ocw.mit.edu: pages are public and I did not fetch their robots.txt (not checked; gap).
-- No logins, no CAPTCHAs solved. Bot check seen once: khanacademy.org returned a "Client Challenge" page for `/computing/intro-to-programming` and for the first robots.txt fetch. I did not retry or bypass. An older public Khan URL for the same course loaded normally, so Khan is covered from that page.
+- No logins, no CAPTCHAs solved. Bot check seen once: khanacademy.org returned a "Client Challenge" page for `/computing/intro-to-programming` and for the first robots.txt fetch. Per our rule, a bot check means skip: Khan Academy is not covered, and notes briefly taken from an older Khan URL were deleted.
 - Gaps (see section 2 and the links file): Grasshopper (grasshopper.app, www.grasshopper.app) did not resolve in DNS from this laptop, so it is not covered. Scrimba: my guessed course URL returned a CSS Flexbox course, so Scrimba's Python/JS beginner course is not covered, only its model (paid tiers, screencasts) from that page. Exercism's `/tracks/python/exercises` list is rendered client-side and the learning-exercise names did not come through; concept order did. AlgoMaster `/learn/dsa/python-for-dsa` returned 404 (slug guess wrong); the warm-up list came from the 771-item sidebar of the course page. Chapter bodies of AlgoMaster were not rendered (matches the earlier bucket). algosimplified.dev and codolio.com: no beginner/language-basics track exists in the structure already recorded in `algosimplified.md` and `codolio.md` (blog posts and sheets only), so there is nothing new to add; they are not re-crawled. prachub skipped as instructed (bot check).
 - Source quote limits: no passages reproduced. Short phrases are product names or section titles.
 
@@ -364,7 +364,7 @@ Where the common failure points sit in this graph (inference): L7 (`input` retur
 
 ## 7. Open questions and gaps
 
-- Grasshopper (DNS failure), Scrimba beginner course, Exercism learning-exercise names, AlgoMaster beginner page bodies, MIT lectures 10-25 order (only weeks 1-5 read in the calendar excerpt), and Khan unit 1 in full (partially read) were not covered.
+- Grasshopper (DNS failure), Scrimba beginner course, Exercism learning-exercise names, AlgoMaster beginner page bodies, MIT lectures 10-25 order (only weeks 1-5 read in the calendar excerpt) and Khan Academy (skipped: bot check) were not covered.
 - Validation with real learners is needed for the inferred failure points.
 - Cast names are placeholders pending the real cast list.
 - No licence file was opened; licences are as shown on repo pages. Not relevant for the final plan because we write everything ourselves.

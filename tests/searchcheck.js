@@ -43,7 +43,7 @@ Object.entries(S.SEARCH_TYPES).forEach(([type, [, page]]) => {
 const first = (q) => { const g = S.siteSearch(q); return g.length ? g[0].type + ':' + g[0].items[0].id : '(none)'; };
 [['two sum', 'story:two-sum'], ['lru', 'story:lru-cache'], ['rebase', 'git:rebase'], ['attention', 'ai:attention'],
   ['sliding window', 'pattern:Sliding Window'], ['enumerate', 'term:enumerate'], ['sharding', 'sd:sharding'],
-  ['lantern bridge', 'story:two-sum-ii'], ['155', 'problem:min-stack'], ['rotting orngs', 'story:rotting-oranges']]
+  ['lantern bridge', 'story:two-sum-ii'], ['design hashset', 'problem:design-hashset'], ['rotting orngs', 'story:rotting-oranges']]
   .forEach(([q, k]) => { const got = first(q); if (got !== k) fail('"' + q + '" first result ' + got + ', expected ' + k); else console.log('  ✓ "' + q + '" → ' + k); });
 const g = S.siteSearch('tree');
 const flat = [].concat(...g.map((x) => x.items));

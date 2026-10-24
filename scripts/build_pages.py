@@ -5,9 +5,9 @@ across pages and live in one place; this script copies them back into every page
 
   shared/themes_common.js   -> between // @@THEMES@@ ... // @@END-THEMES@@
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
-  shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet page)
+  shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet and Code pages)
                                and its row count -> // @@SHEET-COUNT@@ ... // @@END-SHEET-COUNT@@ (Main, Home)
-  shared/tests_spec.js ids  -> between // @@SHEET-RUN@@ ... // @@END-SHEET-RUN@@ (Sheet page: the Run badge)
+  scripts/build_sheet.js    -> between // @@SOLVE@@ ... // @@END-SOLVE@@ (every page; SOLVE_IDS: sheet row id -> problem page id where they differ)
   shared/data.js            -> between // @@DATA@@ ... // @@END-DATA@@ (every page; DS, the data layer)
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@ (every page)
   shared/ui.js              -> between // @@UI@@ ... // @@END-UI@@ (every page; component view models)
@@ -17,7 +17,7 @@ across pages and live in one place; this script copies them back into every page
   shared/ui/nav.html + shared/drawer.html -> between <!-- PILL NAV --> ... <!-- /PILL NAV -->
   shared/ui/tiles.html, rings.html, medals.html -> <!-- STAT TILES -->, <!-- RINGS -->, <!-- MEDALS --> blocks
   shared/ui/phone.html      -> <!-- PHONE CSS --> in the helmet of every page with a phone layout (data-page root)
-  The six script blocks are added after the catalog (or the themes) when a page lacks them.
+  The seven script blocks are added after the catalog (or the themes) when a page lacks them.
   shared/pattern_intros.js  -> between // @@INTROS@@ ... // @@END-INTROS@@ (Patterns page), plus SHEET_INDEX built from sheet.js
   shared/tests_spec.js      -> between // @@TESTS-SPEC@@ ... // @@END-TESTS-SPEC@@
   shared/sheet.js hints     -> between // @@MOCK-HINTS@@ ... // @@END-MOCK-HINTS@@ (Interview: the sheet's one-line hint per runnable problem)
@@ -36,6 +36,7 @@ across pages and live in one place; this script copies them back into every page
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
   src/code/code_body.html + code.js       -> Code
+  scripts/build_registry.js -> data/problem-registry.json and docs/problems/REGISTRY.md (the problem registry)
 
 Run from the repo root:  python3 scripts/build_pages.py
 """
@@ -64,7 +65,8 @@ def block(src, start, end, new):
 # Script blocks every page gets, in this order, right after the catalog (or the themes on pages without one).
 SHARED_JS = [('// @@DATA@@', '// @@END-DATA@@', 'data.js'), ('// @@DRAWER@@', '// @@END-DRAWER@@', 'drawer.js'),
              ('// @@UI@@', '// @@END-UI@@', 'ui.js'), ('// @@SEARCH@@', '// @@END-SEARCH@@', '@search'),
-             ('// @@FIND@@', '// @@END-FIND@@', 'search.js'), ('// @@NAV@@', '// @@END-NAV@@', 'nav.js')]
+             ('// @@FIND@@', '// @@END-FIND@@', 'search.js'), ('// @@NAV@@', '// @@END-NAV@@', 'nav.js'),
+             ('// @@SOLVE@@', '// @@END-SOLVE@@', '@solve')]
 
 
 def ensure_blocks(s):
@@ -114,39 +116,6 @@ def phone_pads(files):
     return '\n'.join(','.join(sel) + '{' + key + '}' for key, sel in sorted(rules.items()))
 
 
-def sheet_index(sheet):
-    """Group -> [[slug, name]] from shared/sheet.js, so pages without the whole sheet can count ticks per group."""
-    out, group = {}, None
-    for line in sheet.splitlines():
-        m = re.match(r'^  "([^"]+)": \[\s*$', line)
-        if m:
-            group = m.group(1)
-            out[group] = []
-            continue
-        m = re.match(r'^\s*\["([a-z0-9-]+)", \d+, "((?:[^"\\]|\\.)*)"', line)
-        if m and group:
-            out[group].append([m.group(1), m.group(2)])
-    return out
-
-
-def mock_hints(sheet, spec_ids):
-    """Spec id -> the sheet's one-line hint, matched by LeetCode slug or by the row's story id."""
-    by_slug, by_story = {}, {}
-    for line in sheet.splitlines():
-        line = line.strip().rstrip(',')
-        if not line.startswith('["'):
-            continue
-        try:
-            row = json.loads(line.replace('{ premium: true }', '{"premium": true}'))
-        except ValueError:
-            continue
-        if len(row) >= 6 and isinstance(row[4], str):
-            by_slug.setdefault(row[0], row[4])
-            if row[5]:
-                by_story.setdefault(row[5], row[4])
-    return {i: by_slug.get(i) or by_story.get(i) for i in spec_ids if by_slug.get(i) or by_story.get(i)}
-
-
 def start_block():
     """Trace each ready chapter's watch program (src/start/tracer.py), write src/start/traces.js, return the block."""
     import importlib.util
@@ -177,7 +146,10 @@ def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
     sheet = read('shared', 'sheet.js')
-    sheet_total = len(re.findall(r'^\s*\["[a-z0-9-]+", \d+, ', sheet, re.M))
+    # The sheet as the pages read it: its size, SHEET_INDEX and each row's problem-page id and hint.
+    sheet_data = json.loads(subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_sheet.js')], cwd=ROOT, check=True,
+                                           capture_output=True).stdout.decode('utf-8'))
+    sheet_total = sheet_data['total']
     sheet_count = ('// @@SHEET-COUNT@@ — generated: how many problems the master sheet holds\n'
                    'const SHEET_TOTAL = %d;\n// @@END-SHEET-COUNT@@' % sheet_total)
     drawer_html = read('shared', 'drawer.html')
@@ -189,6 +161,11 @@ def main():
     shared_js['@search'] = ('// @@SEARCH@@ — generated by scripts/build_search.js: the site search index and the counts pages show.\n'
                             '// counts: stories, storyPatterns, patterns, catalog, sheet, runnable, sql, git, sd, ai, terms. Items: [type, id, title, sub, keywords].\n'
                             'const SITE_INDEX = ' + index + ';\n// @@END-SEARCH@@')
+    solve = {rid: pid for rid, pid, _ in sheet_data['rows'] if rid != pid}
+    shared_js['@solve'] = ('// @@SOLVE@@ — generated from shared/sheet.js: the id our problem page knows a sheet row by, where it differs from the row id.\n'
+                           'const SOLVE_IDS = ' + json.dumps(solve, separators=(',', ':')) + ';\n'
+                           'function solveId(id) { return SOLVE_IDS[id] || id; }\n'
+                           "function solveHref(id) { return 'Code.dc.html?problem=' + encodeURIComponent(solveId(id)); }\n// @@END-SOLVE@@")
     built = sorted(f for f in os.listdir(PAGES) if f.endswith('.dc.html'))
     shared_js['data.js'] = shared_js['data.js'].replace('/*@@SHEET-SIZE@@*/216', str(sheet_total))
     shared_js['nav.js'] = shared_js['nav.js'].replace('/*@@PAGES@@*/[]', repr(built).replace("'", '"'))
@@ -198,12 +175,12 @@ def main():
     intros = read('shared', 'pattern_intros.js').rstrip()
     end = '// @@END-INTROS@@'
     intros = (intros[:-len(end)] + '// SHEET_INDEX: generated by scripts/build_pages.py from shared/sheet.js.\nconst SHEET_INDEX = '
-              + json.dumps(sheet_index(sheet), ensure_ascii=False, separators=(',', ':')) + ';\n' + end)
+              + json.dumps(sheet_data['index'],ensure_ascii=False, separators=(',', ':')) + ';\n' + end)
     phone_pages = [read('pages', f) for f in built if 'data-page=' in read('pages', f)]
     phone_pages += [read(*p) for p in [('src', 'code', 'code_body.html'), ('src', 'pages', 'profile_body.html'), ('src', 'pages', 'welcome_body.html')]]
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('/*@@PADS@@*/', phone_pads(phone_pages))
     tests_spec = read('shared', 'tests_spec.js')
-    # Ids of every problem with a runnable spec, for the Sheet's Run badge (the Sheet does not load the specs).
+    # Ids of every problem with a spec (the mock interview's hints cover these).
     spec_block = tests_spec[tests_spec.index('const TEST_SPECS = {'):]
     spec_block = spec_block[:spec_block.index('\n};')]
     spec_ids = re.findall(r"^  '?([a-z0-9-]+)'?: \{\s*$", spec_block, re.M)
@@ -211,10 +188,8 @@ def main():
     sql_block = sql_spec[sql_spec.index('const SQL_SPECS = {'):]
     sql_block = sql_block[:sql_block.index('\n};')]
     spec_ids += re.findall(r"^  '([a-z0-9-]+)': \{\s*$", sql_block, re.M)
-    sheet_run = ('// @@SHEET-RUN@@ — generated from shared/tests_spec.js: problems the Code page can run\n'
-                 'const SHEET_RUN = new Set(%s);\n// @@END-SHEET-RUN@@' % repr(spec_ids).replace("'", '"'))
     hints = ('// @@MOCK-HINTS@@ — generated from shared/sheet.js: the sheet hint for each runnable problem (the last mock interview hint)\n'
-             'const MOCK_HINTS = ' + json.dumps(mock_hints(sheet, spec_ids), ensure_ascii=False, separators=(',', ':')) + ';\n// @@END-MOCK-HINTS@@')
+             'const MOCK_HINTS = ' + json.dumps({pid: hint for _, pid, hint in sheet_data['rows'] if pid in spec_ids}, ensure_ascii=False, separators=(',', ':')) + ';\n// @@END-MOCK-HINTS@@')
     runner = read('shared', 'runner.js')
     contests = read('shared', 'contests.js')
     pane_js = read('shared', 'code_pane.js')
@@ -250,7 +225,6 @@ def main():
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
         s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
-        s = block(s, '// @@SHEET-RUN@@', '// @@END-SHEET-RUN@@', sheet_run)
         s = ensure_blocks(s)
         for start, end, n in SHARED_JS:
             s = block(s, start, end, shared_js[n])
@@ -294,3 +268,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # The problem registry (data/problem-registry.json, docs/problems/REGISTRY.md), from the same data.
+    subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_registry.js')], cwd=ROOT, check=True)

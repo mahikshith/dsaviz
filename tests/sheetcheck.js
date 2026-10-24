@@ -1,6 +1,6 @@
 // Integrity test for the master sheet (shared/sheet.js) and the Sheet page.
-// Fails on duplicate ids, numbers or titles, bad links, missing fields, long hints, groups whose difficulty falls
-// as they go, and counts that are not derived from the data. Slugs that do not look like their title are listed for review.
+// Fails on duplicate ids or titles, rows without an in-site problem page (a test spec or a SQL spec), missing fields,
+// long hints, groups whose difficulty falls as they go, and counts that are not derived from the data. Slugs that do not look like their title are listed for review.
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -17,8 +17,11 @@ const { SHEET, SHEET_GROUPS, PROBLEMS, SHEET_KEY } = new Function('window', cata
 // ---- 1. data ----
 const DIFFS = ['Easy', 'Medium', 'Hard'];
 const groupNames = SHEET_GROUPS.map(([n]) => n);
-const LINK = /^https:\/\/leetcode\.com\/problems\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/;
-const ids = new Map(), nums = new Map(), titles = new Map();
+// Every row opens our own problem page: its pid names a test spec or a SQL spec.
+const { TEST_SPECS } = require('../shared/tests_spec.js');
+const { SQL_SPECS } = require('../shared/sql_spec.js');
+const pids = new Map();
+const ids = new Map(), titles = new Map();
 const review = [];
 // Loose kebab-case: drop apostrophes and backticks, turn any other run of punctuation or spaces into one hyphen.
 const kebab = (t) => t.toLowerCase().replace(/['`’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -28,8 +31,6 @@ SHEET.forEach((r, i) => {
   const at = '#' + i + ' ' + (r.id || '(no id)');
   if (!r.id || typeof r.id !== 'string') fail(at + ': missing id');
   if (ids.has(r.id)) fail(at + ': duplicate id, also row ' + ids.get(r.id)); else ids.set(r.id, i);
-  if (!Number.isInteger(r.n) || r.n <= 0) fail(at + ': bad LeetCode number ' + r.n);
-  if (nums.has(r.n)) fail(at + ': duplicate number ' + r.n + ', also ' + nums.get(r.n)); else nums.set(r.n, r.id);
   if (!r.name || !r.name.trim()) fail(at + ': missing name');
   else {
     const tk = r.name.trim().toLowerCase();
@@ -37,12 +38,13 @@ SHEET.forEach((r, i) => {
     // punctuation edge cases (Pow(x, n) -> powx-n) are fine when only the hyphens differ
     if (r.id && kebab(r.name) !== r.id && kebab(r.name).replace(/-/g, '') !== r.id.replace(/-/g, '')) review.push(r.id + ' <- "' + r.name + '"');
   }
-  if (!r.url || !r.url.trim() || /undefined|null|#|placeholder|example/i.test(r.url)) fail(at + ': empty or placeholder link "' + r.url + '"');
-  else if (!LINK.test(r.url)) fail(at + ': link does not match https://leetcode.com/problems/<slug>/: ' + r.url);
-  else if (r.url !== 'https://leetcode.com/problems/' + r.id + '/') fail(at + ': link slug differs from id');
+  if ('n' in r || 'url' in r || 'link' in r || 'premium' in r) fail(at + ': rows carry no outside number, link or premium flag');
+  if (!r.pid || !(TEST_SPECS[r.pid] || SQL_SPECS[r.pid])) fail(at + ': no in-site problem page (no spec or SQL spec named ' + r.pid + ')');
+  else if (r.pattern === 'SQL' ? !SQL_SPECS[r.pid] : !TEST_SPECS[r.pid]) fail(at + ': ' + r.pattern + ' row opens the wrong kind of page');
+  if (r.href !== 'Code.dc.html?problem=' + r.pid) fail(at + ': href should be Code.dc.html?problem=' + r.pid + ', is ' + r.href);
+  if (pids.has(r.pid)) fail(at + ': problem page ' + r.pid + ' is also row ' + pids.get(r.pid)); else pids.set(r.pid, r.id);
   if (!DIFFS.includes(r.diff)) fail(at + ': missing or unknown difficulty "' + r.diff + '"');
   if (!r.pattern || !groupNames.includes(r.pattern)) fail(at + ': missing or unknown pattern "' + r.pattern + '"');
-  if ('premium' in r && typeof r.premium !== 'boolean') fail(at + ': premium must be a boolean, got ' + JSON.stringify(r.premium));
   if (!r.hint || !r.hint.trim()) fail(at + ': missing hint');
   else if (r.hint.length > 120) fail(at + ': hint is ' + r.hint.length + ' characters (max 120)');
   if (/[[\]{}<>]|TODO|TBD|lorem/i.test(r.hint || '')) fail(at + ': hint looks like a placeholder');
@@ -65,10 +67,20 @@ groupNames.forEach((g) => {
 PROBLEMS.forEach((p) => {
   const rows = SHEET.filter((r) => r.story === p.id);
   if (rows.length !== 1) { fail('catalog problem ' + p.id + ' appears ' + rows.length + ' times in the sheet'); return; }
-  if (rows[0].n !== p.n) fail('catalog problem ' + p.id + ': number ' + p.n + ' vs sheet ' + rows[0].n);
   if (rows[0].pattern !== p.pattern) fail('catalog problem ' + p.id + ': pattern ' + p.pattern + ' vs sheet ' + rows[0].pattern);
 });
 SHEET.filter((r) => r.story).forEach((r) => { if (!PROBLEMS.some((p) => p.id === r.story)) fail(r.id + ': story ' + r.story + ' is not in the catalog'); });
+Object.keys(TEST_SPECS).concat(Object.keys(SQL_SPECS)).forEach((id) => { if (!pids.has(id)) fail('spec ' + id + ' is not on the sheet'); });
+// SOLVE_IDS (every page) maps a row id to its problem page id where they differ.
+{
+  const home = read('pages', 'Revisit.dc.html');
+  const m = home.match(/const SOLVE_IDS = (\{[^\n]*\});/);
+  if (!m) fail('Revisit.dc.html has no SOLVE_IDS: run npm run build');
+  else {
+    const S = JSON.parse(m[1]);
+    SHEET.forEach((r) => { if ((S[r.id] || r.id) !== r.pid) fail('SOLVE_IDS sends ' + r.id + ' to ' + (S[r.id] || r.id) + ', the sheet says ' + r.pid); });
+  }
+}
 
 // ---- 2. the built page carries the current data ----
 const page = read('pages', 'Sheet.dc.html');
@@ -176,14 +188,6 @@ expectEq('company Amazon rows', amazon, SHEET.filter((r) => r.story && PROBLEMS.
 c.setState({ company: 'All', query: 'rotated' });
 if (c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0) !== SHEET.filter((r) => /rotated/i.test(r.name)).length) fail('search does not match names');
 c.setState({ query: '' });
-// premium: hidden by the toggle, never offered by Random unsolved
-const premiumIds = SHEET.filter((r) => r.premium).map((r) => r.id);
-c.setState({ hidePremium: true, open: {} });
-if (c.filtered().some((r) => r.premium)) fail('Hide premium still shows premium rows');
-expectEq('hide premium rows', c.filtered().length, SHEET.length - premiumIds.length);
-c.setState({ hidePremium: false, pattern: 'Concurrency' });
-for (let i = 0; i < 40; i++) { c.randomPick(); if (premiumIds.includes(c.state.pick)) { fail('Random unsolved picked premium ' + c.state.pick); break; } }
-c.setState({ pattern: 'All', pick: null });
 // Today's 5: five distinct problems, unsolved before today, the same all day
 const noon = Date.parse('2026-10-24T12:00:00Z');
 const t1 = P.todaysFive({ done: {}, star: {} }, noon).map((r) => r.id);
@@ -196,12 +200,11 @@ if (t1.length !== 5 || new Set(t1).size !== 5) fail("Today's 5 is not five disti
 if (t1.join() !== t2.join()) fail("Today's 5 changes during the day");
 if (t1.join() !== t3.join()) fail("Today's 5 changes after solving one today");
 if (t4.includes(t1[0])) fail("Today's 5 includes a problem solved on an earlier day");
-for (let d = 0; d < 60; d++) { const p = P.todaysFive({ done: {}, star: {} }, noon + d * 86400e3); if (p.some((r) => r.premium)) { fail("Today's 5 includes a premium problem"); break; } }
 if (t1.join() === P.todaysFive({ done: {}, star: {} }, noon + 86400e3).map((r) => r.id).join()) fail("Today's 5 is the same on the next day");
 
 const counts = {};
 SHEET.forEach((r) => { counts[r.pattern] = (counts[r.pattern] || 0) + 1; });
-console.log('sheet: ' + SHEET.length + ' problems in ' + SHEET_GROUPS.length + ' groups; ' + DIFFS.map((d) => d + ' ' + SHEET.filter((r) => r.diff === d).length).join(', ') + '; ' + SHEET.filter((r) => r.story).length + ' with stories; ' + SHEET.filter((r) => r.premium).length + ' premium');
+console.log('sheet: ' + SHEET.length + ' problems in ' + SHEET_GROUPS.length + ' groups; ' + DIFFS.map((d) => d + ' ' + SHEET.filter((r) => r.diff === d).length).join(', ') + '; ' + SHEET.filter((r) => r.story).length + ' with stories; every row opens its own problem page');
 console.log('  per group: ' + SHEET_GROUPS.map(([g]) => g + ' ' + (counts[g] || 0)).join(', '));
 if (review.length) console.log('  slug review (' + review.length + ', not failures): ' + review.join('; '));
 console.log(problems ? problems + ' sheet problem(s)' : 'sheet clean');

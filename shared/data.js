@@ -316,7 +316,7 @@ const DS = (function () {
   }
 
   // -- notes per problem: dsaviz-notes-v1 = { v: 1, notes: { id: { text, at } } }. The story page uses the catalog id;
-  // sheet rows use their story id when they have one (so both places share a note), else the LeetCode slug.
+  // sheet rows use their story id when they have one (so both places share a note), else the row id.
   const NOTE_MAX = 2000;
   function readNotes() {
     const o = json(KEY.notes, null);

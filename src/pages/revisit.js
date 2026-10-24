@@ -18,9 +18,10 @@ function rvCard(c) {
     when: PATTERN_WHEN[pattern] || '',
     rule: c.kind === 'story' ? c.rule : c.hint,
     noteId: P ? P.id : c.story || slug,
-    href: P ? (P.animated ? 'Story.dc.html' : 'Briefing.dc.html') : 'https://leetcode.com/problems/' + slug + '/',
+    // A story card replays its story; a sheet card opens our problem page.
+    href: P ? (P.animated ? 'Story.dc.html' : 'Briefing.dc.html') : c.story ? 'Code.dc.html?problem=' + encodeURIComponent(c.story) : solveHref(slug),
     go: () => { if (P) saveProblem(P.id); },
-    linkLabel: P ? (P.animated ? 'Replay the story' : 'Read the briefing') : 'Open on LeetCode',
+    linkLabel: P ? (P.animated ? 'Replay the story' : 'Read the briefing') : 'Solve it again',
     due: c.due, late: c.late, inDays: c.inDays, reps: c.reps
   };
 }

@@ -61,7 +61,7 @@ The build inlines these into the single-file site.
 
 ## Content
 
-The problems link to LeetCode by number and title only. Every problem statement, story, hint and test input on the site is written for DSAMaxxing. The SQL problems use our own tables, columns, rows and wording; `tests/sqlcheck.js` fails if a schema uses one of LeetCode's table names. No problem text or examples are copied from LeetCode.
+Problems are known by their common titles only, and every problem has its own page on this site. Every problem statement, story, hint, example and test input on the site is written for DSAMaxxing. The SQL problems use our own tables, columns, rows and wording; `tests/sqlcheck.js` fails if a schema uses a table name common practice sets use. No problem text or examples are copied from other sites.
 
 ### Lesson material
 

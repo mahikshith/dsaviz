@@ -5,16 +5,24 @@ so it opens by double-clicking the file and also works inside strict sandboxes.
 The CodeMirror editor is bundled by scripts/build_editor.js (esbuild) and inlined inside a
 function, window.DS_EDITOR_LOAD, so the browser only pre-parses it; it runs when the Code page opens.
 
+It also writes the offline web app files next to it (scripts/pwa.py): dist/manifest.webmanifest,
+dist/sw.js (cache-first service worker, cache named after the build hash) and dist/icons/*.png.
+The page registers the worker only when it is served over http(s); opened as a file it works as before.
+
 Run from the repo root after `npm install`:  python3 scripts/build_site.py
 """
 import json
 import os
 import re
 import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pwa  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ORDER = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard',
-         'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson']
+         'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Contests']
 
 
 def read(*parts):
@@ -57,17 +65,21 @@ def main():
     runtime = read('scripts', 'site-runtime.js')
     subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_editor.js')], cwd=ROOT, check=True)
     editor = read('build', 'editor.iife.js')
-    out = '<!doctype html>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>dsaviz</title>\n'
+    out = '<!doctype html>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>DSAMaxxing</title>\n'
+    out += pwa.HEAD
     out += '<style>html,body{margin:0;overflow-x:hidden;background:#0A0A0B}</style>\n<div id="app"></div>\n'
     out += '<script>' + esc(react) + '</script>\n<script>' + esc(react_dom) + '</script>\n'
     out += '<script>\nwindow.DS_SITE_INDEX = ' + esc(site_index or '{"items": [], "counts": {}}') + ';\n</script>\n'
     out += '<script>\nwindow.DS_BOARDS = {};\n' + '\n'.join(boards) + '\n</script>\n'
     out += '<script>\nwindow.DS_EDITOR_LOAD = function () {\n' + esc(editor) + '\nreturn DSEditor;\n};\n</script>\n'
     out += '<script>' + esc(runtime) + '</script>\n'
+    out += pwa.REGISTER
     os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
     with open(os.path.join(ROOT, 'dist', 'index.html'), 'w', encoding='utf-8') as f:
         f.write(out)
     print('dist/index.html', round(len(out) / 1024), 'KB')
+    fonts = sorted(set(re.findall(r'href="(https://fonts\.googleapis\.com/[^"]+)"', ''.join(read('pages', n + '.dc.html') for n in ORDER))))
+    print(pwa.write(os.path.join(ROOT, 'dist'), out, [f.replace('&amp;', '&') for f in fonts]))
 
 
 if __name__ == '__main__':

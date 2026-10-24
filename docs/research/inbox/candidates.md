@@ -129,3 +129,8 @@
 | Largest integer whose digit costs sum to target | doocs-leetcode | knapsack | hard | new? |
 | Equal-height billboard supports | doocs-leetcode | knapsack | hard | new? |
 | Best coins from stacks of piles (group knapsack) | doocs-leetcode | knapsack | hard | new? |
+| Insert gcd of neighbours between list nodes | gahogg-solutions | linked list | easy | new? |
+| Wait for a warmer day (then widen to histogram) | gahogg-solutions | monotonic stack ladder | medium | new? |
+| Count tree nodes equal to their subtree average | gahogg-solutions | tree DFS state (not thin) | medium | new? |
+| Longest run after at most k flips | gahogg-solutions | sliding window (not thin) | medium | new? |
+| Hand-built tiny weighted graph: connect all points cheaply | gahogg-solutions | MST (not thin) | medium | new? |

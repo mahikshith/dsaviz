@@ -34,7 +34,7 @@ function checkGraph(S, where, report) {
     keys.add(k);
   }
   for (const phone of [false, true]) {
-    const B = graphBox(S, phone), list = G.nodes;
+    const B = graphBox(phone ? Object.assign({}, S, { phone: true, AV: 348 }) : S, phone), list = G.nodes;
     for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
       const [a, b] = [B.pos[list[i].id], B.pos[list[j].id]];
       if (Math.hypot(a[0] - b[0], a[1] - b[1]) < 2 * B.r + 6) report(where + ' nodes ' + list[i].id + ' and ' + list[j].id + ' overlap' + (phone ? ' on a phone' : ''));

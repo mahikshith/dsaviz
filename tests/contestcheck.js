@@ -27,6 +27,9 @@ const ref = '2026-10-24T00:00:00Z';
 check(next('lc-weekly', ref)[0] === at('2026-10-25T02:30:00Z'), 'LeetCode weekly: Sun 25 Oct 02:30 UTC');
 check(next('lc-biweekly', ref, 2).join() === [at('2026-10-24T14:30:00Z'), at('2026-11-07T14:30:00Z')].join(), 'LeetCode biweekly: 24 Oct, then 7 Nov (every other Saturday)');
 check(next('atcoder-abc', ref)[0] === at('2026-10-24T12:00:00Z'), 'AtCoder ABC: Sat 24 Oct 12:00 UTC');
+// Biweekly anchor confirmed on clist.by (2026-10-24): Biweekly 194 on Sat 24 Oct 2026, Biweekly 195 on Sat 7 Nov 2026.
+check(K.contestRuns(byId('lc-biweekly'), at(ref), at(ref) + 365 * 86400000).every((r) => new Date(r.start).getUTCDay() === 6), 'every computed biweekly in the next year falls on a Saturday (UTC)');
+check(K.contestRuns(byId('lc-biweekly'), at(ref), Date.now() + 365 * 86400000).some((r) => r.start >= Date.now() - 14 * 86400000), 'the biweekly rule still produces runs around today');
 check(next('codechef-starters', ref)[0] === at('2026-10-28T14:30:00Z'), 'CodeChef Starters: Wed 28 Oct 14:30 UTC');
 check(K.contestRuns(byId('codeforces'), at(ref), at(ref) + 14 * 86400000).length === 0, 'Codeforces has no generated dates');
 check(next('lc-weekly', '2026-10-25T02:30:00Z')[0] === at('2026-10-25T02:30:00Z'), 'a run starting exactly at the window start is included');

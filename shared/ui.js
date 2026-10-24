@@ -25,6 +25,12 @@ const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
 // True while the page shows its phone layout (below 760px; the runtime sets html[data-phone] and
 // re-renders the page when it flips). Use it only for content changes; layout belongs in CSS.
 function dsPhone() { try { return typeof document !== 'undefined' && document.documentElement.hasAttribute('data-phone'); } catch (e) { return false; } }
+// Blocks that sit in a different order on phones are rendered in that order, so keyboard and screen-reader
+// order follow what is seen (CSS `order` would only move the pixels). In markup:
+//   <sc-for list="{{parts}}" as="part"><sc-if value="{{part.aside}}">…</sc-if><sc-if value="{{part.main}}">…</sc-if></sc-for>
+// with parts: phoneOrder(['aside', 'main'], ['main', 'aside']).
+// Every item names every part (true for its own), so a template check on the first item sees them all.
+function phoneOrder(desk, phone) { return (dsPhone() ? phone : desk).map((k) => Object.assign(...desk.map((d) => ({ [d]: d === k })))); }
 function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
 function iconVals(name, color) {
   const filled = !!ICON_FILLED[name];

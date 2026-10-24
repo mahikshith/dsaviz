@@ -91,7 +91,7 @@ function canCopyImage() { try { return !!(navigator.clipboard && navigator.clipb
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, nudged: [], del: 0, share: null, shareMsg: '' };
+    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, month: 0, nudged: [], del: 0, share: null, shareMsg: '' };
     // Medals earned since the last visit shine once; then they are marked seen.
     const medals = DS.medals(PROBLEMS, PATTERNS);
     this.fresh = {};
@@ -167,6 +167,24 @@ class Component extends DCLogic {
       months.push(prev && prev.getMonth() !== d.getMonth() && w - lastLabel > 2 && w < 25 ? MONTHS[d.getMonth()] : '');
     }
     const sel = cells[dayIdx];
+    // Phones: one month at a time as a calendar with 44px day buttons, instead of 26 weeks of 16px squares.
+    const phone = dsPhone();
+    const dayAt = {};
+    cells.forEach((c, i) => { dayAt[c.d.getFullYear() + '-' + c.d.getMonth() + '-' + c.d.getDate()] = i; });
+    const lastD = cells[todayIdx].d, firstD = cells[0].d;
+    const monthsBack = (lastD.getFullYear() - firstD.getFullYear()) * 12 + lastD.getMonth() - firstD.getMonth();
+    const mBack = Math.max(0, Math.min(monthsBack, this.state.month));
+    const view = new Date(lastD.getFullYear(), lastD.getMonth() - mBack, 1);
+    const inMonth = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+    const monthDays = Array.from({ length: view.getDay() }, () => ({ blank: true, real: false, n: '', off: true, on: 'false', tip: '', bg: 'transparent', fg: t.muted, border: '0', weight: 500, pick: () => {} })).concat(Array.from({ length: inMonth }, (_, k) => {
+      const i = dayAt[view.getFullYear() + '-' + view.getMonth() + '-' + (k + 1)];
+      const c = i == null ? null : cells[i], raw = i == null ? null : hm.cells[i];
+      const off = !c || raw.future;
+      return { blank: false, real: true, n: k + 1, off, on: i === dayIdx ? 'true' : 'false', tip: c ? c.tip : (k + 1) + ' ' + MONTHS[view.getMonth()] + ': before your 6 months',
+        bg: c && !raw.future ? c.bg : 'transparent', fg: off ? t.muted : raw.level >= 3 ? t.bg : t.text,
+        border: i === dayIdx ? '2px solid ' + t.text : off ? '1px dashed ' + t.line : '1px solid transparent', weight: raw && raw.today ? 800 : 500,
+        pick: () => { if (!off) this.setState({ day: i }); } };
+    }));
     const CERTS = certRows();
     const cr = CERTS[this.state.cert];
     const c = [cr.name, cr.mark, cr.have, cr.need, cr.when, cr.id];
@@ -214,6 +232,11 @@ class Component extends DCLogic {
       shelf: medalShelf(t, DS.medals(PROBLEMS, PATTERNS), 20, this.fresh),
       heatTitle: hm.activeDays ? plural(hm.activeDays, 'active day') + ' in 6 months' : 'Your 6 months start today',
       months, cells,
+      heatDesk: !phone, heatPhone: phone, heatRowM: phone ? 'col' : 'scroll', heatCardGap: phone ? '0' : '24px',
+      monthTitle: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][view.getMonth()] + ' ' + view.getFullYear(),
+      monthDays, weekdays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+      prevMonthOff: mBack >= monthsBack, nextMonthOff: mBack === 0,
+      prevMonth: () => this.setState({ month: Math.min(monthsBack, mBack + 1) }), nextMonth: () => this.setState({ month: Math.max(0, mBack - 1) }),
       day: {
         date: sel.label + (dayIdx === todayIdx ? ' · today' : ''),
         head: sel.n ? plural(sel.n, 'thing') + ' done' : dayIdx === todayIdx ? 'Nothing yet today' : 'A rest day',

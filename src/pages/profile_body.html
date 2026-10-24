@@ -47,9 +47,10 @@
 <!-- /STAT TILES -->
 
 <!-- HEATMAP -->
-<section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
+<section data-m="p16" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">{{heatTitle}}</span><span style="font-size: 14px; color: {{t.muted}}">Pick a day to see what you did</span></div>
-<div data-m="scroll" style="display: flex; gap: 10px">
+<div data-m="{{heatRowM}}" style="display: flex; gap: 10px">
+<sc-if value="{{heatDesk}}" hint-placeholder-val="{{ true }}">
 <div style="display: grid; grid-template-rows: repeat(7, 16px); gap: 4px; padding-top: 22px; font-size: 11px; color: {{t.muted}}"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <div data-m="keep" style="display: grid; grid-template-columns: repeat(26, 16px); gap: 4px; height: 16px; font-size: 11px; color: {{t.muted}}"><sc-for list="{{months}}" as="mo" hint-placeholder-count="26"><span style="white-space: nowrap">{{mo}}</span></sc-for></div>
@@ -57,7 +58,21 @@
 <sc-for list="{{cells}}" as="cl" hint-placeholder-count="182"><button data-m="keep" onClick="{{cl.pick}}" title="{{cl.tip}}" aria-label="{{cl.tip}}" style="width: 16px; height: 16px; padding: 0; border-radius: 4px; border: {{cl.border}}; background: {{cl.bg}}; cursor: pointer"></button></sc-for>
 </div>
 </div>
-<div style="flex-grow: 1; margin-left: 24px; padding: 18px 20px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 8px; align-self: stretch">
+</sc-if>
+<sc-if value="{{heatPhone}}" hint-placeholder-val="{{ false }}">
+<div role="group" aria-label="Activity calendar" style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<button onClick="{{prevMonth}}" disabled="{{prevMonthOff}}" aria-label="Previous month" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<span aria-live="polite" style="font-size: 16px; font-weight: 700">{{monthTitle}}</span>
+<button onClick="{{nextMonth}}" disabled="{{nextMonthOff}}" aria-label="Next month" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div data-m="keep" aria-hidden="true" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; font-size: 12px; font-weight: 700; text-align: center; color: {{t.muted}}"><sc-for list="{{weekdays}}" as="wd" hint-placeholder-count="7"><span>{{wd}}</span></sc-for></div>
+<div data-m="keep" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px">
+<sc-for list="{{monthDays}}" as="hday" hint-placeholder-count="35"><sc-if value="{{hday.blank}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true"></span></sc-if><sc-if value="{{hday.real}}" hint-placeholder-val="{{ true }}"><button data-m="keep" onClick="{{hday.pick}}" disabled="{{hday.off}}" aria-pressed="{{hday.on}}" aria-label="{{hday.tip}}" style="height: 44px; min-width: 0; padding: 0; box-sizing: border-box; border-radius: 8px; border: {{hday.border}}; background: {{hday.bg}}; color: {{hday.fg}}; cursor: pointer; font-size: 14px; font-weight: {{hday.weight}}; font-variant-numeric: tabular-nums">{{hday.n}}</button></sc-if></sc-for>
+</div>
+</div>
+</sc-if>
+<div style="flex-grow: 1; margin-left: {{heatCardGap}}; padding: 18px 20px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 8px; align-self: stretch">
 <span style="font-size: 13px; font-weight: 700; color: {{t.muted}}">{{day.date}}</span>
 <span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600">{{day.head}}</span>
 <span style="font-size: 15px; line-height: 1.5; color: {{t.text2}}">{{day.line}}</span>

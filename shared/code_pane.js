@@ -33,6 +33,8 @@ class CodeRunner {
     this.el = null;
     this.ref = (el) => {
       if (el === this.el) return;
+      // The pane can be swapped out (the Code page's SQL mode): a new element gets a new editor.
+      if (this.editor) { this.editor.destroy(); this.editor = null; }
       this.el = el;
       if (el) setTimeout(() => this.mountEditor(), 0);
     };

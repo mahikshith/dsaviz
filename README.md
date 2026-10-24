@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 22 linked pages, 47 animated stories covering all 16 patterns plus the Graphs and Tries groups, a master sheet of 553 problems, a code editor that runs 104 problems' tests in JavaScript and Python in the browser, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 22 linked pages, 47 animated stories covering all 16 patterns plus the Graphs and Tries groups, a master sheet of 553 problems, a code editor that runs 351 problems' tests in JavaScript and Python in the browser plus SQL practice on SQLite, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -55,13 +55,15 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `shared/tests_spec.js` | Test specs for 351 problems (every catalog problem plus popular sheet problems): signatures in 5 languages, 3 examples, 5+ hidden cases, comparator, JS reference. The top of the file documents how linked lists, trees, graphs, in-place answers and design classes are written as JSON. |
 | `shared/code_pane.html` + `code_pane.js` | The self-contained code pane (`CodeRunner`): language tabs, timer, editor, Run/Submit, custom input, console. Any page can drop it in with the `<!-- CODE PANE -->` and `// @@CODE-PANE@@` markers. |
 | `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
+| `shared/sql_spec.js` | SQL problems (the sheet's SQL group): our own CREATE TABLE schema, a visible dataset plus 3 to 5 hidden ones (rows and expected result), output columns, ordered or any-order rows, a reference query and a tempting wrong one (`trap`). Also the helpers that build each dataset, run a query and diff the result. |
+| `shared/sql_pane.html` + `sql_pane.js` | The Code page's SQL mode (`SqlRunner`): SQL editor, Run (visible dataset, result grid), Submit (every dataset, pass count, first failing dataset's diff) and the schema panel's data. SQLite is sql.js 1.14.2 from jsDelivr, in a Blob worker (4 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
 | `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (20 HLD and 9 LLD lessons as data: nodes, links, steps). The hub shows three shelves: fundamentals, case studies (lessons with `method: true`) and LLD. Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
 | `scripts/build_search.js` + `shared/search.js` | Site search. The build turns the catalog, sheet, specs, Git, system design and AI lessons and the glossary into `SITE_INDEX` (the `@@SEARCH@@` block, also holding the counts pages show); `search.js` scores queries. The pill nav's search box (press `/`) opens results grouped by type. `build_site.py` keeps one copy of the index in `dist/index.html`. |
 | `shared/contests.js` | The contest calendar's rules (Contests page): each recurring contest as a UTC start plus a weekly RRULE, the 14-day expansion in the learner's time zone, and the `.ics` writer. See docs/BACKEND.md. |
 | `scripts/pwa.py` | Writes the offline app files (manifest, `sw.js`, icons) during `build_site.py`. |
-| `tests/` | `contestcheck.js` (contest dates across time zones and daylight saving, valid `.ics`), `pwacheck.js` (manifest, icons, service worker, head links), `searchcheck.js` (index coverage, no duplicate keys, known queries), `copycheck.js` (fails on stale copy: old depth wording, trial claims, hard-coded counts), `backtest.js`, `mapcheck.js` (pattern map and intro cards), `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
+| `tests/` | `contestcheck.js` (contest dates across time zones and daylight saving, valid `.ics`), `pwacheck.js` (manifest, icons, service worker, head links), `searchcheck.js` (index coverage, no duplicate keys, known queries), `copycheck.js` (fails on stale copy: old depth wording, trial claims, hard-coded counts), `backtest.js`, `mapcheck.js` (pattern map and intro cards), `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `sqlcheck.js` (every SQL reference passes every dataset on real SQLite, every trap fails one), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -136,6 +138,10 @@ Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself)
 
 The Code page lists every problem with a spec, grouped by pattern, and opens with `?problem=<id>` or the last problem picked anywhere on the site. Java, C++ and Go are edit-only for now.
 
+## Add a SQL problem
+
+Add an entry to `SQL_SPECS` in `shared/sql_spec.js`, keyed by the sheet's slug: `title` and `n` exactly as in the sheet's SQL group, `ask` in our own words naming every output column, `schema` (one `CREATE TABLE Name (col TYPE, ...)` per table, our own names), `cols`, `order`, and `sets` (the first is shown and run by Run; 3 to 5 more are hidden). Each set lists `rows` per table and the `want` rows. Write a `ref` query and a `trap` (the most tempting mistake), then `npm run build && npm test`. `sqlcheck.js` fails if the reference misses any set, if no set catches the trap, or if a table uses LeetCode's name. A problem that changes a table (a DELETE) sets `after`, the SELECT that reads the answer.
+
 ## Known gaps
 
 - 47 of 62 catalog problems have an animated story, covering all 16 patterns plus Graphs and Tries. The rest have story, synopsis and briefing. Pages read these counts from `SITE_INDEX.counts`, so they stay current.
@@ -145,4 +151,4 @@ The Code page lists every problem with a spec, grouped by pattern, and opens wit
 
 ## Third-party code
 
-The site bundles React and CodeMirror 6 (MIT), loads Pyodide (MPL-2.0) from jsDelivr when a learner runs Python, and uses Google Fonts under the SIL Open Font License. esbuild (MIT) is used only at build time. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for every component, its version and its licence.
+The site bundles React and CodeMirror 6 (MIT), loads Pyodide (MPL-2.0) from jsDelivr when a learner runs Python and sql.js (MIT) when they run SQL, and uses Google Fonts under the SIL Open Font License. esbuild (MIT) is used only at build time. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for every component, its version and its licence.

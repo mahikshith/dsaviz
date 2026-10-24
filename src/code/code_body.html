@@ -12,7 +12,7 @@
 
 <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 400px minmax(0, 1fr)">
 
-<aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow: hidden">
+<aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow: {{asideOverflow}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{kicker}}</span>
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 26px; line-height: 1.15; font-weight: 600">{{P.title}}</h1>
@@ -23,6 +23,7 @@
 </div>
 </div>
 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
+<sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
 <sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
@@ -34,11 +35,34 @@
 </div>
 <sc-if value="{{hasStory}}"><div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Stuck? Old Hoot walks through it in the story. <a href="Story.dc.html" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Back to {{P.story}}</a></div></sc-if>
 <sc-if value="{{noStory}}"><div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">This one has tests but no story yet. Old Hoot explains the {{P.pattern}} idea in the library. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>
+</sc-if>
+<sc-if value="{{isSql}}">
+<section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px">
+<h2 id="sql-tables" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables</h2>
+<button onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.rowsLabel}}</button>
+</div>
+<sc-for list="{{sq.tables}}" as="tb" hint-placeholder-count="2">
+<div style="flex-shrink: 0; border-radius: 12px; border: 1px solid {{t.line}}; overflow: hidden">
+<div style="padding: 8px 12px; background: {{t.sunk}}; font-family: {{t.mono}}; font-size: 14px; font-weight: 700">{{tb.name}}</div>
+<sc-if value="{{sq.rowsClosed}}"><div style="padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none"><sc-for list="{{tb.cols}}" as="cl" hint-placeholder-count="3"><div style="display: flex; gap: 8px"><span>{{cl.n}}</span><span style="color: {{t.muted}}">{{cl.ty}}</span></div></sc-for></div></sc-if>
+<sc-if value="{{sq.rowsOpen}}"><div style="overflow-x: auto"><div role="table" aria-label="{{tb.name}} sample rows" style="display: table; border-collapse: collapse; min-width: 100%; font-family: {{t.mono}}; font-size: 13px; line-height: 1.4; font-variant-ligatures: none"><div role="row" style="display: table-row"><sc-for list="{{tb.grid.cols}}" as="hc"><div role="columnheader" style="display: table-cell; text-align: left; padding: 6px 10px; color: {{t.muted}}; font-weight: 700; white-space: nowrap">{{hc.c}}</div></sc-for></div><sc-for list="{{tb.grid.rows}}" as="gr"><div role="row" style="display: table-row; border-top: 1px solid {{t.line}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="display: table-cell; padding: 6px 10px; white-space: nowrap; color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{tb.grid.empty}}"><div style="padding: 8px 10px; font-size: 13px; color: {{t.muted}}">No rows.</div></sc-if></div></sc-if>
+</div>
+</sc-for>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}">{{sq.tablesNote}}</p>
+</section>
+</sc-if>
 </aside>
 
 <main style="padding: 20px 24px; min-width: 0; min-height: 0">
+<sc-if value="{{notSql}}">
 <!-- CODE PANE -->
 <!-- /CODE PANE -->
+</sc-if>
+<sc-if value="{{isSql}}">
+<!-- SQL PANE -->
+<!-- /SQL PANE -->
+</sc-if>
 </main>
 </div>
 </div>

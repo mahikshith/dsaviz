@@ -66,6 +66,11 @@
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]),[data-page] select,[data-page] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
 [data-page] a[style^="height:"],[data-page] a[style*="; height:"],[data-page] a[style*="min-height:"]{min-height:44px;height:auto!important}
+/* Inline links in breadcrumbs and footers: padding grows the tap area to 44px (side margins keep the text where it was);
+   footer link lists drop their gap, since each link now brings its own. */
+[data-page] nav[aria-label="Breadcrumb"] a,[data-page] footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
+[data-page] footer nav[style*="flex-direction: column"]{gap:0!important}
+[data-page] nav[aria-label="Breadcrumb"]{align-items:center}
 }
 </style>
 <!-- /PHONE CSS -->

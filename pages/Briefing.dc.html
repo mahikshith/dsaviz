@@ -19,11 +19,11 @@ a{color:inherit;text-decoration:none}a:hover{opacity:0.75}
 button{font:inherit}
 </style>
 <style>
-/* Briefing on phones: the start card (depth and Begin) comes right after the quest; example and cast follow. */
+/* Briefing on phones: the start card (depth and Begin) comes right after the quest; example and cast follow.
+   The markup is already in that order (the start card spans both desktop rows), so the grid just stacks. */
 @media (max-width: 759px){
-[data-page="Briefing"] [data-brief-left]{display:contents!important}
-[data-page="Briefing"] [data-brief-grid]>:last-child{order:1}
-[data-page="Briefing"] [data-brief-late]{order:2}
+[data-page="Briefing"] [data-brief-grid]{grid-template-rows:none!important}
+[data-page="Briefing"] [data-brief-right],[data-page="Briefing"] [data-brief-rest]{grid-column:auto!important;grid-row:auto!important}
 [data-page="Briefing"] [data-brief-late]>div{width:auto!important}
 }
 </style>
@@ -104,6 +104,11 @@ button{font:inherit}
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]),[data-page] select,[data-page] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
 [data-page] button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
 [data-page] a[style^="height:"],[data-page] a[style*="; height:"],[data-page] a[style*="min-height:"]{min-height:44px;height:auto!important}
+/* Inline links in breadcrumbs and footers: padding grows the tap area to 44px (side margins keep the text where it was);
+   footer link lists drop their gap, since each link now brings its own. */
+[data-page] nav[aria-label="Breadcrumb"] a,[data-page] footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
+[data-page] footer nav[style*="flex-direction: column"]{gap:0!important}
+[data-page] nav[aria-label="Breadcrumb"]{align-items:center}
 }
 </style>
 <!-- /PHONE CSS -->
@@ -240,7 +245,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 </div>
 
-<div data-brief-grid style="flex-grow: 1; padding: 48px 80px; display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 56px">
+<div data-brief-grid style="flex-grow: 1; padding: 48px 80px; display: grid; grid-template-columns: minmax(0, 1fr) 420px; grid-template-rows: auto 1fr; gap: 26px 56px">
 
 <!-- LEFT: the quest -->
 <div data-brief-left style="display: flex; flex-direction: column; gap: 26px">
@@ -273,7 +278,56 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <sc-if value="{{notTS}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px; font-size: 17px; line-height: 1.6"><p style="margin: 0">This story retells LeetCode {{P.n}}, “{{P.title}}”. Read the exact wording there, then come back and walk it with the cast.</p><a href="{{P.lcUrl}}" target="_blank" rel="noopener" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font-weight: 700; color: {{t.accent}}">Open LeetCode {{P.n}} ↗</a></div></sc-if>
 </sc-if>
+</div>
 
+<!-- RIGHT: before you start -->
+<div data-brief-right style="grid-column: 2; grid-row: 1 / span 2; background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 22px; align-self: start">
+<span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600">Before the clock starts</span>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="padding: 14px; border-radius: 14px; background: {{t.bg}}; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: {{t.muted}}">Typical solve</span><span style="font-family: {{t.mono}}; font-size: 22px; font-weight: 700">~{{P.time}}</span></div>
+<div style="padding: 14px; border-radius: 14px; background: {{t.bg}}; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: {{t.muted}}">Difficulty</span><span style="font-size: 22px; font-weight: 700; color: {{diffFg}}">{{P.diff}}</span></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; color: {{t.muted}}">Pattern</span>
+<sc-if value="{{patternHidden}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px dashed {{t.faint}}">
+<span style="font-size: 15px; font-weight: 600; letter-spacing: 0.3em; color: {{t.faint}}">■■■ ■■■■■■■■</span>
+<button onClick="{{revealPattern}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.text}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Reveal</button>
+</div>
+<span style="font-size: 13px; color: {{t.muted}}; line-height: 1.5">Hidden on purpose. Try naming it yourself in chapter 2 — that's the skill interviews test.</span>
+</sc-if>
+<sc-if value="{{patternShown}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 12px 14px; border-radius: 12px; background: {{t.bg}}; font-size: 15px; font-weight: 700">{{P.pattern}} <span style="font-weight: 400; color: {{t.muted}}">— {{P.tagline}}</span></div>
+</sc-if>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; color: {{t.muted}}">Asked at</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{P.cos}}" as="co" hint-placeholder-count="3"><span style="padding: 4px 10px; border-radius: 6px; border: 1px solid {{t.line}}; font-size: 13px; font-weight: 600">{{co}}</span></sc-for>
+</div>
+</div>
+
+<div style="display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 14px; background: {{t.bg}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-linecap="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V16h8v-1.3A7 7 0 0 0 12 2z"></path></svg>
+<span style="font-size: 14px; line-height: 1.45"><b>3 story hints</b> from Old Hoot. Clues in the story, not code. Using one never costs you anything.</span>
+</div>
+
+<sc-if value="{{P.animated}}" hint-placeholder-val="{{ true }}">
+<a href="Story.dc.html" style="height: 56px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; gap: 10px; align-items: center; justify-content: center; font-size: 17px; font-weight: 700">Begin the story · start timer<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<a href="Code.dc.html" style="text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{t.muted}}">I know the story. Skip to the code</a>
+</sc-if>
+<sc-if value="{{notAnimated}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 14px 16px; border-radius: 14px; background: {{t.coolBg}}; font-size: 14px; line-height: 1.5">This story's animation is still being drawn. Every pattern has at least one animated story, so warm up with {{flagStory}}, which uses the same pattern.</div>
+<a href="Story.dc.html" onClick="{{playFlagship}}" style="height: 56px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Play {{flagStory}}</a>
+<a href="Patterns.dc.html" style="text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{t.muted}}">Back to the library</a>
+</sc-if>
+</div>
+
+<!-- LEFT, second row: example and cast. After the start card in the markup, so phones read and tab in the order they show. -->
+<div data-brief-rest style="grid-column: 1; display: flex; flex-direction: column; gap: 26px">
 <sc-if value="{{isTS}}" hint-placeholder-val="{{ true }}">
 <div data-brief-late data-m="col" style="display: flex; gap: 16px">
 <div style="flex-grow: 1; padding: 18px 20px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px; font-family: {{t.mono}}; font-size: 15px">
@@ -318,52 +372,6 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </div>
 </div>
-</div>
-
-<!-- RIGHT: before you start -->
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 22px; align-self: start">
-<span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600">Before the clock starts</span>
-
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
-<div style="padding: 14px; border-radius: 14px; background: {{t.bg}}; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: {{t.muted}}">Typical solve</span><span style="font-family: {{t.mono}}; font-size: 22px; font-weight: 700">~{{P.time}}</span></div>
-<div style="padding: 14px; border-radius: 14px; background: {{t.bg}}; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; color: {{t.muted}}">Difficulty</span><span style="font-size: 22px; font-weight: 700; color: {{diffFg}}">{{P.diff}}</span></div>
-</div>
-
-<div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; color: {{t.muted}}">Pattern</span>
-<sc-if value="{{patternHidden}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px dashed {{t.faint}}">
-<span style="font-size: 15px; font-weight: 600; letter-spacing: 0.3em; color: {{t.faint}}">■■■ ■■■■■■■■</span>
-<button onClick="{{revealPattern}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.text}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Reveal</button>
-</div>
-<span style="font-size: 13px; color: {{t.muted}}; line-height: 1.5">Hidden on purpose. Try naming it yourself in chapter 2 — that's the skill interviews test.</span>
-</sc-if>
-<sc-if value="{{patternShown}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 12px 14px; border-radius: 12px; background: {{t.bg}}; font-size: 15px; font-weight: 700">{{P.pattern}} <span style="font-weight: 400; color: {{t.muted}}">— {{P.tagline}}</span></div>
-</sc-if>
-</div>
-
-<div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; color: {{t.muted}}">Asked at</span>
-<div style="display: flex; flex-wrap: wrap; gap: 6px">
-<sc-for list="{{P.cos}}" as="co" hint-placeholder-count="3"><span style="padding: 4px 10px; border-radius: 6px; border: 1px solid {{t.line}}; font-size: 13px; font-weight: 600">{{co}}</span></sc-for>
-</div>
-</div>
-
-<div style="display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 14px; background: {{t.bg}}">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-linecap="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V16h8v-1.3A7 7 0 0 0 12 2z"></path></svg>
-<span style="font-size: 14px; line-height: 1.45"><b>3 story hints</b> from Old Hoot. Clues in the story, not code. Using one never costs you anything.</span>
-</div>
-
-<sc-if value="{{P.animated}}" hint-placeholder-val="{{ true }}">
-<a href="Story.dc.html" style="height: 56px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; gap: 10px; align-items: center; justify-content: center; font-size: 17px; font-weight: 700">Begin the story · start timer<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-<a href="Code.dc.html" style="text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{t.muted}}">I know the story. Skip to the code</a>
-</sc-if>
-<sc-if value="{{notAnimated}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 14px 16px; border-radius: 14px; background: {{t.coolBg}}; font-size: 14px; line-height: 1.5">This story's animation is still being drawn. Every pattern has at least one animated story, so warm up with {{flagStory}}, which uses the same pattern.</div>
-<a href="Story.dc.html" onClick="{{playFlagship}}" style="height: 56px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">Play {{flagStory}}</a>
-<a href="Patterns.dc.html" style="text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: {{t.muted}}">Back to the library</a>
-</sc-if>
 </div>
 </div>
 </div>
@@ -1090,6 +1098,12 @@ const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
 // True while the page shows its phone layout (below 760px; the runtime sets html[data-phone] and
 // re-renders the page when it flips). Use it only for content changes; layout belongs in CSS.
 function dsPhone() { try { return typeof document !== 'undefined' && document.documentElement.hasAttribute('data-phone'); } catch (e) { return false; } }
+// Blocks that sit in a different order on phones are rendered in that order, so keyboard and screen-reader
+// order follow what is seen (CSS `order` would only move the pixels). In markup:
+//   <sc-for list="{{parts}}" as="part"><sc-if value="{{part.aside}}">…</sc-if><sc-if value="{{part.main}}">…</sc-if></sc-for>
+// with parts: phoneOrder(['aside', 'main'], ['main', 'aside']).
+// Every item names every part (true for its own), so a template check on the first item sees them all.
+function phoneOrder(desk, phone) { return (dsPhone() ? phone : desk).map((k) => Object.assign(...desk.map((d) => ({ [d]: d === k })))); }
 function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
 function iconVals(name, color) {
   const filled = !!ICON_FILLED[name];

@@ -54,3 +54,22 @@ Verified on 2026-10-24 from the repo pages via REA. Keep the MIT notice and cred
 | [kousiknath/LowLevelDesign](https://github.com/kousiknath/LowLevelDesign) | MIT | kousiknath | Java LLD case-study problem set (parking lot, elevator, BookMyShow, blocking queue, thread pool, message broker, chat and others) as seed code for LLD lessons. Check each file header before copying. |
 
 Facts only (no permissive licence): ashishps1/awesome-low-level-design (GPL-3.0), karanpratapsingh/system-design (custom licence, type not shown), tssovi/grokking-the-object-oriented-design-interview, prasadgujar/low-level-design-primer, kilimchoi/engineering-blogs, madhank93/learn-system-design (none shown); hellointerview.com, designgurus.io, refactoring.guru, highscalability.com, dataintensive.net (all rights reserved).
+
+## Machine learning and data science
+
+Read from page text or repo sidebars with REA on 2026-10-24. Re-check the LICENSE file before adapting anything, and copy the exact copyright holder line from it. Credit must be shown on the site where the material is used.
+
+| Source | License | Holder (as shown) | What could be adapted |
+|---|---|---|---|
+| [huggingface/course](https://github.com/huggingface/course) (huggingface.co/learn/llm-course) | Apache-2.0 | Hugging Face (holder line not read) | Chapter outline, explanations and code with credit, link to license, and a note of changes (the course page states this) |
+| [Google Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course) | CC BY 4.0 (content), Apache 2.0 (code samples), "except as otherwise noted" | Google | Module structure, lesson text and exercises with credit and license link; skip items marked otherwise |
+| [Distill articles](https://distill.pub/) | CC-BY (the t-SNE article says CC-BY 2.0; figures reused from other sources excluded) | the article authors | Diagram ideas and text with credit; check each article's reuse note first |
+| [distillpub/template](https://github.com/distillpub/template) | Apache-2.0 | "Copyright 2018, The Distill Template Authors" (README) | Interactive-article framework code, notice kept |
+| [GokuMohandas/Made-With-ML](https://github.com/GokuMohandas/Made-With-ML) | MIT | not shown (read LICENSE) | MLOps lesson order and repo code; site prose licence not shown |
+| [HandsOnLLM/Hands-On-Large-Language-Models](https://github.com/HandsOnLLM/Hands-On-Large-Language-Models) | Apache-2.0 | not shown (read LICENSE) | Chapter notebooks and code only, not book text or figures |
+| [ManimCommunity/manim](https://github.com/ManimCommunity/manim) | MIT (two MIT licences found) | not shown | Animation library for pre-rendered story visuals |
+| [Kaggle/learntools](https://github.com/Kaggle/learntools) | Apache-2.0 | not shown | Exercise-checking tooling pattern; lesson text is not covered |
+
+Needs verification before use: d2l-ai/d2l-zh (sidebar says Apache-2.0, but English d2l-en is CC BY-SA 4.0 text with modified MIT code).
+
+Facts only (NC/SA/ND, none shown, or all rights reserved): d2l-ai/d2l-en (CC BY-SA 4.0 text), jalammar.github.io posts (CC BY-NC-SA 4.0), datawhalechina/happy-llm and llm-cookbook (CC BY-NC-SA 4.0), datawhalechina/so-large-lm, the-full-stack/website, fastai/course22, Kaggle lesson text (none shown); statquest.org, 3blue1brown.com (c 2026 Grant Sanderson), deeplearning.ai (all rights reserved).

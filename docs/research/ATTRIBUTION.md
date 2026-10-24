@@ -73,3 +73,16 @@ Read from page text or repo sidebars with REA on 2026-10-24. Re-check the LICENS
 Needs verification before use: d2l-ai/d2l-zh (sidebar says Apache-2.0, but English d2l-en is CC BY-SA 4.0 text with modified MIT code).
 
 Facts only (NC/SA/ND, none shown, or all rights reserved): d2l-ai/d2l-en (CC BY-SA 4.0 text), jalammar.github.io posts (CC BY-NC-SA 4.0), datawhalechina/happy-llm and llm-cookbook (CC BY-NC-SA 4.0), datawhalechina/so-large-lm, the-full-stack/website, fastai/course22, Kaggle lesson text (none shown); statquest.org, 3blue1brown.com (c 2026 Grant Sanderson), deeplearning.ai (all rights reserved).
+
+## Beginners
+
+Read with REA on 2026-10-25. Owner decision: the Start here track is written entirely by us. Nothing below is adapted or copied; licences are noted for reference only, from repo sidebars (LICENSE files not opened). Structure and ordering ideas only.
+
+| Source | License shown | Use |
+|---|---|---|
+| alexmojaki/futurecoder | MIT | idea reference only (chapter order, hint ladder, Parsons, error rewrites) |
+| codedex-io/python-101 | MIT | idea reference only (chapter order, story-named exercises) |
+| trekhleb/learn-python | MIT | idea reference only |
+| exercism/python | MIT / Zero-Clause BSD / Exercism Python Track License (page lines) | concept order reference only |
+
+Facts only: CS50 (CC BY-NC-SA 4.0), MIT OCW 6.0001 and 6.100L (CC BY-NC-SA), Automate the Boring Stuff (CC BY-NC-SA), animator/learn-python (CC-BY-SA-4.0), Akuli/python-tutorial, 4GeeksAcademy exercises, PythonFreeCourse/Notebooks (licence Other), Asabeneh/30-Days-Of-Python, Upendhar10/LogicBuilding101, zhiwehu/Python-programming-exercises (none shown); freeCodeCamp, Khan Academy, Python docs (not checked); Codecademy, Codedex site, W3Schools, Programiz, Jiki, Scrimba, AlgoMaster (proprietary).

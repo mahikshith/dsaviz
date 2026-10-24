@@ -177,6 +177,22 @@
       "h": 1400,
       "title": "Contest calendar · next 14 days in your time, filters, add to calendar",
       "is_interactive": true
+    },
+    "Start.dc.html": {
+      "h": 1474,
+      "is_interactive": true,
+      "title": "Start here · road map, placement check, path map",
+      "w": 1440,
+      "x": 12160,
+      "y": 0
+    },
+    "Chapter.dc.html": {
+      "h": 1060,
+      "is_interactive": true,
+      "title": "Start here lesson · story, watch it run, try it, practice, check",
+      "w": 1440,
+      "x": 12160,
+      "y": 1620
     }
   },
   "createdOnFiles": {
@@ -249,6 +265,8 @@
     "Story.dc.html",
     "Code.dc.html",
     "Glossary.dc.html",
+    "Start.dc.html",
+    "Chapter.dc.html",
     "Basics.dc.html",
     "SystemDesign.dc.html",
     "SDLesson.dc.html",

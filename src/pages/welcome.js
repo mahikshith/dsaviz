@@ -7,7 +7,7 @@ const REASONS = [
   ['fun', '🌱', 'Learning for the joy of it', 'I want to finally understand how this stuff works']
 ];
 const LEVELS = [
-  ['zero', '✏️', 'I’ve never really written code', 'We’ll start with language basics, then the gentlest stories', 'Basics.dc.html', 'strings'],
+  ['zero', '✏️', 'I’ve never really written code', 'We’ll start with Start here: tiny lessons from your very first line of code', 'Start.dc.html', 'strings'],
   ['lang', '🧩', 'I know a language, but not DSA', 'Start the learning path at Strings — two friends on a hallway', 'Story.dc.html', 'strings'],
   ['some', '⚙️', 'I’ve solved some practice problems', 'Jump to patterns: Two Pointers, Sliding Window, Hash Map', 'Story.dc.html', 'arrays'],
   ['ready', '🚀', 'Interview-ready, just need a refresh', 'Revisit daily, then mock interviews and company tracks', 'Interview.dc.html', 'arrays']
@@ -25,7 +25,7 @@ const HOOTS = [
   'That’s your week. Walk the first story now and your streak starts today.'
 ];
 const PLANS = {
-  zero: [['Python basics: lists', 'Basics'], ['Loops & enumerate', 'Glossary'], ['The Mirror Hallway', 'Story'], ['Revisit + dictionaries', 'Revisit'], ['The Guest List', 'Story'], ['The Scrabble Swap', 'Story'], ['Rest or catch up', 'Streak freeze']],
+  zero: [['What is a program?', 'Start here'], ['Your first run', 'Start here'], ['Calculator mode', 'Start here'], ['Reading your first error', 'Start here'], ['Variables are labelled boxes', 'Start here'], ['Kinds of values', 'Start here'], ['Rest or catch up', 'Streak freeze']],
   lang: [['The Mirror Hallway', 'Story'], ['The Scrabble Swap', 'Story'], ['Revisit 3 cards', 'Revisit'], ['The Train of Unique Faces', 'Story'], ['The Guest List', 'Story'], ['The Lantern Bridge', 'Story'], ['Rest or catch up', 'Streak freeze']],
   some: [['The Lantern Bridge', 'Story'], ['The Train of Unique Faces', 'Story'], ['The Coat-Check Counter', 'Story'], ['Revisit 5 cards', 'Revisit'], ['The Rain Barrel Builders', 'Story'], ['The Market Stall Diary', 'Story'], ['Pattern radar quiz', 'Interview']],
   ready: [['Revisit 5 cards', 'Revisit'], ['Pattern radar quiz', 'Interview'], ['The Paint Touch-up', 'Story'], ['Company track: Amazon', 'Interview'], ['Mock interview · 45 min', 'Interview'], ['Revisit 5 cards', 'Revisit'], ['Mock interview · 45 min', 'Interview']]
@@ -108,7 +108,7 @@ class Component extends DCLogic {
       next: () => { if (can) { this.persist(); this.setState({ step: Math.min(4, step + 1) }); } },
       hint: can ? (step < 4 ? 'You can change all of this later in your profile.' : '') : ['Pick a reason to continue.', 'Pick the closest match.', '', '', ''][step],
       startHref: level[4],
-      startLabel: level[0] === 'zero' ? 'Start with the basics →' : level[0] === 'ready' ? 'Open my interview plan →' : 'Start my first story →',
+      startLabel: level[0] === 'zero' ? 'Start lesson 1 →' : level[0] === 'ready' ? 'Open my interview plan →' : 'Start my first story →',
       finish: () => { this.persist(); saveUser(true); if (first) saveProblem(first); },
       skip: () => { saveUser(true); }
     };

@@ -3,9 +3,9 @@
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1' };
-  const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5, mock: 20 };
-  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock]];
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1', start: 'dsaviz-start-v1' };
+  const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5, mock: 20, start: 10 };
+  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock], ['Passing a Start here exercise', XP.start]];
   const LEVEL_XP = 500;
   const SHEET_SIZE = /*@@SHEET-SIZE@@*/216; // rows in the master sheet; the build fills in the count from shared/sheet.js
   const DAY = 86400000;
@@ -32,9 +32,9 @@ const DS = (function () {
   // -- the activity log: { v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }
   function readLog() {
     const o = json(KEY.log, null);
-    const out = { v: 1, days: {}, stories: {}, code: {}, lessons: {} };
+    const out = { v: 1, days: {}, stories: {}, code: {}, lessons: {}, start: {} };
     if (!o || o.v !== 1) return out;
-    ['days', 'stories', 'code', 'lessons'].forEach((k) => { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) out[k] = o[k]; });
+    ['days', 'stories', 'code', 'lessons', 'start'].forEach((k) => { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) out[k] = o[k]; });
     return out;
   }
   function readSheet() {
@@ -46,17 +46,19 @@ const DS = (function () {
     }
     return { done, star };
   }
-  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
+  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock' | 'start'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:', 'start:' (a Start here chapter).
+  // 'start' is one Start here exercise passed (its id is the exercise id); it counts once per exercise. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
   function logActivity(kind, id) {
     if (!XP[kind] || kind === 'sheet') return null;
     const ts = now();
     const log = JSON.parse(JSON.stringify(readLog()));
     const k = dayKey(ts);
-    const day = log.days[k] = Object.assign({ story: 0, code: 0, lesson: 0, revisit: 0, mock: 0, xp: 0 }, log.days[k]);
+    const day = log.days[k] = Object.assign({ story: 0, code: 0, lesson: 0, revisit: 0, mock: 0, start: 0, xp: 0 }, log.days[k]);
     day[kind] = (day[kind] || 0) + 1;
     let first = true;
-    if (kind === 'story' || kind === 'code' || kind === 'lesson') {
-      const book = kind === 'story' ? log.stories : kind === 'code' ? log.code : log.lessons;
+    if (kind === 'story' || kind === 'code' || kind === 'lesson' || kind === 'start') {
+      if (kind === 'start' && !log.start) log.start = {};
+      const book = kind === 'story' ? log.stories : kind === 'code' ? log.code : kind === 'start' ? log.start : log.lessons;
       first = !(id in book);
       if (first && id) book[id] = ts;
     }
@@ -69,14 +71,14 @@ const DS = (function () {
   function days() {
     const log = readLog(), sheet = readSheet();
     const out = {};
-    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, lesson: 0, sheet: 0, revisit: 0, mock: 0, xp: 0, total: 0 });
+    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, lesson: 0, sheet: 0, revisit: 0, mock: 0, start: 0, xp: 0, total: 0 });
     Object.keys(log.days).forEach((k) => {
       const d = log.days[k] || {}, o = at(k);
-      ['story', 'code', 'lesson', 'revisit', 'mock'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
+      ['story', 'code', 'lesson', 'revisit', 'mock', 'start'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
       o.xp += Math.max(0, Number(d.xp) || 0);
     });
     Object.keys(sheet.done).forEach((id) => { const o = at(dayKey(sheet.done[id])); o.sheet++; o.xp += XP.sheet; });
-    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.lesson + o.sheet + o.revisit + o.mock; if (!o.total) delete out[k]; });
+    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.lesson + o.sheet + o.revisit + o.mock + o.start; if (!o.total) delete out[k]; });
     return out;
   }
 
@@ -374,7 +376,7 @@ const DS = (function () {
     const name = typeof ob.name === 'string' && ob.name.trim() ? ob.name.trim().slice(0, 40) : '';
     const initials = name ? name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '';
     const s = stories(), sh = sheet();
-    return { name, initials, signedIn: get(KEY.user) === '1', isNew: !s.count && !sh.ticked && !codePasses().count && !lessons().count,
+    return { name, initials, signedIn: get(KEY.user) === '1', isNew: !s.count && !sh.ticked && !codePasses().count && !lessons().count && !Object.keys(readLog().start).length,
       lang: prefs.lang || '', goal: prefs.goal || '', reason: ob.reason || '', date: ob.date || '', demo: false };
   }
 
@@ -560,11 +562,51 @@ const DS = (function () {
       change: scores.length > 1 ? scores[scores.length - 1] - scores[scores.length - 2] : null };
   }
 
+  // -- Start here (the programming-from-zero track). Stored in dsaviz-start-v1 as
+  //    { v: 1, done: { chapter: ts }, ex: { exercise: ts }, skip: { chapter: 1 }, placed: ts, last: chapter, stage: { chapter: stage } }.
+  //    Passing an exercise logs a 'start' activity (XP.start, once); finishing a chapter logs the lesson 'start:<chapter>'.
+  function readStart() {
+    const o = json(KEY.start, null);
+    const out = { v: 1, done: {}, ex: {}, skip: {}, placed: 0, last: '', stage: {} };
+    if (!o || o.v !== 1) return out;
+    ['done', 'ex', 'skip', 'stage'].forEach((k) => { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) out[k] = Object.assign({}, o[k]); });
+    out.placed = Number(o.placed) || 0;
+    out.last = typeof o.last === 'string' ? o.last : '';
+    return out;
+  }
+  function writeStart(o) { set(KEY.start, JSON.stringify(o)); }
+  function start() { return readStart(); }
+  function startPass(exId) {
+    const o = readStart();
+    if (!o.ex[exId]) { o.ex[exId] = now(); writeStart(o); }
+    return logActivity('start', exId);
+  }
+  function startFinish(ch) {
+    const o = readStart();
+    if (!o.done[ch]) { o.done[ch] = now(); writeStart(o); }
+    return logActivity('lesson', 'start:' + ch);
+  }
+  function startVisit(ch, stage) {
+    const o = readStart();
+    o.last = ch;
+    if (stage) o.stage[ch] = stage;
+    writeStart(o);
+  }
+  // The placement check: chapters the learner already knows can be skipped (they stay open, marked "known").
+  function startPlace(ids) {
+    const o = readStart();
+    o.skip = {};
+    (ids || []).forEach((id) => { o.skip[id] = 1; });
+    o.placed = now();
+    writeStart(o);
+    return o;
+  }
+
   // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
@@ -573,6 +615,7 @@ const DS = (function () {
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
     predict, logPredict,
+    start, startPass, startFinish, startVisit, startPlace,
     MOCK_LENGTHS, MOCK_MIX, MOCK_AREAS, MOCK_HINT_COST, MOCK_BANDS, mockPick, mockStart, mockSession, mockRecord, mockHint, mockNotes, mockExtend, mockEnd, mockAbandon, mockScore, mockSave, mockHistory,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,

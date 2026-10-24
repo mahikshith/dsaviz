@@ -10,7 +10,7 @@ let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };
 
 // Generated script blocks: their sources (shared/, src/) are scanned on their own below.
-const BLOCKS = ['THEMES', 'CATALOG', 'SHEET', 'SHEET-COUNT', 'DATA', 'DRAWER', 'UI', 'SEARCH', 'FIND', 'NAV', 'TESTS-SPEC', 'MOCK-HINTS', 'RUNNER', 'CODE-PANE', 'GITSIM', 'SDLESSONS', 'AILESSONS'];
+const BLOCKS = ['THEMES', 'CATALOG', 'SHEET', 'SHEET-COUNT', 'DATA', 'DRAWER', 'UI', 'SEARCH', 'FIND', 'NAV', 'TESTS-SPEC', 'MOCK-HINTS', 'RUNNER', 'CODE-PANE', 'GITSIM', 'SDLESSONS', 'AILESSONS', 'CONTESTS'];
 function stripBlocks(s) {
   BLOCKS.forEach((b) => {
     const start = '// @@' + b + '@@', end = b === 'CATALOG' ? '// @@END@@' : '// @@END-' + b + '@@';
@@ -57,7 +57,7 @@ fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html')).forEach((f) => {
   scanned++;
 });
 // Sources of the generated blocks and bodies.
-[['shared', ['drawer.html', 'drawer.js', 'nav.js', 'search.js', 'data.js']], ['shared/ui', ['nav.html', 'tiles.html', 'rings.html', 'medals.html']],
+[['shared', ['drawer.html', 'drawer.js', 'nav.js', 'search.js', 'data.js', 'contests.js']], ['shared/ui', ['nav.html', 'tiles.html', 'rings.html', 'medals.html']],
   ['src/pages', null], ['src/code', ['code_body.html', 'code.js']], ['src/story', ['story_body.html', 'comp.js']]].forEach(([dir, files]) => {
   const d = path.join(root, dir);
   (files || fs.readdirSync(d)).forEach((f) => { check(dir + '/' + f, fs.readFileSync(path.join(d, f), 'utf8'), f.endsWith('.html')); scanned++; });

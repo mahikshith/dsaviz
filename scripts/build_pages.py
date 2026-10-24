@@ -27,6 +27,7 @@ across pages and live in one place; this script copies them back into every page
   src/git/sim.js + lessons.js -> between // @@GITSIM@@ ... // @@END-GITSIM@@ (Git page)
   src/sd/engine.js + lessons.js -> between // @@SDLESSONS@@ ... // @@END-SDLESSONS@@ (SystemDesign, SDLesson)
   src/ai/render.js + lessons.js -> between // @@AILESSONS@@ ... // @@END-AILESSONS@@ (AI & ML pages)
+  shared/contests.js        -> between // @@CONTESTS@@ ... // @@END-CONTESTS@@ (Contests page)
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
   src/code/code_body.html + code.js       -> Code
@@ -180,6 +181,7 @@ def main():
     hints = ('// @@MOCK-HINTS@@ — generated from shared/sheet.js: the sheet hint for each runnable problem (the last mock interview hint)\n'
              'const MOCK_HINTS = ' + json.dumps(mock_hints(sheet, spec_ids), ensure_ascii=False, separators=(',', ':')) + ';\n// @@END-MOCK-HINTS@@')
     runner = read('shared', 'runner.js')
+    contests = read('shared', 'contests.js')
     pane_js = read('shared', 'code_pane.js')
     pane_html = read('shared', 'code_pane.html')
     bodies = {'Story': ('src', 'story', 'story_body.html')}
@@ -225,6 +227,7 @@ def main():
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
         s = block(s, '// @@SDLESSONS@@', '// @@END-SDLESSONS@@', sd_lessons)
         s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)
+        s = block(s, '// @@CONTESTS@@', '// @@END-CONTESTS@@', contests)
         name = f[:-len('.dc.html')]
         if name in bodies:
             body = read(*bodies[name])

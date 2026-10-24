@@ -64,6 +64,7 @@ button{font:inherit}
 [data-page] [style*="padding: 0px 40px;"],[data-page] [style*="padding: 0px 80px;"],[data-page] [style*="padding: 24px 40px 40px;"],[data-page] [style*="padding: 24px 48px 32px;"],[data-page] [style*="padding: 26px 36px;"],[data-page] [style*="padding: 28px 80px;"],[data-page] [style*="padding: 30px 40px;"],[data-page] [style*="padding: 36px 40px;"],[data-page] [style*="padding: 36px 64px;"]{padding-left:16px!important;padding-right:16px!important}
 [data-page] [style*="padding: 0px 80px 72px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:0px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
 [data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
@@ -1175,6 +1176,7 @@ const MENU = [
   ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
   ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
+  ['Contests.dc.html', 'Contest calendar', 'LeetCode, AtCoder, CodeChef and Codeforces in your time', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];
@@ -1408,7 +1410,7 @@ function searchTarget(it) {
 // A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
 // NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
 // whose page is not built yet shows as "Soon" instead of a dead link.
-const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Code.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
+const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Code.dc.html", "Contests.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
 // key, label, page, icon, hidden on phones unless active
 const NAV_ITEMS = [
   ['home', 'Home', 'Home.dc.html', 'home', false],

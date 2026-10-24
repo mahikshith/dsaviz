@@ -83,6 +83,18 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 
 To switch one of these to a server, keep its return shape, fetch into a cache when the page mounts, return the cache from the function, and drop `demo: true`. The "Demo" tags are tied to `demo`, so they go away with it.
 
+## Contest calendar (placeholder rules)
+
+The Contests page does not fetch anything. `shared/contests.js` (copied into the page between `// @@CONTESTS@@` markers) lists each recurring contest as a rule: `{ id, platform, name, start, rrule, minutes, link }`, where `start` is one known start in UTC and `rrule` is an iCalendar weekly rule (`FREQ=WEEKLY`, optionally `INTERVAL=2`). `contestDays(now, tz, 14, platforms)` expands the rules into the next 14 local days, and `contestIcs(runs, stamp)` writes the `.ics` file in the browser. Codeforces has no fixed day, so it has `rrule: null` and a link to its own calendar. The page tells learners that times follow each platform's usual schedule and to check the platform before they start. `tests/contestcheck.js` pins the dates across time zones and daylight saving, and checks the `.ics` output.
+
+This is a stand-in until there is a backend. A real one would:
+
+- `GET /contests?from=&to=`: fetch each platform's published schedule on a timer (LeetCode, Codeforces, AtCoder and CodeChef all list upcoming contests), store them as `{ id, platform, name, start, end, link }` in UTC, and serve the next few weeks. Codeforces rounds would then show up on the calendar.
+- Keep the same run shape (`{ c, start, end }`), so `contestDays` and `contestIcs` work on fetched runs unchanged. Fall back to the rules when the request fails or the site is offline.
+- Later: reminders (`POST /me/contest-reminders`) and a subscribable calendar feed (`GET /me/contests.ics`), which need accounts.
+
+The selected platform chip is kept in `dsaviz-contest-filter` (`All`, `LeetCode`, `Codeforces`, `AtCoder` or `CodeChef`).
+
 ## Shared components
 
 `shared/ui.js` builds view models and `shared/ui/*.html` holds the markup. The build copies each between its comment markers (`PILL NAV`, `STAT TILES`, `RINGS`, `MEDALS`).

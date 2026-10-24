@@ -134,3 +134,9 @@
 | Count tree nodes equal to their subtree average | gahogg-solutions | tree DFS state (not thin) | medium | new? |
 | Longest run after at most k flips | gahogg-solutions | sliding window (not thin) | medium | new? |
 | Hand-built tiny weighted graph: connect all points cheaply | gahogg-solutions | MST (not thin) | medium | new? |
+| DS/ML round: decision split chosen by impurity (visual) | ds-interview-questions | future DS/ML section | easy | new? |
+| DS/ML round: precision and recall as a threshold slider | ds-interview-questions | future DS/ML section | easy | new? |
+| DS/ML round: gradient descent on a loss surface | ds-interview-questions | future DS/ML section | easy | new? |
+| DS/ML round: spot overfitting from train vs validation curves | ds-interview-questions | future DS/ML section | medium | new? |
+| DS/ML round: smooth a noisy series with a moving average | ds-interview-questions | future DS/ML section | easy | new? |
+| DS/ML round: TF-IDF weights on small sentences | ds-interview-questions | future DS/ML section | medium | new? |

@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Contest calendar — DSAMaxxing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+[style*="Anton"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}
+p[style*="Anton"],[style*="Anton"][style*="italic"],[style*="Anton"][style*="font-size: 11px"],[style*="Anton"][style*="font-size: 12px"],[style*="Anton"][style*="font-size: 13px"],[style*="Anton"][style*="font-size: 14px"],[style*="Anton"][style*="font-size: 15px"],[style*="Anton"][style*="font-size: 16px"],[style*="Anton"][style*="font-size: 17px"],[style*="Anton"][style*="font-size: 18px"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}
+header a,header button,nav a{white-space:nowrap}
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button,input{font:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+<!-- PHONE CSS -->
+<style>
+/* Shared phone layout (shared/ui/phone.html, copied into every page's helmet by the build).
+   A page opts in with data-fluid="true" data-page="Name" on its root div. Below 760px the runtime
+   shows it at zoom 1 and sets html[data-phone]; these rules turn the 1440px board into one column.
+   Everything sits inside the media query and keys off data attributes, so desktop is untouched.
+   Per-element hooks, as space-separated words in data-m:
+     pad   16px side gutters        col   flex row becomes a column   wrap  flex row wraps
+     two   two-column grid          keep  grid keeps its desktop columns
+     full  drop a fixed width       auto  drop a fixed height          hide  hidden on phones
+     one / four  force one or four grid columns  g16 / g12 / g8  gap from the spacing scale
+     p16  16px padding all round   scroll  sideways strip
+   Grids collapse to one column on their own, except strips of 5 to 9 equal columns and tight
+   segmented controls (gap 2px or 4px); four-up grids go two-up.
+   Page-specific rules go in the page's own helmet, scoped with [data-page="Name"]; the automatic
+   grid rules sit in :where() so any page rule beats them. */
+@media (max-width: 759px){
+[data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
+/* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
+[data-fit][data-fluid]{width:100%!important}
+[data-fit][data-fluid] [style*="font-size: 10px"],[data-fit][data-fluid] [style*="font-size: 11px"]{font-size:12px!important}
+[data-page] *{max-width:100%}
+[data-page] main,[data-page] [data-m~="pad"]{padding-left:16px!important;padding-right:16px!important}
+[data-page]:where([style*="grid-template-columns"]),[data-page] :where([style*="grid-template-columns"]:not([data-m~="keep"]):not([style*="gap: 2px"]):not([style*="gap: 4px"]):not([data-drawer] *):not([data-m~="two"]):not([style*="repeat(4,"]):not([style*="repeat(5,"]):not([style*="repeat(6,"]):not([style*="repeat(7,"]):not([style*="repeat(8,"]):not([style*="repeat(9,"])){grid-template-columns:minmax(0,1fr)!important}
+[data-page] [data-m~="one"]{grid-template-columns:minmax(0,1fr)!important}
+[data-page] [data-m~="four"]{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+/* Sections drop their board heights; title rows with a side note or link stack. */
+[data-page] section,[data-page] main{height:auto!important}
+[data-page] [style*="justify-content: space-between"][style*="align-items: flex-end"]:not([data-m~="keep"]){flex-direction:column;align-items:flex-start!important;gap:12px!important}
+[data-page] [style*="justify-content: space-between"][style*="align-items: baseline"]{flex-wrap:wrap;column-gap:12px;row-gap:4px}
+/* Tab strips and code scroll sideways inside their box, never the page. */
+[data-page] [role="tablist"]{overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none;align-self:stretch!important}
+[data-page] [role="tablist"]>*{flex-shrink:0}
+[data-page] pre,[data-page] [style*="white-space: pre;"]{overflow-x:auto}
+[data-page] input,[data-page] textarea,[data-page] select{box-sizing:border-box;max-width:100%!important}
+[data-page] label:has(select){flex:1 1 100%;min-width:0}
+[data-page] label select{flex:1 1 auto;min-width:0;width:auto!important}
+/* Day, week and path strips (5 to 9 equal columns) keep their columns; four-up tiles go two-up. */
+[data-page] :where([style*="grid-template-columns: repeat(4,"]:not([data-m~="keep"]):not([data-drawer] *)),[data-page] [data-m~="two"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+/* Big board paddings, generated by scripts/build_pages.py from the pages' markup. */
+[data-page] [style*="gap: 40px;"],[data-page] [style*="gap: 48px;"],[data-page] [style*="gap: 56px;"],[data-page] [style*="gap: 64px;"],[data-page] [style*="gap: 72px;"]{gap:24px!important}
+[data-page] [style*="padding: 0px 40px;"],[data-page] [style*="padding: 0px 80px;"],[data-page] [style*="padding: 24px 40px 40px;"],[data-page] [style*="padding: 24px 48px 32px;"],[data-page] [style*="padding: 26px 36px;"],[data-page] [style*="padding: 28px 80px;"],[data-page] [style*="padding: 30px 40px;"],[data-page] [style*="padding: 36px 40px;"],[data-page] [style*="padding: 36px 64px;"]{padding-left:16px!important;padding-right:16px!important}
+[data-page] [style*="padding: 0px 80px 72px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:0px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
+[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
+[data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 16px 22px;"],[data-page] [style*="padding: 16px 24px 24px;"],[data-page] [style*="padding: 20px 22px;"],[data-page] [style*="padding: 20px 22px 28px;"],[data-page] [style*="padding: 20px 24px;"],[data-page] [style*="padding: 22px;"],[data-page] [style*="padding: 22px 22px 24px;"],[data-page] [style*="padding: 24px;"],[data-page] [style*="padding: 24px 26px;"],[data-page] [style*="padding: 26px;"],[data-page] [style*="padding: 26px 28px;"],[data-page] [style*="padding: 28px;"],[data-page] [style*="padding: 28px 32px;"],[data-page] [style*="padding: 32px;"]{padding:16px!important}
+[data-page] [data-m~="col"]{flex-direction:column!important;align-items:stretch!important}
+[data-page] [data-m~="wrap"]{flex-wrap:wrap!important}
+[data-page] [data-m~="hide"]{display:none!important}
+[data-page] [data-m~="full"]{width:auto!important;min-width:0!important;flex-basis:auto!important}
+[data-page] [data-m~="auto"]{height:auto!important;min-height:0!important}
+[data-page] [data-m~="g16"]{gap:16px!important}
+[data-page] [data-m~="g12"]{gap:12px!important}
+[data-page] [data-m~="g8"]{gap:8px!important}
+[data-page] [data-m~="p16"]{padding:16px!important}
+[data-page] [data-m~="scroll"]{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+[data-page] [data-m~="scroll"]>*{flex-shrink:0}
+[data-page] svg,[data-page] img,[data-page] pre,[data-page] table{max-width:100%}
+/* Display type at phone size. */
+[data-page] h1{font-size:36px!important;line-height:1.08!important}
+[data-page] [style*="font-size: 34px"],[data-page] [style*="font-size: 36px"]{font-size:28px!important;line-height:1.15!important}
+[data-page] [style*="font-size: 4"]:not([style*="font-size: 4px"]){font-size:32px!important;line-height:1.1!important}
+[data-page] [style*="font-size: 5"]:not([style*="font-size: 5px"]){font-size:36px!important;line-height:1.08!important}
+[data-page] [style*="font-size: 7"]:not([style*="font-size: 7px"]){font-size:44px!important;line-height:1.05!important}
+[data-page] [style*="font-size: 180px"]{font-size:96px!important;line-height:1!important}
+/* Nothing under 12px. */
+[data-page] [style*="font-size: 9px"],[data-page] [style*="font-size: 10px"],[data-page] [style*="font-size: 11px"]{font-size:12px!important}
+/* 44px touch targets. */
+[data-page] [role="checkbox"]{position:relative}
+[data-page] [role="checkbox"]::after{content:"";position:absolute;inset:-10px}
+[data-page] button:not([data-m~="keep"]):not([role="checkbox"]),[data-page] select,[data-page] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
+[data-page] button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
+[data-page] a[style^="height:"],[data-page] a[style*="; height:"],[data-page] a[style*="min-height:"]{min-height:44px;height:auto!important}
+/* Inline links in breadcrumbs and footers: padding grows the tap area to 44px (side margins keep the text where it was);
+   footer link lists drop their gap, since each link now brings its own. */
+[data-page] nav[aria-label="Breadcrumb"] a,[data-page] footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
+[data-page] footer nav[style*="flex-direction: column"]{gap:0!important}
+[data-page] nav[aria-label="Breadcrumb"]{align-items:center}
+}
+</style>
+<!-- /PHONE CSS -->
+<style>
+[data-cx-chip]:focus-visible,[data-cx-act]:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media (prefers-reduced-motion: reduce){[data-page="Contests"] main{animation:none!important}}
+@media (max-width: 759px){
+[data-page="Contests"] [data-cx-day]{grid-template-columns:56px minmax(0,1fr)!important;gap:12px!important}
+[data-page="Contests"] [data-cx-run]{flex-wrap:wrap!important;row-gap:8px!important}
+[data-page="Contests"] [data-cx-acts]{width:100%;justify-content:flex-start!important}
+[data-page="Contests"] [data-cx-chips]{flex-wrap:wrap!important}
+}
+</style>
+</helmet>
+<div data-fluid="true" data-page="Contests" style="width: 1440px; height: 1400px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<!-- PILL NAV -->
+<style>
+[data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
+[data-pn] a,[data-pn] button{transition:transform .22s cubic-bezier(.32,.72,0,1),background-color .2s,color .2s}
+[data-pn] a:active,[data-pn] button:active{transform:scale(.95);transition-duration:.12s}
+[data-pn] a:hover{opacity:1}
+[data-pn-item][data-on="false"]:hover{background:rgba(127,127,127,.12)!important}
+[data-pn-field]:focus-within{outline:2px solid currentColor;outline-offset:2px}
+[data-pn-results] a{transition:background-color .12s}
+[data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-pn-panel] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+[data-ring]{animation:ds-ring .7s cubic-bezier(.33,1,.68,1) both}
+[data-rise]{animation:ds-rise .38s cubic-bezier(.33,1,.68,1) both}
+[data-fresh="true"]{animation:ds-pop .5s cubic-bezier(.34,1.56,.64,1) both}
+[data-shine]{animation:ds-shine .9s cubic-bezier(.65,0,.35,1) .35s both}
+@keyframes ds-ring{from{stroke-dashoffset:var(--len)}}
+@keyframes ds-rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes ds-pop{0%{transform:scale(.6)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes ds-shine{from{transform:translateX(-40px) skewX(-20deg)}to{transform:translateX(90px) skewX(-20deg)}}
+@media (prefers-reduced-motion: reduce){[data-ring],[data-rise],[data-fresh="true"]{animation:none}[data-shine]{display:none}[data-pn] a,[data-pn] button{transition:none}}
+@media (max-width: 759px){
+[data-pn-wrap]{position:fixed;top:auto;bottom:0;left:0;right:0;padding:0 8px 8px;zoom:calc(1 / var(--fit, 1))}
+[data-pn]{gap:2px!important;padding:0 4px!important}
+[data-pn-logo],[data-pn-streak],[data-pn-soon]{display:none!important}
+[data-pn-item]{padding:0 10px!important;min-width:44px;justify-content:center;box-sizing:border-box}
+[data-pn-item][data-on="false"] [data-pn-label]{display:none}
+[data-pn-item][data-extra="true"][data-on="false"]{display:none!important}
+[data-pn-items]{justify-content:space-around}
+body{padding-bottom:calc(80px / var(--fit, 1))}
+[data-drawer]{zoom:calc(1 / var(--fit, 1))}
+[data-drawer] aside{width:min(360px,86vw)!important}
+[data-pn-kbd]{display:none!important}
+[data-pn-panel]{top:auto!important;bottom:8px!important;left:8px!important;right:8px!important;width:auto!important;flex-direction:column-reverse!important}
+[data-pn-results]{max-height:55vh!important}
+}
+</style>
+<div data-pn-wrap>
+<nav aria-label="Main" data-pn style="height: 60px; box-sizing: border-box; padding: 0 8px; border-radius: 30px; background: {{nav.glass}}; border: 1px solid {{t.line}}; box-shadow: 0 8px 24px {{nav.shadow}}; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; align-items: center; gap: 4px; font-family: {{t.body}}; color: {{t.text}}">
+<button onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 44px; padding: 0 16px 0 4px; flex-shrink: 0; display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700; white-space: nowrap">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
+<div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
+<sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="7">
+<sc-if value="{{ni.live}}" hint-placeholder-val="{{ true }}"><a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span></a></sc-if>
+<sc-if value="{{ni.soon}}" hint-placeholder-val="{{ false }}"><span aria-disabled="true" title="{{ni.title}}" data-pn-item data-pn-soon data-on="false" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; color: {{t.muted}}; cursor: default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span><span style="padding: 0 6px; border-radius: 999px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 600; line-height: 18px">Soon</span></span></sc-if>
+</sc-for>
+</div>
+<button data-pn-search-btn onClick="{{nav.srch.show}}" aria-label="Search the site" aria-keyshortcuts="/" title="Search (press /)" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.srch.icon}}"></path></svg><span data-pn-kbd aria-hidden="true" style="min-width: 20px; height: 22px; padding: 0 4px; box-sizing: border-box; border-radius: 6px; border: 1px solid {{t.line2}}; font-family: {{t.mono}}; font-size: 12px; line-height: 20px; text-align: center; color: {{t.muted}}">/</span></button>
+<sc-if value="{{nav.member}}" hint-placeholder-val="{{ true }}">
+<a href="Profile.dc.html" data-pn-streak aria-label="{{nav.streakLabel}}" title="{{nav.streakLabel}}" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{t.line}}; background: {{t.sunk}}; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{nav.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>{{nav.streak}}</a>
+<a href="Profile.dc.html" aria-label="Your profile" aria-current="{{nav.profileOn}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; background: {{nav.avatarBg}}; color: {{nav.avatarFg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800"><sc-if value="{{nav.hasName}}" hint-placeholder-val="{{ false }}">{{nav.initials}}</sc-if><sc-if value="{{nav.noName}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.userIcon}}"></path></svg></sc-if></a>
+</sc-if>
+<sc-if value="{{nav.guest}}" hint-placeholder-val="{{ false }}">
+<a href="Auth.dc.html" style="height: 44px; padding: 0 16px; flex-shrink: 0; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700; white-space: nowrap">Log in</a>
+</sc-if>
+</nav>
+<sc-if value="{{nav.srch.open}}" hint-placeholder-val="{{ false }}">
+<div onClick="{{nav.srch.hide}}" aria-hidden="true" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 41"></div>
+<div data-pn-panel role="search" style="position: absolute; top: 8px; right: 24px; width: 480px; z-index: 42; display: flex; flex-direction: column; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
+<div data-pn-field style="height: 60px; box-sizing: border-box; padding: 0 8px 0 20px; border-radius: 30px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}; display: flex; align-items: center; gap: 12px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.srch.icon}}"></path></svg>
+<input data-pn-search-input type="text" role="combobox" aria-label="Search the site" aria-expanded="{{nav.srch.expanded}}" aria-controls="pn-results" aria-autocomplete="list" aria-activedescendant="{{nav.srch.active}}" autocomplete="off" spellcheck="false" placeholder="Search stories, problems and lessons" value="{{nav.srch.q}}" onChange="{{nav.srch.onInput}}" onKeyDown="{{nav.srch.onKey}}" style="flex-grow: 1; min-width: 0; height: 44px; border: 0; outline: 0; background: transparent; color: {{t.text}}; font-family: {{t.body}}; font-size: 16px">
+<button onClick="{{nav.srch.hide}}" aria-label="Close search" style="height: 32px; padding: 0 8px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; font-family: {{t.mono}}; font-size: 12px; cursor: pointer">Esc</button>
+</div>
+<div data-pn-results style="max-height: 480px; overflow-y: auto; box-sizing: border-box; padding: 8px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}">
+<sc-if value="{{nav.srch.hasHint}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; padding: 8px 12px; font-size: 13px; line-height: 1.5; color: {{t.muted}}">{{nav.srch.hint}}. Use the arrow keys and Enter to open one.</p></sc-if>
+<sc-if value="{{nav.srch.none}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 8px 12px; font-size: 13px; line-height: 1.5; color: {{t.muted}}">No matches. Try a problem name, a pattern or a LeetCode number.</p></sc-if>
+<div id="pn-results" role="listbox" aria-label="Search results">
+<sc-for list="{{nav.srch.groups}}" as="pnsg" hint-placeholder-count="2">
+<div role="group" aria-labelledby="{{pnsg.gid}}">
+<div id="{{pnsg.gid}}" style="padding: 8px 12px 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">{{pnsg.label}}</div>
+<sc-for list="{{pnsg.items}}" as="pnsi" hint-placeholder-count="3">
+<a href="{{pnsi.href}}" id="{{pnsi.id}}" role="option" aria-selected="{{pnsi.sel}}" tabindex="-1" onClick="{{pnsi.go}}" onMouseEnter="{{pnsi.hover}}" style="display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 10px; background: {{pnsi.bg}}; box-shadow: inset 3px 0 0 {{pnsi.bar}}"><span style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pnsi.title}}</span><span style="font-size: 12px; color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pnsi.sub}}</span></a>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<div role="status" aria-live="polite" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap">{{nav.srch.status}}</div>
+</div>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
+<div data-drawer style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
+<aside aria-label="Menu" onKeyDown="{{drawerKey}}" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 10px; align-items: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
+<div style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 700">{{drawerStreak}}</span><span style="font-size: 13px; color: {{t.muted}}">{{drawerStreakLine}}</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{drawerWeek}}" as="dwk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{dwk.border}}; background: {{dwk.bg}}; color: {{dwk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{dwk.d}}</span></sc-for>
+</div>
+
+<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Go to my home</a>
+</div>
+</sc-if>
+<sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 16px; font-weight: 700">Your progress is saved here</span>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Streaks, XP and sheet ticks are kept in this browser. Make a free profile to add your name and goals.</span>
+<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Make a free profile</a>
+<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Preview as a signed-in learner</button>
+</div>
+</sc-if>
+<nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
+<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
+</sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="dtb" hint-placeholder-count="3"><button onClick="{{dtb.pick}}" aria-pressed="{{dtb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{dtb.bg}}; color: {{dtb.fg}}">{{dtb.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>
+</aside>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="flex-grow: 1; height: 100vh; border: 0; background: rgba(10,10,10,0.4); cursor: pointer"></button>
+</div>
+</sc-if>
+<!-- /PILL NAV -->
+<main style="padding: 32px 80px 48px; display: flex; flex-direction: column; gap: 24px; animation: rise 0.3s ease">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 760px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Contest calendar</span>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 48px; line-height: 1.05">The next two weeks of contests</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; color: {{t.text2}}">Weekly rounds on LeetCode, AtCoder and CodeChef, in your time: <strong style="color: {{t.text}}">{{zone}}</strong>.</p>
+</div>
+<button data-cx-act onClick="{{addAll}}" disabled="{{noneLeft}}" style="height: 48px; padding: 0 20px; flex-shrink: 0; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; opacity: {{allOpacity}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"></path></svg>{{allLabel}}</button>
+</div>
+
+<div role="note" style="display: flex; gap: 12px; align-items: flex-start; padding: 16px 20px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}"><strong style="color: {{t.text}}">These times follow each platform’s usual schedule.</strong> They are not a live feed. Platforms sometimes move or skip a round, so check the contest page before you start.</span>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+<div data-cx-chips role="group" aria-label="Show contests from" style="display: flex; gap: 8px">
+<sc-for list="{{chips}}" as="ch" hint-placeholder-count="5"><button data-cx-chip onClick="{{ch.pick}}" aria-pressed="{{ch.on}}" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid {{ch.border}}; background: {{ch.bg}}; color: {{ch.fg}}; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{ch.dot}}; display: {{ch.dotShow}}"></span>{{ch.label}}</button></sc-for>
+</div>
+<span aria-live="polite" style="font-size: 13px; font-weight: 600; color: {{t.ok}}">{{saved}}</span>
+</div>
+
+<sc-if value="{{showCf}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 20px; border-radius: 16px; border: 1px dashed {{t.line2}}">
+<span style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="width: 4px; height: 32px; border-radius: 2px; background: {{cf.color}}; flex-shrink: 0"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">{{cf.name}}</span><span style="font-size: 13px; color: {{t.muted}}">{{cf.note}}</span></span></span>
+<a href="{{cf.link}}" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; color: {{t.text}}; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px">Open the Codeforces calendar<span aria-hidden="true">↗</span></a>
+</div>
+</sc-if>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start">
+<sc-for list="{{weeks}}" as="wk" hint-placeholder-count="2">
+<section aria-label="{{wk.label}}" style="display: flex; flex-direction: column">
+<h2 style="margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{wk.label}}</h2>
+<sc-for list="{{wk.days}}" as="dy" hint-placeholder-count="7">
+<div data-cx-day data-m="keep" aria-current="{{dy.current}}" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid {{t.line}}">
+<div style="display: flex; flex-direction: column; gap: 2px; align-items: flex-start">
+<span style="font-size: 13px; font-weight: 600; color: {{dy.wdColor}}">{{dy.wd}}</span>
+<span style="font-family: {{t.num}}; font-size: 28px; font-weight: 700; line-height: 1; color: {{dy.numColor}}">{{dy.num}}</span>
+<span style="font-size: 12px; color: {{t.muted}}">{{dy.month}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<sc-for list="{{dy.runs}}" as="rn" hint-placeholder-count="1">
+<div data-cx-run style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: {{t.surface}}; border: 1px solid {{rn.border}}; opacity: {{rn.opacity}}">
+<span aria-hidden="true" style="width: 4px; align-self: stretch; border-radius: 2px; background: {{rn.color}}; flex-shrink: 0"></span>
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{t.muted}}">{{rn.platform}}</span><sc-if value="{{rn.badge}}" hint-placeholder-val="{{ false }}"><span style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{rn.badgeLine}}; color: {{rn.badgeFg}}; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center">{{rn.badge}}</span></sc-if></span>
+<span style="font-size: 16px; font-weight: 700">{{rn.name}}</span>
+<span style="font-size: 14px; color: {{t.text2}}">{{rn.time}} · {{rn.length}}</span>
+</span>
+<span data-cx-acts style="display: flex; gap: 8px; flex-shrink: 0">
+<a data-cx-act href="{{rn.link}}" aria-label="{{rn.openLabel}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; color: {{t.text}}; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 4px">Open<span aria-hidden="true">↗</span></a>
+<sc-if value="{{rn.open}}" hint-placeholder-val="{{ true }}"><button data-cx-act onClick="{{rn.add}}" aria-label="{{rn.addLabel}}" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add to calendar</button></sc-if>
+</span>
+</div>
+</sc-for>
+<sc-if value="{{dy.empty}}" hint-placeholder-val="{{ false }}"><span style="min-height: 40px; display: flex; align-items: center; font-size: 14px; color: {{t.muted}}">No regular contests</span></sc-if>
+</div>
+</div>
+</sc-for>
+</section>
+</sc-for>
+</div>
+
+<p style="margin: 0; max-width: 820px; font-size: 13px; line-height: 1.6; color: {{t.muted}}">How this works: each contest is a weekly rule in UTC (LeetCode’s Weekly Contest is Sundays at 02:30 UTC, for example), and your browser turns it into local time. The calendar file saves the times shown here. When accounts launch, a server will fetch each platform’s real schedule.</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1400}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
+const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  // num: the face for big digits (lantern tiles, scores). Max uses Outfit; the light and dark themes keep Fraunces.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO, num: OUTFIT,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E', link: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A', link: '#9FE870',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO, num: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// This week's streak strip, Monday first, from the real activity log (DS in shared/data.js).
+function streakDays(t) {
+  return DS.streak().week.map((w) => ({ d: w.d, bg: w.on ? t.flame : 'transparent', fg: w.on ? t.onAccent : t.muted, border: w.on ? t.flame : (w.today ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+// @@DATA@@ — generated block (from shared/data.js): DS, the one data layer every page reads.
+// Real learner data lives in this browser's localStorage. Features that need a server (league, buddies,
+// other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
+// docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
+const DS = (function () {
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1' };
+  const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5 };
+  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
+  const LEVEL_XP = 500;
+  const SHEET_SIZE = 553; // rows in the master sheet; the build fills in the count from shared/sheet.js
+  const DAY = 86400000;
+  let now = () => Date.now();
+
+  function store() { try { return window.localStorage; } catch (e) { return null; } }
+  function get(k) { const s = store(); try { return s ? s.getItem(k) : null; } catch (e) { return null; } }
+  function set(k, v) { const s = store(); try { if (s) s.setItem(k, v); } catch (e) {} }
+  // Parsed reads are cached by their raw string, so a render can ask many times for free.
+  const cache = {};
+  function json(k, fallback) {
+    const raw = get(k);
+    if (cache[k] && cache[k].raw === raw) return cache[k].val;
+    let val = fallback;
+    try { const v = JSON.parse(raw); if (v != null && typeof v === 'object') val = v; } catch (e) {}
+    cache[k] = { raw, val };
+    return val;
+  }
+  const pad = (n) => String(n).padStart(2, '0');
+  function dayKey(ts) { const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function midnight(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function addDays(ts, n) { const d = new Date(ts); d.setDate(d.getDate() + n); return d.getTime(); }
+
+  // -- the activity log: { v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }
+  function readLog() {
+    const o = json(KEY.log, null);
+    const out = { v: 1, days: {}, stories: {}, code: {}, lessons: {} };
+    if (!o || o.v !== 1) return out;
+    ['days', 'stories', 'code', 'lessons'].forEach((k) => { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) out[k] = o[k]; });
+    return out;
+  }
+  function readSheet() {
+    const o = json(KEY.sheet, null);
+    const done = {}, star = {};
+    if (o && o.v === 1) {
+      if (o.done && typeof o.done === 'object') Object.keys(o.done).forEach((k) => { const ts = Number(o.done[k]); if (isFinite(ts) && ts > 0) done[k] = ts; });
+      if (o.star && typeof o.star === 'object') Object.keys(o.star).forEach((k) => { if (o.star[k]) star[k] = 1; });
+    }
+    return { done, star };
+  }
+  // kind: 'story' | 'code' | 'lesson' | 'revisit'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
+  function logActivity(kind, id) {
+    if (!XP[kind] || kind === 'sheet') return null;
+    const ts = now();
+    const log = JSON.parse(JSON.stringify(readLog()));
+    const k = dayKey(ts);
+    const day = log.days[k] = Object.assign({ story: 0, code: 0, lesson: 0, revisit: 0, xp: 0 }, log.days[k]);
+    day[kind] = (day[kind] || 0) + 1;
+    let first = true;
+    if (kind === 'story' || kind === 'code' || kind === 'lesson') {
+      const book = kind === 'story' ? log.stories : kind === 'code' ? log.code : log.lessons;
+      first = !(id in book);
+      if (first && id) book[id] = ts;
+    }
+    if (first) day.xp = (day.xp || 0) + XP[kind];
+    set(KEY.log, JSON.stringify(log));
+    return { day: k, first, xp: first ? XP[kind] : 0 };
+  }
+
+  // -- per-day activity: the log plus sheet ticks, keyed by local date
+  function days() {
+    const log = readLog(), sheet = readSheet();
+    const out = {};
+    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, lesson: 0, sheet: 0, revisit: 0, xp: 0, total: 0 });
+    Object.keys(log.days).forEach((k) => {
+      const d = log.days[k] || {}, o = at(k);
+      ['story', 'code', 'lesson', 'revisit'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
+      o.xp += Math.max(0, Number(d.xp) || 0);
+    });
+    Object.keys(sheet.done).forEach((id) => { const o = at(dayKey(sheet.done[id])); o.sheet++; o.xp += XP.sheet; });
+    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.lesson + o.sheet + o.revisit; if (!o.total) delete out[k]; });
+    return out;
+  }
+
+  // -- streak: consecutive active days. A streak that ran through yesterday is still alive today (atRisk).
+  function streak() {
+    const map = days();
+    const today = midnight(now());
+    const on = (ts) => !!map[dayKey(ts)];
+    const activeToday = on(today);
+    let current = 0;
+    let cur = activeToday ? today : addDays(today, -1);
+    while (on(cur)) { current++; cur = addDays(cur, -1); }
+    const keys = Object.keys(map).sort();
+    let longest = 0, run = 0, prev = null;
+    keys.forEach((k) => {
+      const [y, m, d] = k.split('-').map(Number);
+      const ts = new Date(y, m - 1, d).getTime();
+      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + 1 : 1;
+      longest = Math.max(longest, run);
+      prev = ts;
+    });
+    // This week, Monday first.
+    const dow = (new Date(today).getDay() + 6) % 7;
+    const monday = addDays(today, -dow);
+    const week = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => {
+      const ts = addDays(monday, i);
+      return { d, date: dayKey(ts), on: on(ts), today: i === dow, future: ts > today };
+    });
+    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week };
+  }
+
+  // -- heatmap: `weeks` columns ending this week, Sunday first (GitHub layout)
+  function heatmap(weeks) {
+    weeks = weeks || 26;
+    const map = days();
+    const today = midnight(now());
+    const start = addDays(today, -(new Date(today).getDay()) - (weeks - 1) * 7);
+    const cells = [];
+    let total = 0, active = 0;
+    for (let i = 0; i < weeks * 7; i++) {
+      const ts = addDays(start, i);
+      const k = dayKey(ts);
+      const d = map[k];
+      const n = d ? d.total : 0;
+      const future = ts > today;
+      if (!future) { total += n; if (n) active++; }
+      cells.push({ date: k, ts, n, story: d ? d.story : 0, sheet: d ? d.sheet : 0, code: d ? d.code : 0, lesson: d ? d.lesson : 0, revisit: d ? d.revisit : 0,
+        level: n === 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 6 ? 3 : 4, future, today: ts === today });
+    }
+    return { weeks, cells, total, activeDays: active, todayIndex: cells.findIndex((c) => c.today) };
+  }
+
+  // -- XP: earned per day, so "this week" is a real sum
+  function xp() {
+    const map = days();
+    const today = midnight(now());
+    const monday = addDays(today, -((new Date(today).getDay() + 6) % 7));
+    let total = 0, week = 0, todayXp = 0;
+    Object.keys(map).forEach((k) => {
+      const [y, m, d] = k.split('-').map(Number);
+      const ts = new Date(y, m - 1, d).getTime();
+      total += map[k].xp;
+      if (ts >= monday && ts <= today) week += map[k].xp;
+      if (ts === today) todayXp += map[k].xp;
+    });
+    const level = Math.floor(total / LEVEL_XP) + 1;
+    const into = total % LEVEL_XP;
+    return { total, week, today: todayXp, level, into, need: LEVEL_XP, pct: Math.round((into / LEVEL_XP) * 100) };
+  }
+
+  // -- problems and stories
+  function stories() { const s = readLog().stories; return { ids: Object.keys(s), count: Object.keys(s).length, at: s }; }
+  function lessons() { const l = readLog().lessons; return { ids: Object.keys(l), count: Object.keys(l).length }; }
+  function codePasses() { const c = readLog().code; return { ids: Object.keys(c), count: Object.keys(c).length }; }
+  function sheet() { const s = readSheet(); return { ticked: Object.keys(s.done).length, starred: Object.keys(s.star).length, total: typeof SHEET !== 'undefined' && SHEET.length ? SHEET.length : SHEET_SIZE, done: s.done }; }
+  function problemStatus(id) {
+    const log = readLog();
+    if (id in log.stories || id in log.code) return 'done';
+    return get(KEY.problem) === id ? 'now' : 'todo';
+  }
+  // The catalog ships every problem as "todo"; this makes `p.status` read the learner's real progress.
+  function bindCatalog(list) {
+    (list || []).forEach((p) => { try { Object.defineProperty(p, 'status', { get: () => problemStatus(p.id), configurable: true, enumerable: true }); } catch (e) {} });
+  }
+  function patterns(list, pats) {
+    return (pats || []).map(([name, tag, who]) => {
+      const all = (list || []).filter((p) => p.pattern === name);
+      const done = all.filter((p) => problemStatus(p.id) === 'done').length;
+      return { name, tag, companion: who, done, total: all.length, pct: all.length ? Math.round((done / all.length) * 100) : 0 };
+    });
+  }
+
+  // -- medals: bronze = first story in the pattern, silver = half its stories, gold = all of them and each rated in Revisit
+  const TIERS = ['bronze', 'silver', 'gold'];
+  function medals(list, pats) {
+    const deck = json(KEY.deck, {});
+    const seen = json(KEY.medals, {});
+    return patterns(list, pats).filter((p) => p.total > 0).map((p) => {
+      const ids = (list || []).filter((x) => x.pattern === p.name).map((x) => x.id);
+      const rev = readReview().cards;
+      const rated = ids.filter((id) => problemStatus(id) === 'done' && (deck[id] || (rev[id] && rev[id].last))).length;
+      const half = Math.ceil(p.total / 2);
+      const tier = p.done === p.total && rated === p.total ? 'gold' : p.done >= half ? 'silver' : p.done >= 1 ? 'bronze' : null;
+      const nextTier = tier === 'gold' ? null : TIERS[tier ? TIERS.indexOf(tier) + 1 : 0];
+      const next = !nextTier ? null : nextTier === 'bronze' ? { tier: nextTier, have: 0, need: 1, unit: 'story' }
+        : nextTier === 'silver' ? { tier: nextTier, have: p.done, need: half, unit: 'stories' }
+        : p.done < p.total ? { tier: nextTier, have: p.done, need: p.total, unit: 'stories' } : { tier: nextTier, have: rated, need: p.total, unit: 'rated' };
+      if (next) next.pct = Math.round((next.have / Math.max(1, next.need)) * 100);
+      const key = p.name + ':' + tier;
+      return { pattern: p.name, mark: p.name.split(/[\s&-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), tier, next, fresh: !!tier && !seen[key], key, done: p.done, total: p.total };
+    });
+  }
+  function markMedalsSeen(list) {
+    const seen = Object.assign({}, json(KEY.medals, {}));
+    (list || []).forEach((m) => { if (m.tier) seen[m.key] = 1; });
+    set(KEY.medals, JSON.stringify(seen));
+  }
+
+  // -- spaced repetition. Every finished story and every ticked sheet problem is a card; the card's schedule
+  // lives in dsaviz-review-v1: { v: 1, cards: { id: { due, interval, ease, reps, lapses, last, grade, name, pattern, rule, hint, story } }, log: [{ id, at, grade }] }.
+  // Sheet cards are 'sheet:<slug>'. A card with no schedule yet is due the day after it was finished or ticked.
+  const GRADES = ['Again', 'Hard', 'Good', 'Easy'];
+  const EASE = { start: 2.5, min: 1.3, max: 3.0 };
+  const MAX_INTERVAL = 365;
+  function readReview() {
+    const o = json(KEY.review, null);
+    const out = { v: 1, cards: {}, log: [] };
+    if (!o || o.v !== 1) return out;
+    if (o.cards && typeof o.cards === 'object' && !Array.isArray(o.cards)) Object.keys(o.cards).forEach((id) => { const c = o.cards[id]; if (c && typeof c === 'object') out.cards[id] = c; });
+    if (Array.isArray(o.log)) out.log = o.log.filter((x) => x && typeof x.id === 'string' && isFinite(x.at) && x.grade >= 1 && x.grade <= 4);
+    return out;
+  }
+  function writeReview(r) { set(KEY.review, JSON.stringify(r)); }
+  const fromKey = (k) => { const [y, m, d] = String(k).split('-').map(Number); return new Date(y, m - 1, d).getTime(); };
+  const daysBetween = (a, b) => Math.round((midnight(b) - midnight(a)) / DAY);
+  // The scheduler, SM-2 style: grade 1 Again, 2 Hard, 3 Good, 4 Easy. Pure: takes a card's state, returns the next one.
+  // First review: Hard 1 day, Good 3, Easy 6. After that the gap grows by 1.2 (Hard), the ease (Good) or ease x 1.3 (Easy),
+  // always by at least a day. Again resets the card to tomorrow and lowers its ease. Ease stays within 1.3 to 3.0.
+  function schedule(card, grade, ts) {
+    grade = Math.max(1, Math.min(4, Math.round(Number(grade) || 1)));
+    const c = card || {};
+    const reps = Math.max(0, Number(c.reps) || 0), prev = Math.max(0, Number(c.interval) || 0);
+    let ease = Math.max(EASE.min, Math.min(EASE.max, Number(c.ease) || EASE.start));
+    let interval;
+    if (grade === 1) { interval = 1; ease = Math.max(EASE.min, ease - 0.2); }
+    else if (reps === 0) interval = [0, 0, 1, 3, 6][grade];
+    else {
+      const grow = grade === 2 ? 1.2 : grade === 3 ? ease : ease * 1.3;
+      interval = Math.max(prev + 1, Math.round(prev * grow));
+      if (grade === 2) ease = Math.max(EASE.min, ease - 0.15);
+      if (grade === 4) ease = Math.min(EASE.max, ease + 0.15);
+    }
+    interval = Math.min(MAX_INTERVAL, interval);
+    const at = ts == null ? now() : ts;
+    return { interval, ease: Math.round(ease * 100) / 100, reps: grade === 1 ? 0 : reps + 1, lapses: (Number(c.lapses) || 0) + (grade === 1 ? 1 : 0),
+      grade, last: at, due: dayKey(addDays(midnight(at), interval)) };
+  }
+  // Every card the learner has earned, merged with its schedule and any details pages stored. Soonest due first.
+  function reviewCards() {
+    const log = readLog(), sh = readSheet(), rev = readReview();
+    const today = dayKey(now());
+    const out = [];
+    const add = (id, kind, added) => {
+      const c = rev.cards[id] || {};
+      const due = typeof c.due === 'string' && /^\d{4}-\d\d-\d\d$/.test(c.due) ? c.due : dayKey(addDays(midnight(added), 1));
+      out.push({ id, kind, added, due, isDue: due <= today, late: Math.max(0, daysBetween(fromKey(due), now())), inDays: Math.max(0, daysBetween(now(), fromKey(due))),
+        interval: Number(c.interval) || 0, ease: Number(c.ease) || EASE.start, reps: Number(c.reps) || 0, lapses: Number(c.lapses) || 0, last: Number(c.last) || 0, grade: Number(c.grade) || 0,
+        name: c.name || '', pattern: c.pattern || '', rule: c.rule || '', hint: c.hint || '', story: c.story || '' });
+    };
+    Object.keys(log.stories).forEach((id) => add(id, 'story', Number(log.stories[id]) || now()));
+    Object.keys(sh.done).forEach((slug) => {
+      const c = rev.cards['sheet:' + slug];
+      if (slug in log.stories || (c && c.story && c.story in log.stories)) return; // the story card already covers this problem
+      add('sheet:' + slug, 'sheet', sh.done[slug]);
+    });
+    return out.sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : a.added - b.added));
+  }
+  function reviewDue() { return reviewCards().filter((c) => c.isDue); }
+  // Upcoming: cards not due today, soonest first, plus a count per day for the next `days` days (index 0 is tomorrow).
+  function reviewUpcoming(days) {
+    days = days || 7;
+    const cards = reviewCards().filter((c) => !c.isDue);
+    const counts = [];
+    for (let i = 1; i <= days; i++) { const k = dayKey(addDays(midnight(now()), i)); counts.push({ date: k, n: cards.filter((c) => c.due === k).length }); }
+    return { cards, counts };
+  }
+  // Remember details a page knows (name, pattern, key rule, hint, story id) without changing the schedule.
+  function addCard(id, meta) {
+    if (!id) return;
+    const r = readReview();
+    const c = Object.assign({}, r.cards[id]);
+    ['name', 'pattern', 'rule', 'hint', 'story'].forEach((k) => { if (meta && typeof meta[k] === 'string' && meta[k]) c[k] = meta[k].slice(0, 400); });
+    r.cards[id] = c;
+    writeReview(r);
+  }
+  // Rate a card 1-4. Logs a revisit for the streak and XP, and returns the card's new schedule.
+  // With { redo: true } a learner who changes their mind straight after rating re-rates from the state before
+  // that rating: the last log entry is replaced and no extra XP is given.
+  const SCHED = ['interval', 'ease', 'reps', 'lapses', 'grade', 'last', 'due'];
+  function review(id, grade, opts) {
+    if (!id) return null;
+    const r = readReview();
+    const cur = r.cards[id] || {};
+    const last = r.log[r.log.length - 1];
+    const redo = !!(opts && opts.redo && cur.prev && last && last.id === id);
+    const base = redo ? cur.prev : cur;
+    const next = schedule(base, grade, now());
+    const prev = {};
+    SCHED.forEach((k) => { if (base[k] !== undefined) prev[k] = base[k]; });
+    const card = Object.assign({}, cur, next, { prev });
+    SCHED.forEach((k) => { if (next[k] === undefined) delete card[k]; });
+    r.cards[id] = card;
+    if (redo) r.log.pop();
+    r.log.push({ id, at: now(), grade: next.grade });
+    if (r.log.length > 2000) r.log = r.log.slice(-2000);
+    writeReview(r);
+    if (!redo) logActivity('revisit', id);
+    return next;
+  }
+  function whenLabel(n) { return n <= 1 ? 'tomorrow' : n < 14 ? 'in ' + n + ' days' : n < 60 ? 'in ' + Math.round(n / 7) + ' weeks' : 'in ' + Math.round(n / 30) + ' months'; }
+  // What each grade would do to a card now: [{ grade, label, interval, when }].
+  function reviewPreview(id, opts) {
+    const c = (opts && opts.redo && (readReview().cards[id] || {}).prev) || readReview().cards[id];
+    return GRADES.map((label, i) => { const s = schedule(c, i + 1, now()); return { grade: i + 1, label, interval: s.interval, when: whenLabel(s.interval) }; });
+  }
+  // Retention: the share of reviews in the last 30 days that were not "Again". pct is null until the first review.
+  function retention(windowDays) {
+    windowDays = windowDays || 30;
+    const since = addDays(midnight(now()), -windowDays + 1);
+    const recent = readReview().log.filter((x) => x.at >= since);
+    const recalled = recent.filter((x) => x.grade > 1).length;
+    const today = dayKey(now());
+    return { pct: recent.length ? Math.round((recalled / recent.length) * 100) : null, reviews: recent.length, recalled, windowDays,
+      today: recent.filter((x) => dayKey(x.at) === today).length };
+  }
+
+  // -- notes per problem: dsaviz-notes-v1 = { v: 1, notes: { id: { text, at } } }. The story page uses the catalog id;
+  // sheet rows use their story id when they have one (so both places share a note), else the LeetCode slug.
+  const NOTE_MAX = 2000;
+  function readNotes() {
+    const o = json(KEY.notes, null);
+    const out = {};
+    if (o && o.v === 1 && o.notes && typeof o.notes === 'object') Object.keys(o.notes).forEach((id) => { const n = o.notes[id]; if (n && typeof n.text === 'string' && n.text.trim()) out[id] = { text: n.text.slice(0, NOTE_MAX), at: Number(n.at) || 0 }; });
+    return out;
+  }
+  function note(id) { const n = readNotes()[id]; return n ? n.text : ''; }
+  function setNote(id, text) {
+    if (!id) return;
+    const all = Object.assign({}, readNotes());
+    const t = typeof text === 'string' ? text.slice(0, NOTE_MAX) : '';
+    if (t.trim()) all[id] = { text: t, at: now() }; else delete all[id];
+    set(KEY.notes, JSON.stringify({ v: 1, notes: all }));
+  }
+  // Merge notes from a backup: a missing note is added; a different one replaces ours only when it is newer. Returns how many changed.
+  function mergeNotes(incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return 0;
+    const all = Object.assign({}, readNotes());
+    let changed = 0;
+    Object.keys(incoming).forEach((id) => {
+      const n = incoming[id];
+      const text = n && typeof n === 'object' ? n.text : n;
+      if (typeof text !== 'string' || !text.trim()) return;
+      const at = (n && typeof n === 'object' && Number(n.at)) || 0;
+      if (!all[id] || (all[id].text !== text && at > all[id].at)) { all[id] = { text: text.slice(0, NOTE_MAX), at }; changed++; }
+    });
+    if (changed) set(KEY.notes, JSON.stringify({ v: 1, notes: all }));
+    return changed;
+  }
+
+  // -- the sheet backup file: { v: 1, done, star, notes }. Import adds ticks, stars and notes, keeps the earliest tick time and never removes anything.
+  function exportBackup() {
+    const s = readSheet();
+    return { v: 1, done: s.done, star: s.star, notes: readNotes() };
+  }
+  function importBackup(data) {
+    if (!data || typeof data !== 'object' || data.v !== 1) return null;
+    const cur = readSheet();
+    const done = Object.assign({}, cur.done), star = Object.assign({}, cur.star);
+    let ticks = 0;
+    if (data.done && typeof data.done === 'object') Object.keys(data.done).forEach((k) => {
+      const ts = Number(data.done[k]);
+      if (!isFinite(ts) || ts <= 0) return;
+      if (!done[k]) ticks++;
+      done[k] = done[k] ? Math.min(done[k], ts) : ts;
+    });
+    if (data.star && typeof data.star === 'object') Object.keys(data.star).forEach((k) => { if (data.star[k]) star[k] = 1; });
+    set(KEY.sheet, JSON.stringify({ v: 1, done, star }));
+    return { ticks, notes: mergeNotes(data.notes) };
+  }
+
+  // -- the learner, as far as this browser knows them
+  function profile() {
+    const ob = json(KEY.onboard, {});
+    const prefs = json(KEY.prefs, {});
+    const name = typeof ob.name === 'string' && ob.name.trim() ? ob.name.trim().slice(0, 40) : '';
+    const initials = name ? name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '';
+    const s = stories(), sh = sheet();
+    return { name, initials, signedIn: get(KEY.user) === '1', isNew: !s.count && !sh.ticked && !codePasses().count && !lessons().count,
+      lang: prefs.lang || '', goal: prefs.goal || '', reason: ob.reason || '', date: ob.date || '', demo: false };
+  }
+
+  // -- demo-only data: these need accounts and a server. The learner's own row is always real.
+  const PEOPLE = [['Priya Iyer', 'Chennai', 2140, 31], ['Karthik Reddy', 'Hyderabad', 1985, 27], ['Sneha Kulkarni', 'Pune', 1760, 22], ['Arjun Mehta', 'Jaipur', 1640, 19],
+    ['Fatima Shaikh', 'Mumbai', 1590, 17], ['Vikram Singh', 'Chandigarh', 1520, 15], ['Ananya Rao', 'Bengaluru', 1470, 12], ['Rohit Verma', 'Delhi', 1400, 5],
+    ['Meera Nair', 'Kochi', 1350, 2], ['Aditya Joshi', 'Indore', 1290, 9], ['Kavya Pillai', 'Thiruvananthapuram', 1240, 8], ['Harsh Agarwal', 'Lucknow', 1180, 6],
+    ['Ritika Banerjee', 'Kolkata', 1120, 4], ['Rahul Menon', 'Noida', 1060, 7], ['Pooja Desai', 'Surat', 990, 3], ['Nikhil Bhat', 'Mangaluru', 920, 2],
+    ['Zoya Khan', 'Bhopal', 860, 1], ['Aman Chauhan', 'Dehradun', 780, 1], ['Lakshmi Narayanan', 'Coimbatore', 690, 1]];
+  const BOARDS = { league: [1, 19], all: [42, 19], friends: [1, 6], college: [3, 12] };
+  function leaderboard(tab) {
+    tab = BOARDS[tab] ? tab : 'league';
+    const [scale, size] = BOARDS[tab];
+    const me = profile(), x = xp(), st = streak();
+    const pool = tab === 'friends' ? PEOPLE.filter((p, i) => [6, 7, 8, 1, 4, 15].includes(i)) : PEOPLE.slice(0, size);
+    const rows = pool.map(([name, where, w, streakDays], i) => ({ name, where, xp: Math.round(w * scale), streak: streakDays, me: false, seed: i }))
+      .concat([{ name: me.name || 'You', where: 'This browser', xp: tab === 'league' || tab === 'friends' ? x.week : x.total, streak: st.current, me: true, seed: 99 }])
+      .sort((a, b) => b.xp - a.xp || (a.me ? 1 : -1));
+    rows.forEach((r, i) => { r.rank = i + 1; });
+    const you = rows.find((r) => r.me);
+    const promoteAt = tab === 'league' ? rows[6] : null;
+    return { demo: true, tab, rows, you: { rank: you.rank, of: rows.length, xp: you.xp, toPromotion: promoteAt && !promoteAt.me && you.rank > 7 ? promoteAt.xp - you.xp + 1 : 0 } };
+  }
+  function buddies() {
+    return { demo: true, list: [['Ananya Rao', 'AR', 'Final year · PES University', 12, true], ['Rohit Verma', 'RV', 'SDE-1 · Bengaluru', 5, false], ['Meera Nair', 'MN', 'M.Tech · IIIT Hyderabad', 2, false]]
+      .map(([name, initials, where, streakDays, today]) => ({ name, initials, where, streak: streakDays, learnedToday: today })) };
+  }
+  function feed() {
+    return { demo: true, list: [['Sneha in Pune', 'started', 'The Campfire Trio', '2P'], ['Karthik in Bengaluru', 'finished', 'Islands on the Map', 'DFS'],
+      ['Farhan in Hyderabad', 'hit a 30-day streak on', 'The Coat-Check Counter', 'HM'], ['Divya in Chennai', 'unlocked', 'Stacks, queues & heaps', 'LVL'],
+      ['Rahul in Gurugram', 'started a mock on', 'The Train Yard Merge', 'MOCK'], ['Neha in Kolkata', 'finished', 'The Exact Change Counter', 'DP']]
+      .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
+  }
+
+  // -- predict the next step: dsaviz-predict-v1 = { v: 1, streak, best, right, total }. A wrong pick resets the streak.
+  function predict() {
+    const o = json(KEY.predict, null);
+    const n = (x) => Math.max(0, Math.floor(Number(x) || 0));
+    if (!o || o.v !== 1) return { streak: 0, best: 0, right: 0, total: 0 };
+    const total = n(o.total), right = Math.min(n(o.right), total), streak = Math.min(n(o.streak), right);
+    return { streak, best: Math.max(streak, Math.min(n(o.best), right)), right, total };
+  }
+  function logPredict(ok) {
+    const p = predict();
+    const streak = ok ? p.streak + 1 : 0;
+    const next = { v: 1, streak, best: Math.max(p.best, streak), right: p.right + (ok ? 1 : 0), total: p.total + 1 };
+    set(KEY.predict, JSON.stringify(next));
+    return { streak: next.streak, best: next.best, right: next.right, total: next.total };
+  }
+
+  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
+  // Theme, profile and settings stay.
+  function eraseProgress() {
+    const s = store();
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+  }
+
+  return {
+    KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
+    logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
+    days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
+    predict, logPredict,
+    note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
+    leaderboard, buddies, feed,
+    setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
+  };
+})();
+if (typeof PROBLEMS !== 'undefined') DS.bindCatalog(PROBLEMS);
+// @@END-DATA@@
+// @@DRAWER@@ — shared menu logic (every page with the pill nav)
+const MENU = [
+  ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
+  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
+  ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
+  ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],
+  ['Profile.dc.html', 'My profile', 'Heatmap, medals, certificates, reminders', null],
+  ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
+  ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
+  ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
+  ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
+  ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
+  ['Contests.dc.html', 'Contest calendar', 'LeetCode, AtCoder, CodeChef and Codeforces in your time', null],
+  ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
+  ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
+];
+function drawerVals(cmp, t, themeKey) {
+  const user = cmp.state.user !== undefined ? !!cmp.state.user : loadUser();
+  const st = DS.streak();
+  return {
+    drawerOpen: !!cmp.state.drawer,
+    openDrawer: () => cmp.setState({ drawer: true }),
+    closeDrawer: () => cmp.setState({ drawer: false }),
+    drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
+    user, guest: !user,
+    signIn: () => { saveUser(true); cmp.setState({ user: true }); },
+    signOut: () => { saveUser(false); cmp.setState({ user: false, drawer: false }); },
+    drawerWeek: streakDays(t),
+    drawerStreak: st.current ? st.current + '-day streak' : 'No streak yet',
+    drawerStreakLine: st.activeToday ? 'Today counts. Come back tomorrow.' : st.current ? 'Finish a story today to make it ' + (st.current + 1) : 'Finish one story to start your streak',
+    themeBtns: themeButtons(cmp, themeKey, t),
+    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => ({
+      href, label, sub,
+      go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
+    }))
+  };
+}
+// @@END-DRAWER@@
+// @@UI@@ — generated block (from shared/ui.js): view models for the shared components.
+// Markup lives in shared/ui/*.html; the build copies it between the STAT TILES, RINGS and MEDALS comment markers.
+// Every builder takes the theme tokens `t` first, so all four themes work.
+const ICONS = {
+  home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+  learn: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
+  sheet: 'M10 6h10M10 12h10M10 18h10M3.5 6l1.5 1.5 2.5-3M3.5 12l1.5 1.5 2.5-3M3.5 18l1.5 1.5 2.5-3',
+  code: 'M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16',
+  git: 'M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9',
+  design: 'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01',
+  ai: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  flame: 'M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z',
+  check: 'M5 12l5 5L20 7',
+  bolt: 'M13 2L4 14h7l-1 8 9-12h-7z',
+  story: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
+  lock: 'M7 11h10v9H7zM9 11V8a3 3 0 0 1 6 0v3',
+  user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0'
+};
+// Filled icons; the rest are stroked.
+const ICON_FILLED = { flame: 1, bolt: 1 };
+// Medal metals (light, mid, shadow) from the Gym Buddy spec. Theme-independent, like real metal.
+const METALS = { bronze: ['#F2BE95', '#B97A4E', '#6E3F22'], silver: ['#F7F8FA', '#B8BCC6', '#62666F'], gold: ['#FFEAA8', '#E0B04A', '#8E6618'] };
+const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
+// True while the page shows its phone layout (below 760px; the runtime sets html[data-phone] and
+// re-renders the page when it flips). Use it only for content changes; layout belongs in CSS.
+function dsPhone() { try { return typeof document !== 'undefined' && document.documentElement.hasAttribute('data-phone'); } catch (e) { return false; } }
+// Blocks that sit in a different order on phones are rendered in that order, so keyboard and screen-reader
+// order follow what is seen (CSS `order` would only move the pixels). In markup:
+//   <sc-for list="{{parts}}" as="part"><sc-if value="{{part.aside}}">…</sc-if><sc-if value="{{part.main}}">…</sc-if></sc-for>
+// with parts: phoneOrder(['aside', 'main'], ['main', 'aside']).
+// Every item names every part (true for its own), so a template check on the first item sees them all.
+function phoneOrder(desk, phone) { return (dsPhone() ? phone : desk).map((k) => Object.assign(...desk.map((d) => ({ [d]: d === k })))); }
+function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
+function iconVals(name, color) {
+  const filled = !!ICON_FILLED[name];
+  return { d: ICONS[name] || '', fill: filled ? color : 'none', stroke: filled ? 'none' : color };
+}
+// Reduced motion is read once; the CSS also turns animation off, this only drops the stagger delay.
+function reducedMotion() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+
+// Stat tiles: icon box, big number, small unit, short label, optional 4px progress bar.
+// items: [{ icon, color, value, unit, label, pct }] (pct 0-100 or null)
+function statTiles(t, items) {
+  const still = reducedMotion();
+  return {
+    cols: items.length,
+    list: items.map((it, i) => Object.assign(iconVals(it.icon, it.color), {
+      value: String(it.value), unit: it.unit || '', label: it.label, fg: it.color, box: tint(it.color, '22'),
+      bar: it.pct != null, pct: Math.max(0, Math.min(100, Math.round(it.pct || 0))) + '%',
+      delay: still ? '0ms' : i * 50 + 'ms'
+    }))
+  };
+}
+
+// Concentric progress rings, outermost first, a stroke/3 gap between them. A ring at zero hides its cap.
+// rings: [{ label, value, pct, color }]
+function ringSet(t, rings, size, stroke) {
+  size = size || 152; stroke = stroke || 12;
+  const c = size / 2;
+  const gap = stroke / 3;
+  const arcs = rings.map((r, i) => {
+    const radius = c - stroke / 2 - i * (stroke + gap);
+    const len = 2 * Math.PI * radius;
+    const pct = Math.max(0, Math.min(100, r.pct || 0));
+    return { r: radius.toFixed(2), len: len.toFixed(2), offset: (len * (1 - pct / 100)).toFixed(2), color: r.color, op: pct > 0 ? 1 : 0 };
+  });
+  return {
+    size, c, stroke, arcs,
+    legend: rings.map((r) => ({ label: r.label, value: r.value, color: r.color })),
+    aria: rings.map((r) => r.label + ' ' + r.value).join(', '),
+    empty: rings.every((r) => !r.pct)
+  };
+}
+
+// Medal shelf: earned medals in metal, the next one outlined with an accent progress line, the rest locked.
+// medals: DS.medals(...) output. fresh: keys that should shine once.
+function medalShelf(t, medals, slots, fresh) {
+  slots = slots || 8;
+  const rank = { gold: 3, silver: 2, bronze: 1 };
+  const open = medals.filter((m) => m.next).sort((a, b) => b.next.pct - a.next.pct || b.done - a.done);
+  const next = open[0] || null;
+  // The next medal sits on its own slot: when it upgrades an earned one, it shows that metal plus the progress line.
+  const earned = medals.filter((m) => m.tier && m !== next).sort((a, b) => rank[b.tier] - rank[a.tier] || b.done - a.done);
+  const locked = medals.filter((m) => !m.tier && m !== next);
+  const total = medals.length * 3;
+  const got = medals.reduce((s, m) => s + (m.tier ? rank[m.tier] : 0), 0);
+  const freshSet = fresh || {};
+  const items = [];
+  const base = (m, i) => ({ gid: 'dsm-g' + i, cid: 'dsm-c' + i, mark: m.mark, label: m.pattern, pathLen: 100, progress: '0 100', showProgress: false, fresh: false, lock: false, showMark: true, sw: '1.5', dash: 'none', op: 1 });
+  earned.forEach((m) => {
+    if (items.length >= slots) return;
+    const [c1, c2, c3] = METALS[m.tier];
+    const fr = !!freshSet[m.key];
+    items.push(Object.assign(base(m, items.length), { c1, c2, c3, fill: 'url(#dsm-g' + items.length + ')', stroke: c3, ink: '#2A1A0A',
+      sub: TIER_NAME[m.tier], subFg: t.text2, fresh: fr, aria: m.pattern + ': ' + TIER_NAME[m.tier] + ' medal' + (fr ? ', just earned' : '') }));
+  });
+  if (next && items.length < slots) {
+    const metal = next.tier ? METALS[next.tier] : null;
+    items.push(Object.assign(base(next, items.length), { c1: metal ? metal[0] : t.sunk, c2: metal ? metal[1] : t.sunk, c3: metal ? metal[2] : t.sunk,
+      fill: metal ? 'url(#dsm-g' + items.length + ')' : t.sunk, stroke: metal ? metal[2] : t.line2, ink: metal ? '#2A1A0A' : t.text,
+      showProgress: true, progress: Math.max(2, next.next.pct) + ' 100', sub: next.next.have + ' of ' + next.next.need, subFg: t.accent,
+      label: next.pattern, aria: (next.tier ? TIER_NAME[next.tier] + ' earned. ' : '') + 'Next: ' + TIER_NAME[next.next.tier] + ' in ' + next.pattern + ', ' + next.next.have + ' of ' + next.next.need + ' ' + next.next.unit }));
+  }
+  locked.forEach((m) => {
+    if (items.length >= slots) return;
+    items.push(Object.assign(base(m, items.length), { c1: t.bg, c2: t.bg, c3: t.bg, fill: 'transparent', stroke: t.line2, ink: t.faint, dash: '3 3',
+      showMark: false, lock: true, sub: 'Locked', subFg: t.muted, aria: m.pattern + ': locked' }));
+  });
+  return {
+    items, got, total, empty: got === 0,
+    caption: got + ' of ' + total,
+    nextLine: next ? TIER_NAME[next.next.tier] + ' · ' + next.pattern + ' · ' + next.next.have + ' of ' + next.next.need + ' ' + next.next.unit : 'Every medal earned'
+  };
+}
+// @@END-UI@@
+// @@SEARCH@@ — generated by scripts/build_search.js: the site search index and the counts pages show.
+// counts: stories, storyPatterns, patterns, catalog, sheet, runnable, git, sd, ai, terms. Items: [type, id, title, sub, keywords].
+const SITE_INDEX = {"items":[["story","valid-anagram","Valid Anagram","The Scrabble Swap · Hash Map","242"],["story","valid-palindrome","Valid Palindrome","The Mirror Hallway · Two Pointers","125"],["story","longest-substring","Longest Substring Without Repeating Characters","The Train of Unique Faces · Sliding Window","3"],["story","char-replacement","Longest Repeating Character Replacement","The Paint Touch-up · Sliding Window","424"],["story","two-sum-ii","Two Sum II — Sorted","The Lantern Bridge · Two Pointers","167"],["story","container","Container With Most Water","The Rain Barrel Builders · Two Pointers","11"],["story","best-time-stock","Best Time to Buy and Sell Stock","The Market Stall Diary · Sliding Window","121"],["story","product-except-self","Product of Array Except Self","The Group Photo Scores · Prefix Sum","238"],["story","subarray-sum-k","Subarray Sum Equals K","The Coin Jar Checkpoints · Prefix Sum","560"],["story","binary-search","Binary Search","The Number-Guessing Game · Binary Search","704"],["story","search-rotated","Search in Rotated Sorted Array","The Spun Bookshelf · Binary Search","33"],["story","find-min-rotated","Find Minimum in Rotated Sorted Array","The Lowest Step · Binary Search","153"],["story","rotate-image","Rotate Image","The Turning Tile Floor · Matrix","48"],["story","merge-intervals","Merge Intervals","The Meeting Room Diary · Intervals","56"],["story","insert-interval","Insert Interval","The Late Booking · Intervals","57"],["story","jump-game","Jump Game","The Stepping Stones · Greedy","55"],["story","subsets","Subsets","The Picnic Basket Choices · Backtracking","78"],["story","permutations","Permutations","The Seating Chart · Backtracking","46"],["story","combination-sum","Combination Sum","The Exact Price Basket · Backtracking","39"],["story","contains-duplicate","Contains Duplicate","The Guest List · Hash Map","217"],["story","two-sum","Two Sum","The Coat-Check Counter · Hash Map","1"],["story","valid-parentheses","Valid Parentheses","The Stack of Plates · Stack","20"],["story","daily-temperatures","Daily Temperatures","The Weather Watchers · Stack","739"],["story","kth-largest","Kth Largest Element in an Array","The Talent Show Top K · Heap","215"],["story","top-k-frequent","Top K Frequent Elements","The Most-Requested Songs · Heap","347"],["story","reverse-linked-list","Reverse Linked List","Turning the Train Around · In-place Reversal","206"],["story","linked-list-cycle","Linked List Cycle","The Tortoise and the Hare · Fast & Slow Pointers","141"],["story","middle-of-list","Middle of the Linked List","Halfway Across the Bridge · Fast & Slow Pointers","876"],["story","merge-k-lists","Merge k Sorted Lists","The Train Yard Merge · Heap","23"],["story","invert-tree","Invert Binary Tree","The Mirror Garden · Depth-First Search","226"],["story","max-depth","Maximum Depth of Binary Tree","The Tallest Branch · Depth-First Search","104"],["story","validate-bst","Validate Binary Search Tree","The Orchard Rule · Depth-First Search","98"],["story","level-order","Binary Tree Level Order Traversal","Floors of the Treehouse · Breadth-First Search","102"],["story","right-side-view","Binary Tree Right Side View","The View from the Right Balcony · Breadth-First Search","199"],["story","number-of-islands","Number of Islands","Islands on the Map · Depth-First Search","200"],["story","rotting-oranges","Rotting Oranges","The Spreading Ripple · Breadth-First Search","994"],["story","climbing-stairs","Climbing Stairs","Notes on the Staircase · Dynamic Programming","70"],["story","house-robber","House Robber","The Careful Night Walk · Dynamic Programming","198"],["story","coin-change","Coin Change","The Exact Change Counter · Dynamic Programming","322"],["story","unique-paths","Unique Paths","The Grid Walker's Notebook · Dynamic Programming","62"],["pattern","Two Pointers","Two Pointers","Two friends walk toward each other","Lumi & Roo"],["pattern","Sliding Window","Sliding Window","A train window gliding past the view","Wren"],["pattern","Hash Map","Hash Map","The coat-check counter","Cleo"],["pattern","Prefix Sum","Prefix Sum","A running tally in the margin","Penny"],["pattern","Binary Search","Binary Search","Guess the number, halve the doubt","Gus"],["pattern","Matrix","Matrix","Turning the tiled floor","Tilda"],["pattern","Intervals","Intervals","The meeting-room diary","Iris"],["pattern","Greedy","Greedy","Take the best step you can see","Jax"],["pattern","Stack","Stack","A pile of plates: last on, first off","Pip"],["pattern","Heap","Heap","The triage desk","Nia"],["pattern","In-place Reversal","In-place Reversal","Turning the train around","Cole"],["pattern","Fast & Slow Pointers","Fast & Slow Pointers","The tortoise and the hare","Tam & Hazel"],["pattern","Depth-First Search","Depth-First Search","The maze explorer with chalk","Moss"],["pattern","Breadth-First Search","Breadth-First Search","Ripples in a pond","Rill"],["pattern","Backtracking","Backtracking","Try, mark, undo","Chalk"],["pattern","Dynamic Programming","Dynamic Programming","Notes to your future self","Sol"],["problem","two-sum-ii","Two Sum II — Sorted","Two Pointers · Medium","167"],["problem","valid-palindrome","Valid Palindrome","Two Pointers · Easy","125"],["problem","container","Container With Most Water","Two Pointers · Medium","11"],["problem","longest-substring","Longest Substring Without Repeating Characters","Sliding Window · Medium","3"],["problem","char-replacement","Longest Repeating Character Replacement","Sliding Window · Medium","424"],["problem","best-time-stock","Best Time to Buy and Sell Stock","Sliding Window · Easy","121"],["problem","contains-duplicate","Contains Duplicate","Hash Map · Starter","217"],["problem","two-sum","Two Sum","Hash Map · Easy","1"],["problem","valid-anagram","Valid Anagram","Hash Map · Starter","242"],["problem","min-window","Minimum Window Substring","Sliding Window · Hard","76"],["problem","longest-palindrome","Longest Palindromic Substring","Two Pointers · Medium","5"],["problem","3sum","3Sum","Two Pointers · Medium","15"],["problem","trapping-rain","Trapping Rain Water","Two Pointers · Hard","42"],["problem","move-zeroes","Move Zeroes","Two Pointers · Starter","283"],["problem","product-except-self","Product of Array Except Self","Prefix Sum · Medium","238"],["problem","subarray-sum-k","Subarray Sum Equals K","Prefix Sum · Medium","560"],["problem","binary-search","Binary Search","Binary Search · Starter","704"],["problem","search-rotated","Search in Rotated Sorted Array","Binary Search · Medium","33"],["problem","find-min-rotated","Find Minimum in Rotated Sorted Array","Binary Search · Medium","153"],["problem","rotate-image","Rotate Image","Matrix · Medium","48"],["problem","merge-intervals","Merge Intervals","Intervals · Medium","56"],["problem","insert-interval","Insert Interval","Intervals · Medium","57"],["problem","jump-game","Jump Game","Greedy · Medium","55"],["problem","subsets","Subsets","Backtracking · Medium","78"],["problem","permutations","Permutations","Backtracking · Medium","46"],["problem","combination-sum","Combination Sum","Backtracking · Medium","39"],["problem","group-anagrams","Group Anagrams","Hash Map · Medium","49"],["problem","longest-consecutive","Longest Consecutive Sequence","Hash Map · Medium","128"],["problem","valid-parentheses","Valid Parentheses","Stack · Easy","20"],["problem","daily-temperatures","Daily Temperatures","Stack · Medium","739"],["problem","min-stack","Min Stack","Stack · Medium","155"],["problem","kth-largest","Kth Largest Element in an Array","Heap · Medium","215"],["problem","top-k-frequent","Top K Frequent Elements","Heap · Medium","347"],["problem","sliding-window-max","Sliding Window Maximum","Sliding Window · Hard","239"],["problem","reverse-linked-list","Reverse Linked List","In-place Reversal · Easy","206"],["problem","linked-list-cycle","Linked List Cycle","Fast & Slow Pointers · Easy","141"],["problem","middle-of-list","Middle of the Linked List","Fast & Slow Pointers · Starter","876"],["problem","merge-two-lists","Merge Two Sorted Lists","Two Pointers · Easy","21"],["problem","remove-nth","Remove Nth Node From End of List","Two Pointers · Medium","19"],["problem","merge-k-lists","Merge k Sorted Lists","Heap · Hard","23"],["problem","invert-tree","Invert Binary Tree","Depth-First Search · Starter","226"],["problem","max-depth","Maximum Depth of Binary Tree","Depth-First Search · Easy","104"],["problem","validate-bst","Validate Binary Search Tree","Depth-First Search · Medium","98"],["problem","level-order","Binary Tree Level Order Traversal","Breadth-First Search · Medium","102"],["problem","right-side-view","Binary Tree Right Side View","Breadth-First Search · Medium","199"],["problem","number-of-islands","Number of Islands","Depth-First Search · Medium","200"],["problem","rotting-oranges","Rotting Oranges","Breadth-First Search · Medium","994"],["problem","clone-graph","Clone Graph","Depth-First Search · Medium","133"],["problem","course-schedule","Course Schedule","Breadth-First Search · Medium","207"],["problem","word-search","Word Search","Backtracking · Medium","79"],["problem","climbing-stairs","Climbing Stairs","Dynamic Programming · Easy","70"],["problem","house-robber","House Robber","Dynamic Programming · Medium","198"],["problem","max-subarray","Maximum Subarray","Dynamic Programming · Medium","53"],["problem","coin-change","Coin Change","Dynamic Programming · Medium","322"],["problem","lis","Longest Increasing Subsequence","Dynamic Programming · Medium","300"],["problem","word-break","Word Break","Dynamic Programming · Medium","139"],["problem","unique-paths","Unique Paths","Dynamic Programming · Medium","62"],["problem","reverse-string","Reverse String","Two Pointers · Easy","344"],["problem","squares-of-a-sorted-array","Squares of a Sorted Array","Two Pointers · Easy","977"],["problem","merge-sorted-array","Merge Sorted Array","Two Pointers · Easy","88"],["problem","sort-colors","Sort Colors","Two Pointers · Medium","75"],["problem","is-subsequence","Is Subsequence","Two Pointers · Easy","392"],["problem","permutation-in-string","Permutation in String","Sliding Window · Medium","567"],["problem","minimum-size-subarray-sum","Minimum Size Subarray Sum","Sliding Window · Medium","209"],["problem","find-all-anagrams-in-a-string","Find All Anagrams in a String","Sliding Window · Medium","438"],["problem","ransom-note","Ransom Note","Hash Map · Easy","383"],["problem","isomorphic-strings","Isomorphic Strings","Hash Map · Easy","205"],["problem","lru-cache","LRU Cache","Hash Map · Medium","146"],["problem","find-pivot-index","Find Pivot Index","Prefix Sum · Easy","724"],["problem","search-insert-position","Search Insert Position","Binary Search · Easy","35"],["problem","koko-eating-bananas","Koko Eating Bananas","Binary Search · Medium","875"],["problem","search-a-2d-matrix","Search a 2D Matrix","Binary Search · Medium","74"],["problem","spiral-matrix","Spiral Matrix","Matrix · Medium","54"],["problem","set-matrix-zeroes","Set Matrix Zeroes","Matrix · Medium","73"],["problem","non-overlapping-intervals","Non-overlapping Intervals","Intervals · Medium","435"],["problem","jump-game-ii","Jump Game II","Greedy · Medium","45"],["problem","gas-station","Gas Station","Greedy · Medium","134"],["problem","partition-labels","Partition Labels","Greedy · Medium","763"],["problem","evaluate-reverse-polish-notation","Evaluate Reverse Polish Notation","Stack · Medium","150"],["problem","largest-rectangle-in-histogram","Largest Rectangle in Histogram","Stack · Hard","84"],["problem","last-stone-weight","Last Stone Weight","Heap · Easy","1046"],["problem","k-closest-points-to-origin","K Closest Points to Origin","Heap · Medium","973"],["problem","palindrome-linked-list","Palindrome Linked List","In-place Reversal · Easy","234"],["problem","reorder-list","Reorder List","In-place Reversal · Medium","143"],["problem","happy-number","Happy Number","Fast & Slow Pointers · Easy","202"],["problem","find-the-duplicate-number","Find the Duplicate Number","Fast & Slow Pointers · Medium","287"],["problem","same-tree","Same Tree","Depth-First Search · Easy","100"],["problem","max-area-of-island","Max Area of Island","Depth-First Search · Medium","695"],["problem","course-schedule-ii","Course Schedule II","Breadth-First Search · Medium","210"],["problem","letter-combinations-of-a-phone-number","Letter Combinations of a Phone Number","Backtracking · Medium","17"],["problem","min-cost-climbing-stairs","Min Cost Climbing Stairs","Dynamic Programming · Easy","746"],["problem","longest-common-subsequence","Longest Common Subsequence","Dynamic Programming · Medium","1143"],["problem","decode-ways","Decode Ways","Dynamic Programming · Medium","91"],["problem","edit-distance","Edit Distance","Dynamic Programming · Medium","72"],["problem","partition-equal-subset-sum","Partition Equal Subset Sum","Dynamic Programming · Medium","416"],["problem","diameter-of-binary-tree","Diameter of Binary Tree","Trees · Easy","543"],["problem","balanced-binary-tree","Balanced Binary Tree","Trees · Easy","110"],["problem","kth-smallest-element-in-a-bst","Kth Smallest Element in a BST","Trees · Medium","230"],["problem","implement-trie-prefix-tree","Implement Trie (Prefix Tree)","Tries · Medium","208"],["problem","single-number","Single Number","Bit Manipulation · Easy","136"],["problem","missing-number","Missing Number","Bit Manipulation · Easy","268"],["problem","counting-bits","Counting Bits","Bit Manipulation · Easy","338"],["problem","palindrome-number","Palindrome Number","Math · Easy","9"],["problem","powx-n","Pow(x, n)","Math · Medium","50"],["problem","reverse-vowels-of-a-string","Reverse Vowels of a String","Two Pointers · Easy","345"],["problem","sort-array-by-parity","Sort Array By Parity","Two Pointers · Easy","905"],["problem","merge-strings-alternately","Merge Strings Alternately","Two Pointers · Easy","1768"],["problem","valid-palindrome-ii","Valid Palindrome II","Two Pointers · Easy","680"],["problem","backspace-string-compare","Backspace String Compare","Two Pointers · Easy","844"],["problem","boats-to-save-people","Boats to Save People","Two Pointers · Medium","881"],["problem","3sum-closest","3Sum Closest","Two Pointers · Medium","16"],["problem","next-permutation","Next Permutation","Two Pointers · Medium","31"],["problem","maximum-average-subarray-i","Maximum Average Subarray I","Sliding Window · Easy","643"],["problem","contains-duplicate-ii","Contains Duplicate II","Sliding Window · Easy","219"],["problem","minimum-difference-between-highest-and-lowest-of-k-scores","Minimum Difference Between Highest and Lowest of K Scores","Sliding Window · Easy","1984"],["problem","maximum-number-of-vowels-in-a-substring-of-given-length","Maximum Number of Vowels in a Substring of Given Length","Sliding Window · Medium","1456"],["problem","maximum-points-you-can-obtain-from-cards","Maximum Points You Can Obtain from Cards","Sliding Window · Medium","1423"],["problem","subarray-product-less-than-k","Subarray Product Less Than K","Sliding Window · Medium","713"],["problem","max-consecutive-ones-iii","Max Consecutive Ones III","Sliding Window · Medium","1004"],["problem","longest-subarray-of-1s-after-deleting-one-element","Longest Subarray of 1's After Deleting One Element","Sliding Window · Medium","1493"],["problem","fruit-into-baskets","Fruit Into Baskets","Sliding Window · Medium","904"],["problem","subarrays-with-k-different-integers","Subarrays with K Different Integers","Sliding Window · Hard","992"],["problem","find-the-difference-of-two-arrays","Find the Difference of Two Arrays","Hash Map · Easy","2215"],["problem","first-unique-character-in-a-string","First Unique Character in a String","Hash Map · Easy","387"],["problem","maximum-number-of-balloons","Maximum Number of Balloons","Hash Map · Easy","1189"],["problem","intersection-of-two-arrays","Intersection of Two Arrays","Hash Map · Easy","349"],["problem","number-of-good-pairs","Number of Good Pairs","Hash Map · Easy","1512"],["problem","unique-number-of-occurrences","Unique Number of Occurrences","Hash Map · Easy","1207"],["problem","word-pattern","Word Pattern","Hash Map · Easy","290"],["problem","majority-element","Majority Element","Hash Map · Easy","169"],["problem","determine-if-two-strings-are-close","Determine if Two Strings Are Close","Hash Map · Medium","1657"],["problem","valid-sudoku","Valid Sudoku","Hash Map · Medium","36"],["problem","first-missing-positive","First Missing Positive","Hash Map · Hard","41"],["problem","equal-row-and-column-pairs","Equal Row and Column Pairs","Hash Map · Medium","2352"],["problem","4sum-ii","4Sum II","Hash Map · Medium","454"],["problem","running-sum-of-1d-array","Running Sum of 1d Array","Prefix Sum · Easy","1480"],["problem","find-the-highest-altitude","Find the Highest Altitude","Prefix Sum · Easy","1732"],["problem","find-the-middle-index-in-array","Find the Middle Index in Array","Prefix Sum · Easy","1991"],["problem","range-sum-query-immutable","Range Sum Query - Immutable","Prefix Sum · Easy","303"],["problem","contiguous-array","Contiguous Array","Prefix Sum · Medium","525"],["problem","continuous-subarray-sum","Continuous Subarray Sum","Prefix Sum · Medium","523"],["problem","subarray-sums-divisible-by-k","Subarray Sums Divisible by K","Prefix Sum · Medium","974"],["problem","corporate-flight-bookings","Corporate Flight Bookings","Prefix Sum · Medium","1109"],["problem","sqrtx","Sqrt(x)","Binary Search · Easy","69"],["problem","find-smallest-letter-greater-than-target","Find Smallest Letter Greater Than Target","Binary Search · Easy","744"],["problem","find-first-and-last-position-of-element-in-sorted-array","Find First and Last Position of Element in Sorted Array","Binary Search · Medium","34"],["problem","peak-index-in-a-mountain-array","Peak Index in a Mountain Array","Binary Search · Medium","852"],["problem","find-peak-element","Find Peak Element","Binary Search · Medium","162"],["problem","single-element-in-a-sorted-array","Single Element in a Sorted Array","Binary Search · Medium","540"],["problem","capacity-to-ship-packages-within-d-days","Capacity To Ship Packages Within D Days","Binary Search · Medium","1011"],["problem","minimum-number-of-days-to-make-m-bouquets","Minimum Number of Days to Make m Bouquets","Binary Search · Medium","1482"],["problem","time-based-key-value-store","Time Based Key-Value Store","Binary Search · Medium","981"],["problem","split-array-largest-sum","Split Array Largest Sum","Binary Search · Hard","410"],["problem","median-of-two-sorted-arrays","Median of Two Sorted Arrays","Binary Search · Hard","4"],["problem","transpose-matrix","Transpose Matrix","Matrix · Easy","867"],["problem","reshape-the-matrix","Reshape the Matrix","Matrix · Easy","566"],["problem","matrix-diagonal-sum","Matrix Diagonal Sum","Matrix · Easy","1572"],["problem","pascals-triangle","Pascal's Triangle","Matrix · Easy","118"],["problem","count-negative-numbers-in-a-sorted-matrix","Count Negative Numbers in a Sorted Matrix","Matrix · Easy","1351"],["problem","spiral-matrix-ii","Spiral Matrix II","Matrix · Medium","59"],["problem","game-of-life","Game of Life","Matrix · Medium","289"],["problem","summary-ranges","Summary Ranges","Intervals · Easy","228"],["problem","minimum-number-of-arrows-to-burst-balloons","Minimum Number of Arrows to Burst Balloons","Intervals · Medium","452"],["problem","interval-list-intersections","Interval List Intersections","Intervals · Medium","986"],["problem","car-pooling","Car Pooling","Intervals · Medium","1094"],["problem","my-calendar-i","My Calendar I","Intervals · Medium","729"],["problem","remove-covered-intervals","Remove Covered Intervals","Intervals · Medium","1288"],["problem","assign-cookies","Assign Cookies","Greedy · Easy","455"],["problem","lemonade-change","Lemonade Change","Greedy · Easy","860"],["problem","can-place-flowers","Can Place Flowers","Greedy · Easy","605"],["problem","split-a-string-in-balanced-strings","Split a String in Balanced Strings","Greedy · Easy","1221"],["problem","maximum-units-on-a-truck","Maximum Units on a Truck","Greedy · Easy","1710"],["problem","best-time-to-buy-and-sell-stock-ii","Best Time to Buy and Sell Stock II","Greedy · Medium","122"],["problem","minimum-add-to-make-parentheses-valid","Minimum Add to Make Parentheses Valid","Greedy · Medium","921"],["problem","increasing-triplet-subsequence","Increasing Triplet Subsequence","Greedy · Medium","334"],["problem","hand-of-straights","Hand of Straights","Greedy · Medium","846"],["problem","valid-parenthesis-string","Valid Parenthesis String","Greedy · Medium","678"],["problem","task-scheduler","Task Scheduler","Greedy · Medium","621"],["problem","candy","Candy","Greedy · Hard","135"],["problem","merge-triplets-to-form-target-triplet","Merge Triplets to Form Target Triplet","Greedy · Medium","1899"],["problem","baseball-game","Baseball Game","Stack · Easy","682"],["problem","remove-all-adjacent-duplicates-in-string","Remove All Adjacent Duplicates In String","Stack · Easy","1047"],["problem","make-the-string-great","Make The String Great","Stack · Easy","1544"],["problem","next-greater-element-i","Next Greater Element I","Stack · Easy","496"],["problem","implement-queue-using-stacks","Implement Queue using Stacks","Stack · Easy","232"],["problem","removing-stars-from-a-string","Removing Stars From a String","Stack · Medium","2390"],["problem","simplify-path","Simplify Path","Stack · Medium","71"],["problem","decode-string","Decode String","Stack · Medium","394"],["problem","asteroid-collision","Asteroid Collision","Stack · Medium","735"],["problem","car-fleet","Car Fleet","Stack · Medium","853"],["problem","basic-calculator-ii","Basic Calculator II","Stack · Medium","227"],["problem","longest-valid-parentheses","Longest Valid Parentheses","Stack · Hard","32"],["problem","online-stock-span","Online Stock Span","Stack · Medium","901"],["problem","next-greater-element-ii","Next Greater Element II","Monotonic Stack & Queue · Medium","503"],["problem","remove-k-digits","Remove K Digits","Monotonic Stack & Queue · Medium","402"],["problem","final-prices-with-a-special-discount-in-a-shop","Final Prices With a Special Discount in a Shop","Monotonic Stack & Queue · Easy","1475"],["problem","132-pattern","132 Pattern","Monotonic Stack & Queue · Medium","456"],["problem","sum-of-subarray-minimums","Sum of Subarray Minimums","Monotonic Stack & Queue · Medium","907"],["problem","kth-largest-element-in-a-stream","Kth Largest Element in a Stream","Heap · Easy","703"],["problem","the-k-weakest-rows-in-a-matrix","The K Weakest Rows in a Matrix","Heap · Easy","1337"],["problem","take-gifts-from-the-richest-pile","Take Gifts From the Richest Pile","Heap · Easy","2558"],["problem","top-k-frequent-words","Top K Frequent Words","Heap · Medium","692"],["problem","sort-characters-by-frequency","Sort Characters By Frequency","Heap · Medium","451"],["problem","find-median-from-data-stream","Find Median from Data Stream","Heap · Hard","295"],["problem","reorganize-string","Reorganize String","Heap · Medium","767"],["problem","remove-duplicates-from-sorted-list","Remove Duplicates from Sorted List","Linked Lists · Easy","83"],["problem","convert-binary-number-in-a-linked-list-to-integer","Convert Binary Number in a Linked List to Integer","Linked Lists · Easy","1290"],["problem","remove-linked-list-elements","Remove Linked List Elements","Linked Lists · Easy","203"],["problem","add-two-numbers","Add Two Numbers","Linked Lists · Medium","2"],["problem","odd-even-linked-list","Odd Even Linked List","Linked Lists · Medium","328"],["problem","partition-list","Partition List","Linked Lists · Medium","86"],["problem","sort-list","Sort List","Linked Lists · Medium","148"],["problem","swap-nodes-in-pairs","Swap Nodes in Pairs","In-place Reversal · Medium","24"],["problem","reverse-linked-list-ii","Reverse Linked List II","In-place Reversal · Medium","92"],["problem","rotate-list","Rotate List","In-place Reversal · Medium","61"],["problem","reverse-nodes-in-k-group","Reverse Nodes in k-Group","In-place Reversal · Hard","25"],["problem","maximum-twin-sum-of-a-linked-list","Maximum Twin Sum of a Linked List","In-place Reversal · Medium","2130"],["problem","delete-the-middle-node-of-a-linked-list","Delete the Middle Node of a Linked List","Fast & Slow Pointers · Medium","2095"],["problem","binary-tree-inorder-traversal","Binary Tree Inorder Traversal","Trees · Easy","94"],["problem","binary-tree-preorder-traversal","Binary Tree Preorder Traversal","Trees · Easy","144"],["problem","binary-tree-postorder-traversal","Binary Tree Postorder Traversal","Trees · Easy","145"],["problem","merge-two-binary-trees","Merge Two Binary Trees","Trees · Easy","617"],["problem","univalued-binary-tree","Univalued Binary Tree","Trees · Easy","965"],["problem","symmetric-tree","Symmetric Tree","Trees · Easy","101"],["problem","path-sum","Path Sum","Trees · Easy","112"],["problem","subtree-of-another-tree","Subtree of Another Tree","Trees · Easy","572"],["problem","leaf-similar-trees","Leaf-Similar Trees","Trees · Easy","872"],["problem","sum-of-left-leaves","Sum of Left Leaves","Trees · Easy","404"],["problem","binary-tree-paths","Binary Tree Paths","Trees · Easy","257"],["problem","search-in-a-binary-search-tree","Search in a Binary Search Tree","Trees · Easy","700"],["problem","range-sum-of-bst","Range Sum of BST","Trees · Easy","938"],["problem","minimum-absolute-difference-in-bst","Minimum Absolute Difference in BST","Trees · Easy","530"],["problem","path-sum-ii","Path Sum II","Trees · Medium","113"],["problem","sum-root-to-leaf-numbers","Sum Root to Leaf Numbers","Trees · Medium","129"],["problem","count-good-nodes-in-binary-tree","Count Good Nodes in Binary Tree","Trees · Medium","1448"],["problem","path-sum-iii","Path Sum III","Trees · Medium","437"],["problem","lowest-common-ancestor-of-a-binary-search-tree","Lowest Common Ancestor of a Binary Search Tree","Trees · Medium","235"],["problem","lowest-common-ancestor-of-a-binary-tree","Lowest Common Ancestor of a Binary Tree","Trees · Medium","236"],["problem","insert-into-a-binary-search-tree","Insert into a Binary Search Tree","Trees · Medium","701"],["problem","flatten-binary-tree-to-linked-list","Flatten Binary Tree to Linked List","Trees · Medium","114"],["problem","construct-binary-tree-from-preorder-and-inorder-traversal","Construct Binary Tree from Preorder and Inorder Traversal","Trees · Medium","105"],["problem","house-robber-iii","House Robber III","Trees · Medium","337"],["problem","binary-tree-maximum-path-sum","Binary Tree Maximum Path Sum","Trees · Hard","124"],["problem","convert-sorted-array-to-binary-search-tree","Convert Sorted Array to Binary Search Tree","Trees · Easy","108"],["problem","minimum-depth-of-binary-tree","Minimum Depth of Binary Tree","Breadth-First Search · Easy","111"],["problem","average-of-levels-in-binary-tree","Average of Levels in Binary Tree","Breadth-First Search · Easy","637"],["problem","binary-tree-zigzag-level-order-traversal","Binary Tree Zigzag Level Order Traversal","Breadth-First Search · Medium","103"],["problem","maximum-level-sum-of-a-binary-tree","Maximum Level Sum of a Binary Tree","Breadth-First Search · Medium","1161"],["problem","flood-fill","Flood Fill","Depth-First Search · Easy","733"],["problem","island-perimeter","Island Perimeter","Depth-First Search · Easy","463"],["problem","find-if-path-exists-in-graph","Find if Path Exists in Graph","Depth-First Search · Easy","1971"],["problem","keys-and-rooms","Keys and Rooms","Depth-First Search · Medium","841"],["problem","number-of-provinces","Number of Provinces","Depth-First Search · Medium","547"],["problem","number-of-closed-islands","Number of Closed Islands","Depth-First Search · Medium","1254"],["problem","number-of-enclaves","Number of Enclaves","Depth-First Search · Medium","1020"],["problem","surrounded-regions","Surrounded Regions","Depth-First Search · Medium","130"],["problem","pacific-atlantic-water-flow","Pacific Atlantic Water Flow","Depth-First Search · Medium","417"],["problem","longest-increasing-path-in-a-matrix","Longest Increasing Path in a Matrix","Depth-First Search · Hard","329"],["problem","shortest-path-in-binary-matrix","Shortest Path in Binary Matrix","Breadth-First Search · Medium","1091"],["problem","nearest-exit-from-entrance-in-maze","Nearest Exit from Entrance in Maze","Breadth-First Search · Medium","1926"],["problem","01-matrix","01 Matrix","Breadth-First Search · Medium","542"],["problem","open-the-lock","Open the Lock","Breadth-First Search · Medium","752"],["problem","word-ladder","Word Ladder","Breadth-First Search · Hard","127"],["problem","subsets-ii","Subsets II","Backtracking · Medium","90"],["problem","combinations","Combinations","Backtracking · Medium","77"],["problem","combination-sum-iii","Combination Sum III","Backtracking · Medium","216"],["problem","permutations-ii","Permutations II","Backtracking · Medium","47"],["problem","combination-sum-ii","Combination Sum II","Backtracking · Medium","40"],["problem","generate-parentheses","Generate Parentheses","Backtracking · Medium","22"],["problem","palindrome-partitioning","Palindrome Partitioning","Backtracking · Medium","131"],["problem","n-queens","N-Queens","Backtracking · Hard","51"],["problem","n-queens-ii","N-Queens II","Backtracking · Hard","52"],["problem","find-the-town-judge","Find the Town Judge","Graphs · Easy","997"],["problem","find-center-of-star-graph","Find Center of Star Graph","Graphs · Easy","1791"],["problem","is-graph-bipartite","Is Graph Bipartite?","Graphs · Medium","785"],["problem","redundant-connection","Redundant Connection","Graphs · Medium","684"],["problem","number-of-operations-to-make-network-connected","Number of Operations to Make Network Connected","Graphs · Medium","1319"],["problem","network-delay-time","Network Delay Time","Graphs · Medium","743"],["problem","min-cost-to-connect-all-points","Min Cost to Connect All Points","Graphs · Medium","1584"],["problem","cheapest-flights-within-k-stops","Cheapest Flights Within K Stops","Graphs · Medium","787"],["problem","path-with-minimum-effort","Path With Minimum Effort","Graphs · Medium","1631"],["problem","longest-common-prefix","Longest Common Prefix","Tries · Easy","14"],["problem","design-add-and-search-words-data-structure","Design Add and Search Words Data Structure","Tries · Medium","211"],["problem","replace-words","Replace Words","Tries · Medium","648"],["problem","search-suggestions-system","Search Suggestions System","Tries · Medium","1268"],["problem","map-sum-pairs","Map Sum Pairs","Tries · Medium","677"],["problem","word-search-ii","Word Search II","Tries · Hard","212"],["problem","maximum-xor-of-two-numbers-in-an-array","Maximum XOR of Two Numbers in an Array","Tries · Medium","421"],["problem","fibonacci-number","Fibonacci Number","Dynamic Programming · Easy","509"],["problem","n-th-tribonacci-number","N-th Tribonacci Number","Dynamic Programming · Easy","1137"],["problem","house-robber-ii","House Robber II","Dynamic Programming · Medium","213"],["problem","delete-and-earn","Delete and Earn","Dynamic Programming · Medium","740"],["problem","maximum-product-subarray","Maximum Product Subarray","Dynamic Programming · Medium","152"],["problem","best-time-to-buy-and-sell-stock-with-cooldown","Best Time to Buy and Sell Stock with Cooldown","Dynamic Programming · Medium","309"],["problem","best-time-to-buy-and-sell-stock-with-transaction-fee","Best Time to Buy and Sell Stock with Transaction Fee","Dynamic Programming · Medium","714"],["problem","minimum-path-sum","Minimum Path Sum","Dynamic Programming · Medium","64"],["problem","perfect-squares","Perfect Squares","Dynamic Programming · Medium","279"],["problem","coin-change-ii","Coin Change II","Dynamic Programming · Medium","518"],["problem","combination-sum-iv","Combination Sum IV","Dynamic Programming · Medium","377"],["problem","minimum-cost-for-tickets","Minimum Cost For Tickets","Dynamic Programming · Medium","983"],["problem","best-time-to-buy-and-sell-stock-iii","Best Time to Buy and Sell Stock III","Dynamic Programming · Hard","123"],["problem","unique-paths-ii","Unique Paths II","Dynamic Programming · Medium","63"],["problem","triangle","Triangle","Dynamic Programming · Medium","120"],["problem","maximal-square","Maximal Square","Dynamic Programming · Medium","221"],["problem","palindromic-substrings","Palindromic Substrings","Dynamic Programming · Medium","647"],["problem","longest-palindromic-subsequence","Longest Palindromic Subsequence","Dynamic Programming · Medium","516"],["problem","delete-operation-for-two-strings","Delete Operation for Two Strings","Dynamic Programming · Medium","583"],["problem","interleaving-string","Interleaving String","Dynamic Programming · Medium","97"],["problem","target-sum","Target Sum","Dynamic Programming · Medium","494"],["problem","last-stone-weight-ii","Last Stone Weight II","Dynamic Programming · Medium","1049"],["problem","maximum-length-of-pair-chain","Maximum Length of Pair Chain","Dynamic Programming · Medium","646"],["problem","longest-string-chain","Longest String Chain","Dynamic Programming · Medium","1048"],["problem","number-of-longest-increasing-subsequence","Number of Longest Increasing Subsequence","Dynamic Programming · Medium","673"],["problem","russian-doll-envelopes","Russian Doll Envelopes","Dynamic Programming · Hard","354"],["problem","distinct-subsequences","Distinct Subsequences","Dynamic Programming · Hard","115"],["problem","length-of-last-word","Length of Last Word","String Algorithms · Easy","58"],["problem","find-the-index-of-the-first-occurrence-in-a-string","Find the Index of the First Occurrence in a String","String Algorithms · Easy","28"],["problem","reverse-words-in-a-string","Reverse Words in a String","String Algorithms · Medium","151"],["problem","string-to-integer-atoi","String to Integer (atoi)","String Algorithms · Medium","8"],["problem","zigzag-conversion","Zigzag Conversion","String Algorithms · Medium","6"],["problem","rotate-string","Rotate String","String Algorithms · Easy","796"],["problem","repeated-substring-pattern","Repeated Substring Pattern","String Algorithms · Easy","459"],["problem","fizz-buzz","Fizz Buzz","Math · Easy","412"],["problem","plus-one","Plus One","Math · Easy","66"],["problem","roman-to-integer","Roman to Integer","Math · Easy","13"],["problem","integer-to-roman","Integer to Roman","Math · Medium","12"],["problem","reverse-integer","Reverse Integer","Math · Medium","7"],["problem","excel-sheet-column-number","Excel Sheet Column Number","Math · Easy","171"],["problem","excel-sheet-column-title","Excel Sheet Column Title","Math · Easy","168"],["problem","count-primes","Count Primes","Math · Medium","204"],["problem","multiply-strings","Multiply Strings","Math · Medium","43"],["problem","add-digits","Add Digits","Math · Easy","258"],["problem","greatest-common-divisor-of-strings","Greatest Common Divisor of Strings","Math · Easy","1071"],["problem","number-of-1-bits","Number of 1 Bits","Bit Manipulation · Easy","191"],["problem","power-of-two","Power of Two","Bit Manipulation · Easy","231"],["problem","hamming-distance","Hamming Distance","Bit Manipulation · Easy","461"],["problem","find-the-difference","Find the Difference","Bit Manipulation · Easy","389"],["problem","reverse-bits","Reverse Bits","Bit Manipulation · Easy","190"],["problem","single-number-ii","Single Number II","Bit Manipulation · Medium","137"],["problem","height-checker","Height Checker","Sorting · Easy","1051"],["problem","relative-sort-array","Relative Sort Array","Sorting · Easy","1122"],["problem","sort-integers-by-the-number-of-1-bits","Sort Integers by The Number of 1 Bits","Sorting · Easy","1356"],["problem","custom-sort-string","Custom Sort String","Sorting · Medium","791"],["problem","h-index","H-Index","Sorting · Medium","274"],["problem","largest-number","Largest Number","Sorting · Medium","179"],["problem","sort-an-array","Sort an Array","Sorting · Medium","912"],["problem","design-parking-system","Design Parking System","Design · Easy","1603"],["problem","number-of-recent-calls","Number of Recent Calls","Design · Easy","933"],["problem","design-hashmap","Design HashMap","Design · Easy","706"],["problem","design-browser-history","Design Browser History","Design · Medium","1472"],["problem","design-circular-queue","Design Circular Queue","Design · Medium","622"],["git","first-commit","Your first commit","init · add · commit","git"],["git","status-diff","What changed?","status · diff","git"],["git","branches","Branches","branch · switch","git"],["git","merge","Merging","fast-forward · 3-way","git"],["git","rebase","Rebase","replay commits","git"],["git","remote","Remotes","push · fetch · pull","git"],["git","stash","Stash","park unfinished work","git"],["git","undo","Undo","reset vs revert","git"],["sd","scale","Scale up or out","HLD · vertical · horizontal",""],["sd","lb","Load balancer","HLD · round robin · health checks",""],["sd","cache","Caching","HLD · cache-aside · hit · miss",""],["sd","cdn","CDN","HLD · edge · pull · DNS",""],["sd","replicas","Read replicas","HLD · primary · replica · failover",""],["sd","sharding","Sharding","HLD · shard key · hot shard · ring",""],["sd","hashing","Consistent hashing","HLD · ring · virtual nodes",""],["sd","cap","CAP and consistency","HLD · partitions · strong · eventual",""],["sd","sqlnosql","SQL or NoSQL","HLD · tables · documents · key-value",""],["sd","indexes","Database indexes","HLD · B-tree · composite · cost",""],["sd","queue","Message queue","HLD · async jobs · workers · retries",""],["sd","idempotency","Idempotency and retries","HLD · keys · backoff",""],["sd","ratelimit","Rate limiting","HLD · token bucket · 429",""],["sd","observability","Observability","HLD · metrics · logs · traces",""],["sd","shortener","URL shortener","HLD · case study · the 4 steps",""],["sd","chat","Chat app","HLD · case study · WebSockets",""],["sd","feed","News feed","HLD · case study · fan-out",""],["sd","ride","Ride sharing","HLD · case study · geo index",""],["sd","video","Video streaming","HLD · case study · chunks · CDN",""],["sd","payments","Payments","HLD · case study · ledger",""],["sd","solid","SOLID in one picture","LLD · five rules for classes",""],["sd","strategy","Strategy pattern","LLD · swap behaviour at runtime",""],["sd","observer","Observer pattern","LLD · one change, many listeners",""],["sd","factory","Factory pattern","LLD · one place to choose a class",""],["sd","singleton","Singleton, with care","LLD · one instance · and its costs",""],["sd","lru","LRU cache","LLD · hash map + linked list",""],["sd","parking","Parking lot","LLD · classes · then a flow",""],["sd","elevator","Elevator system","LLD · state · scheduler strategy",""],["sd","movies","Movie ticket booking","LLD · seat holds · races",""],["ai","gradient","Fit a line by gradient descent","ML foundations · linear regression",""],["ai","logistic","Logistic regression and the sigmoid","ML foundations · probabilities from a line",""],["ai","knn","k-nearest neighbours","ML foundations · classification by vote",""],["ai","tree","Decision tree splits","ML foundations · questions that sort",""],["ai","confusion","Precision, recall and the confusion matrix","ML foundations · judging a classifier",""],["ai","overfit","Train, test and overfitting","ML foundations · generalisation",""],["ai","biasvar","The bias-variance picture","ML foundations · stiff or jumpy",""],["ai","kmeans","k-means clustering","ML foundations · groups without labels",""],["ai","pca","PCA: many columns into few","ML foundations · directions of spread",""],["ai","backprop","A neuron and backprop","ML foundations · tiny neural net",""],["ai","embeddings","Embeddings and cosine similarity","ML foundations · meaning as direction",""],["ai","tokens","Tokens and byte-pair encoding","AI now · how text becomes numbers",""],["ai","attention","Attention in a transformer","AI now · tokens looking at tokens",""],["ai","systems","System 1 and System 2 thinking","AI now · reasoning models",""],["ai","agents","Agents, tools and MCP","AI now · the agent loop",""],["ai","rag","RAG: retrieve, then generate","AI now · grounded answers",""],["ai","moe","Mixture of experts","AI now · a router picks experts",""],["ai","lora","Fine-tuning with LoRA","AI now · small adapters",""],["ai","distill","Distillation: big teacher, small student","AI now · soft targets",""],["ai","jepa","JEPA: predict meaning, not pixels","AI now · world models",""],["ai","evals","Evals and benchmarks","AI now · what a score is worth",""],["term","enumerate","enumerate","index + value together","Loops"],["term","zip","zip","walk two lists side by side","Loops"],["term","range","range","count from start to stop","Loops"],["term","slicing","slicing","take a piece of a list or string","Strings"],["term","comprehension","comprehension","build a list in one line","Collections"],["term","get-default","get-default","look up with a fallback","Maps & sets"],["term","defaultdict","defaultdict","buckets that create themselves","Maps & sets"],["term","counter","counter","tally everything at once","Maps & sets"],["term","set-in","set-in","have I seen this before?","Maps & sets"],["term","deque","deque","a line with two doors","Collections"],["term","heap","heap","smallest always on top","Collections"],["term","sort-key","sort-key","sort by any rule","Collections"],["term","div-mod","div-mod","share sweets fairly","Math"],["term","infinity","infinity","a best-so-far you will beat","Math"],["term","char-code","char-code","letters as locker numbers","Strings"],["term","append-pop","append-pop","push and pop the end","Collections"],["sheet","reverse-string","Reverse String","Two Pointers · Easy","344"],["sheet","reverse-vowels-of-a-string","Reverse Vowels of a String","Two Pointers · Easy","345"],["sheet","valid-palindrome","Valid Palindrome","Two Pointers · Easy","125"],["sheet","move-zeroes","Move Zeroes","Two Pointers · Easy","283"],["sheet","remove-duplicates-from-sorted-array","Remove Duplicates from Sorted Array","Two Pointers · Easy","26"],["sheet","remove-element","Remove Element","Two Pointers · Easy","27"],["sheet","sort-array-by-parity","Sort Array By Parity","Two Pointers · Easy","905"],["sheet","squares-of-a-sorted-array","Squares of a Sorted Array","Two Pointers · Easy","977"],["sheet","merge-strings-alternately","Merge Strings Alternately","Two Pointers · Easy","1768"],["sheet","merge-sorted-array","Merge Sorted Array","Two Pointers · Easy","88"],["sheet","merge-two-sorted-lists","Merge Two Sorted Lists","Two Pointers · Easy","21"],["sheet","is-subsequence","Is Subsequence","Two Pointers · Easy","392"],["sheet","valid-palindrome-ii","Valid Palindrome II","Two Pointers · Easy","680"],["sheet","backspace-string-compare","Backspace String Compare","Two Pointers · Easy","844"],["sheet","remove-duplicates-from-sorted-array-ii","Remove Duplicates from Sorted Array II","Two Pointers · Medium","80"],["sheet","two-sum-ii-input-array-is-sorted","Two Sum II - Input Array Is Sorted","Two Pointers · Medium","167"],["sheet","boats-to-save-people","Boats to Save People","Two Pointers · Medium","881"],["sheet","remove-nth-node-from-end-of-list","Remove Nth Node From End of List","Two Pointers · Medium","19"],["sheet","sort-colors","Sort Colors","Two Pointers · Medium","75"],["sheet","container-with-most-water","Container With Most Water","Two Pointers · Medium","11"],["sheet","3sum","3Sum","Two Pointers · Medium","15"],["sheet","3sum-closest","3Sum Closest","Two Pointers · Medium","16"],["sheet","longest-palindromic-substring","Longest Palindromic Substring","Two Pointers · Medium","5"],["sheet","next-permutation","Next Permutation","Two Pointers · Medium","31"],["sheet","trapping-rain-water","Trapping Rain Water","Two Pointers · Hard","42"],["sheet","maximum-average-subarray-i","Maximum Average Subarray I","Sliding Window · Easy","643"],["sheet","best-time-to-buy-and-sell-stock","Best Time to Buy and Sell Stock","Sliding Window · Easy","121"],["sheet","contains-duplicate-ii","Contains Duplicate II","Sliding Window · Easy","219"],["sheet","minimum-difference-between-highest-and-lowest-of-k-scores","Minimum Difference Between Highest and Lowest of K Scores","Sliding Window · Easy","1984"],["sheet","maximum-number-of-vowels-in-a-substring-of-given-length","Maximum Number of Vowels in a Substring of Given Length","Sliding Window · Medium","1456"],["sheet","maximum-points-you-can-obtain-from-cards","Maximum Points You Can Obtain from Cards","Sliding Window · Medium","1423"],["sheet","minimum-size-subarray-sum","Minimum Size Subarray Sum","Sliding Window · Medium","209"],["sheet","subarray-product-less-than-k","Subarray Product Less Than K","Sliding Window · Medium","713"],["sheet","longest-substring-without-repeating-characters","Longest Substring Without Repeating Characters","Sliding Window · Medium","3"],["sheet","max-consecutive-ones-iii","Max Consecutive Ones III","Sliding Window · Medium","1004"],["sheet","longest-subarray-of-1s-after-deleting-one-element","Longest Subarray of 1's After Deleting One Element","Sliding Window · Medium","1493"],["sheet","longest-repeating-character-replacement","Longest Repeating Character Replacement","Sliding Window · Medium","424"],["sheet","permutation-in-string","Permutation in String","Sliding Window · Medium","567"],["sheet","find-all-anagrams-in-a-string","Find All Anagrams in a String","Sliding Window · Medium","438"],["sheet","fruit-into-baskets","Fruit Into Baskets","Sliding Window · Medium","904"],["sheet","binary-subarrays-with-sum","Binary Subarrays With Sum","Sliding Window · Medium","930"],["sheet","count-number-of-nice-subarrays","Count Number of Nice Subarrays","Sliding Window · Medium","1248"],["sheet","number-of-substrings-containing-all-three-characters","Number of Substrings Containing All Three Characters","Sliding Window · Medium","1358"],["sheet","minimum-window-substring","Minimum Window Substring","Sliding Window · Hard","76"],["sheet","sliding-window-maximum","Sliding Window Maximum","Sliding Window · Hard","239"],["sheet","subarrays-with-k-different-integers","Subarrays with K Different Integers","Sliding Window · Hard","992"],["sheet","substring-with-concatenation-of-all-words","Substring with Concatenation of All Words","Sliding Window · Hard","30"],["sheet","contains-duplicate","Contains Duplicate","Hash Map · Easy","217"],["sheet","valid-anagram","Valid Anagram","Hash Map · Easy","242"],["sheet","find-the-difference-of-two-arrays","Find the Difference of Two Arrays","Hash Map · Easy","2215"],["sheet","two-sum","Two Sum","Hash Map · Easy","1"],["sheet","ransom-note","Ransom Note","Hash Map · Easy","383"],["sheet","first-unique-character-in-a-string","First Unique Character in a String","Hash Map · Easy","387"],["sheet","isomorphic-strings","Isomorphic Strings","Hash Map · Easy","205"],["sheet","maximum-number-of-balloons","Maximum Number of Balloons","Hash Map · Easy","1189"],["sheet","intersection-of-two-arrays","Intersection of Two Arrays","Hash Map · Easy","349"],["sheet","number-of-good-pairs","Number of Good Pairs","Hash Map · Easy","1512"],["sheet","unique-number-of-occurrences","Unique Number of Occurrences","Hash Map · Easy","1207"],["sheet","word-pattern","Word Pattern","Hash Map · Easy","290"],["sheet","majority-element","Majority Element","Hash Map · Easy","169"],["sheet","group-anagrams","Group Anagrams","Hash Map · Medium","49"],["sheet","determine-if-two-strings-are-close","Determine if Two Strings Are Close","Hash Map · Medium","1657"],["sheet","equal-row-and-column-pairs","Equal Row and Column Pairs","Hash Map · Medium","2352"],["sheet","longest-consecutive-sequence","Longest Consecutive Sequence","Hash Map · Medium","128"],["sheet","4sum-ii","4Sum II","Hash Map · Medium","454"],["sheet","valid-sudoku","Valid Sudoku","Hash Map · Medium","36"],["sheet","insert-delete-getrandom-o1","Insert Delete GetRandom O(1)","Hash Map · Medium","380"],["sheet","lru-cache","LRU Cache","Hash Map · Medium","146"],["sheet","first-missing-positive","First Missing Positive","Hash Map · Hard","41"],["sheet","running-sum-of-1d-array","Running Sum of 1d Array","Prefix Sum · Easy","1480"],["sheet","find-the-highest-altitude","Find the Highest Altitude","Prefix Sum · Easy","1732"],["sheet","find-pivot-index","Find Pivot Index","Prefix Sum · Easy","724"],["sheet","find-the-middle-index-in-array","Find the Middle Index in Array","Prefix Sum · Easy","1991"],["sheet","range-sum-query-immutable","Range Sum Query - Immutable","Prefix Sum · Easy","303"],["sheet","number-of-ways-to-split-array","Number of Ways to Split Array","Prefix Sum · Medium","2270"],["sheet","product-of-array-except-self","Product of Array Except Self","Prefix Sum · Medium","238"],["sheet","xor-queries-of-a-subarray","XOR Queries of a Subarray","Prefix Sum · Medium","1310"],["sheet","range-sum-query-2d-immutable","Range Sum Query 2D - Immutable","Prefix Sum · Medium","304"],["sheet","corporate-flight-bookings","Corporate Flight Bookings","Prefix Sum · Medium","1109"],["sheet","subarray-sum-equals-k","Subarray Sum Equals K","Prefix Sum · Medium","560"],["sheet","subarray-sums-divisible-by-k","Subarray Sums Divisible by K","Prefix Sum · Medium","974"],["sheet","contiguous-array","Contiguous Array","Prefix Sum · Medium","525"],["sheet","continuous-subarray-sum","Continuous Subarray Sum","Prefix Sum · Medium","523"],["sheet","make-sum-divisible-by-p","Make Sum Divisible by P","Prefix Sum · Medium","1590"],["sheet","matrix-block-sum","Matrix Block Sum","Prefix Sum · Medium","1314"],["sheet","number-of-submatrices-that-sum-to-target","Number of Submatrices That Sum to Target","Prefix Sum · Hard","1074"],["sheet","binary-search","Binary Search","Binary Search · Easy","704"],["sheet","guess-number-higher-or-lower","Guess Number Higher or Lower","Binary Search · Easy","374"],["sheet","search-insert-position","Search Insert Position","Binary Search · Easy","35"],["sheet","first-bad-version","First Bad Version","Binary Search · Easy","278"],["sheet","sqrtx","Sqrt(x)","Binary Search · Easy","69"],["sheet","find-smallest-letter-greater-than-target","Find Smallest Letter Greater Than Target","Binary Search · Easy","744"],["sheet","find-first-and-last-position-of-element-in-sorted-array","Find First and Last Position of Element in Sorted Array","Binary Search · Medium","34"],["sheet","search-a-2d-matrix","Search a 2D Matrix","Binary Search · Medium","74"],["sheet","peak-index-in-a-mountain-array","Peak Index in a Mountain Array","Binary Search · Medium","852"],["sheet","find-peak-element","Find Peak Element","Binary Search · Medium","162"],["sheet","single-element-in-a-sorted-array","Single Element in a Sorted Array","Binary Search · Medium","540"],["sheet","find-minimum-in-rotated-sorted-array","Find Minimum in Rotated Sorted Array","Binary Search · Medium","153"],["sheet","search-in-rotated-sorted-array","Search in Rotated Sorted Array","Binary Search · Medium","33"],["sheet","find-k-closest-elements","Find K Closest Elements","Binary Search · Medium","658"],["sheet","koko-eating-bananas","Koko Eating Bananas","Binary Search · Medium","875"],["sheet","capacity-to-ship-packages-within-d-days","Capacity To Ship Packages Within D Days","Binary Search · Medium","1011"],["sheet","minimum-number-of-days-to-make-m-bouquets","Minimum Number of Days to Make m Bouquets","Binary Search · Medium","1482"],["sheet","time-based-key-value-store","Time Based Key-Value Store","Binary Search · Medium","981"],["sheet","find-minimum-in-rotated-sorted-array-ii","Find Minimum in Rotated Sorted Array II","Binary Search · Hard","154"],["sheet","find-in-mountain-array","Find in Mountain Array","Binary Search · Hard","1095"],["sheet","split-array-largest-sum","Split Array Largest Sum","Binary Search · Hard","410"],["sheet","median-of-two-sorted-arrays","Median of Two Sorted Arrays","Binary Search · Hard","4"],["sheet","transpose-matrix","Transpose Matrix","Matrix · Easy","867"],["sheet","reshape-the-matrix","Reshape the Matrix","Matrix · Easy","566"],["sheet","matrix-diagonal-sum","Matrix Diagonal Sum","Matrix · Easy","1572"],["sheet","pascals-triangle","Pascal's Triangle","Matrix · Easy","118"],["sheet","count-negative-numbers-in-a-sorted-matrix","Count Negative Numbers in a Sorted Matrix","Matrix · Easy","1351"],["sheet","determine-whether-matrix-can-be-obtained-by-rotation","Determine Whether Matrix Can Be Obtained By Rotation","Matrix · Easy","1886"],["sheet","rotate-image","Rotate Image","Matrix · Medium","48"],["sheet","spiral-matrix","Spiral Matrix","Matrix · Medium","54"],["sheet","spiral-matrix-ii","Spiral Matrix II","Matrix · Medium","59"],["sheet","diagonal-traverse","Diagonal Traverse","Matrix · Medium","498"],["sheet","sort-the-matrix-diagonally","Sort the Matrix Diagonally","Matrix · Medium","1329"],["sheet","set-matrix-zeroes","Set Matrix Zeroes","Matrix · Medium","73"],["sheet","search-a-2d-matrix-ii","Search a 2D Matrix II","Matrix · Medium","240"],["sheet","game-of-life","Game of Life","Matrix · Medium","289"],["sheet","summary-ranges","Summary Ranges","Intervals · Easy","228"],["sheet","meeting-rooms","Meeting Rooms","Intervals · Easy","252"],["sheet","merge-intervals","Merge Intervals","Intervals · Medium","56"],["sheet","insert-interval","Insert Interval","Intervals · Medium","57"],["sheet","remove-covered-intervals","Remove Covered Intervals","Intervals · Medium","1288"],["sheet","interval-list-intersections","Interval List Intersections","Intervals · Medium","986"],["sheet","non-overlapping-intervals","Non-overlapping Intervals","Intervals · Medium","435"],["sheet","minimum-number-of-arrows-to-burst-balloons","Minimum Number of Arrows to Burst Balloons","Intervals · Medium","452"],["sheet","meeting-rooms-ii","Meeting Rooms II","Intervals · Medium","253"],["sheet","car-pooling","Car Pooling","Intervals · Medium","1094"],["sheet","my-calendar-i","My Calendar I","Intervals · Medium","729"],["sheet","my-calendar-ii","My Calendar II","Intervals · Medium","731"],["sheet","maximum-number-of-events-that-can-be-attended","Maximum Number of Events That Can Be Attended","Intervals · Medium","1353"],["sheet","my-calendar-iii","My Calendar III","Intervals · Hard","732"],["sheet","minimum-interval-to-include-each-query","Minimum Interval to Include Each Query","Intervals · Hard","1851"],["sheet","assign-cookies","Assign Cookies","Greedy · Easy","455"],["sheet","lemonade-change","Lemonade Change","Greedy · Easy","860"],["sheet","can-place-flowers","Can Place Flowers","Greedy · Easy","605"],["sheet","split-a-string-in-balanced-strings","Split a String in Balanced Strings","Greedy · Easy","1221"],["sheet","maximum-units-on-a-truck","Maximum Units on a Truck","Greedy · Easy","1710"],["sheet","longest-palindrome","Longest Palindrome","Greedy · Easy","409"],["sheet","maximize-sum-of-array-after-k-negations","Maximize Sum Of Array After K Negations","Greedy · Easy","1005"],["sheet","best-time-to-buy-and-sell-stock-ii","Best Time to Buy and Sell Stock II","Greedy · Medium","122"],["sheet","minimum-add-to-make-parentheses-valid","Minimum Add to Make Parentheses Valid","Greedy · Medium","921"],["sheet","increasing-triplet-subsequence","Increasing Triplet Subsequence","Greedy · Medium","334"],["sheet","jump-game","Jump Game","Greedy · Medium","55"],["sheet","jump-game-ii","Jump Game II","Greedy · Medium","45"],["sheet","gas-station","Gas Station","Greedy · Medium","134"],["sheet","merge-triplets-to-form-target-triplet","Merge Triplets to Form Target Triplet","Greedy · Medium","1899"],["sheet","hand-of-straights","Hand of Straights","Greedy · Medium","846"],["sheet","partition-labels","Partition Labels","Greedy · Medium","763"],["sheet","valid-parenthesis-string","Valid Parenthesis String","Greedy · Medium","678"],["sheet","dota2-senate","Dota2 Senate","Greedy · Medium","649"],["sheet","task-scheduler","Task Scheduler","Greedy · Medium","621"],["sheet","minimum-number-of-taps-to-open-to-water-a-garden","Minimum Number of Taps to Open to Water a Garden","Greedy · Hard","1326"],["sheet","candy","Candy","Greedy · Hard","135"],["sheet","valid-parentheses","Valid Parentheses","Stack · Easy","20"],["sheet","baseball-game","Baseball Game","Stack · Easy","682"],["sheet","remove-all-adjacent-duplicates-in-string","Remove All Adjacent Duplicates In String","Stack · Easy","1047"],["sheet","make-the-string-great","Make The String Great","Stack · Easy","1544"],["sheet","next-greater-element-i","Next Greater Element I","Stack · Easy","496"],["sheet","implement-queue-using-stacks","Implement Queue using Stacks","Stack · Easy","232"],["sheet","removing-stars-from-a-string","Removing Stars From a String","Stack · Medium","2390"],["sheet","min-stack","Min Stack","Stack · Medium","155"],["sheet","evaluate-reverse-polish-notation","Evaluate Reverse Polish Notation","Stack · Medium","150"],["sheet","simplify-path","Simplify Path","Stack · Medium","71"],["sheet","minimum-remove-to-make-valid-parentheses","Minimum Remove to Make Valid Parentheses","Stack · Medium","1249"],["sheet","basic-calculator-ii","Basic Calculator II","Stack · Medium","227"],["sheet","decode-string","Decode String","Stack · Medium","394"],["sheet","daily-temperatures","Daily Temperatures","Stack · Medium","739"],["sheet","online-stock-span","Online Stock Span","Stack · Medium","901"],["sheet","asteroid-collision","Asteroid Collision","Stack · Medium","735"],["sheet","car-fleet","Car Fleet","Stack · Medium","853"],["sheet","largest-rectangle-in-histogram","Largest Rectangle in Histogram","Stack · Hard","84"],["sheet","longest-valid-parentheses","Longest Valid Parentheses","Stack · Hard","32"],["sheet","basic-calculator","Basic Calculator","Stack · Hard","224"],["sheet","last-stone-weight","Last Stone Weight","Heap · Easy","1046"],["sheet","kth-largest-element-in-a-stream","Kth Largest Element in a Stream","Heap · Easy","703"],["sheet","the-k-weakest-rows-in-a-matrix","The K Weakest Rows in a Matrix","Heap · Easy","1337"],["sheet","take-gifts-from-the-richest-pile","Take Gifts From the Richest Pile","Heap · Easy","2558"],["sheet","kth-largest-element-in-an-array","Kth Largest Element in an Array","Heap · Medium","215"],["sheet","top-k-frequent-elements","Top K Frequent Elements","Heap · Medium","347"],["sheet","top-k-frequent-words","Top K Frequent Words","Heap · Medium","692"],["sheet","k-closest-points-to-origin","K Closest Points to Origin","Heap · Medium","973"],["sheet","sort-characters-by-frequency","Sort Characters By Frequency","Heap · Medium","451"],["sheet","reorganize-string","Reorganize String","Heap · Medium","767"],["sheet","furthest-building-you-can-reach","Furthest Building You Can Reach","Heap · Medium","1642"],["sheet","single-threaded-cpu","Single-Threaded CPU","Heap · Medium","1834"],["sheet","maximum-subsequence-score","Maximum Subsequence Score","Heap · Medium","2542"],["sheet","merge-k-sorted-lists","Merge k Sorted Lists","Heap · Hard","23"],["sheet","find-median-from-data-stream","Find Median from Data Stream","Heap · Hard","295"],["sheet","minimum-cost-to-hire-k-workers","Minimum Cost to Hire K Workers","Heap · Hard","857"],["sheet","ipo","IPO","Heap · Hard","502"],["sheet","minimum-number-of-refueling-stops","Minimum Number of Refueling Stops","Heap · Hard","871"],["sheet","sliding-window-median","Sliding Window Median","Heap · Hard","480"],["sheet","reverse-linked-list","Reverse Linked List","In-place Reversal · Easy","206"],["sheet","palindrome-linked-list","Palindrome Linked List","In-place Reversal · Easy","234"],["sheet","maximum-twin-sum-of-a-linked-list","Maximum Twin Sum of a Linked List","In-place Reversal · Medium","2130"],["sheet","swapping-nodes-in-a-linked-list","Swapping Nodes in a Linked List","In-place Reversal · Medium","1721"],["sheet","swap-nodes-in-pairs","Swap Nodes in Pairs","In-place Reversal · Medium","24"],["sheet","reverse-linked-list-ii","Reverse Linked List II","In-place Reversal · Medium","92"],["sheet","add-two-numbers-ii","Add Two Numbers II","In-place Reversal · Medium","445"],["sheet","rotate-list","Rotate List","In-place Reversal · Medium","61"],["sheet","reorder-list","Reorder List","In-place Reversal · Medium","143"],["sheet","reverse-nodes-in-k-group","Reverse Nodes in k-Group","In-place Reversal · Hard","25"],["sheet","middle-of-the-linked-list","Middle of the Linked List","Fast & Slow Pointers · Easy","876"],["sheet","linked-list-cycle","Linked List Cycle","Fast & Slow Pointers · Easy","141"],["sheet","happy-number","Happy Number","Fast & Slow Pointers · Easy","202"],["sheet","intersection-of-two-linked-lists","Intersection of Two Linked Lists","Fast & Slow Pointers · Easy","160"],["sheet","delete-the-middle-node-of-a-linked-list","Delete the Middle Node of a Linked List","Fast & Slow Pointers · Medium","2095"],["sheet","linked-list-cycle-ii","Linked List Cycle II","Fast & Slow Pointers · Medium","142"],["sheet","convert-sorted-list-to-binary-search-tree","Convert Sorted List to Binary Search Tree","Fast & Slow Pointers · Medium","109"],["sheet","find-the-duplicate-number","Find the Duplicate Number","Fast & Slow Pointers · Medium","287"],["sheet","circular-array-loop","Circular Array Loop","Fast & Slow Pointers · Medium","457"],["sheet","invert-binary-tree","Invert Binary Tree","Depth-First Search · Easy","226"],["sheet","maximum-depth-of-binary-tree","Maximum Depth of Binary Tree","Depth-First Search · Easy","104"],["sheet","same-tree","Same Tree","Depth-First Search · Easy","100"],["sheet","flood-fill","Flood Fill","Depth-First Search · Easy","733"],["sheet","island-perimeter","Island Perimeter","Depth-First Search · Easy","463"],["sheet","find-if-path-exists-in-graph","Find if Path Exists in Graph","Depth-First Search · Easy","1971"],["sheet","validate-binary-search-tree","Validate Binary Search Tree","Depth-First Search · Medium","98"],["sheet","keys-and-rooms","Keys and Rooms","Depth-First Search · Medium","841"],["sheet","number-of-islands","Number of Islands","Depth-First Search · Medium","200"],["sheet","max-area-of-island","Max Area of Island","Depth-First Search · Medium","695"],["sheet","clone-graph","Clone Graph","Depth-First Search · Medium","133"],["sheet","number-of-closed-islands","Number of Closed Islands","Depth-First Search · Medium","1254"],["sheet","number-of-enclaves","Number of Enclaves","Depth-First Search · Medium","1020"],["sheet","surrounded-regions","Surrounded Regions","Depth-First Search · Medium","130"],["sheet","count-sub-islands","Count Sub Islands","Depth-First Search · Medium","1905"],["sheet","pacific-atlantic-water-flow","Pacific Atlantic Water Flow","Depth-First Search · Medium","417"],["sheet","number-of-provinces","Number of Provinces","Depth-First Search · Medium","547"],["sheet","find-eventual-safe-states","Find Eventual Safe States","Depth-First Search · Medium","802"],["sheet","evaluate-division","Evaluate Division","Depth-First Search · Medium","399"],["sheet","longest-increasing-path-in-a-matrix","Longest Increasing Path in a Matrix","Depth-First Search · Hard","329"],["sheet","minimum-depth-of-binary-tree","Minimum Depth of Binary Tree","Breadth-First Search · Easy","111"],["sheet","average-of-levels-in-binary-tree","Average of Levels in Binary Tree","Breadth-First Search · Easy","637"],["sheet","binary-tree-level-order-traversal","Binary Tree Level Order Traversal","Breadth-First Search · Medium","102"],["sheet","binary-tree-right-side-view","Binary Tree Right Side View","Breadth-First Search · Medium","199"],["sheet","maximum-level-sum-of-a-binary-tree","Maximum Level Sum of a Binary Tree","Breadth-First Search · Medium","1161"],["sheet","binary-tree-zigzag-level-order-traversal","Binary Tree Zigzag Level Order Traversal","Breadth-First Search · Medium","103"],["sheet","populating-next-right-pointers-in-each-node","Populating Next Right Pointers in Each Node","Breadth-First Search · Medium","116"],["sheet","all-nodes-distance-k-in-binary-tree","All Nodes Distance K in Binary Tree","Breadth-First Search · Medium","863"],["sheet","shortest-path-in-binary-matrix","Shortest Path in Binary Matrix","Breadth-First Search · Medium","1091"],["sheet","nearest-exit-from-entrance-in-maze","Nearest Exit from Entrance in Maze","Breadth-First Search · Medium","1926"],["sheet","rotting-oranges","Rotting Oranges","Breadth-First Search · Medium","994"],["sheet","01-matrix","01 Matrix","Breadth-First Search · Medium","542"],["sheet","shortest-bridge","Shortest Bridge","Breadth-First Search · Medium","934"],["sheet","course-schedule","Course Schedule","Breadth-First Search · Medium","207"],["sheet","course-schedule-ii","Course Schedule II","Breadth-First Search · Medium","210"],["sheet","open-the-lock","Open the Lock","Breadth-First Search · Medium","752"],["sheet","snakes-and-ladders","Snakes and Ladders","Breadth-First Search · Medium","909"],["sheet","word-ladder","Word Ladder","Breadth-First Search · Hard","127"],["sheet","shortest-path-in-a-grid-with-obstacles-elimination","Shortest Path in a Grid with Obstacles Elimination","Breadth-First Search · Hard","1293"],["sheet","bus-routes","Bus Routes","Breadth-First Search · Hard","815"],["sheet","binary-watch","Binary Watch","Backtracking · Easy","401"],["sheet","letter-combinations-of-a-phone-number","Letter Combinations of a Phone Number","Backtracking · Medium","17"],["sheet","subsets","Subsets","Backtracking · Medium","78"],["sheet","subsets-ii","Subsets II","Backtracking · Medium","90"],["sheet","combinations","Combinations","Backtracking · Medium","77"],["sheet","combination-sum-iii","Combination Sum III","Backtracking · Medium","216"],["sheet","permutations","Permutations","Backtracking · Medium","46"],["sheet","permutations-ii","Permutations II","Backtracking · Medium","47"],["sheet","combination-sum","Combination Sum","Backtracking · Medium","39"],["sheet","combination-sum-ii","Combination Sum II","Backtracking · Medium","40"],["sheet","generate-parentheses","Generate Parentheses","Backtracking · Medium","22"],["sheet","word-search","Word Search","Backtracking · Medium","79"],["sheet","restore-ip-addresses","Restore IP Addresses","Backtracking · Medium","93"],["sheet","palindrome-partitioning","Palindrome Partitioning","Backtracking · Medium","131"],["sheet","maximum-length-of-a-concatenated-string-with-unique-characters","Maximum Length of a Concatenated String with Unique Characters","Backtracking · Medium","1239"],["sheet","matchsticks-to-square","Matchsticks to Square","Backtracking · Medium","473"],["sheet","partition-to-k-equal-sum-subsets","Partition to K Equal Sum Subsets","Backtracking · Medium","698"],["sheet","n-queens","N-Queens","Backtracking · Hard","51"],["sheet","n-queens-ii","N-Queens II","Backtracking · Hard","52"],["sheet","sudoku-solver","Sudoku Solver","Backtracking · Hard","37"],["sheet","permutation-sequence","Permutation Sequence","Backtracking · Hard","60"],["sheet","unique-paths-iii","Unique Paths III","Backtracking · Hard","980"],["sheet","remove-invalid-parentheses","Remove Invalid Parentheses","Backtracking · Hard","301"],["sheet","fibonacci-number","Fibonacci Number","Dynamic Programming · Easy","509"],["sheet","n-th-tribonacci-number","N-th Tribonacci Number","Dynamic Programming · Easy","1137"],["sheet","climbing-stairs","Climbing Stairs","Dynamic Programming · Easy","70"],["sheet","min-cost-climbing-stairs","Min Cost Climbing Stairs","Dynamic Programming · Easy","746"],["sheet","house-robber","House Robber","Dynamic Programming · Medium","198"],["sheet","house-robber-ii","House Robber II","Dynamic Programming · Medium","213"],["sheet","delete-and-earn","Delete and Earn","Dynamic Programming · Medium","740"],["sheet","solving-questions-with-brainpower","Solving Questions With Brainpower","Dynamic Programming · Medium","2140"],["sheet","maximum-subarray","Maximum Subarray","Dynamic Programming · Medium","53"],["sheet","maximum-product-subarray","Maximum Product Subarray","Dynamic Programming · Medium","152"],["sheet","best-time-to-buy-and-sell-stock-with-cooldown","Best Time to Buy and Sell Stock with Cooldown","Dynamic Programming · Medium","309"],["sheet","best-time-to-buy-and-sell-stock-with-transaction-fee","Best Time to Buy and Sell Stock with Transaction Fee","Dynamic Programming · Medium","714"],["sheet","unique-paths","Unique Paths","Dynamic Programming · Medium","62"],["sheet","minimum-path-sum","Minimum Path Sum","Dynamic Programming · Medium","64"],["sheet","coin-change","Coin Change","Dynamic Programming · Medium","322"],["sheet","perfect-squares","Perfect Squares","Dynamic Programming · Medium","279"],["sheet","coin-change-ii","Coin Change II","Dynamic Programming · Medium","518"],["sheet","combination-sum-iv","Combination Sum IV","Dynamic Programming · Medium","377"],["sheet","partition-equal-subset-sum","Partition Equal Subset Sum","Dynamic Programming · Medium","416"],["sheet","word-break","Word Break","Dynamic Programming · Medium","139"],["sheet","minimum-cost-for-tickets","Minimum Cost For Tickets","Dynamic Programming · Medium","983"],["sheet","decode-ways","Decode Ways","Dynamic Programming · Medium","91"],["sheet","longest-increasing-subsequence","Longest Increasing Subsequence","Dynamic Programming · Medium","300"],["sheet","longest-common-subsequence","Longest Common Subsequence","Dynamic Programming · Medium","1143"],["sheet","edit-distance","Edit Distance","Dynamic Programming · Medium","72"],["sheet","best-time-to-buy-and-sell-stock-iii","Best Time to Buy and Sell Stock III","Dynamic Programming · Hard","123"],["sheet","best-time-to-buy-and-sell-stock-iv","Best Time to Buy and Sell Stock IV","Dynamic Programming · Hard","188"],["sheet","maximum-profit-in-job-scheduling","Maximum Profit in Job Scheduling","Dynamic Programming · Hard","1235"],["sheet","burst-balloons","Burst Balloons","Dynamic Programming · Hard","312"],["sheet","regular-expression-matching","Regular Expression Matching","Dynamic Programming · Hard","10"],["sheet","remove-duplicates-from-sorted-list","Remove Duplicates from Sorted List","Linked Lists · Easy","83"],["sheet","convert-binary-number-in-a-linked-list-to-integer","Convert Binary Number in a Linked List to Integer","Linked Lists · Easy","1290"],["sheet","remove-linked-list-elements","Remove Linked List Elements","Linked Lists · Easy","203"],["sheet","design-linked-list","Design Linked List","Linked Lists · Medium","707"],["sheet","add-two-numbers","Add Two Numbers","Linked Lists · Medium","2"],["sheet","odd-even-linked-list","Odd Even Linked List","Linked Lists · Medium","328"],["sheet","partition-list","Partition List","Linked Lists · Medium","86"],["sheet","remove-duplicates-from-sorted-list-ii","Remove Duplicates from Sorted List II","Linked Lists · Medium","82"],["sheet","copy-list-with-random-pointer","Copy List with Random Pointer","Linked Lists · Medium","138"],["sheet","sort-list","Sort List","Linked Lists · Medium","148"],["sheet","final-prices-with-a-special-discount-in-a-shop","Final Prices With a Special Discount in a Shop","Monotonic Stack & Queue · Easy","1475"],["sheet","next-greater-element-ii","Next Greater Element II","Monotonic Stack & Queue · Medium","503"],["sheet","remove-k-digits","Remove K Digits","Monotonic Stack & Queue · Medium","402"],["sheet","remove-duplicate-letters","Remove Duplicate Letters","Monotonic Stack & Queue · Medium","316"],["sheet","132-pattern","132 Pattern","Monotonic Stack & Queue · Medium","456"],["sheet","sum-of-subarray-minimums","Sum of Subarray Minimums","Monotonic Stack & Queue · Medium","907"],["sheet","longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit","Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit","Monotonic Stack & Queue · Medium","1438"],["sheet","maximal-rectangle","Maximal Rectangle","Monotonic Stack & Queue · Hard","85"],["sheet","shortest-subarray-with-sum-at-least-k","Shortest Subarray with Sum at Least K","Monotonic Stack & Queue · Hard","862"],["sheet","number-of-visible-people-in-a-queue","Number of Visible People in a Queue","Monotonic Stack & Queue · Hard","1944"],["sheet","binary-tree-inorder-traversal","Binary Tree Inorder Traversal","Trees · Easy","94"],["sheet","binary-tree-preorder-traversal","Binary Tree Preorder Traversal","Trees · Easy","144"],["sheet","binary-tree-postorder-traversal","Binary Tree Postorder Traversal","Trees · Easy","145"],["sheet","merge-two-binary-trees","Merge Two Binary Trees","Trees · Easy","617"],["sheet","univalued-binary-tree","Univalued Binary Tree","Trees · Easy","965"],["sheet","symmetric-tree","Symmetric Tree","Trees · Easy","101"],["sheet","diameter-of-binary-tree","Diameter of Binary Tree","Trees · Easy","543"],["sheet","balanced-binary-tree","Balanced Binary Tree","Trees · Easy","110"],["sheet","path-sum","Path Sum","Trees · Easy","112"],["sheet","subtree-of-another-tree","Subtree of Another Tree","Trees · Easy","572"],["sheet","leaf-similar-trees","Leaf-Similar Trees","Trees · Easy","872"],["sheet","sum-of-left-leaves","Sum of Left Leaves","Trees · Easy","404"],["sheet","binary-tree-paths","Binary Tree Paths","Trees · Easy","257"],["sheet","search-in-a-binary-search-tree","Search in a Binary Search Tree","Trees · Easy","700"],["sheet","range-sum-of-bst","Range Sum of BST","Trees · Easy","938"],["sheet","minimum-absolute-difference-in-bst","Minimum Absolute Difference in BST","Trees · Easy","530"],["sheet","convert-sorted-array-to-binary-search-tree","Convert Sorted Array to Binary Search Tree","Trees · Easy","108"],["sheet","path-sum-ii","Path Sum II","Trees · Medium","113"],["sheet","sum-root-to-leaf-numbers","Sum Root to Leaf Numbers","Trees · Medium","129"],["sheet","count-good-nodes-in-binary-tree","Count Good Nodes in Binary Tree","Trees · Medium","1448"],["sheet","path-sum-iii","Path Sum III","Trees · Medium","437"],["sheet","lowest-common-ancestor-of-a-binary-search-tree","Lowest Common Ancestor of a Binary Search Tree","Trees · Medium","235"],["sheet","insert-into-a-binary-search-tree","Insert into a Binary Search Tree","Trees · Medium","701"],["sheet","delete-node-in-a-bst","Delete Node in a BST","Trees · Medium","450"],["sheet","kth-smallest-element-in-a-bst","Kth Smallest Element in a BST","Trees · Medium","230"],["sheet","binary-search-tree-iterator","Binary Search Tree Iterator","Trees · Medium","173"],["sheet","flatten-binary-tree-to-linked-list","Flatten Binary Tree to Linked List","Trees · Medium","114"],["sheet","lowest-common-ancestor-of-a-binary-tree","Lowest Common Ancestor of a Binary Tree","Trees · Medium","236"],["sheet","construct-binary-tree-from-preorder-and-inorder-traversal","Construct Binary Tree from Preorder and Inorder Traversal","Trees · Medium","105"],["sheet","construct-binary-tree-from-inorder-and-postorder-traversal","Construct Binary Tree from Inorder and Postorder Traversal","Trees · Medium","106"],["sheet","construct-binary-search-tree-from-preorder-traversal","Construct Binary Search Tree from Preorder Traversal","Trees · Medium","1008"],["sheet","longest-zigzag-path-in-a-binary-tree","Longest ZigZag Path in a Binary Tree","Trees · Medium","1372"],["sheet","house-robber-iii","House Robber III","Trees · Medium","337"],["sheet","delete-nodes-and-return-forest","Delete Nodes And Return Forest","Trees · Medium","1110"],["sheet","unique-binary-search-trees","Unique Binary Search Trees","Trees · Medium","96"],["sheet","binary-tree-maximum-path-sum","Binary Tree Maximum Path Sum","Trees · Hard","124"],["sheet","serialize-and-deserialize-binary-tree","Serialize and Deserialize Binary Tree","Trees · Hard","297"],["sheet","binary-tree-cameras","Binary Tree Cameras","Trees · Hard","968"],["sheet","vertical-order-traversal-of-a-binary-tree","Vertical Order Traversal of a Binary Tree","Trees · Hard","987"],["sheet","find-the-town-judge","Find the Town Judge","Graphs · Easy","997"],["sheet","find-center-of-star-graph","Find Center of Star Graph","Graphs · Easy","1791"],["sheet","is-graph-bipartite","Is Graph Bipartite?","Graphs · Medium","785"],["sheet","possible-bipartition","Possible Bipartition","Graphs · Medium","886"],["sheet","redundant-connection","Redundant Connection","Graphs · Medium","684"],["sheet","number-of-operations-to-make-network-connected","Number of Operations to Make Network Connected","Graphs · Medium","1319"],["sheet","satisfiability-of-equality-equations","Satisfiability of Equality Equations","Graphs · Medium","990"],["sheet","accounts-merge","Accounts Merge","Graphs · Medium","721"],["sheet","most-stones-removed-with-same-row-or-column","Most Stones Removed with Same Row or Column","Graphs · Medium","947"],["sheet","minimum-height-trees","Minimum Height Trees","Graphs · Medium","310"],["sheet","find-all-possible-recipes-from-given-supplies","Find All Possible Recipes from Given Supplies","Graphs · Medium","2115"],["sheet","course-schedule-iv","Course Schedule IV","Graphs · Medium","1462"],["sheet","network-delay-time","Network Delay Time","Graphs · Medium","743"],["sheet","path-with-maximum-probability","Path with Maximum Probability","Graphs · Medium","1514"],["sheet","path-with-minimum-effort","Path With Minimum Effort","Graphs · Medium","1631"],["sheet","number-of-ways-to-arrive-at-destination","Number of Ways to Arrive at Destination","Graphs · Medium","1976"],["sheet","min-cost-to-connect-all-points","Min Cost to Connect All Points","Graphs · Medium","1584"],["sheet","cheapest-flights-within-k-stops","Cheapest Flights Within K Stops","Graphs · Medium","787"],["sheet","build-a-matrix-with-conditions","Build a Matrix With Conditions","Graphs · Hard","2392"],["sheet","reconstruct-itinerary","Reconstruct Itinerary","Graphs · Hard","332"],["sheet","swim-in-rising-water","Swim in Rising Water","Graphs · Hard","778"],["sheet","critical-connections-in-a-network","Critical Connections in a Network","Graphs · Hard","1192"],["sheet","find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree","Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree","Graphs · Hard","1489"],["sheet","minimum-cost-to-make-at-least-one-valid-path-in-a-grid","Minimum Cost to Make at Least One Valid Path in a Grid","Graphs · Hard","1368"],["sheet","longest-common-prefix","Longest Common Prefix","Tries · Easy","14"],["sheet","implement-trie-prefix-tree","Implement Trie (Prefix Tree)","Tries · Medium","208"],["sheet","design-add-and-search-words-data-structure","Design Add and Search Words Data Structure","Tries · Medium","211"],["sheet","replace-words","Replace Words","Tries · Medium","648"],["sheet","map-sum-pairs","Map Sum Pairs","Tries · Medium","677"],["sheet","search-suggestions-system","Search Suggestions System","Tries · Medium","1268"],["sheet","find-the-length-of-the-longest-common-prefix","Find the Length of the Longest Common Prefix","Tries · Medium","3043"],["sheet","maximum-xor-of-two-numbers-in-an-array","Maximum XOR of Two Numbers in an Array","Tries · Medium","421"],["sheet","word-search-ii","Word Search II","Tries · Hard","212"],["sheet","sum-of-prefix-scores-of-strings","Sum of Prefix Scores of Strings","Tries · Hard","2416"],["sheet","prefix-and-suffix-search","Prefix and Suffix Search","Tries · Hard","745"],["sheet","height-checker","Height Checker","Sorting · Easy","1051"],["sheet","relative-ranks","Relative Ranks","Sorting · Easy","506"],["sheet","relative-sort-array","Relative Sort Array","Sorting · Easy","1122"],["sheet","sort-array-by-increasing-frequency","Sort Array by Increasing Frequency","Sorting · Easy","1636"],["sheet","sort-integers-by-the-number-of-1-bits","Sort Integers by The Number of 1 Bits","Sorting · Easy","1356"],["sheet","sort-an-array","Sort an Array","Sorting · Medium","912"],["sheet","insertion-sort-list","Insertion Sort List","Sorting · Medium","147"],["sheet","custom-sort-string","Custom Sort String","Sorting · Medium","791"],["sheet","h-index","H-Index","Sorting · Medium","274"],["sheet","largest-number","Largest Number","Sorting · Medium","179"],["sheet","design-parking-system","Design Parking System","Design · Easy","1603"],["sheet","number-of-recent-calls","Number of Recent Calls","Design · Easy","933"],["sheet","design-hashset","Design HashSet","Design · Easy","705"],["sheet","design-hashmap","Design HashMap","Design · Easy","706"],["sheet","design-circular-queue","Design Circular Queue","Design · Medium","622"],["sheet","design-circular-deque","Design Circular Deque","Design · Medium","641"],["sheet","design-browser-history","Design Browser History","Design · Medium","1472"],["sheet","snapshot-array","Snapshot Array","Design · Medium","1146"],["sheet","design-underground-system","Design Underground System","Design · Medium","1396"],["sheet","design-twitter","Design Twitter","Design · Medium","355"],["sheet","lfu-cache","LFU Cache","Design · Hard","460"],["sheet","all-oone-data-structure","All O`one Data Structure","Design · Hard","432"],["sheet","maximum-frequency-stack","Maximum Frequency Stack","Design · Hard","895"],["sheet","defanging-an-ip-address","Defanging an IP Address","String Algorithms · Easy","1108"],["sheet","length-of-last-word","Length of Last Word","String Algorithms · Easy","58"],["sheet","find-the-index-of-the-first-occurrence-in-a-string","Find the Index of the First Occurrence in a String","String Algorithms · Easy","28"],["sheet","rotate-string","Rotate String","String Algorithms · Easy","796"],["sheet","repeated-substring-pattern","Repeated Substring Pattern","String Algorithms · Easy","459"],["sheet","string-matching-in-an-array","String Matching in an Array","String Algorithms · Easy","1408"],["sheet","reverse-words-in-a-string","Reverse Words in a String","String Algorithms · Medium","151"],["sheet","string-compression","String Compression","String Algorithms · Medium","443"],["sheet","string-to-integer-atoi","String to Integer (atoi)","String Algorithms · Medium","8"],["sheet","zigzag-conversion","Zigzag Conversion","String Algorithms · Medium","6"],["sheet","longest-happy-prefix","Longest Happy Prefix","String Algorithms · Hard","1392"],["sheet","shortest-palindrome","Shortest Palindrome","String Algorithms · Hard","214"],["sheet","longest-duplicate-substring","Longest Duplicate Substring","String Algorithms · Hard","1044"],["sheet","text-justification","Text Justification","String Algorithms · Hard","68"],["sheet","pascals-triangle-ii","Pascal's Triangle II","DP on Grids & Strings · Easy","119"],["sheet","unique-paths-ii","Unique Paths II","DP on Grids & Strings · Medium","63"],["sheet","triangle","Triangle","DP on Grids & Strings · Medium","120"],["sheet","maximal-square","Maximal Square","DP on Grids & Strings · Medium","221"],["sheet","palindromic-substrings","Palindromic Substrings","DP on Grids & Strings · Medium","647"],["sheet","longest-palindromic-subsequence","Longest Palindromic Subsequence","DP on Grids & Strings · Medium","516"],["sheet","delete-operation-for-two-strings","Delete Operation for Two Strings","DP on Grids & Strings · Medium","583"],["sheet","interleaving-string","Interleaving String","DP on Grids & Strings · Medium","97"],["sheet","distinct-subsequences","Distinct Subsequences","DP on Grids & Strings · Hard","115"],["sheet","minimum-insertion-steps-to-make-a-string-palindrome","Minimum Insertion Steps to Make a String Palindrome","DP on Grids & Strings · Hard","1312"],["sheet","wildcard-matching","Wildcard Matching","DP on Grids & Strings · Hard","44"],["sheet","dungeon-game","Dungeon Game","DP on Grids & Strings · Hard","174"],["sheet","target-sum","Target Sum","Knapsack & LIS · Medium","494"],["sheet","last-stone-weight-ii","Last Stone Weight II","Knapsack & LIS · Medium","1049"],["sheet","ones-and-zeroes","Ones and Zeroes","Knapsack & LIS · Medium","474"],["sheet","maximum-length-of-pair-chain","Maximum Length of Pair Chain","Knapsack & LIS · Medium","646"],["sheet","number-of-longest-increasing-subsequence","Number of Longest Increasing Subsequence","Knapsack & LIS · Medium","673"],["sheet","largest-divisible-subset","Largest Divisible Subset","Knapsack & LIS · Medium","368"],["sheet","longest-string-chain","Longest String Chain","Knapsack & LIS · Medium","1048"],["sheet","profitable-schemes","Profitable Schemes","Knapsack & LIS · Hard","879"],["sheet","russian-doll-envelopes","Russian Doll Envelopes","Knapsack & LIS · Hard","354"],["sheet","minimum-score-triangulation-of-polygon","Minimum Score Triangulation of Polygon","Interval & Bitmask DP · Medium","1039"],["sheet","beautiful-arrangement","Beautiful Arrangement","Interval & Bitmask DP · Medium","526"],["sheet","minimum-number-of-work-sessions-to-finish-the-tasks","Minimum Number of Work Sessions to Finish the Tasks","Interval & Bitmask DP · Medium","1986"],["sheet","palindrome-partitioning-ii","Palindrome Partitioning II","Interval & Bitmask DP · Hard","132"],["sheet","minimum-cost-to-cut-a-stick","Minimum Cost to Cut a Stick","Interval & Bitmask DP · Hard","1547"],["sheet","strange-printer","Strange Printer","Interval & Bitmask DP · Hard","664"],["sheet","shortest-path-visiting-all-nodes","Shortest Path Visiting All Nodes","Interval & Bitmask DP · Hard","847"],["sheet","number-of-1-bits","Number of 1 Bits","Bit Manipulation · Easy","191"],["sheet","power-of-two","Power of Two","Bit Manipulation · Easy","231"],["sheet","single-number","Single Number","Bit Manipulation · Easy","136"],["sheet","counting-bits","Counting Bits","Bit Manipulation · Easy","338"],["sheet","missing-number","Missing Number","Bit Manipulation · Easy","268"],["sheet","hamming-distance","Hamming Distance","Bit Manipulation · Easy","461"],["sheet","find-the-difference","Find the Difference","Bit Manipulation · Easy","389"],["sheet","binary-number-with-alternating-bits","Binary Number with Alternating Bits","Bit Manipulation · Easy","693"],["sheet","reverse-bits","Reverse Bits","Bit Manipulation · Easy","190"],["sheet","minimum-flips-to-make-a-or-b-equal-to-c","Minimum Flips to Make a OR b Equal to c","Bit Manipulation · Medium","1318"],["sheet","find-the-original-array-of-prefix-xor","Find The Original Array of Prefix Xor","Bit Manipulation · Medium","2433"],["sheet","sum-of-two-integers","Sum of Two Integers","Bit Manipulation · Medium","371"],["sheet","single-number-ii","Single Number II","Bit Manipulation · Medium","137"],["sheet","single-number-iii","Single Number III","Bit Manipulation · Medium","260"],["sheet","bitwise-and-of-numbers-range","Bitwise AND of Numbers Range","Bit Manipulation · Medium","201"],["sheet","gray-code","Gray Code","Bit Manipulation · Medium","89"],["sheet","fizz-buzz","Fizz Buzz","Math & Geometry · Easy","412"],["sheet","subtract-the-product-and-sum-of-digits-of-an-integer","Subtract the Product and Sum of Digits of an Integer","Math & Geometry · Easy","1281"],["sheet","palindrome-number","Palindrome Number","Math & Geometry · Easy","9"],["sheet","add-digits","Add Digits","Math & Geometry · Easy","258"],["sheet","plus-one","Plus One","Math & Geometry · Easy","66"],["sheet","roman-to-integer","Roman to Integer","Math & Geometry · Easy","13"],["sheet","excel-sheet-column-number","Excel Sheet Column Number","Math & Geometry · Easy","171"],["sheet","excel-sheet-column-title","Excel Sheet Column Title","Math & Geometry · Easy","168"],["sheet","ugly-number","Ugly Number","Math & Geometry · Easy","263"],["sheet","greatest-common-divisor-of-strings","Greatest Common Divisor of Strings","Math & Geometry · Easy","1071"],["sheet","check-if-it-is-a-straight-line","Check If It Is a Straight Line","Math & Geometry · Easy","1232"],["sheet","rectangle-overlap","Rectangle Overlap","Math & Geometry · Easy","836"],["sheet","integer-to-roman","Integer to Roman","Math & Geometry · Medium","12"],["sheet","reverse-integer","Reverse Integer","Math & Geometry · Medium","7"],["sheet","factorial-trailing-zeroes","Factorial Trailing Zeroes","Math & Geometry · Medium","172"],["sheet","powx-n","Pow(x, n)","Math & Geometry · Medium","50"],["sheet","multiply-strings","Multiply Strings","Math & Geometry · Medium","43"],["sheet","ugly-number-ii","Ugly Number II","Math & Geometry · Medium","264"],["sheet","count-primes","Count Primes","Math & Geometry · Medium","204"],["sheet","find-the-winner-of-the-circular-game","Find the Winner of the Circular Game","Math & Geometry · Medium","1823"],["sheet","rectangle-area","Rectangle Area","Math & Geometry · Medium","223"],["sheet","valid-square","Valid Square","Math & Geometry · Medium","593"],["sheet","max-points-on-a-line","Max Points on a Line","Math & Geometry · Hard","149"],["sheet","number-of-digit-one","Number of Digit One","Math & Geometry · Hard","233"],["sheet","erect-the-fence","Erect the Fence","Math & Geometry · Hard","587"],["sheet","range-sum-query-mutable","Range Sum Query - Mutable","Segment Tree & BIT · Medium","307"],["sheet","count-of-smaller-numbers-after-self","Count of Smaller Numbers After Self","Segment Tree & BIT · Hard","315"],["sheet","reverse-pairs","Reverse Pairs","Segment Tree & BIT · Hard","493"],["sheet","create-sorted-array-through-instructions","Create Sorted Array through Instructions","Segment Tree & BIT · Hard","1649"],["sheet","the-skyline-problem","The Skyline Problem","Segment Tree & BIT · Hard","218"],["sheet","range-module","Range Module","Segment Tree & BIT · Hard","715"],["sheet","recyclable-and-low-fat-products","Recyclable and Low Fat Products","SQL · Easy","1757"],["sheet","find-customer-referee","Find Customer Referee","SQL · Easy","584"],["sheet","big-countries","Big Countries","SQL · Easy","595"],["sheet","article-views-i","Article Views I","SQL · Easy","1148"],["sheet","invalid-tweets","Invalid Tweets","SQL · Easy","1683"],["sheet","combine-two-tables","Combine Two Tables","SQL · Easy","175"],["sheet","replace-employee-id-with-the-unique-identifier","Replace Employee ID With The Unique Identifier","SQL · Easy","1378"],["sheet","customer-who-visited-but-did-not-make-any-transactions","Customer Who Visited but Did Not Make Any Transactions","SQL · Easy","1581"],["sheet","employees-earning-more-than-their-managers","Employees Earning More Than Their Managers","SQL · Easy","181"],["sheet","customers-who-never-order","Customers Who Never Order","SQL · Easy","183"],["sheet","duplicate-emails","Duplicate Emails","SQL · Easy","182"],["sheet","rising-temperature","Rising Temperature","SQL · Easy","197"],["sheet","delete-duplicate-emails","Delete Duplicate Emails","SQL · Easy","196"],["sheet","average-selling-price","Average Selling Price","SQL · Easy","1251"],["sheet","queries-quality-and-percentage","Queries Quality and Percentage","SQL · Easy","1211"],["sheet","patients-with-a-condition","Patients With a Condition","SQL · Easy","1527"],["sheet","second-highest-salary","Second Highest Salary","SQL · Medium","176"],["sheet","nth-highest-salary","Nth Highest Salary","SQL · Medium","177"],["sheet","rank-scores","Rank Scores","SQL · Medium","178"],["sheet","consecutive-numbers","Consecutive Numbers","SQL · Medium","180"],["sheet","department-highest-salary","Department Highest Salary","SQL · Medium","184"],["sheet","managers-with-at-least-5-direct-reports","Managers with at Least 5 Direct Reports","SQL · Medium","570"],["sheet","confirmation-rate","Confirmation Rate","SQL · Medium","1934"],["sheet","monthly-transactions-i","Monthly Transactions I","SQL · Medium","1193"],["sheet","game-play-analysis-iv","Game Play Analysis IV","SQL · Medium","550"],["sheet","exchange-seats","Exchange Seats","SQL · Medium","626"],["sheet","department-top-three-salaries","Department Top Three Salaries","SQL · Hard","185"],["sheet","trips-and-users","Trips and Users","SQL · Hard","262"],["sheet","human-traffic-of-stadium","Human Traffic of Stadium","SQL · Hard","601"],["sheet","print-in-order","Print in Order","Concurrency · Easy","1114"],["sheet","traffic-light-controlled-intersection","Traffic Light Controlled Intersection","Concurrency · Easy","1279"],["sheet","print-foobar-alternately","Print FooBar Alternately","Concurrency · Medium","1115"],["sheet","print-zero-even-odd","Print Zero Even Odd","Concurrency · Medium","1116"],["sheet","building-h2o","Building H2O","Concurrency · Medium","1117"],["sheet","fizz-buzz-multithreaded","Fizz Buzz Multithreaded","Concurrency · Medium","1195"],["sheet","the-dining-philosophers","The Dining Philosophers","Concurrency · Medium","1226"],["sheet","design-bounded-blocking-queue","Design Bounded Blocking Queue","Concurrency · Medium","1188"],["sheet","web-crawler-multithreaded","Web Crawler Multithreaded","Concurrency · Medium","1242"]],"counts":{"stories":40,"storyPatterns":16,"patterns":16,"catalog":57,"sheet":553,"runnable":351,"git":8,"sd":29,"ai":21,"terms":16}};
+// @@END-SEARCH@@
+// @@FIND@@ — generated block (from shared/search.js): site search over SITE_INDEX, the @@SEARCH@@ block that
+// scripts/build_search.js builds from the shared data. The pill nav (shared/nav.js, shared/ui/nav.html) shows the box.
+// A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
+// type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
+const SEARCH_TYPES = {
+  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
+  problem: ['Runnable problems', 'Code.dc.html', 'dsaviz-problem', 2],
+  git: ['Git', 'Git.dc.html', 'dsaviz-git-lesson', 2],
+  sd: ['System design', 'SDLesson.dc.html', 'dsaviz-sd-lesson', 2],
+  ai: ['AI & ML', 'AILesson.dc.html', 'dsaviz-ai-lesson', 2],
+  term: ['Glossary', 'Glossary.dc.html', 'dsaviz-glossary-term', 1.5],
+  sheet: ['Master sheet', 'Sheet.dc.html', 'dsaviz-sheet-focus', 1]
+};
+const SEARCH_ORDER = Object.keys(SEARCH_TYPES);
+function searchNorm(s) {
+  return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9+#]+/g, ' ').trim();
+}
+let SEARCH_PREP = null;
+function searchPrep() {
+  if (!SEARCH_PREP) {
+    SEARCH_PREP = SITE_INDEX.items.map(([type, id, title, sub, kw]) => {
+      const t = searchNorm(title), o = searchNorm(sub + ' ' + kw);
+      return { key: type + ':' + id, type, id, title, sub, t, tw: t.split(' '), o, ow: o.split(' ') };
+    });
+  }
+  return SEARCH_PREP;
+}
+// Letters of q in order inside s, with few gaps: up to 35 points, or 0.
+function searchLoose(q, s) {
+  if (q.length < 3) return 0;
+  let i = 0, start = -1, end = -1;
+  for (let j = 0; j < s.length && i < q.length; j++) {
+    if (s[j] === q[i]) { if (start < 0) start = j; end = j; i++; }
+  }
+  if (i < q.length) return 0;
+  const span = end - start + 1;
+  return span > q.length * 3 ? 0 : 35 * q.length / span;
+}
+function searchScore(q, qw, it) {
+  const pre = (words) => qw.every((w) => words.some((x) => x.indexOf(w) === 0));
+  let s = 0;
+  if (it.t === q) s = 100;
+  else if (it.t.indexOf(q) === 0) s = 90;
+  else if (pre(it.tw)) s = 80;
+  else if (it.t.indexOf(q) >= 0) s = 70;
+  else if (qw.length === 1 && it.ow.indexOf(q) >= 0) s = 60;
+  else if (qw.every((w) => it.tw.some((x) => x.indexOf(w) === 0) || it.ow.some((x) => x.indexOf(w) === 0))) s = 55;
+  else if (it.o.indexOf(q) >= 0) s = 45;
+  else s = searchLoose(q.replace(/ /g, ''), it.t.replace(/ /g, ''));
+  if (!s) return 0;
+  return s - Math.min(5, it.t.length / 20) + SEARCH_TYPES[it.type][3];
+}
+// Best matches, at most `per` of each type and `limit` in all, grouped by type in the order of each group's best match.
+function siteSearch(query, limit, per) {
+  limit = limit || 12; per = per || 4;
+  const q = searchNorm(query);
+  if (!q) return [];
+  const qw = q.split(' ');
+  const hits = [];
+  searchPrep().forEach((it) => { const s = searchScore(q, qw, it); if (s > 0) hits.push([s, it]); });
+  hits.sort((a, b) => b[0] - a[0] || SEARCH_ORDER.indexOf(a[1].type) - SEARCH_ORDER.indexOf(b[1].type) || a[1].title.localeCompare(b[1].title));
+  const groups = [], byType = {};
+  let n = 0;
+  for (const [, it] of hits) {
+    if (n >= limit) break;
+    let g = byType[it.type];
+    if (!g) { g = byType[it.type] = { type: it.type, label: SEARCH_TYPES[it.type][0], items: [] }; groups.push(g); }
+    if (g.items.length >= per) continue;
+    g.items.push(it);
+    n++;
+  }
+  return groups;
+}
+// Read and forget a key a search result wrote (Sheet, Library, Git and Glossary use it on load).
+function searchFocus(key) {
+  try { const v = window.localStorage.getItem(key); if (v != null) window.localStorage.removeItem(key); return v; } catch (e) { return null; }
+}
+// Scroll an element into view once the page has drawn it.
+function searchReveal(sel) {
+  setTimeout(() => { try { const el = document.querySelector(sel); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); } catch (e) {} }, 60);
+}
+// Remember what to open, and return the page that opens it.
+function searchTarget(it) {
+  const [, page, key] = SEARCH_TYPES[it.type];
+  try { window.localStorage.setItem(key, it.id); } catch (e) {}
+  return page;
+}
+// @@END-FIND@@
+// @@NAV@@ — generated block (from shared/nav.js): the floating pill nav at the top of every page.
+// Markup: shared/ui/nav.html, copied between the PILL NAV comment markers together with the menu drawer.
+// A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
+// NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
+// whose page is not built yet shows as "Soon" instead of a dead link.
+const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Code.dc.html", "Contests.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
+// key, label, page, icon, hidden on phones unless active
+const NAV_ITEMS = [
+  ['home', 'Home', 'Home.dc.html', 'home', false],
+  ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
+  ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
+  ['code', 'Code', 'Code.dc.html', 'code', false],
+  ['git', 'Git', 'Git.dc.html', 'git', true],
+  ['design', 'System design', 'SystemDesign.dc.html', 'design', true],
+  ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
+];
+// Which section each page belongs to.
+const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
+  Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
+// The search box: "/" anywhere (outside a text field) opens it on the page that is showing.
+function searchShow(cmp) {
+  cmp.setState({ sOpen: true, sAct: 0 });
+  setTimeout(() => { try { const el = document.querySelector('[data-pn-search-input]'); if (el) el.focus(); } catch (e) {} }, 0);
+}
+function searchHide(cmp, refocus) {
+  cmp.setState({ sOpen: false, sQ: '', sAct: 0 });
+  if (refocus) setTimeout(() => { try { const el = document.querySelector('[data-pn-search-btn]'); if (el) el.focus(); } catch (e) {} }, 0);
+}
+function searchGo(cmp, it) {
+  const page = searchTarget(it);
+  searchHide(cmp, false);
+  if (typeof window !== 'undefined' && window.__dsNav) window.__dsNav(page);
+}
+if (typeof window !== 'undefined' && !window.__dsSearchKeys) {
+  window.__dsSearchKeys = true;
+  try {
+    window.addEventListener('keydown', (e) => {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+      const el = e.target, tag = el && el.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (el && el.isContentEditable)) return;
+      const cmp = window.__dsSearchCmp;
+      if (!cmp || !cmp.__host || !cmp.__host.__mounted) return;
+      e.preventDefault();
+      searchShow(cmp);
+    });
+  } catch (e) {}
+}
+function searchVals(cmp, t) {
+  if (typeof window !== 'undefined') window.__dsSearchCmp = cmp;
+  const st = cmp.state;
+  const q = st.sQ || '';
+  const groups = st.sOpen ? siteSearch(q) : [];
+  const flat = [];
+  groups.forEach((g) => g.items.forEach((it) => flat.push(it)));
+  const act = Math.max(0, Math.min(flat.length - 1, st.sAct || 0));
+  let i = 0;
+  const C = SITE_INDEX.counts;
+  return {
+    open: !!st.sOpen, closed: !st.sOpen, q, icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
+    expanded: st.sOpen && flat.length ? 'true' : 'false',
+    active: flat.length ? 'pn-opt-' + act : '',
+    hint: q.trim() ? '' : 'Stories, ' + C.sheet + ' sheet problems, ' + C.runnable + ' runnable problems, lessons and glossary terms',
+    hasHint: !q.trim(), none: !!q.trim() && !flat.length,
+    status: q.trim() ? (flat.length ? flat.length + ' results' : 'No results') : '',
+    groups: groups.map((g) => ({
+      label: g.label, gid: 'pn-grp-' + g.type,
+      items: g.items.map((it) => {
+        const k = i++;
+        const on = k === act;
+        return { id: 'pn-opt-' + k, title: it.title, sub: it.sub, href: SEARCH_TYPES[it.type][1], sel: on ? 'true' : 'false',
+          bg: on ? t.sunk : 'transparent', bar: on ? t.accent : 'transparent',
+          go: (e) => { searchTarget(it); searchHide(cmp, false); },
+          hover: () => { if ((cmp.state.sAct || 0) !== k) cmp.setState({ sAct: k }); } };
+      })
+    })),
+    show: () => searchShow(cmp),
+    hide: () => searchHide(cmp, true),
+    onInput: (e) => cmp.setState({ sQ: e && e.target ? e.target.value : '', sAct: 0 }),
+    onKey: (e) => {
+      if (!e) return;
+      if (e.stopPropagation) e.stopPropagation();
+      const n = flat.length;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (e.preventDefault) e.preventDefault();
+        if (n) cmp.setState({ sAct: (act + (e.key === 'ArrowDown' ? 1 : n - 1)) % n });
+      } else if (e.key === 'Home' && n) { if (e.preventDefault) e.preventDefault(); cmp.setState({ sAct: 0 }); }
+      else if (e.key === 'End' && n) { if (e.preventDefault) e.preventDefault(); cmp.setState({ sAct: n - 1 }); }
+      else if (e.key === 'Enter') { if (e.preventDefault) e.preventDefault(); if (n) searchGo(cmp, flat[act]); }
+      else if (e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); searchHide(cmp, true); }
+    }
+  };
+}
+function navVals(cmp, t, themeKey, page) {
+  const section = NAV_SECTION[page] || '';
+  const me = DS.profile();
+  const st = DS.streak();
+  const dv = drawerVals(cmp, t, themeKey);
+  return Object.assign(dv, {
+    nav: {
+      glass: tint(t.surface, 'EB'), shadow: t.shadow,
+      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+        const on = key === section;
+        const live = NAV_PAGES.includes(href);
+        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+          live, soon: !live, title: live ? label : label + ' · coming soon',
+          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text2 };
+      }),
+      streak: st.current, streakLabel: st.current ? st.current + '-day streak' : 'No streak yet',
+      flame: st.current ? t.flame : t.muted,
+      initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
+      profileOn: page === 'Profile' ? 'page' : 'false',
+      avatarBg: page === 'Profile' ? t.accent : t.sunk, avatarFg: page === 'Profile' ? t.onAccent : t.text,
+      guest: dv.guest && page === 'Main', member: !(dv.guest && page === 'Main'),
+      srch: searchVals(cmp, t)
+    }
+  });
+}
+// @@END-NAV@@
+// @@CONTESTS@@ — generated block (from shared/contests.js): the contest calendar's rules (Contests page).
+// No live data: each contest is a recurrence rule in UTC, written the iCalendar way (a first start plus
+// an RRULE). The page shows the next 14 days in the learner's time zone. Platforms move contests now and
+// then, so the page tells learners to check the platform before they start. A backend that fetches the
+// real schedules can replace CONTESTS later (docs/BACKEND.md).
+// Fields: id, platform, name, start (one known start, UTC), rrule (FREQ=WEEKLY with optional INTERVAL;
+// null when there is no fixed day), minutes, link, note.
+const CONTESTS = [
+  { id: 'lc-weekly', platform: 'LeetCode', name: 'Weekly Contest', start: '2024-09-29T02:30:00Z', rrule: 'FREQ=WEEKLY', minutes: 90, link: 'https://leetcode.com/contest/' },
+  // Biweekly anchor: Biweekly Contest 194, Sat 24 Oct 2026, as listed on clist.by (checked 2026-10-24). LeetCode's own page sits behind a bot check.
+  { id: 'lc-biweekly', platform: 'LeetCode', name: 'Biweekly Contest', start: '2026-10-24T14:30:00Z', rrule: 'FREQ=WEEKLY;INTERVAL=2', minutes: 90, link: 'https://leetcode.com/contest/' },
+  { id: 'atcoder-abc', platform: 'AtCoder', name: 'Beginner Contest (ABC)', start: '2024-09-28T12:00:00Z', rrule: 'FREQ=WEEKLY', minutes: 100, link: 'https://atcoder.jp/contests/' },
+  { id: 'codechef-starters', platform: 'CodeChef', name: 'Starters', start: '2024-09-25T14:30:00Z', rrule: 'FREQ=WEEKLY', minutes: 120, link: 'https://www.codechef.com/contests' },
+  { id: 'codeforces', platform: 'Codeforces', name: 'Codeforces rounds', start: null, rrule: null, minutes: 120, link: 'https://codeforces.com/calendar',
+    note: 'Rounds run most weeks, on no fixed day. Their calendar has the dates.' }
+];
+const CONTEST_PLATFORMS = ['LeetCode', 'Codeforces', 'AtCoder', 'CodeChef'];
+const CONTEST_DAY = 86400000;
+
+// { freq, interval } from an RRULE string. Only weekly rules are used.
+function contestRule(rrule) {
+  if (!rrule) return null;
+  const o = {};
+  rrule.split(';').forEach((p) => { const [k, v] = p.split('='); o[k] = v; });
+  if (o.FREQ !== 'WEEKLY') return null;
+  return { freq: 'WEEKLY', interval: Math.max(1, parseInt(o.INTERVAL || '1', 10)) };
+}
+// Every run of contest c that overlaps [a, b) (ms), as { c, start, end }.
+function contestRuns(c, a, b) {
+  const r = contestRule(c.rrule);
+  if (!r || !c.start) return [];
+  const t0 = Date.parse(c.start), step = r.interval * 7 * CONTEST_DAY, len = c.minutes * 60000;
+  let k = Math.max(0, Math.ceil((a - len - t0) / step));
+  const out = [];
+  for (let s = t0 + k * step; s < b; k++, s = t0 + k * step) if (s + len > a) out.push({ c, start: s, end: s + len });
+  return out;
+}
+// Wall-clock parts of ms in a time zone (undefined = the browser's own).
+function contestParts(ms, tz) {
+  const f = new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', weekday: 'short' });
+  const p = {};
+  f.formatToParts(new Date(ms)).forEach((x) => { p[x.type] = x.value; });
+  return { y: +p.year, m: +p.month, d: +p.day, hh: +p.hour % 24, mm: +p.minute, wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday) };
+}
+const contestPad = (n) => String(n).padStart(2, '0');
+function contestKey(ms, tz) { const p = contestParts(ms, tz); return p.y + '-' + contestPad(p.m) + '-' + contestPad(p.d); }
+function contestZone(tz) {
+  try { return tz || Intl.DateTimeFormat().resolvedOptions().timeZone || 'your time zone'; } catch (e) { return 'your time zone'; }
+}
+// Local clock time, like "8:00 PM" (the browser's locale unless one is given).
+function contestClock(ms, tz, locale) {
+  try { return new Intl.DateTimeFormat(locale, { timeZone: tz, hour: 'numeric', minute: '2-digit' }).format(new Date(ms)); } catch (e) { const p = contestParts(ms, tz); return contestPad(p.hh) + ':' + contestPad(p.mm); }
+}
+// The next `days` local calendar days from `now`, each with the runs that start on it (in time zone tz).
+// platforms: a list to keep, or null for all. Runs that already ended are kept and marked past.
+function contestDays(now, tz, days, platforms) {
+  days = days || 14;
+  const p = contestParts(now, tz);
+  const list = [];
+  for (let i = 0; i < days; i++) {
+    const u = new Date(Date.UTC(p.y, p.m - 1, p.d + i));
+    list.push({ key: u.getUTCFullYear() + '-' + contestPad(u.getUTCMonth() + 1) + '-' + contestPad(u.getUTCDate()), y: u.getUTCFullYear(), m: u.getUTCMonth() + 1, d: u.getUTCDate(), wd: u.getUTCDay(), today: i === 0, runs: [] });
+  }
+  const byKey = {};
+  list.forEach((x) => { byKey[x.key] = x; });
+  // Wide window: local days can sit up to 14 hours either side of UTC.
+  const a = now - 2 * CONTEST_DAY, b = now + (days + 2) * CONTEST_DAY;
+  CONTESTS.filter((c) => !platforms || platforms.includes(c.platform)).forEach((c) => {
+    contestRuns(c, a, b).forEach((r) => {
+      const day = byKey[contestKey(r.start, tz)];
+      if (day) day.runs.push(Object.assign(r, { past: r.end <= now, live: r.start <= now && now < r.end }));
+    });
+  });
+  list.forEach((x) => x.runs.sort((u, v) => u.start - v.start));
+  return list;
+}
+
+// ---------- iCalendar (.ics) ----------
+function icsStamp(ms) { const d = new Date(ms); return d.getUTCFullYear() + contestPad(d.getUTCMonth() + 1) + contestPad(d.getUTCDate()) + 'T' + contestPad(d.getUTCHours()) + contestPad(d.getUTCMinutes()) + contestPad(d.getUTCSeconds()) + 'Z'; }
+function icsText(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+// Lines longer than 75 octets continue on the next line after a space (RFC 5545 section 3.1).
+function icsFold(line) {
+  const out = [];
+  let cur = '', bytes = 0;
+  for (const ch of line) {
+    const code = ch.charCodeAt(0);
+    const n = ch.length > 1 ? 4 : code < 0x80 ? 1 : code < 0x800 ? 2 : 3;
+    if (bytes + n > (out.length ? 74 : 75)) { out.push(cur); cur = ''; bytes = 0; }
+    cur += ch; bytes += n;
+  }
+  out.push(cur);
+  return out.join('\r\n ');
+}
+// A calendar file for a list of runs ({ c, start, end }). stamp: when the file was made (ms).
+function contestIcs(runs, stamp) {
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DSAMaxxing//Contest calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  runs.forEach((r) => {
+    L.push('BEGIN:VEVENT', 'UID:' + r.c.id + '-' + icsStamp(r.start) + '@dsamaxxing', 'DTSTAMP:' + icsStamp(stamp), 'DTSTART:' + icsStamp(r.start), 'DTEND:' + icsStamp(r.end),
+      'SUMMARY:' + icsText(r.c.platform + ' ' + r.c.name),
+      'DESCRIPTION:' + icsText('Time from ' + r.c.platform + '’s usual schedule. Check ' + r.c.link + ' before you start.'),
+      'URL:' + r.c.link, 'END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.map(icsFold).join('\r\n') + '\r\n';
+}
+// Saves text as a file (a Blob link, so it works from file:// too). Returns false where there is no DOM.
+function contestSave(name, text) {
+  try {
+    const url = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.style.display = 'none';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return true;
+  } catch (e) { return false; }
+}
+// @@END-CONTESTS@@
+// ---- page ----
+const CONTEST_WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const CONTEST_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const CONTEST_FILTER_KEY = 'dsaviz-contest-filter';
+function contestColor(t, platform) {
+  return { LeetCode: t.diff.Medium[0], Codeforces: t.right, AtCoder: t.text2, CodeChef: t.diff.Easy[0] }[platform] || t.muted;
+}
+function contestLength(min) { const h = Math.floor(min / 60), m = min % 60; return (h ? h + ' h' : '') + (h && m ? ' ' : '') + (m ? m + ' min' : ''); }
+// " (GMT+5:30)" for the browser's zone, or nothing where Intl cannot say.
+function contestOffset(ms) {
+  try { const p = new Intl.DateTimeFormat('en-US', { timeZoneName: 'shortOffset' }).formatToParts(new Date(ms)).find((x) => x.type === 'timeZoneName'); return p ? ' (' + p.value + ')' : ''; } catch (e) { return ''; }
+}
+function contestFile(r) { return r.c.id + '-' + new Date(r.start).toISOString().slice(0, 10) + '.ics'; }
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let filter = 'All';
+    try { const f = window.localStorage.getItem(CONTEST_FILTER_KEY); if (f && CONTEST_PLATFORMS.includes(f)) filter = f; } catch (e) {}
+    this.state = { theme: loadTheme(), now: Date.now(), filter, saved: '' };
+  }
+  componentDidMount() {
+    listenTheme(this);
+    // Live and ended badges follow the clock.
+    this.timer = setInterval(() => this.setState({ now: Date.now() }), 60000);
+  }
+  componentWillUnmount() { unlistenTheme(this); clearInterval(this.timer); }
+  pick(f) { try { window.localStorage.setItem(CONTEST_FILTER_KEY, f); } catch (e) {} this.setState({ filter: f, saved: '' }); }
+  save(name, runs, msg) { contestSave(name, contestIcs(runs, Date.now())); this.setState({ saved: msg }); }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
+    const { now, filter } = this.state;
+    const days = contestDays(now, undefined, 14, filter === 'All' ? null : [filter]);
+    const upcoming = [];
+    const dayVals = days.map((d) => ({
+      key: d.key, current: d.today ? 'date' : 'false',
+      wd: d.today ? 'Today' : CONTEST_WD[d.wd], num: d.d, month: CONTEST_MONTHS[d.m - 1],
+      wdColor: d.today ? t.accent : t.muted, numColor: d.today ? t.accent : t.text,
+      empty: d.runs.length === 0,
+      runs: d.runs.map((r) => {
+        if (!r.past) upcoming.push(r);
+        const when = CONTEST_WD[d.wd] + ' ' + d.d + ' ' + CONTEST_MONTHS[d.m - 1] + ', ' + contestClock(r.start);
+        return {
+          platform: r.c.platform, name: r.c.name, link: r.c.link, color: contestColor(t, r.c.platform),
+          time: contestClock(r.start) + ' – ' + contestClock(r.end), length: contestLength(r.c.minutes),
+          badge: r.live ? 'Live now' : r.past ? 'Ended' : '', badgeLine: r.live ? t.accent : t.line2, badgeFg: r.live ? t.accent : t.muted,
+          border: r.live ? t.accent : t.line, opacity: r.past ? '0.7' : '1', open: !r.past,
+          openLabel: 'Open ' + r.c.platform + ' ' + r.c.name + ' (new tab)',
+          addLabel: 'Add ' + r.c.platform + ' ' + r.c.name + ', ' + when + ', to your calendar',
+          add: () => { if (!r.past) this.save(contestFile(r), [r], 'Saved ' + r.c.platform + ' ' + r.c.name + '. Open the file to add it.'); }
+        };
+      })
+    }));
+    const range = (a, b) => CONTEST_WD[a.wd] + ' ' + a.d + ' ' + CONTEST_MONTHS[a.m - 1] + ' – ' + CONTEST_WD[b.wd] + ' ' + b.d + ' ' + CONTEST_MONTHS[b.m - 1];
+    const cfc = CONTESTS.find((c) => c.id === 'codeforces');
+    return {
+      t, ...navVals(this, t, themeKey, 'Contests'),
+      zone: contestZone() + contestOffset(now),
+      chips: ['All'].concat(CONTEST_PLATFORMS).map((p) => {
+        const on = p === filter;
+        return { label: p, on: on ? 'true' : 'false', bg: on ? t.text : 'transparent', fg: on ? t.bg : t.text, border: on ? t.text : t.line2,
+          dot: p === 'All' ? 'transparent' : contestColor(t, p), dotShow: p === 'All' ? 'none' : 'inline-block', pick: () => this.pick(p) };
+      }),
+      saved: this.state.saved,
+      showCf: filter === 'All' || filter === 'Codeforces',
+      cf: { name: cfc.name, note: cfc.note, link: cfc.link, color: contestColor(t, 'Codeforces') },
+      weeks: [0, 7].map((i) => ({ label: (i ? 'The week after · ' : 'Next 7 days · ') + range(days[i], days[i + 6]), days: dayVals.slice(i, i + 7) })),
+      noneLeft: upcoming.length === 0, allOpacity: upcoming.length ? '1' : '0.5',
+      allLabel: upcoming.length ? 'Add all ' + upcoming.length + ' to calendar' : 'Nothing to add',
+      addAll: () => { if (upcoming.length) this.save('dsamaxxing-contests.ics', upcoming, 'Saved ' + upcoming.length + ' contests. Open the file to add them.'); }
+    };
+  }
+}
+</script>
+</body>
+</html>

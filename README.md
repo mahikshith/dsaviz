@@ -4,13 +4,25 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 21 linked pages, 40 animated stories covering all 16 patterns, a master sheet of 553 problems, a code editor that runs 104 problems' tests in JavaScript and Python in the browser, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 22 linked pages, 40 animated stories covering all 16 patterns, a master sheet of 553 problems, a code editor that runs 104 problems' tests in JavaScript and Python in the browser, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
 ```bash
 npm start            # http://localhost:5173
 ```
+
+### Install it as an offline app
+
+Served over http(s), the site is an installable web app that works offline. The build writes these next to `index.html`:
+
+| File | What it does |
+| --- | --- |
+| `dist/manifest.webmanifest` | Name (DSAMaxxing), colours (`#0A0A0B` background, lime `#C5F04A` icon) and icons. |
+| `dist/sw.js` | Cache-first service worker. It caches `index.html`, the manifest, the icons and the web fonts on install, in a cache named after the build hash, so each new build replaces the old copy. Pyodide and sql.js files from the CDN are cached the first time a learner runs code. |
+| `dist/icons/` | The lime "M" logo as PNG: 192 and 512 (rounded), a 512 maskable icon and a 180 apple-touch-icon. |
+
+To host it, copy the whole `dist/` folder to any static host (GitHub Pages, Netlify, Cloudflare Pages, an S3 bucket, nginx) and keep `manifest.webmanifest`, `sw.js` and `icons/` in the same folder as `index.html`. Service workers need https (or `localhost`). Open the site once online; after that it loads with no network, and the browser offers "Install". The worker is only registered over http(s): double-clicking `dist/index.html` still opens the single file exactly as before.
 
 ## Work on it
 
@@ -47,7 +59,9 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
 | `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (20 HLD and 9 LLD lessons as data: nodes, links, steps). The hub shows three shelves: fundamentals, case studies (lessons with `method: true`) and LLD. Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
 | `scripts/build_search.js` + `shared/search.js` | Site search. The build turns the catalog, sheet, specs, Git, system design and AI lessons and the glossary into `SITE_INDEX` (the `@@SEARCH@@` block, also holding the counts pages show); `search.js` scores queries. The pill nav's search box (press `/`) opens results grouped by type. `build_site.py` keeps one copy of the index in `dist/index.html`. |
-| `tests/` | `searchcheck.js` (index coverage, no duplicate keys, known queries), `copycheck.js` (fails on stale copy: old depth wording, trial claims, hard-coded counts), `backtest.js`, `mapcheck.js` (pattern map and intro cards), `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
+| `shared/contests.js` | The contest calendar's rules (Contests page): each recurring contest as a UTC start plus a weekly RRULE, the 14-day expansion in the learner's time zone, and the `.ics` writer. See docs/BACKEND.md. |
+| `scripts/pwa.py` | Writes the offline app files (manifest, `sw.js`, icons) during `build_site.py`. |
+| `tests/` | `contestcheck.js` (contest dates across time zones and daylight saving, valid `.ics`), `pwacheck.js` (manifest, icons, service worker, head links), `searchcheck.js` (index coverage, no duplicate keys, known queries), `copycheck.js` (fails on stale copy: old depth wording, trial claims, hard-coded counts), `backtest.js`, `mapcheck.js` (pattern map and intro cards), `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 

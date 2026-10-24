@@ -232,12 +232,19 @@ const DS = (function () {
   function feed() {
     return { demo: true, list: [['Sneha in Pune', 'started', 'The Campfire Trio', '2P'], ['Karthik in Bengaluru', 'finished', 'Islands on the Map', 'DFS'],
       ['Farhan in Hyderabad', 'hit a 30-day streak on', 'The Coat-Check Counter', 'HM'], ['Divya in Chennai', 'unlocked', 'Stacks, queues & heaps', 'LVL'],
-      ['Rahul in Gurugram', 'started a mock on', 'The Train Yard Merge', 'MOCK'], ['Neha in Kolkata', 'solved at expert depth', 'The Exact Change Counter', 'DP']]
+      ['Rahul in Gurugram', 'started a mock on', 'The Train Yard Merge', 'MOCK'], ['Neha in Kolkata', 'finished', 'The Exact Change Counter', 'DP']]
       .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
   }
 
+  // -- erase this browser's progress: activity log, sheet ticks, revisit deck, medals, saved stories, code and lesson progress.
+  // Theme, profile and settings stay.
+  function eraseProgress() {
+    const s = store();
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+  }
+
   return {
-    KEY, XP, XP_RULES, LEVEL_XP, dayKey,
+    KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     leaderboard, buddies, feed,

@@ -30,8 +30,12 @@ def js(x):
     return json.dumps(x, ensure_ascii=False).replace('</', '<\\/')
 
 
+SITE_INDEX = re.compile(r'const SITE_INDEX = (\{.*\});\n// @@END-SEARCH@@')
+
+
 def main():
     boards = []
+    site_index = None
     for n in ORDER:
         s = read('pages', n + '.dc.html')
         inner = s[s.index('<x-dc>') + len('<x-dc>'):s.index('</x-dc>')]
@@ -40,6 +44,11 @@ def main():
         template = inner[:h.start()] + inner[h.end():] if h else inner
         m = re.search(r'<script type="text/x-dc"[^>]*data-props=\'([^\']*)\'[^>]*>([\s\S]*?)</script>', s)
         props, code = json.loads(m.group(1)), m.group(2)
+        # Every page carries the same search index; the bundle keeps one copy on window.
+        im = SITE_INDEX.search(code)
+        if im:
+            site_index = site_index or im.group(1)
+            code = code[:im.start()] + 'const SITE_INDEX = window.DS_SITE_INDEX;\n// @@END-SEARCH@@' + code[im.end():]
         defaults = {k: v.get('default') for k, v in props.items() if not k.startswith('$') and isinstance(v, dict)}
         boards.append('window.DS_BOARDS[%s] = { template: %s, helmet: %s, defaults: %s, factory: function (DCLogic, StreamableLogic, React) {\n%s\nreturn Component; } };'
                       % (js(n + '.dc.html'), js(template), js(helmet), js(defaults), esc(code)))
@@ -51,6 +60,7 @@ def main():
     out = '<!doctype html>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>dsaviz</title>\n'
     out += '<style>html,body{margin:0;overflow-x:hidden;background:#0A0A0B}</style>\n<div id="app"></div>\n'
     out += '<script>' + esc(react) + '</script>\n<script>' + esc(react_dom) + '</script>\n'
+    out += '<script>\nwindow.DS_SITE_INDEX = ' + esc(site_index or '{"items": [], "counts": {}}') + ';\n</script>\n'
     out += '<script>\nwindow.DS_BOARDS = {};\n' + '\n'.join(boards) + '\n</script>\n'
     out += '<script>\nwindow.DS_EDITOR_LOAD = function () {\n' + esc(editor) + '\nreturn DSEditor;\n};\n</script>\n'
     out += '<script>' + esc(runtime) + '</script>\n'

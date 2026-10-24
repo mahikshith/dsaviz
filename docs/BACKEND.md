@@ -17,7 +17,7 @@ There is no server yet. `DS` has two kinds of functions:
 | `dsaviz-sheet-v1` | Sheet page | `{ v: 1, done: { slug: ts }, star: { slug: 1 } }`. DS only reads it. |
 | `dsaviz-deck` | Story and Revisit pages | `{ id: { due, rated } }` |
 | `dsaviz-onboard` | Welcome page | `{ name, reason, level, goal, lang, time, channel, date }` |
-| `dsaviz-prefs` | Profile and Welcome pages | `{ goal, time, channel, depth, lang }` |
+| `dsaviz-prefs` | Profile and Welcome pages | `{ goal, time, channel, lang }` (older saves may also hold `depth`, which is ignored) |
 | `dsaviz-medals-seen` | `DS.markMedalsSeen` | `{ 'Pattern:tier': 1 }`, so a medal shines once |
 | `dsaviz-problem` | many pages (`saveProblem`) | the problem id the learner last opened |
 
@@ -54,6 +54,7 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | `medals(PROBLEMS, PATTERNS)` | `[{ pattern, mark, tier, next: { tier, have, need, unit, pct } or null, fresh, key, done, total }]`. Bronze: first story in the pattern. Silver: half its stories. Gold: every story done and rated in Revisit. | `GET /me/medals`, with `fresh` set by the server |
 | `markMedalsSeen(medals)` | nothing | `POST /me/medals/seen` |
 | `profile()` | `{ name, initials, signedIn, isNew, lang, goal, reason, date, demo: false }` | `GET /me` |
+| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit deck, seen medals, saved stories, saved code and system design progress from this browser. Theme, profile and settings stay. | `DELETE /me/progress` |
 | `dayKey(ts)`, `setClock(fn)` | helpers; `setClock` is for tests | none |
 
 ## Demo functions

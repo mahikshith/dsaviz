@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 21 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, a step-by-step Git visual, a System design section (12 animated HLD and LLD lessons), 13 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 21 linked pages, 40 animated stories covering all 16 patterns, a master sheet of 553 problems, a code editor that runs 104 problems' tests in JavaScript and Python in the browser, a step-by-step Git visual, a System design section (12 animated HLD and LLD lessons), 13 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -43,7 +43,8 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
 | `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (9 HLD and 3 LLD lessons as data: nodes, links, steps). Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
-| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
+| `scripts/build_search.js` + `shared/search.js` | Site search. The build turns the catalog, sheet, specs, Git, system design and AI lessons and the glossary into `SITE_INDEX` (the `@@SEARCH@@` block, also holding the counts pages show); `search.js` scores queries. The pill nav's search box (press `/`) opens results grouped by type. `build_site.py` keeps one copy of the index in `dist/index.html`. |
+| `tests/` | `searchcheck.js` (index coverage, no duplicate keys, known queries), `copycheck.js` (fails on stale copy: old depth wording, trial claims, hard-coded counts), `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -56,7 +57,7 @@ Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrit
 
 ## Add an animated story
 
-1. Write a scene function in the right `src/story/scenes_*.js` (copy a sibling). It returns items, steps (each with `kind`, `dialog`, narration at three depths, `meter`, `watch`), code in five languages, and a `lines` map from step kind to code line.
+1. Write a scene function in the right `src/story/scenes_*.js` (copy a sibling). It returns items, steps (each with `kind`, `dialog`, `nar` (`kid` is the plain caption, `expert` fills the Go deeper fold, `builder` is still checked by scenecheck), `meter`, `watch`), code in five languages, and a `lines` map from step kind to code line.
 2. Register it in `SCENE_LIST` in `src/story/tail.js`.
 3. Set its `animated` flag to `true` in `shared/catalog.js`.
 4. Run `npm run build && npm test`. `scenecheck.js` fails if a step kind has no code line or a narration is missing.
@@ -112,7 +113,7 @@ The Code page lists every problem with a spec, grouped by pattern, and opens wit
 
 ## Known gaps
 
-- 32 of 58 catalog problems have an animated story, covering 15 of the 16 patterns (Backtracking is next). The rest have story, synopsis and briefing.
+- 40 of 57 catalog problems have an animated story, covering all 16 patterns. The rest have story, synopsis and briefing. Pages read these counts from `SITE_INDEX.counts`, so they stay current.
 - Language basics: only chapter 03 is written.
 - Pages are laid out at 1440px and scaled down on small screens. Two pages have their own phone layout: the problem page (`Story.dc.html`, `data-fluid`: below 760px it stacks problem, example, animation and code) and the Git page (`data-fit`).
 - Success stories on the landing page are labelled illustrative. Replace them with real, consented stories before launch.

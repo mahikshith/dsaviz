@@ -345,7 +345,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="flex-shrink: 0; padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; background: {{verdictBg}}; color: {{t.text}}">{{verdict}}</span>
 </div>
 
-<div aria-live="polite" style="min-height: 148px; box-sizing: border-box; margin-top: 8px; padding: 16px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px">
+<div aria-live="polite" style="min-height: 148px; box-sizing: border-box; margin-top: 8px; scroll-margin: 16px 0 24px; padding: 16px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px">
 <sc-if value="{{asking}}" hint-placeholder-val="{{ false }}">
 <div role="group" aria-labelledby="pp-ask" style="display: flex; flex-direction: column; gap: 12px; animation: rise 240ms cubic-bezier(.2,.8,.2,1)">
 <p id="pp-ask" style="margin: 0; font-size: 17px; line-height: 1.5; font-weight: 600"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}; margin-right: 8px">Predict</span>{{askCue}}</p>
@@ -8269,7 +8269,19 @@ class Component extends DCLogic {
     if (!q) return false;
     clearTimeout(this.timer); this.timer = null;
     this.setState({ ask: Object.assign({ resume }, q), playing: false, fb: null, lastAsk: j });
+    this.showAsk();
     return true;
+  }
+  // Bring the question box fully into view in the left column: smooth, or instant under reduced motion.
+  showAsk() {
+    if (typeof document === 'undefined') return;
+    setTimeout(() => {
+      try {
+        const el = document.getElementById('pp-ask');
+        const box = el && el.closest('[aria-live]');
+        if (box) box.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+      } catch (e) {}
+    }, 30);
   }
   answer(i) {
     const q = this.state.ask;

@@ -82,7 +82,19 @@ class Component extends DCLogic {
     if (!q) return false;
     clearTimeout(this.timer); this.timer = null;
     this.setState({ ask: Object.assign({ resume }, q), playing: false, fb: null, lastAsk: j });
+    this.showAsk();
     return true;
+  }
+  // Bring the question box fully into view in the left column: smooth, or instant under reduced motion.
+  showAsk() {
+    if (typeof document === 'undefined') return;
+    setTimeout(() => {
+      try {
+        const el = document.getElementById('pp-ask');
+        const box = el && el.closest('[aria-live]');
+        if (box) box.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+      } catch (e) {}
+    }, 30);
   }
   answer(i) {
     const q = this.state.ask;

@@ -105,7 +105,12 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     const scene = sceneIdFor(loadProblem());
-    this.state = { theme: loadTheme(), scene, step: 0, playing: false, played: false, tab: 'solution', codeOpened: false,
+    // Opened from a problem page (Story.dc.html?from=code): a link back to it, and the story starts at step 1.
+    let fromCode = false;
+    try { fromCode = new URLSearchParams(window.location.search).get('from') === 'code'; } catch (e) {}
+    this.fromCode = fromCode;
+    // The solution code stays folded until asked for: the story, hints and plan come first.
+    this.state = { theme: loadTheme(), scene, step: 0, playing: false, played: false, tab: 'solution', codeOpened: false, solOpen: false,
       hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null, notesOpen: false, note: DS.note(scene), noteSaved: false,
       // your own input: run is the re-simulated scene (null = the story's own example); predict: the toggle, the open question and the last feedback
       customOpen: false, run: null, runText: '', runMsg: '', runBad: false, predict: false, ask: null, fb: null, lastAsk: -9 };
@@ -668,6 +673,9 @@ class Component extends DCLogic {
     const toneBg = { plain: t.sunk, warn: t.warnBg, cool: t.coolBg, ok: t.okBg };
     const toneBar = { plain: t.muted, warn: t.left, cool: t.right, ok: t.ok };
     const activeLine = lines[st.kind] || 0;
+    // "Plan it first" above the code: the plan line for this story step is lit while the animation plays it.
+    const plan = typeof planFor === 'function' ? planFor(S.id) : null;
+    const planAt = plan ? planStepForKind(plan, st.kind) : -1;
     const more = PROBLEMS.filter((p) => p.pattern === S.pattern && p.id !== S.id).sort((a, b) => (!!SCENES[b.id] - !!SCENES[a.id]) || a.added - b.added).slice(0, 4);
     const quizRight = this.state.pick === kit.right;
     const ratePreview = DS.reviewPreview(S.id, { redo: !!this.state.rated });
@@ -679,6 +687,16 @@ class Component extends DCLogic {
 
     return {
       t, ...navVals(this, t, themeKey, 'Story'), S, P, cr,
+      backHref: this.fromCode ? 'Code.dc.html?problem=' + encodeURIComponent(S.id) : 'Patterns.dc.html',
+      backLabel: this.fromCode ? 'Back to the problem' : 'Library',
+      hasPlan: !!plan, planGoal: plan ? plan.goal : '',
+      planNote: planAt >= 0 ? 'Now on plan step ' + (planAt + 1) : 'Steps light up as the story plays',
+      planSteps: plan ? plan.steps.map(([text], i) => {
+        const on = i === planAt;
+        return { n: i + 1, text, current: on ? 'step' : 'false', bg: on ? t.hl : 'transparent', border: on ? t.accent : 'transparent', fg: on ? t.text : t.text2, num: on ? t.accent : t.muted };
+      }) : [],
+      solOpen: this.state.solOpen, solX: this.state.solOpen ? 'true' : 'false',
+      solLabel: this.state.solOpen ? 'Hide solution' : 'Show solution', toggleSol: () => this.setState({ solOpen: !this.state.solOpen }),
       diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2], patternName: S.pattern,
       clock: cr.clock, clockLabel: cr.clockLabel,
       // the problem
@@ -783,7 +801,7 @@ class Component extends DCLogic {
       code: code.map(([c, cm], i) => ({ n: i + 1, code: c, comment: cm, numColor: i + 1 === activeLine ? t.accent : t.muted })),
       codeH: code.length * CODE_LINE + 'px',
       lineMark: 'translateY(' + Math.max(0, activeLine - 1) * CODE_LINE + 'px)', lineMarkOp: activeLine ? 1 : 0,
-      lineNote: activeLine ? 'Line ' + activeLine + ' runs in this step' : '',
+      lineNote: activeLine && this.state.solOpen ? 'Line ' + activeLine + ' runs in this step' : '',
       watch: st.watch.map(([k, v, c], i) => {
         const was = prevSt && prevSt.watch[i] ? prevSt.watch[i][1] : v;
         const changed = String(was) !== String(v);

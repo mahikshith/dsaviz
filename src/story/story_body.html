@@ -2,14 +2,14 @@
 
 <!-- PILL NAV -->
 <!-- /PILL NAV -->
-<div role="region" aria-label="Page tools" class="pp-top" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px; border-bottom: 1px solid {{t.line}}"><a href="Patterns.dc.html" class="pp-back" style="height: 40px; padding: 0 12px 0 8px; box-sizing: border-box; border-radius: 10px; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; color: {{t.text}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>Library</a>
+<div role="region" aria-label="Page tools" class="pp-top" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px; border-bottom: 1px solid {{t.line}}"><a href="{{backHref}}" class="pp-back" style="height: 40px; padding: 0 12px 0 8px; box-sizing: border-box; border-radius: 10px; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; color: {{t.text}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>{{backLabel}}</a>
 <h1 class="pp-title" title="{{P.title}}" style="margin: 0; min-width: 0; font-family: {{t.display}}; font-size: 20px; line-height: 1.2; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{P.title}}</h1>
 <div class="pp-chips" style="display: flex; gap: 8px; flex-shrink: 0">
 <span style="padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
 <span style="padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}; color: {{t.text2}}">{{patternName}}</span>
 </div>
 <div class="pp-spacer" style="flex-grow: 1"></div>
-<span class="pp-time" role="timer" aria-label="{{clockLabel}}" style="height: 40px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; font-family: {{t.mono}}; font-size: 14px; font-weight: 700; color: {{t.text2}}; flex-shrink: 0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>{{clock}}</span>
+<div class="pp-time" role="group" aria-label="Timer" style="display: flex; align-items: center; gap: 4px; flex-shrink: 0"><sc-if value="{{cr.clockIdle}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.startClock}}" aria-label="Start the timer for this problem" style="height: 40px; padding: 0 12px; box-sizing: border-box; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>Start timer</button></sc-if><sc-if value="{{cr.clockShown}}" hint-placeholder-val="{{ false }}"><span role="timer" aria-label="{{clockLabel}}" style="height: 40px; padding: 0 10px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; font-family: {{t.mono}}; font-size: 14px; font-weight: 700; color: {{t.text2}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>{{clock}}</span><sc-if value="{{cr.canToggleClock}}"><button onClick="{{cr.toggleClock}}" aria-label="{{cr.clockToggleAria}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{cr.clockToggleLabel}}</button></sc-if><button onClick="{{cr.resetClock}}" aria-label="Reset the timer to zero" style="height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">Reset</button></sc-if></div>
 </div>
 
 <div class="pp-main" style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 720px minmax(0, 1fr)">
@@ -310,13 +310,25 @@
 </div>
 
 <sc-if value="{{onSolution}}" hint-placeholder-val="{{ true }}">
-<div role="tabpanel" id="pp-panel-solution" aria-labelledby="pp-tab-solution" style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 12px">
-<div style="flex: 1 1 auto; min-height: 120px; overflow: auto; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; padding: 12px 0">
+<div role="tabpanel" id="pp-panel-solution" aria-labelledby="pp-tab-solution" style="flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{hasPlan}}" hint-placeholder-val="{{ true }}">
+<section aria-labelledby="pp-plan" style="flex-shrink: 0; padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><h3 id="pp-plan" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Plan it first</h3><span style="font-size: 13px; color: {{t.muted}}">{{planNote}}</span></div>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{planGoal}}</p>
+<ol aria-label="Plan steps" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{planSteps}}" as="ps" hint-placeholder-count="5"><li aria-current="{{ps.current}}" style="padding: 4px 8px; border-radius: 8px; border-left: 3px solid {{ps.border}}; background: {{ps.bg}}; display: flex; gap: 6px; font-size: 14px; line-height: 1.45; color: {{ps.fg}}; transition: background 320ms cubic-bezier(.2,.8,.2,1)"><span aria-hidden="true" style="width: 22px; flex-shrink: 0; font-family: {{t.mono}}; font-weight: 700; color: {{ps.num}}">{{ps.n}}</span><span style="min-width: 0">{{ps.text}}</span></li></sc-for>
+</ol>
+</section>
+</sc-if>
+<button onClick="{{toggleSol}}" aria-expanded="{{solX}}" style="align-self: flex-start; flex-shrink: 0; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>{{solLabel}}</button>
+
+<sc-if value="{{solOpen}}" hint-placeholder-val="{{ false }}"><div style="flex: 1 1 auto; min-height: 120px; overflow: auto; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; padding: 12px 0">
 <div class="pp-anim" style="position: relative; min-width: max-content; height: {{codeH}}; font-family: {{t.mono}}; font-size: 13px; line-height: 24px; font-variant-ligatures: none">
 <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 24px; background: {{t.hl}}; border-left: 3px solid {{t.accent}}; box-sizing: border-box; transform: {{lineMark}}; opacity: {{lineMarkOp}}; transition: {{move}}"></div>
 <sc-for list="{{code}}" as="cl" hint-placeholder-count="12"><div style="position: relative; display: flex; height: 24px; padding-right: 16px"><span style="width: 44px; flex-shrink: 0; text-align: right; padding-right: 16px; color: {{cl.numColor}}">{{cl.n}}</span><span style="white-space: pre">{{cl.code}}</span><span style="white-space: pre; color: {{t.muted}}">{{cl.comment}}</span></div></sc-for>
 </div>
 </div>
+</sc-if>
 <div style="padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}"><span>Values right now</span><span style="letter-spacing: 0; text-transform: none; font-weight: 500">{{lineNote}}</span></div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">

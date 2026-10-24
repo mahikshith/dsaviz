@@ -5,6 +5,7 @@ across pages and live in one place; this script copies them back into every page
 
   shared/themes_common.js   -> between // @@THEMES@@ ... // @@END-THEMES@@
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
+  shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet page)
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@
   shared/drawer.html        -> between <!-- MENU DRAWER --> ... <!-- /MENU DRAWER -->
   src/story/*               -> Story.dc.html markup and engine
@@ -34,6 +35,7 @@ def block(src, start, end, new):
 def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
+    sheet = read('shared', 'sheet.js')
     drawer_js = read('shared', 'drawer.js')
     drawer_html = read('shared', 'drawer.html')
     bodies = {'Story': ('src', 'story', 'story_body.html')}
@@ -55,6 +57,7 @@ def main():
         before = s
         s = block(s, '// @@THEMES@@', '// @@END-THEMES@@', themes)
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
+        s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
         s = block(s, '// @@DRAWER@@', '// @@END-DRAWER@@', drawer_js)
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
         name = f[:-len('.dc.html')]

@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Master sheet — DSAMaxxing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Outfit:wght@400;500;600;700;800&amp;family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+[style*="Anton"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}
+p[style*="Anton"],[style*="Anton"][style*="italic"],[style*="Anton"][style*="font-size: 11px"],[style*="Anton"][style*="font-size: 12px"],[style*="Anton"][style*="font-size: 13px"],[style*="Anton"][style*="font-size: 14px"],[style*="Anton"][style*="font-size: 15px"],[style*="Anton"][style*="font-size: 16px"],[style*="Anton"][style*="font-size: 17px"],[style*="Anton"][style*="font-size: 18px"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}
+header a,header button,nav a{white-space:nowrap}
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button,input,select{font:inherit}
+input[type=search]::placeholder{color:inherit;opacity:0.7}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,label:focus-within{outline:2px solid currentColor;outline-offset:2px}
+.sr-file{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+@keyframes slidein{from{transform:translateX(-40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1130px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; overflow: hidden; transition: background 0.3s, color 0.3s">
+
+<header style="height: 64px; flex-shrink: 0; box-sizing: border-box; padding: 0 20px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid {{t.line}}">
+<button onClick="{{openDrawer}}" aria-label="Open menu" style="width: 42px; height: 42px; border-radius: 12px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 21px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
+<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 12px; font-size: 15px; font-weight: 500">
+<a href="Home.dc.html" style="color: {{t.muted}}">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Sheet.dc.html" aria-current="page" style="font-weight: 700">Sheet</a><a href="Revisit.dc.html" style="color: {{t.muted}}">Revisit</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Glossary.dc.html" style="color: {{t.muted}}">Glossary</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
+</nav>
+<div style="flex-grow: 1"></div>
+<span style="font-size: 14px; color: {{t.muted}}">Saved in this browser only</span>
+</header>
+
+<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 340px minmax(0, 1fr)">
+
+<!-- LEFT: progress, rings, today's picks, backup -->
+<aside aria-label="Progress" style="border-right: 1px solid {{t.line}}; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; min-height: 0">
+<section style="padding: 14px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 14px">
+<svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="30" fill="none" stroke="{{t.line}}" stroke-width="7"></circle><circle cx="36" cy="36" r="30" fill="none" stroke="{{t.accent}}" stroke-width="7" stroke-linecap="round" stroke-dasharray="{{ring.dash}}" transform="rotate(-90 36 36)"></circle></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Solved</span>
+<span style="font-family: {{t.mono}}; font-size: 28px; font-weight: 800" aria-label="{{solvedAria}}">{{solved}}<span style="color: {{t.muted}}; font-size: 18px"> / {{total}}</span></span>
+<span style="font-size: 13px; color: {{t.muted}}">{{starLine}}</span>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{diffTiles}}" as="dt" hint-placeholder-count="3">
+<button onClick="{{dt.pick}}" aria-pressed="{{dt.on}}" aria-label="{{dt.aria}}" style="height: 52px; padding: 0 8px; border-radius: 10px; border: 1px solid {{dt.border}}; background: {{dt.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px">
+<span style="font-size: 12px; font-weight: 700; color: {{dt.fg}}">{{dt.label}}</span>
+<span style="font-family: {{t.mono}}; font-size: 15px; font-weight: 700">{{dt.done}}<span style="color: {{t.muted}}">/{{dt.total}}</span></span>
+</button>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="Progress by pattern" style="padding: 12px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">By pattern · tap to filter</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 6px">
+<sc-for list="{{rings}}" as="pr" hint-placeholder-count="21">
+<button onClick="{{pr.pick}}" aria-pressed="{{pr.on}}" aria-label="{{pr.aria}}" title="{{pr.name}}" style="height: 34px; padding: 0 6px; border: 0; border-radius: 8px; background: {{pr.bg}}; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 7px; min-width: 0; text-align: left">
+<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" style="flex-shrink: 0"><circle cx="11" cy="11" r="8" fill="none" stroke="{{t.line2}}" stroke-width="3"></circle><circle cx="11" cy="11" r="8" fill="none" stroke="{{pr.color}}" stroke-width="3" stroke-dasharray="{{pr.dash}}" transform="rotate(-90 11 11)"></circle></svg>
+<span style="flex-grow: 1; min-width: 0; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pr.short}}</span>
+<span style="font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}">{{pr.count}}</span>
+</button>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="Today's five" style="padding: 12px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding: 0 2px 4px"><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700">Today's 5</span><span style="font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}">{{todayLine}}</span></div>
+<sc-for list="{{today}}" as="td" hint-placeholder-count="5">
+<div style="height: 36px; display: flex; align-items: center; gap: 8px">
+<button onClick="{{td.toggle}}" role="checkbox" aria-checked="{{td.done}}" aria-label="{{td.aria}}" style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 6px; border: 2px solid {{td.ring}}; background: {{td.fill}}; color: {{t.onAccent}}; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="opacity: {{td.tick}}"><path d="M5 12l5 5 9-10"></path></svg></button>
+<a href="{{td.url}}" target="_blank" rel="noopener" style="flex-grow: 1; min-width: 0; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: {{td.strike}}">{{td.name}}</a>
+<span role="img" aria-label="{{td.diff}}" title="{{td.diff}}" style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 999px; background: {{td.dot}}"></span>
+</div>
+</sc-for>
+<sc-if value="{{todayEmpty}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{t.muted}}">Everything is solved. Nice work.</span></sc-if>
+</section>
+
+<section aria-label="Backup" style="padding: 12px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Back up your ticks</span>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px">
+<button onClick="{{exportFile}}" style="height: 36px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 700">Export file</button>
+<label style="position: relative; height: 36px; box-sizing: border-box; border-radius: 10px; border: 1px solid {{t.line2}}; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">Import file<input type="file" accept="application/json,.json" onChange="{{importFile}}" aria-label="Import progress file" class="sr-file"></label>
+</div>
+<span role="status" style="font-size: 12px; line-height: 1.4; color: {{t.muted}}">{{msg}}</span>
+</section>
+</aside>
+
+<!-- RIGHT: title, filters, groups -->
+<main style="padding: 16px 20px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1; min-width: 0">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 36px; font-weight: 700; line-height: 1.05">Master sheet</h1>
+<p style="margin: 0; font-size: 14px; color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{subLine}}</p>
+</div>
+<button onClick="{{expandAll}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Open all</button>
+<button onClick="{{collapseAll}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Close all</button>
+<button onClick="{{randomPick}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path></svg>Random unsolved</button>
+</div>
+
+<!-- filters: one row -->
+<div role="search" style="height: 40px; display: flex; align-items: center; gap: 8px">
+<div style="flex-grow: 1; min-width: 120px; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; color: {{t.muted}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink: 0"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Name or number" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; color: {{t.text}}; font-size: 14px"></div>
+<div role="group" aria-label="Difficulty" style="height: 40px; box-sizing: border-box; display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}; flex-shrink: 0">
+<sc-for list="{{diffBtns}}" as="db" hint-placeholder-count="4"><button onClick="{{db.pick}}" aria-pressed="{{db.on}}" style="height: 34px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{db.bg}}; color: {{db.fg}}">{{db.label}}</button></sc-for>
+</div>
+<div role="group" aria-label="Status" style="height: 40px; box-sizing: border-box; display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}; flex-shrink: 0">
+<sc-for list="{{statusBtns}}" as="sb" hint-placeholder-count="4"><button onClick="{{sb.pick}}" aria-pressed="{{sb.on}}" style="height: 34px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{sb.bg}}; color: {{sb.fg}}">{{sb.label}}</button></sc-for>
+</div>
+<select aria-label="Pattern" value="{{patternSel}}" onChange="{{onPattern}}" style="height: 40px; width: 168px; flex-shrink: 0; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-size: 13px; cursor: pointer">
+<sc-for list="{{patternOpts}}" as="po" hint-placeholder-count="5"><option value="{{po.v}}">{{po.label}}</option></sc-for>
+</select>
+<select aria-label="Company" value="{{companySel}}" onChange="{{onCompany}}" style="height: 40px; width: 140px; flex-shrink: 0; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-size: 13px; cursor: pointer">
+<sc-for list="{{companyOpts}}" as="co" hint-placeholder-count="5"><option value="{{co.v}}">{{co.label}}</option></sc-for>
+</select>
+</div>
+
+<sc-if value="{{filterOn}}" hint-placeholder-val="{{ false }}">
+<div style="height: 22px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: {{t.muted}}"><span>{{shownLine}}</span><button onClick="{{clearFilters}}" style="border: 0; background: transparent; padding: 0; color: {{t.accent}}; cursor: pointer; font-size: 13px; font-weight: 700">Clear filters</button></div>
+</sc-if>
+
+<sc-if value="{{showPick}}" hint-placeholder-val="{{ false }}">
+<div style="height: 44px; flex-shrink: 0; box-sizing: border-box; padding: 0 8px 0 14px; border-radius: 12px; background: {{t.hl}}; border: 1px solid {{t.accent}}; display: flex; align-items: center; gap: 12px; animation: rise 0.25s ease">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">Try this</span>
+<a href="{{pick.url}}" target="_blank" rel="noopener" style="font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0">{{pick.name}} ↗</a>
+<span style="font-size: 13px; color: {{t.muted}}; white-space: nowrap">{{pick.pattern}} · {{pick.diff}}</span>
+<div style="flex-grow: 1"></div>
+<button onClick="{{randomPick}}" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Another</button>
+<button onClick="{{closePick}}" aria-label="Close suggestion" style="width: 32px; height: 32px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+</sc-if>
+<sc-if value="{{pickNone}}" hint-placeholder-val="{{ false }}">
+<div style="height: 44px; flex-shrink: 0; box-sizing: border-box; padding: 0 14px; border-radius: 12px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; align-items: center; font-size: 14px; color: {{t.muted}}">No unsolved problems match these filters.</div>
+</sc-if>
+
+<div style="flex: 0 1 auto; min-height: 0; overflow-y: auto; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="6">
+<section aria-label="{{g.name}}">
+<button onClick="{{g.toggle}}" aria-expanded="{{g.open}}" style="width: 100%; height: 48px; padding: 0 16px; border: 0; border-bottom: 1px solid {{t.line}}; background: {{g.bg}}; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left; position: sticky; top: 0; z-index: 1">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" style="flex-shrink: 0; transform: {{g.chev}}; transition: transform 0.2s"><path d="M9 6l6 6-6 6"></path></svg>
+<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.accent}}">{{g.num}}</span>
+<span style="font-size: 15px; font-weight: 700; white-space: nowrap">{{g.name}}</span>
+<span style="font-size: 13px; color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-grow: 1">{{g.tag}}</span>
+<sc-if value="{{g.showMatch}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: {{t.muted}}; white-space: nowrap">{{g.matchLine}}</span></sc-if>
+<span style="font-family: {{t.mono}}; font-size: 13px; font-weight: 700; white-space: nowrap" aria-label="{{g.aria}}">{{g.done}}<span style="color: {{t.muted}}">/{{g.total}}</span></span>
+<span style="width: 90px; height: 6px; flex-shrink: 0; border-radius: 999px; background: {{t.line}}; display: block"><span style="display: block; height: 6px; border-radius: 999px; background: {{t.ok}}; width: {{g.pct}}"></span></span>
+</button>
+<sc-if value="{{g.open}}" hint-placeholder-val="{{ true }}">
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="5">
+<div style="height: 44px; box-sizing: border-box; padding: 0 16px 0 42px; display: grid; grid-template-columns: 24px minmax(0, 1fr) 170px 84px 70px 32px 32px; gap: 10px; align-items: center; border-bottom: 1px solid {{t.line}}; background: {{r.bg}}">
+<button onClick="{{r.toggle}}" role="checkbox" aria-checked="{{r.done}}" aria-label="{{r.aria}}" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 6px; border: 2px solid {{r.ring}}; background: {{r.fill}}; color: {{t.onAccent}}; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="opacity: {{r.tick}}"><path d="M5 12l5 5 9-10"></path></svg></button>
+<span style="display: flex; align-items: baseline; gap: 8px; min-width: 0">
+<span style="font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}; flex-shrink: 0">{{r.seqLabel}}</span>
+<a href="{{r.url}}" target="_blank" rel="noopener" title="Open on LeetCode" style="font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: {{r.nameColor}}">{{r.name}}</a>
+<span style="font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}; flex-shrink: 0">#{{r.n}}</span>
+</span>
+<span style="display: flex; gap: 4px; overflow: hidden"><sc-for list="{{r.cos}}" as="rc" hint-placeholder-count="2"><span style="padding: 1px 6px; border-radius: 5px; border: 1px solid {{t.line}}; font-size: 11px; color: {{t.text2}}; white-space: nowrap">{{rc}}</span></sc-for></span>
+<span><sc-if value="{{r.story}}" hint-placeholder-val="{{ false }}"><a href="{{r.storyHref}}" onClick="{{r.goStory}}" style="height: 26px; padding: 0 10px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: {{t.accent}}"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>Story</a></sc-if></span>
+<span style="justify-self: start; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{r.dBg}}; color: {{r.dFg}}">{{r.diff}}</span>
+<button onClick="{{r.starToggle}}" aria-pressed="{{r.starred}}" aria-label="{{r.starAria}}" title="Star to revise later" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: {{r.starColor}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="{{r.starFill}}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"></path></svg></button>
+<button onClick="{{r.hintToggle}}" aria-expanded="{{r.hintOpen}}" aria-label="{{r.hintAria}}" title="Show a hint" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: {{r.hintBg}}; color: {{r.hintColor}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></button>
+</div>
+<sc-if value="{{r.hintOpen}}" hint-placeholder-val="{{ false }}">
+<div style="min-height: 36px; box-sizing: border-box; padding: 8px 16px 8px 76px; border-bottom: 1px solid {{t.line}}; background: {{t.sunk}}; font-size: 14px; line-height: 1.45; color: {{t.text2}}; animation: rise 0.2s ease"><b style="color: {{t.accent}}">Hint</b> · {{r.hint}}</div>
+</sc-if>
+</sc-for>
+</sc-if>
+</section>
+</sc-for>
+<sc-if value="{{noGroups}}" hint-placeholder-val="{{ false }}"><div style="padding: 20px; font-size: 14px; color: {{t.muted}}">No problems match these filters.</div></sc-if>
+</div>
+</main>
+</div>
+
+<!-- MENU DRAWER -->
+<sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
+<aside aria-label="Menu" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 10px; align-items: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
+<div style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 700">23-day streak</span><span style="font-size: 13px; color: {{t.muted}}">Play one story today to make it 24</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{week}}" as="wk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{wk.border}}; background: {{wk.bg}}; color: {{wk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{wk.d}}</span></sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px">Daily goal · 2 of 3 stories</span><span style="height: 6px; border-radius: 999px; background: {{t.line}}; display: block"><span style="display: block; width: 66%; height: 6px; border-radius: 999px; background: {{t.ok}}"></span></span></div>
+<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Go to my home</a>
+</div>
+</sc-if>
+<sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 16px; font-weight: 700">Keep a streak. Climb the league.</span>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Sign in to save progress, keep your daily streak and see where you rank this week.</span>
+<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Start 3-day free trial</a>
+<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Preview as a signed-in learner</button>
+</div>
+</sc-if>
+<nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
+<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
+</sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>
+</aside>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="flex-grow: 1; height: 100vh; border: 0; background: rgba(10,10,10,0.4); cursor: pointer"></button>
+</div>
+</sc-if>
+<!-- /MENU DRAWER -->
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1130}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
+const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+// @@CATALOG@@ — generated block, shared by every board that lists problems.
+// Company tags: where learners most often report meeting each problem in interviews. Times are typical first-solve times.
+const STAGES = [
+  { key: "strings", name: "Strings", meta: "bead necklaces", blurb: "A string is a necklace of letter-beads. You'll walk it from both ends, slide a window along it, and count its beads.", why: "Everyone has used text. It's the gentlest place to meet your first patterns." },
+  { key: "arrays", name: "Arrays", meta: "rows of lanterns", blurb: "An array is a row of numbered lanterns. The big ideas show up here: two friends walking inward, sliding windows, halving searches and grids you can turn.", why: "Most interview problems are arrays in disguise." },
+  { key: "hash", name: "Maps & sets", meta: "coat-check counters", blurb: "Hand over a coat, get a ticket, find it again instantly. Maps and sets turn “search everything” into “just look it up”.", why: "The most-used trick for turning O(n²) into O(n)." },
+  { key: "stacks", name: "Stacks, queues & heaps", meta: "plates, lines and triage", blurb: "A stack is a pile of plates, a queue is a ticket line, and a heap is a triage desk where the most urgent case is always on top.", why: "They power bracket-matching, 'next warmer day' puzzles, top-K lists and the BFS you'll meet later." },
+  { key: "linked", name: "Linked lists", meta: "train carriages", blurb: "Each carriage only knows the next one. You'll turn trains around, zip two trains together and catch loops with a tortoise and a hare.", why: "Your first real taste of pointers — you'll need them for trees." },
+  { key: "trees", name: "Trees", meta: "family trees", blurb: "One ancestor at the top, branches below. Explore deep down one branch first, or visit floor by floor.", why: "DFS and BFS begin here, on shapes with no loops." },
+  { key: "graphs", name: "Graphs & grids", meta: "islands and ripples", blurb: "Maps of islands, cities and friendships. Ripple outward with BFS, or explore every path with DFS and backtrack when you hit a wall.", why: "Trees with loops — so you learn to remember where you've been." },
+  { key: "dp", name: "Dynamic programming", meta: "notes to your future self", blurb: "Solve the small versions first and write the answers down, so you never solve the same thing twice.", why: "It comes last because it builds on the recursion from trees and graphs." }
+];
+
+// name, tagline, companion (name, role)
+const PATTERNS = [
+  ["Two Pointers", "Two friends walk toward each other", "Lumi & Roo", "two friends who start at opposite ends"],
+  ["Sliding Window", "A train window gliding past the view", "Wren", "the window-keeper on the night train"],
+  ["Hash Map", "The coat-check counter", "Cleo", "the coat-check clerk who never forgets a ticket"],
+  ["Prefix Sum", "A running tally in the margin", "Penny", "who writes the running total after every step"],
+  ["Binary Search", "Guess the number, halve the doubt", "Gus", "the number-guesser who halves the doubt"],
+  ["Matrix", "Turning the tiled floor", "Tilda", "the tiler who turns whole floors"],
+  ["Intervals", "The meeting-room diary", "Iris", "the scheduler with the fat diary"],
+  ["Greedy", "Take the best step you can see", "Jax", "the stone-hopper who always leaps as far as he can"],
+  ["Stack", "A pile of plates: last on, first off", "Pip", "the plate-stacker at the busy canteen"],
+  ["Heap", "The triage desk", "Nia", "the triage nurse who always knows who's next"],
+  ["In-place Reversal", "Turning the train around", "Cole", "the conductor who re-couples carriages"],
+  ["Fast & Slow Pointers", "The tortoise and the hare", "Tam & Hazel", "a tortoise and a hare on the same track"],
+  ["Depth-First Search", "The maze explorer with chalk", "Moss", "the explorer who goes deep before going wide"],
+  ["Breadth-First Search", "Ripples in a pond", "Rill", "the ripple that spreads one ring at a time"],
+  ["Backtracking", "Try, mark, undo", "Chalk", "who marks every path and rubs it out on the way back"],
+  ["Dynamic Programming", "Notes to your future self", "Sol", "the scribe who writes every small answer down"]
+];
+
+// id, LeetCode #, title, story title, synopsis, difficulty, minutes, companies, pattern, stage, status, popularity rank, order added, animated?
+const PROBLEMS = [
+  ["valid-anagram", 242, "Valid Anagram", "The Scrabble Swap", "Two friends each hold a bag of Scrabble tiles. Can one spell exactly the other's word — nothing extra, nothing missing? Cleo keeps a tally: add for one bag, subtract for the other, and check every count lands on zero.", "Starter", 8, ["Amazon", "Bloomberg", "Uber"], "Hash Map", "strings", "done", 3, 1, true],
+  ["valid-palindrome", 125, "Valid Palindrome", "The Mirror Hallway", "Lumi and Roo walk a hallway painted with letters, one from each end, stepping over spaces and commas. If every pair of letters they meet matches, the hallway is a perfect mirror.", "Easy", 10, ["Meta", "Microsoft", "Apple"], "Two Pointers", "strings", "done", 2, 2, true],
+  ["longest-substring", 3, "Longest Substring Without Repeating Characters", "The Train of Unique Faces", "Wren watches passengers through the train window. She wants the longest stretch where no face appears twice. When a familiar face shows up, the back of the window slides forward just past the first one.", "Medium", 25, ["Amazon", "Microsoft", "Google"], "Sliding Window", "strings", "done", 1, 3, true],
+  ["char-replacement", 424, "Longest Repeating Character Replacement", "The Paint Touch-up", "A painter may repaint at most k tiles. How long a stretch can she make one colour? Wren keeps the window honest: window size minus the most common colour must stay at or below k.", "Medium", 30, ["Google", "Amazon", "Uber"], "Sliding Window", "strings", "todo", 5, 30, true],
+  ["min-window", 76, "Minimum Window Substring", "The Shopping List Window", "Walking down a market street, find the shortest stretch of stalls that sells everything on your list. Grow the window until the list is covered, then squeeze it from the left.", "Hard", 45, ["Meta", "Amazon", "Google", "Airbnb"], "Sliding Window", "strings", "todo", 4, 31, false],
+  ["longest-palindrome", 5, "Longest Palindromic Substring", "The Echo Chamber", "Stand in the middle of a word and shout. The echo spreads both ways for as long as the letters match. Try every middle — including the gaps between letters — and keep the longest echo.", "Medium", 30, ["Amazon", "Microsoft", "Adobe"], "Two Pointers", "strings", "todo", 3, 32, false],
+
+  ["two-sum-ii", 167, "Two Sum II — Sorted", "The Lantern Bridge", "Six lanterns hang in a row from dimmest to brightest. The gate opens only for two lanterns whose glow adds up to exactly the target. Lumi starts at the dim end, Roo at the bright end, and they squeeze inward.", "Medium", 20, ["Amazon", "Adobe", "Google", "Meta"], "Two Pointers", "arrays", "now", 4, 4, true],
+  ["container", 11, "Container With Most Water", "The Rain Barrel Builders", "Two builders stand at the ends of a fence of uneven planks. The shorter plank always decides how much rain the barrel holds, so the builder at the shorter plank steps inward, hoping for a taller one.", "Medium", 25, ["Amazon", "Google", "Meta"], "Two Pointers", "arrays", "todo", 3, 20, true],
+  ["3sum", 15, "3Sum", "The Campfire Trio", "Three friends around a fire need glows that add up to zero. Sort them, fix one friend in place, and let the other two play the Lantern Bridge on everyone to their right. Skip twins so no trio repeats.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Two Pointers", "arrays", "todo", 2, 6, false],
+  ["trapping-rain", 42, "Trapping Rain Water", "The Valley After the Storm", "Rain falls on a row of rocks. The water above each rock rises to the lower of the tallest rock on its left and the tallest on its right. Two walkers from the ends carry those heights with them.", "Hard", 45, ["Amazon", "Google", "Goldman Sachs"], "Two Pointers", "arrays", "todo", 5, 7, false],
+  ["move-zeroes", 283, "Move Zeroes", "The Tidy Bookshelf", "Push every empty slot on a bookshelf to the right while keeping the books in their order. Roo reads each slot; Lumi places the next book wherever the tidy part ends.", "Starter", 8, ["Meta", "Amazon", "Apple"], "Two Pointers", "arrays", "done", 6, 33, false],
+  ["best-time-stock", 121, "Best Time to Buy and Sell Stock", "The Market Stall Diary", "Each morning you note the price of mangoes. Remember the cheapest morning so far; today's profit is today's price minus that. Keep the best profit you've ever seen.", "Easy", 15, ["Amazon", "Goldman Sachs", "Flipkart"], "Sliding Window", "arrays", "done", 1, 5, true],
+  ["product-except-self", 238, "Product of Array Except Self", "The Group Photo Scores", "Everyone in a group photo gets a score: the product of everybody else's numbers. Penny walks once from the left and once from the right, and multiplies the two notes she left at each seat.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Apple"], "Prefix Sum", "arrays", "todo", 2, 34, true],
+  ["subarray-sum-k", 560, "Subarray Sum Equals K", "The Coin Jar Checkpoints", "Drop coins in a jar and note the running total at every checkpoint. Two checkpoints whose totals differ by exactly k fence off a stretch that sums to k — Cleo remembers how often each total has appeared.", "Medium", 30, ["Meta", "Google", "Amazon"], "Prefix Sum", "arrays", "todo", 3, 35, true],
+  ["binary-search", 704, "Binary Search", "The Number-Guessing Game", "Gus has to find a number in a sorted row. Every guess tells him higher or lower, so half the row disappears each time. Eight guesses are enough for 256 numbers.", "Starter", 8, ["Microsoft", "Apple"], "Binary Search", "arrays", "done", 4, 36, true],
+  ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, true],
+  ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, true],
+  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, false],
+  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, true],
+  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, true],
+  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, true],
+  ["subsets", 78, "Subsets", "The Picnic Basket Choices", "For every snack, Chalk asks one question: in the basket or not? Two branches per snack, and every path to the bottom is one possible basket.", "Medium", 25, ["Meta", "Amazon"], "Backtracking", "arrays", "todo", 2, 42, false],
+  ["permutations", 46, "Permutations", "The Seating Chart", "Seat guests one chair at a time. Try each unseated guest in the next chair, go deeper, then stand them back up and try the next.", "Medium", 25, ["Microsoft", "LinkedIn", "Amazon"], "Backtracking", "arrays", "todo", 3, 43, false],
+  ["combination-sum", 39, "Combination Sum", "The Exact Price Basket", "Fill a basket that costs exactly the target, reusing any item as often as you like. Chalk tries items in order so the same basket is never counted twice.", "Medium", 30, ["Amazon", "Airbnb"], "Backtracking", "arrays", "todo", 4, 44, false],
+
+  ["contains-duplicate", 217, "Contains Duplicate", "The Guest List", "At the door, Cleo checks every guest against her list. The moment someone is already on it, she knows someone came twice.", "Starter", 8, ["Amazon", "Apple"], "Hash Map", "hash", "done", 3, 8, true],
+  ["two-sum", 1, "Two Sum", "The Coat-Check Counter", "Guests arrive one by one. For each guest, Cleo checks her ticket book: is the partner who completes the target already here? If not, she writes this guest down and waits.", "Easy", 15, ["Amazon", "Google", "Meta", "Microsoft"], "Hash Map", "hash", "done", 1, 9, true],
+  ["group-anagrams", 49, "Group Anagrams", "The Letter-Sorting Office", "Every word goes into a pigeonhole labelled with its letters in alphabetical order. Words that share a label are anagrams of each other.", "Medium", 25, ["Amazon", "Uber", "Meta"], "Hash Map", "hash", "todo", 2, 10, false],
+  ["longest-consecutive", 128, "Longest Consecutive Sequence", "The Missing Page Hunt", "Torn diary pages lie scattered. Cleo only starts counting a run from a page whose previous page is missing, then counts upward — so every page is visited once.", "Medium", 25, ["Google", "Amazon"], "Hash Map", "hash", "todo", 4, 45, false],
+
+  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, true],
+  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, true],
+  ["min-stack", 155, "Min Stack", "The Plate Pile with a Memory", "Next to every plate, Pip writes the smallest plate in the pile at that moment. Taking a plate off takes its note with it.", "Medium", 15, ["Amazon", "Bloomberg"], "Stack", "stacks", "todo", 3, 46, false],
+  ["kth-largest", 215, "Kth Largest Element in an Array", "The Talent Show Top K", "Nia keeps only the k best acts in a small room, weakest at the door. A new act gets in only if it beats the weakest, who then leaves.", "Medium", 25, ["Meta", "Amazon", "Microsoft"], "Heap", "stacks", "todo", 1, 47, true],
+  ["top-k-frequent", 347, "Top K Frequent Elements", "The Most-Requested Songs", "Cleo tallies every song request; Nia keeps the k most-requested in her small room. The quieter songs never make it past the door.", "Medium", 25, ["Amazon", "Meta", "Apple"], "Heap", "stacks", "todo", 2, 48, true],
+  ["sliding-window-max", 239, "Sliding Window Maximum", "The Tallest in the Window", "As Wren's window slides, she keeps a line of candidates, tallest at the front. Anyone shorter than a newcomer can never be the tallest again, so they leave.", "Hard", 40, ["Amazon", "Google"], "Sliding Window", "stacks", "todo", 4, 49, false],
+
+  ["reverse-linked-list", 206, "Reverse Linked List", "Turning the Train Around", "Cole walks down the train unhooking each carriage and re-hooking it to face backward. Three hands are all he needs: the carriage behind, the one he holds, and the one ahead.", "Easy", 15, ["Amazon", "Microsoft", "Apple"], "In-place Reversal", "linked", "todo", 1, 13, true],
+  ["linked-list-cycle", 141, "Linked List Cycle", "The Tortoise and the Hare", "Tam walks one carriage at a time; Hazel runs two. If the track loops, the hare laps the tortoise and they meet. If it doesn't, Hazel reaches the end.", "Easy", 15, ["Amazon", "Microsoft", "Goldman Sachs"], "Fast & Slow Pointers", "linked", "todo", 2, 14, true],
+  ["middle-of-list", 876, "Middle of the Linked List", "Halfway Across the Bridge", "Hazel runs two carriages for every one Tam walks. When Hazel reaches the end of the train, Tam is standing in the middle.", "Starter", 8, ["Amazon", "Apple"], "Fast & Slow Pointers", "linked", "todo", 4, 50, true],
+  ["merge-two-lists", 21, "Merge Two Sorted Lists", "The Zipper Merge", "Two sorted trains meet at a junction. Lumi and Roo each watch one train and wave through whichever carriage is smaller next, zipping them into one sorted train.", "Easy", 12, ["Amazon", "Microsoft", "Apple"], "Two Pointers", "linked", "todo", 3, 51, false],
+  ["remove-nth", 19, "Remove Nth Node From End of List", "The Carriage Gap", "Send a scout n carriages ahead. Walk both together; when the scout reaches the end, you're standing just before the carriage to unhook.", "Medium", 20, ["Meta", "Amazon"], "Two Pointers", "linked", "todo", 5, 52, false],
+  ["merge-k-lists", 23, "Merge k Sorted Lists", "The Train Yard Merge", "k sorted trains pull into one yard. Nia keeps the front carriage of every train at her desk and always sends out the smallest one next.", "Hard", 40, ["Amazon", "Google", "Meta"], "Heap", "linked", "todo", 6, 53, true],
+
+  ["invert-tree", 226, "Invert Binary Tree", "The Mirror Garden", "Moss swaps each gardener's left and right flower beds, then asks their children to do the same. The whole garden ends up mirrored.", "Starter", 8, ["Google", "Amazon"], "Depth-First Search", "trees", "todo", 3, 54, false],
+  ["max-depth", 104, "Maximum Depth of Binary Tree", "The Tallest Branch", "Every branch asks its two children how deep they go, adds one for itself, and passes the bigger answer up to its parent.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Depth-First Search", "trees", "todo", 2, 15, false],
+  ["validate-bst", 98, "Validate Binary Search Tree", "The Orchard Rule", "In this orchard every tree on the left must be shorter and every tree on the right taller — not just than the parent, but than every ancestor. Moss carries the allowed range down with him.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Depth-First Search", "trees", "todo", 4, 55, false],
+  ["level-order", 102, "Binary Tree Level Order Traversal", "Floors of the Treehouse", "Rill visits the treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.", "Medium", 25, ["Amazon", "Meta", "Microsoft"], "Breadth-First Search", "trees", "todo", 1, 16, false],
+  ["right-side-view", 199, "Binary Tree Right Side View", "The View from the Right Balcony", "Stand on the right balcony of every floor of the treehouse. The last person on each floor is the one you can see.", "Medium", 20, ["Meta", "Amazon"], "Breadth-First Search", "trees", "todo", 5, 56, false],
+
+  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, false],
+  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, false],
+  ["clone-graph", 133, "Clone Graph", "The Friendship Photocopier", "Moss photocopies a web of friends. He keeps a notebook of who's already copied, so nobody gets copied twice and every friendship is redrawn.", "Medium", 25, ["Meta", "Google", "Amazon"], "Depth-First Search", "graphs", "todo", 4, 57, false],
+  ["course-schedule", 207, "Course Schedule", "The Prerequisite Map", "Rill starts with every course that has no prerequisites, then unlocks the courses that were waiting on them. If some are never unlocked, there's a loop.", "Medium", 30, ["Amazon", "Microsoft", "Uber"], "Breadth-First Search", "graphs", "todo", 3, 58, false],
+  ["word-search", 79, "Word Search", "The Letter Maze", "Chalk traces the word letter by letter through a grid, marking each square as he goes and rubbing the mark out when a path fails.", "Medium", 30, ["Amazon", "Microsoft", "Bloomberg"], "Backtracking", "graphs", "todo", 5, 59, false],
+
+  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, false],
+  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, false],
+  ["max-subarray", 53, "Maximum Subarray", "The Hiker's Best Stretch", "A hiker logs every climb and drop. Sol keeps a running total of the current stretch; the moment it sinks below zero, starting fresh is better.", "Medium", 20, ["Amazon", "Microsoft", "LinkedIn"], "Dynamic Programming", "dp", "todo", 3, 60, false],
+  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, false],
+  ["lis", 300, "Longest Increasing Subsequence", "The Staircase of Heights", "Pick people from a line to build the longest staircase of rising heights, keeping their order. For each person, Sol asks how long a staircase could end with them.", "Medium", 30, ["Google", "Microsoft", "Amazon"], "Dynamic Programming", "dp", "todo", 5, 62, false],
+  ["word-break", 139, "Word Break", "The Dictionary Fence", "Can a long string be cut into dictionary words? Sol marks every position he can reach with a clean cut and checks whether the end gets a mark.", "Medium", 30, ["Amazon", "Google", "Meta"], "Dynamic Programming", "dp", "todo", 6, 63, false],
+  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, false]
+].map(([id, n, title, story, synopsis, diff, mins, cos, pattern, dtype, status, pop, added, animated]) =>
+  ({ id, n, title, story, synopsis, diff, time: mins + " min", mins, cos, pattern, dtype, status, pop, added, animated }));
+
+const COMPANY_TABS = [
+  ["MAANG", ["Meta", "Apple", "Amazon", "Netflix", "Google"]],
+  ["Amazon", ["Amazon"]], ["Google", ["Google"]], ["Meta", ["Meta"]], ["Microsoft", ["Microsoft"]], ["Apple", ["Apple"]],
+  ["Adobe", ["Adobe"]], ["Uber", ["Uber"]], ["Bloomberg", ["Bloomberg"]], ["LinkedIn", ["LinkedIn"]], ["Airbnb", ["Airbnb"]],
+  ["Goldman Sachs", ["Goldman Sachs"]], ["Flipkart", ["Flipkart"]]
+];
+const PROBLEM_KEY = "dsaviz-problem";
+function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
+function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }
+function storeSaved(list) { writeJSON('dsaviz-saved', list); }
+function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function storeDeck(d) { writeJSON('dsaviz-deck', d); }
+// @@END@@
+
+// @@SHEET@@ — generated block: the DSAMaxxing master sheet (our own selection, order and hints).
+// Each group runs from the easiest idea to the hardest. Rows: LeetCode slug, number, official name, difficulty,
+// a one-line hint in our own words, and the catalog story id when the problem has a story here.
+// Groups: our 16 patterns first, then five topic groups. Company tags come only from the catalog (PROBLEMS).
+const SHEET_EXTRA_GROUPS = [
+  ["Trees", "Recursion on shapes with one parent per node"],
+  ["Graphs", "Weighted roads, unions and shortest trips"],
+  ["Tries", "A letter tree for prefixes"],
+  ["Bit Manipulation", "Thinking in ones and zeros"],
+  ["Math", "Digits, powers and primes"]
+];
+const SHEET_DATA = {
+  "Two Pointers": [
+    ["reverse-string", 344, "Reverse String", "Easy", "Swap the two ends, then step both inward until they meet.", null],
+    ["valid-palindrome", 125, "Valid Palindrome", "Easy", "Skip anything that is not a letter or digit, then compare the two ends, ignoring case.", "valid-palindrome"],
+    ["move-zeroes", 283, "Move Zeroes", "Easy", "A writer pointer marks where the next non-zero goes. A reader walks ahead and hands them over.", "move-zeroes"],
+    ["remove-duplicates-from-sorted-array", 26, "Remove Duplicates from Sorted Array", "Easy", "Sorted means repeats sit together. Write a value only when it differs from the last one written.", null],
+    ["squares-of-a-sorted-array", 977, "Squares of a Sorted Array", "Easy", "The biggest square is at one of the two ends. Fill the answer from the back.", null],
+    ["merge-sorted-array", 88, "Merge Sorted Array", "Easy", "Fill from the back of the bigger array so nothing gets overwritten.", null],
+    ["merge-two-sorted-lists", 21, "Merge Two Sorted Lists", "Easy", "Keep a dummy head. Always attach the smaller of the two front nodes.", "merge-two-lists"],
+    ["is-subsequence", 392, "Is Subsequence", "Easy", "Walk the long string once and move the short pointer only on a match.", null],
+    ["valid-palindrome-ii", 680, "Valid Palindrome II", "Easy", "On the first mismatch, try skipping the left letter or the right one and check the rest.", null],
+    ["two-sum-ii-input-array-is-sorted", 167, "Two Sum II - Input Array Is Sorted", "Medium", "Sum too small? Move the left pointer up. Too big? Move the right pointer down.", "two-sum-ii"],
+    ["remove-nth-node-from-end-of-list", 19, "Remove Nth Node From End of List", "Medium", "Send one pointer n steps ahead, then move both. When the leader stops, the trailer is just before the target.", "remove-nth"],
+    ["sort-colors", 75, "Sort Colors", "Medium", "Three pointers: zeros grow from the left, twos from the right, and a middle scanner decides.", null],
+    ["container-with-most-water", 11, "Container With Most Water", "Medium", "The shorter wall limits the water, so always move the shorter wall inward.", "container"],
+    ["3sum", 15, "3Sum", "Medium", "Sort, fix one number, then run Two Sum II on the rest. Skip repeated values.", "3sum"],
+    ["longest-palindromic-substring", 5, "Longest Palindromic Substring", "Medium", "Grow outward from every centre, both on a letter and between two letters.", "longest-palindrome"],
+    ["trapping-rain-water", 42, "Trapping Rain Water", "Hard", "Water above a bar is the lower of the tallest wall on each side. Walk in from the side with the lower wall.", "trapping-rain"]
+  ],
+  "Sliding Window": [
+    ["maximum-average-subarray-i", 643, "Maximum Average Subarray I", "Easy", "Fixed window: add the new number, drop the old one, and track the best sum.", null],
+    ["best-time-to-buy-and-sell-stock", 121, "Best Time to Buy and Sell Stock", "Easy", "Remember the cheapest price so far. Each day, check what selling today would earn.", "best-time-stock"],
+    ["contains-duplicate-ii", 219, "Contains Duplicate II", "Easy", "Keep a set of the last k numbers. A repeat inside the set means yes.", null],
+    ["maximum-number-of-vowels-in-a-substring-of-given-length", 1456, "Maximum Number of Vowels in a Substring of Given Length", "Medium", "Fixed window of size k. Count vowels in and out as it slides.", null],
+    ["minimum-size-subarray-sum", 209, "Minimum Size Subarray Sum", "Medium", "Grow until the sum reaches the target, then shrink from the left while it still does.", null],
+    ["longest-substring-without-repeating-characters", 3, "Longest Substring Without Repeating Characters", "Medium", "On a repeat, jump the left edge just past where that letter was last seen.", "longest-substring"],
+    ["max-consecutive-ones-iii", 1004, "Max Consecutive Ones III", "Medium", "Let the window hold at most k zeros. Shrink from the left when it holds more.", null],
+    ["longest-repeating-character-replacement", 424, "Longest Repeating Character Replacement", "Medium", "Window size minus the most common letter count must stay at or below k.", "char-replacement"],
+    ["permutation-in-string", 567, "Permutation in String", "Medium", "Slide a window the length of the short string and compare letter counts.", null],
+    ["find-all-anagrams-in-a-string", 438, "Find All Anagrams in a String", "Medium", "Same window as Permutation in String, but record every start where the counts match.", null],
+    ["fruit-into-baskets", 904, "Fruit Into Baskets", "Medium", "Longest window with at most two different values. Count each value inside.", null],
+    ["minimum-window-substring", 76, "Minimum Window Substring", "Hard", "Grow until every needed letter is covered, then squeeze from the left and record the shortest.", "min-window"],
+    ["sliding-window-maximum", 239, "Sliding Window Maximum", "Hard", "Keep a deque of indexes with falling values. The front is the window maximum.", "sliding-window-max"],
+    ["subarrays-with-k-different-integers", 992, "Subarrays with K Different Integers", "Hard", "Exactly k equals at most k minus at most k-1. Count each with a window.", null]
+  ],
+  "Hash Map": [
+    ["contains-duplicate", 217, "Contains Duplicate", "Easy", "Drop each number into a set. If it is already there, you found a repeat.", "contains-duplicate"],
+    ["valid-anagram", 242, "Valid Anagram", "Easy", "Count letters up for one word and down for the other. Every count must end at zero.", "valid-anagram"],
+    ["two-sum", 1, "Two Sum", "Easy", "For each number, look up the partner you need in a map of numbers seen so far.", "two-sum"],
+    ["ransom-note", 383, "Ransom Note", "Easy", "Count the magazine letters, then spend them on the note. Running out means no.", null],
+    ["first-unique-character-in-a-string", 387, "First Unique Character in a String", "Easy", "Count every letter in one pass, then find the first letter with a count of one.", null],
+    ["isomorphic-strings", 205, "Isomorphic Strings", "Easy", "Map letters both ways. A letter may never point to two different partners.", null],
+    ["group-anagrams", 49, "Group Anagrams", "Medium", "Give every word a key, its sorted letters or letter counts, and group by that key.", "group-anagrams"],
+    ["longest-consecutive-sequence", 128, "Longest Consecutive Sequence", "Medium", "Put all numbers in a set. Only start counting from a number whose smaller neighbour is missing.", "longest-consecutive"],
+    ["valid-sudoku", 36, "Valid Sudoku", "Medium", "One set per row, per column and per 3x3 box. A repeat in any set fails the board.", null],
+    ["insert-delete-getrandom-o1", 380, "Insert Delete GetRandom O(1)", "Medium", "An array for random picks plus a map from value to index. Delete by swapping with the last item.", null],
+    ["lru-cache", 146, "LRU Cache", "Medium", "A map for instant lookup plus a linked list kept in order of last use.", null],
+    ["first-missing-positive", 41, "First Missing Positive", "Hard", "Use the array itself as the map: put each value v at index v-1, then find the first gap.", null]
+  ],
+  "Prefix Sum": [
+    ["running-sum-of-1d-array", 1480, "Running Sum of 1d Array", "Easy", "Each answer is the previous answer plus the current number.", null],
+    ["find-pivot-index", 724, "Find Pivot Index", "Easy", "Left sum equals total minus left sum minus the current number.", null],
+    ["range-sum-query-immutable", 303, "Range Sum Query - Immutable", "Easy", "Store running totals once. Any range sum is one subtraction.", null],
+    ["product-of-array-except-self", 238, "Product of Array Except Self", "Medium", "Multiply the product of everything to the left by the product of everything to the right.", "product-except-self"],
+    ["range-sum-query-2d-immutable", 304, "Range Sum Query 2D - Immutable", "Medium", "Running totals in two directions. A rectangle is one big box minus two strips plus a corner.", null],
+    ["subarray-sum-equals-k", 560, "Subarray Sum Equals K", "Medium", "Count how often each running total appears. Look up total minus k at every step.", "subarray-sum-k"],
+    ["subarray-sums-divisible-by-k", 974, "Subarray Sums Divisible by K", "Medium", "Two running totals with the same remainder mod k frame a valid subarray.", null],
+    ["contiguous-array", 525, "Contiguous Array", "Medium", "Count 0 as -1. Equal running totals mean the stretch between them is balanced.", null],
+    ["continuous-subarray-sum", 523, "Continuous Subarray Sum", "Medium", "Remember the first index of each remainder. A repeat at least two apart means yes.", null],
+    ["matrix-block-sum", 1314, "Matrix Block Sum", "Medium", "Build 2D running totals once, then read each block with four lookups.", null],
+    ["number-of-submatrices-that-sum-to-target", 1074, "Number of Submatrices That Sum to Target", "Hard", "Fix a top and bottom row, squash the columns into one list, then run Subarray Sum Equals K.", null]
+  ],
+  "Binary Search": [
+    ["binary-search", 704, "Binary Search", "Easy", "Look at the middle and throw away the half that cannot hold the target.", "binary-search"],
+    ["search-insert-position", 35, "Search Insert Position", "Easy", "Find the first index whose value is at least the target.", null],
+    ["first-bad-version", 278, "First Bad Version", "Easy", "The answer is the first true in a run of false then true. Halve toward it.", null],
+    ["find-first-and-last-position-of-element-in-sorted-array", 34, "Find First and Last Position of Element in Sorted Array", "Medium", "Run two searches: one leans left for the first match, one leans right for the last.", null],
+    ["search-a-2d-matrix", 74, "Search a 2D Matrix", "Medium", "Read the grid as one long sorted list and turn each index into a row and column.", null],
+    ["find-peak-element", 162, "Find Peak Element", "Medium", "If the next value is higher, a peak lies to the right. Otherwise it lies here or to the left.", null],
+    ["find-minimum-in-rotated-sorted-array", 153, "Find Minimum in Rotated Sorted Array", "Medium", "Compare the middle with the right end to tell which side holds the drop.", "find-min-rotated"],
+    ["search-in-rotated-sorted-array", 33, "Search in Rotated Sorted Array", "Medium", "One half is always sorted. Check if the target fits there, else search the other half.", "search-rotated"],
+    ["koko-eating-bananas", 875, "Koko Eating Bananas", "Medium", "Search over eating speeds, not the array. Test each speed against the hour limit.", null],
+    ["capacity-to-ship-packages-within-d-days", 1011, "Capacity To Ship Packages Within D Days", "Medium", "Search over ship sizes. A greedy loading pass tells you if a size is enough.", null],
+    ["time-based-key-value-store", 981, "Time Based Key-Value Store", "Medium", "Each key keeps its values in time order. Find the latest time not after the query.", null],
+    ["split-array-largest-sum", 410, "Split Array Largest Sum", "Hard", "Search over the largest allowed part sum. Count how many parts a greedy cut needs.", null],
+    ["median-of-two-sorted-arrays", 4, "Median of Two Sorted Arrays", "Hard", "Binary search a cut in the shorter array so both left halves together hold half the items.", null]
+  ],
+  "Matrix": [
+    ["transpose-matrix", 867, "Transpose Matrix", "Easy", "Row i, column j moves to row j, column i.", null],
+    ["matrix-diagonal-sum", 1572, "Matrix Diagonal Sum", "Easy", "Add both diagonals and do not count the centre twice when the size is odd.", null],
+    ["rotate-image", 48, "Rotate Image", "Medium", "Turning a quarter clockwise is a transpose followed by flipping each row.", "rotate-image"],
+    ["spiral-matrix", 54, "Spiral Matrix", "Medium", "Keep four walls. Walk one edge, then pull that wall in.", null],
+    ["spiral-matrix-ii", 59, "Spiral Matrix II", "Medium", "Same four walls as Spiral Matrix, but write 1, 2, 3 as you walk.", null],
+    ["set-matrix-zeroes", 73, "Set Matrix Zeroes", "Medium", "Use the first row and column as notes for which rows and columns to clear.", null],
+    ["search-a-2d-matrix-ii", 240, "Search a 2D Matrix II", "Medium", "Start at the top-right corner. Too big? Go left. Too small? Go down.", null],
+    ["game-of-life", 289, "Game of Life", "Medium", "Count eight neighbours. Store the next state in spare bits so updates do not leak.", null]
+  ],
+  "Intervals": [
+    ["summary-ranges", 228, "Summary Ranges", "Easy", "Extend a run while the next number is one more. Close it when the chain breaks.", null],
+    ["merge-intervals", 56, "Merge Intervals", "Medium", "Sort by start. Merge whenever the next start is not after the current end.", "merge-intervals"],
+    ["insert-interval", 57, "Insert Interval", "Medium", "Copy the ones that end before, merge the ones that overlap, then copy the rest.", "insert-interval"],
+    ["interval-list-intersections", 986, "Interval List Intersections", "Medium", "Two pointers. The overlap is the later start to the earlier end. Advance whichever ends first.", null],
+    ["non-overlapping-intervals", 435, "Non-overlapping Intervals", "Medium", "Sort by end and keep the one that finishes first. Count the ones you drop.", null],
+    ["minimum-number-of-arrows-to-burst-balloons", 452, "Minimum Number of Arrows to Burst Balloons", "Medium", "Sort by end and shoot at the first end. A new arrow only when a balloon starts after it.", null],
+    ["car-pooling", 1094, "Car Pooling", "Medium", "Add riders at pickup and remove them at drop-off on a timeline. Check the load never goes over.", null],
+    ["my-calendar-i", 729, "My Calendar I", "Medium", "A new booking fits if it ends before or starts after every booking it touches.", null],
+    ["minimum-interval-to-include-each-query", 1851, "Minimum Interval to Include Each Query", "Hard", "Sort queries and intervals. Push intervals that started into a heap by size and pop the ones that ended.", null]
+  ],
+  "Greedy": [
+    ["assign-cookies", 455, "Assign Cookies", "Easy", "Sort both. Give each child the smallest cookie that is big enough.", null],
+    ["lemonade-change", 860, "Lemonade Change", "Easy", "Count your fives and tens. Give change with a ten first when you can.", null],
+    ["best-time-to-buy-and-sell-stock-ii", 122, "Best Time to Buy and Sell Stock II", "Medium", "Collect every rise from one day to the next.", null],
+    ["jump-game", 55, "Jump Game", "Medium", "Track the farthest spot you can reach. If you stand beyond it, you are stuck.", "jump-game"],
+    ["jump-game-ii", 45, "Jump Game II", "Medium", "Treat each jump as a level. Count a jump when you pass the edge of the current reach.", null],
+    ["gas-station", 134, "Gas Station", "Medium", "If the tank goes negative, no station up to here can be the start. Begin again after it.", null],
+    ["hand-of-straights", 846, "Hand of Straights", "Medium", "Always start a group at the smallest card left and use up the next ones in a row.", null],
+    ["partition-labels", 763, "Partition Labels", "Medium", "Note each letter's last position. Cut when the scan reaches the farthest last position so far.", null],
+    ["valid-parenthesis-string", 678, "Valid Parenthesis String", "Medium", "Track the lowest and highest possible number of open brackets as you read.", null],
+    ["task-scheduler", 621, "Task Scheduler", "Medium", "The most frequent task sets the frame. Fill the gaps between its copies with the others.", null],
+    ["candy", 135, "Candy", "Hard", "One pass from the left for rising ratings, one from the right, then take the larger count.", null]
+  ],
+  "Stack": [
+    ["valid-parentheses", 20, "Valid Parentheses", "Easy", "Push openers. Each closer must match the opener on top.", "valid-parentheses"],
+    ["remove-all-adjacent-duplicates-in-string", 1047, "Remove All Adjacent Duplicates In String", "Easy", "Push each letter, but pop instead when it matches the top.", null],
+    ["next-greater-element-i", 496, "Next Greater Element I", "Easy", "Keep a stack of values waiting for something bigger. A bigger value answers them all.", null],
+    ["min-stack", 155, "Min Stack", "Medium", "Store the smallest-so-far next to every pushed value.", "min-stack"],
+    ["evaluate-reverse-polish-notation", 150, "Evaluate Reverse Polish Notation", "Medium", "Push numbers. An operator pops two, works them out, and pushes the result.", null],
+    ["simplify-path", 71, "Simplify Path", "Medium", "Split on slashes. A name is pushed, two dots pops, one dot does nothing.", null],
+    ["decode-string", 394, "Decode String", "Medium", "On an opening bracket, save the count and text so far. On a closing one, repeat and join.", null],
+    ["daily-temperatures", 739, "Daily Temperatures", "Medium", "Keep a stack of days still waiting for a warmer one. A warm day pops them and sets their wait.", "daily-temperatures"],
+    ["online-stock-span", 901, "Online Stock Span", "Medium", "Each stack item keeps a price and its span. Lower prices fold into the new one.", null],
+    ["asteroid-collision", 735, "Asteroid Collision", "Medium", "Only a left-mover hitting a right-mover on top can crash. Resolve crashes until it is safe.", null],
+    ["car-fleet", 853, "Car Fleet", "Medium", "Sort by position. A car that would arrive no later than the car ahead joins its fleet.", null],
+    ["largest-rectangle-in-histogram", 84, "Largest Rectangle in Histogram", "Hard", "Keep bars in rising order. When a shorter bar comes, pop and measure each taller bar's widest box.", null]
+  ],
+  "Heap": [
+    ["last-stone-weight", 1046, "Last Stone Weight", "Easy", "A max heap hands you the two heaviest stones every round.", null],
+    ["kth-largest-element-in-a-stream", 703, "Kth Largest Element in a Stream", "Easy", "Keep a min heap of size k. Its top is the kth largest.", null],
+    ["kth-largest-element-in-an-array", 215, "Kth Largest Element in an Array", "Medium", "A min heap of size k, or quickselect for average linear time.", "kth-largest"],
+    ["top-k-frequent-elements", 347, "Top K Frequent Elements", "Medium", "Count, then keep the k biggest counts in a small heap or in buckets by count.", "top-k-frequent"],
+    ["k-closest-points-to-origin", 973, "K Closest Points to Origin", "Medium", "A max heap of size k by squared distance. No square roots needed.", null],
+    ["sort-characters-by-frequency", 451, "Sort Characters By Frequency", "Medium", "Count letters, then pop the most frequent and write it that many times.", null],
+    ["reorganize-string", 767, "Reorganize String", "Medium", "Always place the most common letter that is not the one you just placed.", null],
+    ["merge-k-sorted-lists", 23, "Merge k Sorted Lists", "Hard", "Put each list's head in a min heap. Pop the smallest and push its next node.", "merge-k-lists"],
+    ["find-median-from-data-stream", 295, "Find Median from Data Stream", "Hard", "A max heap for the lower half and a min heap for the upper half, kept balanced.", null],
+    ["ipo", 502, "IPO", "Hard", "Unlock projects you can afford into a max heap by profit, then take the best one.", null]
+  ],
+  "In-place Reversal": [
+    ["reverse-linked-list", 206, "Reverse Linked List", "Easy", "Walk the list with prev and current. Point each node back before you move on.", "reverse-linked-list"],
+    ["palindrome-linked-list", 234, "Palindrome Linked List", "Easy", "Find the middle, reverse the second half, then compare the halves.", null],
+    ["maximum-twin-sum-of-a-linked-list", 2130, "Maximum Twin Sum of a Linked List", "Medium", "Reverse the second half and add the nodes in pairs.", null],
+    ["swap-nodes-in-pairs", 24, "Swap Nodes in Pairs", "Medium", "With a dummy head, re-link two nodes at a time and step forward by two.", null],
+    ["reverse-linked-list-ii", 92, "Reverse Linked List II", "Medium", "Stop just before the range, then move each next node to the front of the range.", null],
+    ["rotate-list", 61, "Rotate List", "Medium", "Close the list into a ring, then cut it at the new tail.", null],
+    ["reorder-list", 143, "Reorder List", "Medium", "Split in the middle, reverse the back half, then zip the two halves together.", null],
+    ["reverse-nodes-in-k-group", 25, "Reverse Nodes in k-Group", "Hard", "Check that k nodes remain, reverse them, then join the group back to the rest.", null]
+  ],
+  "Fast & Slow Pointers": [
+    ["middle-of-the-linked-list", 876, "Middle of the Linked List", "Easy", "The fast pointer moves two steps for every one. When it stops, the slow one is in the middle.", "middle-of-list"],
+    ["linked-list-cycle", 141, "Linked List Cycle", "Easy", "If there is a loop, the fast pointer will lap the slow one and they meet.", "linked-list-cycle"],
+    ["happy-number", 202, "Happy Number", "Easy", "The digit-square sums form a chain. Either it reaches 1 or it loops.", null],
+    ["intersection-of-two-linked-lists", 160, "Intersection of Two Linked Lists", "Easy", "When a walker ends, restart it on the other list. Both cover the same distance and meet.", null],
+    ["delete-the-middle-node-of-a-linked-list", 2095, "Delete the Middle Node of a Linked List", "Medium", "Give fast a one-step head start so slow stops just before the middle.", null],
+    ["linked-list-cycle-ii", 142, "Linked List Cycle II", "Medium", "After they meet, restart one pointer at the head. Moving one step each, they meet at the loop's entry.", null],
+    ["find-the-duplicate-number", 287, "Find the Duplicate Number", "Medium", "Treat each value as a pointer to an index. The repeat is where the loop begins.", null],
+    ["circular-array-loop", 457, "Circular Array Loop", "Medium", "Run fast and slow from each start, stopping when direction flips or a loop has length one.", null]
+  ],
+  "Depth-First Search": [
+    ["invert-binary-tree", 226, "Invert Binary Tree", "Easy", "Swap the two children, then do the same for each child.", "invert-tree"],
+    ["maximum-depth-of-binary-tree", 104, "Maximum Depth of Binary Tree", "Easy", "Depth is one plus the deeper of the two children.", "max-depth"],
+    ["same-tree", 100, "Same Tree", "Easy", "Both empty is a match. Otherwise the values and both subtrees must match.", null],
+    ["flood-fill", 733, "Flood Fill", "Easy", "From the start cell, repaint and spread to neighbours of the old colour.", null],
+    ["validate-binary-search-tree", 98, "Validate Binary Search Tree", "Medium", "Pass down the allowed low and high limits. Every node must sit inside them.", "validate-bst"],
+    ["number-of-islands", 200, "Number of Islands", "Medium", "Each new land cell starts an island. Sink all the land connected to it.", "number-of-islands"],
+    ["max-area-of-island", 695, "Max Area of Island", "Medium", "Same sinking walk as Number of Islands, but count the cells as you go.", null],
+    ["clone-graph", 133, "Clone Graph", "Medium", "Map each old node to its copy. Make a copy on first visit, then wire up the neighbours.", "clone-graph"],
+    ["surrounded-regions", 130, "Surrounded Regions", "Medium", "Mark every O that can reach the border. Flip the unmarked ones.", null],
+    ["pacific-atlantic-water-flow", 417, "Pacific Atlantic Water Flow", "Medium", "Walk uphill from each ocean's edge. Keep the cells both oceans reach.", null],
+    ["number-of-provinces", 547, "Number of Provinces", "Medium", "Each unvisited city starts a new group. Visit everyone it connects to.", null],
+    ["longest-increasing-path-in-a-matrix", 329, "Longest Increasing Path in a Matrix", "Hard", "DFS from each cell to larger neighbours, and save each cell's best answer.", null]
+  ],
+  "Breadth-First Search": [
+    ["binary-tree-level-order-traversal", 102, "Binary Tree Level Order Traversal", "Medium", "Use a queue. Note its size, then empty exactly that many nodes for one level.", "level-order"],
+    ["binary-tree-right-side-view", 199, "Binary Tree Right Side View", "Medium", "Go level by level and keep the last node of each level.", "right-side-view"],
+    ["binary-tree-zigzag-level-order-traversal", 103, "Binary Tree Zigzag Level Order Traversal", "Medium", "Level order as usual, then reverse every other level.", null],
+    ["shortest-path-in-binary-matrix", 1091, "Shortest Path in Binary Matrix", "Medium", "BFS over open cells with eight moves. The first time you reach the corner is the shortest.", null],
+    ["rotting-oranges", 994, "Rotting Oranges", "Medium", "Start the queue with every rotten orange at once. Each ring of the queue is one minute.", "rotting-oranges"],
+    ["01-matrix", 542, "01 Matrix", "Medium", "Start from all zeros together and spread outward, writing distances as you go.", null],
+    ["course-schedule", 207, "Course Schedule", "Medium", "Take courses with no remaining requirements first. If some never free up, there is a cycle.", "course-schedule"],
+    ["course-schedule-ii", 210, "Course Schedule II", "Medium", "Same idea as Course Schedule, but record the order in which courses are freed.", null],
+    ["open-the-lock", 752, "Open the Lock", "Medium", "Each lock code is a node with eight neighbours. BFS from 0000 and skip the deadends.", null],
+    ["word-ladder", 127, "Word Ladder", "Hard", "Words are nodes and one-letter changes are edges. BFS gives the fewest steps.", null]
+  ],
+  "Backtracking": [
+    ["letter-combinations-of-a-phone-number", 17, "Letter Combinations of a Phone Number", "Medium", "For each digit, try every letter it maps to, then move to the next digit.", null],
+    ["subsets", 78, "Subsets", "Medium", "For each number, choose: leave it out or put it in.", "subsets"],
+    ["subsets-ii", 90, "Subsets II", "Medium", "Sort first. At the same depth, skip a value equal to the one you just tried.", null],
+    ["combinations", 77, "Combinations", "Medium", "Pick numbers in rising order and stop once you hold k.", null],
+    ["permutations", 46, "Permutations", "Medium", "Fill each position with any unused number, then undo and try the next.", "permutations"],
+    ["combination-sum", 39, "Combination Sum", "Medium", "You may reuse a number, so stay on the same index after picking it. Stop when the sum goes over.", "combination-sum"],
+    ["combination-sum-ii", 40, "Combination Sum II", "Medium", "Each number once: move to the next index, and skip equal values at the same depth.", null],
+    ["generate-parentheses", 22, "Generate Parentheses", "Medium", "Add an opener while some are left. Add a closer only while it would still match an opener.", null],
+    ["word-search", 79, "Word Search", "Medium", "From each cell, follow the next letter in four directions. Mark cells on the way in and clear them on the way out.", "word-search"],
+    ["palindrome-partitioning", 131, "Palindrome Partitioning", "Medium", "Cut off a palindrome prefix and solve the rest the same way.", null],
+    ["n-queens", 51, "N-Queens", "Hard", "Place one queen per row. Track used columns and both diagonals to prune fast.", null],
+    ["sudoku-solver", 37, "Sudoku Solver", "Hard", "Fill the next empty cell with any legal digit, then go deeper. Undo when stuck.", null]
+  ],
+  "Dynamic Programming": [
+    ["climbing-stairs", 70, "Climbing Stairs", "Easy", "Ways to reach a step are the ways to reach the step before plus the one two below.", "climbing-stairs"],
+    ["min-cost-climbing-stairs", 746, "Min Cost Climbing Stairs", "Easy", "Cheapest cost to stand on a step is its cost plus the cheaper of the two steps below.", null],
+    ["house-robber", 198, "House Robber", "Medium", "At each house: skip it, or take it and add the best from two houses back.", "house-robber"],
+    ["house-robber-ii", 213, "House Robber II", "Medium", "The houses form a circle, so solve once without the first house and once without the last.", null],
+    ["maximum-subarray", 53, "Maximum Subarray", "Medium", "Either extend the running sum or start fresh here, whichever is bigger.", "max-subarray"],
+    ["maximum-product-subarray", 152, "Maximum Product Subarray", "Medium", "Track both the largest and smallest product, since a negative flips them.", null],
+    ["unique-paths", 62, "Unique Paths", "Medium", "Paths into a cell are the paths from above plus the paths from the left.", "unique-paths"],
+    ["minimum-path-sum", 64, "Minimum Path Sum", "Medium", "Each cell adds its value to the cheaper of the cell above and the cell to the left.", null],
+    ["coin-change", 322, "Coin Change", "Medium", "Fewest coins for an amount is one plus the best for that amount minus each coin.", "coin-change"],
+    ["coin-change-ii", 518, "Coin Change II", "Medium", "Loop coins on the outside so each mix is counted once, not once per order.", null],
+    ["partition-equal-subset-sum", 416, "Partition Equal Subset Sum", "Medium", "Can some numbers reach half the total? Track reachable sums, going downward each round.", null],
+    ["word-break", 139, "Word Break", "Medium", "A prefix works if some shorter good prefix is followed by a dictionary word.", "word-break"],
+    ["decode-ways", 91, "Decode Ways", "Medium", "Read one digit or two digits at a time. Zeros only work as part of 10 or 20.", null],
+    ["longest-increasing-subsequence", 300, "Longest Increasing Subsequence", "Medium", "Keep the smallest possible tail for each length and binary search where each number goes.", "lis"],
+    ["longest-common-subsequence", 1143, "Longest Common Subsequence", "Medium", "Grid of prefixes: matching letters add one to the diagonal, otherwise take the better neighbour.", null],
+    ["edit-distance", 72, "Edit Distance", "Medium", "Grid of prefixes. Each cell is the cheapest of insert, delete or replace from a neighbour.", null],
+    ["burst-balloons", 312, "Burst Balloons", "Hard", "Pick the balloon that pops last in a range. Its neighbours are then the range edges.", null],
+    ["regular-expression-matching", 10, "Regular Expression Matching", "Hard", "Grid over both strings. A star means use the letter zero times or once more.", null]
+  ],
+  "Trees": [
+    ["symmetric-tree", 101, "Symmetric Tree", "Easy", "Compare the left subtree with a mirror of the right: outside with outside, inside with inside.", null],
+    ["diameter-of-binary-tree", 543, "Diameter of Binary Tree", "Easy", "At each node, the longest path through it is left height plus right height.", null],
+    ["balanced-binary-tree", 110, "Balanced Binary Tree", "Easy", "Return each height, or a fail signal as soon as two sides differ by more than one.", null],
+    ["lowest-common-ancestor-of-a-binary-search-tree", 235, "Lowest Common Ancestor of a Binary Search Tree", "Medium", "Walk down. The first node that falls between the two values is the answer.", null],
+    ["kth-smallest-element-in-a-bst", 230, "Kth Smallest Element in a BST", "Medium", "An in-order walk visits values in sorted order. Stop at the kth one.", null],
+    ["lowest-common-ancestor-of-a-binary-tree", 236, "Lowest Common Ancestor of a Binary Tree", "Medium", "If both sides report a find, this node is the answer. Otherwise pass up whichever side found one.", null],
+    ["construct-binary-tree-from-preorder-and-inorder-traversal", 105, "Construct Binary Tree from Preorder and Inorder Traversal", "Medium", "Preorder gives the root. Its place in inorder splits the left and right subtrees.", null],
+    ["binary-tree-maximum-path-sum", 124, "Binary Tree Maximum Path Sum", "Hard", "Each node passes up its best single branch, but checks a path that bends through itself.", null],
+    ["serialize-and-deserialize-binary-tree", 297, "Serialize and Deserialize Binary Tree", "Hard", "Write a preorder list with markers for empty spots, then read it back in the same order.", null]
+  ],
+  "Graphs": [
+    ["find-the-town-judge", 997, "Find the Town Judge", "Easy", "Count trust given and trust received. The judge receives n-1 and gives none.", null],
+    ["redundant-connection", 684, "Redundant Connection", "Medium", "Union-find: the first edge that joins two nodes already in one group is the extra one.", null],
+    ["network-delay-time", 743, "Network Delay Time", "Medium", "Dijkstra from the source. The answer is the longest of the shortest times.", null],
+    ["min-cost-to-connect-all-points", 1584, "Min Cost to Connect All Points", "Medium", "Grow a tree by always adding the cheapest edge to a new point.", null],
+    ["cheapest-flights-within-k-stops", 787, "Cheapest Flights Within K Stops", "Medium", "Relax all flights once per allowed stop, using a copy of last round's prices.", null],
+    ["reconstruct-itinerary", 332, "Reconstruct Itinerary", "Hard", "Take tickets in name order and add an airport to the route once it has no tickets left. Then reverse.", null],
+    ["swim-in-rising-water", 778, "Swim in Rising Water", "Hard", "Dijkstra where a path costs its highest cell. Always expand the lowest cell you can reach.", null]
+  ],
+  "Tries": [
+    ["implement-trie-prefix-tree", 208, "Implement Trie (Prefix Tree)", "Medium", "Each node holds child links by letter and an end-of-word flag.", null],
+    ["design-add-and-search-words-data-structure", 211, "Design Add and Search Words Data Structure", "Medium", "A trie, where a dot tries every child at that depth.", null],
+    ["search-suggestions-system", 1268, "Search Suggestions System", "Medium", "Sort the products, then for each typed prefix take the first three that match.", null],
+    ["word-search-ii", 212, "Word Search II", "Hard", "Put all words in a trie and walk the grid along trie paths. Remove words once found.", null]
+  ],
+  "Bit Manipulation": [
+    ["number-of-1-bits", 191, "Number of 1 Bits", "Easy", "n AND (n-1) clears the lowest set bit. Count how many times until zero.", null],
+    ["single-number", 136, "Single Number", "Easy", "XOR everything. Pairs cancel and the lone number is left.", null],
+    ["counting-bits", 338, "Counting Bits", "Easy", "Bits in i equal bits in i shifted right by one, plus its last bit.", null],
+    ["missing-number", 268, "Missing Number", "Easy", "XOR every index and every value together. What is left is the missing one.", null],
+    ["sum-of-two-integers", 371, "Sum of Two Integers", "Medium", "XOR adds without carries, AND shifted left is the carry. Repeat until no carry.", null],
+    ["single-number-ii", 137, "Single Number II", "Medium", "Count each bit position across all numbers. Counts not divisible by three belong to the loner.", null]
+  ],
+  "Math": [
+    ["palindrome-number", 9, "Palindrome Number", "Easy", "Reverse only the back half of the digits and compare it with the front half.", null],
+    ["plus-one", 66, "Plus One", "Easy", "Add from the last digit. Nines become zeros and carry left.", null],
+    ["reverse-integer", 7, "Reverse Integer", "Medium", "Pop digits off the end and push them on, checking for overflow before each push.", null],
+    ["powx-n", 50, "Pow(x, n)", "Medium", "Square the base and halve the power. Odd powers multiply in one extra base.", null],
+    ["count-primes", 204, "Count Primes", "Medium", "Sieve: from each prime p, cross out p squared, then every pth number after it.", null],
+    ["max-points-on-a-line", 149, "Max Points on a Line", "Hard", "For each point, group the others by reduced slope. The biggest group plus one is a line.", null]
+  ]
+};
+// Flat list, in group order. seq is our order inside the group, starting at 1.
+const SHEET_GROUPS = PATTERNS.map(([name, tag]) => [name, tag]).concat(SHEET_EXTRA_GROUPS);
+const SHEET = [];
+SHEET_GROUPS.forEach(([group]) => (SHEET_DATA[group] || []).forEach(([id, n, name, diff, hint, story], i) => {
+  SHEET.push({ id, n, name, diff, pattern: group, hint, story, seq: i + 1, url: 'https://leetcode.com/problems/' + id + '/' });
+}));
+const SHEET_KEY = 'dsaviz-sheet-v1';
+// Progress: { v: 1, done: { id: timestamp }, star: { id: 1 } }. Unknown ids are kept so an older export still imports.
+function cleanSheetProgress(o) {
+  const out = { v: 1, done: {}, star: {} };
+  if (!o || typeof o !== 'object' || o.v !== 1) return out;
+  if (o.done && typeof o.done === 'object') Object.keys(o.done).forEach((k) => { const ts = Number(o.done[k]); if (isFinite(ts) && ts > 0) out.done[k] = ts; });
+  if (o.star && typeof o.star === 'object') Object.keys(o.star).forEach((k) => { if (o.star[k]) out.star[k] = 1; });
+  return out;
+}
+function loadSheetProgress() { try { return cleanSheetProgress(JSON.parse(window.localStorage.getItem(SHEET_KEY))); } catch (e) { return cleanSheetProgress(null); } }
+function saveSheetProgress(p) { try { window.localStorage.setItem(SHEET_KEY, JSON.stringify(p)); } catch (e) {} }
+// @@END-SHEET@@
+
+// @@DRAWER@@ — shared menu logic (landing + home)
+const MENU = [
+  ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
+  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
+  ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
+  ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],
+  ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
+  ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
+  ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
+  ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
+];
+function drawerVals(cmp, t, themeKey) {
+  return {
+    drawerOpen: !!cmp.state.drawer,
+    openDrawer: () => cmp.setState({ drawer: true }),
+    closeDrawer: () => cmp.setState({ drawer: false }),
+    user: !!cmp.state.user, guest: !cmp.state.user,
+    signIn: () => { saveUser(true); cmp.setState({ user: true }); },
+    signOut: () => { saveUser(false); cmp.setState({ user: false, drawer: false }); },
+    week: streakDays(t),
+    themeBtns: themeButtons(cmp, themeKey, t),
+    menu: MENU.map(([href, label, sub, tab]) => ({
+      href, label, sub,
+      go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
+    }))
+  };
+}
+// @@END-DRAWER@@
+
+// ---- page ----
+const SHEET_DIFFS = ['Easy', 'Medium', 'Hard'];
+// Short names for the small progress rings; the full name is in the tooltip and the screen-reader label.
+const SHEET_SHORT = { 'Sliding Window': 'Sliding window', 'Hash Map': 'Hash map', 'Prefix Sum': 'Prefix sum', 'Binary Search': 'Binary search', 'In-place Reversal': 'Reversal', 'Fast & Slow Pointers': 'Fast & slow', 'Depth-First Search': 'Depth-first', 'Breadth-First Search': 'Breadth-first', 'Dynamic Programming': 'DP', 'Bit Manipulation': 'Bits', 'Two Pointers': 'Two pointers', 'Backtracking': 'Backtrack' };
+const SHEET_STATUS = [['all', 'All'], ['todo', 'To do'], ['done', 'Done'], ['star', 'Starred']];
+const SHEET_COMPANIES = (() => {
+  const s = [];
+  PROBLEMS.forEach((p) => p.cos.forEach((c) => { if (!s.includes(c)) s.push(c); }));
+  return s.sort((a, b) => a.localeCompare(b));
+})();
+// Company tags exist only for problems that have a story in the catalog.
+function sheetCompanies(r) {
+  const p = r.story ? PROBLEMS.find((x) => x.id === r.story) : null;
+  return p ? p.cos : [];
+}
+function sheetHash(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function utcDay(now) { return new Date(now).toISOString().slice(0, 10); }
+// Five unsolved picks seeded by the UTC date. Problems solved today stay in the list, ticked, so it is stable all day.
+function todaysFive(prog, now) {
+  const day = utcDay(now);
+  const start = Date.parse(day + 'T00:00:00Z');
+  return SHEET.slice()
+    .sort((a, b) => sheetHash(day + '|' + a.id) - sheetHash(day + '|' + b.id) || a.id.localeCompare(b.id))
+    .filter((r) => !prog.done[r.id] || prog.done[r.id] >= start)
+    .slice(0, 5);
+}
+function ringDash(done, total, r) {
+  const c = 2 * Math.PI * r;
+  return (total ? (c * done) / total : 0).toFixed(2) + ' ' + c.toFixed(2);
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), query: '', diff: 'All', status: 'all', pattern: 'All', company: 'All', open: {}, hint: {}, pick: null, pickNone: false, msg: 'Download your ticks as a file, or load a file you saved before.' };
+  }
+  componentDidMount() {
+    listenTheme(this);
+    this.onSheet = (e) => { if (e.key === SHEET_KEY) this.setState({ prog: loadSheetProgress() }); };
+    try { window.addEventListener('storage', this.onSheet); } catch (e) {}
+  }
+  componentWillUnmount() { unlistenTheme(this); try { window.removeEventListener('storage', this.onSheet); } catch (e) {} }
+  setProg(prog) { saveSheetProgress(prog); this.setState({ prog }); }
+  toggleDone(id) {
+    const done = Object.assign({}, this.state.prog.done);
+    if (done[id]) delete done[id]; else done[id] = Date.now();
+    this.setProg(Object.assign({}, this.state.prog, { done }));
+  }
+  toggleStar(id) {
+    const star = Object.assign({}, this.state.prog.star);
+    if (star[id]) delete star[id]; else star[id] = 1;
+    this.setProg(Object.assign({}, this.state.prog, { star }));
+  }
+  filtered() {
+    const s = this.state, prog = s.prog;
+    const q = s.query.trim().toLowerCase();
+    return SHEET.filter((r) => (s.diff === 'All' || r.diff === s.diff) &&
+      (s.pattern === 'All' || r.pattern === s.pattern) &&
+      (s.company === 'All' || sheetCompanies(r).includes(s.company)) &&
+      (s.status === 'all' || (s.status === 'done' ? !!prog.done[r.id] : s.status === 'todo' ? !prog.done[r.id] : !!prog.star[r.id])) &&
+      (!q || (r.name + ' ' + r.n + ' ' + r.pattern).toLowerCase().includes(q)));
+  }
+  randomPick() {
+    const pool = this.filtered().filter((r) => !this.state.prog.done[r.id]);
+    if (!pool.length) { this.setState({ pick: null, pickNone: true }); return; }
+    const choices = pool.length > 1 ? pool.filter((r) => r.id !== this.state.pick) : pool;
+    const r = choices[Math.floor(Math.random() * choices.length)];
+    this.setState({ pick: r.id, pickNone: false, open: Object.assign({}, this.state.open, { [r.pattern]: true }) });
+  }
+  exportFile() {
+    const day = utcDay(Date.now());
+    try {
+      if (typeof document === 'undefined' || typeof Blob === 'undefined') throw new Error('no browser');
+      const blob = new Blob([JSON.stringify(this.state.prog, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'dsamaxxing-sheet-' + day + '.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      this.setState({ msg: 'Saved dsamaxxing-sheet-' + day + '.json to your downloads.' });
+    } catch (e) { this.setState({ msg: 'Export needs a browser that can download files.' }); }
+  }
+  importFile(e) {
+    const input = e && e.target;
+    const file = input && input.files && input.files[0];
+    if (!file) return;
+    try {
+      const reader = new FileReader();
+      reader.onload = () => {
+        let data = null;
+        try { data = JSON.parse(String(reader.result)); } catch (err) { data = null; }
+        if (!data || data.v !== 1) { this.setState({ msg: 'That file is not a sheet backup. Nothing changed.' }); return; }
+        const inc = cleanSheetProgress(data), cur = this.state.prog;
+        const done = Object.assign({}, cur.done), star = Object.assign({}, cur.star);
+        Object.keys(inc.done).forEach((k) => { done[k] = done[k] ? Math.min(done[k], inc.done[k]) : inc.done[k]; });
+        Object.keys(inc.star).forEach((k) => { star[k] = 1; });
+        this.setProg({ v: 1, done, star });
+        const added = SHEET.filter((r) => inc.done[r.id] && !cur.done[r.id]).length;
+        this.setState({ msg: 'Imported. ' + added + ' new ticks added; nothing was removed.' });
+      };
+      reader.readAsText(file);
+    } catch (err) { this.setState({ msg: 'Could not read that file.' }); }
+    try { input.value = ''; } catch (err) {}
+  }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
+    const s = this.state, prog = s.prog;
+    const isDone = (r) => !!prog.done[r.id];
+    const total = SHEET.length;
+    const solved = SHEET.filter(isDone).length;
+    const starred = SHEET.filter((r) => prog.star[r.id]).length;
+    const visible = this.filtered();
+    const filterOn = !!s.query.trim() || s.diff !== 'All' || s.status !== 'all' || s.pattern !== 'All' || s.company !== 'All';
+    const firstGroup = SHEET_GROUPS[0][0];
+    const pickRow = s.pick ? SHEET.find((r) => r.id === s.pick) : null;
+
+    const row = (r) => {
+      const d = t.diff[r.diff], done = isDone(r), star = !!prog.star[r.id], hintOpen = !!s.hint[r.id];
+      const p = r.story ? PROBLEMS.find((x) => x.id === r.story) : null;
+      return {
+        id: r.id, n: r.n, name: r.name, url: r.url, diff: r.diff, hint: r.hint,
+        seqLabel: String(r.seq).padStart(2, '0'),
+        done, tick: done ? 1 : 0, ring: done ? t.ok : t.muted, fill: done ? t.ok : 'transparent',
+        aria: (done ? 'Solved: ' : 'Mark solved: ') + r.name,
+        nameColor: done ? t.muted : t.text,
+        bg: r.id === s.pick ? t.hl : 'transparent',
+        cos: sheetCompanies(r).slice(0, 2),
+        story: !!p, storyHref: p && p.animated ? 'Story.dc.html' : 'Briefing.dc.html',
+        goStory: () => { if (p) saveProblem(p.id); },
+        dBg: d[1], dFg: d[2],
+        starred: star, starFill: star ? 'currentColor' : 'none', starColor: star ? t.accent : t.muted,
+        starAria: (star ? 'Remove revision star: ' : 'Star for revision: ') + r.name,
+        starToggle: () => this.toggleStar(r.id),
+        toggle: () => this.toggleDone(r.id),
+        hintOpen, hintBg: hintOpen ? t.sunk : 'transparent', hintColor: hintOpen ? t.accent : t.muted,
+        hintAria: (hintOpen ? 'Hide hint: ' : 'Show hint: ') + r.name,
+        hintToggle: () => this.setState({ hint: Object.assign({}, s.hint, { [r.id]: !hintOpen }) })
+      };
+    };
+
+    const groups = SHEET_GROUPS.map(([name, tag], i) => {
+      const all = SHEET.filter((r) => r.pattern === name);
+      const shown = visible.filter((r) => r.pattern === name);
+      const done = all.filter(isDone).length;
+      const open = s.open[name] !== undefined ? !!s.open[name] : (filterOn || name === firstGroup);
+      return {
+        num: String(i + 1).padStart(2, '0'), name, tag, open,
+        done, total: all.length, pct: Math.round((done / all.length) * 100) + '%',
+        shown: shown.length, showMatch: filterOn, matchLine: shown.length + ' match',
+        aria: done + ' of ' + all.length + ' solved',
+        chev: open ? 'rotate(90deg)' : 'rotate(0deg)', bg: open ? t.sunk : t.surface,
+        rows: shown.map(row),
+        toggle: () => this.setState({ open: Object.assign({}, s.open, { [name]: !open }) })
+      };
+    }).filter((g) => g.shown > 0);
+
+    const rings = SHEET_GROUPS.map(([name]) => {
+      const all = SHEET.filter((r) => r.pattern === name);
+      const done = all.filter(isDone).length;
+      const on = s.pattern === name;
+      return {
+        name, short: SHEET_SHORT[name] || name, on, count: done + '/' + all.length, dash: ringDash(done, all.length, 8),
+        color: done === all.length ? t.ok : t.accent, bg: on ? t.sunk : 'transparent',
+        aria: name + ': ' + done + ' of ' + all.length + ' solved',
+        pick: () => this.setState({ pattern: on ? 'All' : name, open: {} })
+      };
+    });
+
+    const diffTiles = SHEET_DIFFS.map((k) => {
+      const all = SHEET.filter((r) => r.diff === k);
+      const done = all.filter(isDone).length;
+      const on = s.diff === k;
+      return {
+        label: k, done, total: all.length, on, fg: t.diff[k][2],
+        bg: on ? t.diff[k][1] : t.sunk, border: on ? t.diff[k][0] : 'transparent',
+        aria: k + ': ' + done + ' of ' + all.length + ' solved',
+        pick: () => this.setState({ diff: on ? 'All' : k, open: {} })
+      };
+    });
+
+    const now = Date.now();
+    const today = todaysFive(prog, now).map((r) => {
+      const done = isDone(r);
+      return {
+        id: r.id, name: r.name, url: r.url, diff: r.diff, dot: t.diff[r.diff][0],
+        done, tick: done ? 1 : 0, ring: done ? t.ok : t.muted, fill: done ? t.ok : 'transparent',
+        strike: done ? 'line-through' : 'none',
+        aria: (done ? 'Solved: ' : 'Mark solved: ') + r.name,
+        toggle: () => this.toggleDone(r.id)
+      };
+    });
+    const todayDone = today.filter((x) => x.done).length;
+
+    const seg = (on) => ({ bg: on ? t.text : 'transparent', fg: on ? t.bg : t.muted });
+    return {
+      t, ...drawerVals(this, t, themeKey),
+      total, solved, starred,
+      solvedAria: solved + ' of ' + total + ' solved',
+      starLine: starred + ' starred for revision',
+      ring: { dash: ringDash(solved, total, 30) },
+      diffTiles, rings, today,
+      todayEmpty: today.length === 0,
+      todayLine: todayDone + '/' + today.length + ' · ' + utcDay(now),
+      subLine: total + ' problems in ' + SHEET_GROUPS.length + ' groups. Each group runs from the easiest idea to the hardest.',
+      query: s.query,
+      onQuery: (e) => this.setState({ query: (e && e.target && e.target.value) || '', open: {} }),
+      diffBtns: ['All'].concat(SHEET_DIFFS).map((k) => Object.assign({ label: k, on: s.diff === k, pick: () => this.setState({ diff: k, open: {} }) }, seg(s.diff === k))),
+      statusBtns: SHEET_STATUS.map(([k, label]) => Object.assign({ label, on: s.status === k, pick: () => this.setState({ status: k, open: {} }) }, seg(s.status === k))),
+      patternSel: s.pattern,
+      patternOpts: [{ v: 'All', label: 'All patterns' }].concat(SHEET_GROUPS.map(([n]) => ({ v: n, label: n }))),
+      onPattern: (e) => { const v = (e && e.target && e.target.value) || 'All'; this.setState({ pattern: SHEET_GROUPS.some(([n]) => n === v) ? v : 'All', open: {} }); },
+      companySel: s.company,
+      companyOpts: [{ v: 'All', label: 'Any company' }].concat(SHEET_COMPANIES.map((c) => ({ v: c, label: c }))),
+      onCompany: (e) => { const v = (e && e.target && e.target.value) || 'All'; this.setState({ company: SHEET_COMPANIES.includes(v) ? v : 'All', open: {} }); },
+      filterOn,
+      shownLine: 'Showing ' + visible.length + ' of ' + total + (s.company !== 'All' ? ' · company tags cover story problems only' : ''),
+      clearFilters: () => this.setState({ query: '', diff: 'All', status: 'all', pattern: 'All', company: 'All', open: {}, pickNone: false }),
+      expandAll: () => { const o = {}; SHEET_GROUPS.forEach(([n]) => { o[n] = true; }); this.setState({ open: o }); },
+      collapseAll: () => { const o = {}; SHEET_GROUPS.forEach(([n]) => { o[n] = false; }); this.setState({ open: o }); },
+      randomPick: () => this.randomPick(),
+      showPick: !!pickRow,
+      pick: pickRow ? { name: pickRow.name, url: pickRow.url, pattern: pickRow.pattern, diff: pickRow.diff } : { name: '', url: '', pattern: '', diff: '' },
+      pickNone: !pickRow && s.pickNone,
+      closePick: () => this.setState({ pick: null, pickNone: false }),
+      groups, noGroups: groups.length === 0,
+      exportFile: () => this.exportFile(),
+      importFile: (e) => this.importFile(e),
+      msg: s.msg
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -19,7 +19,7 @@
       "y": 0
     },
     "Basics.dc.html": {
-      "h": 1180,
+      "h": 1130,
       "is_interactive": true,
       "title": "Language basics · animated lesson",
       "w": 1440,
@@ -113,6 +113,14 @@
       "h": 2020,
       "title": "Profile · heatmap, certificates, invites, reminders",
       "is_interactive": true
+    },
+    "Sheet.dc.html": {
+      "x": 4560,
+      "y": 4620,
+      "w": 1440,
+      "h": 1130,
+      "title": "Master sheet · every problem by pattern, ticks, hints, today's 5",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -179,6 +187,7 @@
     "Profile.dc.html",
     "Leaderboard.dc.html",
     "Patterns.dc.html",
+    "Sheet.dc.html",
     "Interview.dc.html",
     "Briefing.dc.html",
     "Story.dc.html",

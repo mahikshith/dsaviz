@@ -11,7 +11,7 @@ import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ORDER = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard',
-         'Patterns', 'Interview', 'Briefing', 'Story', 'Glossary', 'Basics']
+         'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Glossary', 'Basics']
 
 
 def read(*parts):

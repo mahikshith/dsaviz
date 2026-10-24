@@ -2,6 +2,7 @@
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
   ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
   ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],

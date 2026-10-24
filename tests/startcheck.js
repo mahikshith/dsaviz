@@ -52,9 +52,11 @@ function runPyAll(jobs) {
     '    res.append({"out": buf.getvalue(), "error": err})',
     'print(json.dumps(res))'
   ].join('\n');
-  const r = spawnSync(py, ['-c', script], { input: JSON.stringify(jobs.map((j) => ({ code: j.code, prelude: R.pyProgramPrelude(j.stdin || []) }))), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync(py, ['-c', script], { input: JSON.stringify(jobs.map((j) => ({ code: j.code, prelude: R.pyProgramPrelude(j.stdin || []) }))), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: Object.assign({}, process.env, { PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' }) });
   if (r.status !== 0) { fail('python', r.stderr.slice(0, 300)); return null; }
-  return JSON.parse(r.stdout).map((x) => ({ error: x.error, out: R.programOutput([x.out]) }));
+  // echo: the output with the answers typed into input() shown the way a terminal (and the tracer) shows them
+  return JSON.parse(r.stdout).map((x) => ({ error: x.error, out: R.programOutput([x.out]),
+    echo: R.programOutput([x.out.split(String.fromCharCode(10)).map((l) => (l.indexOf(R.PROGRAM_IN) === 0 ? l.slice(R.PROGRAM_IN.length).replace(R.PROGRAM_SEP, '') : l)).join(String.fromCharCode(10))]) }));
 }
 const pyJobs = []; // { code, stdin, check(result) }
 const traceJobs = []; // trace exercises, checked with the real tracer
@@ -116,18 +118,18 @@ S.START_CHAPTERS.filter((c) => c.ready).forEach((c) => {
   else if (!tr || !tr.steps || tr.steps.length < 2) fail(id, 'no trace: run python scripts/build_pages.py');
   else {
     tr.steps.forEach((s, i) => { const say = S.startTraceSay(tr.steps, i); if (!say || say.length > MAX) fail(id, 'trace caption ' + (i + 1) + ' is empty or too long: ' + say); });
-    if (tr.steps[tr.steps.length - 1].e !== 'end') fail(id, 'the watch program does not finish cleanly');
-    pyJobs.push({ code: c.watch.code, stdin: c.watch.stdin, check: (r) => { if (r.error || r.out !== R.programOutput([tr.steps[tr.steps.length - 1].o])) fail(id, 'trace output differs from a real run: rebuild'); } });
+    if (tr.steps[tr.steps.length - 1].e !== (c.watch.error ? 'error' : 'end')) fail(id, c.watch.error ? 'the watch program should stop with an error' : 'the watch program does not finish cleanly');
+    pyJobs.push({ code: c.watch.code, stdin: c.watch.stdin, check: (r) => { if (!!r.error !== !!c.watch.error || r.echo !== R.programOutput([tr.steps[tr.steps.length - 1].o])) fail(id, 'trace output differs from a real run: rebuild'); } });
   }
   // try it
   if (!c.tryit || !c.tryit.py || !c.tryit.js || !Array.isArray(c.tryit.goals) || c.tryit.goals.length < 2) fail(id, 'try it needs py, js and 2+ goals');
   else {
     const j = runJs(c.tryit.js, c.tryit.stdin);
-    if (j.error) fail(id, 'try it (js) fails: ' + j.error);
-    pyJobs.push({ code: c.tryit.py, stdin: c.tryit.stdin, check: (r) => { if (r.error) fail(id, 'try it (py) fails: ' + r.error); else if (r.out !== j.out && !c.tryit.differs) fail(id, 'try it prints differently in py and js'); } });
+    if (!!j.error !== !!c.tryit.errors) fail(id, c.tryit.errors ? 'try it (js) should show an error' : 'try it (js) fails: ' + j.error);
+    pyJobs.push({ code: c.tryit.py, stdin: c.tryit.stdin, check: (r) => { if (!!r.error !== !!c.tryit.errors) fail(id, c.tryit.errors ? 'try it (py) should show an error' : 'try it (py) fails: ' + r.error); else if (r.out !== j.out && !c.tryit.differs) fail(id, 'try it prints differently in py and js'); } });
   }
   // check
-  if (!c.check || !c.check.q || !Array.isArray(c.check.choices) || c.check.choices.filter((x) => x[1]).length !== 1) fail(id, 'check needs a question and exactly one right choice');
+  if (!c.check || !text(c.check.q, 'py') || !text(c.check.q, 'js') || !Array.isArray(c.check.choices) || c.check.choices.filter((x) => x[1]).length !== 1) fail(id, 'check needs a question and exactly one right choice');
   else c.check.choices.forEach(([t, , why]) => { if (!why || why.length > MAX * 1.5) fail(id, 'check feedback missing or long'); if (!text(t, 'py') || !text(t, 'js')) fail(id, 'check choice has no text'); });
   // exercises
   const exs = S.START_EXERCISES[id] || [];
@@ -142,7 +144,7 @@ function checkExercise(c, e) {
   if (!e.id || !e.id.startsWith(c.id + ':')) fail(id, 'exercise id must start with the lesson id');
   if (exIds.has(e.id)) fail(id, 'duplicate exercise id'); exIds.add(e.id);
   if (!e.title || !e.ask || e.ask.length > 2 * MAX) fail(id, 'needs a title and a short ask');
-  if (!Array.isArray(e.hints) || e.hints.length < 2 || e.hints.some((h) => !h || h.length > MAX)) fail(id, 'needs a ladder of 2+ short hints');
+  if (!Array.isArray(e.hints) || e.hints.length < 2 || e.hints.some((h) => ['py', 'js'].some((l) => !text(h, l) || text(h, l).length > MAX))) fail(id, 'needs a ladder of 2+ short hints');
   if (/\bleet\s*code\b/i.test(JSON.stringify(e))) fail(id, 'mentions LeetCode');
   const langs = ['py', 'js'];
   if (e.kind === 'predict') {
@@ -248,6 +250,36 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   const late = needs.filter((k) => !taught.includes(k));
   if (late.length) fail(c.id, 'first problem ' + pid + ' needs ' + late.join(', ') + ', taught later');
 }));
+
+// ---------- DS wiring: progress, streak, XP, medals, revisit cards, the ring ----------
+{
+  const built = JSON.parse(spawnSync('node', [path.join(root, 'scripts', 'build_start.js')], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).stdout);
+  const store = {};
+  const window = { localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } } };
+  const src = read('shared', 'data.js').replace('/*@@START-MEDALS@@*/[]', JSON.stringify(built.medals));
+  const DS = new Function('window', src + '\nreturn DS;')(window);
+  DS.setClock(() => new Date(2026, 9, 21, 20, 0, 0).getTime());
+  const ok = (cond, msg) => { if (!cond) fail('DS', msg); };
+  const first = S.START_CHAPTERS[0], ex = S.START_EXERCISES[first.id];
+  ok(DS.startMedals().length === 5 && DS.startMedals().every((m) => !m.tier && m.next.tier === 'bronze'), 'five beginner medals, none earned yet');
+  ok(DS.startRing() === null, 'no Start here ring before the learner starts');
+  ok(DS.profile().isNew, 'a new learner is new');
+  DS.startPass(ex[0].id);
+  ok(DS.streak().activeToday && DS.xp().total === DS.XP.start, 'a passed exercise counts for the streak and XP');
+  DS.startPass(ex[0].id);
+  ok(DS.xp().total === DS.XP.start, 'passing the same exercise twice gives XP once');
+  ok(!DS.profile().isNew, 'a learner with a passed exercise is not new');
+  DS.startFinish(first.id);
+  ok(DS.lessons().ids.includes('start:' + first.id), 'a finished lesson is logged as start:<id>');
+  ok(DS.startMedals()[0].tier === 'bronze', 'one finished lesson earns the chapter bronze');
+  ok(DS.medals([], []).some((m) => m.start), 'DS.medals includes the beginner set');
+  ok(DS.reviewCards().some((c) => c.kind === 'start' && c.id === 'start:' + first.id), 'a finished lesson becomes a revisit card');
+  const ring = DS.startRing();
+  ok(ring && ring.done === 1 && ring.total === built.medals.reduce((n, g) => n + g.lessons.length, 0), 'the ring counts Level 1 lessons');
+  DS.startPlace([S.START_CHAPTERS[1].id]);
+  ok(DS.startRing().done === 2, 'placement-known lessons fill the ring');
+  ok(S.startProgress(DS.start()).rows[1].known, 'placement marks a lesson known');
+}
 
 // ---------- error help and pages ----------
 [['NameError: name \'pront\' is not defined (line 1)', /pront/], ['SyntaxError: unterminated string literal (detected at line 1) (line 1)', /quote/], ['TypeError: can only concatenate str (not "int") to str', /str\(\)/], ['ZeroDivisionError: division by zero', /zero/], ['Timeout', /never finished/], ['IndentationError: expected an indented block', /indent/i]]

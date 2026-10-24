@@ -37,7 +37,7 @@
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h2}}; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere">{{card.name}}</h2>
 <sc-if value="{{card.hasStory}}" hint-placeholder-val="{{ true }}"><span style="font-size: 15px; color: {{t.muted}}">Story: {{card.story}}</span></sc-if>
 </div>
-<p style="margin: 0; font-size: 22px; line-height: 1.4; font-weight: 600">What’s the key move?</p>
+<p style="margin: 0; font-size: 22px; line-height: 1.4; font-weight: 600">{{card.prompt}}</p>
 
 <sc-if value="{{hidden}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">

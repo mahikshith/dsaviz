@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 17 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, a step-by-step Git visual, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 21 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, a step-by-step Git visual, a System design section (12 animated HLD and LLD lessons), 13 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -19,7 +19,7 @@ Requirements: Node 18+ and Python 3.
 ```bash
 npm install          # React, CodeMirror and esbuild, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # back-test of every page, every animated story, every test spec, the sheet and every Git lesson step
+npm test             # back-test of every page, every animated story, every test spec, the sheet, every Git lesson step and every system design lesson and every AI & ML lesson
 npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
 ```
 
@@ -36,12 +36,14 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
 | `src/git/` | The Git page's model: `sim.js` (a small Git: files, staging area, commits, branches, origin, stash) and `lessons.js` (8 lessons, one command and one caption per step). |
+| `src/ai/` | The AI & ML pages (`AIML` hub, `AILesson` player): `render.js` (scene to SVG, easing between steps) and `lessons.js` (13 lessons in two tracks; each step is one caption plus a scene of points, lines, nets, tokens, attention arcs or boxes and arrows; optional slider; sources for AI-now lessons). |
 | `shared/tests_spec.js` | Test specs for 104 problems (every catalog problem plus popular sheet problems): signatures in 5 languages, 3 examples, 5+ hidden cases, comparator, JS reference. The top of the file documents how linked lists, trees, graphs, in-place answers and design classes are written as JSON. |
 | `shared/code_pane.html` + `code_pane.js` | The self-contained code pane (`CodeRunner`): language tabs, timer, editor, Run/Submit, custom input, console. Any page can drop it in with the `<!-- CODE PANE -->` and `// @@CODE-PANE@@` markers. |
 | `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
-| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `site-test.js`. |
+| `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (9 HLD and 3 LLD lessons as data: nodes, links, steps). Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
+| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -79,15 +81,28 @@ For maps, floors and tables use `visual: 'grid'` (see `scenes_mx.js`, `scenes_df
 
 For decision trees and binary trees use `visual: 'tree'` (see `scenes_bt.js`, `scenes_dft.js`, `scenes_bft.js`). `tree` is a list of `{ id, label, parent, side }` (one root, up to about 16 nodes and depth 4; `side: 'L'` or `'R'` keeps a lone child on its own side). The engine lays it out top-down. Every step carries `nodes`, a map from id to a state name; a node missing from the map is hidden, so a tree can grow as it is explored. Optional per step: `edge` (id → `'path'` or `'out'`, for the line into that node), `actorAt` (a node id), `vals` (id → new label), `tags` (id → a short note drawn beside the node; set `tags: true` on the scene) and `tree` (a reshaped copy with the same ids, for moves such as swapping children). A scene can also bring its own `kit` (quiz) when the pattern's default quiz is about another problem. `scenecheck.js` fails on duplicate ids, missing parents, loops, or a step that names a node that does not exist.
 
+## Add an AI & ML lesson
+
+1. Add an entry to `AI_LESSONS` in `src/ai/lessons.js` with `make(p)` returning 8 to 15 steps of `{ say, focus, scene }`. Captions are one plain sentence or two, at most 140 characters, and never name a colour (colours change with the theme).
+2. AI-now lessons need `sources`: title, org, date and an http(s) link to the primary source. Explain in our own words.
+3. Run `npm run build && npm test`. `aicheck.js` fails on long captions, missing references, off-canvas items or bad links.
+
 ## Add a Git lesson
 
 1. Add an entry to `GIT_LESSONS` in `src/git/lessons.js`: a start (`empty`, `local` or `cloned`) and steps of `[command, caption]`. Keep captions to one idea in short, everyday sentences.
 2. If a command is new, teach it to `gitRun` in `src/git/sim.js`.
 3. Run `npm run build && npm test`. `gitcheck.js` fails if Git would refuse a step, if a commit saves something that was not staged, or if a caption runs long.
 
+## Add a system design lesson
+
+1. Add an entry to `SD_LESSONS` in `src/sd/lessons.js`: `nodes` (box centres on a 1080 × 440 canvas; kinds `client`, `lb`, `server`, `cache`, `db`, `queue`, `cdn`, `dns`, `worker`, `limiter`, `car`, or `class`/`iface` with `lines`), `links`, and 8 to 15 steps. Each step has a `cmd`, one `say` caption (140 characters at most) and one `focus`, plus any of `add`, `drop`, `mark`, `sub`, `go` (requests along links), `nums` and `math`.
+2. Put the arithmetic behind a number in `check` (`qps`, `gb`, `ms`, `cap`, `b62`) so the test recomputes it.
+3. HLD lessons adapted from the System Design Primer set `credit: 'sdp'`, which shows the CC BY 4.0 credit on the lesson. Write every word yourself.
+4. Run `npm run build && npm test`. `sdcheck.js` fails if a step names a missing or hidden node, a request skips a drawn link, boxes overlap, a caption runs long, or a number disagrees with its check.
+
 ## State
 
-Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, and `dsaviz-code-v1` (code per problem and language). The master sheet keeps ticks and stars in `dsaviz-sheet-v1` as `{ v: 1, done: { id: timestamp }, star: { id: 1 } }`, and can export or import that as a JSON file. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
+Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, `dsaviz-code-v1` (code per problem and language), and `dsaviz-sd-progress` / `dsaviz-sd-lesson` (furthest step per system design lesson, and the lesson to open). The master sheet keeps ticks and stars in `dsaviz-sheet-v1` as `{ v: 1, done: { id: timestamp }, star: { id: 1 } }`, and can export or import that as a JSON file. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
 
 ## Add a coding problem
 

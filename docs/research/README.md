@@ -47,6 +47,12 @@ What this folder is for: research for turning dsaviz into **DSAMaxxing**. Each s
 
 ## Feature parity checklist
 
+Owner decisions (2026-10-24):
+- No video lessons and no text-to-speech: visual stories only.
+- Prefer integrating free, permissively licensed open-source projects over building from scratch. The site will be monetized, so licences must allow commercial use.
+- Features that need a backend (leaderboard, accounts, cross-device sync) use demo data until a real backend is built after the rest is done.
+- Problem count matters to beginners, so grow the sheet to 500+ quality problems.
+
 Every feature seen on any researched site, who has it, and where DSAMaxxing stands. **Have** means we already do it; **Better** means we do it better than any rival seen; **Building** means an open PR does it; **Planned** means it's queued with a PR name. Every missing item has a plan.
 
 ### Learn: explanations and visuals
@@ -65,8 +71,8 @@ Every feature seen on any researched site, who has it, and where DSAMaxxing stan
 | Predict-the-next-step questions | Brilliant, VisuAlgo e-lecture quiz | **Have** (predict mode) | n/a |
 | Concept lessons before problems | algomaster, Educative, Scaler, hello-algo | **Partial** (Basics, Glossary) | `pattern-intros` |
 | "Use it when" card per pattern | Educative Grokking, NeetCode | **Planned** | `pattern-intros` |
-| Video lessons | NeetCode, AlgoExpert, CS50, takeUforward | **Not planned**: animated stories replace video | n/a |
-| Text-to-speech narration | algomaster (tts keyframes) | **Planned** (Web Speech API, local) | `narration` |
+| Video lessons | NeetCode, AlgoExpert, CS50, takeUforward | **Out of scope** (owner decision): visual stories only | n/a |
+| Text-to-speech narration | algomaster (tts keyframes) | **Out of scope** (owner decision) | n/a |
 
 ### Practise: problems and code
 
@@ -76,7 +82,7 @@ Every feature seen on any researched site, who has it, and where DSAMaxxing stan
 | Run and submit against hidden tests | LeetCode, NeetCode, CSES, InterviewBit | **Building**: JS and Python run in the browser; tests for 9 problems | #8, then `tests-all` |
 | Java/C++/Go execution | LeetCode, HackerRank | **Planned** (WASM toolchains or Judge0-style API later) | `runner-more-langs` |
 | Test specs for every animated problem | LeetCode | **Planned** | `tests-all` |
-| Master sheet with pattern groups and filters | algomaster, algosimplified, NeetCode, takeUforward, codolio | **Building**: 216 problems, our own curation | #6 |
+| Master sheet with pattern groups and filters | algomaster, algosimplified, NeetCode, takeUforward, codolio | **Building**: 216 problems now, growing to 500+ (our own curation) | #6, `sheet-500` |
 | Company tags and filter | algomaster, codolio, InterviewBit, LeetCode | **Have** (catalog), on the sheet | #6 |
 | Random unsolved pick | algomaster, algosimplified | **Building** | #6 |
 | Daily challenge or problem of the day | algosimplified, GfG, freeCodeCamp, LeetCode | **Building** ("Today's 5") | #6 |

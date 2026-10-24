@@ -161,7 +161,7 @@ const PATTERN_INTROS = {
     clues: ['next greater or smaller element', 'max or min of every window', 'remove digits or letters to get the smallest result'],
     template: ['dq = deque()', 'for i, x in enumerate(a):', '  while dq and a[dq[-1]] <= x: dq.pop()', '  dq.append(i)', '  if dq[0] <= i - k: dq.popleft()', '  if i >= k - 1: out.append(a[dq[0]])'],
     mistakes: ['Storing values instead of indexes, so you cannot tell when one leaves the window.', 'Using the wrong comparison and keeping items that should go.'],
-    stories: ['sliding-window-max'], sheet: ['final-prices-with-a-special-discount-in-a-shop', 'next-greater-element-ii', 'remove-k-digits'], run: ['sliding-window-max', 'daily-temperatures', 'largest-rectangle-in-histogram']
+    stories: ['sliding-window-max', 'largest-rectangle-in-histogram'], sheet: ['final-prices-with-a-special-discount-in-a-shop', 'next-greater-element-ii', 'remove-k-digits'], run: ['sliding-window-max', 'daily-temperatures', 'largest-rectangle-in-histogram']
   },
   'Trees': {
     companion: 'Old Hoot',
@@ -175,14 +175,14 @@ const PATTERN_INTROS = {
     clues: ['prerequisites or build order', 'connected groups, friends or provinces', 'cheapest flight or network delay'],
     template: ['adj = build(edges)', 'indeg = count_in(adj)', 'q = [v for v in nodes if indeg[v] == 0]', 'while q:', '  v = q.pop(); order.append(v)', '  for w in adj[v]:', '    indeg[w] -= 1', '    if indeg[w] == 0: q.append(w)'],
     mistakes: ['Assuming a tree: graphs can loop, so always track visited.', 'Building edges one way when the graph is undirected.'],
-    stories: ['course-schedule', 'clone-graph'], sheet: ['find-the-town-judge', 'find-center-of-star-graph', 'is-graph-bipartite'], run: ['course-schedule', 'course-schedule-ii', 'clone-graph']
+    stories: ['course-schedule', 'clone-graph', 'redundant-connection', 'network-delay-time'], sheet: ['find-the-town-judge', 'find-center-of-star-graph', 'is-graph-bipartite'], run: ['course-schedule', 'course-schedule-ii', 'clone-graph']
   },
   'Tries': {
     companion: 'Old Hoot',
     clues: ['"starts with" or autocomplete', 'a dictionary of words plus many queries', 'word search with a long word list'],
     template: ['root = {}', 'def insert(w):', '  node = root', '  for ch in w:', '    node = node.setdefault(ch, {})', '  node["$"] = True'],
     mistakes: ['Forgetting the end-of-word mark, so "app" matches when only "apple" was added.', 'Rebuilding the trie for every query.'],
-    stories: [], sheet: ['longest-common-prefix', 'implement-trie-prefix-tree', 'design-add-and-search-words-data-structure'], run: ['implement-trie-prefix-tree']
+    stories: ['implement-trie-prefix-tree'], sheet: ['longest-common-prefix', 'implement-trie-prefix-tree', 'design-add-and-search-words-data-structure'], run: ['implement-trie-prefix-tree']
   },
   'Sorting': {
     companion: 'Old Hoot',
@@ -196,7 +196,7 @@ const PATTERN_INTROS = {
     clues: ['"implement" or "design" a class', 'get and put in O(1)', 'recent calls, caches or counters'],
     template: ['class Cache:', '  def __init__(self, cap):', '    self.map = {}', '    self.order = linked_list()', '  def get(self, k):', '    move k to front; return value'],
     mistakes: ['Picking one structure when two together (map plus list) are needed for speed.', 'Forgetting to evict or update both structures together.'],
-    stories: [], sheet: ['design-parking-system', 'number-of-recent-calls', 'design-hashset'], run: ['lru-cache', 'min-stack']
+    stories: ['lru-cache'], sheet: ['design-parking-system', 'number-of-recent-calls', 'design-hashset'], run: ['lru-cache', 'min-stack']
   },
   'String Algorithms': {
     companion: 'Old Hoot',

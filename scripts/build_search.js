@@ -55,7 +55,9 @@ function build() {
   D.ai.AI_LESSONS.forEach((L) => add('ai', L.id, L.title, track[L.track] + ' · ' + L.tag));
   D.KEYWORDS.forEach((k) => add('term', k.id, k.id, k.gist, [k.cat]));
   D.SHEET.forEach((r) => add('sheet', r.id, r.name, r.pattern + ' · ' + r.diff, [String(r.n)]));
-  const patterns = new Set(animated.map((p) => p.pattern));
+  // only the 16 patterns count here; stories in sheet groups (Graphs, Tries) are extra
+  const names = new Set(D.PATTERNS.map((p) => p[0]));
+  const patterns = new Set(animated.map((p) => p.pattern).filter((x) => names.has(x)));
   const counts = {
     stories: animated.length, storyPatterns: patterns.size, patterns: D.PATTERNS.length, catalog: D.PROBLEMS.length,
     sheet: D.SHEET.length, runnable: Object.keys(D.TEST_SPECS).length,

@@ -94,7 +94,7 @@ const SHEET_DATA = {
     ["4sum-ii", 454, "4Sum II", "Medium", "Count every sum from the first two lists, then look up the negative of each sum from the last two.", null],
     ["valid-sudoku", 36, "Valid Sudoku", "Medium", "One set per row, per column and per 3x3 box. A repeat in any set fails the board.", null],
     ["insert-delete-getrandom-o1", 380, "Insert Delete GetRandom O(1)", "Medium", "An array for random picks plus a map from value to index. Delete by swapping with the last item.", null],
-    ["lru-cache", 146, "LRU Cache", "Medium", "A map for instant lookup plus a linked list kept in order of last use.", null],
+    ["lru-cache", 146, "LRU Cache", "Medium", "A map for instant lookup plus a linked list kept in order of last use.", "lru-cache"],
     ["first-missing-positive", 41, "First Missing Positive", "Hard", "Use the array itself as the map: put each value v at index v-1, then find the first gap.", null]
   ],
   "Prefix Sum": [
@@ -214,7 +214,7 @@ const SHEET_DATA = {
     ["online-stock-span", 901, "Online Stock Span", "Medium", "Each stack item keeps a price and its span. Lower prices fold into the new one.", null],
     ["asteroid-collision", 735, "Asteroid Collision", "Medium", "Only a left-mover hitting a right-mover on top can crash. Resolve crashes until it is safe.", null],
     ["car-fleet", 853, "Car Fleet", "Medium", "Sort by position. A car that would arrive no later than the car ahead joins its fleet.", null],
-    ["largest-rectangle-in-histogram", 84, "Largest Rectangle in Histogram", "Hard", "Keep bars in rising order. When a shorter bar comes, pop and measure each taller bar's widest box.", null],
+    ["largest-rectangle-in-histogram", 84, "Largest Rectangle in Histogram", "Hard", "Keep bars in rising order. When a shorter bar comes, pop and measure each taller bar's widest box.", "largest-rectangle-in-histogram"],
     ["longest-valid-parentheses", 32, "Longest Valid Parentheses", "Hard", "Stack indexes with a base marker. After each pop, the gap to the new top is a valid length.", null],
     ["basic-calculator", 224, "Basic Calculator", "Hard", "On an opening bracket, save the running result and sign. On a closing one, fold back in.", null]
   ],
@@ -433,7 +433,7 @@ const SHEET_DATA = {
     ["find-center-of-star-graph", 1791, "Find Center of Star Graph", "Easy", "The centre is in every edge, so it is whichever node the first two edges share.", null],
     ["is-graph-bipartite", 785, "Is Graph Bipartite?", "Medium", "Colour each part with two colours as you explore. A neighbour with your colour means no.", null],
     ["possible-bipartition", 886, "Possible Bipartition", "Medium", "Dislikes are edges. The question is whether the graph can take two colours.", null],
-    ["redundant-connection", 684, "Redundant Connection", "Medium", "Union-find: the first edge that joins two nodes already in one group is the extra one.", null],
+    ["redundant-connection", 684, "Redundant Connection", "Medium", "Union-find: the first edge that joins two nodes already in one group is the extra one.", "redundant-connection"],
     ["number-of-operations-to-make-network-connected", 1319, "Number of Operations to Make Network Connected", "Medium", "You need n-1 cables at least. Then the answer is the number of groups minus one.", null],
     ["satisfiability-of-equality-equations", 990, "Satisfiability of Equality Equations", "Medium", "Union all the equal pairs first, then check that no unequal pair shares a group.", null],
     ["accounts-merge", 721, "Accounts Merge", "Medium", "Union emails that appear in the same account, then gather each group under one name.", null],
@@ -441,7 +441,7 @@ const SHEET_DATA = {
     ["minimum-height-trees", 310, "Minimum Height Trees", "Medium", "Peel off leaves layer by layer. The last one or two nodes left are the centres.", null],
     ["find-all-possible-recipes-from-given-supplies", 2115, "Find All Possible Recipes from Given Supplies", "Medium", "Topological order: a recipe is ready once all its ingredients are ready.", null],
     ["course-schedule-iv", 1462, "Course Schedule IV", "Medium", "Walk courses in topological order and pass each course's full set of prerequisites forward.", null],
-    ["network-delay-time", 743, "Network Delay Time", "Medium", "Dijkstra from the source. The answer is the longest of the shortest times.", null],
+    ["network-delay-time", 743, "Network Delay Time", "Medium", "Dijkstra from the source. The answer is the longest of the shortest times.", "network-delay-time"],
     ["path-with-maximum-probability", 1514, "Path with Maximum Probability", "Medium", "Dijkstra with a max heap, multiplying probabilities instead of adding distances.", null],
     ["path-with-minimum-effort", 1631, "Path With Minimum Effort", "Medium", "Dijkstra where a path costs its biggest single step, not the sum.", null],
     ["number-of-ways-to-arrive-at-destination", 1976, "Number of Ways to Arrive at Destination", "Medium", "Dijkstra that also counts: equal distance adds ways, shorter distance resets them.", null],
@@ -456,7 +456,7 @@ const SHEET_DATA = {
   ],
   "Tries": [
     ["longest-common-prefix", 14, "Longest Common Prefix", "Easy", "Compare letter by letter across all words and stop at the first column that disagrees.", null],
-    ["implement-trie-prefix-tree", 208, "Implement Trie (Prefix Tree)", "Medium", "Each node holds child links by letter and an end-of-word flag.", null],
+    ["implement-trie-prefix-tree", 208, "Implement Trie (Prefix Tree)", "Medium", "Each node holds child links by letter and an end-of-word flag.", "implement-trie-prefix-tree"],
     ["design-add-and-search-words-data-structure", 211, "Design Add and Search Words Data Structure", "Medium", "A trie, where a dot tries every child at that depth.", null],
     ["replace-words", 648, "Replace Words", "Medium", "Put roots in a trie. For each word, walk the trie and stop at the first root ending.", null],
     ["map-sum-pairs", 677, "Map Sum Pairs", "Medium", "Each trie node stores the sum of values below it. Adjust by the difference on an update.", null],

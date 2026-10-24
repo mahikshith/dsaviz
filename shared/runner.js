@@ -529,8 +529,9 @@ function runPython(code, fn, cases, onCase, onEnd, io) {
 // printed as PROGRAM_IN + question + PROGRAM_SEP + answer, so the page can show it like a terminal and leave it
 // out when it compares output. The JS prelude stays one line and opens a try block, so error line numbers are
 // the learner's line + 1, as in function mode.
-const PROGRAM_IN = '\u0000in';
-const PROGRAM_SEP = '\u0001';
+// Private-use characters: Pyodide drops NUL from printed text, so the marker cannot start with \u0000.
+const PROGRAM_IN = '\uE000in';
+const PROGRAM_SEP = '\uE001';
 const PROGRAM_NO_INPUT = 'EOFError: the program asked for more input than it was given. Add another line in the Input box.';
 function jsProgramSource(code, stdin) {
   const prelude = 'var __logs = [], __in = ' + JSON.stringify((stdin || []).map(String)) + '; (function () { var fmt = function (a) { if (typeof a === "string") return a; if (a === undefined) return "undefined"; try { var s = JSON.stringify(a); return s === undefined ? String(a) : s; } catch (e) { return String(a); } }; var log = function () { if (__logs.length < 500) __logs.push(Array.prototype.map.call(arguments, fmt).join(" ")); }; console.log = console.info = console.warn = console.error = console.debug = log; ["fetch", "XMLHttpRequest", "WebSocket", "EventSource", "importScripts", "indexedDB", "caches"].forEach(function (k) { try { self[k] = undefined; } catch (e) {} }); self.prompt = function (q) { if (!__in.length) { var x = new Error(' + JSON.stringify(PROGRAM_NO_INPUT.replace(/^EOFError: /, '')) + '); x.name = "EOFError"; throw x; } var v = __in.shift(); __logs.push(' + JSON.stringify(PROGRAM_IN) + ' + (q == null ? "" : String(q)) + ' + JSON.stringify(PROGRAM_SEP) + ' + v); return v; }; })(); try {';

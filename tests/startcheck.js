@@ -52,9 +52,11 @@ function runPyAll(jobs) {
     '    res.append({"out": buf.getvalue(), "error": err})',
     'print(json.dumps(res))'
   ].join('\n');
-  const r = spawnSync(py, ['-c', script], { input: JSON.stringify(jobs.map((j) => ({ code: j.code, prelude: R.pyProgramPrelude(j.stdin || []) }))), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync(py, ['-c', script], { input: JSON.stringify(jobs.map((j) => ({ code: j.code, prelude: R.pyProgramPrelude(j.stdin || []) }))), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: Object.assign({}, process.env, { PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' }) });
   if (r.status !== 0) { fail('python', r.stderr.slice(0, 300)); return null; }
-  return JSON.parse(r.stdout).map((x) => ({ error: x.error, out: R.programOutput([x.out]) }));
+  // echo: the output with the answers typed into input() shown the way a terminal (and the tracer) shows them
+  return JSON.parse(r.stdout).map((x) => ({ error: x.error, out: R.programOutput([x.out]),
+    echo: R.programOutput([x.out.split(String.fromCharCode(10)).map((l) => (l.indexOf(R.PROGRAM_IN) === 0 ? l.slice(R.PROGRAM_IN.length).replace(R.PROGRAM_SEP, '') : l)).join(String.fromCharCode(10))]) }));
 }
 const pyJobs = []; // { code, stdin, check(result) }
 const traceJobs = []; // trace exercises, checked with the real tracer
@@ -116,18 +118,18 @@ S.START_CHAPTERS.filter((c) => c.ready).forEach((c) => {
   else if (!tr || !tr.steps || tr.steps.length < 2) fail(id, 'no trace: run python scripts/build_pages.py');
   else {
     tr.steps.forEach((s, i) => { const say = S.startTraceSay(tr.steps, i); if (!say || say.length > MAX) fail(id, 'trace caption ' + (i + 1) + ' is empty or too long: ' + say); });
-    if (tr.steps[tr.steps.length - 1].e !== 'end') fail(id, 'the watch program does not finish cleanly');
-    pyJobs.push({ code: c.watch.code, stdin: c.watch.stdin, check: (r) => { if (r.error || r.out !== R.programOutput([tr.steps[tr.steps.length - 1].o])) fail(id, 'trace output differs from a real run: rebuild'); } });
+    if (tr.steps[tr.steps.length - 1].e !== (c.watch.error ? 'error' : 'end')) fail(id, c.watch.error ? 'the watch program should stop with an error' : 'the watch program does not finish cleanly');
+    pyJobs.push({ code: c.watch.code, stdin: c.watch.stdin, check: (r) => { if (!!r.error !== !!c.watch.error || r.echo !== R.programOutput([tr.steps[tr.steps.length - 1].o])) fail(id, 'trace output differs from a real run: rebuild'); } });
   }
   // try it
   if (!c.tryit || !c.tryit.py || !c.tryit.js || !Array.isArray(c.tryit.goals) || c.tryit.goals.length < 2) fail(id, 'try it needs py, js and 2+ goals');
   else {
     const j = runJs(c.tryit.js, c.tryit.stdin);
-    if (j.error) fail(id, 'try it (js) fails: ' + j.error);
-    pyJobs.push({ code: c.tryit.py, stdin: c.tryit.stdin, check: (r) => { if (r.error) fail(id, 'try it (py) fails: ' + r.error); else if (r.out !== j.out && !c.tryit.differs) fail(id, 'try it prints differently in py and js'); } });
+    if (!!j.error !== !!c.tryit.errors) fail(id, c.tryit.errors ? 'try it (js) should show an error' : 'try it (js) fails: ' + j.error);
+    pyJobs.push({ code: c.tryit.py, stdin: c.tryit.stdin, check: (r) => { if (!!r.error !== !!c.tryit.errors) fail(id, c.tryit.errors ? 'try it (py) should show an error' : 'try it (py) fails: ' + r.error); else if (r.out !== j.out && !c.tryit.differs) fail(id, 'try it prints differently in py and js'); } });
   }
   // check
-  if (!c.check || !c.check.q || !Array.isArray(c.check.choices) || c.check.choices.filter((x) => x[1]).length !== 1) fail(id, 'check needs a question and exactly one right choice');
+  if (!c.check || !text(c.check.q, 'py') || !text(c.check.q, 'js') || !Array.isArray(c.check.choices) || c.check.choices.filter((x) => x[1]).length !== 1) fail(id, 'check needs a question and exactly one right choice');
   else c.check.choices.forEach(([t, , why]) => { if (!why || why.length > MAX * 1.5) fail(id, 'check feedback missing or long'); if (!text(t, 'py') || !text(t, 'js')) fail(id, 'check choice has no text'); });
   // exercises
   const exs = S.START_EXERCISES[id] || [];
@@ -142,7 +144,7 @@ function checkExercise(c, e) {
   if (!e.id || !e.id.startsWith(c.id + ':')) fail(id, 'exercise id must start with the lesson id');
   if (exIds.has(e.id)) fail(id, 'duplicate exercise id'); exIds.add(e.id);
   if (!e.title || !e.ask || e.ask.length > 2 * MAX) fail(id, 'needs a title and a short ask');
-  if (!Array.isArray(e.hints) || e.hints.length < 2 || e.hints.some((h) => !h || h.length > MAX)) fail(id, 'needs a ladder of 2+ short hints');
+  if (!Array.isArray(e.hints) || e.hints.length < 2 || e.hints.some((h) => ['py', 'js'].some((l) => !text(h, l) || text(h, l).length > MAX))) fail(id, 'needs a ladder of 2+ short hints');
   if (/\bleet\s*code\b/i.test(JSON.stringify(e))) fail(id, 'mentions LeetCode');
   const langs = ['py', 'js'];
   if (e.kind === 'predict') {

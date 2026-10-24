@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 9 animated stories, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 25 animated stories, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -32,7 +32,7 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `pages/*.dc.html` | One file per page: markup template, then a `<script type="text/x-dc">` with a `Component` class whose `renderVals()` fills the `{{holes}}`. |
 | `pages/canvas.json` | Board positions for the design-canvas view. |
 | `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the 58-problem catalog (`catalog.js`), the menu drawer. |
-| `src/story/` | The story engine: `scenes_tp.js` (Two Pointers), `scenes_sw.js` (Sliding Window), `scenes_hm.js` (Hash Map), `tail.js` (scene registry and quiz kits), `comp.js` (the player), `story_body.html` (its markup). |
+| `src/story/` | The story engine: `scenes_tp.js` (Two Pointers), `scenes_sw.js` (Sliding Window), `scenes_hm.js` (Hash Map), `scenes_st.js` (Stack), `scenes_gr.js` (Greedy), `scenes_iv.js` (Intervals), `tail.js` (scene registry and quiz kits), `comp.js` (the player), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). |
@@ -74,7 +74,7 @@ Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from 
 
 ## Known gaps
 
-- 9 of 58 stories are animated (Two Pointers, Sliding Window, Hash Map). The rest have story, synopsis and briefing.
+- 14 of 58 stories are animated (Two Pointers, Sliding Window, Hash Map, Stack, Greedy, Intervals). The rest have story, synopsis and briefing.
 - Language basics: only chapter 03 is written.
 - Pages are laid out at 1440px and scaled down on small screens; there is no dedicated mobile layout.
 - Success stories on the landing page are labelled illustrative. Replace them with real, consented stories before launch.

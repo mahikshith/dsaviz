@@ -251,6 +251,36 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   if (late.length) fail(c.id, 'first problem ' + pid + ' needs ' + late.join(', ') + ', taught later');
 }));
 
+// ---------- DS wiring: progress, streak, XP, medals, revisit cards, the ring ----------
+{
+  const built = JSON.parse(spawnSync('node', [path.join(root, 'scripts', 'build_start.js')], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).stdout);
+  const store = {};
+  const window = { localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } } };
+  const src = read('shared', 'data.js').replace('/*@@START-MEDALS@@*/[]', JSON.stringify(built.medals));
+  const DS = new Function('window', src + '\nreturn DS;')(window);
+  DS.setClock(() => new Date(2026, 9, 21, 20, 0, 0).getTime());
+  const ok = (cond, msg) => { if (!cond) fail('DS', msg); };
+  const first = S.START_CHAPTERS[0], ex = S.START_EXERCISES[first.id];
+  ok(DS.startMedals().length === 5 && DS.startMedals().every((m) => !m.tier && m.next.tier === 'bronze'), 'five beginner medals, none earned yet');
+  ok(DS.startRing() === null, 'no Start here ring before the learner starts');
+  ok(DS.profile().isNew, 'a new learner is new');
+  DS.startPass(ex[0].id);
+  ok(DS.streak().activeToday && DS.xp().total === DS.XP.start, 'a passed exercise counts for the streak and XP');
+  DS.startPass(ex[0].id);
+  ok(DS.xp().total === DS.XP.start, 'passing the same exercise twice gives XP once');
+  ok(!DS.profile().isNew, 'a learner with a passed exercise is not new');
+  DS.startFinish(first.id);
+  ok(DS.lessons().ids.includes('start:' + first.id), 'a finished lesson is logged as start:<id>');
+  ok(DS.startMedals()[0].tier === 'bronze', 'one finished lesson earns the chapter bronze');
+  ok(DS.medals([], []).some((m) => m.start), 'DS.medals includes the beginner set');
+  ok(DS.reviewCards().some((c) => c.kind === 'start' && c.id === 'start:' + first.id), 'a finished lesson becomes a revisit card');
+  const ring = DS.startRing();
+  ok(ring && ring.done === 1 && ring.total === built.medals.reduce((n, g) => n + g.lessons.length, 0), 'the ring counts Level 1 lessons');
+  DS.startPlace([S.START_CHAPTERS[1].id]);
+  ok(DS.startRing().done === 2, 'placement-known lessons fill the ring');
+  ok(S.startProgress(DS.start()).rows[1].known, 'placement marks a lesson known');
+}
+
 // ---------- error help and pages ----------
 [['NameError: name \'pront\' is not defined (line 1)', /pront/], ['SyntaxError: unterminated string literal (detected at line 1) (line 1)', /quote/], ['TypeError: can only concatenate str (not "int") to str', /str\(\)/], ['ZeroDivisionError: division by zero', /zero/], ['Timeout', /never finished/], ['IndentationError: expected an indented block', /indent/i]]
   .forEach(([m, re]) => { if (!re.test(S.startHelp(m, 'py'))) fail('help', 'no plain help for ' + m); });

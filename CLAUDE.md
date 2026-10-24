@@ -4,9 +4,9 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 
 ## Workflow
 
-- Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@SHEET-RUN@@` (spec ids for the Sheet's Run badge), `@@RUNNER@@`, `@@CODE-PANE@@`, `@@GITSIM@@` (from `src/git/`), `@@SDLESSONS@@` (from `src/sd/`), `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
+- Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@MOCK-HINTS@@` (sheet hints for the mock interview), `@@SHEET-RUN@@` (spec ids for the Sheet's Run badge), `@@RUNNER@@`, `@@CODE-PANE@@`, `@@GITSIM@@` (from `src/git/`), `@@SDLESSONS@@` (from `src/sd/`), `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
 - Other page markup and page-specific scripts are edited directly in `pages/*.dc.html`.
-- After any change: `npm run build && npm test`. The tests must print "all clear", "data clean", "all scenes clean" and "all specs pass", "sheet clean", "all git steps consistent", "all system design lessons consistent", "all ai lessons valid", "search clean" and "copy clean".
+- After any change: `npm run build && npm test`. The tests must print "all clear", "data clean", "mock interview clean", "all scenes clean" and "all specs pass", "sheet clean", "all git steps consistent", "all system design lessons consistent", "all ai lessons valid", "search clean" and "copy clean".
 - `dist/index.html` is generated and committed so the site opens without a build. Rebuild it before committing.
 
 ## Conventions

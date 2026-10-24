@@ -351,9 +351,9 @@ function streakDays(t) {
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1' };
-  const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5 };
-  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1' };
+  const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5, mock: 20 };
+  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock]];
   const LEVEL_XP = 500;
   const SHEET_SIZE = 553; // rows in the master sheet; the build fills in the count from shared/sheet.js
   const DAY = 86400000;
@@ -394,13 +394,13 @@ const DS = (function () {
     }
     return { done, star };
   }
-  // kind: 'story' | 'code' | 'lesson' | 'revisit'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
+  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
   function logActivity(kind, id) {
     if (!XP[kind] || kind === 'sheet') return null;
     const ts = now();
     const log = JSON.parse(JSON.stringify(readLog()));
     const k = dayKey(ts);
-    const day = log.days[k] = Object.assign({ story: 0, code: 0, lesson: 0, revisit: 0, xp: 0 }, log.days[k]);
+    const day = log.days[k] = Object.assign({ story: 0, code: 0, lesson: 0, revisit: 0, mock: 0, xp: 0 }, log.days[k]);
     day[kind] = (day[kind] || 0) + 1;
     let first = true;
     if (kind === 'story' || kind === 'code' || kind === 'lesson') {
@@ -417,14 +417,14 @@ const DS = (function () {
   function days() {
     const log = readLog(), sheet = readSheet();
     const out = {};
-    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, lesson: 0, sheet: 0, revisit: 0, xp: 0, total: 0 });
+    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, lesson: 0, sheet: 0, revisit: 0, mock: 0, xp: 0, total: 0 });
     Object.keys(log.days).forEach((k) => {
       const d = log.days[k] || {}, o = at(k);
-      ['story', 'code', 'lesson', 'revisit'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
+      ['story', 'code', 'lesson', 'revisit', 'mock'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
       o.xp += Math.max(0, Number(d.xp) || 0);
     });
     Object.keys(sheet.done).forEach((id) => { const o = at(dayKey(sheet.done[id])); o.sheet++; o.xp += XP.sheet; });
-    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.lesson + o.sheet + o.revisit; if (!o.total) delete out[k]; });
+    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.lesson + o.sheet + o.revisit + o.mock; if (!o.total) delete out[k]; });
     return out;
   }
 
@@ -471,7 +471,7 @@ const DS = (function () {
       const n = d ? d.total : 0;
       const future = ts > today;
       if (!future) { total += n; if (n) active++; }
-      cells.push({ date: k, ts, n, story: d ? d.story : 0, sheet: d ? d.sheet : 0, code: d ? d.code : 0, lesson: d ? d.lesson : 0, revisit: d ? d.revisit : 0,
+      cells.push({ date: k, ts, n, story: d ? d.story : 0, sheet: d ? d.sheet : 0, code: d ? d.code : 0, lesson: d ? d.lesson : 0, revisit: d ? d.revisit : 0, mock: d ? d.mock : 0,
         level: n === 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 6 ? 3 : 4, future, today: ts === today });
     }
     return { weeks, cells, total, activeDays: active, todayIndex: cells.findIndex((c) => c.today) };
@@ -773,11 +773,146 @@ const DS = (function () {
     return { streak: next.streak, best: next.best, right: next.right, total: next.total };
   }
 
+  // -- mock interviews: dsaviz-mock-v1 = { v: 1, live: session | null, history: [result] }.
+  // A session: { id, startedAt, mins, extra, mix, pattern, lang, problems: [{ id, title, diff, pattern, hints, best, total, submitted, runs }], notes, endedAt }.
+  // The clock is the start time plus mins (and any extra minutes), so a reload carries on where it was. endedAt set = waiting for the self-score.
+  // A saved result: { id, at, mins, used, hints, passed, total, problems, scores: { area: 1-4 }, score, band }.
+  const MOCK_LENGTHS = { 30: 1, 45: 2, 60: 2 };             // minutes -> how many problems
+  const MOCK_MIX = { easy: ['Easy', 'Easy'], standard: ['Easy', 'Medium'], hard: ['Medium', 'Hard'] };
+  // Six areas, weighted to 100 (the split follows common interview rubrics; the words are ours).
+  const MOCK_AREAS = [['understanding', 10], ['approach', 25], ['code', 20], ['correctness', 20], ['complexity', 15], ['communication', 10]];
+  const MOCK_HINT_COST = 3;                                  // points off the final score per hint
+  const MOCK_BANDS = [[70, 'pass', 'Pass'], [50, 'borderline', 'Borderline'], [0, 'nohire', 'No hire']];
+  const MOCK_HISTORY_MAX = 100;
+  const MOCK_NOTES_MAX = 4000;
+  function readMock() {
+    const o = json(KEY.mock, null);
+    const out = { v: 1, live: null, history: [] };
+    if (!o || o.v !== 1) return out;
+    if (o.live && typeof o.live === 'object' && Array.isArray(o.live.problems) && o.live.problems.length && isFinite(o.live.startedAt) && MOCK_LENGTHS[o.live.mins]) out.live = o.live;
+    if (Array.isArray(o.history)) out.history = o.history.filter((h) => h && isFinite(h.at) && isFinite(h.score) && h.scores && typeof h.scores === 'object');
+    return out;
+  }
+  function writeMock(m) { set(KEY.mock, JSON.stringify(m)); }
+  const easyish = (d) => (d === 'Starter' ? 'Easy' : d);
+  // Pick problems for a session. cands: [{ id, diff, pattern, title }] (every runnable problem). Unsolved ones first,
+  // matching the mix (and the pattern when one is chosen). Falls back to any difficulty, then to solved ones, so a
+  // session can always start. rand is injectable for tests.
+  function mockPick(cands, cfg, rand) {
+    rand = rand || Math.random;
+    const n = MOCK_LENGTHS[cfg && cfg.mins] || 2;
+    const mix = MOCK_MIX[cfg && cfg.mix] || MOCK_MIX.standard;
+    const want = n === 1 ? [mix[1]] : mix.slice(0, n);
+    const log = readLog();
+    const solved = (id) => id in log.code || id in log.stories;
+    let pool = (cands || []).filter((c) => c && c.id);
+    if (cfg && cfg.pattern) { const p = pool.filter((c) => c.pattern === cfg.pattern); if (p.length) pool = p; }
+    const fresh = pool.filter((c) => !solved(c.id));
+    const out = [];
+    want.forEach((d) => {
+      const tries = [fresh.filter((c) => easyish(c.diff) === d), fresh, pool.filter((c) => easyish(c.diff) === d), pool];
+      for (const list of tries) {
+        const left = list.filter((c) => !out.some((o) => o.id === c.id));
+        if (left.length) { out.push(left[Math.floor(rand() * left.length) % left.length]); return; }
+      }
+    });
+    return out;
+  }
+  function mockStart(cfg, picks) {
+    if (!picks || !picks.length) return null;
+    const mins = MOCK_LENGTHS[cfg && cfg.mins] ? Number(cfg.mins) : 45;
+    const live = { id: 'm' + now(), startedAt: now(), mins, extra: 0, mix: (cfg && cfg.mix) || 'standard', pattern: (cfg && cfg.pattern) || '', lang: (cfg && cfg.lang) || 'py',
+      problems: picks.map((p) => ({ id: p.id, title: p.title || p.id, diff: easyish(p.diff) || '', pattern: p.pattern || '', hints: 0, best: 0, total: Math.max(0, Number(p.total) || 0), submitted: false, runs: 0 })),
+      notes: '', endedAt: null };
+    const m = readMock(); m.live = live; writeMock(m);
+    return mockSession();
+  }
+  // The live session with its clock worked out: limit, used and left (seconds), over (time ran out), ended, allSubmitted.
+  function mockSession() {
+    const live = readMock().live;
+    if (!live) return null;
+    const limit = (live.mins + (live.extra || 0)) * 60;
+    const end = live.endedAt || now();
+    const used = Math.max(0, Math.min(limit, Math.floor((end - live.startedAt) / 1000)));
+    return Object.assign({}, live, { limit, used, left: limit - used, over: used >= limit, ended: !!live.endedAt,
+      allSubmitted: live.problems.every((p) => p.submitted) });
+  }
+  function mockEdit(fn) { const m = readMock(); if (!m.live || m.live.endedAt) return null; fn(m.live); writeMock(m); return mockSession(); }
+  // A Run or Submit finished. Submit results count towards "tests passed"; the best one is kept.
+  function mockRecord(pid, mode, passed, total) {
+    return mockEdit((live) => {
+      const p = live.problems.find((x) => x.id === pid);
+      if (!p) return;
+      if (mode === 'submit') { p.submitted = true; p.total = Math.max(0, Number(total) || 0); p.best = Math.max(p.best || 0, Math.min(p.total, Math.max(0, Number(passed) || 0))); }
+      else p.runs = (p.runs || 0) + 1;
+    });
+  }
+  function mockHint(pid) { return mockEdit((live) => { const p = live.problems.find((x) => x.id === pid); if (p) p.hints = Math.min(9, (p.hints || 0) + 1); }); }
+  function mockNotes(text) { return mockEdit((live) => { live.notes = typeof text === 'string' ? text.slice(0, MOCK_NOTES_MAX) : ''; }); }
+  // More time, up to 30 extra minutes in all (a time limit must be adjustable).
+  function mockExtend(minutes) { return mockEdit((live) => { live.extra = Math.min(30, (live.extra || 0) + Math.max(0, Number(minutes) || 0)); }); }
+  // Stop the clock. The session then waits for the self-score.
+  function mockEnd() {
+    const m = readMock();
+    if (!m.live) return null;
+    if (!m.live.endedAt) {
+      const limit = (m.live.mins + (m.live.extra || 0)) * 60 * 1000;
+      m.live.endedAt = Math.min(now(), m.live.startedAt + limit);
+      writeMock(m);
+    }
+    return mockSession();
+  }
+  function mockAbandon() { const m = readMock(); m.live = null; writeMock(m); }
+  // Rubric math. scores: { area: 1-4 }. Each area gives (score - 1) / 3 of its weight; each hint takes MOCK_HINT_COST off.
+  // Returns { raw, penalty, score (0-100), band, label, complete }.
+  function mockScore(scores, hints) {
+    let raw = 0, complete = true;
+    MOCK_AREAS.forEach(([k, w]) => {
+      const v = Number(scores && scores[k]);
+      if (!(v >= 1 && v <= 4 && v === Math.round(v))) { complete = false; return; }
+      raw += ((v - 1) / 3) * w;
+    });
+    raw = Math.round(raw);
+    const penalty = Math.max(0, Math.floor(Number(hints) || 0)) * MOCK_HINT_COST;
+    const score = Math.max(0, raw - penalty);
+    const b = MOCK_BANDS.find(([min]) => score >= min);
+    return { raw, penalty, score, band: b[1], label: b[2], complete };
+  }
+  // Save the ended session and its self-score to history, log the activity for the streak, clear the live session.
+  function mockSave(scores) {
+    const live = mockSession();
+    if (!live || !live.ended) return null;
+    const hints = live.problems.reduce((a, p) => a + (p.hints || 0), 0);
+    const sc = mockScore(scores, hints);
+    if (!sc.complete) return null;
+    const clean = {};
+    MOCK_AREAS.forEach(([k]) => { clean[k] = Number(scores[k]); });
+    const res = { id: live.id, at: now(), mins: live.mins + (live.extra || 0), used: live.used, hints,
+      passed: live.problems.reduce((a, p) => a + (p.best || 0), 0), total: live.problems.reduce((a, p) => a + (p.total || 0), 0),
+      problems: live.problems.map((p) => ({ id: p.id, title: p.title, diff: p.diff, pattern: p.pattern, best: p.best || 0, total: p.total || 0, submitted: !!p.submitted, hints: p.hints || 0 })),
+      scores: clean, score: sc.score, band: sc.band };
+    const m = readMock();
+    m.history = m.history.filter((h) => h.id !== res.id).concat([res]).slice(-MOCK_HISTORY_MAX);
+    m.live = null;
+    writeMock(m);
+    logActivity('mock', res.id);
+    return res;
+  }
+  // History, oldest first, plus the trend: the last n scores (default 10), the best, the average and the change since the one before.
+  function mockHistory(n) {
+    const list = readMock().history.slice().sort((a, b) => a.at - b.at);
+    const scores = list.map((h) => h.score);
+    return { list, count: list.length, trend: list.slice(-(n || 10)).map((h) => ({ at: h.at, day: dayKey(h.at), score: h.score, band: h.band })),
+      best: scores.length ? Math.max.apply(null, scores) : null,
+      avg: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null,
+      change: scores.length > 1 ? scores[scores.length - 1] - scores[scores.length - 2] : null };
+  }
+
   // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
@@ -786,6 +921,7 @@ const DS = (function () {
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
     predict, logPredict,
+    MOCK_LENGTHS, MOCK_MIX, MOCK_AREAS, MOCK_HINT_COST, MOCK_BANDS, mockPick, mockStart, mockSession, mockRecord, mockHint, mockNotes, mockExtend, mockEnd, mockAbandon, mockScore, mockSave, mockHistory,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,
     setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }

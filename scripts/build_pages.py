@@ -20,6 +20,7 @@ across pages and live in one place; this script copies them back into every page
   The six script blocks are added after the catalog (or the themes) when a page lacks them.
   shared/pattern_intros.js  -> between // @@INTROS@@ ... // @@END-INTROS@@ (Patterns page), plus SHEET_INDEX built from sheet.js
   shared/tests_spec.js      -> between // @@TESTS-SPEC@@ ... // @@END-TESTS-SPEC@@
+  shared/sheet.js hints     -> between // @@MOCK-HINTS@@ ... // @@END-MOCK-HINTS@@ (Interview: the sheet's one-line hint per runnable problem)
   shared/runner.js          -> between // @@RUNNER@@ ... // @@END-RUNNER@@
   shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
   shared/code_pane.html     -> between <!-- CODE PANE --> ... <!-- /CODE PANE --> (after page bodies)
@@ -122,6 +123,24 @@ def sheet_index(sheet):
     return out
 
 
+def mock_hints(sheet, spec_ids):
+    """Spec id -> the sheet's one-line hint, matched by LeetCode slug or by the row's story id."""
+    by_slug, by_story = {}, {}
+    for line in sheet.splitlines():
+        line = line.strip().rstrip(',')
+        if not line.startswith('["'):
+            continue
+        try:
+            row = json.loads(line.replace('{ premium: true }', '{"premium": true}'))
+        except ValueError:
+            continue
+        if len(row) >= 6 and isinstance(row[4], str):
+            by_slug.setdefault(row[0], row[4])
+            if row[5]:
+                by_story.setdefault(row[5], row[4])
+    return {i: by_slug.get(i) or by_story.get(i) for i in spec_ids if by_slug.get(i) or by_story.get(i)}
+
+
 def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
@@ -158,6 +177,8 @@ def main():
     spec_ids = re.findall(r"^  '?([a-z0-9-]+)'?: \{\s*$", spec_block, re.M)
     sheet_run = ('// @@SHEET-RUN@@ — generated from shared/tests_spec.js: problems the Code page can run\n'
                  'const SHEET_RUN = new Set(%s);\n// @@END-SHEET-RUN@@' % repr(spec_ids).replace("'", '"'))
+    hints = ('// @@MOCK-HINTS@@ — generated from shared/sheet.js: the sheet hint for each runnable problem (the last mock interview hint)\n'
+             'const MOCK_HINTS = ' + json.dumps(mock_hints(sheet, spec_ids), ensure_ascii=False, separators=(',', ':')) + ';\n// @@END-MOCK-HINTS@@')
     runner = read('shared', 'runner.js')
     pane_js = read('shared', 'code_pane.js')
     pane_html = read('shared', 'code_pane.html')
@@ -199,6 +220,7 @@ def main():
         s = block(s, '// @@INTROS@@', '// @@END-INTROS@@', intros)
         s = block(s, '// @@TESTS-SPEC@@', '// @@END-TESTS-SPEC@@', tests_spec)
         s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
+        s = block(s, '// @@MOCK-HINTS@@', '// @@END-MOCK-HINTS@@', hints)
         s = block(s, '// @@CODE-PANE@@', '// @@END-CODE-PANE@@', pane_js)
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
         s = block(s, '// @@SDLESSONS@@', '// @@END-SDLESSONS@@', sd_lessons)

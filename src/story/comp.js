@@ -19,13 +19,21 @@ function tagLines(code) {
 const MOVE = 'transform 420ms cubic-bezier(.45,.05,.2,1)';   // on-screen moves: actors, the window frame, the line marker
 const SETTLE = 'transform 320ms cubic-bezier(.2,.8,.2,1), opacity 320ms cubic-bezier(.2,.8,.2,1)'; // tiles lift, dim and land
 const CODE_LINE = 24;
+// The story's key rule for Revisit: Old Hoot's answer to the right quiz pick, without the speaker and the "Yes!".
+function storyKeyRule(id) {
+  const S = SCENES[id];
+  if (!S || !S.quizFb) return '';
+  const kit = Object.assign({}, KIT[S.pattern], S.kit || {});
+  const fb = S.quizFb[kit.right] || '';
+  return fb.replace(/^[^:“"]*:\s*/, '').replace(/^[“"]|[”"]$/g, '').replace(/^(Yes|Right|Exactly)[!.,]?\s*(—\s*)?/i, '').trim();
+}
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
     const scene = sceneIdFor(loadProblem());
     this.state = { theme: loadTheme(), scene, step: 0, playing: false, played: false, tab: 'solution', codeOpened: false,
-      hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null };
+      hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null, notesOpen: false, note: DS.note(scene), noteSaved: false };
     this.runner = new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true });
   }
   componentDidMount() {
@@ -38,7 +46,7 @@ class Component extends DCLogic {
     const n = this.steps().length;
     const step = Math.max(0, Math.min(n - 1, i));
     this.setState({ step });
-    if (step === n - 1) { this.stop(); DS.finishStory(this.state.scene); }
+    if (step === n - 1) { this.stop(); DS.finishStory(this.state.scene); DS.addCard(this.state.scene, { rule: storyKeyRule(this.state.scene) }); }
   }
   stop() { clearTimeout(this.timer); this.timer = null; if (this.state.playing) this.setState({ playing: false }); }
   // Autoplay: each beat holds long enough to read its caption (1.8 to 2.2 s), then moves on. It never loops.
@@ -74,15 +82,17 @@ class Component extends DCLogic {
     this.stop();
     saveProblem(id);
     this.runner.setProblem(id);
-    this.setState({ scene: id, step: 0, played: false, hints: 0, pick: null, rated: null });
+    this.setState({ scene: id, step: 0, played: false, hints: 0, pick: null, rated: null, note: DS.note(id), noteSaved: false });
   }
   openCode() { this.stop(); this.setState({ tab: 'code', codeOpened: true }); }
-  rate(label, days) {
-    const deck = loadDeck();
-    deck[this.state.scene] = { due: days, rated: label };
-    storeDeck(deck);
-    if (!this.state.rated) DS.rateCard(this.state.scene);
-    this.setState({ rated: label });
+  // Rating a finished story schedules its Revisit card (DS.review). Changing your mind re-rates it from the same starting point.
+  rate(grade) {
+    DS.review(this.state.scene, grade, { redo: !!this.state.rated });
+    this.setState({ rated: grade });
+  }
+  setNote(text) {
+    DS.setNote(this.state.scene, text);
+    this.setState({ note: text, noteSaved: true });
   }
 
   cellLook(state, t) {
@@ -396,7 +406,7 @@ class Component extends DCLogic {
     const activeLine = lines[st.kind] || 0;
     const more = PROBLEMS.filter((p) => p.pattern === S.pattern && p.id !== S.id).sort((a, b) => (!!SCENES[b.id] - !!SCENES[a.id]) || a.added - b.added).slice(0, 4);
     const quizRight = this.state.pick === kit.right;
-    const RATES = [['Again', 'tomorrow', 1], ['Hard', 'in 3 days', 3], ['Good', 'in a week', 7], ['Easy', 'in 3 weeks', 21]];
+    const ratePreview = DS.reviewPreview(S.id, { redo: !!this.state.rated });
     const pct = Math.max(0, Math.min(100, st.meter.pct));
     // One primary action at a time: Play until the story has been watched, then "Write it yourself", then Run (in the code pane).
     const tryPrimary = !onCode && atEnd && this.state.played;
@@ -461,11 +471,17 @@ class Component extends DCLogic {
       // more stories like this (the old side quests)
       hasMore: more.length > 0,
       moreStories: more.map((p) => ({ story: p.story, title: p.title, animated: !!SCENES[p.id], notAnimated: !SCENES[p.id], play: () => this.switchScene(p.id), go: () => saveProblem(p.id) })),
-      rates: RATES.map(([label, when, days]) => {
-        const on = this.state.rated === label;
-        return { label, when, on, bg: on ? t.text : 'transparent', fg: on ? t.bg : t.text, border: on ? t.text : t.line2, pick: () => this.rate(label, days) };
+      rates: ratePreview.map(({ grade, label, when }) => {
+        const on = this.state.rated === grade;
+        return { label, when, on, bg: on ? t.text : 'transparent', fg: on ? t.bg : t.text, border: on ? t.text : t.line2, pick: () => this.rate(grade) };
       }),
-      ratedMsg: this.state.rated ? 'Added to Revisit. It comes back ' + RATES.find(([l]) => l === this.state.rated)[1] + '.' : 'When should this one come back for review?',
+      ratedMsg: this.state.rated ? 'In your Revisit queue. It comes back ' + ratePreview[this.state.rated - 1].when + '.' : 'How well do you know it now? Revisit brings it back at the right time.',
+      // my notes (folded by default)
+      notesOpen: this.state.notesOpen, notesX: this.state.notesOpen ? 'true' : 'false', toggleNotes: () => this.setState({ notesOpen: !this.state.notesOpen }),
+      noteText: this.state.note,
+      noteSummary: this.state.note.trim() ? 'saved in this browser' : 'empty',
+      noteStatus: this.state.noteSaved ? (this.state.note.trim() ? 'Saved' : 'Note cleared') : 'Only you see this. It is included in the sheet backup file.',
+      onNote: (e) => this.setNote(e && e.target ? e.target.value : ''),
       // right pane
       tabs: [['solution', 'Solution'], ['code', 'Your code']].map(([k, label]) => {
         const on = this.state.tab === k;

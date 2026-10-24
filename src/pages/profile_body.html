@@ -1,4 +1,4 @@
-<div style="width: 1440px; height: 2040px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div style="width: 1440px; height: {{pageH}}px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <!-- /PILL NAV -->
 
@@ -16,7 +16,7 @@
 </div>
 <div style="display: flex; gap: 12px; align-items: center; margin-top: 4px">
 <a href="Welcome.dc.html" style="height: 44px; padding: 0 20px; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">{{me.cta}}</a>
-<button onClick="{{shareProfile}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{shareLabel}}</button>
+<button id="pf-share-btn" onClick="{{shareProfile}}" aria-expanded="{{shareOpen}}" aria-controls="pf-share" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>Share my progress</button>
 </div>
 </div>
 </div>
@@ -26,6 +26,22 @@
 <!-- /RINGS -->
 </div>
 </section>
+
+<sc-if value="{{shareOpen}}" hint-placeholder-val="{{ false }}">
+<section id="pf-share" tabindex="-1" aria-label="Share my progress" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.accent}}; display: grid; grid-template-columns: 600px minmax(0, 1fr); gap: 24px; align-items: center; outline: none; animation: rise 0.3s cubic-bezier(.2,.8,.2,1)">
+<img src="{{shareUrl}}" alt="{{shareAlt}}" width="600" height="315" style="display: block; width: 600px; height: 315px; border-radius: 12px; border: 1px solid {{t.line}}">
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Your progress card</h2>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">A 1200 by 630 image, made in this browser. It shows your streak, stories, sheet count and top patterns, and your name only if you typed one.</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button onClick="{{downloadShare}}" style="height: 44px; padding: 0 20px; border-radius: 22px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 800">Download PNG</button>
+<sc-if value="{{canCopy}}" hint-placeholder-val="{{ true }}"><button onClick="{{copyShare}}" style="height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Copy image</button></sc-if>
+<button onClick="{{closeShare}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">Close</button>
+</div>
+<span role="status" style="font-size: 13px; color: {{t.muted}}">{{shareMsg}}</span>
+</div>
+</section>
+</sc-if>
 
 <!-- STAT TILES -->
 <!-- /STAT TILES -->

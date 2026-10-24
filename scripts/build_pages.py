@@ -13,6 +13,7 @@ across pages and live in one place; this script copies them back into every page
   shared/nav.js             -> between // @@NAV@@ ... // @@END-NAV@@ (every page; NAV_PAGES filled from pages/)
   shared/ui/nav.html + shared/drawer.html -> between <!-- PILL NAV --> ... <!-- /PILL NAV -->
   shared/ui/tiles.html, rings.html, medals.html -> <!-- STAT TILES -->, <!-- RINGS -->, <!-- MEDALS --> blocks
+  shared/ui/phone.html      -> <!-- PHONE CSS --> in the helmet of every page with a phone layout (data-page root)
   The four script blocks are added after the catalog (or the themes) when a page lacks them.
   shared/tests_spec.js      -> between // @@TESTS-SPEC@@ ... // @@END-TESTS-SPEC@@
   shared/runner.js          -> between // @@RUNNER@@ ... // @@END-RUNNER@@
@@ -62,6 +63,43 @@ def ensure_blocks(s):
     return s
 
 
+def phone_pads(files):
+    """Phone rules for the big paddings the 1440px boards use (shared/ui/phone.html, /*@@PADS@@*/).
+    Matches each padding as the browser serializes it: wide side padding drops to the 16px gutter,
+    tall section padding to 40px, and 22 to 32px card padding to 16px."""
+    seen = set()
+    for s in files:
+        for m in re.finditer(r'padding: ([0-9px ]+)[;"]', s):
+            seen.add(m.group(1).strip())
+    rules = {}
+    for v in sorted(seen):
+        px = [int(x[:-2]) if x.endswith('px') else int(x) for x in v.split()]
+        t, r, b, l = (px * 4)[:4] if len(px) == 1 else (px[0], px[1], px[0], px[1]) if len(px) == 2 else (px[0], px[1], px[2], px[1]) if len(px) == 3 else px
+        out = []
+        if r >= 36 and l >= 36:
+            out.append('padding-left:16px!important;padding-right:16px!important')
+        elif 22 <= r <= 32 and 22 <= l <= 32 and 16 <= t <= 32 and 16 <= b <= 32:
+            out.append('padding:16px!important')
+        if max(t, b) >= 48:
+            out.append('padding-top:%dpx!important;padding-bottom:%dpx!important' % (min(t, 40), min(b, 40)))
+        if out:
+            key = ';'.join(out)
+            # The browser writes the shortest form: 'padding: 80px 80px' comes back as 'padding: 80px'.
+            short = [t] if t == r == b == l else [t, r] if t == b and r == l else [t, r, b] if r == l else [t, r, b, l]
+            css = 'padding: ' + ' '.join('%dpx' % x for x in short) + ';'
+            sel = '[data-page] [style*="%s"]' % css
+            if sel not in rules.setdefault(key, []):
+                rules[key].append(sel)
+    # Wide board gaps (40px and up) close to 24px.
+    gaps = set()
+    for s in files:
+        gaps.update(int(g) for g in re.findall(r'[;" ]gap: (\d+)px[;"]', s))
+    big = ['[data-page] [style*="gap: %dpx;"]' % g for g in sorted(gaps) if g >= 40]
+    if big:
+        rules['gap:24px!important'] = big
+    return '\n'.join(','.join(sel) + '{' + key + '}' for key, sel in sorted(rules.items()))
+
+
 def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
@@ -76,7 +114,10 @@ def main():
     shared_js['nav.js'] = shared_js['nav.js'].replace('/*@@PAGES@@*/[]', repr(built).replace("'", '"'))
     drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
-    ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html')]}
+    ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html')]}
+    phone_pages = [read('pages', f) for f in built if 'data-page=' in read('pages', f)]
+    phone_pages += [read(*p) for p in [('src', 'code', 'code_body.html'), ('src', 'pages', 'profile_body.html'), ('src', 'pages', 'welcome_body.html')]]
+    ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('/*@@PADS@@*/', phone_pads(phone_pages))
     tests_spec = read('shared', 'tests_spec.js')
     runner = read('shared', 'runner.js')
     pane_js = read('shared', 'code_pane.js')

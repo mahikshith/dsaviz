@@ -1,6 +1,6 @@
 <!-- CODE PANE --> <!-- generated from shared/code_pane.html: editor, Run/Submit, console. Fills its parent's height; holes under cr.* come from CodeRunner.vals(t). -->
 <section aria-label="Code" style="height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<div data-m="wrap" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
 <sc-if value="{{cr.showLangs}}" hint-placeholder-val="{{ true }}">
 <div role="group" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
 <sc-for list="{{cr.langs}}" as="lg" hint-placeholder-count="5"><button onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>

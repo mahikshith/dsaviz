@@ -152,8 +152,8 @@
       this.logic = new C(Object.assign({}, window.DS_BOARDS[p.name].defaults));
       this.logic.__host = this;
     }
-    componentDidMount() { this.__mounted = true; try { this.logic.componentDidMount(); } catch (err) { console.error(err); } }
-    componentWillUnmount() { this.__mounted = false; try { this.logic.componentWillUnmount(); } catch (err) { console.error(err); } }
+    componentDidMount() { this.__mounted = true; this.__phone = () => this.forceUpdate(); window.addEventListener('ds-phone', this.__phone); try { this.logic.componentDidMount(); } catch (err) { console.error(err); } }
+    componentWillUnmount() { this.__mounted = false; window.removeEventListener('ds-phone', this.__phone); try { this.logic.componentWillUnmount(); } catch (err) { console.error(err); } }
     render() {
       let vals;
       try { vals = this.logic.renderVals(); } catch (err) { console.error(err); return e('pre', { style: { padding: 24 } }, 'This page hit an error: ' + err.message); }
@@ -189,12 +189,17 @@
   }
   // Pages are laid out at 1440px and zoomed to fit. A page can declare another layout width with
   // data-fit on its root (the Git page uses a 420px stacked layout on phones). A page whose root
-  // carries data-fluid (the problem page) has its own phone layout below 760px and is shown there at zoom 1.
+  // carries data-fluid has its own phone layout below 760px and is shown there at zoom 1: the problem
+  // page styles itself, the other pages use the shared rules in shared/ui/phone.html (root data-page).
   function fit() {
     const r = document.querySelector('#app > div');
     const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
     const fluid = r && r.hasAttribute('data-fluid') && window.innerWidth < 760;
     const z = fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
+    // Runtime phone flag: html[data-phone] while a fluid page shows its phone layout. Pages read it
+    // with dsPhone() (shared/ui.js); crossing 760px re-renders the open page.
+    const de = document.documentElement;
+    if (de.hasAttribute('data-phone') !== !!fluid) { if (fluid) de.setAttribute('data-phone', ''); else de.removeAttribute('data-phone'); window.dispatchEvent(new Event('ds-phone')); }
     if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
     // The pill nav and the menu read --fit to stay at real size on phones (see shared/ui/nav.html).
     if (document.documentElement.style.getPropertyValue('--fit') !== String(z)) document.documentElement.style.setProperty('--fit', String(z));

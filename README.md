@@ -20,7 +20,9 @@ Requirements: Node 18+ and Python 3.
 npm install          # React, CodeMirror and esbuild, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
 npm test             # back-test of every page, the data layer, every animated story, every test spec, the sheet, every Git lesson step and every system design lesson and every AI & ML lesson
-npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
+npm run test:browser # optional; every page at 1440px, then at 390x844 (phone) in max and paper
+                     # needs: npm install --no-save playwright && npx playwright install chromium
+                     # or: npm install --no-save playwright-core, then DS_BROWSER=msedge (or chrome) npm run test:browser
 ```
 
 Edit, then `npm run build`, then refresh `dist/index.html`.
@@ -31,7 +33,7 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | --- | --- |
 | `pages/*.dc.html` | One file per page: markup template, then a `<script type="text/x-dc">` with a `Component` class whose `renderVals()` fills the `{{holes}}`. |
 | `pages/canvas.json` | Board positions for the design-canvas view. |
-| `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the problem catalog (`catalog.js`), the master sheet (`sheet.js`, Sheet page only), the data layer `DS` (`data.js`), the pill nav and menu (`nav.js`, `drawer.js`, `ui/nav.html`) and the shared components (`ui.js`, `ui/tiles.html`, `ui/rings.html`, `ui/medals.html`). |
+| `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the problem catalog (`catalog.js`), the master sheet (`sheet.js`, Sheet page only), the data layer `DS` (`data.js`), the pill nav and menu (`nav.js`, `drawer.js`, `ui/nav.html`) and the shared components (`ui.js`, `ui/tiles.html`, `ui/rings.html`, `ui/medals.html`), and the phone layout rules (`ui/phone.html`). |
 | `src/story/` | The story engine: `scenes_tp.js` (Two Pointers, engine header), `scenes_sw.js`, `scenes_hm.js`, and one `scenes_<code>.js` per newer pattern; `tail.js` (scene registry and quiz kits), `tasks.js` (each problem in plain words), `comp.js` (the problem page), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |

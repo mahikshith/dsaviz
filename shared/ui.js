@@ -22,6 +22,9 @@ const ICON_FILLED = { flame: 1, bolt: 1 };
 // Medal metals (light, mid, shadow) from the Gym Buddy spec. Theme-independent, like real metal.
 const METALS = { bronze: ['#F2BE95', '#B97A4E', '#6E3F22'], silver: ['#F7F8FA', '#B8BCC6', '#62666F'], gold: ['#FFEAA8', '#E0B04A', '#8E6618'] };
 const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
+// True while the page shows its phone layout (below 760px; the runtime sets html[data-phone] and
+// re-renders the page when it flips). Use it only for content changes; layout belongs in CSS.
+function dsPhone() { try { return typeof document !== 'undefined' && document.documentElement.hasAttribute('data-phone'); } catch (e) { return false; } }
 function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
 function iconVals(name, color) {
   const filled = !!ICON_FILLED[name];

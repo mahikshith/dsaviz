@@ -34,6 +34,7 @@ across pages and live in one place; this script copies them back into every page
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
   src/code/code_body.html + code.js       -> Code
+  scripts/build_registry.js -> data/problem-registry.json and docs/problems/REGISTRY.md (the problem registry)
 
 Run from the repo root:  python3 scripts/build_pages.py
 """
@@ -237,3 +238,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # The problem registry (data/problem-registry.json, docs/problems/REGISTRY.md), from the same data.
+    subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_registry.js')], cwd=ROOT, check=True)

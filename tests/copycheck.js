@@ -62,6 +62,13 @@ fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html')).forEach((f) => {
   const d = path.join(root, dir);
   (files || fs.readdirSync(d)).forEach((f) => { check(dir + '/' + f, fs.readFileSync(path.join(d, f), 'utf8'), f.endsWith('.html')); scanned++; });
 });
+// Entry points that resume or open a problem say "Continue: <problem title>" (or "Start: ..."), never "Replay" or a story name.
+['pages/Patterns.dc.html', 'pages/Home.dc.html', 'shared/drawer.js', 'shared/catalog.js', 'src/pages/profile.js'].forEach((f) => {
+  fs.readFileSync(path.join(root, f), 'utf8').split(/\r?\n/).forEach((line, i) => {
+    if (/SITE_INDEX\s*=/.test(line)) return;
+    if (/['">]Replay\b|Play story|Read story/.test(line)) fail(f + ':' + (i + 1), 'a Replay / Play story label; use "Continue: <problem title>" or "Start: ..."');
+  });
+});
 console.log('copy: ' + scanned + ' files scanned');
 console.log(problems ? problems + ' copy problem(s)' : 'copy clean');
 if (problems) process.exitCode = 1;

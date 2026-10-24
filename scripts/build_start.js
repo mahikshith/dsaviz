@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
 const read = (...p) => fs.readFileSync(path.join(root, ...p), 'utf8');
-const S = new Function(read('src', 'start', 'engine.js') + '\n' + read('src', 'start', 'chapters.js') + '\n' + read('src', 'start', 'needs.js') + '\nreturn { START_CHAPTERS, START_NEEDS };')();
+const S = new Function(require('./start_files.js').startSource(false) + '\nreturn { START_CHAPTERS, START_NEEDS };')();
 const win = { localStorage: { getItem: () => null, setItem() {} } };
 const T = new Function('module', 'window', read('shared', 'catalog.js') + '\n' + read('shared', 'tests_spec.js') + '\nreturn { specInfo, TEST_SPECS };')({}, win);
 const problems = {};

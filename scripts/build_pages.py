@@ -166,7 +166,7 @@ def start_block():
         with open(path, 'w', encoding='utf-8', newline='\n') as fh:
             fh.write(out)
     tracer_py = read('src', 'start', 'tracer.py')
-    body = ''.join(read('src', 'start', f) + '\n' for f in ['engine.js', 'chapters.js', 'exercises.js', 'needs.js', 'traces.js'])
+    body = ''.join(read('src', 'start', f) + '\n' for f in ['engine.js', 'chapters.js'] + sorted(x for x in os.listdir(os.path.join(ROOT, 'src', 'start')) if x.startswith('lessons_') and x.endswith('.js')) + ['exercises.js', 'needs.js', 'traces.js'])
     return ('// @@START@@ — generated from src/ai/render.js (easing and painting) and src/start/*; edit those, then build.\n'
             + read('src', 'ai', 'render.js') + '\n' + body
             + '// The tracer behind "Watch it run", for tracing the learner\'s own code in the browser (Pyodide).\n'

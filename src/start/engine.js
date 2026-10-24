@@ -46,6 +46,14 @@ const START_NEEDS_KEYS = {
 const START_STAGES = [['story', 'Story'], ['watch', 'Watch it run'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
 const START_EASE_MS = 600;
 
+// A lessons_*.js file fills in a lesson written in chapters.js and marks it ready:
+// START_LESSON(id, { code, story, watch, tryit, check, first }).
+function START_LESSON(id, data) {
+  const c = START_CHAPTERS.find((x) => x.id === id);
+  if (!c) throw new Error('START_LESSON: no lesson ' + id + ' in chapters.js');
+  Object.assign(c, data, { ready: true });
+}
+
 // ---------- the path ----------
 function startIndex(id) { return START_CHAPTERS.findIndex((c) => c.id === id); }
 function startById(id) { return START_CHAPTERS[startIndex(id)] || null; }

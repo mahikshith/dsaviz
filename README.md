@@ -116,7 +116,8 @@ A track for people who have never written code, in Python (JavaScript too). The 
 | Path | What it is |
 | --- | --- |
 | `src/start/engine.js` | Cast (Old Hoot, Dot, Bolt, Penny), levels and parts, the path helpers (`startProgress`, unlocks, first problems), plain error help (`startHelp`), "Watch it run" captions and predictions, the story scene vocabulary (`stFlatten`, drawn on a 640 x 360 canvas and eased with `aiTween` from `src/ai/render.js`), the later-level visuals (`stPlates`, `stRefs`, `stQueue`), the placement questions and the road map. |
-| `src/start/chapters.js` | The lessons, as data: level, part, `after` (hard prerequisites, the map's arrows), `soft`, `teaches` (needs keys), `trap`, and for a ready lesson its story beats, code card, watch program, try-it and check. |
+| `src/start/chapters.js` | Every lesson's record: level, part, `after` (hard prerequisites, the map's arrows), `soft`, `teaches` (needs keys), `trap`. |
+| `src/start/lessons_*.js` | The written lessons: `START_LESSON(id, { code, story, watch, tryit, check, first })` adds the story beats, code card, watch program, try-it and check, and marks the lesson ready. |
 | `src/start/exercises.js` | 3 to 5 exercises per lesson: predict, choose, order (drag lines), fill the blank, trace table, fix and write. Programs are checked by what they print; function exercises by return values. Each has a hint ladder; fix and write offer a drag-to-order puzzle when stuck. |
 | `src/start/needs.js` | What each easy runnable problem needs, so a lesson's "First problems" only lists what has been taught. |
 | `src/start/tracer.py` | Runs a program line by line and records the stack, every variable and the output. The build traces each lesson's watch program into `src/start/traces.js`; the page runs the same file in Pyodide to trace the learner's own code. |
@@ -125,7 +126,7 @@ The code pane runs whole programs too (`runProgram` in `shared/runner.js`, with 
 
 ### Add a lesson
 
-1. Fill its record in `START_CHAPTERS` and set `ready: true`: story beats (`stBeat(who, say, scene, focus, line)`, one idea each, captions at most 140 characters, never naming a colour), `code` (same number of lines in py and js), `watch.code`, `tryit` and `check`.
+1. Its record is in `START_CHAPTERS`. Write it with `START_LESSON` in a `lessons_*.js` file: story beats (`stBeat(who, say, scene, focus, line)`, one idea each, captions at most 140 characters, never naming a colour), `code` (same number of lines in py and js), `watch.code`, `tryit` and `check`.
 2. Add 3 to 5 exercises to `START_EXERCISES[id]` with both languages and a reference.
 3. Run `python scripts/build_pages.py` (it traces the watch program), `python scripts/build_site.py` and `npm test`. `tests/startcheck.js` runs every reference and predict snippet in JavaScript and Python, checks scenes stay on the canvas and fails on stale traces, unknown needs or a first problem that needs something taught later.
 

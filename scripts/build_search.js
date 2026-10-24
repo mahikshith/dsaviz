@@ -29,7 +29,7 @@ function load() {
   const git = new Function(read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '\nreturn GIT_LESSONS;')();
   const sd = new Function('window', read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '\nreturn SD_LESSONS;')(win);
   const ai = new Function(read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '\nreturn { AI_LESSONS, AI_TRACKS };')();
-  const start = new Function(read('src', 'start', 'engine.js') + '\n' + read('src', 'start', 'chapters.js') + '\nreturn { START_CHAPTERS, START_PARTS };')();
+  const start = new Function(require('./start_files.js').startSource(false) + '\nreturn { START_CHAPTERS, START_PARTS };')();
   // The glossary keeps its keywords in the Glossary page's own script.
   const gloss = read('pages', 'Glossary.dc.html');
   const a = gloss.indexOf('const KEYWORDS = [');

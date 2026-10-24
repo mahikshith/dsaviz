@@ -11,7 +11,7 @@ const read = (...p) => fs.readFileSync(path.join(root, ...p), 'utf8');
 let bad = 0;
 const fail = (id, msg) => { bad++; console.log('  ✗', id, msg); };
 
-const S = new Function(read('src', 'ai', 'render.js') + '\n' + ['engine.js', 'chapters.js', 'exercises.js', 'needs.js', 'traces.js'].map((f) => read('src', 'start', f)).join('\n') +
+const S = new Function(read('src', 'ai', 'render.js') + '\n' + require('../scripts/start_files.js').startSource() +
   '\nreturn { START_CHAPTERS, START_EXERCISES, START_NEEDS, START_NEEDS_KEYS, START_TRACES, START_PROBLEMS, START_PARTS, START_LEVELS, START_PLACEMENT, START_CAST, START_ROAD, stSceneProblems, startTraceSay, startTaughtBy, startFirstProblems, startProgress, startHelp, stPlates, stRefs, stQueue, stScene };')();
 const R = require('../shared/runner.js');
 const win = { localStorage: { getItem: () => null, setItem() {} } };
@@ -254,7 +254,7 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   .forEach(([m, re]) => { if (!re.test(S.startHelp(m, 'py'))) fail('help', 'no plain help for ' + m); });
 if (!/ReferenceError/.test(S.startHelp('ReferenceError: x is not defined', 'js'))) fail('help', 'JavaScript names should say ReferenceError');
 // No LeetCode mentions in our track's own files and page code (the generated shared blocks are checked elsewhere).
-['engine.js', 'chapters.js', 'exercises.js', 'needs.js', 'tracer.py'].forEach((f) => { if (/leet\s*code/i.test(read('src', 'start', f))) fail(f, 'mentions LeetCode'); });
+require('../scripts/start_files.js').startFiles().concat(['tracer.py']).forEach((f) => { if (/leet\s*code/i.test(read('src', 'start', f))) fail(f, 'mentions LeetCode'); });
 ['Start', 'Chapter'].forEach((n) => {
   const s = read('pages', n + '.dc.html');
   const own = s.slice(s.indexOf('<!-- /PILL NAV -->'), s.indexOf('</x-dc>')).replace(/<!-- CODE PANE -->[\s\S]*?<!-- \/CODE PANE -->/, '') + s.slice(s.indexOf('// ---- page ----'));

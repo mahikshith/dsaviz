@@ -36,3 +36,22 @@
 | Two non-repeating numbers among pairs | gsheet-1hXser | xor | medium | new? |
 | Range sum query with updates | gsheet-1hXser | segment tree / BIT | medium-hard | new? |
 | Count smaller values to the right | gsheet-1hXser | BIT / merge sort | hard | new? |
+| Pair summing to target in a sorted array | neetcode roadmap | two pointers | easy | new? |
+| Longest stretch with no repeated character | neetcode roadmap | sliding window | medium | new? |
+| Balanced brackets check | neetcode roadmap | stack | easy | new? |
+| Stack that reports its minimum in O(1) | neetcode roadmap | stack | medium | new? |
+| Reverse a linked list in place | neetcode roadmap | linked list | easy | new? |
+| Depth of a binary tree | neetcode roadmap | tree DFS | easy | new? |
+| Level-by-level tree walk | neetcode roadmap | tree BFS | medium | new? |
+| Prefix tree insert and search | neetcode roadmap | trie | medium | new? |
+| Kth largest element using a heap | neetcode roadmap | heap | medium | new? |
+| All subsets of a set | neetcode cheatsheet (exponential) | backtracking | medium | new? |
+| All orderings of distinct items | neetcode cheatsheet (factorial) | backtracking | medium | new? |
+| Combinations that add to a target | neetcode roadmap | backtracking | medium | new? |
+| Order courses given prerequisites | neetcode roadmap | graph / topological sort | medium | new? |
+| Ways to climb n stairs | neetcode roadmap | 1-D dp | easy | new? |
+| Fewest coins for an amount | neetcode roadmap | 1-D dp | medium | new? |
+| Rob non-adjacent houses for max loot | neetcode roadmap | 1-D dp | medium | new? |
+| Can you reach the last index by jumps | neetcode roadmap | greedy | medium | new? |
+| Find the lone unpaired number (XOR) | neetcode roadmap | bit manipulation | easy | new? |
+| Count set bits in a number | neetcode roadmap | bit manipulation | easy | new? |

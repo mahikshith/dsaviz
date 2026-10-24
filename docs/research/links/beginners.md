@@ -21,8 +21,7 @@ Licences are as shown on the page or repo sidebar. LICENSE files were not opened
 | https://cs50.harvard.edu/x/weeks/0/ | 2026-10-25 | 200 | CS50x week 0 Scratch topics; week list 0-10 | n |
 | https://www.freecodecamp.org/learn | 2026-10-25 | 200 | curriculum home; recommended certifications | n (sign-in only to save) |
 | https://www.freecodecamp.org/learn/python-v9/ | 2026-10-25 | 200 | Python certification: 579 steps, Basics 141, section list, five projects | n |
-| https://www.khanacademy.org/computing/intro-to-programming | 2026-10-25 | Client Challenge (bot check) | stopped, not bypassed | n |
-| https://www.khanacademy.org/computing/computer-programming/programming/intro-to-programming | 2026-10-25 | 200 | JS course unit 1: drawing, color, variables, animation, mouse, strings. Khan content mostly CC BY-NC-SA: facts only | n |
+| https://www.khanacademy.org/computing/intro-to-programming | 2026-10-25 | skipped: bot check (Client Challenge) | stopped; no other Khan page used | n |
 | https://exercism.org/tracks/python | 2026-10-25 | 200 | 146 exercises, 17 concepts; points beginners to Jiki | n |
 | https://exercism.org/tracks/python/concepts | 2026-10-25 | 200 | Python concept order | n |
 | https://exercism.org/tracks/javascript/concepts | 2026-10-25 | 200 | JavaScript concept order (about 40) | n |

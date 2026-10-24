@@ -9,7 +9,7 @@ Lesson names, section order and counts below are facts read from public pages. D
 ## 1. Method
 
 - Tool: REA MCP `capture_browser_scenario`, Edge launch mode, 1280x720, DOM capture after each step. 2-4 pages per call. Parsed with the scratchpad `parse.py`. Date 2026-10-25.
-- robots.txt read first for docs.python.org, freecodecamp.org, exercism.org, khanacademy.org, codecademy.com, w3schools.com, programiz.com, scrimba.com. No crawl-delay found on any. Nothing I visited is disallowed (Codecademy disallows `/courses/` only; I used `/learn/`). futurecoder.io and cs50.harvard.edu return no robots file (404 / not-found page). github.com and ocw.mit.edu: pages are public and I did not fetch their robots.txt (not checked; gap).
+- robots.txt read first for docs.python.org, freecodecamp.org, exercism.org, codecademy.com, w3schools.com, programiz.com, scrimba.com. No crawl-delay found on any. Nothing I visited is disallowed (Codecademy disallows `/courses/` only; I used `/learn/`). futurecoder.io and cs50.harvard.edu return no robots file (404 / not-found page). github.com and ocw.mit.edu: pages are public and I did not fetch their robots.txt (not checked; gap).
 - No logins, no CAPTCHAs solved. Bot check seen once: khanacademy.org returned a "Client Challenge" page for `/computing/intro-to-programming` and for the first robots.txt fetch. I did not retry or bypass. An older public Khan URL for the same course loaded normally, so Khan is covered from that page.
 - Gaps (see section 2 and the links file): Grasshopper (grasshopper.app, www.grasshopper.app) did not resolve in DNS from this laptop, so it is not covered. Scrimba: my guessed course URL returned a CSS Flexbox course, so Scrimba's Python/JS beginner course is not covered, only its model (paid tiers, screencasts) from that page. Exercism's `/tracks/python/exercises` list is rendered client-side and the learning-exercise names did not come through; concept order did. AlgoMaster `/learn/dsa/python-for-dsa` returned 404 (slug guess wrong); the warm-up list came from the 771-item sidebar of the course page. Chapter bodies of AlgoMaster were not rendered (matches the earlier bucket). algosimplified.dev and codolio.com: no beginner/language-basics track exists in the structure already recorded in `algosimplified.md` and `codolio.md` (blog posts and sheets only), so there is nothing new to add; they are not re-crawled. prachub skipped as instructed (bot check).
 - Source quote limits: no passages reproduced. Short phrases are product names or section titles.
@@ -49,14 +49,9 @@ Template per source: audience, order from zero, how lesson 1 starts, lesson size
 - Business: charity, donations. Licence: not checked this session; treat as unknown.
 - Takeaway: flow is variables, strings, numbers, booleans, functions before loops; the algorithms/graphs/DP block is inside the same certification, which is the same path we want, but the leap from Basics to Algorithms has dictionaries, classes and OOP in between that our users may not need.
 
-### 2.4 Khan Academy (Computer programming - JavaScript and the web)
-- Audience: ages roughly 10+, first-time coders. 8 units (intro JS drawing and animation, HTML/CSS, SQL, advanced JS games, natural simulations, interactive web, jQuery, meet the professional).
-- Unit 1 order: What is programming, drawing basics (shapes by function calls), coloring, the power of the docs (reading references), a project, variables (hold values for later), animation basics (draw loop and incrementing), interactive programs with mouse position, using math in expressions (optional bonus, "skip this lesson if fractions bother you"), text and strings.
-- Lesson 1: visual first. You call shape functions with numbers and see a drawing. Variables appear only after a drawing exists and numbers repeat.
-- Pattern: Learn (talk-through video with live edits) then Challenge (fix or finish a drawing) then Project (open ended); "number scrubbing" lets you drag a number and watch the picture change.
-- Errors: not examined here.
-- Business: nonprofit, free. Licence: mixed; much content CC BY-NC-SA. Structure only.
-- Takeaway: Khan introduces variables only after the learner has felt the pain of repeated numbers. That is the best "why variables exist" story I found.
+### 2.4 Khan Academy
+
+Skipped: bot check ("Client Challenge") on khanacademy.org. No notes taken; nothing from Khan is used.
 
 ### 2.5 Exercism (Python and JavaScript tracks, plus Jiki)
 - Audience: track is for people with some programming in other languages; the track page now says "Learning to code? Check out our new dedicated beginners platform - Jiki". So Exercism itself routes true beginners away.
@@ -146,9 +141,9 @@ Inference (flag for validation with real beginners):
 - They stick on: seeing a result within the first minute, small named stories, streak/XP only if it does not punish a missed day, a visible "you can do this" progress map, and lessons that end in something playable.
 
 ### 3.2 Common first 20 topics, in order (consensus of the 12 curricula)
-1. What a program is / why program (py4e, CS50 W0, Khan, MIT L1)
+1. What a program is / why program (py4e, CS50 W0, MIT L1)
 2. Run something: print / REPL / shell (all)
-3. Numbers and arithmetic as a calculator (Python tutorial, futurecoder, Khan)
+3. Numbers and arithmetic as a calculator (Python tutorial, futurecoder)
 4. Text (strings) and quotes (futurecoder ch2, FCC, Exercism)
 5. Variables (names for values), assignment (all)
 6. Data types and conversion (FCC, Programiz, Codedex)
@@ -187,7 +182,6 @@ Inference (flag for validation with real beginners):
 - A project at the end of each chapter, plus a checkpoint (Codedex, FCC).
 - Fix-the-broken-file tasks (rustlings/ziglings idea).
 - Unit tests as exercise spec (Exercism, CS50P week 6, FCC labs).
-- Number scrubbing / change a value and see the picture change (Khan).
 - Progress that rewards completion not time: chapter unlocks, XP, badges (Codedex). Streaks exist on W3Schools app; unknown effect.
 
 ### 3.5 Where learners get lost, and how sites route to first problems
@@ -223,7 +217,7 @@ The Start-here track is 4 chapters plus the bridge. Each lesson is 5-12 minutes 
 **L3. Calculator mode.** One idea: Python can evaluate expressions; numbers and `+ - * / // % **`.
 - Story: Mossy counts acorns for the winter stockpile.
 - Exercises: PR evaluate five expressions; FB complete an expression to print 42; FX operator-precedence trap (brackets); WF-lite print total acorns.
-- Inspired by: Python tutorial chapter 3, futurecoder ch1, Khan number scrubbing.
+- Inspired by: Python tutorial chapter 3, futurecoder ch1.
 
 **L4. Reading your first error.** One idea: the red message names the file line and the kind of mistake; it is help, not a verdict.
 - Story: Juno panics at red text; Old Hoot shows how to read "line, kind, hint".
@@ -231,9 +225,9 @@ The Start-here track is 4 chapters plus the bridge. Each lesson is 5-12 minutes 
 - Our error messages rewritten into plain words (futurecoder idea, our own text).
 
 **L5. Variables: names for values.** One idea: `name = value` stores a value; a name can be re-bound.
-- Story: Mossy labels jars. Khan-style: first show repeated numbers in a drawing/story, then introduce the label.
+- Story: Mossy labels jars. First show repeated numbers in a story, then introduce the label.
 - Exercises: PR what is `b` after `a = 3; b = a; a = 4`?; TR fill a trace table; FX using a name before defining it; WF-lite store price and quantity and print the total.
-- Inspired by: Khan variables unit, Programiz first program (two variables, add them), MIT "bindings".
+- Inspired by: Programiz first program (two variables, add them), MIT "bindings".
 
 **L6. Types: numbers, text, True/False.** One idea: values have a kind, and `"5"` is not `5`.
 - Story: the shop's price tag says "5" in ink; Pip cannot add ink.
@@ -366,7 +360,7 @@ Where the common failure points sit in this graph (inference): L7 (`input` retur
 2. **L25 unlocks "First problems"**: a set of about 10-15 easy problems chosen to use only what the track taught (scan once, count, max, reverse, palindrome, FizzBuzz-style, two-sum-by-brute-force, first repeated item with a dictionary). Each problem page shows the "job card" format from L25.
 3. **Then the pattern map**: the first problems each tag the pattern they hint at (scan, counting/hash map, two pointers, ...); finishing First problems opens the pattern map, with Big O introduced right after, via "how many steps did my loop do?" using the trace tables from L13-L17. This avoids the AlgoMaster jump (warm-up straight to recurrence relations).
 4. **Re-entry**: any problem failing on a basic error (NameError, TypeError, off-by-one) links back to L4, L23 or the relevant lesson ("review this"), not a generic wiki.
-5. **Language variants**: Python version first. Later: JavaScript version of the same graph (Exercism's JS concept tree, Khan's JS course and freeCodeCamp's JS certification are all available to compare).
+5. **Language variants**: Python version first. Later: JavaScript version of the same graph (Exercism's JS concept tree and freeCodeCamp's JS certification are all available to compare).
 
 ## 7. Open questions and gaps
 

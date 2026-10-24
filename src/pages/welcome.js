@@ -49,8 +49,8 @@ class Component extends DCLogic {
     try { window.localStorage.setItem('dsaviz-lang', code); } catch (e) {}
   }
   renderVals() {
-    const themeKey = this.state.theme || this.props.theme || 'paper';
-    const t = THEMES[themeKey] || THEMES.paper;
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
     const st = this.state;
     const step = st.step;
     const pick = (key, v) => () => this.setState({ [key]: v });

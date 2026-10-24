@@ -30,8 +30,8 @@ class Component extends DCLogic {
     this.setState({ results: this.state.results.concat([{ id, right, label, days }]), pos: this.state.pos + 1, picked: null });
   }
   renderVals() {
-    const themeKey = this.state.theme || this.props.theme || 'paper';
-    const t = THEMES[themeKey] || THEMES.paper;
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
     const Q = this.state.queue.map((id) => PROBLEMS.find((p) => p.id === id));
     const pos = Math.min(this.state.pos, Q.length - 1);
     const P = Q[pos];

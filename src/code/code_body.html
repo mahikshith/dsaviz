@@ -23,6 +23,8 @@
 </div>
 </div>
 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
+<!-- PROBLEM FACTS -->
+<!-- /PROBLEM FACTS -->
 <sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
@@ -35,6 +37,8 @@
 </div>
 <sc-if value="{{hasStory}}"><div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Stuck? Old Hoot walks through it in the story. <a href="Story.dc.html" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Back to {{P.story}}</a></div></sc-if>
 <sc-if value="{{noStory}}"><div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">This one has tests but no story yet. Old Hoot explains the {{P.pattern}} idea in the library. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>
+<!-- APPROACH PANE -->
+<!-- /APPROACH PANE -->
 </sc-if>
 <sc-if value="{{isSql}}">
 <section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">

@@ -1,0 +1,23 @@
+<!-- PROBLEM FACTS -->
+<sc-if value="{{fx.has}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Input, output and constraints" data-m="keep" style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; display: grid; grid-template-columns: {{fx.cols}}; grid-template-areas: {{fx.areas}}; column-gap: 12px; row-gap: 8px; font-size: 14px; line-height: 1.5">
+<span style="grid-area: il; font-size: 13px; font-weight: 700; color: {{t.muted}}; padding-top: 2px">Input</span>
+<span style="grid-area: iv; color: {{t.text}}">{{fx.input}}</span>
+<span style="grid-area: ol; font-size: 13px; font-weight: 700; color: {{t.muted}}; padding-top: 2px">Output</span>
+<span style="grid-area: ov; color: {{t.text}}">{{fx.output}}</span>
+<sc-if value="{{fx.hasCons}}" hint-placeholder-val="{{ true }}">
+<span style="grid-area: cl; font-size: 13px; font-weight: 700; color: {{t.muted}}; padding-top: 2px">Constraints</span>
+<ul aria-label="Constraints" style="grid-area: cv; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; color: {{t.text2}}; font-variant-ligatures: none">
+<sc-for list="{{fx.cons}}" as="fc" hint-placeholder-count="3"><li style="overflow-wrap: anywhere">{{fc.c}}</li></sc-for>
+</ul>
+</sc-if>
+<sc-if value="{{fx.hasAim}}" hint-placeholder-val="{{ true }}">
+<span style="grid-area: al; font-size: 13px; font-weight: 700; color: {{t.muted}}; padding-top: 4px">Aim for</span>
+<span style="grid-area: av; display: flex; flex-direction: column; align-items: flex-start; gap: 4px">
+<span aria-label="{{fx.aimLabel}}" style="padding: 3px 10px; border-radius: 999px; border: 1px solid {{t.accent}}; background: {{t.hl}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: 13px; font-weight: 700; font-variant-ligatures: none">{{fx.aim}}</span>
+<sc-if value="{{fx.hasNote}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; line-height: 1.4; color: {{t.muted}}">{{fx.note}}</span></sc-if>
+</span>
+</sc-if>
+</section>
+</sc-if>
+<!-- /PROBLEM FACTS -->

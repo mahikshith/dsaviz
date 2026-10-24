@@ -30,6 +30,7 @@ class Component extends DCLogic {
     this.state = { theme: loadTheme(), pid };
     this.runner = new CodeRunner(this, TEST_SPECS[pid] ? pid : 'two-sum-ii');
     this.sql = new SqlRunner(this, pid);
+    this.approaches = new ApproachPane(this, pid, { lang: () => this.runner.s.lang });
   }
   componentDidMount() {
     listenTheme(this);
@@ -48,6 +49,7 @@ class Component extends DCLogic {
     saveProblem(pid);
     setQueryProblem(pid);
     if (SQL_SPECS[pid]) this.sql.setProblem(pid); else this.runner.setProblem(pid);
+    this.approaches.setProblem(pid);
     this.setState({ pid });
   }
   renderVals() {
@@ -59,7 +61,8 @@ class Component extends DCLogic {
     return {
       t, ...navVals(this, t, themeKey, 'Code'), themeBtns: themeButtons(this, themeKey, t),
       cr: this.runner.vals(t), sq: this.sql.vals(t),
-      isSql, notSql: !isSql, asideOverflow: isSql ? 'auto' : 'hidden',
+      fx: factsVals(t, this.state.pid), ap: this.approaches.vals(t),
+      isSql, notSql: !isSql, asideOverflow: 'auto',
       P, ask: isSql ? SQL_SPECS[this.state.pid].ask : spec.ask, diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2],
       keepProblem: () => saveProblem(this.state.pid),
       pid: this.state.pid,

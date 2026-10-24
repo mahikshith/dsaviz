@@ -27,7 +27,7 @@ What this folder is for: research for turning dsaviz into **DSAMaxxing**. Each s
 | Visual teaching | [USFCA visualizations](platforms/usfca.md) | [links](links/usfca.md) | in guide | 9 pages |
 | Visual teaching | [NeetCode](platforms/neetcode.md) | [links](links/neetcode.md) | in guide | 10 pages |
 | Visual teaching | [ByteByteGo](platforms/bytebytego.md) | [links](links/bytebytego.md) | in guide | 9 pages |
-| Course platforms | Scaler, InterviewBit, Coursera, CodeSignal | `platforms/*.md` | in guide | in progress |
+| Course platforms | [Scaler](platforms/scaler.md), [InterviewBit](platforms/interviewbit.md), [Coursera](platforms/coursera.md), [CodeSignal](platforms/codesignal.md) | [scaler](links/scaler.md), [ib](links/interviewbit.md), [coursera](links/coursera.md), [codesignal](links/codesignal.md) | in guide | 37 pages |
 | Our own look | [Gym Buddy visual language](gym-buddy-visual-language.md) | n/a | `mahikshith/workout` | done |
 
 ## dsaviz today

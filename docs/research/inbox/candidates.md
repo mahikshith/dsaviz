@@ -150,3 +150,31 @@
 | Group nodes into connected sets | neetcode 5 graph algorithms | union-find | medium | new? |
 | Cheapest path with weighted edges | neetcode 5 graph algorithms | shortest path (Dijkstra) | medium-hard | new? |
 | Count nested-loop steps for n*m vs n*n | neetcode big-o lesson | complexity analysis | easy | new? |
+| Best sum of a window that slides one step at a time | neetcode advanced course (windows) | sliding window fixed | easy | new? |
+| Longest stretch that satisfies a rule (grow and shrink window) | neetcode advanced course (windows) | sliding window variable | medium | new? |
+| Running totals so any range sum is instant | neetcode advanced course (prefix sums) | prefix sum | easy | new? |
+| Find the middle of a list in one pass | neetcode advanced course (fast and slow) | fast/slow pointers | easy | new? |
+| Walk a tree without recursion using your own stack | neetcode advanced course (iterative DFS) | tree traversal | medium | new? |
+| Range sum with point updates (segment tree) | neetcode advanced course | segment tree | hard | new? |
+| Running median of a stream with two heaps | neetcode advanced course (two heaps) | heap | hard | new? |
+| All subsets / all pairs / all orderings, side by side | neetcode advanced course | backtracking | medium | new? |
+| Cheapest way to wire up every point (Prim vs Kruskal compared) | neetcode advanced course | minimum spanning tree | medium-hard | new? |
+| Order tasks that depend on each other | neetcode advanced course (topological sort) | topological sort | medium | new? |
+| Pack a bag: each item once vs unlimited | neetcode advanced course (two knapsacks) | dp knapsack | medium | new? |
+| Longest shared run between two strings | neetcode advanced course (LCS) | 2-d dp | medium | new? |
+| Longest palindrome inside a string | neetcode advanced course (palindromes) | dp / expand around centre | medium | new? |
+| Insert and remove in a search tree | neetcode beginners course (BST) | tree | medium | new? |
+| Find first and last position of a value in a sorted list | neetcode beginners course (search range) | binary search | medium | new? |
+| Build a heap from an unsorted list in linear time | neetcode beginners course (heapify) | heap | medium | new? |
+| Count paths through a maze of tree branches | neetcode beginners course (tree maze) | backtracking | easy | new? |
+| Build a hash table yourself with collisions | neetcode beginners course (hash implementation) | hash map | medium | new? |
+| Sort a list by hand: insertion, merge, quick | neetcode core skills | sorting | easy-medium | new? |
+| Flood a grid with DFS and with BFS, compare | neetcode beginners course (matrix DFS/BFS) | grid search | medium | new? |
+| Design a game board that checks for a winning line | neetcode OOD course | LLD | medium | new? |
+| Design a parking lot with spot types | neetcode OOD course | LLD | medium | new? |
+| Design an elevator that serves requests | neetcode OOD course | LLD | medium | new? |
+| Design a rate limiter | neetcode system design interview course | system design | medium | new? |
+| Design a short-link service | neetcode system design interview course | system design | medium | new? |
+| Design a key-value store | neetcode system design interview course | system design | hard | new? |
+| Spot the right design pattern: factory, observer, strategy | neetcode design patterns course | LLD patterns | easy | new? |
+| Compare brute force vs best on the same input (side-by-side steps) | neetcode solution tab | complexity | easy | new? |

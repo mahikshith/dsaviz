@@ -88,7 +88,7 @@ class ApproachPane {
     const lang = this.opts.lang ? this.opts.lang() : 'js';
     const code = shown === 'py' ? a.py : a.js;
     return {
-      has: true, open: this.s.open, closed: !this.s.open, openX: this.s.open ? 'true' : 'false',
+      has: true, open: this.s.open, closed: !this.s.open, openX: this.s.open ? 'true' : 'false', controls: this.s.open ? 'ap-body' : '',
       toggle: () => this.toggle(), toggleLabel: this.s.open ? 'Hide approaches' : 'Show approaches',
       count: list.length + ' ways, slow to fast',
       tabs: list.map((x, i) => {

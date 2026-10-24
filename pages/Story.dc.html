@@ -622,7 +622,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <h2 id="ap-head" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Approaches</h2>
 <span style="font-size: 13px; color: {{t.muted}}">{{ap.count}}</span>
 <div style="flex-grow: 1"></div>
-<button onClick="{{ap.toggle}}" aria-expanded="{{ap.openX}}" aria-controls="ap-body" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>{{ap.toggleLabel}}</button>
+<button onClick="{{ap.toggle}}" aria-expanded="{{ap.openX}}" aria-controls="{{ap.controls}}" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>{{ap.toggleLabel}}</button>
 </div>
 <sc-if value="{{ap.closed}}" hint-placeholder-val="{{ true }}">
 <p style="margin: 0; padding: 10px 14px; border-radius: 12px; border: 1px dashed {{t.line2}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Spoilers inside: full solutions from brute force to best, with their cost and common mistakes. Try it yourself first.</p>
@@ -21732,7 +21732,7 @@ class ApproachPane {
     const lang = this.opts.lang ? this.opts.lang() : 'js';
     const code = shown === 'py' ? a.py : a.js;
     return {
-      has: true, open: this.s.open, closed: !this.s.open, openX: this.s.open ? 'true' : 'false',
+      has: true, open: this.s.open, closed: !this.s.open, openX: this.s.open ? 'true' : 'false', controls: this.s.open ? 'ap-body' : '',
       toggle: () => this.toggle(), toggleLabel: this.s.open ? 'Hide approaches' : 'Show approaches',
       count: list.length + ' ways, slow to fast',
       tabs: list.map((x, i) => {

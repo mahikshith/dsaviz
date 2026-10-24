@@ -36,7 +36,7 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
 | `src/git/` | The Git page's model: `sim.js` (a small Git: files, staging area, commits, branches, origin, stash) and `lessons.js` (8 lessons, one command and one caption per step). |
-| `shared/tests_spec.js` | Test spec per problem: signatures in 5 languages, 3 examples, hidden cases, comparator, JS reference. |
+| `shared/tests_spec.js` | Test specs for 104 problems (every catalog problem plus popular sheet problems): signatures in 5 languages, 3 examples, 5+ hidden cases, comparator, JS reference. The top of the file documents how linked lists, trees, graphs, in-place answers and design classes are written as JSON. |
 | `shared/code_pane.html` + `code_pane.js` | The self-contained code pane (`CodeRunner`): language tabs, timer, editor, Run/Submit, custom input, console. Any page can drop it in with the `<!-- CODE PANE -->` and `// @@CODE-PANE@@` markers. |
 | `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
@@ -87,7 +87,9 @@ Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from 
 
 ## Add a coding problem
 
-Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself), then `npm run build && npm test`. The Code page opens with `?problem=<id>` or the last problem picked anywhere on the site. Java, C++ and Go are edit-only for now.
+Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself), then `npm run build && npm test`. A problem that is not in the catalog also needs `meta: [title, LeetCode number, difficulty, pattern]`. Linked lists, trees and graphs are written as arrays (level order with `null` for trees); set `io` so the runner builds the nodes. Every animated story must have a spec, or `tests/specs.js` fails.
+
+The Code page lists every problem with a spec, grouped by pattern, and opens with `?problem=<id>` or the last problem picked anywhere on the site. Java, C++ and Go are edit-only for now.
 
 ## Known gaps
 
@@ -95,3 +97,7 @@ Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself)
 - Language basics: only chapter 03 is written.
 - Pages are laid out at 1440px and scaled down on small screens; there is no dedicated mobile layout.
 - Success stories on the landing page are labelled illustrative. Replace them with real, consented stories before launch.
+
+## Third-party code
+
+The site bundles React and CodeMirror 6 (MIT), loads Pyodide (MPL-2.0) from jsDelivr when a learner runs Python, and uses Google Fonts under the SIL Open Font License. esbuild (MIT) is used only at build time. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for every component, its version and its licence.

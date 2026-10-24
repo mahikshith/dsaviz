@@ -1399,6 +1399,853 @@ const TEST_SPECS = {
     examples: [[[2, 3], 3], [[1, 1], 1], [[4, 4], 20]],
     hidden: [[[1, 10], 1], [[10, 1], 1], [[3, 3], 6], [[5, 5], 70], [[10, 10], 48620], [[16, 16], 155117520]],
     ref: function (m, n) { const row = new Array(n).fill(1); for (let i = 1; i < m; i++) for (let j = 1; j < n; j++) row[j] += row[j - 1]; return row[n - 1]; }
+  },
+  'reverse-string': {
+    fn: 'reverseString', params: ['s'], cmp: 'exact', io: { inplace: 0 }, meta: ['Reverse String', 344, 'Easy', 'Two Pointers'],
+    ask: 's is a list of single characters. Reverse it by changing s itself and return nothing; the tests read s afterwards.',
+    sig: {
+      py: 'def reverseString(s: List[str]) -> None:',
+      js: 'function reverseString(s) {',
+      java: 'public void reverseString(char[] s) {',
+      cpp: 'void reverseString(vector<char>& s) {',
+      go: 'func reverseString(s []byte) {'
+    },
+    examples: [[[['h', 'o', 'p']], ['p', 'o', 'h']], [[['a', 'b']], ['b', 'a']], [[['x', 'y', 'y']], ['y', 'y', 'x']]],
+    hidden: [[[[]], []], [[['z']], ['z']], [[['A', 'b', 'C', 'd']], ['d', 'C', 'b', 'A']], [[['1', ' ', '2']], ['2', ' ', '1']], [[['r', 'a', 'c', 'e', 'c', 'a', 'r']], ['r', 'a', 'c', 'e', 'c', 'a', 'r']]],
+    ref: function (s) { for (let l = 0, r = s.length - 1; l < r; l++, r--) { const t = s[l]; s[l] = s[r]; s[r] = t; } }
+  },
+  'squares-of-a-sorted-array': {
+    fn: 'sortedSquares', params: ['nums'], cmp: 'exact', meta: ['Squares of a Sorted Array', 977, 'Easy', 'Two Pointers'],
+    ask: 'nums is sorted from small to large and may hold negatives. Return the square of every number, also sorted from small to large.',
+    sig: {
+      py: 'def sortedSquares(nums: List[int]) -> List[int]:',
+      js: 'function sortedSquares(nums) {',
+      java: 'public int[] sortedSquares(int[] nums) {',
+      cpp: 'vector<int> sortedSquares(vector<int>& nums) {',
+      go: 'func sortedSquares(nums []int) []int {'
+    },
+    examples: [[[[-3, -1, 0, 2]], [0, 1, 4, 9]], [[[1, 2, 3]], [1, 4, 9]], [[[-5, -4]], [16, 25]]],
+    hidden: [[[[]], []], [[[0]], [0]], [[[-2, -2, 2, 2]], [4, 4, 4, 4]], [[[-7, -3, 2, 3, 11]], [4, 9, 9, 49, 121]], [[[-10000, 10000]], [100000000, 100000000]]],
+    ref: function (nums) {
+      const out = new Array(nums.length); let l = 0, r = nums.length - 1;
+      for (let k = nums.length - 1; k >= 0; k--) { if (Math.abs(nums[l]) > Math.abs(nums[r])) { out[k] = nums[l] * nums[l]; l++; } else { out[k] = nums[r] * nums[r]; r--; } }
+      return out;
+    }
+  },
+  'merge-sorted-array': {
+    fn: 'merge', params: ['nums1', 'm', 'nums2', 'n'], cmp: 'exact', io: { inplace: 0 }, meta: ['Merge Sorted Array', 88, 'Easy', 'Two Pointers'],
+    ask: 'nums1 holds m sorted numbers followed by n spare zeros; nums2 holds n sorted numbers. Merge nums2 into nums1 so nums1 is fully sorted. Change nums1 itself and return nothing.',
+    sig: {
+      py: 'def merge(nums1: List[int], m: int, nums2: List[int], n: int) -> None:',
+      js: 'function merge(nums1, m, nums2, n) {',
+      java: 'public void merge(int[] nums1, int m, int[] nums2, int n) {',
+      cpp: 'void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {',
+      go: 'func merge(nums1 []int, m int, nums2 []int, n int) {'
+    },
+    examples: [[[[1, 4, 7, 0, 0], 3, [2, 5], 2], [1, 2, 4, 5, 7]], [[[0], 0, [3], 1], [3]], [[[5], 1, [], 0], [5]]],
+    hidden: [[[[2, 2, 0, 0], 2, [1, 2], 2], [1, 2, 2, 2]], [[[-1, 0, 0, 0], 1, [-3, -2, 5], 3], [-3, -2, -1, 5]], [[[4, 5, 6, 0, 0, 0], 3, [1, 2, 3], 3], [1, 2, 3, 4, 5, 6]], [[[1, 2, 3, 0, 0, 0], 3, [4, 5, 6], 3], [1, 2, 3, 4, 5, 6]], [[[0, 0], 0, [7, 8], 2], [7, 8]]],
+    ref: function (nums1, m, nums2, n) {
+      let i = m - 1, j = n - 1, k = m + n - 1;
+      while (j >= 0) nums1[k--] = i >= 0 && nums1[i] > nums2[j] ? nums1[i--] : nums2[j--];
+    }
+  },
+  'sort-colors': {
+    fn: 'sortColors', params: ['nums'], cmp: 'exact', io: { inplace: 0 }, meta: ['Sort Colors', 75, 'Medium', 'Two Pointers'],
+    ask: 'nums holds only 0, 1 and 2. Sort it in one pass without a library sort, changing nums itself and returning nothing.',
+    sig: {
+      py: 'def sortColors(nums: List[int]) -> None:',
+      js: 'function sortColors(nums) {',
+      java: 'public void sortColors(int[] nums) {',
+      cpp: 'void sortColors(vector<int>& nums) {',
+      go: 'func sortColors(nums []int) {'
+    },
+    examples: [[[[2, 0, 1, 0]], [0, 0, 1, 2]], [[[2, 1]], [1, 2]], [[[1, 0]], [0, 1]]],
+    hidden: [[[[]], []], [[[2, 2, 2]], [2, 2, 2]], [[[1, 0, 2, 1, 0, 2]], [0, 0, 1, 1, 2, 2]], [[[2, 1, 0]], [0, 1, 2]], [[[0, 1, 2, 0, 1, 2, 0]], [0, 0, 0, 1, 1, 2, 2]]],
+    ref: function (nums) {
+      let lo = 0, mid = 0, hi = nums.length - 1;
+      const sw = (a, b) => { const t = nums[a]; nums[a] = nums[b]; nums[b] = t; };
+      while (mid <= hi) { if (nums[mid] === 0) sw(lo++, mid++); else if (nums[mid] === 2) sw(mid, hi--); else mid++; }
+    }
+  },
+  'is-subsequence': {
+    fn: 'isSubsequence', params: ['s', 't'], cmp: 'exact', meta: ['Is Subsequence', 392, 'Easy', 'Two Pointers'],
+    ask: 'Return true if the letters of s appear in t in the same order (other letters may sit between them).',
+    sig: {
+      py: 'def isSubsequence(s: str, t: str) -> bool:',
+      js: 'function isSubsequence(s, t) {',
+      java: 'public boolean isSubsequence(String s, String t) {',
+      cpp: 'bool isSubsequence(string s, string t) {',
+      go: 'func isSubsequence(s string, t string) bool {'
+    },
+    examples: [[['ace', 'abcde'], true], [['aec', 'abcde'], false], [['', 'xyz'], true]],
+    hidden: [[['a', ''], false], [['', ''], true], [['aaa', 'aa'], false], [['bb', 'abab'], true], [['xyz', 'xaybzc'], true], [['abc', 'cba'], false]],
+    ref: function (s, t) { let i = 0; for (const c of t) if (c === s[i]) i++; return i === s.length; }
+  },
+  'permutation-in-string': {
+    fn: 'checkInclusion', params: ['s1', 's2'], cmp: 'exact', meta: ['Permutation in String', 567, 'Medium', 'Sliding Window'],
+    ask: 'Return true if some stretch of s2 uses exactly the letters of s1, each the same number of times, in any order.',
+    sig: {
+      py: 'def checkInclusion(s1: str, s2: str) -> bool:',
+      js: 'function checkInclusion(s1, s2) {',
+      java: 'public boolean checkInclusion(String s1, String s2) {',
+      cpp: 'bool checkInclusion(string s1, string s2) {',
+      go: 'func checkInclusion(s1 string, s2 string) bool {'
+    },
+    examples: [[['ab', 'xbay'], true], [['ab', 'axyb'], false], [['abc', 'cab'], true]],
+    hidden: [[['a', 'a'], true], [['abc', 'ab'], false], [['aab', 'abab'], true], [['hello', 'ooolleoooleh'], false], [['xyz', 'zzzyx'], true]],
+    ref: function (s1, s2) {
+      const k = s1.length, need = s1.split('').sort().join('');
+      for (let i = 0; i + k <= s2.length; i++) if (s2.slice(i, i + k).split('').sort().join('') === need) return true;
+      return false;
+    }
+  },
+  'minimum-size-subarray-sum': {
+    fn: 'minSubArrayLen', params: ['target', 'nums'], cmp: 'exact', meta: ['Minimum Size Subarray Sum', 209, 'Medium', 'Sliding Window'],
+    ask: 'nums holds positive numbers. Return the length of the shortest unbroken stretch whose sum is at least target, or 0 if none is.',
+    sig: {
+      py: 'def minSubArrayLen(target: int, nums: List[int]) -> int:',
+      js: 'function minSubArrayLen(target, nums) {',
+      java: 'public int minSubArrayLen(int target, int[] nums) {',
+      cpp: 'int minSubArrayLen(int target, vector<int>& nums) {',
+      go: 'func minSubArrayLen(target int, nums []int) int {'
+    },
+    examples: [[[8, [3, 1, 4, 4, 2]], 2], [[100, [1, 2, 3]], 0], [[5, [5]], 1]],
+    hidden: [[[3, [1, 1, 1]], 3], [[1, []], 0], [[10, [2, 3, 1, 2, 4, 3]], 4], [[6, [6, 1, 6]], 1], [[15, [1, 2, 3, 4, 5]], 5], [[11, [1, 10, 1]], 2]],
+    ref: function (target, nums) {
+      let l = 0, sum = 0, best = Infinity;
+      for (let r = 0; r < nums.length; r++) { sum += nums[r]; while (sum >= target) { best = Math.min(best, r - l + 1); sum -= nums[l++]; } }
+      return best === Infinity ? 0 : best;
+    }
+  },
+  'find-all-anagrams-in-a-string': {
+    fn: 'findAnagrams', params: ['s', 'p'], cmp: 'exact', meta: ['Find All Anagrams in a String', 438, 'Medium', 'Sliding Window'],
+    ask: 'Return, from smallest to largest, every start index in s where a stretch uses exactly the letters of p in some order.',
+    sig: {
+      py: 'def findAnagrams(s: str, p: str) -> List[int]:',
+      js: 'function findAnagrams(s, p) {',
+      java: 'public List<Integer> findAnagrams(String s, String p) {',
+      cpp: 'vector<int> findAnagrams(string s, string p) {',
+      go: 'func findAnagrams(s string, p string) []int {'
+    },
+    examples: [[['cbaxabc', 'abc'], [0, 4]], [['aaaa', 'aa'], [0, 1, 2]], [['ab', 'abc'], []]],
+    hidden: [[['a', 'a'], [0]], [['xyz', 'a'], []], [['abab', 'ab'], [0, 1, 2]], [['baab', 'ab'], [0, 2]], [['listensilent', 'enlist'], [0, 3, 6]]],
+    ref: function (s, p) {
+      const k = p.length, need = p.split('').sort().join(''), out = [];
+      for (let i = 0; i + k <= s.length; i++) if (s.slice(i, i + k).split('').sort().join('') === need) out.push(i);
+      return out;
+    }
+  },
+  'ransom-note': {
+    fn: 'canConstruct', params: ['ransomNote', 'magazine'], cmp: 'exact', meta: ['Ransom Note', 383, 'Easy', 'Hash Map'],
+    ask: 'Return true if ransomNote can be built from the letters of magazine, using each magazine letter at most once.',
+    sig: {
+      py: 'def canConstruct(ransomNote: str, magazine: str) -> bool:',
+      js: 'function canConstruct(ransomNote, magazine) {',
+      java: 'public boolean canConstruct(String ransomNote, String magazine) {',
+      cpp: 'bool canConstruct(string ransomNote, string magazine) {',
+      go: 'func canConstruct(ransomNote string, magazine string) bool {'
+    },
+    examples: [[['hat', 'that'], true], [['zoo', 'zo'], false], [['', 'abc'], true]],
+    hidden: [[['a', ''], false], [['aab', 'baa'], true], [['abc', 'aabbc'], true], [['bbb', 'abab'], false], [['note', 'tone'], true], [['x', 'y'], false]],
+    ref: function (ransomNote, magazine) {
+      const c = {}; for (const ch of magazine) c[ch] = (c[ch] || 0) + 1;
+      for (const ch of ransomNote) { if (!c[ch]) return false; c[ch]--; }
+      return true;
+    }
+  },
+  'isomorphic-strings': {
+    fn: 'isIsomorphic', params: ['s', 't'], cmp: 'exact', meta: ['Isomorphic Strings', 205, 'Easy', 'Hash Map'],
+    ask: 's and t have the same length. Return true if you can swap each letter of s for a letter of t, the same swap every time and no two letters onto one, to turn s into t.',
+    sig: {
+      py: 'def isIsomorphic(s: str, t: str) -> bool:',
+      js: 'function isIsomorphic(s, t) {',
+      java: 'public boolean isIsomorphic(String s, String t) {',
+      cpp: 'bool isIsomorphic(string s, string t) {',
+      go: 'func isIsomorphic(s string, t string) bool {'
+    },
+    examples: [[['abb', 'cdd'], true], [['abc', 'xxy'], false], [['ab', 'ca'], true]],
+    hidden: [[['', ''], true], [['a', 'a'], true], [['ab', 'aa'], false], [['badc', 'baba'], false], [['13', '42'], true], [['abab', 'cdcd'], true]],
+    ref: function (s, t) {
+      const a = new Map(), b = new Map();
+      for (let i = 0; i < s.length; i++) {
+        if ((a.has(s[i]) && a.get(s[i]) !== t[i]) || (b.has(t[i]) && b.get(t[i]) !== s[i])) return false;
+        a.set(s[i], t[i]); b.set(t[i], s[i]);
+      }
+      return true;
+    }
+  },
+  'lru-cache': {
+    fn: 'LRUCache', params: ['ops', 'args'], cmp: 'exact', io: { design: true, ctor: true }, meta: ['LRU Cache', 146, 'Medium', 'Hash Map'],
+    ask: 'Build a cache that holds at most capacity keys. get(key) returns the value or -1. put(key, value) adds or updates a key; when the cache is over capacity it drops the key used least recently. Both in O(1). The first op creates the cache with its capacity; the tests compare what each call returned (null for nothing).',
+    sig: { py: 'class LRUCache:', js: 'class LRUCache {', java: 'class LRUCache {', cpp: 'class LRUCache {', go: 'type LRUCache struct {' },
+    starter: {
+      py: 'class LRUCache:\n    def __init__(self, capacity: int):\n        pass\n\n    def get(self, key: int) -> int:\n        pass\n\n    def put(self, key: int, value: int) -> None:\n        pass\n',
+      js: 'class LRUCache {\n  constructor(capacity) {\n  }\n  get(key) {\n  }\n  put(key, value) {\n  }\n}\n',
+      java: 'class LRUCache {\n    public LRUCache(int capacity) {\n    }\n    public int get(int key) {\n        return -1;\n    }\n    public void put(int key, int value) {\n    }\n}\n',
+      cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nclass LRUCache {\npublic:\n    LRUCache(int capacity) {\n    }\n    int get(int key) {\n        return -1;\n    }\n    void put(int key, int value) {\n    }\n};\n',
+      go: 'package main\n\ntype LRUCache struct {\n}\n\nfunc Constructor(capacity int) LRUCache {\n    return LRUCache{}\n}\n\nfunc (c *LRUCache) Get(key int) int {\n    return -1\n}\n\nfunc (c *LRUCache) Put(key int, value int) {\n}\n'
+    },
+    examples: [[[['LRUCache', 'put', 'put', 'get', 'put', 'get', 'get'], [[2], [1, 10], [2, 20], [1], [3, 30], [2], [3]]], [null, null, null, 10, null, -1, 30]], [[['LRUCache', 'put', 'get', 'put', 'get', 'get'], [[1], [5, 50], [5], [6, 60], [5], [6]]], [null, null, 50, null, -1, 60]], [[['LRUCache', 'get'], [[3], [9]]], [null, -1]]],
+    hidden: [[[['LRUCache', 'put', 'put', 'put', 'put', 'get', 'get'], [[2], [1, 1], [2, 2], [1, 100], [3, 3], [1], [2]]], [null, null, null, null, null, 100, -1]], [[['LRUCache', 'put', 'put', 'put', 'get', 'put', 'get', 'get', 'get'], [[3], [1, 1], [2, 2], [3, 3], [1], [4, 4], [2], [1], [4]]], [null, null, null, null, 1, null, -1, 1, 4]], [[['LRUCache', 'put', 'put', 'get', 'get'], [[2], [7, 0], [7, 5], [7], [8]]], [null, null, null, 5, -1]], [[['LRUCache', 'put', 'put', 'put', 'get', 'get'], [[1], [1, 1], [2, 2], [3, 3], [2], [3]]], [null, null, null, null, -1, 3]], [[['LRUCache', 'put', 'get', 'put', 'get', 'put', 'get', 'get'], [[2], [1, 5], [1], [2, 6], [2], [3, 7], [1], [3]]], [null, null, 5, null, 6, null, -1, 7]]],
+    ref: class {
+      constructor(capacity) { this.cap = capacity; this.m = new Map(); }
+      get(key) { if (!this.m.has(key)) return -1; const v = this.m.get(key); this.m.delete(key); this.m.set(key, v); return v; }
+      put(key, value) { this.m.delete(key); this.m.set(key, value); if (this.m.size > this.cap) this.m.delete(this.m.keys().next().value); }
+    }
+  },
+  'find-pivot-index': {
+    fn: 'pivotIndex', params: ['nums'], cmp: 'exact', meta: ['Find Pivot Index', 724, 'Easy', 'Prefix Sum'],
+    ask: 'Return the leftmost index where the sum of everything to its left equals the sum of everything to its right (an empty side sums to 0), or -1 if there is none.',
+    sig: {
+      py: 'def pivotIndex(nums: List[int]) -> int:',
+      js: 'function pivotIndex(nums) {',
+      java: 'public int pivotIndex(int[] nums) {',
+      cpp: 'int pivotIndex(vector<int>& nums) {',
+      go: 'func pivotIndex(nums []int) int {'
+    },
+    examples: [[[[1, 2, 6, 3]], 2], [[[1, 2, 3]], -1], [[[7]], 0]],
+    hidden: [[[[0, 0, 0]], 0], [[[2, -1, 1]], 0], [[[-1, -1, -1, -1, -1, 0]], 2], [[[1, 1]], -1], [[[10, 5, -5, 3, 7]], -1], [[[3, 0, 3]], 1]],
+    ref: function (nums) {
+      const total = nums.reduce((a, b) => a + b, 0); let left = 0;
+      for (let i = 0; i < nums.length; i++) { if (left === total - left - nums[i]) return i; left += nums[i]; }
+      return -1;
+    }
+  },
+  'search-insert-position': {
+    fn: 'searchInsert', params: ['nums', 'target'], cmp: 'exact', meta: ['Search Insert Position', 35, 'Easy', 'Binary Search'],
+    ask: 'nums is sorted with no repeats. Return the index of target, or the index where it would go to keep nums sorted. Aim for O(log n).',
+    sig: {
+      py: 'def searchInsert(nums: List[int], target: int) -> int:',
+      js: 'function searchInsert(nums, target) {',
+      java: 'public int searchInsert(int[] nums, int target) {',
+      cpp: 'int searchInsert(vector<int>& nums, int target) {',
+      go: 'func searchInsert(nums []int, target int) int {'
+    },
+    examples: [[[[2, 4, 6, 8], 6], 2], [[[2, 4, 6, 8], 5], 2], [[[2, 4, 6, 8], 9], 4]],
+    hidden: [[[[1], 0], 0], [[[1], 2], 1], [[[-5, -2, 0], -3], 1], [[[10, 20, 30, 40, 50], 10], 0], [[[3, 5], 4], 1], [[[1, 3, 5, 7, 9, 11], 12], 6]],
+    ref: function (nums, target) { let lo = 0, hi = nums.length; while (lo < hi) { const m = (lo + hi) >> 1; if (nums[m] < target) lo = m + 1; else hi = m; } return lo; }
+  },
+  'koko-eating-bananas': {
+    fn: 'minEatingSpeed', params: ['piles', 'h'], cmp: 'exact', meta: ['Koko Eating Bananas', 875, 'Medium', 'Binary Search'],
+    ask: 'Each hour Koko eats up to k bananas from one pile (if the pile has fewer, she finishes it and waits). Return the smallest whole k that finishes every pile within h hours. h is at least the number of piles.',
+    sig: {
+      py: 'def minEatingSpeed(piles: List[int], h: int) -> int:',
+      js: 'function minEatingSpeed(piles, h) {',
+      java: 'public int minEatingSpeed(int[] piles, int h) {',
+      cpp: 'int minEatingSpeed(vector<int>& piles, int h) {',
+      go: 'func minEatingSpeed(piles []int, h int) int {'
+    },
+    examples: [[[[4, 9, 6], 5], 5], [[[10], 2], 5], [[[1, 1, 1], 3], 1]],
+    hidden: [[[[5, 5, 5, 5], 4], 5], [[[5, 5, 5, 5], 8], 3], [[[1000000000], 2], 500000000], [[[2, 7], 9], 1], [[[12, 7, 3], 5], 6], [[[1, 2, 3, 4, 5], 5], 5]],
+    ref: function (piles, h) {
+      let lo = 1, hi = Math.max(...piles);
+      while (lo < hi) { const k = Math.floor((lo + hi) / 2); let t = 0; for (const p of piles) t += Math.ceil(p / k); if (t <= h) hi = k; else lo = k + 1; }
+      return lo;
+    }
+  },
+  'search-a-2d-matrix': {
+    fn: 'searchMatrix', params: ['matrix', 'target'], cmp: 'exact', meta: ['Search a 2D Matrix', 74, 'Medium', 'Binary Search'],
+    ask: 'Each row of matrix is sorted, and each row starts above the last value of the row before it. Return true if target is in matrix, in O(log(rows × columns)).',
+    sig: {
+      py: 'def searchMatrix(matrix: List[List[int]], target: int) -> bool:',
+      js: 'function searchMatrix(matrix, target) {',
+      java: 'public boolean searchMatrix(int[][] matrix, int target) {',
+      cpp: 'bool searchMatrix(vector<vector<int>>& matrix, int target) {',
+      go: 'func searchMatrix(matrix [][]int, target int) bool {'
+    },
+    examples: [[[[[1, 4, 6], [8, 10, 13]], 10], true], [[[[1, 4, 6], [8, 10, 13]], 7], false], [[[[5]], 5], true]],
+    hidden: [[[[[5]], 1], false], [[[[1, 2, 3, 4]], 4], true], [[[[1], [3], [5]], 3], true], [[[[-10, -5], [0, 5], [10, 15]], 12], false], [[[[2, 4], [6, 8]], 2], true], [[[[2, 4], [6, 8]], 9], false]],
+    ref: function (matrix, target) {
+      const w = matrix[0].length; let lo = 0, hi = matrix.length * w - 1;
+      while (lo <= hi) { const m = (lo + hi) >> 1, v = matrix[Math.floor(m / w)][m % w]; if (v === target) return true; if (v < target) lo = m + 1; else hi = m - 1; }
+      return false;
+    }
+  },
+  'spiral-matrix': {
+    fn: 'spiralOrder', params: ['matrix'], cmp: 'exact', meta: ['Spiral Matrix', 54, 'Medium', 'Matrix'],
+    ask: 'Return every value of matrix in spiral order: along the top row, down the right side, back along the bottom, up the left side, then inward.',
+    sig: {
+      py: 'def spiralOrder(matrix: List[List[int]]) -> List[int]:',
+      js: 'function spiralOrder(matrix) {',
+      java: 'public List<Integer> spiralOrder(int[][] matrix) {',
+      cpp: 'vector<int> spiralOrder(vector<vector<int>>& matrix) {',
+      go: 'func spiralOrder(matrix [][]int) []int {'
+    },
+    examples: [[[[[1, 2], [3, 4]]], [1, 2, 4, 3]], [[[[1, 2, 3]]], [1, 2, 3]], [[[[1], [2], [3]]], [1, 2, 3]]],
+    hidden: [[[[[7]]], [7]], [[[[9, 8, 7], [6, 5, 4], [3, 2, 1]]], [9, 8, 7, 4, 1, 2, 3, 6, 5]], [[[[1, 2, 3, 4], [5, 6, 7, 8]]], [1, 2, 3, 4, 8, 7, 6, 5]], [[[[1, 2], [3, 4], [5, 6]]], [1, 2, 4, 6, 5, 3]], [[[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]]], [0, 1, 2, 3, 7, 11, 15, 14, 13, 12, 8, 4, 5, 6, 10, 9]], [[[[-1, -2], [-3, -4]]], [-1, -2, -4, -3]]],
+    ref: function (matrix) {
+      const out = []; let top = 0, bot = matrix.length - 1, left = 0, right = matrix[0].length - 1;
+      while (top <= bot && left <= right) {
+        for (let j = left; j <= right; j++) out.push(matrix[top][j]);
+        for (let i = top + 1; i <= bot; i++) out.push(matrix[i][right]);
+        if (top < bot) for (let j = right - 1; j >= left; j--) out.push(matrix[bot][j]);
+        if (left < right) for (let i = bot - 1; i > top; i--) out.push(matrix[i][left]);
+        top++; bot--; left++; right--;
+      }
+      return out;
+    }
+  },
+  'set-matrix-zeroes': {
+    fn: 'setZeroes', params: ['matrix'], cmp: 'exact', io: { inplace: 0 }, meta: ['Set Matrix Zeroes', 73, 'Medium', 'Matrix'],
+    ask: 'Wherever matrix has a 0, set that whole row and that whole column to 0. Change matrix itself and return nothing.',
+    sig: {
+      py: 'def setZeroes(matrix: List[List[int]]) -> None:',
+      js: 'function setZeroes(matrix) {',
+      java: 'public void setZeroes(int[][] matrix) {',
+      cpp: 'void setZeroes(vector<vector<int>>& matrix) {',
+      go: 'func setZeroes(matrix [][]int) {'
+    },
+    examples: [[[[[1, 2], [0, 3]]], [[0, 2], [0, 0]]], [[[[1, 0, 1], [1, 1, 1]]], [[0, 0, 0], [1, 0, 1]]], [[[[5, 0], [0, 5]]], [[0, 0], [0, 0]]]],
+    hidden: [[[[[1]]], [[1]]], [[[[1, 2, 3], [4, 5, 6]]], [[1, 2, 3], [4, 5, 6]]], [[[[1, 2, 3, 4], [5, 0, 7, 8], [9, 10, 11, 0]]], [[1, 0, 3, 0], [0, 0, 0, 0], [0, 0, 0, 0]]], [[[[0, 0], [1, 1]]], [[0, 0], [0, 0]]], [[[[1], [0], [2]]], [[0], [0], [0]]], [[[[-1, 2, 0]]], [[0, 0, 0]]]],
+    ref: function (matrix) {
+      const rows = new Set(), cols = new Set();
+      matrix.forEach((r, i) => r.forEach((v, j) => { if (v === 0) { rows.add(i); cols.add(j); } }));
+      matrix.forEach((r, i) => r.forEach((v, j) => { if (rows.has(i) || cols.has(j)) r[j] = 0; }));
+    }
+  },
+  'non-overlapping-intervals': {
+    fn: 'eraseOverlapIntervals', params: ['intervals'], cmp: 'exact', meta: ['Non-overlapping Intervals', 435, 'Medium', 'Intervals'],
+    ask: 'Return the fewest intervals to remove so that the rest do not overlap. Intervals that only touch at an end, like [1, 2] and [2, 3], do not overlap.',
+    sig: {
+      py: 'def eraseOverlapIntervals(intervals: List[List[int]]) -> int:',
+      js: 'function eraseOverlapIntervals(intervals) {',
+      java: 'public int eraseOverlapIntervals(int[][] intervals) {',
+      cpp: 'int eraseOverlapIntervals(vector<vector<int>>& intervals) {',
+      go: 'func eraseOverlapIntervals(intervals [][]int) int {'
+    },
+    examples: [[[[[1, 3], [2, 4], [3, 5]]], 1], [[[[0, 5], [0, 5]]], 1], [[[[1, 2], [2, 3], [0, 4]]], 1]],
+    hidden: [[[[[5, 6]]], 0], [[[]], 0], [[[[1, 100], [2, 3], [4, 5], [6, 7]]], 1], [[[[1, 4], [2, 5], [3, 6], [4, 7]]], 2], [[[[-3, -1], [-2, 0], [0, 2]]], 1], [[[[0, 1], [0, 1], [0, 1], [1, 2]]], 2]],
+    ref: function (intervals) {
+      const a = intervals.slice().sort((x, y) => x[1] - y[1]); let end = -Infinity, keep = 0;
+      for (const [s, e] of a) if (s >= end) { keep++; end = e; }
+      return a.length - keep;
+    }
+  },
+  'jump-game-ii': {
+    fn: 'jump', params: ['nums'], cmp: 'exact', meta: ['Jump Game II', 45, 'Medium', 'Greedy'],
+    ask: 'You start on the first stone and nums[i] is the longest jump from stone i. The last stone can always be reached. Return the fewest jumps to get there.',
+    sig: {
+      py: 'def jump(nums: List[int]) -> int:',
+      js: 'function jump(nums) {',
+      java: 'public int jump(int[] nums) {',
+      cpp: 'int jump(vector<int>& nums) {',
+      go: 'func jump(nums []int) int {'
+    },
+    examples: [[[[2, 1, 3, 1, 1]], 2], [[[0]], 0], [[[1, 1, 1]], 2]],
+    hidden: [[[[5, 1, 1, 1, 1]], 1], [[[1, 2]], 1], [[[1, 2, 1, 1, 1]], 3], [[[2, 3, 0, 1, 4]], 2], [[[1, 1, 1, 1, 1, 1]], 5], [[[4, 1, 1, 3, 1, 1, 1]], 2]],
+    ref: function (nums) {
+      let jumps = 0, end = 0, far = 0;
+      for (let i = 0; i < nums.length - 1; i++) { far = Math.max(far, i + nums[i]); if (i === end) { jumps++; end = far; } }
+      return jumps;
+    }
+  },
+  'gas-station': {
+    fn: 'canCompleteCircuit', params: ['gas', 'cost'], cmp: 'exact', meta: ['Gas Station', 134, 'Medium', 'Greedy'],
+    ask: 'Stations sit on a loop. At station i you fill up gas[i], and driving to the next station uses cost[i]. Starting with an empty tank, return the station from which you can drive all the way round, or -1. When a start exists it is the only one.',
+    sig: {
+      py: 'def canCompleteCircuit(gas: List[int], cost: List[int]) -> int:',
+      js: 'function canCompleteCircuit(gas, cost) {',
+      java: 'public int canCompleteCircuit(int[] gas, int[] cost) {',
+      cpp: 'int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {',
+      go: 'func canCompleteCircuit(gas []int, cost []int) int {'
+    },
+    examples: [[[[1, 4, 2], [3, 1, 2]], 1], [[[2, 2], [3, 2]], -1], [[[5], [4]], 0]],
+    hidden: [[[[4], [5]], -1], [[[0, 0, 5], [1, 1, 1]], 2], [[[3, 3, 4], [3, 4, 4]], -1], [[[6, 1, 1, 1], [2, 2, 2, 2]], 0], [[[2, 0, 0, 3], [1, 1, 1, 1]], 3], [[[0, 0, 0, 9], [2, 2, 2, 2]], 3]],
+    ref: function (gas, cost) {
+      let total = 0, tank = 0, start = 0;
+      for (let i = 0; i < gas.length; i++) { total += gas[i] - cost[i]; tank += gas[i] - cost[i]; if (tank < 0) { start = i + 1; tank = 0; } }
+      return total < 0 ? -1 : start;
+    }
+  },
+  'partition-labels': {
+    fn: 'partitionLabels', params: ['s'], cmp: 'exact', meta: ['Partition Labels', 763, 'Medium', 'Greedy'],
+    ask: 'Cut s into as many pieces as possible so that each letter appears in only one piece. Return the piece lengths, left to right.',
+    sig: {
+      py: 'def partitionLabels(s: str) -> List[int]:',
+      js: 'function partitionLabels(s) {',
+      java: 'public List<Integer> partitionLabels(String s) {',
+      cpp: 'vector<int> partitionLabels(string s) {',
+      go: 'func partitionLabels(s string) []int {'
+    },
+    examples: [[['abacdd'], [3, 1, 2]], [['zzz'], [3]], [['abc'], [1, 1, 1]]],
+    hidden: [[['a'], [1]], [['abca'], [4]], [['abcdabefgfh'], [6, 1, 3, 1]], [['xyxzz'], [3, 2]], [['aabbccaa'], [8]]],
+    ref: function (s) {
+      const last = {}; for (let i = 0; i < s.length; i++) last[s[i]] = i;
+      const out = []; let start = 0, end = 0;
+      for (let i = 0; i < s.length; i++) { end = Math.max(end, last[s[i]]); if (i === end) { out.push(end - start + 1); start = i + 1; } }
+      return out;
+    }
+  },
+  'evaluate-reverse-polish-notation': {
+    fn: 'evalRPN', params: ['tokens'], cmp: 'exact', meta: ['Evaluate Reverse Polish Notation', 150, 'Medium', 'Stack'],
+    ask: 'tokens is a sum written in postfix: each operator (+, -, *, /) applies to the two values before it. Division drops the fraction toward zero. Return the result.',
+    sig: {
+      py: 'def evalRPN(tokens: List[str]) -> int:',
+      js: 'function evalRPN(tokens) {',
+      java: 'public int evalRPN(String[] tokens) {',
+      cpp: 'int evalRPN(vector<string>& tokens) {',
+      go: 'func evalRPN(tokens []string) int {'
+    },
+    examples: [[[['3', '4', '+', '2', '*']], 14], [[['7', '2', '/']], 3], [[['-7', '2', '/']], -3]],
+    hidden: [[[['42']], 42], [[['1', '2', '-']], -1], [[['6', '-3', '*', '2', '+']], -16], [[['10', '3', '-', '4', '/']], 1], [[['2', '3', '4', '*', '+', '5', '-']], 9], [[['-1', '3', '/']], 0]],
+    ref: function (tokens) {
+      const st = [];
+      for (const t of tokens) {
+        if (!['+', '-', '*', '/'].includes(t)) { st.push(Number(t)); continue; }
+        const b = st.pop(), a = st.pop();
+        st.push(t === '+' ? a + b : t === '-' ? a - b : t === '*' ? a * b : Math.trunc(a / b) + 0);
+      }
+      return st[0];
+    }
+  },
+  'largest-rectangle-in-histogram': {
+    fn: 'largestRectangleArea', params: ['heights'], cmp: 'exact', meta: ['Largest Rectangle in Histogram', 84, 'Hard', 'Stack'],
+    ask: 'heights are bars of width 1 standing side by side. Return the area of the largest rectangle that fits inside the bars.',
+    sig: {
+      py: 'def largestRectangleArea(heights: List[int]) -> int:',
+      js: 'function largestRectangleArea(heights) {',
+      java: 'public int largestRectangleArea(int[] heights) {',
+      cpp: 'int largestRectangleArea(vector<int>& heights) {',
+      go: 'func largestRectangleArea(heights []int) int {'
+    },
+    examples: [[[[2, 4, 3]], 6], [[[5]], 5], [[[1, 1, 1, 1]], 4]],
+    hidden: [[[[0]], 0], [[[6, 2, 5, 4, 5, 1, 6]], 12], [[[3, 6, 5, 7, 4, 8, 1, 0]], 20], [[[2, 1, 2]], 3], [[[4, 4, 4, 1]], 12], [[[1, 2, 3, 4, 5]], 9]],
+    ref: function (heights) {
+      const st = []; let best = 0;
+      for (let i = 0; i <= heights.length; i++) {
+        const h = i === heights.length ? 0 : heights[i];
+        while (st.length && heights[st[st.length - 1]] >= h) { const top = heights[st.pop()]; const left = st.length ? st[st.length - 1] + 1 : 0; best = Math.max(best, top * (i - left)); }
+        st.push(i);
+      }
+      return best;
+    }
+  },
+  'last-stone-weight': {
+    fn: 'lastStoneWeight', params: ['stones'], cmp: 'exact', meta: ['Last Stone Weight', 1046, 'Easy', 'Heap'],
+    ask: 'Each turn, smash the two heaviest stones together. Equal stones both break; otherwise the lighter breaks and the heavier keeps the difference. Return the weight of the last stone left, or 0 if none is.',
+    sig: {
+      py: 'def lastStoneWeight(stones: List[int]) -> int:',
+      js: 'function lastStoneWeight(stones) {',
+      java: 'public int lastStoneWeight(int[] stones) {',
+      cpp: 'int lastStoneWeight(vector<int>& stones) {',
+      go: 'func lastStoneWeight(stones []int) int {'
+    },
+    examples: [[[[3, 7, 2]], 2], [[[5, 5]], 0], [[[9]], 9]],
+    hidden: [[[[1, 1, 1]], 1], [[[10, 4, 4]], 2], [[[6, 4]], 2], [[[2, 2, 2, 2]], 0], [[[8, 3, 3, 1]], 1], [[[20, 1]], 19]],
+    ref: function (stones) {
+      const a = stones.slice();
+      while (a.length > 1) { a.sort((x, y) => y - x); const x = a.shift(), y = a.shift(); if (x !== y) a.push(x - y); }
+      return a.length ? a[0] : 0;
+    }
+  },
+  'k-closest-points-to-origin': {
+    fn: 'kClosest', params: ['points', 'k'], cmp: 'unordered', meta: ['K Closest Points to Origin', 973, 'Medium', 'Heap'],
+    ask: 'Return the k points closest to (0, 0), measured by straight-line distance, in any order. The answer is always unique.',
+    sig: {
+      py: 'def kClosest(points: List[List[int]], k: int) -> List[List[int]]:',
+      js: 'function kClosest(points, k) {',
+      java: 'public int[][] kClosest(int[][] points, int k) {',
+      cpp: 'vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {',
+      go: 'func kClosest(points [][]int, k int) [][]int {'
+    },
+    examples: [[[[[1, 2], [3, 3], [-1, 0]], 2], [[-1, 0], [1, 2]]], [[[[5, 5]], 1], [[5, 5]]], [[[[2, 2], [-3, 0], [1, -1]], 1], [[1, -1]]]],
+    hidden: [[[[[0, 0], [1, 1], [2, 2]], 2], [[0, 0], [1, 1]]], [[[[-4, -4], [4, 4], [0, 6]], 2], [[-4, -4], [4, 4]]], [[[[3, 4], [0, 5], [1, 1]], 1], [[1, 1]]], [[[[10, 0], [0, -9], [-8, 0], [7, 7]], 3], [[-8, 0], [0, -9], [7, 7]]], [[[[1, 3], [-2, 2]], 2], [[1, 3], [-2, 2]]]],
+    ref: function (points, k) { return points.slice().sort((a, b) => a[0] * a[0] + a[1] * a[1] - b[0] * b[0] - b[1] * b[1]).slice(0, k); }
+  },
+  'palindrome-linked-list': {
+    fn: 'isPalindrome', params: ['head'], cmp: 'exact', io: { args: ['list'] }, meta: ['Palindrome Linked List', 234, 'Easy', 'In-place Reversal'],
+    ask: 'Return true if the values of the linked list read the same from both ends. Try O(1) extra space by reversing half of it.',
+    sig: {
+      py: 'def isPalindrome(head: Optional[ListNode]) -> bool:',
+      js: 'function isPalindrome(head) {',
+      java: 'public boolean isPalindrome(ListNode head) {',
+      cpp: 'bool isPalindrome(ListNode* head) {',
+      go: 'func isPalindrome(head *ListNode) bool {'
+    },
+    examples: [[[[4, 5, 4]], true], [[[1, 2]], false], [[[7]], true]],
+    hidden: [[[[]], true], [[[1, 1]], true], [[[1, 2, 3, 2, 1]], true], [[[1, 2, 3, 1]], false], [[[-1, -1, 2]], false], [[[9, 8, 8, 9, 9]], false]],
+    ref: function (head) { const v = []; for (let n = head; n; n = n.next) v.push(n.val); return v.join(',') === v.slice().reverse().join(','); }
+  },
+  'reorder-list': {
+    fn: 'reorderList', params: ['head'], cmp: 'exact', io: { args: ['list'], inplace: 0 }, meta: ['Reorder List', 143, 'Medium', 'In-place Reversal'],
+    ask: 'Relink the list as first, last, second, second-to-last, and so on, by changing next pointers (not values). Return nothing; the tests read the list from head afterwards.',
+    sig: {
+      py: 'def reorderList(head: Optional[ListNode]) -> None:',
+      js: 'function reorderList(head) {',
+      java: 'public void reorderList(ListNode head) {',
+      cpp: 'void reorderList(ListNode* head) {',
+      go: 'func reorderList(head *ListNode) {'
+    },
+    examples: [[[[10, 20, 30, 40, 50]], [10, 50, 20, 40, 30]], [[[5, 6, 7]], [5, 7, 6]], [[[1, 2, 3, 4, 5, 6]], [1, 6, 2, 5, 3, 4]]],
+    hidden: [[[[]], []], [[[1]], [1]], [[[1, 2]], [1, 2]], [[[1, 2, 3, 4]], [1, 4, 2, 3]], [[[9, 9, 1, 1]], [9, 1, 9, 1]], [[[-3, -2, -1, 0, 1, 2, 3]], [-3, 3, -2, 2, -1, 1, 0]]],
+    ref: function (head) {
+      const nodes = []; for (let n = head; n; n = n.next) nodes.push(n);
+      let l = 0, r = nodes.length - 1, prev = null;
+      while (l <= r) { const pair = l === r ? [nodes[l]] : [nodes[l], nodes[r]]; for (const n of pair) { if (prev) prev.next = n; prev = n; } l++; r--; }
+      if (prev) prev.next = null;
+    }
+  },
+  'happy-number': {
+    fn: 'isHappy', params: ['n'], cmp: 'exact', meta: ['Happy Number', 202, 'Easy', 'Fast & Slow Pointers'],
+    ask: 'Replace n by the sum of the squares of its digits, again and again. Return true if this reaches 1, and false if it loops forever without reaching 1.',
+    sig: {
+      py: 'def isHappy(n: int) -> bool:',
+      js: 'function isHappy(n) {',
+      java: 'public boolean isHappy(int n) {',
+      cpp: 'bool isHappy(int n) {',
+      go: 'func isHappy(n int) bool {'
+    },
+    examples: [[[7], true], [[4], false], [[1], true]],
+    hidden: [[[2], false], [[10], true], [[100], true], [[23], true], [[11], false], [[1111111], true]],
+    ref: function (n) {
+      const next = (x) => String(x).split('').reduce((s, d) => s + d * d, 0);
+      let slow = n, fast = next(n);
+      while (fast !== 1 && slow !== fast) { slow = next(slow); fast = next(next(fast)); }
+      return fast === 1;
+    }
+  },
+  'find-the-duplicate-number': {
+    fn: 'findDuplicate', params: ['nums'], cmp: 'exact', meta: ['Find the Duplicate Number', 287, 'Medium', 'Fast & Slow Pointers'],
+    ask: 'nums has n + 1 values, each between 1 and n, so at least one repeats. Exactly one value repeats (possibly many times). Return it without changing nums and with O(1) extra space.',
+    sig: {
+      py: 'def findDuplicate(nums: List[int]) -> int:',
+      js: 'function findDuplicate(nums) {',
+      java: 'public int findDuplicate(int[] nums) {',
+      cpp: 'int findDuplicate(vector<int>& nums) {',
+      go: 'func findDuplicate(nums []int) int {'
+    },
+    examples: [[[[1, 4, 2, 3, 4]], 4], [[[2, 2, 2]], 2], [[[1, 1]], 1]],
+    hidden: [[[[5, 1, 2, 3, 4, 5]], 5], [[[2, 5, 9, 6, 9, 3, 8, 9, 7, 1]], 9], [[[1, 3, 4, 2, 1]], 1], [[[4, 3, 1, 4, 2]], 4], [[[2, 1, 2]], 2], [[[6, 6, 6, 6, 6, 6, 6]], 6]],
+    ref: function (nums) {
+      let slow = nums[0], fast = nums[nums[0]];
+      while (slow !== fast) { slow = nums[slow]; fast = nums[nums[fast]]; }
+      slow = 0; while (slow !== fast) { slow = nums[slow]; fast = nums[fast]; }
+      return slow;
+    }
+  },
+  'same-tree': {
+    fn: 'isSameTree', params: ['p', 'q'], cmp: 'exact', io: { args: ['tree', 'tree'] }, meta: ['Same Tree', 100, 'Easy', 'Depth-First Search'],
+    ask: 'Return true if the two binary trees have the same shape and the same value in every node.',
+    sig: {
+      py: 'def isSameTree(p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:',
+      js: 'function isSameTree(p, q) {',
+      java: 'public boolean isSameTree(TreeNode p, TreeNode q) {',
+      cpp: 'bool isSameTree(TreeNode* p, TreeNode* q) {',
+      go: 'func isSameTree(p *TreeNode, q *TreeNode) bool {'
+    },
+    examples: [[[[1, 2], [1, 2]], true], [[[1, 2], [1, null, 2]], false], [[[], []], true]],
+    hidden: [[[[5], [6]], false], [[[1, 2, 3], [1, 2, 3]], true], [[[1, 2, 3], [1, 3, 2]], false], [[[0, null, -1], [0, null, -1]], true], [[[], [1]], false], [[[4, 2, 6, 1, 3, 5, 7], [4, 2, 6, 1, 3, 5, 8]], false]],
+    ref: function (p, q) {
+      const same = (a, b) => (!a || !b ? a === b : a.val === b.val && same(a.left, b.left) && same(a.right, b.right));
+      return same(p, q);
+    }
+  },
+  'max-area-of-island': {
+    fn: 'maxAreaOfIsland', params: ['grid'], cmp: 'exact', meta: ['Max Area of Island', 695, 'Medium', 'Depth-First Search'],
+    ask: 'grid is a map of 1 (land) and 0 (water). Land cells touching up, down, left or right form an island. Return the number of cells in the biggest island, or 0 if there is no land.',
+    sig: {
+      py: 'def maxAreaOfIsland(grid: List[List[int]]) -> int:',
+      js: 'function maxAreaOfIsland(grid) {',
+      java: 'public int maxAreaOfIsland(int[][] grid) {',
+      cpp: 'int maxAreaOfIsland(vector<vector<int>>& grid) {',
+      go: 'func maxAreaOfIsland(grid [][]int) int {'
+    },
+    examples: [[[[[1, 1, 0], [0, 1, 0], [1, 0, 1]]], 3], [[[[0, 0]]], 0], [[[[1]]], 1]],
+    hidden: [[[[[1, 1], [1, 1]]], 4], [[[[1, 0, 1, 0, 1]]], 1], [[[[1, 1, 0, 0], [0, 0, 0, 1], [0, 1, 1, 1]]], 4], [[[[0, 1, 0], [1, 1, 1], [0, 1, 0]]], 5], [[[[1, 0], [0, 1]]], 1]],
+    ref: function (grid) {
+      const g = grid.map((r) => r.slice()); let best = 0;
+      const area = (i, j) => { if (i < 0 || j < 0 || i >= g.length || j >= g[0].length || g[i][j] !== 1) return 0; g[i][j] = 0; return 1 + area(i + 1, j) + area(i - 1, j) + area(i, j + 1) + area(i, j - 1); };
+      for (let i = 0; i < g.length; i++) for (let j = 0; j < g[i].length; j++) best = Math.max(best, area(i, j));
+      return best;
+    }
+  },
+  'course-schedule-ii': {
+    fn: 'findOrder', params: ['numCourses', 'prerequisites'], cmp: 'any', meta: ['Course Schedule II', 210, 'Medium', 'Breadth-First Search'],
+    ask: 'Courses are numbered 0 to numCourses - 1, and [a, b] means b must come before a. Return any order that takes every course, or an empty list if no order works.',
+    sig: {
+      py: 'def findOrder(numCourses: int, prerequisites: List[List[int]]) -> List[int]:',
+      js: 'function findOrder(numCourses, prerequisites) {',
+      java: 'public int[] findOrder(int numCourses, int[][] prerequisites) {',
+      cpp: 'vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {',
+      go: 'func findOrder(numCourses int, prerequisites [][]int) []int {'
+    },
+    examples: [[[2, [[1, 0]]], [0, 1]], [[3, [[0, 1], [1, 2], [2, 0]]], []], [[1, []], [0]]],
+    hidden: [[[3, []], [0, 1, 2]], [[4, [[1, 0], [2, 0], [3, 1], [3, 2]]], [0, 1, 2, 3]], [[2, [[0, 1], [1, 0]]], []], [[5, [[4, 3], [3, 2], [2, 1], [1, 0]]], [0, 1, 2, 3, 4]], [[3, [[0, 2], [1, 2]]], [2, 0, 1]], [[4, [[1, 0], [2, 1], [0, 2], [3, 0]]], []]],
+    check: function (args, got, want) {
+      const [n, pre] = args;
+      if (!Array.isArray(got)) return false;
+      if (!want.length) return got.length === 0;
+      if (got.length !== n || new Set(got).size !== n || got.some((c) => !(c >= 0 && c < n))) return false;
+      const pos = {}; got.forEach((c, i) => { pos[c] = i; });
+      return pre.every(([a, b]) => pos[b] < pos[a]);
+    },
+    ref: function (numCourses, prerequisites) {
+      const indeg = new Array(numCourses).fill(0), out = Array.from({ length: numCourses }, () => []);
+      for (const [a, b] of prerequisites) { out[b].push(a); indeg[a]++; }
+      const q = [], order = []; indeg.forEach((d, i) => { if (!d) q.push(i); });
+      while (q.length) { const c = q.shift(); order.push(c); for (const n of out[c]) if (--indeg[n] === 0) q.push(n); }
+      return order.length === numCourses ? order : [];
+    }
+  },
+  'letter-combinations-of-a-phone-number': {
+    fn: 'letterCombinations', params: ['digits'], cmp: 'unordered', meta: ['Letter Combinations of a Phone Number', 17, 'Medium', 'Backtracking'],
+    ask: 'On a phone keypad 2 is abc, 3 def, 4 ghi, 5 jkl, 6 mno, 7 pqrs, 8 tuv and 9 wxyz. Return every letter string the digits could spell, in any order. No digits means an empty list.',
+    sig: {
+      py: 'def letterCombinations(digits: str) -> List[str]:',
+      js: 'function letterCombinations(digits) {',
+      java: 'public List<String> letterCombinations(String digits) {',
+      cpp: 'vector<string> letterCombinations(string digits) {',
+      go: 'func letterCombinations(digits string) []string {'
+    },
+    examples: [[['2'], ['a', 'b', 'c']], [[''], []], [['79'], ['pw', 'px', 'py', 'pz', 'qw', 'qx', 'qy', 'qz', 'rw', 'rx', 'ry', 'rz', 'sw', 'sx', 'sy', 'sz']]],
+    hidden: [[['9'], ['w', 'x', 'y', 'z']], [['7'], ['p', 'q', 'r', 's']], [['22'], ['aa', 'ab', 'ac', 'ba', 'bb', 'bc', 'ca', 'cb', 'cc']], [['34'], ['dg', 'dh', 'di', 'eg', 'eh', 'ei', 'fg', 'fh', 'fi']], [['56'], ['jm', 'jn', 'jo', 'km', 'kn', 'ko', 'lm', 'ln', 'lo']], [['234'], ['adg', 'adh', 'adi', 'aeg', 'aeh', 'aei', 'afg', 'afh', 'afi', 'bdg', 'bdh', 'bdi', 'beg', 'beh', 'bei', 'bfg', 'bfh', 'bfi', 'cdg', 'cdh', 'cdi', 'ceg', 'ceh', 'cei', 'cfg', 'cfh', 'cfi']]],
+    ref: function (digits) {
+      if (!digits) return [];
+      const keys = { 2: 'abc', 3: 'def', 4: 'ghi', 5: 'jkl', 6: 'mno', 7: 'pqrs', 8: 'tuv', 9: 'wxyz' };
+      let out = [''];
+      for (const d of digits) out = out.flatMap((p) => keys[d].split('').map((c) => p + c));
+      return out;
+    }
+  },
+  'min-cost-climbing-stairs': {
+    fn: 'minCostClimbingStairs', params: ['cost'], cmp: 'exact', meta: ['Min Cost Climbing Stairs', 746, 'Easy', 'Dynamic Programming'],
+    ask: 'cost[i] is the price of standing on step i. You may start on step 0 or step 1 and climb 1 or 2 steps at a time. Return the cheapest way to get past the last step.',
+    sig: {
+      py: 'def minCostClimbingStairs(cost: List[int]) -> int:',
+      js: 'function minCostClimbingStairs(cost) {',
+      java: 'public int minCostClimbingStairs(int[] cost) {',
+      cpp: 'int minCostClimbingStairs(vector<int>& cost) {',
+      go: 'func minCostClimbingStairs(cost []int) int {'
+    },
+    examples: [[[[5, 10, 20]], 10], [[[0, 0]], 0], [[[3, 2, 4, 1]], 3]],
+    hidden: [[[[1, 100]], 1], [[[10, 1, 10, 1, 10]], 2], [[[7, 7, 7, 7]], 14], [[[0, 5, 0, 5, 0]], 0], [[[100, 1, 1, 100]], 2]],
+    ref: function (cost) { let a = 0, b = 0; for (let i = 2; i <= cost.length; i++) [a, b] = [b, Math.min(b + cost[i - 1], a + cost[i - 2])]; return b; }
+  },
+  'longest-common-subsequence': {
+    fn: 'longestCommonSubsequence', params: ['text1', 'text2'], cmp: 'exact', meta: ['Longest Common Subsequence', 1143, 'Medium', 'Dynamic Programming'],
+    ask: 'Return the length of the longest string whose letters appear, in order (gaps allowed), in both text1 and text2.',
+    sig: {
+      py: 'def longestCommonSubsequence(text1: str, text2: str) -> int:',
+      js: 'function longestCommonSubsequence(text1, text2) {',
+      java: 'public int longestCommonSubsequence(String text1, String text2) {',
+      cpp: 'int longestCommonSubsequence(string text1, string text2) {',
+      go: 'func longestCommonSubsequence(text1 string, text2 string) int {'
+    },
+    examples: [[['kitten', 'sitting'], 4], [['abc', 'xyz'], 0], [['same', 'same'], 4]],
+    hidden: [[['a', 'a'], 1], [['', 'abc'], 0], [['abcbdab', 'bdcaba'], 4], [['aaaa', 'aa'], 2], [['xyzabc', 'abcxyz'], 3], [['banana', 'atana'], 4]],
+    ref: function (text1, text2) {
+      const dp = Array.from({ length: text1.length + 1 }, () => new Array(text2.length + 1).fill(0));
+      for (let i = 1; i <= text1.length; i++) for (let j = 1; j <= text2.length; j++) dp[i][j] = text1[i - 1] === text2[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+      return dp[text1.length][text2.length];
+    }
+  },
+  'decode-ways': {
+    fn: 'numDecodings', params: ['s'], cmp: 'exact', meta: ['Decode Ways', 91, 'Medium', 'Dynamic Programming'],
+    ask: 'Letters are coded as numbers: A = 1, B = 2, up to Z = 26. Return how many ways the digit string s can be read back into letters. A piece may not start with 0.',
+    sig: {
+      py: 'def numDecodings(s: str) -> int:',
+      js: 'function numDecodings(s) {',
+      java: 'public int numDecodings(String s) {',
+      cpp: 'int numDecodings(string s) {',
+      go: 'func numDecodings(s string) int {'
+    },
+    examples: [[['11'], 2], [['27'], 1], [['30'], 0]],
+    hidden: [[['1'], 1], [['10'], 1], [['101'], 1], [['1111'], 5], [['123123'], 9], [['100'], 0], [['0'], 0]],
+    ref: function (s) {
+      let a = 1, b = s[0] === '0' ? 0 : 1;
+      for (let i = 1; i < s.length; i++) { const two = Number(s.slice(i - 1, i + 1)); const c = (s[i] !== '0' ? b : 0) + (two >= 10 && two <= 26 ? a : 0); a = b; b = c; }
+      return s.length ? b : 0;
+    }
+  },
+  'edit-distance': {
+    fn: 'minDistance', params: ['word1', 'word2'], cmp: 'exact', meta: ['Edit Distance', 72, 'Medium', 'Dynamic Programming'],
+    ask: 'One step inserts, deletes or replaces a single letter. Return the fewest steps that turn word1 into word2.',
+    sig: {
+      py: 'def minDistance(word1: str, word2: str) -> int:',
+      js: 'function minDistance(word1, word2) {',
+      java: 'public int minDistance(String word1, String word2) {',
+      cpp: 'int minDistance(string word1, string word2) {',
+      go: 'func minDistance(word1 string, word2 string) int {'
+    },
+    examples: [[['kitten', 'sitting'], 3], [['', 'abc'], 3], [['same', 'same'], 0]],
+    hidden: [[['a', ''], 1], [['ab', 'ba'], 2], [['sunday', 'saturday'], 3], [['abc', 'yabd'], 2], [['flaw', 'lawn'], 2], [['aaaa', 'b'], 4]],
+    ref: function (word1, word2) {
+      let prev = Array.from({ length: word2.length + 1 }, (_, j) => j);
+      for (let i = 1; i <= word1.length; i++) {
+        const cur = [i];
+        for (let j = 1; j <= word2.length; j++) cur[j] = word1[i - 1] === word2[j - 1] ? prev[j - 1] : 1 + Math.min(prev[j - 1], prev[j], cur[j - 1]);
+        prev = cur;
+      }
+      return prev[word2.length];
+    }
+  },
+  'partition-equal-subset-sum': {
+    fn: 'canPartition', params: ['nums'], cmp: 'exact', meta: ['Partition Equal Subset Sum', 416, 'Medium', 'Dynamic Programming'],
+    ask: 'nums holds positive numbers. Return true if they can be split into two groups with equal sums.',
+    sig: {
+      py: 'def canPartition(nums: List[int]) -> bool:',
+      js: 'function canPartition(nums) {',
+      java: 'public boolean canPartition(int[] nums) {',
+      cpp: 'bool canPartition(vector<int>& nums) {',
+      go: 'func canPartition(nums []int) bool {'
+    },
+    examples: [[[[3, 1, 4, 2]], true], [[[1, 2, 5]], false], [[[2, 2]], true]],
+    hidden: [[[[1]], false], [[[1, 1, 1, 1]], true], [[[3, 3, 3, 4, 5]], true], [[[2, 4, 8]], false], [[[100, 100, 100, 100, 100, 100, 100, 100]], true], [[[1, 2, 3, 8]], false]],
+    ref: function (nums) {
+      const total = nums.reduce((a, b) => a + b, 0); if (total % 2) return false;
+      const can = new Array(total / 2 + 1).fill(false); can[0] = true;
+      for (const x of nums) for (let s = total / 2; s >= x; s--) if (can[s - x]) can[s] = true;
+      return can[total / 2];
+    }
+  },
+  'diameter-of-binary-tree': {
+    fn: 'diameterOfBinaryTree', params: ['root'], cmp: 'exact', io: { args: ['tree'] }, meta: ['Diameter of Binary Tree', 543, 'Easy', 'Trees'],
+    ask: 'Return the number of edges on the longest path between any two nodes of the tree. The path does not have to pass through the root.',
+    sig: {
+      py: 'def diameterOfBinaryTree(root: Optional[TreeNode]) -> int:',
+      js: 'function diameterOfBinaryTree(root) {',
+      java: 'public int diameterOfBinaryTree(TreeNode root) {',
+      cpp: 'int diameterOfBinaryTree(TreeNode* root) {',
+      go: 'func diameterOfBinaryTree(root *TreeNode) int {'
+    },
+    examples: [[[[3, 1, 4, null, 2]], 3], [[[1]], 0], [[[1, 2]], 1]],
+    hidden: [[[[1, 2, 3]], 2], [[[1, 2, null, 3, 4, 5, null, null, 6]], 4], [[[1, null, 2, null, 3, null, 4]], 3], [[[5, 4, 6, 3, null, null, 7]], 4], [[[0, 0, 0, 0, 0, 0, 0]], 4]],
+    ref: function (root) {
+      let best = 0;
+      const h = (n) => { if (!n) return 0; const l = h(n.left), r = h(n.right); best = Math.max(best, l + r); return 1 + Math.max(l, r); };
+      h(root);
+      return best;
+    }
+  },
+  'balanced-binary-tree': {
+    fn: 'isBalanced', params: ['root'], cmp: 'exact', io: { args: ['tree'] }, meta: ['Balanced Binary Tree', 110, 'Easy', 'Trees'],
+    ask: 'Return true if, at every node, the heights of the left and right subtrees differ by at most 1.',
+    sig: {
+      py: 'def isBalanced(root: Optional[TreeNode]) -> bool:',
+      js: 'function isBalanced(root) {',
+      java: 'public boolean isBalanced(TreeNode root) {',
+      cpp: 'bool isBalanced(TreeNode* root) {',
+      go: 'func isBalanced(root *TreeNode) bool {'
+    },
+    examples: [[[[3, 1, 5]], true], [[[1, 2, null, 3]], false], [[[]], true]],
+    hidden: [[[[1]], true], [[[1, 2, 3, 4, null, null, null, 5]], false], [[[1, 2, 3, 4, 5, 6, 7]], true], [[[1, 2, 3, null, 4, 5]], true], [[[2, 1]], true], [[[1, null, 2, null, 3]], false]],
+    ref: function (root) {
+      const h = (n) => { if (!n) return 0; const l = h(n.left), r = h(n.right); if (l < 0 || r < 0 || Math.abs(l - r) > 1) return -1; return 1 + Math.max(l, r); };
+      return h(root) >= 0;
+    }
+  },
+  'kth-smallest-element-in-a-bst': {
+    fn: 'kthSmallest', params: ['root', 'k'], cmp: 'exact', io: { args: ['tree', null] }, meta: ['Kth Smallest Element in a BST', 230, 'Medium', 'Trees'],
+    ask: 'root is a binary search tree. Return its k-th smallest value (k = 1 is the smallest).',
+    sig: {
+      py: 'def kthSmallest(root: Optional[TreeNode], k: int) -> int:',
+      js: 'function kthSmallest(root, k) {',
+      java: 'public int kthSmallest(TreeNode root, int k) {',
+      cpp: 'int kthSmallest(TreeNode* root, int k) {',
+      go: 'func kthSmallest(root *TreeNode, k int) int {'
+    },
+    examples: [[[[5, 3, 7, 2, 4], 3], 4], [[[1], 1], 1], [[[2, 1, 3], 3], 3]],
+    hidden: [[[[8, 4, 12, 2, 6, 10, 14], 1], 2], [[[8, 4, 12, 2, 6, 10, 14], 7], 14], [[[8, 4, 12, 2, 6, 10, 14], 4], 8], [[[3, 1, null, null, 2], 2], 2], [[[-5, -10, 0], 2], -5]],
+    ref: function (root, k) {
+      const vals = []; const walk = (n) => { if (!n) return; walk(n.left); vals.push(n.val); walk(n.right); };
+      walk(root);
+      return vals[k - 1];
+    }
+  },
+  'implement-trie-prefix-tree': {
+    fn: 'Trie', params: ['ops', 'args'], cmp: 'exact', io: { design: true }, meta: ['Implement Trie (Prefix Tree)', 208, 'Medium', 'Tries'],
+    ask: 'Build a letter tree with insert(word), search(word) (true only for a whole inserted word) and startsWith(prefix) (true if any inserted word begins with prefix). The tests create one Trie and compare what each call returned (null for nothing).',
+    sig: { py: 'class Trie:', js: 'class Trie {', java: 'class Trie {', cpp: 'class Trie {', go: 'type Trie struct {' },
+    starter: {
+      py: 'class Trie:\n    def __init__(self):\n        pass\n\n    def insert(self, word: str) -> None:\n        pass\n\n    def search(self, word: str) -> bool:\n        pass\n\n    def startsWith(self, prefix: str) -> bool:\n        pass\n',
+      js: 'class Trie {\n  constructor() {\n  }\n  insert(word) {\n  }\n  search(word) {\n  }\n  startsWith(prefix) {\n  }\n}\n',
+      java: 'class Trie {\n    public Trie() {\n    }\n    public void insert(String word) {\n    }\n    public boolean search(String word) {\n        return false;\n    }\n    public boolean startsWith(String prefix) {\n        return false;\n    }\n}\n',
+      cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nclass Trie {\npublic:\n    Trie() {\n    }\n    void insert(string word) {\n    }\n    bool search(string word) {\n        return false;\n    }\n    bool startsWith(string prefix) {\n        return false;\n    }\n};\n',
+      go: 'package main\n\ntype Trie struct {\n}\n\nfunc Constructor() Trie {\n    return Trie{}\n}\n\nfunc (t *Trie) Insert(word string) {\n}\n\nfunc (t *Trie) Search(word string) bool {\n    return false\n}\n\nfunc (t *Trie) StartsWith(prefix string) bool {\n    return false\n}\n'
+    },
+    examples: [[[['insert', 'search', 'search', 'startsWith'], [['cart'], ['cart'], ['car'], ['car']]], [null, true, false, true]], [[['search'], [['a']]], [false]], [[['insert', 'insert', 'search', 'startsWith', 'startsWith'], [['to'], ['tea'], ['tea'], ['te'], ['tx']]], [null, null, true, true, false]]],
+    hidden: [[[['insert', 'search', 'insert', 'search'], [['plum'], ['plu'], ['plu'], ['plu']]], [null, false, null, true]], [[['insert', 'startsWith', 'search'], [['a'], ['a'], ['a']]], [null, true, true]], [[['insert', 'insert', 'search', 'search', 'startsWith'], [['dog'], ['dot'], ['do'], ['dot'], ['dox']]], [null, null, false, true, false]], [[['insert', 'insert', 'search'], [['abc'], ['abc'], ['abc']]], [null, null, true]], [[['insert', 'search', 'startsWith'], [['hello'], ['hell'], ['hello']]], [null, false, true]]],
+    ref: class {
+      constructor() { this.root = {}; }
+      insert(word) { let n = this.root; for (const c of word) n = n[c] = n[c] || {}; n.end = true; }
+      find(s) { let n = this.root; for (const c of s) { if (!n[c]) return null; n = n[c]; } return n; }
+      search(word) { const n = this.find(word); return !!(n && n.end); }
+      startsWith(prefix) { return !!this.find(prefix); }
+    }
+  },
+  'single-number': {
+    fn: 'singleNumber', params: ['nums'], cmp: 'exact', meta: ['Single Number', 136, 'Easy', 'Bit Manipulation'],
+    ask: 'Every value in nums appears twice except one, which appears once. Return that one, using O(1) extra space.',
+    sig: {
+      py: 'def singleNumber(nums: List[int]) -> int:',
+      js: 'function singleNumber(nums) {',
+      java: 'public int singleNumber(int[] nums) {',
+      cpp: 'int singleNumber(vector<int>& nums) {',
+      go: 'func singleNumber(nums []int) int {'
+    },
+    examples: [[[[4, 7, 4]], 7], [[[-1]], -1], [[[3, 9, 3, 5, 9]], 5]],
+    hidden: [[[[0, 1, 0]], 1], [[[2, 2, 0]], 0], [[[-3, -3, -8]], -8], [[[100000, 7, 100000]], 7], [[[1, 2, 3, 4, 1, 2, 3]], 4]],
+    ref: function (nums) { return nums.reduce((a, b) => a ^ b, 0); }
+  },
+  'missing-number': {
+    fn: 'missingNumber', params: ['nums'], cmp: 'exact', meta: ['Missing Number', 268, 'Easy', 'Bit Manipulation'],
+    ask: 'nums holds n different numbers from 0 to n, so exactly one number in that range is missing. Return it.',
+    sig: {
+      py: 'def missingNumber(nums: List[int]) -> int:',
+      js: 'function missingNumber(nums) {',
+      java: 'public int missingNumber(int[] nums) {',
+      cpp: 'int missingNumber(vector<int>& nums) {',
+      go: 'func missingNumber(nums []int) int {'
+    },
+    examples: [[[[0, 1, 3]], 2], [[[1]], 0], [[[2, 0, 1]], 3]],
+    hidden: [[[[0]], 1], [[[]], 0], [[[1, 2]], 0], [[[5, 3, 0, 1, 2]], 4], [[[0, 1, 2, 3, 4, 5, 6, 7, 8]], 9], [[[7, 6, 5, 4, 3, 2, 1]], 0]],
+    ref: function (nums) { let x = nums.length; nums.forEach((v, i) => { x ^= v ^ i; }); return x; }
+  },
+  'counting-bits': {
+    fn: 'countBits', params: ['n'], cmp: 'exact', meta: ['Counting Bits', 338, 'Easy', 'Bit Manipulation'],
+    ask: 'Return a list of n + 1 numbers where position i holds how many 1 bits i has in binary.',
+    sig: {
+      py: 'def countBits(n: int) -> List[int]:',
+      js: 'function countBits(n) {',
+      java: 'public int[] countBits(int n) {',
+      cpp: 'vector<int> countBits(int n) {',
+      go: 'func countBits(n int) []int {'
+    },
+    examples: [[[3], [0, 1, 1, 2]], [[0], [0]], [[6], [0, 1, 1, 2, 1, 2, 2]]],
+    hidden: [[[1], [0, 1]], [[2], [0, 1, 1]], [[8], [0, 1, 1, 2, 1, 2, 2, 3, 1]], [[15], [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4]], [[16], [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1]]],
+    ref: function (n) { const out = [0]; for (let i = 1; i <= n; i++) out.push(out[i >> 1] + (i & 1)); return out; }
+  },
+  'palindrome-number': {
+    fn: 'isPalindrome', params: ['x'], cmp: 'exact', meta: ['Palindrome Number', 9, 'Easy', 'Math'],
+    ask: 'Return true if the whole number x reads the same forwards and backwards. Negative numbers never do. Try it without turning x into a string.',
+    sig: {
+      py: 'def isPalindrome(x: int) -> bool:',
+      js: 'function isPalindrome(x) {',
+      java: 'public boolean isPalindrome(int x) {',
+      cpp: 'bool isPalindrome(int x) {',
+      go: 'func isPalindrome(x int) bool {'
+    },
+    examples: [[[1221], true], [[-7], false], [[10], false]],
+    hidden: [[[0], true], [[7], true], [[12321], true], [[123], false], [[1000021], false], [[2147447412], true]],
+    ref: function (x) { if (x < 0) return false; let r = 0, y = x; while (y > 0) { r = r * 10 + (y % 10); y = Math.floor(y / 10); } return r === x; }
+  },
+  'powx-n': {
+    fn: 'myPow', params: ['x', 'n'], cmp: 'float', meta: ['Pow(x, n)', 50, 'Medium', 'Math'],
+    ask: 'Return x raised to the whole-number power n (n may be negative) without a library power function. Answers within 0.000001 are accepted. Aim for O(log n) multiplications.',
+    sig: {
+      py: 'def myPow(x: float, n: int) -> float:',
+      js: 'function myPow(x, n) {',
+      java: 'public double myPow(double x, int n) {',
+      cpp: 'double myPow(double x, int n) {',
+      go: 'func myPow(x float64, n int) float64 {'
+    },
+    examples: [[[2, 5], 32], [[3, -2], 0.1111111111111111], [[1.5, 2], 2.25]],
+    hidden: [[[5, 0], 1], [[0, 3], 0], [[-2, 3], -8], [[2, -3], 0.125], [[1.0001, 10000], 2.7181459268249255], [[-1, 2147483647], -1], [[2, 30], 1073741824]],
+    ref: function (x, n) {
+      let e = Math.abs(n), b = x, r = 1;
+      while (e > 0) { if (e % 2) r *= b; b *= b; e = Math.floor(e / 2); }
+      return n < 0 ? 1 / r : r;
+    }
   }
 };
 

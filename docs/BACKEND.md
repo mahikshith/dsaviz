@@ -7,7 +7,7 @@ There is no server yet. `DS` has two kinds of functions:
 - **Real.** These read this browser's `localStorage`. A new learner sees zeros and empty states, never sample numbers.
 - **Demo.** These need accounts and a server, so they return sample data marked `demo: true`. Pages put a small "Demo" tag next to anything they show from these. The learner's own row inside demo data is always real.
 
-`npm test` runs `tests/datacheck.js` against this module: the empty state, logging, streak math across days, sheet ticks, medals and the demo flags.
+`npm test` runs `tests/datacheck.js` against this module: the empty state, logging, streak math across days, sheet ticks, medals, the demo flags, the review scheduler and queue, notes, and the backup file.
 
 ## Storage keys
 
@@ -15,7 +15,9 @@ There is no server yet. `DS` has two kinds of functions:
 | --- | --- | --- |
 | `dsaviz-activity-v1` | `DS.logActivity` | `{ v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }` |
 | `dsaviz-sheet-v1` | Sheet page | `{ v: 1, done: { slug: ts }, star: { slug: 1 } }`. DS only reads it. |
-| `dsaviz-deck` | Story and Revisit pages | `{ id: { due, rated } }` |
+| `dsaviz-deck` | older Story and Revisit pages | `{ id: { due, rated } }`. Legacy: only read for medals. |
+| `dsaviz-review-v1` | `DS.review`, `DS.addCard` | `{ v: 1, cards: { id: { due: 'YYYY-MM-DD', interval, ease, reps, lapses, last, grade, prev, name, pattern, rule, hint, story } }, log: [{ id, at, grade }] }`. Sheet cards are `sheet:<slug>`. |
+| `dsaviz-notes-v1` | `DS.setNote`, `DS.importBackup` | `{ v: 1, notes: { id: { text, at } } }`. Story ids, or the sheet slug for rows without a story. Max 2000 characters. |
 | `dsaviz-onboard` | Welcome page | `{ name, reason, level, goal, lang, time, channel, date }` |
 | `dsaviz-prefs` | Profile and Welcome pages | `{ goal, time, channel, lang }` (older saves may also hold `depth`, which is ignored) |
 | `dsaviz-medals-seen` | `DS.markMedalsSeen` | `{ 'Pattern:tier': 1 }`, so a medal shines once |
@@ -28,7 +30,8 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | Event | Call | Where it is made |
 | --- | --- | --- |
 | A story reaches its last step | `DS.finishStory(id)` | `src/story/comp.js`, `go()` |
-| A story or revisit card is rated | `DS.rateCard(id)` | `src/story/comp.js` `rate()` (first rating only), `src/pages/revisit.js` `rate()` |
+| A story or revisit card is rated | `DS.review(id, grade)` (logs a revisit) | `src/story/comp.js` `rate()` (re-rating uses `{ redo: true }`), `src/pages/revisit.js` `rate()` |
+| A story is finished / a sheet box is ticked | `DS.addCard(id, { rule } / { name, pattern, hint, story })` | `src/story/comp.js` `go()`, Sheet page `toggleDone()` and import |
 | Every code test passes on Submit | `DS.passCode(id)` | `shared/code_pane.js`, where `solved` is set |
 | A Git, system design or AI & ML lesson reaches its last step | `DS.finishLesson('git:' / 'sd:' / 'ai:' + id)` | `go()` in `pages/Git.dc.html`, `pages/SDLesson.dc.html`, `pages/AILesson.dc.html` |
 | A sheet box is ticked | nothing to call | DS reads the tick timestamps in `dsaviz-sheet-v1` |
@@ -54,7 +57,13 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | `medals(PROBLEMS, PATTERNS)` | `[{ pattern, mark, tier, next: { tier, have, need, unit, pct } or null, fresh, key, done, total }]`. Bronze: first story in the pattern. Silver: half its stories. Gold: every story done and rated in Revisit. | `GET /me/medals`, with `fresh` set by the server |
 | `markMedalsSeen(medals)` | nothing | `POST /me/medals/seen` |
 | `profile()` | `{ name, initials, signedIn, isNew, lang, goal, reason, date, demo: false }` | `GET /me` |
-| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit deck, seen medals, saved stories, saved code and system design progress from this browser. Theme, profile and settings stay. | `DELETE /me/progress` |
+| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit cards (`dsaviz-review-v1` and the old deck), seen medals, saved stories, saved code and system design progress from this browser. Notes, theme, profile and settings stay. | `DELETE /me/progress` |
+| `schedule(card, grade, ts)` | the pure SM-2-style scheduler. Grade 1 Again, 2 Hard, 3 Good, 4 Easy. First review: 1 / 3 / 6 days; then x1.2 (Hard), x ease (Good), x ease x 1.3 (Easy), at least +1 day, capped at 365. Again: tomorrow, reps reset, ease -0.2. Ease 1.3 to 3.0, starts at 2.5. | server-side scheduler |
+| `reviewCards()`, `reviewDue()`, `reviewUpcoming(days = 7)` | every finished story and ticked sheet problem as a card `{ id, kind, due, isDue, late, inDays, interval, ease, reps, name, pattern, rule, hint }`; a card never rated is due the day after it was earned. Upcoming adds `counts: [{ date, n }]` from tomorrow. | `GET /me/revisions?due=today` |
+| `review(id, grade, { redo })`, `reviewPreview(id)`, `addCard(id, meta)`, `whenLabel(days)` | rate a card; what each grade would do; store card details | `POST /me/revisions/{id}` |
+| `retention(days = 30)` | `{ pct, reviews, recalled, today }`: share of reviews not rated Again; `pct` is null before the first review | `GET /me/retention` |
+| `note(id)`, `notes()`, `setNote(id, text)`, `mergeNotes(map)` | notes per problem | `GET/PUT /me/notes/{id}` |
+| `exportBackup()`, `importBackup(file)` | the sheet backup file `{ v: 1, done, star, notes }`; import merges (earliest tick wins, a note is replaced only by a newer one) and returns `{ ticks, notes }` or null | `GET/POST /me/backup` |
 | `dayKey(ts)`, `setClock(fn)` | helpers; `setClock` is for tests | none |
 
 ## Demo functions

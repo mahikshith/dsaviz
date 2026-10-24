@@ -21,7 +21,7 @@ button{font:inherit}
 @keyframes feedin{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 </style>
 </helmet>
-<div style="width: 1440px; height: 1240px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fit="{{L.rootW}}" style="width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <style>
 [data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
@@ -147,53 +147,62 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<div style="flex-grow: 1; padding: 36px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 32px; align-items: start">
+<main style="flex-grow: 1; padding: {{L.pad}}; display: grid; grid-template-columns: {{L.cols}}; gap: {{L.gap}}; align-items: start">
 
 <!-- SESSION -->
-<div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
-<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+<div style="display: flex; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-width: 0">
 <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Revisit · {{today}}</span>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 44px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em">{{headline}}</h1>
-<p style="margin: 0; max-width: 720px; font-size: 17px; line-height: 1.55; color: {{t.text2}}">Old Hoot picks the stories you're about to forget. For each one: name the pattern from the story alone, check the key move, then say how well you remembered. The better you remember, the longer until it comes back.</p>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h1}}; line-height: 1.05; font-weight: 600; letter-spacing: -0.02em">{{headline}}</h1>
+<p style="margin: 0; max-width: 680px; font-size: 17px; line-height: 1.55; color: {{t.text2}}">{{subline}}</p>
+</div>
+<div role="status" aria-live="polite" style="flex-shrink: 0; padding: {{L.countPad}}; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+<span style="font-family: {{t.mono}}; font-size: {{L.count}}; font-weight: 800; line-height: 1; color: {{t.accent}}">{{dueCount}}</span>
+<span style="font-size: 13px; font-weight: 600; color: {{t.muted}}">{{dueUnit}}</span>
+</div>
 </div>
 
-<div style="display: flex; align-items: center; gap: 14px">
+<sc-if value="{{showProgress}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 16px">
 <span style="font-family: {{t.mono}}; font-size: 14px; font-weight: 700; white-space: nowrap">{{progressLabel}}</span>
-<div style="flex-grow: 1; display: flex; gap: 6px">
-<sc-for list="{{queue}}" as="q" hint-placeholder-count="5"><span title="{{q.story}}" style="flex-grow: 1; height: 10px; border-radius: 999px; background: {{q.bg}}; transition: background 0.3s"></span></sc-for>
+<div aria-hidden="true" style="flex-grow: 1; display: flex; gap: 4px">
+<sc-for list="{{bars}}" as="q" hint-placeholder-count="5"><span title="{{q.label}}" style="flex-grow: 1; height: 8px; border-radius: 999px; background: {{q.bg}}; transition: background 0.3s"></span></sc-for>
 </div>
-<span style="padding: 6px 12px; border-radius: 999px; background: {{t.okBg}}; font-size: 13px; font-weight: 700; white-space: nowrap">+{{xp}} XP so far</span>
 </div>
+</sc-if>
 
 <sc-if value="{{inSession}}" hint-placeholder-val="{{ true }}">
-<section style="padding: 32px; border-radius: 28px; background: {{t.surface}}; border: 1px solid {{t.line}}; box-shadow: 0 18px 50px {{t.shadow}}; display: flex; flex-direction: column; gap: 18px; animation: rise 0.35s ease">
-<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: {{t.muted}}">
-<span>From your library · last walked {{card.ago}}</span><span>·</span><span>LeetCode {{card.n}}</span>
-<span style="padding: 3px 10px; border-radius: 999px; font-weight: 700; background: {{card.dBg}}; color: {{card.dFg}}">{{card.diff}}</span>
+<section aria-label="Review card" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; box-shadow: 0 18px 50px {{t.shadow}}; display: flex; flex-direction: column; gap: 24px; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+<span style="height: 28px; padding: 0 12px; border-radius: 999px; background: {{t.hl}}; color: {{t.accent}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 700">{{card.pattern}}</span>
+<span style="height: 28px; padding: 0 12px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600; color: {{t.text2}}">{{card.kind}}</span>
+<span style="font-size: 13px; color: {{t.muted}}">{{card.meta}}</span>
 </div>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: 38px; font-weight: 600; line-height: 1.15">{{card.story}}</h2>
-<p style="margin: 0; font-family: {{t.display}}; font-size: 21px; line-height: 1.55">{{card.cue}}</p>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h2}}; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere">{{card.name}}</h2>
+<sc-if value="{{card.hasStory}}" hint-placeholder-val="{{ true }}"><span style="font-size: 15px; color: {{t.muted}}">Story: {{card.story}}</span></sc-if>
+</div>
+<p style="margin: 0; font-size: 22px; line-height: 1.4; font-weight: 600">What’s the key move?</p>
 
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 14px; font-weight: 700">Which pattern cracks it?</span>
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
-<sc-for list="{{options}}" as="op" hint-placeholder-count="4"><button onClick="{{op.pick}}" aria-pressed="{{op.on}}" style="min-height: 56px; padding: 10px 16px; border-radius: 14px; border: 2px solid {{op.border}}; background: {{op.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; transition: background 0.2s, border-color 0.2s"><span>{{op.name}}</span><span style="font-family: {{t.display}}; font-style: italic; font-weight: 400; font-size: 14px; color: {{t.muted}}">{{op.tag}}</span></button></sc-for>
+<sc-if value="{{hidden}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+<button id="rv-reveal" onClick="{{reveal}}" style="height: 52px; padding: 0 32px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 16px; font-weight: 800">Reveal</button>
+<span style="font-size: 13px; color: {{t.muted}}">Think of your answer first. Space reveals.</span>
 </div>
-</div>
+</sc-if>
 
-<sc-if value="{{answered}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 18px 20px; border-radius: 16px; background: {{fbBg}}; display: flex; flex-direction: column; gap: 10px; animation: rise 0.3s ease">
-<span style="font-size: 15px; font-weight: 700">{{fbTitle}}</span>
-<div style="display: flex; gap: 12px; align-items: flex-start">
-<span style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800">{{card.initial}}</span>
-<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 700; color: {{t.muted}}">{{card.companion}}, {{card.role}}</span><span style="font-size: 16px; line-height: 1.55">{{card.synopsis}}</span></span>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{ false }}">
+<div id="rv-answer" tabindex="-1" style="padding: {{L.ansPad}}; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.26s cubic-bezier(.2,.8,.2,1)">
+<sc-if value="{{card.hasWhen}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{card.pattern}}</span><span style="font-size: 18px; line-height: 1.5">{{card.when}}</span></div></sc-if>
+<sc-if value="{{card.hasRule}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{card.ruleTitle}}</span><span style="font-size: 16px; line-height: 1.55; color: {{t.text2}}">{{card.rule}}</span></div></sc-if>
+<sc-if value="{{card.hasNote}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Your note</span><span style="font-size: 15px; line-height: 1.55; color: {{t.text2}}; white-space: pre-wrap">{{card.note}}</span></div></sc-if>
+<a href="{{card.href}}" onClick="{{card.go}}" style="align-self: flex-start; min-height: 24px; font-size: 14px; font-weight: 700; color: {{t.link}}">{{card.linkLabel}} →</a>
 </div>
-<a href="{{card.href}}" onClick="{{card.go}}" style="align-self: flex-start; font-size: 14px; font-weight: 700; color: {{t.accent}}">{{card.replay}}</a>
-</div>
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 14px; font-weight: 700">How well did you remember?</span>
-<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
-<sc-for list="{{rates}}" as="rt" hint-placeholder-count="4"><button onClick="{{rt.pick}}" style="min-height: 64px; padding: 8px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{rt.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{rt.label}}</span><span style="font-size: 12px; color: {{t.muted}}">back {{rt.when}}</span></button></sc-for>
+<div role="group" aria-label="How well did you remember?" style="display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 15px; font-weight: 700">How well did you remember? <span style="font-weight: 500; color: {{t.muted}}">· keys 1 to 4</span></span>
+<div style="display: grid; grid-template-columns: {{L.rateCols}}; gap: 12px">
+<sc-for list="{{rates}}" as="rt" hint-placeholder-count="4"><button onClick="{{rt.pick}}" aria-label="{{rt.aria}}" style="min-height: 76px; padding: 8px; border-radius: 16px; border: 1px solid {{rt.border}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px"><span style="font-size: 17px; font-weight: 800">{{rt.label}}</span><span style="font-size: 12px; color: {{t.text2}}">{{rt.note}}</span><span style="font-size: 12px; color: {{t.muted}}">{{rt.when}}</span></button></sc-for>
 </div>
 </div>
 </sc-if>
@@ -201,38 +210,62 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 
 <sc-if value="{{sessionDone}}" hint-placeholder-val="{{ false }}">
-<section style="padding: 36px; border-radius: 28px; background: {{t.surface}}; border: 1px solid {{t.ok}}; display: flex; flex-direction: column; gap: 18px; animation: rise 0.35s ease">
+<section id="rv-done" tabindex="-1" aria-label="Session complete" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.ok}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
 <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}">Session complete</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: 38px; font-weight: 600">{{doneTitle}}</h2>
-<p style="margin: 0; font-size: 17px; line-height: 1.55; color: {{t.text2}}">{{doneLine}}</p>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
-<sc-for list="{{doneStats}}" as="ds" hint-placeholder-count="3"><div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 26px; font-weight: 800">{{ds.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{ds.k}}</span></div></sc-for>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600">{{doneTitle}}</h2>
+<div style="display: grid; grid-template-columns: {{L.statCols}}; gap: 12px">
+<sc-for list="{{doneStats}}" as="ds" hint-placeholder-count="3"><div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 28px; font-weight: 800">{{ds.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{ds.k}}</span></div></sc-for>
 </div>
-<div style="display: flex; gap: 10px; flex-wrap: wrap">
-<a href="Home.dc.html" style="height: 50px; padding: 0 24px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Back to my home</a>
-<a href="Patterns.dc.html" style="height: 50px; padding: 0 22px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Play a new story</a>
-<button onClick="{{restart}}" style="height: 50px; padding: 0 20px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 15px; font-weight: 600; text-decoration: underline">Run the session again</button>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="Home.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Back to my home</a>
+<a href="Patterns.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Play a new story</a>
 </div>
 </section>
 </sc-if>
 
-<section style="padding: 20px 22px; border-radius: 20px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}; margin-bottom: 6px">Today's queue</span>
-<sc-for list="{{queue}}" as="qq" hint-placeholder-count="5">
-<div style="min-height: 44px; display: flex; gap: 12px; align-items: center; border-top: 1px solid {{t.line}}">
-<span style="width: 26px; height: 26px; border-radius: 999px; background: {{qq.dotBg}}; color: {{qq.dotFg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">{{qq.mark}}</span>
-<span style="font-family: {{t.display}}; font-size: 17px; font-weight: 600; flex-grow: 1">{{qq.story}}</span>
-<span style="font-size: 13px; color: {{t.muted}}">{{qq.note}}</span>
+<sc-if value="{{emptyDue}}" hint-placeholder-val="{{ false }}">
+<section aria-label="How the queue fills" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px dashed {{t.line2}}; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<span style="font-size: 16px; line-height: 1.55; color: {{t.text2}}">Every story you finish and every problem you tick on the sheet becomes a card. It comes back the next day, then less and less often as you remember it.</span>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="Patterns.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 800">Find a story</a>
+<a href="Sheet.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">Open the sheet</a>
 </div>
-</sc-for>
 </section>
+</sc-if>
 </div>
 
 <!-- MEMORY -->
-<div style="display: flex; flex-direction: column; gap: 22px">
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 18px; font-weight: 700">Why revisit?</span>
-<svg width="376" height="204" viewBox="0 0 376 204" role="img" aria-label="Memory without review falls fast; each revisit resets it and it falls more slowly">
+<div style="display: flex; flex-direction: column; gap: 24px">
+<section aria-labelledby="rv-ret" style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="rv-ret" style="margin: 0; font-size: 18px; font-weight: 700">Retention</h2><span style="font-size: 13px; color: {{t.muted}}">{{queueSize}}</span></div>
+<span aria-label="{{retAria}}" style="font-family: {{t.mono}}; font-size: 48px; font-weight: 800; line-height: 1; color: {{retColor}}">{{retPct}}</span>
+<span aria-hidden="true" style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{retBar}}; background: {{retColor}}; transition: width 0.4s ease"></span></span>
+<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">{{retLine}} {{retAdvice}}</span>
+</section>
+
+<section aria-labelledby="rv-up" style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="rv-up" style="margin: 0; font-size: 18px; font-weight: 700">Upcoming</h2><span style="font-size: 13px; color: {{t.muted}}">{{weekTotal}}</span></div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 112px">
+<sc-for list="{{week}}" as="wk" hint-placeholder-count="7">
+<div role="img" aria-label="{{wk.aria}}" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; height: 112px">
+<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700">{{wk.n}}</span>
+<span style="width: 100%; height: {{wk.h}}px; border-radius: 6px 6px 2px 2px; background: {{wk.color}}; transition: height 0.4s ease"></span>
+<span style="font-size: 12px; color: {{t.muted}}">{{wk.d}}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{noUpcoming}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">No cards scheduled yet.</span></sc-if>
+<sc-if value="{{hasUpcoming}}" hint-placeholder-val="{{ true }}">
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{upcoming}}" as="u" hint-placeholder-count="4"><li style="min-height: 44px; display: flex; align-items: center; gap: 12px; border-top: 1px solid {{t.line}}"><span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{u.name}}</span><span style="font-size: 12px; color: {{t.muted}}">{{u.pattern}}</span></span><span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.text2}}; white-space: nowrap">{{u.when}}</span></li></sc-for>
+</ul>
+<sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{t.muted}}">{{upcomingMore}}</span></sc-if>
+</sc-if>
+</section>
+
+<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 700">Why revisit?</h2>
+<svg width="100%" viewBox="0 0 376 204" style="max-width: 376px; height: auto" role="img" aria-label="Memory without review falls fast; each revisit resets it and it falls more slowly">
 <line x1="40" y1="150" x2="370" y2="150" stroke="{{t.line2}}" stroke-width="1"></line>
 <line x1="40" y1="20" x2="40" y2="150" stroke="{{t.line2}}" stroke-width="1"></line>
 <text x="34" y="24" text-anchor="end" font-size="11" fill="{{t.muted}}">100%</text>
@@ -247,41 +280,18 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="font-size: 14px; line-height: 1.55; color: {{t.text2}}">A story you walked once fades within days. Each revisit brings it back to full strength, and it fades more slowly every time. Five cards a day keeps your whole library fresh.</span>
 </section>
 
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 700">Coming up this week</span><span style="font-size: 13px; color: {{t.muted}}">{{weekTotal}} cards</span></div>
-<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 120px">
-<sc-for list="{{week}}" as="wk" hint-placeholder-count="7">
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 120px">
-<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700">{{wk.n}}</span>
-<span style="width: 100%; height: {{wk.h}}px; border-radius: 6px 6px 2px 2px; background: {{wk.color}}; transition: height 0.4s ease"></span>
-<span style="font-size: 12px; color: {{wk.fg}}; font-weight: {{wk.weight}}">{{wk.d}}</span>
-</div>
-</sc-for>
-</div>
-</section>
-
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: 18px; font-weight: 700">Memory by pattern</span>
-<sc-for list="{{strength}}" as="sg" hint-placeholder-count="5">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 600">{{sg.name}}</span><span style="font-family: {{t.mono}}; color: {{sg.fg}}">{{sg.pct}}</span></div>
-<span style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{sg.pct}}; background: {{sg.color}}; transition: width 0.4s ease"></span></span>
-</div>
-</sc-for>
-</section>
-
-<section style="padding: 22px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 700">Saved by you</span><span style="font-size: 13px; color: {{t.muted}}">★ on any story</span></div>
+<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Saved by you</h2><span style="font-size: 13px; color: {{t.muted}}">★ on any story</span></div>
 <sc-if value="{{noSaved}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">Nothing saved yet. Tap ☆ Save on any story and it will wait for you here.</span></sc-if>
 <sc-for list="{{saved}}" as="sv" hint-placeholder-count="2">
-<a href="{{sv.href}}" onClick="{{sv.go}}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px solid {{t.line}}"><span style="font-family: {{t.display}}; font-size: 16px; font-weight: 600">{{sv.story}}</span><span style="font-size: 12px; color: {{t.muted}}">{{sv.pattern}}</span></a>
+<a href="{{sv.href}}" onClick="{{sv.go}}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid {{t.line}}"><span style="font-family: {{t.display}}; font-size: 16px; font-weight: 600">{{sv.story}}</span><span style="font-size: 12px; color: {{t.muted}}">{{sv.pattern}}</span></a>
 </sc-for>
 </section>
 </div>
-</div>
+</main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1240}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1320}}'>
 // @@THEMES@@ — generated block, shared by every board.
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
@@ -444,7 +454,42 @@ const COMPANY_TABS = [
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
-// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+// "Use it when": one line per pattern and sheet group, shown when a Revisit card is revealed.
+const PATTERN_WHEN = {
+  "Two Pointers": "Use it when the input is sorted or symmetric and a pair from both ends can rule things out.",
+  "Sliding Window": "Use it when the answer is a contiguous run and you can grow the right edge and shrink the left.",
+  "Hash Map": "Use it when you keep asking \"have I seen this before?\" and want the answer in one step.",
+  "Prefix Sum": "Use it when you need many range totals: store running sums once, subtract two of them.",
+  "Binary Search": "Use it when the answer space is ordered and one check tells you which half to drop.",
+  "Matrix": "Use it when a grid must be turned, spiralled or marked in place, layer by layer.",
+  "Intervals": "Use it when ranges overlap: sort by start, then merge or count as you sweep.",
+  "Greedy": "Use it when the best local step can never hurt you later, so you never look back.",
+  "Stack": "Use it when the newest open item must be closed first, like brackets or undo.",
+  "Heap": "Use it when you need the smallest or largest of a changing set, or the top k of many.",
+  "In-place Reversal": "Use it when links must be turned around without copying the list.",
+  "Fast & Slow Pointers": "Use it when a list may loop or you need its middle: one walker runs twice as fast.",
+  "Depth-First Search": "Use it when you must explore every corner of one region before moving on.",
+  "Breadth-First Search": "Use it when you need the fewest steps: spread out one ring at a time.",
+  "Backtracking": "Use it when you must list every valid choice: try, recurse, then undo.",
+  "Dynamic Programming": "Use it when the same smaller question repeats: answer each once and write it down.",
+  "Linked Lists": "Use it when nodes point to the next one: a dummy head and careful pointer swaps.",
+  "Monotonic Stack & Queue": "Use it when you need the next bigger or smaller value: drop anything that can no longer win.",
+  "Trees": "Use it when each node has one parent: solve the children, then combine at the node.",
+  "Graphs": "Use it when things connect in any direction: pick union-find, a topological order or a shortest path.",
+  "Tries": "Use it when many words share prefixes and you search by the letters typed so far.",
+  "Sorting": "Use it when order reveals the answer: sort first, then read it off in one pass.",
+  "Design": "Use it when a class must promise a speed: pair a hash map with a list, heap or array.",
+  "String Algorithms": "Use it when matching or parsing text: scan once with a rolling hash or a small state machine.",
+  "DP on Grids & Strings": "Use it when two indexes walk two strings or a grid: fill a table cell by cell.",
+  "Knapsack & LIS": "Use it when you pick or skip items under a budget, or grow the longest chain.",
+  "Interval & Bitmask DP": "Use it when you solve every sub-range, or every subset stored as a number.",
+  "Bit Manipulation": "Use it when ones and zeros carry the answer: XOR, masks and shifts.",
+  "Math & Geometry": "Use it when a formula, a modulus or a coordinate trick beats a simulation.",
+  "Segment Tree & BIT": "Use it when range answers must survive point updates.",
+  "SQL": "Use it when the data lives in tables: join, group, then filter or window.",
+  "Concurrency": "Use it when threads must take turns: locks, semaphores or conditions."
+};
+// Saved stories. The old revisit deck (dsaviz-deck) is read once by DS for medals; reviews now live in DS (dsaviz-review-v1).
 function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
 function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }
@@ -457,7 +502,7 @@ function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem' };
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1' };
   const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5 };
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
   const LEVEL_XP = 500;
@@ -630,7 +675,8 @@ const DS = (function () {
     const seen = json(KEY.medals, {});
     return patterns(list, pats).filter((p) => p.total > 0).map((p) => {
       const ids = (list || []).filter((x) => x.pattern === p.name).map((x) => x.id);
-      const rated = ids.filter((id) => problemStatus(id) === 'done' && deck[id]).length;
+      const rev = readReview().cards;
+      const rated = ids.filter((id) => problemStatus(id) === 'done' && (deck[id] || (rev[id] && rev[id].last))).length;
       const half = Math.ceil(p.total / 2);
       const tier = p.done === p.total && rated === p.total ? 'gold' : p.done >= half ? 'silver' : p.done >= 1 ? 'bronze' : null;
       const nextTier = tier === 'gold' ? null : TIERS[tier ? TIERS.indexOf(tier) + 1 : 0];
@@ -646,6 +692,178 @@ const DS = (function () {
     const seen = Object.assign({}, json(KEY.medals, {}));
     (list || []).forEach((m) => { if (m.tier) seen[m.key] = 1; });
     set(KEY.medals, JSON.stringify(seen));
+  }
+
+  // -- spaced repetition. Every finished story and every ticked sheet problem is a card; the card's schedule
+  // lives in dsaviz-review-v1: { v: 1, cards: { id: { due, interval, ease, reps, lapses, last, grade, name, pattern, rule, hint, story } }, log: [{ id, at, grade }] }.
+  // Sheet cards are 'sheet:<slug>'. A card with no schedule yet is due the day after it was finished or ticked.
+  const GRADES = ['Again', 'Hard', 'Good', 'Easy'];
+  const EASE = { start: 2.5, min: 1.3, max: 3.0 };
+  const MAX_INTERVAL = 365;
+  function readReview() {
+    const o = json(KEY.review, null);
+    const out = { v: 1, cards: {}, log: [] };
+    if (!o || o.v !== 1) return out;
+    if (o.cards && typeof o.cards === 'object' && !Array.isArray(o.cards)) Object.keys(o.cards).forEach((id) => { const c = o.cards[id]; if (c && typeof c === 'object') out.cards[id] = c; });
+    if (Array.isArray(o.log)) out.log = o.log.filter((x) => x && typeof x.id === 'string' && isFinite(x.at) && x.grade >= 1 && x.grade <= 4);
+    return out;
+  }
+  function writeReview(r) { set(KEY.review, JSON.stringify(r)); }
+  const fromKey = (k) => { const [y, m, d] = String(k).split('-').map(Number); return new Date(y, m - 1, d).getTime(); };
+  const daysBetween = (a, b) => Math.round((midnight(b) - midnight(a)) / DAY);
+  // The scheduler, SM-2 style: grade 1 Again, 2 Hard, 3 Good, 4 Easy. Pure: takes a card's state, returns the next one.
+  // First review: Hard 1 day, Good 3, Easy 6. After that the gap grows by 1.2 (Hard), the ease (Good) or ease x 1.3 (Easy),
+  // always by at least a day. Again resets the card to tomorrow and lowers its ease. Ease stays within 1.3 to 3.0.
+  function schedule(card, grade, ts) {
+    grade = Math.max(1, Math.min(4, Math.round(Number(grade) || 1)));
+    const c = card || {};
+    const reps = Math.max(0, Number(c.reps) || 0), prev = Math.max(0, Number(c.interval) || 0);
+    let ease = Math.max(EASE.min, Math.min(EASE.max, Number(c.ease) || EASE.start));
+    let interval;
+    if (grade === 1) { interval = 1; ease = Math.max(EASE.min, ease - 0.2); }
+    else if (reps === 0) interval = [0, 0, 1, 3, 6][grade];
+    else {
+      const grow = grade === 2 ? 1.2 : grade === 3 ? ease : ease * 1.3;
+      interval = Math.max(prev + 1, Math.round(prev * grow));
+      if (grade === 2) ease = Math.max(EASE.min, ease - 0.15);
+      if (grade === 4) ease = Math.min(EASE.max, ease + 0.15);
+    }
+    interval = Math.min(MAX_INTERVAL, interval);
+    const at = ts == null ? now() : ts;
+    return { interval, ease: Math.round(ease * 100) / 100, reps: grade === 1 ? 0 : reps + 1, lapses: (Number(c.lapses) || 0) + (grade === 1 ? 1 : 0),
+      grade, last: at, due: dayKey(addDays(midnight(at), interval)) };
+  }
+  // Every card the learner has earned, merged with its schedule and any details pages stored. Soonest due first.
+  function reviewCards() {
+    const log = readLog(), sh = readSheet(), rev = readReview();
+    const today = dayKey(now());
+    const out = [];
+    const add = (id, kind, added) => {
+      const c = rev.cards[id] || {};
+      const due = typeof c.due === 'string' && /^\d{4}-\d\d-\d\d$/.test(c.due) ? c.due : dayKey(addDays(midnight(added), 1));
+      out.push({ id, kind, added, due, isDue: due <= today, late: Math.max(0, daysBetween(fromKey(due), now())), inDays: Math.max(0, daysBetween(now(), fromKey(due))),
+        interval: Number(c.interval) || 0, ease: Number(c.ease) || EASE.start, reps: Number(c.reps) || 0, lapses: Number(c.lapses) || 0, last: Number(c.last) || 0, grade: Number(c.grade) || 0,
+        name: c.name || '', pattern: c.pattern || '', rule: c.rule || '', hint: c.hint || '', story: c.story || '' });
+    };
+    Object.keys(log.stories).forEach((id) => add(id, 'story', Number(log.stories[id]) || now()));
+    Object.keys(sh.done).forEach((slug) => {
+      const c = rev.cards['sheet:' + slug];
+      if (slug in log.stories || (c && c.story && c.story in log.stories)) return; // the story card already covers this problem
+      add('sheet:' + slug, 'sheet', sh.done[slug]);
+    });
+    return out.sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : a.added - b.added));
+  }
+  function reviewDue() { return reviewCards().filter((c) => c.isDue); }
+  // Upcoming: cards not due today, soonest first, plus a count per day for the next `days` days (index 0 is tomorrow).
+  function reviewUpcoming(days) {
+    days = days || 7;
+    const cards = reviewCards().filter((c) => !c.isDue);
+    const counts = [];
+    for (let i = 1; i <= days; i++) { const k = dayKey(addDays(midnight(now()), i)); counts.push({ date: k, n: cards.filter((c) => c.due === k).length }); }
+    return { cards, counts };
+  }
+  // Remember details a page knows (name, pattern, key rule, hint, story id) without changing the schedule.
+  function addCard(id, meta) {
+    if (!id) return;
+    const r = readReview();
+    const c = Object.assign({}, r.cards[id]);
+    ['name', 'pattern', 'rule', 'hint', 'story'].forEach((k) => { if (meta && typeof meta[k] === 'string' && meta[k]) c[k] = meta[k].slice(0, 400); });
+    r.cards[id] = c;
+    writeReview(r);
+  }
+  // Rate a card 1-4. Logs a revisit for the streak and XP, and returns the card's new schedule.
+  // With { redo: true } a learner who changes their mind straight after rating re-rates from the state before
+  // that rating: the last log entry is replaced and no extra XP is given.
+  const SCHED = ['interval', 'ease', 'reps', 'lapses', 'grade', 'last', 'due'];
+  function review(id, grade, opts) {
+    if (!id) return null;
+    const r = readReview();
+    const cur = r.cards[id] || {};
+    const last = r.log[r.log.length - 1];
+    const redo = !!(opts && opts.redo && cur.prev && last && last.id === id);
+    const base = redo ? cur.prev : cur;
+    const next = schedule(base, grade, now());
+    const prev = {};
+    SCHED.forEach((k) => { if (base[k] !== undefined) prev[k] = base[k]; });
+    const card = Object.assign({}, cur, next, { prev });
+    SCHED.forEach((k) => { if (next[k] === undefined) delete card[k]; });
+    r.cards[id] = card;
+    if (redo) r.log.pop();
+    r.log.push({ id, at: now(), grade: next.grade });
+    if (r.log.length > 2000) r.log = r.log.slice(-2000);
+    writeReview(r);
+    if (!redo) logActivity('revisit', id);
+    return next;
+  }
+  function whenLabel(n) { return n <= 1 ? 'tomorrow' : n < 14 ? 'in ' + n + ' days' : n < 60 ? 'in ' + Math.round(n / 7) + ' weeks' : 'in ' + Math.round(n / 30) + ' months'; }
+  // What each grade would do to a card now: [{ grade, label, interval, when }].
+  function reviewPreview(id, opts) {
+    const c = (opts && opts.redo && (readReview().cards[id] || {}).prev) || readReview().cards[id];
+    return GRADES.map((label, i) => { const s = schedule(c, i + 1, now()); return { grade: i + 1, label, interval: s.interval, when: whenLabel(s.interval) }; });
+  }
+  // Retention: the share of reviews in the last 30 days that were not "Again". pct is null until the first review.
+  function retention(windowDays) {
+    windowDays = windowDays || 30;
+    const since = addDays(midnight(now()), -windowDays + 1);
+    const recent = readReview().log.filter((x) => x.at >= since);
+    const recalled = recent.filter((x) => x.grade > 1).length;
+    const today = dayKey(now());
+    return { pct: recent.length ? Math.round((recalled / recent.length) * 100) : null, reviews: recent.length, recalled, windowDays,
+      today: recent.filter((x) => dayKey(x.at) === today).length };
+  }
+
+  // -- notes per problem: dsaviz-notes-v1 = { v: 1, notes: { id: { text, at } } }. The story page uses the catalog id;
+  // sheet rows use their story id when they have one (so both places share a note), else the LeetCode slug.
+  const NOTE_MAX = 2000;
+  function readNotes() {
+    const o = json(KEY.notes, null);
+    const out = {};
+    if (o && o.v === 1 && o.notes && typeof o.notes === 'object') Object.keys(o.notes).forEach((id) => { const n = o.notes[id]; if (n && typeof n.text === 'string' && n.text.trim()) out[id] = { text: n.text.slice(0, NOTE_MAX), at: Number(n.at) || 0 }; });
+    return out;
+  }
+  function note(id) { const n = readNotes()[id]; return n ? n.text : ''; }
+  function setNote(id, text) {
+    if (!id) return;
+    const all = Object.assign({}, readNotes());
+    const t = typeof text === 'string' ? text.slice(0, NOTE_MAX) : '';
+    if (t.trim()) all[id] = { text: t, at: now() }; else delete all[id];
+    set(KEY.notes, JSON.stringify({ v: 1, notes: all }));
+  }
+  // Merge notes from a backup: a missing note is added; a different one replaces ours only when it is newer. Returns how many changed.
+  function mergeNotes(incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return 0;
+    const all = Object.assign({}, readNotes());
+    let changed = 0;
+    Object.keys(incoming).forEach((id) => {
+      const n = incoming[id];
+      const text = n && typeof n === 'object' ? n.text : n;
+      if (typeof text !== 'string' || !text.trim()) return;
+      const at = (n && typeof n === 'object' && Number(n.at)) || 0;
+      if (!all[id] || (all[id].text !== text && at > all[id].at)) { all[id] = { text: text.slice(0, NOTE_MAX), at }; changed++; }
+    });
+    if (changed) set(KEY.notes, JSON.stringify({ v: 1, notes: all }));
+    return changed;
+  }
+
+  // -- the sheet backup file: { v: 1, done, star, notes }. Import adds ticks, stars and notes, keeps the earliest tick time and never removes anything.
+  function exportBackup() {
+    const s = readSheet();
+    return { v: 1, done: s.done, star: s.star, notes: readNotes() };
+  }
+  function importBackup(data) {
+    if (!data || typeof data !== 'object' || data.v !== 1) return null;
+    const cur = readSheet();
+    const done = Object.assign({}, cur.done), star = Object.assign({}, cur.star);
+    let ticks = 0;
+    if (data.done && typeof data.done === 'object') Object.keys(data.done).forEach((k) => {
+      const ts = Number(data.done[k]);
+      if (!isFinite(ts) || ts <= 0) return;
+      if (!done[k]) ticks++;
+      done[k] = done[k] ? Math.min(done[k], ts) : ts;
+    });
+    if (data.star && typeof data.star === 'object') Object.keys(data.star).forEach((k) => { if (data.star[k]) star[k] = 1; });
+    set(KEY.sheet, JSON.stringify({ v: 1, done, star }));
+    return { ticks, notes: mergeNotes(data.notes) };
   }
 
   // -- the learner, as far as this browser knows them
@@ -690,17 +908,19 @@ const DS = (function () {
       .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
   }
 
-  // -- erase this browser's progress: activity log, sheet ticks, revisit deck, medals, saved stories, code and lesson progress.
+  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
     KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
+    note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,
     setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
   };
@@ -1068,116 +1288,139 @@ function navVals(cmp, t, themeKey, page) {
 // @@END-NAV@@
 
 // ---- page ----
-// Today's revisit queue: anything you rated in a story that is due, topped up from stories you've walked.
-const WALKED = ['valid-anagram', 'longest-substring', 'two-sum-ii', 'contains-duplicate', 'valid-palindrome', 'two-sum', 'best-time-stock', 'container'];
-const AGO = ['6 days ago', '3 days ago', '9 days ago', '2 weeks ago', '4 days ago'];
-const DISTRACT = ['Two Pointers', 'Sliding Window', 'Hash Map', 'Binary Search', 'Stack', 'Prefix Sum', 'Greedy'];
-const RATES = [['Again', 'in 10 min', 0], ['Hard', 'in 2 days', 2], ['Good', 'in 5 days', 5], ['Easy', 'in 12 days', 12]];
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const BASE_WEEK = [0, 3, 4, 2, 6, 1, 3];
-function buildQueue() {
-  const deck = loadDeck();
-  const due = Object.keys(deck).filter((id) => deck[id] && deck[id].due <= 1 && PROBLEMS.some((p) => p.id === id));
-  const ids = [];
-  due.concat(WALKED).forEach((id) => { if (!ids.includes(id)) ids.push(id); });
-  return ids.slice(0, 5);
+// Revisit: today's spaced-repetition queue from DS. Every finished story and every ticked sheet problem is a card.
+// One card at a time: name, pattern, "What's the key move?", Reveal, then rate recall 1-4 (Again, Hard, Good, Easy).
+const RV_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const RV_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const RV_GRADE_NOTE = ['Forgot it', 'Slow to come', 'Remembered', 'Instant'];
+const rvTitle = (slug) => String(slug || '').replace(/^sheet:/, '').split('-').map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w)).join(' ');
+const rvDate = (key) => { const [y, m, d] = key.split('-').map(Number); const x = new Date(y, m - 1, d); return RV_DAYS[x.getDay()] + ' ' + d + ' ' + RV_MONTHS[m - 1]; };
+// A card as the page shows it: names and lines come from the catalog for stories, from the stored sheet row otherwise.
+function rvCard(c) {
+  const P = c.kind === 'story' ? PROBLEMS.find((p) => p.id === c.id) : null;
+  const pattern = P ? P.pattern : c.pattern || '';
+  const slug = c.id.replace(/^sheet:/, '');
+  return {
+    id: c.id, kind: c.kind, P, pattern,
+    name: P ? P.title : c.name || rvTitle(slug),
+    story: P ? P.story : '',
+    when: PATTERN_WHEN[pattern] || '',
+    rule: c.kind === 'story' ? c.rule : c.hint,
+    noteId: P ? P.id : c.story || slug,
+    href: P ? (P.animated ? 'Story.dc.html' : 'Briefing.dc.html') : 'https://leetcode.com/problems/' + slug + '/',
+    go: () => { if (P) saveProblem(P.id); },
+    linkLabel: P ? (P.animated ? 'Replay the story' : 'Read the briefing') : 'Open on LeetCode',
+    due: c.due, late: c.late, inDays: c.inDays, reps: c.reps
+  };
 }
+function rvMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
+function rvDayName(offset) { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + offset); return RV_DAYS[d.getDay()]; }
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), queue: buildQueue(), pos: 0, picked: null, results: [], saved: loadSaved() };
+    this.state = { theme: loadTheme(), queue: DS.reviewDue().map((c) => c.id), pos: 0, revealed: false, results: [], saved: loadSaved() };
   }
-  componentDidMount() { listenTheme(this); }
-  componentWillUnmount() { unlistenTheme(this); }
-  rate(label, days) {
+  componentDidMount() {
+    listenTheme(this);
+    // Keys: Space or Enter reveals (when focus is not on another control), 1-4 rate. Ignored while typing or with a modifier held.
+    this.onKey = (e) => {
+      const tag = e.target && e.target.tagName;
+      if (e.ctrlKey || e.metaKey || e.altKey || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (this.state.pos >= this.state.queue.length) return;
+      if (!this.state.revealed && (e.key === ' ' || e.key === 'Enter') && tag !== 'BUTTON' && tag !== 'A') { e.preventDefault(); this.reveal(); }
+      else if (this.state.revealed && /^[1-4]$/.test(e.key)) { e.preventDefault(); this.rate(Number(e.key)); }
+    };
+    // Phones get a 420px single-column layout (the runtime zooms it to fit); desktop keeps the 1440px board.
+    this.onResize = () => { if (rvMobile() !== this.mobile) this.forceUpdate(); };
+    try { window.addEventListener('keydown', this.onKey); window.addEventListener('resize', this.onResize); } catch (e) {}
+  }
+  componentWillUnmount() { unlistenTheme(this); try { window.removeEventListener('keydown', this.onKey); window.removeEventListener('resize', this.onResize); } catch (e) {} }
+  focus(ids) { setTimeout(() => { try { for (const id of ids) { const el = document.getElementById(id); if (el) { el.focus(); return; } } } catch (e) {} }, 30); }
+  reveal() { this.setState({ revealed: true }); this.focus(['rv-answer']); }
+  rate(grade) {
     const id = this.state.queue[this.state.pos];
-    const deck = loadDeck();
-    deck[id] = { due: days, rated: label };
-    storeDeck(deck);
-    DS.rateCard(id);
-    const right = this.state.picked === PROBLEMS.find((p) => p.id === id).pattern;
-    this.setState({ results: this.state.results.concat([{ id, right, label, days }]), pos: this.state.pos + 1, picked: null });
+    if (!id) return;
+    const next = DS.review(id, grade);
+    this.setState({ results: this.state.results.concat([{ id, grade, interval: next.interval }]), pos: this.state.pos + 1, revealed: false });
+    this.focus(['rv-reveal', 'rv-done']);
   }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
-    const Q = this.state.queue.map((id) => PROBLEMS.find((p) => p.id === id));
-    const pos = Math.min(this.state.pos, Q.length - 1);
-    const P = Q[pos];
-    const done = this.state.pos >= Q.length;
-    const patIdx = PATTERNS.findIndex(([n]) => n === P.pattern);
-    const pat = PATTERNS[patIdx];
-    const picked = this.state.picked;
-    const right = picked === P.pattern;
-    // four options: the right one plus three neighbours from the distractor list, in a fixed order per card
-    const others = DISTRACT.filter((n) => n !== P.pattern);
-    const opts = [P.pattern, others[pos % others.length], others[(pos + 2) % others.length], others[(pos + 4) % others.length]];
-    const order = [[0, 1, 2, 3], [1, 0, 3, 2], [2, 3, 0, 1], [3, 2, 1, 0], [1, 3, 0, 2]][pos % 5].map((i) => opts[i]);
-    const results = this.state.results;
-    const xp = results.reduce((s, r) => s + (r.right ? 10 : 4), 0) + (done ? 10 : 0);
-    const firstSentence = P.synopsis.split(/(?<=[.?!])\s/)[0];
+    const s = this.state;
+    const all = DS.reviewCards();
+    const byId = {};
+    all.forEach((c) => { byId[c.id] = c; });
+    const Q = s.queue.filter((id) => byId[id]);
+    const total = Q.length;
+    const inSession = s.pos < total;
+    const C = inSession ? rvCard(byId[Q[s.pos]]) : null;
     const now = new Date();
-    const week = BASE_WEEK.map((n, i) => (i === 0 ? Q.length - Math.min(this.state.pos, Q.length) : n) + results.filter((r) => r.days === i).length);
-    const maxW = Math.max(...week, 1);
-    const correct = results.filter((r) => r.right).length;
-    const STRENGTH = [['Two Pointers', 92], ['Hash Map', 81], ['Sliding Window', 64], ['Binary Search', 38], ['Stack', 22]];
+    const results = s.results;
+    const recalled = results.filter((r) => r.grade > 1).length;
+    const left = Math.max(0, total - s.pos);
+    const up = DS.reviewUpcoming(7);
+    const ret = DS.retention(30);
+    const maxW = Math.max(1, ...up.counts.map((c) => c.n));
+    const next = up.cards[0];
+    const noCards = all.length === 0;
+    const note = C ? DS.note(C.noteId) : '';
+    const preview = C ? DS.reviewPreview(C.id) : [];
+    const retColor = ret.pct === null ? t.muted : ret.pct >= 70 ? t.ok : ret.pct >= 50 ? t.medFg : t.left;
+    const m = this.mobile = rvMobile();
+    const L = m ? { rootW: 420, rootH: 'auto', pad: '16px 16px 112px', cols: 'minmax(0, 1fr)', gap: '24px', h1: '34px', h2: '28px', count: '36px', countPad: '12px 16px', cardPad: '20px', ansPad: '16px', rateCols: 'repeat(2, minmax(0, 1fr))', statCols: 'minmax(0, 1fr)' }
+      : { rootW: 1440, rootH: '1320px', pad: '32px 40px', cols: 'minmax(0, 1fr) 420px', gap: '32px', h1: '48px', h2: '40px', count: '48px', countPad: '16px 24px', cardPad: '32px', ansPad: '24px', rateCols: 'repeat(4, minmax(0, 1fr))', statCols: 'repeat(3, minmax(0, 1fr))' };
+    const blankCard = { name: '', story: '', hasStory: false, pattern: '', kind: '', meta: '', when: '', hasWhen: false, rule: '', hasRule: false, ruleTitle: '', note: '', hasNote: false, href: '', go: null, linkLabel: '' };
     return {
-      t, ...navVals(this, t, themeKey, 'Revisit'), themeBtns: themeButtons(this, themeKey, t),
-      today: DAYS[now.getDay()] + ' ' + now.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now.getMonth()],
-      headline: done ? 'All caught up. Your library is fresh.' : Q.length - this.state.pos + ' stories are fading. Bring them back in about ' + Math.max(2, (Q.length - this.state.pos) * 1.2).toFixed(0) + ' minutes.',
-      progressLabel: done ? Q.length + ' / ' + Q.length + ' done' : 'Card ' + (pos + 1) + ' of ' + Q.length,
-      xp,
-      queue: Q.map((p, i) => {
+      t, L, ...navVals(this, t, themeKey, 'Revisit'),
+      today: RV_DAYS[now.getDay()] + ' ' + now.getDate() + ' ' + RV_MONTHS[now.getMonth()],
+      dueCount: String(left),
+      dueUnit: left === 1 ? 'card due today' : 'cards due today',
+      headline: inSession ? 'Due today' : total ? 'All caught up for today.' : 'Nothing due.',
+      subline: inSession ? 'Say the key move out loud, then reveal it and rate how well you knew it. The better you knew it, the longer until it comes back.'
+        : total ? 'Every card you rated has a new date. Shaky ones come back soon, solid ones much later.'
+        : noCards ? 'Finish a story to start your queue.' : 'Your next card comes back ' + DS.whenLabel(next ? next.inDays : 1) + '. Finished stories and ticked sheet problems join the queue the day after.',
+      progressLabel: inSession ? 'Card ' + (s.pos + 1) + ' of ' + total : total + ' of ' + total + ' done',
+      showProgress: total > 0,
+      bars: Q.map((id, i) => {
         const r = results[i];
-        const state = r ? (r.right ? 'right' : 'wrong') : i === this.state.pos ? 'now' : 'todo';
-        return {
-          story: p.story,
-          bg: state === 'right' ? t.ok : state === 'wrong' ? t.left : state === 'now' ? t.accent : t.sunk,
-          mark: state === 'right' ? '✓' : state === 'wrong' ? '↺' : String(i + 1),
-          dotBg: state === 'right' ? t.ok : state === 'wrong' ? t.warnBg : state === 'now' ? t.accent : t.sunk,
-          dotFg: state === 'right' ? t.onAccent : state === 'now' ? t.onAccent : t.text,
-          note: r ? (r.right ? 'Remembered' : 'Mixed up') + ' · back ' + RATES.find(([l]) => l === r.label)[1] : state === 'now' ? 'Now' : 'Last walked ' + AGO[i % AGO.length]
-        };
+        return { label: rvCard(byId[id]).name, bg: r ? (r.grade > 1 ? t.ok : t.left) : i === s.pos ? t.accent : t.line2 };
       }),
-      inSession: !done, sessionDone: done,
-      card: {
-        story: P.story, n: P.n, diff: P.diff, dBg: t.diff[P.diff][1], dFg: t.diff[P.diff][2], ago: AGO[pos % AGO.length],
-        cue: firstSentence, synopsis: P.synopsis, initial: pat[2][0], companion: pat[2], role: pat[3],
-        href: P.animated ? 'Story.dc.html' : 'Briefing.dc.html',
-        replay: P.animated ? 'Replay the animated story →' : 'Read the briefing again →',
-        go: () => saveProblem(P.id)
-      },
-      options: order.map((name) => {
-        const on = picked === name, isRight = name === P.pattern;
-        const show = picked !== null;
-        return {
-          name, on, tag: (PATTERNS.find(([n]) => n === name) || ['', ''])[1],
-          border: show && isRight ? t.ok : on ? t.left : t.line,
-          bg: show && isRight ? t.okBg : on ? t.warnBg : t.surface,
-          pick: () => { if (this.state.picked === null) this.setState({ picked: name }); }
-        };
-      }),
-      answered: picked !== null,
-      fbTitle: right ? 'Yes — ' + P.pattern + '. ' + pat[1] + '.' : 'Not quite. This one is ' + P.pattern + ': ' + pat[1].toLowerCase() + '.',
-      fbBg: right ? t.okBg : t.sunk,
-      rates: RATES.map(([label, when, days]) => ({ label, when, bg: t.surface, pick: () => this.rate(label, days) })),
-      doneTitle: correct + ' of ' + Q.length + ' remembered.',
-      doneLine: 'Every story you rated is scheduled: the ones you knew come back later, the shaky ones come back soon. Your streak is safe for today.',
-      doneStats: [[correct + '/' + Q.length, 'patterns named from the story alone'], ['+' + xp, 'XP earned'], [String(week[1]), 'cards due tomorrow']].map(([v, k]) => ({ v, k })),
-      restart: () => this.setState({ pos: 0, picked: null, results: [], queue: buildQueue() }),
-      week: week.map((n, i) => {
-        const d = new Date(now); d.setDate(now.getDate() + i);
-        return { n, h: Math.round((n / maxW) * 84) + 2, d: i === 0 ? 'Today' : DAYS[d.getDay()], color: i === 0 ? t.accent : t.line2, fg: i === 0 ? t.text : t.muted, weight: i === 0 ? '700' : '500' };
-      }),
-      weekTotal: week.reduce((a, b) => a + b, 0),
-      strength: STRENGTH.map(([name, v]) => {
-        const bump = results.filter((r) => r.right && PROBLEMS.find((p) => p.id === r.id).pattern === name).length * 3;
-        const pct = Math.min(99, v + bump);
-        return { name, pct: pct + '%', color: pct > 75 ? t.ok : pct > 50 ? t.diff.Medium[0] : t.left, fg: pct > 75 ? t.ok : t.muted };
-      }),
-      saved: this.state.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.story, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
-      noSaved: this.state.saved.length === 0
+      inSession, sessionDone: !inSession && total > 0, emptyDue: total === 0,
+      noCards, someUpcoming: total === 0 && !noCards,
+      card: C ? {
+        name: C.name, story: C.story, hasStory: !!C.story, pattern: C.pattern || 'Sheet problem', kind: C.kind === 'story' ? 'Story' : 'Sheet',
+        meta: C.late ? (C.late === 1 ? 'A day overdue' : C.late + ' days overdue') : C.reps ? 'Due today' : 'First review',
+        when: C.when, hasWhen: !!C.when, rule: C.rule, hasRule: !!C.rule,
+        ruleTitle: C.kind === 'story' ? 'The key rule' : 'The key move',
+        note, hasNote: !!note, href: C.href, go: C.go, linkLabel: C.linkLabel
+      } : blankCard,
+      revealed: s.revealed, hidden: !s.revealed,
+      reveal: () => this.reveal(),
+      rates: preview.map((p, i) => ({
+        label: p.label, key: String(p.grade), when: p.when, note: RV_GRADE_NOTE[i],
+        border: i === 0 ? t.flame : i === 3 ? t.ok : t.line2,
+        aria: p.label + ', key ' + p.grade + ': ' + RV_GRADE_NOTE[i].toLowerCase() + '. Comes back ' + p.when + '.',
+        pick: () => this.rate(p.grade)
+      })),
+      doneTitle: recalled + ' of ' + total + ' remembered.',
+      doneStats: [[String(results.length), results.length === 1 ? 'card reviewed' : 'cards reviewed'], ['+' + results.length * DS.XP.revisit, 'XP earned'], [String(up.counts[0].n), up.counts[0].n === 1 ? 'card due tomorrow' : 'cards due tomorrow']].map(([v, k]) => ({ v, k })),
+      // retention and upcoming
+      retPct: ret.pct === null ? '–' : ret.pct + '%', retColor,
+      retAria: ret.pct === null ? 'Retention: no reviews yet' : 'Retention ' + ret.pct + ' percent',
+      retLine: ret.pct === null ? 'Shows up after your first review.' : ret.recalled + ' of ' + ret.reviews + (ret.reviews === 1 ? ' review' : ' reviews') + ' recalled in the last 30 days.',
+      retAdvice: ret.pct === null ? 'Above 70% means the gaps suit you.' : ret.pct >= 70 ? 'Healthy. Keep the daily habit.' : ret.pct >= 50 ? 'Some cards are slipping. Rate honestly and they come back sooner.' : 'Lots of Again. Clear the queue before starting new stories.',
+      retBar: ret.pct === null ? '0%' : ret.pct + '%',
+      week: up.counts.map((c, i) => ({ n: c.n, h: Math.round((c.n / maxW) * 72) + 4, d: i === 0 ? 'Tmrw' : rvDayName(i + 1), aria: rvDate(c.date) + ': ' + c.n + (c.n === 1 ? ' card' : ' cards'), color: c.n ? t.accent : t.line2 })),
+      weekTotal: up.counts.reduce((a, c) => a + c.n, 0) + ' in the next 7 days',
+      upcoming: up.cards.slice(0, 6).map((c) => { const v = rvCard(c); return { name: v.name, pattern: v.pattern || 'Sheet problem', when: c.inDays <= 1 ? 'Tomorrow' : rvDate(c.due) }; }),
+      hasUpcoming: up.cards.length > 0, noUpcoming: up.cards.length === 0,
+      upcomingMore: up.cards.length > 6 ? '+' + (up.cards.length - 6) + ' more later' : '',
+      hasMore: up.cards.length > 6,
+      queueSize: all.length + (all.length === 1 ? ' card' : ' cards') + ' in your queue',
+      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.story, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
+      noSaved: s.saved.length === 0
     };
   }
 }

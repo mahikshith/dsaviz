@@ -218,6 +218,14 @@
 <sc-if value="{{quizAnswered}}" hint-placeholder-val="{{ false }}"><div role="status" style="padding: 12px 16px; border-radius: 12px; background: {{quizFbBg}}; font-size: 14px; line-height: 1.5">{{quizFeedback}}</div></sc-if>
 </div>
 </sc-if>
+<button onClick="{{toggleNotes}}" aria-expanded="{{notesX}}" aria-controls="pp-notes" style="min-height: 48px; padding: 0 4px; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; font-size: 15px; font-weight: 700"><span>My notes <span style="font-weight: 500; color: {{t.muted}}">· {{noteSummary}}</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{notesOpen}}" hint-placeholder-val="{{ false }}">
+<div id="pp-notes" style="padding: 12px 4px 16px; border-bottom: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px; animation: rise 240ms cubic-bezier(.2,.8,.2,1)">
+<label for="pp-note" style="font-size: 13px; font-weight: 700; color: {{t.text2}}">Your note on this problem</label>
+<textarea id="pp-note" value="{{noteText}}" onChange="{{onNote}}" maxlength="2000" rows="4" placeholder="The trick, a bug you hit, what to remember next time" style="width: 100%; box-sizing: border-box; min-height: 96px; padding: 12px; border-radius: 12px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+<span role="status" style="font-size: 12px; color: {{t.muted}}">{{noteStatus}}</span>
+</div>
+</sc-if>
 </section>
 
 <sc-if value="{{finished}}" hint-placeholder-val="{{ false }}">

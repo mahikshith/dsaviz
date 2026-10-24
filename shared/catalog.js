@@ -109,7 +109,42 @@ const COMPANY_TABS = [
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
-// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+// "Use it when": one line per pattern and sheet group, shown when a Revisit card is revealed.
+const PATTERN_WHEN = {
+  "Two Pointers": "Use it when the input is sorted or symmetric and a pair from both ends can rule things out.",
+  "Sliding Window": "Use it when the answer is a contiguous run and you can grow the right edge and shrink the left.",
+  "Hash Map": "Use it when you keep asking \"have I seen this before?\" and want the answer in one step.",
+  "Prefix Sum": "Use it when you need many range totals: store running sums once, subtract two of them.",
+  "Binary Search": "Use it when the answer space is ordered and one check tells you which half to drop.",
+  "Matrix": "Use it when a grid must be turned, spiralled or marked in place, layer by layer.",
+  "Intervals": "Use it when ranges overlap: sort by start, then merge or count as you sweep.",
+  "Greedy": "Use it when the best local step can never hurt you later, so you never look back.",
+  "Stack": "Use it when the newest open item must be closed first, like brackets or undo.",
+  "Heap": "Use it when you need the smallest or largest of a changing set, or the top k of many.",
+  "In-place Reversal": "Use it when links must be turned around without copying the list.",
+  "Fast & Slow Pointers": "Use it when a list may loop or you need its middle: one walker runs twice as fast.",
+  "Depth-First Search": "Use it when you must explore every corner of one region before moving on.",
+  "Breadth-First Search": "Use it when you need the fewest steps: spread out one ring at a time.",
+  "Backtracking": "Use it when you must list every valid choice: try, recurse, then undo.",
+  "Dynamic Programming": "Use it when the same smaller question repeats: answer each once and write it down.",
+  "Linked Lists": "Use it when nodes point to the next one: a dummy head and careful pointer swaps.",
+  "Monotonic Stack & Queue": "Use it when you need the next bigger or smaller value: drop anything that can no longer win.",
+  "Trees": "Use it when each node has one parent: solve the children, then combine at the node.",
+  "Graphs": "Use it when things connect in any direction: pick union-find, a topological order or a shortest path.",
+  "Tries": "Use it when many words share prefixes and you search by the letters typed so far.",
+  "Sorting": "Use it when order reveals the answer: sort first, then read it off in one pass.",
+  "Design": "Use it when a class must promise a speed: pair a hash map with a list, heap or array.",
+  "String Algorithms": "Use it when matching or parsing text: scan once with a rolling hash or a small state machine.",
+  "DP on Grids & Strings": "Use it when two indexes walk two strings or a grid: fill a table cell by cell.",
+  "Knapsack & LIS": "Use it when you pick or skip items under a budget, or grow the longest chain.",
+  "Interval & Bitmask DP": "Use it when you solve every sub-range, or every subset stored as a number.",
+  "Bit Manipulation": "Use it when ones and zeros carry the answer: XOR, masks and shifts.",
+  "Math & Geometry": "Use it when a formula, a modulus or a coordinate trick beats a simulation.",
+  "Segment Tree & BIT": "Use it when range answers must survive point updates.",
+  "SQL": "Use it when the data lives in tables: join, group, then filter or window.",
+  "Concurrency": "Use it when threads must take turns: locks, semaphores or conditions."
+};
+// Saved stories. The old revisit deck (dsaviz-deck) is read once by DS for medals; reviews now live in DS (dsaviz-review-v1).
 function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
 function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }

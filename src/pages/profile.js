@@ -22,13 +22,76 @@ function certRows() {
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYNAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 function loadPrefs() { const v = readJSON(PREFS_KEY, {}); return Object.assign({}, PREF_DEFAULT, v && typeof v === 'object' ? v : {}); }
-// Clipboard can be blocked (permissions, iframes); the button still confirms.
-function copyText(text) { try { const w = navigator.clipboard && navigator.clipboard.writeText(text); if (w && w.catch) w.catch(() => {}); } catch (e) {} }
+// ---- share card: a 1200x630 PNG drawn on a canvas in the browser, in the Max theme. Nothing leaves the page.
+// It shows only the wordmark, the name the learner typed (if any), streak, stories, sheet count and the top three pattern rings.
+const SHARE_W = 1200, SHARE_H = 630;
+function shareStats() {
+  const me = DS.profile(), st = DS.streak(), stories = DS.stories(), sheet = DS.sheet();
+  const pats = DS.patterns(PROBLEMS, PATTERNS).filter((p) => p.total);
+  const top = pats.slice().sort((a, b) => b.pct - a.pct || b.done - a.done || pats.indexOf(a) - pats.indexOf(b)).slice(0, 3);
+  return { name: me.name, streak: st.current, stories: stories.count, storyTotal: PROBLEMS.length, sheet: sheet.ticked, sheetTotal: sheet.total, top };
+}
+function shareAlt(d) {
+  return 'DSAMaxxing progress card' + (d.name ? ' for ' + d.name : '') + ': ' + d.streak + '-day streak, ' + d.stories + ' of ' + d.storyTotal + ' stories finished, ' + d.sheet + ' of ' + d.sheetTotal + ' sheet problems solved. Top patterns: ' + d.top.map((p) => p.name + ' ' + p.pct + '%').join(', ') + '.';
+}
+function drawShareCard(canvas, d) {
+  const T = THEMES.max;
+  canvas.width = SHARE_W; canvas.height = SHARE_H;
+  const x = canvas.getContext('2d');
+  const display = "'Anton', Impact, 'Arial Narrow', sans-serif", body = "'Outfit', system-ui, sans-serif";
+  x.fillStyle = T.bg; x.fillRect(0, 0, SHARE_W, SHARE_H);
+  // A lime glow in the corner and a faint dot grid, so the card reads as ours at a glance.
+  const g = x.createRadialGradient(1080, 60, 0, 1080, 60, 520);
+  g.addColorStop(0, 'rgba(197,240,74,0.22)'); g.addColorStop(1, 'rgba(197,240,74,0)');
+  x.fillStyle = g; x.fillRect(0, 0, SHARE_W, SHARE_H);
+  x.fillStyle = 'rgba(255,255,255,0.05)';
+  for (let gx = 36; gx < SHARE_W; gx += 36) for (let gy = 36; gy < SHARE_H; gy += 36) x.fillRect(gx, gy, 2, 2);
+  x.fillStyle = T.accent; x.fillRect(0, 0, 12, SHARE_H);
+  x.textBaseline = 'alphabetic'; x.textAlign = 'left';
+  // wordmark and name
+  x.fillStyle = T.accent; x.font = '64px ' + display;
+  x.fillText('DSAMAXXING', 72, 118);
+  x.fillStyle = T.text2; x.font = '500 26px ' + body;
+  x.fillText(d.name ? d.name.slice(0, 32) + '\u2019s progress' : 'My progress', 72, 164);
+  // three stats
+  const stats = [[String(d.streak), 'day streak', T.flame], [String(d.stories), 'of ' + d.storyTotal + ' stories finished', T.text], [String(d.sheet), 'of ' + d.sheetTotal + ' sheet problems', T.text]];
+  stats.forEach(([v, label, color], i) => {
+    const sx = 72 + i * 360;
+    x.fillStyle = color; x.font = '120px ' + display;
+    x.fillText(v, sx, 330);
+    x.fillStyle = T.muted; x.font = '500 24px ' + body;
+    x.fillText(label, sx, 370);
+  });
+  x.fillStyle = T.line2; x.fillRect(72, 410, SHARE_W - 144, 2);
+  // top three pattern rings
+  const colors = [T.accent, T.right, T.flame];
+  x.fillStyle = T.muted; x.font = '700 18px ' + body;
+  x.fillText('TOP PATTERNS', 72, 452);
+  d.top.forEach((p, i) => {
+    const cx = 72 + 52 + i * 340, cy = 532, r = 44;
+    x.lineWidth = 12; x.lineCap = 'round';
+    x.strokeStyle = T.line2; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+    if (p.pct > 0) { x.strokeStyle = colors[i]; x.beginPath(); x.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * p.pct) / 100); x.stroke(); }
+    x.fillStyle = T.text; x.textAlign = 'center'; x.font = '700 22px ' + body;
+    x.fillText(p.pct + '%', cx, cy + 8);
+    x.textAlign = 'left'; x.font = '600 22px ' + body; x.fillStyle = T.text;
+    let label = p.name;
+    while (x.measureText(label).width > 200 && label.length > 4) label = label.slice(0, -1);
+    if (label !== p.name) label = label.trim() + '\u2026';
+    x.fillText(label, cx + r + 20, cy - 4);
+    x.fillStyle = T.muted; x.font = '500 18px ' + body;
+    x.fillText(p.done + ' of ' + p.total + ' stories', cx + r + 20, cy + 22);
+  });
+  x.textAlign = 'right'; x.fillStyle = T.muted; x.font = '500 18px ' + body;
+  x.fillText('DSA, told as stories', SHARE_W - 72, 452);
+  x.textAlign = 'left';
+}
+function canCopyImage() { try { return !!(navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem !== 'undefined'); } catch (e) { return false; } }
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, shared: false, nudged: [], del: 0 };
+    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, nudged: [], del: 0, share: null, shareMsg: '' };
     // Medals earned since the last visit shine once; then they are marked seen.
     const medals = DS.medals(PROBLEMS, PATTERNS);
     this.fresh = {};
@@ -37,6 +100,44 @@ class Component extends DCLogic {
   }
   componentDidMount() { listenTheme(this); }
   componentWillUnmount() { unlistenTheme(this); }
+  focusId(id) { setTimeout(() => { try { const el = document.getElementById(id); if (el) el.focus(); } catch (e) {} }, 30); }
+  // Draw the card once the display fonts are ready (they fall back to Impact and system fonts if they never load).
+  shareProgress() {
+    const d = shareStats();
+    const draw = () => {
+      try {
+        const c = document.createElement('canvas');
+        drawShareCard(c, d);
+        this.canvas = c;
+        this.setState({ share: { url: c.toDataURL('image/png'), alt: shareAlt(d) }, shareMsg: '' });
+        this.focusId('pf-share');
+      } catch (e) { this.setState({ share: null, shareMsg: 'This browser cannot draw the card.' }); }
+    };
+    try {
+      if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('64px Anton'), document.fonts.load('500 24px Outfit'), document.fonts.load('700 22px Outfit')]).then(draw, draw);
+      else draw();
+    } catch (e) { draw(); }
+  }
+  downloadShare() {
+    if (!this.state.share) return;
+    const name = 'dsamaxxing-progress-' + DS.dayKey(Date.now()) + '.png';
+    try {
+      const a = document.createElement('a');
+      a.href = this.state.share.url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      this.setState({ shareMsg: 'Saved ' + name + ' to your downloads.' });
+    } catch (e) { this.setState({ shareMsg: 'Download is blocked here. Right-click the image to save it.' }); }
+  }
+  copyShare() {
+    const done = (msg) => this.setState({ shareMsg: msg });
+    if (!this.canvas || !canCopyImage()) { done('This browser cannot copy images. Download it instead.'); return; }
+    try {
+      this.canvas.toBlob((blob) => {
+        if (!blob) { done('Could not copy the image. Download it instead.'); return; }
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(() => done('Copied. Paste it into a post or chat.'), () => done('Copy was blocked. Download it instead.'));
+      }, 'image/png');
+    } catch (e) { done('Could not copy the image. Download it instead.'); }
+  }
   setPref(k, v) {
     const prefs = Object.assign({}, this.state.prefs, { [k]: v });
     writeJSON(PREFS_KEY, prefs);
@@ -96,8 +197,12 @@ class Component extends DCLogic {
         cta: me.name ? 'Change my goals' : 'Set your name and goals'
       },
       chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
-      shareLabel: this.state.shared ? 'Copied ✓' : 'Copy my stats',
-      shareProfile: () => { copyText('DSAMaxxing · ' + who + ' · ' + st.current + '-day streak · ' + stories.count + ' stories · ' + sheet.ticked + ' sheet problems'); this.setState({ shared: true }); },
+      pageH: 2080 + (this.state.share ? 392 : 0),
+      shareProfile: () => this.shareProgress(),
+      shareOpen: !!this.state.share, shareUrl: this.state.share ? this.state.share.url : '', shareAlt: this.state.share ? this.state.share.alt : '',
+      shareMsg: this.state.shareMsg, canCopy: canCopyImage(),
+      downloadShare: () => this.downloadShare(), copyShare: () => this.copyShare(),
+      closeShare: () => { this.setState({ share: null, shareMsg: '' }); this.focusId('pf-share-btn'); },
       rings: ringSet(t, top.map((p, i) => ({ label: p.name, value: p.done + '/' + p.total, pct: p.pct, color: ringColors[i] })), 136, 11),
       tiles: statTiles(t, [
         { icon: 'flame', color: t.flame, value: st.current, unit: st.current === 1 ? 'day' : 'days', label: 'Streak', pct: null },

@@ -3,7 +3,7 @@
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem' };
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1' };
   const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5 };
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
   const LEVEL_XP = 500;
@@ -176,7 +176,8 @@ const DS = (function () {
     const seen = json(KEY.medals, {});
     return patterns(list, pats).filter((p) => p.total > 0).map((p) => {
       const ids = (list || []).filter((x) => x.pattern === p.name).map((x) => x.id);
-      const rated = ids.filter((id) => problemStatus(id) === 'done' && deck[id]).length;
+      const rev = readReview().cards;
+      const rated = ids.filter((id) => problemStatus(id) === 'done' && (deck[id] || (rev[id] && rev[id].last))).length;
       const half = Math.ceil(p.total / 2);
       const tier = p.done === p.total && rated === p.total ? 'gold' : p.done >= half ? 'silver' : p.done >= 1 ? 'bronze' : null;
       const nextTier = tier === 'gold' ? null : TIERS[tier ? TIERS.indexOf(tier) + 1 : 0];
@@ -192,6 +193,178 @@ const DS = (function () {
     const seen = Object.assign({}, json(KEY.medals, {}));
     (list || []).forEach((m) => { if (m.tier) seen[m.key] = 1; });
     set(KEY.medals, JSON.stringify(seen));
+  }
+
+  // -- spaced repetition. Every finished story and every ticked sheet problem is a card; the card's schedule
+  // lives in dsaviz-review-v1: { v: 1, cards: { id: { due, interval, ease, reps, lapses, last, grade, name, pattern, rule, hint, story } }, log: [{ id, at, grade }] }.
+  // Sheet cards are 'sheet:<slug>'. A card with no schedule yet is due the day after it was finished or ticked.
+  const GRADES = ['Again', 'Hard', 'Good', 'Easy'];
+  const EASE = { start: 2.5, min: 1.3, max: 3.0 };
+  const MAX_INTERVAL = 365;
+  function readReview() {
+    const o = json(KEY.review, null);
+    const out = { v: 1, cards: {}, log: [] };
+    if (!o || o.v !== 1) return out;
+    if (o.cards && typeof o.cards === 'object' && !Array.isArray(o.cards)) Object.keys(o.cards).forEach((id) => { const c = o.cards[id]; if (c && typeof c === 'object') out.cards[id] = c; });
+    if (Array.isArray(o.log)) out.log = o.log.filter((x) => x && typeof x.id === 'string' && isFinite(x.at) && x.grade >= 1 && x.grade <= 4);
+    return out;
+  }
+  function writeReview(r) { set(KEY.review, JSON.stringify(r)); }
+  const fromKey = (k) => { const [y, m, d] = String(k).split('-').map(Number); return new Date(y, m - 1, d).getTime(); };
+  const daysBetween = (a, b) => Math.round((midnight(b) - midnight(a)) / DAY);
+  // The scheduler, SM-2 style: grade 1 Again, 2 Hard, 3 Good, 4 Easy. Pure: takes a card's state, returns the next one.
+  // First review: Hard 1 day, Good 3, Easy 6. After that the gap grows by 1.2 (Hard), the ease (Good) or ease x 1.3 (Easy),
+  // always by at least a day. Again resets the card to tomorrow and lowers its ease. Ease stays within 1.3 to 3.0.
+  function schedule(card, grade, ts) {
+    grade = Math.max(1, Math.min(4, Math.round(Number(grade) || 1)));
+    const c = card || {};
+    const reps = Math.max(0, Number(c.reps) || 0), prev = Math.max(0, Number(c.interval) || 0);
+    let ease = Math.max(EASE.min, Math.min(EASE.max, Number(c.ease) || EASE.start));
+    let interval;
+    if (grade === 1) { interval = 1; ease = Math.max(EASE.min, ease - 0.2); }
+    else if (reps === 0) interval = [0, 0, 1, 3, 6][grade];
+    else {
+      const grow = grade === 2 ? 1.2 : grade === 3 ? ease : ease * 1.3;
+      interval = Math.max(prev + 1, Math.round(prev * grow));
+      if (grade === 2) ease = Math.max(EASE.min, ease - 0.15);
+      if (grade === 4) ease = Math.min(EASE.max, ease + 0.15);
+    }
+    interval = Math.min(MAX_INTERVAL, interval);
+    const at = ts == null ? now() : ts;
+    return { interval, ease: Math.round(ease * 100) / 100, reps: grade === 1 ? 0 : reps + 1, lapses: (Number(c.lapses) || 0) + (grade === 1 ? 1 : 0),
+      grade, last: at, due: dayKey(addDays(midnight(at), interval)) };
+  }
+  // Every card the learner has earned, merged with its schedule and any details pages stored. Soonest due first.
+  function reviewCards() {
+    const log = readLog(), sh = readSheet(), rev = readReview();
+    const today = dayKey(now());
+    const out = [];
+    const add = (id, kind, added) => {
+      const c = rev.cards[id] || {};
+      const due = typeof c.due === 'string' && /^\d{4}-\d\d-\d\d$/.test(c.due) ? c.due : dayKey(addDays(midnight(added), 1));
+      out.push({ id, kind, added, due, isDue: due <= today, late: Math.max(0, daysBetween(fromKey(due), now())), inDays: Math.max(0, daysBetween(now(), fromKey(due))),
+        interval: Number(c.interval) || 0, ease: Number(c.ease) || EASE.start, reps: Number(c.reps) || 0, lapses: Number(c.lapses) || 0, last: Number(c.last) || 0, grade: Number(c.grade) || 0,
+        name: c.name || '', pattern: c.pattern || '', rule: c.rule || '', hint: c.hint || '', story: c.story || '' });
+    };
+    Object.keys(log.stories).forEach((id) => add(id, 'story', Number(log.stories[id]) || now()));
+    Object.keys(sh.done).forEach((slug) => {
+      const c = rev.cards['sheet:' + slug];
+      if (slug in log.stories || (c && c.story && c.story in log.stories)) return; // the story card already covers this problem
+      add('sheet:' + slug, 'sheet', sh.done[slug]);
+    });
+    return out.sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : a.added - b.added));
+  }
+  function reviewDue() { return reviewCards().filter((c) => c.isDue); }
+  // Upcoming: cards not due today, soonest first, plus a count per day for the next `days` days (index 0 is tomorrow).
+  function reviewUpcoming(days) {
+    days = days || 7;
+    const cards = reviewCards().filter((c) => !c.isDue);
+    const counts = [];
+    for (let i = 1; i <= days; i++) { const k = dayKey(addDays(midnight(now()), i)); counts.push({ date: k, n: cards.filter((c) => c.due === k).length }); }
+    return { cards, counts };
+  }
+  // Remember details a page knows (name, pattern, key rule, hint, story id) without changing the schedule.
+  function addCard(id, meta) {
+    if (!id) return;
+    const r = readReview();
+    const c = Object.assign({}, r.cards[id]);
+    ['name', 'pattern', 'rule', 'hint', 'story'].forEach((k) => { if (meta && typeof meta[k] === 'string' && meta[k]) c[k] = meta[k].slice(0, 400); });
+    r.cards[id] = c;
+    writeReview(r);
+  }
+  // Rate a card 1-4. Logs a revisit for the streak and XP, and returns the card's new schedule.
+  // With { redo: true } a learner who changes their mind straight after rating re-rates from the state before
+  // that rating: the last log entry is replaced and no extra XP is given.
+  const SCHED = ['interval', 'ease', 'reps', 'lapses', 'grade', 'last', 'due'];
+  function review(id, grade, opts) {
+    if (!id) return null;
+    const r = readReview();
+    const cur = r.cards[id] || {};
+    const last = r.log[r.log.length - 1];
+    const redo = !!(opts && opts.redo && cur.prev && last && last.id === id);
+    const base = redo ? cur.prev : cur;
+    const next = schedule(base, grade, now());
+    const prev = {};
+    SCHED.forEach((k) => { if (base[k] !== undefined) prev[k] = base[k]; });
+    const card = Object.assign({}, cur, next, { prev });
+    SCHED.forEach((k) => { if (next[k] === undefined) delete card[k]; });
+    r.cards[id] = card;
+    if (redo) r.log.pop();
+    r.log.push({ id, at: now(), grade: next.grade });
+    if (r.log.length > 2000) r.log = r.log.slice(-2000);
+    writeReview(r);
+    if (!redo) logActivity('revisit', id);
+    return next;
+  }
+  function whenLabel(n) { return n <= 1 ? 'tomorrow' : n < 14 ? 'in ' + n + ' days' : n < 60 ? 'in ' + Math.round(n / 7) + ' weeks' : 'in ' + Math.round(n / 30) + ' months'; }
+  // What each grade would do to a card now: [{ grade, label, interval, when }].
+  function reviewPreview(id, opts) {
+    const c = (opts && opts.redo && (readReview().cards[id] || {}).prev) || readReview().cards[id];
+    return GRADES.map((label, i) => { const s = schedule(c, i + 1, now()); return { grade: i + 1, label, interval: s.interval, when: whenLabel(s.interval) }; });
+  }
+  // Retention: the share of reviews in the last 30 days that were not "Again". pct is null until the first review.
+  function retention(windowDays) {
+    windowDays = windowDays || 30;
+    const since = addDays(midnight(now()), -windowDays + 1);
+    const recent = readReview().log.filter((x) => x.at >= since);
+    const recalled = recent.filter((x) => x.grade > 1).length;
+    const today = dayKey(now());
+    return { pct: recent.length ? Math.round((recalled / recent.length) * 100) : null, reviews: recent.length, recalled, windowDays,
+      today: recent.filter((x) => dayKey(x.at) === today).length };
+  }
+
+  // -- notes per problem: dsaviz-notes-v1 = { v: 1, notes: { id: { text, at } } }. The story page uses the catalog id;
+  // sheet rows use their story id when they have one (so both places share a note), else the LeetCode slug.
+  const NOTE_MAX = 2000;
+  function readNotes() {
+    const o = json(KEY.notes, null);
+    const out = {};
+    if (o && o.v === 1 && o.notes && typeof o.notes === 'object') Object.keys(o.notes).forEach((id) => { const n = o.notes[id]; if (n && typeof n.text === 'string' && n.text.trim()) out[id] = { text: n.text.slice(0, NOTE_MAX), at: Number(n.at) || 0 }; });
+    return out;
+  }
+  function note(id) { const n = readNotes()[id]; return n ? n.text : ''; }
+  function setNote(id, text) {
+    if (!id) return;
+    const all = Object.assign({}, readNotes());
+    const t = typeof text === 'string' ? text.slice(0, NOTE_MAX) : '';
+    if (t.trim()) all[id] = { text: t, at: now() }; else delete all[id];
+    set(KEY.notes, JSON.stringify({ v: 1, notes: all }));
+  }
+  // Merge notes from a backup: a missing note is added; a different one replaces ours only when it is newer. Returns how many changed.
+  function mergeNotes(incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return 0;
+    const all = Object.assign({}, readNotes());
+    let changed = 0;
+    Object.keys(incoming).forEach((id) => {
+      const n = incoming[id];
+      const text = n && typeof n === 'object' ? n.text : n;
+      if (typeof text !== 'string' || !text.trim()) return;
+      const at = (n && typeof n === 'object' && Number(n.at)) || 0;
+      if (!all[id] || (all[id].text !== text && at > all[id].at)) { all[id] = { text: text.slice(0, NOTE_MAX), at }; changed++; }
+    });
+    if (changed) set(KEY.notes, JSON.stringify({ v: 1, notes: all }));
+    return changed;
+  }
+
+  // -- the sheet backup file: { v: 1, done, star, notes }. Import adds ticks, stars and notes, keeps the earliest tick time and never removes anything.
+  function exportBackup() {
+    const s = readSheet();
+    return { v: 1, done: s.done, star: s.star, notes: readNotes() };
+  }
+  function importBackup(data) {
+    if (!data || typeof data !== 'object' || data.v !== 1) return null;
+    const cur = readSheet();
+    const done = Object.assign({}, cur.done), star = Object.assign({}, cur.star);
+    let ticks = 0;
+    if (data.done && typeof data.done === 'object') Object.keys(data.done).forEach((k) => {
+      const ts = Number(data.done[k]);
+      if (!isFinite(ts) || ts <= 0) return;
+      if (!done[k]) ticks++;
+      done[k] = done[k] ? Math.min(done[k], ts) : ts;
+    });
+    if (data.star && typeof data.star === 'object') Object.keys(data.star).forEach((k) => { if (data.star[k]) star[k] = 1; });
+    set(KEY.sheet, JSON.stringify({ v: 1, done, star }));
+    return { ticks, notes: mergeNotes(data.notes) };
   }
 
   // -- the learner, as far as this browser knows them
@@ -236,17 +409,19 @@ const DS = (function () {
       .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
   }
 
-  // -- erase this browser's progress: activity log, sheet ticks, revisit deck, medals, saved stories, code and lesson progress.
+  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
     KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
+    note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,
     setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
   };

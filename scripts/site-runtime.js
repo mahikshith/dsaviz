@@ -187,8 +187,16 @@
     tmp.innerHTML = window.DS_BOARDS[name].helmet || '';
     for (const el of [...tmp.children]) { const k = el.outerHTML; if (seen.has(k)) continue; seen.add(k); document.head.appendChild(el); }
   }
-  function fit() { document.documentElement.style.zoom = Math.max(0.25, Math.min(1.6, window.innerWidth / 1440)); }
+  // Pages are laid out at 1440px and zoomed to fit. A page can declare another layout width with
+  // data-fit on its root (the Git page uses a 420px stacked layout on phones).
+  function fit() {
+    const r = document.querySelector('#app > div');
+    const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
+    const z = Math.max(0.25, Math.min(1.6, window.innerWidth / w));
+    if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
+  }
   function paint() {
+    fit();
     const r = document.querySelector('#app > div');
     if (!r) return;
     const bg = getComputedStyle(r).backgroundColor;

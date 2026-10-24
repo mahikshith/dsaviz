@@ -2,6 +2,7 @@
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
   ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
   ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],
@@ -9,6 +10,7 @@ const MENU = [
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
   ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];

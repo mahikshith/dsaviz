@@ -18,8 +18,8 @@
 </sc-for>
 </ol>
 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.5; color: {{t.bandMuted}}">
-<span style="color: {{t.bandText}}; font-weight: 700">Your 3-day trial is running.</span>
-<span>No card needed. We'll remind you the day before it ends.</span>
+<span style="color: {{t.bandText}}; font-weight: 700">Early access is free.</span>
+<span>No card, no trial clock. Your progress stays in this browser.</span>
 </div>
 </aside>
 
@@ -64,7 +64,7 @@
 <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">When should Old Hoot nudge you?</h1>
-<p style="margin: 0; font-size: 17px; color: {{t.text2}}">One short reminder a day, only if you haven't learned yet. Learners with a reminder keep their streak far longer.</p>
+<p style="margin: 0; font-size: 17px; color: {{t.text2}}">One short reminder a day, only if you haven't learned yet. We save your choice now, and reminders start when accounts launch.</p>
 <span style="font-size: 15px; font-weight: 700">Time</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{times}}" as="tm" hint-placeholder-count="4"><button onClick="{{tm.pick}}" aria-pressed="{{tm.on}}" style="height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid {{tm.border}}; background: {{tm.bg}}; color: {{tm.fg}}; cursor: pointer; font-size: 15px; font-weight: 700">{{tm.label}}</button></sc-for></div>
 <span style="font-size: 15px; font-weight: 700">Where</span>

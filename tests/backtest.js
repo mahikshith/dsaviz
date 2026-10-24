@@ -51,6 +51,8 @@ for (const f of files) {
     return v;
   };
   while ((m = forRe.exec(markup))) {
+    const outer = m[1].split('.')[0];
+    if (outer in aliases && Object.keys(aliases[outer]).length === 0) { aliases[m[2]] = {}; continue; } // inside an empty list
     const list = resolve(m[1]);
     if (!Array.isArray(list)) { report(f, 'sc-for list not an array: ' + m[1]); continue; }
     aliases[m[2]] = list[0] !== undefined ? list[0] : {};

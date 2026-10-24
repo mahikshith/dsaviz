@@ -24,8 +24,9 @@ function setQueryProblem(id) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    const last = loadProblem();
-    const pid = queryProblem() || (last && TEST_SPECS[last.id] ? last.id : 'two-sum-ii');
+    let last = null;
+    try { last = window.localStorage.getItem(PROBLEM_KEY); } catch (e) {}
+    const pid = queryProblem() || (last && TEST_SPECS[last] ? last : 'two-sum-ii');
     this.state = { theme: loadTheme(), pid };
     this.runner = new CodeRunner(this, pid);
   }

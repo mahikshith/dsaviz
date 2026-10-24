@@ -332,7 +332,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- the canvas (desktop): lanes top to bottom, topics left to right -->
 <sc-if value="{{rm.desk}}" hint-placeholder-val="{{ true }}">
 <section aria-label="Learning roadmap" style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 8px">
-<div style="position: relative; width: {{rm.w}}px; height: {{rm.h}}px; margin: 0 auto">
+<div data-rm-scroll style="display: flex; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin">
+<div style="position: relative; flex-shrink: 0; width: {{rm.w}}px; height: {{rm.h}}px; margin: 0 auto">
 <sc-for list="{{rm.lanes}}" as="ln" hint-placeholder-count="6">
 <div id="{{ln.anchor}}" style="position: absolute; left: 0; top: {{ln.top}}px; width: {{rm.w}}px; height: {{ln.h}}px; border-top: 1px solid {{ln.border}}; scroll-margin-top: 16px"></div>
 </sc-for>
@@ -372,6 +373,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: 12px; font-weight: 600; line-height: 14px; white-space: nowrap; color: {{mn.labelFg}}">{{mn.label}}</span>
 </button>
 </sc-for>
+</div>
+<div aria-hidden="true" style="flex-shrink: 0; width: {{rm.reserve}}px"></div>
 </div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 10px 12px 0; border-top: 1px solid {{t.line}}; font-size: 12px; color: {{t.muted}}">
 <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 3px solid {{t.accent}}; box-sizing: border-box"></span>Outer ring: stories or lessons finished</span>
@@ -414,7 +417,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- the drawer for the picked topic -->
 <sc-if value="{{rm.card.open}}" hint-placeholder-val="{{ false }}">
-<aside data-rm-drawer role="dialog" aria-modal="false" aria-labelledby="rm-drawer-title" onKeyDown="{{rm.key}}" style="position: fixed; top: 0; right: 0; z-index: 60; width: 440px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-left: 1px solid {{t.line2}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px">
+<aside data-rm-drawer role="dialog" aria-modal="false" aria-labelledby="rm-drawer-title" onKeyDown="{{rm.key}}" style="position: fixed; top: 0; right: 0; z-index: 60; width: {{rm.drawerW}}px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-left: 1px solid {{t.line2}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
 <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{rm.card.eyebrow}}</span>
@@ -2556,6 +2559,23 @@ function rmShow(id, lane) {
   setTimeout(() => { try { const el = lane ? document.getElementById('rm-lane-' + lane) : document.querySelector('[data-rm-node="' + id + '"]');
     if (el) el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: lane ? 'start' : 'center' }); } catch (e) {} }, 80);
 }
+// Desktop: with the drawer open, slide the canvas sideways and the page up or down until the picked node sits fully
+// in view to the left of the drawer. The canvas reserves the drawer's width as a spacer, so every node can get there.
+const RM_DRAWER_W = 440;
+function rmReveal(id) {
+  setTimeout(() => {
+    try {
+      const el = document.querySelector('[data-rm-node="' + id + '"]'), box = document.querySelector('[data-rm-scroll]'), dr = document.querySelector('[data-rm-drawer]');
+      if (!el || !box) return;
+      const behavior = reducedMotion() ? 'auto' : 'smooth';
+      const r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+      const k = b.width / box.offsetWidth || 1; // screen pixels per layout pixel (the page is zoomed to fit)
+      const left = b.left + 16 * k, right = (dr ? dr.getBoundingClientRect().left : b.right) - 16 * k;
+      if (r.left < left || r.right > right) box.scrollBy({ left: (r.left + r.width / 2 - (left + right) / 2) / k, behavior });
+      if (r.top < 16 * k || r.bottom > window.innerHeight - 16 * k) window.scrollBy({ top: (r.top + r.height / 2 - window.innerHeight / 2) / k, behavior });
+    } catch (e) {}
+  }, 90);
+}
 function rmJump(key) {
   try { const el = document.getElementById('rm-lane-' + key); if (el) el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }); } catch (e) {}
 }
@@ -2606,7 +2626,7 @@ class Component extends DCLogic {
     const nextId = rmNext(stat);
     const selId = RM_BY[this.state.node] ? this.state.node : null;
     const phone = dsPhone();
-    const pick = (id) => () => { this.setState({ node: id, fold: false }); rmFocus('[data-rm-title]'); };
+    const pick = (id) => () => { this.setState({ node: id, fold: false }); rmFocus('[data-rm-title]'); if (!phone) rmReveal(id); };
     const close = () => { const id = selId; this.setState({ node: null }); if (id) rmFocus('[data-rm-node="' + id + '"]'); };
     const tone = (s) => s.st === 'done' ? t.ok : s.st === 'now' ? t.accent : s.st === 'soon' ? t.faint : t.line2;
     const aria = (n) => {
@@ -2688,7 +2708,7 @@ class Component extends DCLogic {
     });
     const nx = RM_BY[nextId];
     const next = { name: nx.name, lane: RM_LANE_OF[nx.lane].title, line: stat[nextId].line,
-      pick: () => { pick(nextId)(); rmShow(nextId, phone ? nx.lane : ''); } };
+      pick: () => { pick(nextId)(); if (phone) rmShow(nextId, nx.lane); } };
 
     // The drawer for the picked node.
     let card = { open: false };
@@ -2725,7 +2745,7 @@ class Component extends DCLogic {
       };
     }
     return {
-      desk: !phone, phone, w: RM_GEO.w, h: RM_H, gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
+      desk: !phone, phone, w: RM_GEO.w, reserve: selId && !phone ? RM_DRAWER_W + 16 : 0, drawerW: RM_DRAWER_W, h: RM_H, gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
       key: (e) => { if (e.key === 'Escape' && selId) { e.preventDefault(); close(); } }
     };
   }

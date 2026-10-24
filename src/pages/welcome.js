@@ -18,8 +18,8 @@ const TIMES = [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'],
 const CHANNELS = [['WhatsApp', 'WhatsApp'], ['Email', 'Email'], ['Push', 'App notification']];
 const STEP_NAMES = ['About you', 'Where to start', 'Daily goal', 'Reminders', 'Your plan'];
 const HOOTS = [
-  'Hoo! I’m Old Hoot. I’ll be the voice in every story, dropping hints when you’re stuck — never the answer.',
-  'Be honest — I’ll never make you feel slow. Kid depth exists because everyone starts somewhere.',
+  'Hoo! I’m Old Hoot. I’m in every story, with a hint when you’re stuck, never the answer.',
+  'Be honest. I’ll never make you feel slow. Every step starts in plain words, because everyone starts somewhere.',
   'Ten minutes a day, every day, beats three hours on Sunday. Your brain keeps what it sees often.',
   'I only nudge if you haven’t learned yet that day. One message, then I go back to my branch.',
   'That’s your week. Walk the first story now and your streak starts today.'
@@ -100,7 +100,7 @@ class Component extends DCLogic {
         const d = new Date(today); d.setDate(today.getDate() + i);
         return { day: i === 0 ? 'Today' : days[d.getDay()], what, kind, bg: i === 0 ? t.warnBg : t.surface, border: i === 0 ? t.accent : t.line, dayColor: i === 0 ? t.accent : t.muted };
       }),
-      summary: [['Starting point', level[2]], ['Daily goal', GOALS.find(([g]) => g === st.goal)[2]], ['Trial', '3 days free · no card']].map(([k, v]) => ({ k, v })),
+      summary: [['Starting point', level[2]], ['Daily goal', GOALS.find(([g]) => g === st.goal)[2]], ['Price', 'Free in early access']].map(([k, v]) => ({ k, v })),
       atFirst: step === 0, backOp: step === 0 ? 0.4 : 1,
       back: () => this.setState({ step: Math.max(0, step - 1) }),
       notLast: step < 4, isLast: step === 4,

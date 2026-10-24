@@ -169,7 +169,9 @@
     componentDidMount() {
       window.__dsNav = (name) => {
         if (!window.DS_BOARDS[name]) return;
-        this.setState({ page: name });
+        // A visit counter in the key remounts the page even when a link (or a search result) points at the page
+        // already showing, so it re-reads what to open from localStorage.
+        this.setState({ page: name, visit: (this.state.visit || 0) + 1 });
         try { history.pushState(null, '', '#' + name.replace('.dc.html', '')); } catch (err) { try { location.hash = name.replace('.dc.html', ''); } catch (e2) {} }
         window.scrollTo(0, 0);
       };
@@ -177,7 +179,7 @@
       window.addEventListener('hashchange', sync);
       window.addEventListener('popstate', sync);
     }
-    render() { return e(Host, { key: this.state.page, name: this.state.page }); }
+    render() { return e(Host, { key: this.state.page + ':' + (this.state.visit || 0), name: this.state.page }); }
   }
 
   // ---------- page chrome: fonts, fit to screen, background ----------

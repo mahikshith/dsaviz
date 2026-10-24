@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Our story — dsaviz</title>
+<title>Our story — DSAMaxxing</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -10,6 +10,9 @@
 <helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
 <style>
+[style*="Anton"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}
+p[style*="Anton"],[style*="Anton"][style*="italic"],[style*="Anton"][style*="font-size: 11px"],[style*="Anton"][style*="font-size: 12px"],[style*="Anton"][style*="font-size: 13px"],[style*="Anton"][style*="font-size: 14px"],[style*="Anton"][style*="font-size: 15px"],[style*="Anton"][style*="font-size: 16px"],[style*="Anton"][style*="font-size: 17px"],[style*="Anton"][style*="font-size: 18px"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}
+header a,header button,nav a{white-space:nowrap}
 body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
 a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
 button,input,select,textarea{font:inherit}
@@ -20,7 +23,7 @@ button:disabled{opacity:0.4;cursor:default}
 <div style="width: 1440px; height: 4300px; box-sizing: border-box; justify-content: space-between; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 
 <header style="height: 80px; flex-shrink: 0; box-sizing: border-box; padding: 0 80px; display: flex; align-items: center; gap: 32px; border-bottom: 1px solid {{t.line}}">
-<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px"><svg width="32" height="32" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="{{t.text}}"></rect><circle cx="10" cy="15" r="3.5" fill="{{t.logoL}}"></circle><circle cx="20" cy="15" r="3.5" fill="{{t.logoR}}"></circle></svg><span style="font-family: {{t.display}}; font-size: 24px; font-weight: 700">dsaviz</span></a>
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px"><svg width="32" height="32" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 24px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
 <nav aria-label="Page" style="display: flex; align-items: center; gap: 28px; font-size: 16px; font-weight: 500">
 <a href="Patterns.dc.html">Library</a>
 <button onClick="{{goStory}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; font-weight: 700; padding: 0; min-height: 44px">Our story</button>
@@ -33,14 +36,14 @@ button:disabled{opacity:0.4;cursor:default}
 </sc-for>
 </div>
 
-<a href="Main.dc.html" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 1.5px solid {{t.text}}; display: flex; align-items: center; font-size: 15px; font-weight: 600">Back to dsaviz</a>
+<a href="Main.dc.html" style="height: 46px; padding: 0 20px; border-radius: 999px; border: 1.5px solid {{t.text}}; display: flex; align-items: center; font-size: 15px; font-weight: 600">Back to DSAMaxxing</a>
 </header>
 
 <!-- HERO -->
 <section ref="{{storyRef}}" style="padding: 96px 80px 64px; display: flex; flex-direction: column; gap: 22px; max-width: 1100px">
-<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: {{t.accent}}">Why dsaviz exists</span>
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: {{t.accent}}">Why DSAMaxxing exists</span>
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 72px; line-height: 1.04; font-weight: 600; letter-spacing: -0.03em">I built the thing I needed<br>in that exam hall.</h1>
-<p style="margin: 0; font-size: 20px; line-height: 1.6; color: {{t.text2}}; max-width: 760px">dsaviz is made by one developer in India, nights and weekends, for everyone who has ever stared at a coding question and felt their mind go blank.</p>
+<p style="margin: 0; font-size: 20px; line-height: 1.6; color: {{t.text2}}; max-width: 760px">DSAMaxxing is made by one developer in India, nights and weekends, for everyone who has ever stared at a coding question and felt their mind go blank.</p>
 </section>
 
 <!-- LETTER -->
@@ -62,7 +65,7 @@ button:disabled{opacity:0.4;cursor:default}
 <p style="margin: 0">It wasn't that I hadn't practised. I had a spreadsheet of hundreds of “solved” problems. But I had memorised answers, not understood them. Change one small detail — sorted instead of unsorted, a pair instead of a triple — and I was lost all over again.</p>
 <p style="margin: 0; padding: 28px 32px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}">The night it finally clicked, I was on a late train home, drawing Two Sum on the back of my ticket: two people walking toward each other along a platform, one step at a time. Suddenly the code was obvious. <i>It had never been about the code. It was about the story.</i></p>
 <p style="margin: 0">I got my job eventually, the long way round. But I kept thinking about everyone still sitting in that exam hall, feeling stupid about something that was never their fault. Nobody had told them the story yet.</p>
-<p style="margin: 0">So I started building dsaviz, alone, after work: one story, one animation, one tiny step at a time. Lumi and Roo were the first two characters. Old Hoot came later, because I remembered how much I needed someone to nudge me without just handing me the answer.</p>
+<p style="margin: 0">So I started building DSAMaxxing, alone, after work: one story, one animation, one tiny step at a time. Lumi and Roo were the first two characters. Old Hoot came later, because I remembered how much I needed someone to nudge me without just handing me the answer.</p>
 <p style="margin: 0">If you're struggling with DSA right now, I want you to hear this from someone who was exactly there: <b>you're not bad at this. You just haven't met the right story yet.</b> Let's find it together.</p>
 <span style="font-size: 26px; font-style: italic; color: {{t.accent}}">— Mahikshith</span>
 </article>
@@ -110,7 +113,7 @@ button:disabled{opacity:0.4;cursor:default}
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-for list="{{quickTopics}}" as="qt" hint-placeholder-count="3"><button onClick="{{qt.pick}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{qt.label}}</button></sc-for>
 </div>
-<p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: {{t.muted}}">Affiliate disclosure: dsaviz has no affiliate links today. If we ever add one, it will be labelled right next to the link.</p>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: {{t.muted}}">Affiliate disclosure: DSAMaxxing has no affiliate links today. If we ever add one, it will be labelled right next to the link.</p>
 </div>
 
 <div style="padding: 32px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
@@ -158,17 +161,23 @@ button:disabled{opacity:0.4;cursor:default}
 </section>
 
 <footer style="padding: 28px 80px; background: {{t.band}}; color: {{t.bandMuted}}; display: flex; gap: 28px; align-items: center; font-size: 14px">
-<span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700; color: {{t.bandText}}">dsaviz</span><span>Algorithms, told as stories.</span><div style="flex-grow: 1"></div><a href="Main.dc.html">Home</a><a href="Patterns.dc.html">Library</a><a href="Interview.dc.html">Interview prep</a><a href="Glossary.dc.html">Glossary</a><button onClick="{{goFine}}" style="border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 14px; padding: 0">Terms &amp; privacy</button>
+<span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700; color: {{t.bandText}}">DSA<span style="color: {{t.accent}}">Maxxing</span></span><span>Algorithms, told as stories.</span><div style="flex-grow: 1"></div><a href="Main.dc.html">Home</a><a href="Patterns.dc.html">Library</a><a href="Interview.dc.html">Interview prep</a><a href="Glossary.dc.html">Glossary</a><button onClick="{{goFine}}" style="border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 14px; padding: 0">Terms &amp; privacy</button>
 </footer>
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["paper","ink","field"],"default":"paper"},"$preview":{"width":1440,"height":4300}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":4300}}'>
 // @@THEMES@@ — generated block, shared by every board.
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
 const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
 const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
   paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
     band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
@@ -181,12 +190,12 @@ const THEMES = {
 };
 const THEME_KEY = 'dsaviz-theme';
 const USER_KEY = 'dsaviz-user';
-function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
 function themeButtons(cmp, themeKey, t) {
-  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
     label, on: themeKey === k,
     bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
     pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
@@ -240,8 +249,8 @@ class Component extends DCLogic {
   setForm(k, v) { this.setState({ form: Object.assign({}, this.state.form, { [k]: v }) }); }
   jump(el) { try { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} }
   renderVals() {
-    const themeKey = this.state.theme || this.props.theme || 'paper';
-    const t = THEMES[themeKey] || THEMES.paper;
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
     const f = this.state.form;
     const okEmail = /.+@.+\..+/.test(f.email);
     const cantSend = !okEmail || f.message.trim().length < 3;
@@ -254,7 +263,7 @@ class Component extends DCLogic {
         ['What we never do', 'Sell your data, show ads, or share your progress with anyone unless you press a share button yourself.'],
         ['Reminders', 'Only on the channel you pick, at most once a day, and one tap in your profile turns them off.'],
         ['Payments', 'Handled by our payment provider — we never see your card. Cancel any time; you keep access until the paid period ends.'],
-        ['Your code', 'Every code snippet on dsaviz is yours to copy, adapt and use anywhere. The stories and characters stay ours.'],
+        ['Your code', 'Every code snippet on DSAMaxxing is yours to copy, adapt and use anywhere. The stories and characters stay ours.'],
         ['Leaving', 'Delete your account from your profile and we erase your data within 30 days. No emails asking you to stay.']
       ].map(([title, text]) => ({ title, text })),
       goStory: () => this.jump(this.storyEl),
@@ -275,8 +284,8 @@ class Component extends DCLogic {
       sent: this.state.sent, notSent: !this.state.sent,
       sentName: f.name.trim() || 'friend',
       reset: () => this.setState({ sent: false, copied: false }),
-      mailText: 'Topic: ' + f.topic + '\nFrom: ' + (f.name.trim() || 'a dsaviz learner') + ' <' + f.email + '>\n\n' + f.message,
-      mailHref: 'mailto:mahikshith97@gmail.com?subject=' + encodeURIComponent('dsaviz: ' + f.topic) + '&body=' + encodeURIComponent(f.message + '\n\n— ' + (f.name.trim() || 'a dsaviz learner') + ' (' + f.email + ')'),
+      mailText: 'Topic: ' + f.topic + '\nFrom: ' + (f.name.trim() || 'a DSAMaxxing learner') + ' <' + f.email + '>\n\n' + f.message,
+      mailHref: 'mailto:mahikshith97@gmail.com?subject=' + encodeURIComponent('DSAMaxxing: ' + f.topic) + '&body=' + encodeURIComponent(f.message + '\n\n— ' + (f.name.trim() || 'a DSAMaxxing learner') + ' (' + f.email + ')'),
       copyLabel: this.state.copied ? 'Copied ✓' : 'Copy my message',
       copyMail: () => { try { const w = navigator.clipboard && navigator.clipboard.writeText('To: mahikshith97@gmail.com\n' + 'Topic: ' + f.topic + '\n\n' + f.message); if (w && w.catch) w.catch(() => {}); } catch (e) {} this.setState({ copied: true }); }
     };

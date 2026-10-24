@@ -1,4 +1,4 @@
-# dsaviz — notes for Claude Code
+# DSAMaxxing (repo: dsaviz) — notes for Claude Code
 
 DSA learning site: problems told as stories with step-by-step animations. Static only, no backend. See README.md for layout.
 
@@ -11,7 +11,7 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 
 ## Conventions
 
-- Themes: `paper` (light), `ink` (dark), `field` (terminal, monospace). Colors come from `THEMES` tokens (`t.text`, `t.accent`…), never literals in markup, except inside the always-dark story scene.
+- Themes: `max` (default: near-black, volt lime `#C5F04A`, Anton display, Outfit body), `paper` (light), `ink` (dark), `field` (terminal, monospace). Anton is uppercased by page CSS; paragraphs, italics and small text set in `t.display` fall back to Outfit automatically. Colors come from `THEMES` tokens (`t.text`, `t.accent`…), never literals in markup, except inside the always-dark story scene.
 - Every `<button>` needs an `onClick`. Links between pages use `href="X.dc.html"`, never `href="#"`.
 - Each page root is a fixed `width: 1440px; height: Npx` div. If content grows, raise the height in three places: the root div, `$preview.height` in `data-props`, and the board's `h` in `pages/canvas.json`. The terminal theme runs taller, so size for it.
 - Companions per pattern are in `PATTERNS` in `shared/catalog.js`. Old Hoot is the mentor everywhere.

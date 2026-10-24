@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>dsaviz — algorithms told as stories</title>
+<title>DSAMaxxing — algorithms told as stories</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -10,6 +10,9 @@
 <helmet>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&amp;family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
 <style>
+[style*="Anton"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}
+p[style*="Anton"],[style*="Anton"][style*="italic"],[style*="Anton"][style*="font-size: 11px"],[style*="Anton"][style*="font-size: 12px"],[style*="Anton"][style*="font-size: 13px"],[style*="Anton"][style*="font-size: 14px"],[style*="Anton"][style*="font-size: 15px"],[style*="Anton"][style*="font-size: 16px"],[style*="Anton"][style*="font-size: 17px"],[style*="Anton"][style*="font-size: 18px"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}
+header a,header button,nav a{white-space:nowrap}
 body{margin:0;background:#F6F2EA;font-family:'Instrument Sans',system-ui,sans-serif;color:#1D1B18}
 a{color:inherit;text-decoration:none}a:hover{opacity:0.75}
 @keyframes slidein{from{transform:translateX(-40px);opacity:0}to{transform:none;opacity:1}}
@@ -31,8 +34,8 @@ button{font:inherit}
 <header style="height: 92px; box-sizing: border-box; padding: 0 80px; display: flex; align-items: center; gap: 44px; border-bottom: 1px solid {{t.line}}">
 <button onClick="{{openDrawer}}" aria-label="Open menu" style="width: 48px; height: 48px; margin-right: -24px; border-radius: 14px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
 <a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px">
-<svg width="36" height="36" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="{{t.text}}"></rect><circle cx="10" cy="15" r="3.5" fill="{{t.logoL}}"></circle><circle cx="20" cy="15" r="3.5" fill="{{t.logoR}}"></circle></svg>
-<span style="font-family: {{t.display}}; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">dsaviz</span>
+<svg width="36" height="36" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-family: {{t.display}}; font-size: 28px; font-weight: 700; letter-spacing: -0.02em">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
 </a>
 <nav style="display: flex; gap: 32px; font-size: 17px; font-weight: 500">
 <a href="Patterns.dc.html">Library</a>
@@ -43,9 +46,10 @@ button{font:inherit}
 </nav>
 <div style="flex-grow: 1"></div>
 <div style="display: flex; gap: 4px; padding: 4px; background: {{t.sunk}}; border-radius: 999px">
-<button onClick="{{th.paper}}" aria-pressed="{{th.paperOn}}" aria-label="Paper theme" style="width: 42px; height: 42px; border: 0; border-radius: 999px; background: {{th.paperBg}}; color: {{th.paperFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></button>
-<button onClick="{{th.ink}}" aria-pressed="{{th.inkOn}}" aria-label="Ink theme" style="width: 42px; height: 42px; border: 0; border-radius: 999px; background: {{th.inkBg}}; color: {{th.inkFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></button>
-<button onClick="{{th.field}}" aria-pressed="{{th.fieldOn}}" aria-label="Field terminal theme" style="width: 42px; height: 42px; border: 0; border-radius: 999px; background: {{th.fieldBg}}; color: {{th.fieldFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 17l6-5-6-5M12 19h8"></path></svg></button>
+<button onClick="{{th.max}}" aria-pressed="{{th.maxOn}}" aria-label="Max theme" style="width: 36px; height: 36px; border: 0; border-radius: 999px; background: {{th.maxBg}}; color: {{th.maxFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 L8.5 7 L12 14 L15.5 7 L20 18"></path></svg></button>
+<button onClick="{{th.paper}}" aria-pressed="{{th.paperOn}}" aria-label="Paper theme" style="width: 36px; height: 36px; border: 0; border-radius: 999px; background: {{th.paperBg}}; color: {{th.paperFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></button>
+<button onClick="{{th.ink}}" aria-pressed="{{th.inkOn}}" aria-label="Ink theme" style="width: 36px; height: 36px; border: 0; border-radius: 999px; background: {{th.inkBg}}; color: {{th.inkFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></button>
+<button onClick="{{th.field}}" aria-pressed="{{th.fieldOn}}" aria-label="Field terminal theme" style="width: 36px; height: 36px; border: 0; border-radius: 999px; background: {{th.fieldBg}}; color: {{th.fieldFg}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 17l6-5-6-5M12 19h8"></path></svg></button>
 </div>
 <sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
 <a href="Auth.dc.html" style="font-size: 17px; font-weight: 600">Log in</a>
@@ -288,7 +292,7 @@ button{font:inherit}
 <section style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 20px">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<span style="display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{t.ok}}; animation: pulse 1.6s ease-in-out infinite"></span>Right now on dsaviz</span>
+<span style="display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{t.ok}}; animation: pulse 1.6s ease-in-out infinite"></span>Right now on DSAMaxxing</span>
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">You won't be learning alone.</h2>
 </div>
 <div style="display: flex; flex-direction: column; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
@@ -433,16 +437,16 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <footer style="padding: 56px 80px 32px; background: {{t.band}}; color: {{t.bandMuted}}; display: flex; flex-direction: column; gap: 40px; font-size: 14px">
 <div style="display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: {{t.display}}; font-size: 26px; font-weight: 700; color: {{t.bandText}}">dsaviz</span>
+<span style="font-family: {{t.display}}; font-size: 26px; font-weight: 700; color: {{t.bandText}}">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
 <p style="margin: 0; max-width: 360px; line-height: 1.6">Algorithms, told as stories. Built by one developer in India who struggled with DSA too, for everyone still in that exam hall.</p>
 <a href="About.dc.html" style="font-weight: 700; color: {{t.bandAccent}}">Read our story →</a>
 </div>
 <nav aria-label="Learn" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">Learn</span><a href="Patterns.dc.html">Library &amp; learning path</a><a href="Story.dc.html">Story player</a><a href="Revisit.dc.html">Revisit</a><a href="Basics.dc.html">Language basics</a><a href="Glossary.dc.html">Keyword glossary</a></nav>
 <nav aria-label="Prepare" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">Prepare</span><a href="Interview.dc.html" onClick="{{toPlans}}">Interview plans</a><a href="Patterns.dc.html">Company tracks</a><a href="Interview.dc.html" onClick="{{toResources}}">Resources</a><a href="Leaderboard.dc.html">Leaderboard</a></nav>
-<nav aria-label="dsaviz" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">dsaviz</span><a href="About.dc.html">Our story</a><a href="About.dc.html">Contact us</a><a href="#faq">FAQ</a><a href="#trial">Pricing</a></nav>
+<nav aria-label="DSAMaxxing" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">DSA<span style="color: {{t.accent}}">Maxxing</span></span><a href="About.dc.html">Our story</a><a href="About.dc.html">Contact us</a><a href="#faq">FAQ</a><a href="#trial">Pricing</a></nav>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; padding-top: 22px; border-top: 1px solid {{t.bandMuted}}; font-size: 13px">
-<span>© 2026 dsaviz</span><a href="About.dc.html" onClick="{{toFine}}" style="text-decoration: underline">Terms &amp; privacy, in plain words</a><span>Affiliate disclosure: no affiliate links yet — we'll label any we add.</span>
+<span>© 2026 DSAMaxxing</span><a href="About.dc.html" onClick="{{toFine}}" style="text-decoration: underline">Terms &amp; privacy, in plain words</a><span>Affiliate disclosure: no affiliate links yet — we'll label any we add.</span>
 <div style="flex-grow: 1"></div>
 <a href="mailto:mahikshith97@gmail.com" style="color: {{t.bandText}}">mahikshith97@gmail.com</a>
 </div>
@@ -453,7 +457,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
 <aside aria-label="Menu" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
 <div style="display: flex; justify-content: space-between; align-items: center">
-<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">dsaviz</span>
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
 <button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
 <sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
@@ -484,7 +488,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </nav>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
-<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
 <sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
 </div>
 </div>
@@ -497,12 +501,18 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["paper","ink","field"],"default":"paper"},"$preview":{"width":1440,"height":8000}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":8000}}'>
 // @@THEMES@@ — generated block, shared by every board.
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
 const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
 const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
   paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
     band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
@@ -515,12 +525,12 @@ const THEMES = {
 };
 const THEME_KEY = 'dsaviz-theme';
 const USER_KEY = 'dsaviz-user';
-function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
 function themeButtons(cmp, themeKey, t) {
-  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
     label, on: themeKey === k,
     bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
     pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
@@ -739,11 +749,11 @@ const STICKS = [
 ];
 const FAQS = [
   ['I\u2019ve never written code. Is this for me?', 'Yes. Start with Language basics, then the Strings stage at Kid depth. Every story explains the idea with characters and pictures before you see a line of code.'],
-  ['How is this different from practising on LeetCode?', 'LeetCode is where you practise; dsaviz is where it clicks. We teach the pattern behind each problem as a story you can step through, so you recognise it the next time it shows up in a new costume.'],
+  ['How is this different from practising on LeetCode?', 'LeetCode is where you practise; DSAMaxxing is where it clicks. We teach the pattern behind each problem as a story you can step through, so you recognise it the next time it shows up in a new costume.'],
   ['Which languages do you support?', 'Python, Java, C++, JavaScript and Go. You can switch at any step, and the same line of logic lights up in every language.'],
   ['What happens after the 3-day trial?', 'You pick a plan — ₹299 a month, ₹1,999 a year, or half price as a student with a college email — or you stop. We remind you the day before the trial ends, and your streak and progress are kept either way.'],
   ['Can I get more free days?', 'Yes. Invite a friend from your profile: they get 7 days instead of 3, and you get 7 more when they finish their first story.'],
-  ['Who makes dsaviz?', 'One developer in India who struggled with DSA for years and built the tool they wished they\u2019d had. Read the full story on our About page.']
+  ['Who makes DSAMaxxing?', 'One developer in India who struggled with DSA for years and built the tool they wished they\u2019d had. Read the full story on our About page.']
 ];
 
 class Component extends DCLogic {
@@ -778,8 +788,8 @@ class Component extends DCLogic {
     this.setState({ playing: false });
   }
   renderVals() {
-    const themeKey = this.state.theme || this.props.theme || 'paper';
-    const t = THEMES[themeKey] || THEMES.paper;
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
     const [L, R, kind, who, line] = HERO[this.state.step];
     const found = kind === 'found';
     const speaker = {
@@ -789,7 +799,7 @@ class Component extends DCLogic {
     }[who];
     const th = {};
     const feedAt = this.state.feed;
-    ['paper', 'ink', 'field'].forEach((k) => {
+    ['max', 'paper', 'ink', 'field'].forEach((k) => {
       const on = themeKey === k;
       th[k] = () => { saveTheme(k); this.setState({ theme: k }); };
       th[k + 'On'] = on;

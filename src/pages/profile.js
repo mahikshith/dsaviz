@@ -44,8 +44,8 @@ class Component extends DCLogic {
     this.setState({ prefs, savedAt: true });
   }
   renderVals() {
-    const themeKey = this.state.theme || this.props.theme || 'paper';
-    const t = THEMES[themeKey] || THEMES.paper;
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
     // 26 weeks of activity, ending today; quieter at the start, a real habit by the end.
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const start = new Date(today); start.setDate(today.getDate() - today.getDay() - 175);
@@ -90,7 +90,7 @@ class Component extends DCLogic {
       t, themeBtns: themeButtons(this, themeKey, t),
       chips: ['Level 9 · 2,640 XP', 'Lantern League #14', 'Python', 'Placements: December 2026'],
       shareLabel: this.state.shared ? 'Profile link copied ✓' : 'Share my profile',
-      shareProfile: () => { copyText('dsaviz · Aarav Sharma · 23-day streak'); this.setState({ shared: true }); },
+      shareProfile: () => { copyText('DSAMaxxing · Aarav Sharma · 23-day streak'); this.setState({ shared: true }); },
       stats: [['23', 'day streak', t.flame], ['31', 'longest streak', t.text], [String(PROBLEMS.filter((p) => p.status === 'done').length), 'stories finished', t.text], [String(CERTS.filter((x) => x.when).length), 'pattern certified', t.ok], ['78%', 'revisit recall', t.text]].map(([v, k, color]) => ({ v, k, color })),
       heatTitle: total + ' story steps and revisit cards in 6 months · ' + active + ' active days',
       months, cells,
@@ -116,8 +116,8 @@ class Component extends DCLogic {
         title: earned ? c[0] : c[0] + ' — not yet',
         line: earned ? 'Aarav Sharma walked every core ' + c[0] + ' story and passed the pattern exam: spot the pattern in 5 unseen problems, then rebuild the key code from memory.' : soon ? pattern[2] + '’s stories are being animated. The exam opens once they’re ready — the briefings are already in the library.' : 'Walk all ' + c[3] + ' core ' + c[0] + ' stories to unlock the 10-minute pattern exam. ' + pattern[2] + ' is waiting.',
         meta: earned ? c[4] + ' · ID ' + c[5] : soon ? 'Coming soon' : c[2] + ' of ' + c[3] + ' core stories walked',
-        linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=dsaviz&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
-        whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on dsaviz — every ' + c[0] + ' problem as a story. Try it: 7 free days with code AARAV7'),
+        linkedin: 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + enc(certName) + '&organizationName=DSAMaxxing&issueYear=2026&issueMonth=9&certId=' + enc(c[5] || ''),
+        whatsapp: 'https://wa.me/?text=' + enc('I just earned the ' + certName + ' on DSAMaxxing — every ' + c[0] + ' problem as a story. Try it: 7 free days with code AARAV7'),
         cta: soon ? 'Read ' + nextP.story : c[2] ? 'Continue: ' + nextP.story : 'Start with ' + nextP.story,
         nextHref: nextP.animated ? 'Story.dc.html' : 'Briefing.dc.html',
         go: () => saveProblem(nextP.id),
@@ -146,7 +146,7 @@ class Component extends DCLogic {
       cancelDelete: () => this.setState({ del: 0 }),
       copyLabel: this.state.copied ? 'Copied ✓' : 'Copy',
       copyCode: () => { copyText('AARAV7'); this.setState({ copied: true }); },
-      inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on dsaviz — Two Pointers finally clicked. Use my code AARAV7 for 7 free days.'),
+      inviteWa: 'https://wa.me/?text=' + enc('I’m learning DSA as stories on DSAMaxxing — Two Pointers finally clicked. Use my code AARAV7 for 7 free days.'),
       milestones: [['23', '23-day streak', 'today', t.flame], ['HM', 'Hash Map certificate', '20 Sep', t.ok], ['50', '50 revisit cards', '17 Sep', t.right], ['1st', 'First story walked: The Mirror Hallway', '3 Jun', t.accent]].map(([mark, name, when, bg]) => ({ mark, name, when, bg, fg: t.onAccent }))
     };
   }

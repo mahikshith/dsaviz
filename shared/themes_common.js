@@ -2,7 +2,13 @@
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
 const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
 const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
   paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
     band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
@@ -15,12 +21,12 @@ const THEMES = {
 };
 const THEME_KEY = 'dsaviz-theme';
 const USER_KEY = 'dsaviz-user';
-function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : null; } catch (e) { return null; } }
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
 function themeButtons(cmp, themeKey, t) {
-  return [['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
     label, on: themeKey === k,
     bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
     pick: () => { saveTheme(k); cmp.setState({ theme: k }); }

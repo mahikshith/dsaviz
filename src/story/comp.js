@@ -80,8 +80,8 @@ class Component extends DCLogic {
     return code.slice(1).map(([c]) => c).filter((c) => c.trim() && !isBrace(c));
   }
   renderVals() {
-    const themeKey = this.state.theme || this.props.theme || 'paper';
-    const t = Object.assign({}, THEMES[themeKey] || THEMES.paper, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = Object.assign({}, THEMES[themeKey] || THEMES.max, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
     const level = this.state.level || this.props.level || 'kid';
     const S = SCENES[this.state.scene];
     const P = PROBLEMS.find((p) => p.id === S.id);

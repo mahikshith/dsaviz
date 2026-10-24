@@ -1,10 +1,10 @@
-# dsaviz
+# DSAMaxxing
 
 Data structures and algorithms, taught as animated stories. Every problem has a story, a cast of characters per pattern, three explanation depths (kid, builder, expert) and code in Python, Java, C++, JavaScript and Go.
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 9 animated stories, light, dark and terminal themes. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 9 animated stories, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -56,7 +56,7 @@ Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrit
 
 ## State
 
-Progress lives in the browser's `localStorage` under `dsaviz-*` keys: theme, user, problem, lang, saved, deck, prefs, onboard. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
+Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
 
 ## Known gaps
 

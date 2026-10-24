@@ -3,7 +3,7 @@
 <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
 <aside aria-label="Menu" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
 <div style="display: flex; justify-content: space-between; align-items: center">
-<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">dsaviz</span>
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
 <button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
 <sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
@@ -34,7 +34,7 @@
 </nav>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
-<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
 <sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
 </div>
 </div>

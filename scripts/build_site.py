@@ -44,7 +44,7 @@ def main():
     react_dom = read('node_modules', 'react-dom', 'umd', 'react-dom.production.min.js')
     runtime = read('scripts', 'site-runtime.js')
     out = '<!doctype html>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>dsaviz</title>\n'
-    out += '<style>html,body{margin:0;overflow-x:hidden;background:#F6F2EA}</style>\n<div id="app"></div>\n'
+    out += '<style>html,body{margin:0;overflow-x:hidden;background:#0A0A0B}</style>\n<div id="app"></div>\n'
     out += '<script>' + esc(react) + '</script>\n<script>' + esc(react_dom) + '</script>\n'
     out += '<script>\nwindow.DS_BOARDS = {};\n' + '\n'.join(boards) + '\n</script>\n'
     out += '<script>' + esc(runtime) + '</script>\n'

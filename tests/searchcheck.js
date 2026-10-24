@@ -21,7 +21,7 @@ SITE_INDEX.items.forEach(([type]) => { byType[type] = (byType[type] || 0) + 1; }
 Object.keys(S.SEARCH_TYPES).forEach((type) => { if (!byType[type]) fail('no items of type ' + type); });
 Object.keys(byType).forEach((type) => { if (!S.SEARCH_TYPES[type]) fail('unknown type ' + type); });
 const C = SITE_INDEX.counts;
-const want = { story: C.stories, pattern: C.patterns, problem: C.runnable + C.sql, git: C.git, sd: C.sd, ai: C.ai, dsa: C.dsa, term: C.terms, sheet: C.sheet };
+const want = { start: C.start, story: C.stories, pattern: C.patterns, problem: C.runnable + C.sql, git: C.git, sd: C.sd, ai: C.ai, dsa: C.dsa, term: C.terms, sheet: C.sheet };
 Object.keys(want).forEach((type) => { if (byType[type] !== want[type]) fail(type + ': ' + byType[type] + ' items, counts say ' + want[type]); });
 if (C.sheet < 500) fail('sheet count looks wrong: ' + C.sheet);
 if (C.storyPatterns !== C.patterns) console.log('  note: stories cover ' + C.storyPatterns + ' of ' + C.patterns + ' patterns');

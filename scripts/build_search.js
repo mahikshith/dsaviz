@@ -4,6 +4,7 @@
 //
 // Each item is [type, id, title, sub, keywords]. Types, in the order results are grouped when scores tie:
 //   story    an animated story (catalog problem with animated: true)  -> Story page
+//   start    a Start here lesson that is ready                       -> Chapter page
 //   pattern  one of the 16 patterns                                   -> Library, pattern view
 //   problem  a problem with runnable tests (TEST_SPECS and SQL_SPECS) -> Code page
 //   git      a Git lesson                                             -> Git page
@@ -29,6 +30,7 @@ function load() {
   const git = new Function(read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '\nreturn GIT_LESSONS;')();
   const sd = new Function('window', read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '\nreturn SD_LESSONS;')(win);
   const ai = new Function(read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '\nreturn { AI_LESSONS, AI_TRACKS };')();
+  const start = new Function(require('./start_files.js').startSource(false) + '\nreturn { START_CHAPTERS, START_PARTS };')();
   const dsa = new Function(read('src', 'ai', 'render.js') + '\n' + read('src', 'concepts', 'lessons.js') + '\nreturn { CS_LESSONS, CS_TRACKS };')();
   // The glossary keeps its keywords in the Glossary page's own script.
   const gloss = read('pages', 'Glossary.dc.html');
@@ -36,7 +38,7 @@ function load() {
   const b = gloss.indexOf('\n];', a) + 3;
   if (a < 0 || b < 3) throw new Error('KEYWORDS not found in pages/Glossary.dc.html');
   const KEYWORDS = new Function(gloss.slice(a, b) + '\nreturn KEYWORDS;')();
-  return Object.assign(data, spec, { sql, git, sd, ai, dsa, KEYWORDS });
+  return Object.assign(data, spec, { sql, git, sd, ai, dsa, KEYWORDS, start });
 }
 
 function build() {
@@ -46,6 +48,8 @@ function build() {
   const animated = D.PROBLEMS.filter((p) => p.animated);
   // sub is the second line of a result; the group header already names the type. kw holds extra words to match.
   animated.forEach((p) => add('story', p.id, p.title, p.story + ' · ' + p.pattern));
+  const ready = D.start.START_CHAPTERS.filter((c) => c.ready);
+  ready.forEach((c) => add('start', c.id, c.title, 'Level ' + (c.level || 1) + ' · Lesson ' + c.n + ' · ' + c.short, ['beginner', 'start here', 'basics'].concat(c.teaches)));
   D.PATTERNS.forEach(([name, tag, cast]) => add('pattern', name, name, tag, [cast]));
   Object.keys(D.TEST_SPECS).forEach((id) => {
     const P = D.specInfo(id);
@@ -68,7 +72,7 @@ function build() {
   const counts = {
     stories: animated.length, storyPatterns: patterns.size, patterns: D.PATTERNS.length, catalog: D.PROBLEMS.length,
     sheet: D.SHEET.length, runnable: Object.keys(D.TEST_SPECS).length, sql: Object.keys(D.sql).length,
-    git: D.git.length, sd: D.sd.length, ai: D.ai.AI_LESSONS.length, dsa: D.dsa.CS_LESSONS.length, terms: D.KEYWORDS.length
+    git: D.git.length, sd: D.sd.length, ai: D.ai.AI_LESSONS.length, dsa: D.dsa.CS_LESSONS.length, terms: D.KEYWORDS.length, start: ready.length
   };
   return { items, counts };
 }

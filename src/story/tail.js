@@ -1,4 +1,8 @@
 
+// Dot, the Start here companion (src/start/engine.js): new to coding, so she asks what a beginner would ask.
+STORY_CAST.dot = { name: 'Dot', initial: 'D', color: 'accent', radius: '999px' };
+// Bolt, the Start here robot who does exactly what it is told.
+STORY_CAST.bolt = { name: 'Bolt', initial: 'B', color: 'right', radius: '8px' };
 const SCENE_LIST = [lanternScene(), mirrorScene(), waterScene(), facesScene(), paintScene(), stockScene(), coatScene(), guestScene(), scrabbleScene(), ...SCENE_REGISTRY.map((make) => make())];
 const SCENES = {};
 SCENE_LIST.forEach((sc) => { SCENES[sc.id] = sc; });

@@ -55,3 +55,77 @@
 | Can you reach the last index by jumps | neetcode roadmap | greedy | medium | new? |
 | Find the lone unpaired number (XOR) | neetcode roadmap | bit manipulation | easy | new? |
 | Count set bits in a number | neetcode roadmap | bit manipulation | easy | new? |
+| Reorder list: first, last, second, second-last | doocs-leetcode | linked list / fast-slow + reversal | medium | new? |
+| Rotate a list right by k | doocs-leetcode | linked list | medium | new? |
+| Swap every two adjacent nodes | doocs-leetcode | linked list / in-place reversal | medium | new? |
+| Reverse nodes in groups of k | doocs-leetcode | in-place reversal | hard | new? |
+| Reverse only the nodes between positions | doocs-leetcode | in-place reversal | medium | new? |
+| Partition a list around a pivot value, keep order | doocs-leetcode | linked list | medium | new? |
+| Group odd-position nodes before even-position | doocs-leetcode | linked list | medium | new? |
+| Add two numbers stored as digit lists | doocs-leetcode | linked list | medium | new? |
+| Merge sort a linked list | doocs-leetcode | linked list / sorting | medium | new? |
+| Copy a list whose nodes have random pointers | doocs-leetcode | linked list | medium | new? |
+| Flatten a list with child lists | doocs-leetcode | linked list | medium | new? |
+| Split a list into k nearly equal parts | doocs-leetcode | linked list | medium | new? |
+| Remove runs of nodes that sum to zero | doocs-leetcode | linked list / prefix sum | medium | new? |
+| Insert into a sorted circular list | doocs-leetcode | linked list | medium | new? |
+| Cache that evicts least recently used (list + map) | doocs-leetcode | linked list / design | medium | new? |
+| Where does the cycle start | doocs-leetcode | fast & slow | medium | new? |
+| Happy number loop detection | doocs-leetcode | fast & slow | easy | new? |
+| Find the duplicate by treating array as links | doocs-leetcode | fast & slow | medium | new? |
+| Does a circular array loop exist | doocs-leetcode | fast & slow | medium | new? |
+| Is the list a palindrome (O(1) space) | doocs-leetcode | fast & slow + reversal | easy | new? |
+| Reverse the vowels or letters only in a string | doocs-leetcode | in-place reversal / two pointers | easy | new? |
+| Largest rectangle under a histogram | doocs-leetcode | monotonic stack | hard | new? |
+| Remove k digits for the smallest number | doocs-leetcode | monotonic stack | medium | new? |
+| Stock price span so far | doocs-leetcode | monotonic stack | medium | new? |
+| Sum of minimums over all subarrays | doocs-leetcode | monotonic stack | medium | new? |
+| Cars that merge into fleets | doocs-leetcode | monotonic stack | medium | new? |
+| Widest ramp in an array | doocs-leetcode | monotonic stack | medium | new? |
+| Shortest subarray to sort so whole array is sorted | doocs-leetcode | monotonic stack | medium | new? |
+| Max chunks so sorting chunks sorts the array | doocs-leetcode | monotonic stack | medium | new? |
+| Smallest subsequence containing each letter once | doocs-leetcode | monotonic stack | medium | new? |
+| Buildings that see the ocean | doocs-leetcode | monotonic stack | easy | new? |
+| Final prices after next-smaller discount | doocs-leetcode | monotonic stack | easy | new? |
+| Count submatrices of all ones | doocs-leetcode | monotonic stack | medium | new? |
+| Find the 132-style pattern | doocs-leetcode | monotonic stack | medium | new? |
+| Three-way partition: sort colours | doocs-leetcode | sorting / in-place | medium | new? |
+| Largest number formed by joining numbers | doocs-leetcode | sorting / custom comparator | medium | new? |
+| Queue reconstruction by height and count | doocs-leetcode | sorting / greedy | medium | new? |
+| Minimum swaps to sort an array | doocs-leetcode | sorting / cycles | medium | new? |
+| Counting sort for small value range | doocs-leetcode | sorting | easy | new? |
+| Kth largest via quickselect | doocs-leetcode | sorting / partition | medium | new? |
+| Prefix tree: insert, search, starts-with | doocs-leetcode | trie | medium | new? |
+| Dictionary with wildcard dot search | doocs-leetcode | trie | medium | new? |
+| Find all dictionary words on a letter grid | doocs-leetcode | trie + backtracking | hard | new? |
+| Replace words with their shortest root | doocs-leetcode | trie | medium | new? |
+| Autocomplete suggestions as you type | doocs-leetcode | trie | medium | new? |
+| Match a stream of characters against suffixes | doocs-leetcode | trie | hard | new? |
+| Largest XOR of two numbers (binary trie) | doocs-leetcode | trie / bit | medium | new? |
+| Sum of values by key prefix | doocs-leetcode | trie | medium | new? |
+| Longest word buildable one letter at a time | doocs-leetcode | trie | medium | new? |
+| Range sum with point updates | doocs-leetcode | segment tree | medium | new? |
+| Count smaller values to the right | doocs-leetcode | segment tree / BIT | hard | new? |
+| Calendar that counts overlapping bookings | doocs-leetcode | segment tree | hard | new? |
+| Skyline outline of buildings | doocs-leetcode | segment tree / sweep | hard | new? |
+| Range add with lazy propagation | doocs-leetcode | segment tree | hard | new? |
+| Visit every node on the shortest walk (bitmask) | doocs-leetcode | bitmask DP | hard | new? |
+| Split into k subsets of equal sum | doocs-leetcode | bitmask DP | medium | new? |
+| Can the first player force a win (used-number mask) | doocs-leetcode | bitmask DP | medium | new? |
+| Smallest team covering all skills | doocs-leetcode | bitmask DP | hard | new? |
+| Matchsticks to a square | doocs-leetcode | bitmask DP / backtracking | medium | new? |
+| Assign hats so no two people share one | doocs-leetcode | bitmask DP | hard | new? |
+| Fewest work sessions for tasks | doocs-leetcode | bitmask DP | medium | new? |
+| Pop balloons for maximum coins | doocs-leetcode | interval DP | hard | new? |
+| Fewest turns of a printer to print a string | doocs-leetcode | interval DP | hard | new? |
+| Cost to merge piles of stones | doocs-leetcode | interval DP | hard | new? |
+| Remove boxes for maximum points | doocs-leetcode | interval DP | hard | new? |
+| Can the array split into two equal-sum halves | doocs-leetcode | knapsack | medium | new? |
+| Ways to reach a target with plus/minus signs | doocs-leetcode | knapsack | medium | new? |
+| Smallest leftover after smashing stones | doocs-leetcode | knapsack | medium | new? |
+| Fewest coins; count of coin combinations | doocs-leetcode | knapsack | medium | new? |
+| Pick strings under zero and one budgets (2D capacity) | doocs-leetcode | knapsack | medium | new? |
+| Fewest perfect squares summing to n | doocs-leetcode | knapsack | medium | new? |
+| Largest integer whose digit costs sum to target | doocs-leetcode | knapsack | hard | new? |
+| Equal-height billboard supports | doocs-leetcode | knapsack | hard | new? |
+| Best coins from stacks of piles (group knapsack) | doocs-leetcode | knapsack | hard | new? |

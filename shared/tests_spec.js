@@ -86,8 +86,15 @@ const TEST_SPECS = {
     examples: [[['Step on no pets!'], true], [['race a car'], false], [[' '], true]],
     hidden: [[['No lemon, no melon'], true], [['0P'], false], [['ab_a'], true], [['Was it a car or a cat I saw?'], true], [['abca'], false]],
     ref: function (s) {
-      const t = s.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return t === t.split('').reverse().join('');
+      const ok = (c) => /[a-z0-9]/i.test(c);
+      let l = 0, r = s.length - 1;
+      while (l < r) {
+        if (!ok(s[l])) { l++; continue; }
+        if (!ok(s[r])) { r--; continue; }
+        if (s[l].toLowerCase() !== s[r].toLowerCase()) return false;
+        l++; r--;
+      }
+      return true;
     }
   },
   container: {

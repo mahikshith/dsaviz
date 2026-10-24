@@ -33,5 +33,13 @@ const STORY_TASKS = {
   'climbing-stairs': 'You climb n stairs, taking one or two at a time. Return how many different ways reach the top. In the story, Sol counts the ways up six creaky attic stairs.',
   'unique-paths': 'A robot starts in the top-left corner of an m by n grid and may only move right or down. Return how many different paths reach the bottom-right corner. In the story, Sol counts routes across a 4 by 4 floor.',
   'house-robber': 'You get a list of amounts, one per house in a row. Take from as many houses as you like, but never from two next to each other. Return the most you can take. In the story, Sol collects treat bags on Lantern Lane.',
-  'coin-change': 'You get coin values and an amount. Return the fewest coins that add up to exactly the amount, or -1 if no mix works. You may use each coin value as often as you like. In the story, Sol makes change for 6 with coins of 1, 3 and 4.'
+  'coin-change': 'You get coin values and an amount. Return the fewest coins that add up to exactly the amount, or -1 if no mix works. You may use each coin value as often as you like. In the story, Sol makes change for 6 with coins of 1, 3 and 4.',
+  'subsets': 'You get a list of different numbers. Return every possible group you can make from them, including the empty group, with no group listed twice. In the story, Chalk packs every different picnic basket from three snacks.',
+  'permutations': 'You get a list of different numbers. Return every order they can be arranged in. In the story, Chalk seats three guests in every possible order.',
+  'combination-sum': 'You get a list of prices and a target. Return every group of prices that adds up to exactly the target; you may reuse a price, and order does not matter. In the story, Chalk fills baskets that cost exactly 6 coins.',
+  'max-depth': 'You get a binary tree. Return how many nodes are on the longest path from the root down to a leaf. In the story, Moss asks every branch how deep it goes.',
+  'invert-tree': 'You get a binary tree. Swap the left and right child of every node, so the tree becomes its mirror image, and return the root. In the story, Moss swaps every gardener’s two flower beds.',
+  'validate-bst': 'You get a binary tree. Return true if every node is bigger than everything in its left subtree and smaller than everything in its right subtree. In the story, Moss checks an orchard against that rule.',
+  'level-order': 'You get a binary tree. Return its values level by level, top to bottom, each level read left to right. In the story, Rill lists who lives on each floor of a treehouse.',
+  'right-side-view': 'You get a binary tree. Return the value you would see on each level when looking at the tree from the right side, top to bottom. In the story, Rill stands on the right balcony of a treehouse.',
 };

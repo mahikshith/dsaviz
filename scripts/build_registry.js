@@ -26,7 +26,7 @@ function tokens(text) {
 
 function load() {
   const win = { localStorage: { getItem: () => null, setItem: () => {} } };
-  const data = new Function('window', read('shared', 'catalog.js') + '\n' + read('shared', 'sheet.js') + '\nreturn { PROBLEMS, SHEET, SHEET_GROUPS };')(win);
+  const data = new Function('window', read('shared', 'catalog.js') + '\n' + read('shared', 'sheet.js') + '\n' + read('shared', 'lists.js') + '\nreturn { PROBLEMS, SHEET, SHEET_GROUPS, PROBLEM_LISTS, listIds };')(win);
   const { TEST_SPECS } = require('../shared/tests_spec.js');
   const { SQL_SPECS } = require('../shared/sql_spec.js');
   return Object.assign(data, { TEST_SPECS, SQL_SPECS });
@@ -50,6 +50,9 @@ function build() {
   const D = load();
   const story = {};
   D.PROBLEMS.forEach((p) => { story[p.id] = p; });
+  // The practice lists (shared/lists.js) each problem is on: starter, core, all.
+  const onLists = {};
+  D.PROBLEM_LISTS.forEach((l) => D.listIds(l).forEach((id) => { (onLists[id] = onLists[id] || []).push(l.id); }));
   const entries = D.SHEET.map((r) => {
     const sql = r.pattern === 'SQL' ? D.SQL_SPECS[r.pid] : null;
     const spec = sql ? null : D.TEST_SPECS[r.pid];
@@ -61,7 +64,8 @@ function build() {
       id: r.pid, row: r.id, title: r.name, norm: normTitle(r.name), aliases: [...aliases].filter(Boolean).sort(),
       pattern: r.pattern, diff: r.diff, story: r.story || null, kind: sql ? 'sql' : 'code',
       sig: spec || sql ? signature(spec, sql) : null,
-      words: tokens(sql ? sql.ask : spec ? spec.ask : '').length
+      words: tokens(sql ? sql.ask : spec ? spec.ask : '').length,
+      lists: onLists[r.pid] || []
     };
   });
   return { entries };
@@ -76,8 +80,8 @@ function markdown(reg) {
     'or share a signature and pattern with near-identical statements. Every new problem goes through here: add it to the sheet and its spec, then build.\n';
   groups.forEach((g) => {
     const rows = reg.entries.filter((e) => e.pattern === g);
-    out += '\n## ' + g + ' (' + rows.length + ')\n\n| Page id | Title | Normalized | Also known as | Difficulty | Signature |\n|---|---|---|---|---|---|\n';
-    rows.forEach((e) => { out += '| `' + e.id + '` | ' + cell(e.title) + ' | ' + cell(e.norm) + ' | ' + cell(e.aliases.join('; ')) + ' | ' + e.diff + ' | `' + cell(e.sig || '') + '` |\n'; });
+    out += '\n## ' + g + ' (' + rows.length + ')\n\n| Page id | Title | Normalized | Also known as | Difficulty | Lists | Signature |\n|---|---|---|---|---|---|---|\n';
+    rows.forEach((e) => { out += '| `' + e.id + '` | ' + cell(e.title) + ' | ' + cell(e.norm) + ' | ' + cell(e.aliases.join('; ')) + ' | ' + e.diff + ' | ' + (e.lists || []).join(', ') + ' | `' + cell(e.sig || '') + '` |\n'; });
   });
   return out;
 }

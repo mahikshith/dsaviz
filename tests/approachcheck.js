@@ -6,6 +6,8 @@
 //    each with a name, an idea, time and space with a reason, JavaScript and 1 to 3 pitfalls. The best approach
 //    meets the target. Every approach's JavaScript passes the problem's tests through the real runner harness
 //    (one marked slow runs the visible examples only). Python, when given and when Python 3 is installed, too.
+//  - The practice lists (shared/lists.js) use real registry ids with no repeats, Starter 50 inside Core 150
+//    inside All; every Core problem has approaches; the registry records each problem's lists.
 //  - None of it names an outside problem site.
 const path = require('path');
 const fs = require('fs');
@@ -48,6 +50,37 @@ for (const [id, spec] of Object.entries(TEST_SPECS)) {
 Object.keys(PROBLEM_FACTS).forEach((id) => { if (!TEST_SPECS[id]) fail(id, 'facts for a problem with no spec'); });
 for (const id of Object.keys(SQL_SPECS)) if (!SQL_FACTS[id] || !SQL_FACTS[id][0] || !SQL_FACTS[id][1]) fail(id, 'SQL problem needs an input line and an output line');
 if (OUTSIDE.test(JSON.stringify([PROBLEM_FACTS, SQL_FACTS]))) fail('facts', 'names an outside problem site');
+
+// Our tiered lists (shared/lists.js): real registry ids, no repeats, Starter inside Core inside All.
+{
+  const { SHEET, PROBLEM_LISTS, listIds, listName } = new Function('window', read('shared', 'catalog.js') + '\n' + read('shared', 'sheet.js') + '\n' + read('shared', 'lists.js') + '\nreturn { SHEET, PROBLEM_LISTS, listIds, listName };')(win);
+  const reg = JSON.parse(read('data', 'problem-registry.json')).entries;
+  const regIds = new Set(reg.map((e) => e.id));
+  const want = { starter: 50, core: 150, all: reg.length };
+  const sets = {};
+  for (const l of PROBLEM_LISTS) {
+    const ids = listIds(l);
+    sets[l.id] = new Set(ids);
+    ids.filter((id) => !regIds.has(id)).forEach((id) => fail('list ' + l.id, 'not a registry id: ' + id));
+    if (sets[l.id].size !== ids.length) fail('list ' + l.id, 'repeats a problem: ' + ids.filter((id, i) => ids.indexOf(id) !== i).join(', '));
+    if (want[l.id] !== undefined && ids.length !== want[l.id]) fail('list ' + l.id, 'should hold ' + want[l.id] + ' problems, holds ' + ids.length);
+    if (!new RegExp(' ' + ids.length + '$').test(listName(l))) fail('list ' + l.id, 'its name does not show its size: ' + listName(l));
+    if (OUTSIDE.test(JSON.stringify(l))) fail('list ' + l.id, 'names an outside problem site');
+  }
+  if (Object.keys(want).some((k) => !sets[k])) fail('lists', 'needs starter, core and all');
+  else {
+    [...sets.starter].filter((id) => !sets.core.has(id)).forEach((id) => fail('list starter', id + ' is not in Core'));
+    [...sets.core].filter((id) => !sets.all.has(id)).forEach((id) => fail('list core', id + ' is not in All'));
+    if (sets.all.size !== regIds.size) fail('list all', 'should hold every registry problem');
+    [...sets.core].filter((id) => !APPROACHES[id]).forEach((id) => fail('list core', id + ' has no approaches'));
+  }
+  // The registry records each problem's lists.
+  reg.forEach((e) => {
+    const on = PROBLEM_LISTS.filter((l) => sets[l.id].has(e.id)).map((l) => l.id);
+    if (JSON.stringify(e.lists || []) !== JSON.stringify(on)) fail('registry ' + e.id, 'lists ' + JSON.stringify(e.lists) + ' should be ' + JSON.stringify(on) + ' (run the build)');
+  });
+  if (SHEET.length !== reg.length) fail('lists', 'the sheet and the registry disagree on the problem count');
+}
 
 // Approaches.
 for (const p of PROBLEMS) if (TEST_SPECS[p.id] && !APPROACHES[p.id]) fail(p.id, 'story problem has no approaches');

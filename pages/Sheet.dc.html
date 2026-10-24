@@ -146,7 +146,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,la
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fluid="true" data-page="Sheet" style="width: 1440px; height: 1130px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; overflow: hidden; transition: background 0.3s, color 0.3s">
+<div data-fluid="true" data-page="Sheet" style="width: 1440px; height: 1210px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; overflow: hidden; transition: background 0.3s, color 0.3s">
 
 <!-- PILL NAV -->
 <style>
@@ -352,6 +352,17 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <button onClick="{{randomPick}}" style="white-space: nowrap; flex-shrink: 0; height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path></svg>Random unsolved</button>
 </div>
 
+<!-- our tiered practice lists (shared/lists.js): pick one; counts, rings and groups follow it -->
+<div role="group" aria-label="Practice list" data-sheet-lists data-m="keep" style="flex-shrink: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{lists}}" as="pl" hint-placeholder-count="3">
+<button onClick="{{pl.pick}}" aria-pressed="{{pl.on}}" aria-label="{{pl.aria}}" style="min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pl.border}}; background: {{pl.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: left">
+<span style="width: 100%; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 8px"><span style="font-size: 15px; font-weight: 800; white-space: nowrap">{{pl.name}}</span><span style="font-family: {{t.mono}}; font-size: 13px; font-weight: 700; color: {{t.muted}}; white-space: nowrap">{{pl.count}}</span></span>
+<span aria-hidden="true" style="width: 100%; height: 6px; border-radius: 999px; background: {{t.line}}; display: block"><span style="display: block; height: 6px; border-radius: 999px; background: {{t.ok}}; width: {{pl.pct}}"></span></span>
+</button>
+</sc-for>
+</div>
+<p role="status" style="margin: 0; flex-shrink: 0; font-size: 13px; line-height: 1.4; color: {{t.muted}}">{{listLine}}</p>
+
 <!-- filters: one row -->
 <div role="search" data-sheet-filters style="height: 40px; display: flex; align-items: center; gap: 8px">
 <div style="flex-grow: 1; min-width: 120px; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; color: {{t.muted}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink: 0"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Problem name or pattern" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; color: {{t.text}}; font-size: 14px"></div>
@@ -442,7 +453,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1130}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1210}}'>
 // @@THEMES@@ — generated block, shared by every board.
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
@@ -1946,6 +1957,75 @@ function cleanSheetProgress(o) {
 function loadSheetProgress() { try { return cleanSheetProgress(JSON.parse(window.localStorage.getItem(SHEET_KEY))); } catch (e) { return cleanSheetProgress(null); } }
 function saveSheetProgress(p) { try { window.localStorage.setItem(SHEET_KEY, JSON.stringify(p)); } catch (e) {} }
 // @@END-SHEET@@
+// @@LISTS@@ — generated block (from shared/lists.js): our own tiered practice lists on the Sheet.
+// Each list is our own pick and order. Ids are problem page ids from the registry (data/problem-registry.json).
+//   starter  50 problems: the first step in every core pattern, mostly easy, in the order we teach them
+//   core     150 problems: every story problem plus the problems that cover each pattern's main moves;
+//            every core problem has approaches (shared/approaches.js)
+//   all      every problem on the master sheet, in sheet order
+// Starter is inside Core and Core is inside All; tests/approachcheck.js checks that and the ids.
+const PROBLEM_LISTS = [
+  { id: 'starter', title: 'Starter', blurb: 'Fifty first steps: one or two easy wins in every core pattern.', ids: [
+    'valid-palindrome', 'move-zeroes', 'remove-duplicates-from-sorted-array', 'squares-of-a-sorted-array',
+    'merge-sorted-array', 'merge-two-lists', 'two-sum-ii', 'container', 'best-time-stock', 'longest-substring',
+    'minimum-size-subarray-sum', 'contains-duplicate', 'valid-anagram', 'two-sum', 'ransom-note',
+    'first-unique-character-in-a-string', 'majority-element', 'group-anagrams', 'running-sum-of-1d-array',
+    'product-except-self', 'binary-search', 'search-insert-position', 'search-a-2d-matrix', 'rotate-image',
+    'spiral-matrix', 'meeting-rooms', 'merge-intervals', 'best-time-to-buy-and-sell-stock-ii', 'jump-game',
+    'valid-parentheses', 'min-stack', 'daily-temperatures', 'last-stone-weight', 'kth-largest', 'reverse-linked-list',
+    'middle-of-list', 'linked-list-cycle', 'invert-tree', 'max-depth', 'same-tree', 'number-of-islands',
+    'level-order', 'subsets', 'permutations', 'climbing-stairs', 'house-robber', 'max-subarray',
+    'remove-duplicates-from-sorted-list', 'single-number', 'plus-one'
+  ] },
+  { id: 'core', title: 'Core', blurb: 'The core of interview prep: every story problem plus each pattern’s main moves, all with approaches.', ids: [
+    'valid-palindrome', 'move-zeroes', 'remove-duplicates-from-sorted-array', 'squares-of-a-sorted-array',
+    'merge-sorted-array', 'merge-two-lists', 'two-sum-ii', 'sort-colors', 'remove-nth', 'container', '3sum',
+    'longest-palindrome', 'trapping-rain',
+    'best-time-stock', 'minimum-size-subarray-sum', 'longest-substring', 'max-consecutive-ones-iii',
+    'char-replacement', 'permutation-in-string', 'find-all-anagrams-in-a-string', 'min-window', 'sliding-window-max',
+    'contains-duplicate', 'valid-anagram', 'two-sum', 'ransom-note', 'first-unique-character-in-a-string',
+    'majority-element', 'group-anagrams', 'longest-consecutive', 'valid-sudoku', 'lru-cache',
+    'running-sum-of-1d-array', 'range-sum-query-immutable', 'product-except-self', 'subarray-sum-k',
+    'subarray-sums-divisible-by-k',
+    'binary-search', 'search-insert-position', 'find-first-and-last-position-of-element-in-sorted-array',
+    'search-a-2d-matrix', 'find-min-rotated', 'search-rotated', 'koko-eating-bananas', 'time-based-key-value-store',
+    'rotate-image', 'spiral-matrix', 'set-matrix-zeroes', 'search-a-2d-matrix-ii',
+    'meeting-rooms', 'merge-intervals', 'insert-interval', 'non-overlapping-intervals', 'meeting-rooms-ii',
+    'best-time-to-buy-and-sell-stock-ii', 'jump-game', 'jump-game-ii', 'gas-station', 'partition-labels',
+    'task-scheduler',
+    'valid-parentheses', 'min-stack', 'evaluate-reverse-polish-notation', 'decode-string', 'daily-temperatures',
+    'asteroid-collision', 'car-fleet', 'largest-rectangle-in-histogram',
+    'last-stone-weight', 'kth-largest', 'top-k-frequent', 'k-closest-points-to-origin', 'merge-k-lists',
+    'find-median-from-data-stream',
+    'reverse-linked-list', 'palindrome-linked-list', 'reverse-linked-list-ii', 'reorder-list',
+    'middle-of-list', 'linked-list-cycle', 'happy-number', 'linked-list-cycle-ii', 'find-the-duplicate-number',
+    'invert-tree', 'max-depth', 'same-tree', 'validate-bst', 'number-of-islands', 'max-area-of-island', 'clone-graph',
+    'pacific-atlantic-water-flow', 'number-of-provinces',
+    'level-order', 'right-side-view', 'shortest-path-in-binary-matrix', 'rotting-oranges', '01-matrix',
+    'course-schedule', 'course-schedule-ii', 'word-ladder',
+    'letter-combinations-of-a-phone-number', 'subsets', 'combination-sum', 'combination-sum-ii', 'permutations',
+    'generate-parentheses', 'word-search', 'palindrome-partitioning', 'n-queens',
+    'climbing-stairs', 'min-cost-climbing-stairs', 'house-robber', 'house-robber-ii', 'max-subarray',
+    'maximum-product-subarray', 'unique-paths', 'coin-change', 'partition-equal-subset-sum', 'word-break',
+    'decode-ways', 'lis', 'longest-common-subsequence', 'edit-distance',
+    'remove-duplicates-from-sorted-list', 'add-two-numbers',
+    'diameter-of-binary-tree', 'balanced-binary-tree', 'symmetric-tree', 'subtree-of-another-tree',
+    'lowest-common-ancestor-of-a-binary-search-tree', 'kth-smallest-element-in-a-bst',
+    'construct-binary-tree-from-preorder-and-inorder-traversal', 'binary-tree-maximum-path-sum',
+    'find-the-town-judge', 'is-graph-bipartite', 'redundant-connection', 'network-delay-time',
+    'min-cost-to-connect-all-points', 'cheapest-flights-within-k-stops',
+    'longest-common-prefix', 'implement-trie-prefix-tree', 'design-add-and-search-words-data-structure',
+    'number-of-1-bits', 'single-number', 'counting-bits', 'missing-number',
+    'palindrome-number', 'plus-one', 'roman-to-integer', 'powx-n'
+  ] },
+  { id: 'all', title: 'All', blurb: 'Every problem on the master sheet.', ids: null }
+];
+// The ids of a list, in its order; All is every sheet problem, read from the sheet.
+function listIds(list) { return list.ids || SHEET.map((r) => r.pid); }
+// "Starter 50", "Core 150", "All 553".
+function listName(list) { return list.title + ' ' + listIds(list).length; }
+if (typeof module !== 'undefined' && module.exports) module.exports = { PROBLEM_LISTS, listIds, listName };
+// @@END-LISTS@@
 
 // @@DRAWER@@ — shared menu logic (every page with the pill nav)
 const MENU = [
@@ -2341,6 +2421,12 @@ const SHEET_SHORT = { 'Sliding Window': 'Sliding window', 'Hash Map': 'Hash map'
 const SHEET_BY_GROUP = {};
 SHEET.forEach((r) => { (SHEET_BY_GROUP[r.pattern] = SHEET_BY_GROUP[r.pattern] || []).push(r); });
 const SHEET_AUTO_OPEN = 150;
+// Our tiered lists (shared/lists.js). The chosen list is remembered in this browser.
+const SHEET_LIST_KEY = 'dsaviz-sheet-list';
+const SHEET_LIST_IDS = {};
+PROBLEM_LISTS.forEach((l) => { SHEET_LIST_IDS[l.id] = new Set(listIds(l)); });
+function loadSheetList() { try { const v = window.localStorage.getItem(SHEET_LIST_KEY); return SHEET_LIST_IDS[v] ? v : 'all'; } catch (e) { return 'all'; } }
+function saveSheetList(v) { try { window.localStorage.setItem(SHEET_LIST_KEY, v); } catch (e) {} }
 const SHEET_STATUS = [['all', 'All'], ['todo', 'To do'], ['done', 'Done'], ['star', 'Starred']];
 const SHEET_COMPANIES = (() => {
   const s = [];
@@ -2377,7 +2463,7 @@ function ringDash(done, total, r) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), query: '', diff: 'All', status: 'all', pattern: 'All', company: 'All', open: {}, hint: {}, noteOpen: {}, more: {}, focus: null, pick: null, pickNone: false, msg: 'Download your ticks and notes as a file, or load a file you saved before.' };
+    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), list: loadSheetList(), query: '', diff: 'All', status: 'all', pattern: 'All', company: 'All', open: {}, hint: {}, noteOpen: {}, more: {}, focus: null, pick: null, pickNone: false, msg: 'Download your ticks and notes as a file, or load a file you saved before.' };
     // The Library's pattern map links here with one group in focus: show only that group, opened.
     let focus = null;
     try { focus = window.localStorage.getItem('dsaviz-sheet-focus'); window.localStorage.removeItem('dsaviz-sheet-focus'); } catch (e) {}
@@ -2411,7 +2497,8 @@ class Component extends DCLogic {
   filtered() {
     const s = this.state, prog = s.prog;
     const q = s.query.trim().toLowerCase();
-    return SHEET.filter((r) => (s.diff === 'All' || r.diff === s.diff) &&
+    const inList = SHEET_LIST_IDS[s.list] || SHEET_LIST_IDS.all;
+    return SHEET.filter((r) => inList.has(r.pid) && (s.diff === 'All' || r.diff === s.diff) &&
       (s.pattern === 'All' || r.pattern === s.pattern) &&
       (s.company === 'All' || sheetCompanies(r).includes(s.company)) &&
       (s.status === 'all' || (s.status === 'done' ? !!prog.done[r.id] : s.status === 'todo' ? !prog.done[r.id] : !!prog.star[r.id])) &&
@@ -2464,9 +2551,13 @@ class Component extends DCLogic {
     const s = this.state, prog = s.prog;
     const isDone = (r) => !!prog.done[r.id];
     const notes = DS.notes();
-    const total = SHEET.length;
-    const solved = SHEET.filter(isDone).length;
-    const starred = SHEET.filter((r) => prog.star[r.id]).length;
+    // Everything below counts within the chosen list: All, Core or Starter.
+    const inList = SHEET_LIST_IDS[s.list] || SHEET_LIST_IDS.all;
+    const U = SHEET.filter((r) => inList.has(r.pid));
+    const inU = (r) => inList.has(r.pid);
+    const total = U.length;
+    const solved = U.filter(isDone).length;
+    const starred = U.filter((r) => prog.star[r.id]).length;
     const visible = this.filtered();
     const filterOn = !!s.query.trim() || s.diff !== 'All' || s.status !== 'all' || s.pattern !== 'All' || s.company !== 'All';
     const firstGroup = SHEET_GROUPS[0][0];
@@ -2516,7 +2607,7 @@ class Component extends DCLogic {
     const autoAll = filterOn && visible.length <= SHEET_AUTO_OPEN;
     const firstShown = (SHEET_GROUPS.find(([n]) => shownBy[n]) || [firstGroup])[0];
     const groups = SHEET_GROUPS.map(([name, tag], i) => {
-      const all = SHEET_BY_GROUP[name] || [];
+      const all = (SHEET_BY_GROUP[name] || []).filter(inU);
       const shown = shownBy[name] || [];
       const done = all.filter(isDone).length;
       const open = s.open[name] !== undefined ? !!s.open[name] : (autoAll || name === (filterOn ? firstShown : firstGroup));
@@ -2531,8 +2622,8 @@ class Component extends DCLogic {
       };
     }).filter((g) => g.shown > 0);
 
-    const rings = SHEET_GROUPS.map(([name]) => {
-      const all = SHEET_BY_GROUP[name] || [];
+    const rings = SHEET_GROUPS.filter(([name]) => (SHEET_BY_GROUP[name] || []).some(inU)).map(([name]) => {
+      const all = (SHEET_BY_GROUP[name] || []).filter(inU);
       const done = all.filter(isDone).length;
       const on = s.pattern === name;
       return {
@@ -2544,7 +2635,7 @@ class Component extends DCLogic {
     });
 
     const diffTiles = SHEET_DIFFS.map((k) => {
-      const all = SHEET.filter((r) => r.diff === k);
+      const all = U.filter((r) => r.diff === k);
       const done = all.filter(isDone).length;
       const on = s.diff === k;
       return {
@@ -2569,17 +2660,28 @@ class Component extends DCLogic {
     const todayDone = today.filter((x) => x.done).length;
 
     const seg = (on) => ({ bg: on ? t.text : 'transparent', fg: on ? t.bg : t.muted });
+    const curList = PROBLEM_LISTS.find((l) => l.id === s.list) || PROBLEM_LISTS[PROBLEM_LISTS.length - 1];
+    const lists = PROBLEM_LISTS.map((l) => {
+      const ids = SHEET_LIST_IDS[l.id], rows = SHEET.filter((r) => ids.has(r.pid)), done = rows.filter(isDone).length, on = l.id === curList.id;
+      return {
+        name: listName(l), count: done + '/' + rows.length, pct: (rows.length ? Math.round((done / rows.length) * 100) : 0) + '%', on,
+        aria: listName(l) + ': ' + done + ' of ' + rows.length + ' solved',
+        bg: on ? t.hl : t.surface, border: on ? t.accent : t.line,
+        pick: () => { saveSheetList(l.id); this.setState({ list: l.id, open: {}, pattern: 'All', pick: null, pickNone: false }); }
+      };
+    });
     return {
+      lists, listLine: listName(curList) + ' · ' + curList.blurb,
       t, ...navVals(this, t, themeKey, 'Sheet'),
       total, solved, starred,
       solvedAria: solved + ' of ' + total + ' solved',
-      totalAria: total + ' problems on the sheet',
+      totalAria: total + ' problems in ' + listName(curList),
       starLine: starred + ' starred for revision',
       ring: { dash: ringDash(solved, total, 30) },
       diffTiles, rings, today,
       todayEmpty: today.length === 0,
       todayLine: todayDone + '/' + today.length + ' · ' + utcDay(now),
-      subLine: total + ' problems, all solvable here, in ' + SHEET_GROUPS.length + ' groups. Each group runs from the easiest idea to the hardest.',
+      subLine: SHEET.length + ' problems, all solvable here, in ' + SHEET_GROUPS.length + ' groups. Each group runs from the easiest idea to the hardest.',
       // phones: the list before progress, and the title before the count (see phoneOrder in shared/ui.js)
       sheetParts: phoneOrder(['aside', 'main'], ['main', 'aside']), headParts: phoneOrder(['total', 'title'], ['title', 'total']),
       query: s.query,
@@ -2587,13 +2689,13 @@ class Component extends DCLogic {
       diffBtns: ['All'].concat(SHEET_DIFFS).map((k) => Object.assign({ label: k, on: s.diff === k, pick: () => this.setState({ diff: k, open: {} }) }, seg(s.diff === k))),
       statusBtns: SHEET_STATUS.map(([k, label]) => Object.assign({ label, on: s.status === k, pick: () => this.setState({ status: k, open: {} }) }, seg(s.status === k))),
       patternSel: s.pattern,
-      patternOpts: [{ v: 'All', label: 'All patterns' }].concat(SHEET_GROUPS.map(([n]) => ({ v: n, label: n }))),
+      patternOpts: [{ v: 'All', label: 'All patterns' }].concat(SHEET_GROUPS.filter(([n]) => (SHEET_BY_GROUP[n] || []).some(inU)).map(([n]) => ({ v: n, label: n }))),
       onPattern: (e) => { const v = (e && e.target && e.target.value) || 'All'; this.setState({ pattern: SHEET_GROUPS.some(([n]) => n === v) ? v : 'All', open: {} }); },
       companySel: s.company,
       companyOpts: [{ v: 'All', label: 'Any company' }].concat(SHEET_COMPANIES.map((c) => ({ v: c, label: c }))),
       onCompany: (e) => { const v = (e && e.target && e.target.value) || 'All'; this.setState({ company: SHEET_COMPANIES.includes(v) ? v : 'All', open: {} }); },
       filterOn,
-      shownLine: 'Showing ' + visible.length + ' of ' + total + (s.company !== 'All' ? ' · company tags cover story problems only' : ''),
+      shownLine: 'Showing ' + visible.length + ' of ' + total + (curList.id !== 'all' ? ' in ' + listName(curList) : '') + (s.company !== 'All' ? ' · company tags cover story problems only' : ''),
       clearFilters: () => this.setState({ query: '', diff: 'All', status: 'all', pattern: 'All', company: 'All', open: {}, pickNone: false }),
       expandAll: () => { const o = {}; SHEET_GROUPS.forEach(([n]) => { o[n] = true; }); this.setState({ open: o }); },
       collapseAll: () => { const o = {}; SHEET_GROUPS.forEach(([n]) => { o[n] = false; }); this.setState({ open: o }); },

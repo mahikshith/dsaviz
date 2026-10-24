@@ -27,6 +27,7 @@ across pages and live in one place; this script copies them back into every page
   shared/facts.js           -> between // @@FACTS@@ ... // @@END-FACTS@@ (Code, Story: input, output, constraints, target)
   shared/approaches.js      -> between // @@APPROACHES@@ ... // @@END-APPROACHES@@ (Code, Story: brute force to best)
   shared/approach_pane.js   -> between // @@APPROACH-PANE@@ ... // @@END-APPROACH-PANE@@ (Code, Story), after the code pane
+  shared/lists.js           -> between // @@LISTS@@ ... // @@END-LISTS@@ (Sheet: Starter, Core and All lists), after the sheet
   shared/ui/facts.html, approaches.html -> <!-- PROBLEM FACTS -->, <!-- APPROACH PANE --> blocks
   shared/sql_spec.js        -> between // @@SQL-SPEC@@ ... // @@END-SQL-SPEC@@ (Code page; its ids also join SHEET_RUN)
   shared/sql_pane.js        -> between // @@SQL-PANE@@ ... // @@END-SQL-PANE@@ (Code page)
@@ -233,6 +234,11 @@ def main():
         s = block(s, '// @@THEMES@@', '// @@END-THEMES@@', themes)
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
+        if f == 'Sheet.dc.html':
+            if '// @@LISTS@@' not in s:
+                i = s.index('// @@END-SHEET@@') + len('// @@END-SHEET@@')
+                s = s[:i] + chr(10) + '// @@LISTS@@' + chr(10) + '// @@END-LISTS@@' + s[i:]
+            s = block(s, '// @@LISTS@@', '// @@END-LISTS@@', read('shared', 'lists.js'))
         s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
         s = ensure_blocks(s)
         for start, end, n in SHARED_JS:

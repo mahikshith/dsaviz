@@ -3,6 +3,7 @@
 //   constructor:          this.runner = new CodeRunner(this, problemId, opts);
 //     opts.starter(pid, lang)  starter code for a problem with no test spec yet (the pane then edits only)
 //     opts.hideLangs / opts.hideClock  the host page draws its own language tabs or timer
+//     opts.onResult(pid, mode, passed, total)  called when a Run or Submit finishes (the mock interview counts them)
 //   componentDidMount:    this.runner.mount();
 //   componentWillUnmount: this.runner.unmount();
 //   renderVals:           return { t, cr: this.runner.vals(t, themeKey), ... };
@@ -33,7 +34,7 @@ class CodeRunner {
     this.el = null;
     this.ref = (el) => {
       if (el === this.el) return;
-      // The pane can be swapped out (the Code page's SQL mode): a new element gets a new editor.
+      // The pane can be swapped out (the Code page's SQL mode) or leave and come back (the mock interview): always start a fresh editor on mount.
       if (this.editor) { this.editor.destroy(); this.editor = null; }
       this.el = el;
       if (el) setTimeout(() => this.mountEditor(), 0);
@@ -151,6 +152,7 @@ class CodeRunner {
         const status = end.cancelled ? '' : end.timeout ? 'Stopped after ' + limit + ' seconds' : end.fatal ? 'Could not run' : passed + ' / ' + cases.length + ' passed · ' + (Date.now() - out.t0) + ' ms';
         const solved = mode === 'submit' && passed === cases.length && this.s.solvedIn === null;
         if (solved && typeof DS !== 'undefined') DS.passCode(this.pid);
+        if (this.opts.onResult && !end.cancelled) { try { this.opts.onResult(this.pid, mode, end.fatal || end.timeout ? 0 : passed, cases.length); } catch (e) {} }
         this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn });
       }, spec.io);
   }

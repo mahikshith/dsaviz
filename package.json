@@ -5,7 +5,7 @@
   "description": "DSA patterns taught as animated stories.",
   "scripts": {
     "build": "python3 scripts/build_pages.py && python3 scripts/build_site.py",
-    "test": "node tests/backtest.js && node tests/mapcheck.js && node tests/datacheck.js && node tests/scenecheck.js && node tests/sheetcheck.js && node tests/specs.js && node tests/sqlcheck.js && node tests/gitcheck.js && node tests/sdcheck.js && node tests/aicheck.js && node tests/searchcheck.js && node tests/copycheck.js && node tests/contestcheck.js && node tests/pwacheck.js",
+    "test": "node tests/backtest.js && node tests/mapcheck.js && node tests/datacheck.js && node tests/mockcheck.js && node tests/scenecheck.js && node tests/sheetcheck.js && node tests/specs.js && node tests/sqlcheck.js && node tests/gitcheck.js && node tests/sdcheck.js && node tests/aicheck.js && node tests/searchcheck.js && node tests/copycheck.js && node tests/contestcheck.js && node tests/pwacheck.js",
     "test:browser": "node tests/site-test.js",
     "start": "python3 -m http.server 5173 --directory dist"
   },

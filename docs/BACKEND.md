@@ -13,11 +13,12 @@ There is no server yet. `DS` has two kinds of functions:
 
 | Key | Written by | Shape |
 | --- | --- | --- |
-| `dsaviz-activity-v1` | `DS.logActivity` | `{ v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }` |
+| `dsaviz-activity-v1` | `DS.logActivity` | `{ v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, mock, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }` |
 | `dsaviz-sheet-v1` | Sheet page | `{ v: 1, done: { slug: ts }, star: { slug: 1 } }`. DS only reads it. |
 | `dsaviz-deck` | older Story and Revisit pages | `{ id: { due, rated } }`. Legacy: only read for medals. |
 | `dsaviz-review-v1` | `DS.review`, `DS.addCard` | `{ v: 1, cards: { id: { due: 'YYYY-MM-DD', interval, ease, reps, lapses, last, grade, prev, name, pattern, rule, hint, story } }, log: [{ id, at, grade }] }`. Sheet cards are `sheet:<slug>`. |
 | `dsaviz-predict-v1` | `DS.logPredict` | `{ v: 1, streak, best, right, total }`: the Predict toggle on the story player. A wrong pick resets `streak`. |
+| `dsaviz-mock-v1` | `DS.mockStart`, `mockRecord`, `mockHint`, `mockNotes`, `mockExtend`, `mockEnd`, `mockSave`, `mockAbandon` | `{ v: 1, live: { id, startedAt, mins, extra, mix, pattern, lang, problems: [{ id, title, diff, pattern, hints, best, total, submitted, runs }], notes, endedAt } or null, history: [{ id, at, mins, used, hints, passed, total, problems, scores: { area: 1-4 }, score, band }] }`. The clock is `startedAt` plus the minutes, so a reload keeps going. The Interview page also keeps its setup choices in `dsaviz-mock-cfg`. |
 | `dsaviz-notes-v1` | `DS.setNote`, `DS.importBackup` | `{ v: 1, notes: { id: { text, at } } }`. Story ids, or the sheet slug for rows without a story. Max 2000 characters. |
 | `dsaviz-onboard` | Welcome page | `{ name, reason, level, goal, lang, time, channel, date }` |
 | `dsaviz-prefs` | Profile and Welcome pages | `{ goal, time, channel, lang }` (older saves may also hold `depth`, which is ignored) |
@@ -35,19 +36,20 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | A story is finished / a sheet box is ticked | `DS.addCard(id, { rule } / { name, pattern, hint, story })` | `src/story/comp.js` `go()`, Sheet page `toggleDone()` and import |
 | Every code test passes on Submit | `DS.passCode(id)` | `shared/code_pane.js`, where `solved` is set |
 | A Git, system design or AI & ML lesson reaches its last step | `DS.finishLesson('git:' / 'sd:' / 'ai:' + id)` | `go()` in `pages/Git.dc.html`, `pages/SDLesson.dc.html`, `pages/AILesson.dc.html` |
+| A mock interview is self-scored and saved | `DS.mockSave(scores)` (logs a `mock`) | Interview page, `saveMock()` |
 | A sheet box is ticked | nothing to call | DS reads the tick timestamps in `dsaviz-sheet-v1` |
 
 ## Real functions
 
 | Function | Returns | A real API would |
 | --- | --- | --- |
-| `logActivity(kind, id)` | `{ day, first, xp }` or `null` for an unknown kind. `kind` is `'story'`, `'code'`, `'lesson'` or `'revisit'`. | `POST /me/activity { kind, id, at }`. Keep writing locally first so it works offline, then sync. |
+| `logActivity(kind, id)` | `{ day, first, xp }` or `null` for an unknown kind. `kind` is `'story'`, `'code'`, `'lesson'`, `'revisit'` or `'mock'`. | `POST /me/activity { kind, id, at }`. Keep writing locally first so it works offline, then sync. |
 | `finishStory(id)`, `passCode(id)`, `finishLesson(id)`, `rateCard(id)` | same as `logActivity` | same |
-| `days()` | `{ 'YYYY-MM-DD': { story, code, lesson, sheet, revisit, xp, total } }`, active days only | `GET /me/activity?from=&to=` |
+| `days()` | `{ 'YYYY-MM-DD': { story, code, lesson, sheet, revisit, mock, xp, total } }`, active days only | `GET /me/activity?from=&to=` |
 | `streak()` | `{ current, longest, activeToday, atRisk, week: [{ d, date, on, today, future }] }`. `week` is Monday first. A streak that ran through yesterday stays alive today with `atRisk: true`. | compute on the server from the same days, so it agrees across devices |
 | `heatmap(weeks = 26)` | `{ weeks, cells: [{ date, ts, n, story, sheet, code, revisit, level 0-4, future, today }], total, activeDays, todayIndex }`, Sunday-first columns | `GET /me/heatmap?weeks=26` |
 | `xp()` | `{ total, week, today, level, into, need, pct }`. 500 XP a level. | `GET /me/xp` |
-| `XP`, `XP_RULES` | points per event: story 50, code 30, lesson 30, sheet tick 10, revisit card 5 | server config |
+| `XP`, `XP_RULES` | points per event: story 50, code 30, lesson 30, sheet tick 10, revisit card 5, mock interview 20 | server config |
 | `stories()` | `{ ids, count, at: { id: ts } }` | `GET /me/stories` |
 | `codePasses()` | `{ ids, count }` | `GET /me/code` |
 | `lessons()` | `{ ids, count }`, ids prefixed `git:`, `sd:`, `ai:` | `GET /me/lessons` |
@@ -58,11 +60,14 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | `medals(PROBLEMS, PATTERNS)` | `[{ pattern, mark, tier, next: { tier, have, need, unit, pct } or null, fresh, key, done, total }]`. Bronze: first story in the pattern. Silver: half its stories. Gold: every story done and rated in Revisit. | `GET /me/medals`, with `fresh` set by the server |
 | `markMedalsSeen(medals)` | nothing | `POST /me/medals/seen` |
 | `profile()` | `{ name, initials, signedIn, isNew, lang, goal, reason, date, demo: false }` | `GET /me` |
-| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit cards (`dsaviz-review-v1` and the old deck), seen medals, the predict streak, saved stories, saved code and system design progress from this browser. Notes, theme, profile and settings stay. | `DELETE /me/progress` |
+| `eraseProgress()` | nothing. Removes the activity log, sheet ticks, revisit cards (`dsaviz-review-v1` and the old deck), seen medals, the predict streak, mock interviews, saved stories, saved code and system design progress from this browser. Notes, theme, profile and settings stay. | `DELETE /me/progress` |
 | `schedule(card, grade, ts)` | the pure SM-2-style scheduler. Grade 1 Again, 2 Hard, 3 Good, 4 Easy. First review: 1 / 3 / 6 days; then x1.2 (Hard), x ease (Good), x ease x 1.3 (Easy), at least +1 day, capped at 365. Again: tomorrow, reps reset, ease -0.2. Ease 1.3 to 3.0, starts at 2.5. | server-side scheduler |
 | `reviewCards()`, `reviewDue()`, `reviewUpcoming(days = 7)` | every finished story and ticked sheet problem as a card `{ id, kind, due, isDue, late, inDays, interval, ease, reps, name, pattern, rule, hint }`; a card never rated is due the day after it was earned. Upcoming adds `counts: [{ date, n }]` from tomorrow. | `GET /me/revisions?due=today` |
 | `review(id, grade, { redo })`, `reviewPreview(id)`, `addCard(id, meta)`, `whenLabel(days)` | rate a card; what each grade would do; store card details | `POST /me/revisions/{id}` |
 | `retention(days = 30)` | `{ pct, reviews, recalled, today }`: share of reviews not rated Again; `pct` is null before the first review | `GET /me/retention` |
+| `mockPick(cands, cfg, rand)`, `mockStart(cfg, picks)`, `mockSession()` | picks 1 (30 min) or 2 (45, 60 min) unsolved problems for the difficulty mix (`easy`, `standard`, `hard`) and optional pattern; starts and reads the live session with `limit`, `used`, `left`, `over`, `ended`, `allSubmitted` | `POST /me/mocks`, `GET /me/mocks/live` |
+| `mockRecord(pid, mode, passed, total)`, `mockHint(pid)`, `mockNotes(text)`, `mockExtend(min)`, `mockEnd()`, `mockAbandon()` | update the live session; the best Submit per problem counts; nothing changes after `mockEnd` | `PATCH /me/mocks/live` |
+| `mockScore(scores, hints)`, `mockSave(scores)`, `mockHistory(n = 10)` | rubric math over `MOCK_AREAS` (understanding 10, approach 25, code 20, correctness 20, complexity 15, communication 10; each 1-4 gives (s-1)/3 of its weight), minus `MOCK_HINT_COST` (3) per hint; bands pass 70+, borderline 50-69, no hire below. Practice only. History: `{ list, count, trend, best, avg, change }` | `POST /me/mocks/{id}/score`, `GET /me/mocks` |
 | `predict()`, `logPredict(ok)` | `{ streak, best, right, total }` for predict-the-next-step picks; `logPredict` returns the new counts | `GET/POST /me/predict` |
 | `note(id)`, `notes()`, `setNote(id, text)`, `mergeNotes(map)` | notes per problem | `GET/PUT /me/notes/{id}` |
 | `exportBackup()`, `importBackup(file)` | the sheet backup file `{ v: 1, done, star, notes }`; import merges (earliest tick wins, a note is replaced only by a newer one) and returns `{ ticks, notes }` or null | `GET/POST /me/backup` |

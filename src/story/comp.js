@@ -203,12 +203,87 @@ class Component extends DCLogic {
     return grid;
   }
 
+  // The tree: S.tree (or st.tree, for a step that reshapes it) is [{ id, label, parent, side }]; st.nodes maps id → state.
+  // A node missing from st.nodes is hidden, so a decision tree grows as it is explored. Everything moves by transform.
+  treeAt(S, st, t) {
+    const list = st.tree || S.tree, byId = {}, kids = {};
+    list.forEach((n) => { byId[n.id] = n; if (n.parent != null) (kids[n.parent] = kids[n.parent] || []).push(n.id); });
+    const nameOf = (id) => String(st.vals && st.vals[id] != null ? st.vals[id] : byId[id].label);
+    // tidy layout: leaves take the next free column, a parent sits over the middle of its children;
+    // a lone child marked side 'L' or 'R' keeps an empty column for its missing sibling, so binary trees read true
+    const depth = {}, col = {};
+    let next = 0, maxD = 0;
+    const place = (id, d) => {
+      depth[id] = d; maxD = Math.max(maxD, d);
+      let ch = (kids[id] || []).slice().sort((a, b) => (byId[a].side === 'R') - (byId[b].side === 'R'));
+      if (ch.length === 1 && byId[ch[0]].side) ch = byId[ch[0]].side === 'L' ? [ch[0], null] : [null, ch[0]];
+      if (!ch.length) { col[id] = next++; return; }
+      const xs = ch.map((c) => { if (c === null) return next++; place(c, d + 1); return col[c]; });
+      col[id] = (xs[0] + xs[xs.length - 1]) / 2;
+    };
+    list.filter((n) => n.parent == null).forEach((n) => place(n.id, 0));
+    const nh = 30, fontPx = 13;
+    const wOf = (id) => Math.max(nh + 4, Math.round(nameOf(id).length * fontPx * 0.62 + 18));
+    // a tag (the short note beside a node) widens its footprint, so leave room for the longest one any step shows
+    const tagW = S.tags ? Math.max.apply(null, [0].concat(S.steps.map((x) => Math.max.apply(null, [0].concat(Object.values(x.tags || {}).map((v) => String(v).length)))))) * 7 + 8 : 0;
+    const widest = Math.max.apply(null, list.map((n) => wOf(n.id))) + 2 * tagW;
+    const W = S.treeW || (S.board ? 430 : 560), H = S.treeH || 162;
+    const slot = Math.min(110, (W - widest) / Math.max(1, next - 1));
+    const dy = maxD ? Math.min(66, (H - nh) / maxD) : 0;
+    const cx = (id) => widest / 2 + col[id] * slot, cy = (id) => depth[id] * dy + nh / 2;
+    const tree = { w: Math.round(widest + (next - 1) * slot), h: Math.round(maxD * dy + nh) };
+    const shown = (id) => !!(st.nodes && st.nodes[id]);
+    tree.edges = list.filter((n) => n.parent != null && byId[n.parent]).map((n) => {
+      const x1 = cx(n.parent), y1 = cy(n.parent) + nh / 2, x2 = cx(n.id), y2 = cy(n.id) - nh / 2;
+      const len = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+      const es = (st.edge && st.edge[n.id]) || '';
+      const thick = es === 'path' ? 5 : 2;
+      return { id: n.id, thick, color: es === 'path' ? t.path : t.treeEdge, op: shown(n.id) && shown(n.parent) ? (es === 'out' ? 0.35 : 1) : 0,
+        move: 'translate(' + x1.toFixed(1) + 'px, ' + (y1 - thick / 2).toFixed(1) + 'px) rotate(' + ang.toFixed(2) + 'deg) scaleX(' + (len / 100).toFixed(4) + ')' };   // drawn 100px wide, then scaled: page zoom would round a 1px base
+    });
+    tree.nodes = list.map((n) => {
+      const state = st.nodes && st.nodes[n.id];
+      const look = Object.assign({}, this.cellLook(state || 'in', t));
+      if (state === 'out') { look.ink = t.sceneMuted; look.op = 1; look.mark = '✗'; look.markColor = t.sceneMuted; }
+      // explored and left behind: solid and readable (not faded), set apart from 'out' by a visible ring
+      if (state === 'future') { look.fill = t.dead; look.ink = t.sceneText; look.ring = t.treeEdge; look.op = 1; }
+      if (state === 'buy') look.ring = t.sceneText;   // waiting in line: a light dashed ring reads in every theme
+      const w = wOf(n.id), mark = look.mark && look.mark.length <= 2 && look.mark !== '✎' ? look.mark : '';   // the trail line already shows chosen nodes
+      const tag = st.tags && st.tags[n.id] != null ? String(st.tags[n.id]) : '';
+      const x = Math.round(cx(n.id) - w / 2), y = Math.round(cy(n.id) - nh / 2);
+      return { id: n.id, v: nameOf(n.id), x, y, w, h: nh, fill: look.fill, ink: look.ink, ring: look.ring, glow: look.glow || 'none', op: state ? look.op || 1 : 0,
+        grow: state ? 1 : 0.6, mark, markColor: look.markColor || t.sceneMuted, markOp: mark ? 1 : 0, tag, tagOp: tag ? 1 : 0,
+        ringStyle: state === 'buy' ? 'dashed' : 'solid', font: fontPx + 'px' };
+    });
+    const count = list.filter((n) => shown(n.id)).length;
+    const castName = (STORY_CAST[S.cast] || {}).name || 'The guide';
+    const trailIds = list.filter((n) => st.edge && st.edge[n.id] === 'path').map((n) => n.id);
+    const trailText = trailIds.length ? '. Highlighted: ' + trailIds.map((id) => (byId[id].parent != null ? nameOf(byId[id].parent) + ' to ' : '') + nameOf(id)).join(', ') : '';
+    tree.label = (S.treeLabel || 'Tree') + ', ' + count + (count === 1 ? ' node' : ' nodes') + ' shown. ' + st.verdict.replace(/[.!?]$/, '') + trailText + (st.actorAt != null && byId[st.actorAt] ? '. ' + castName + ' is at ' + nameOf(st.actorAt) : '') + '.';
+    tree.actor = { move: 'translate(0px, 0px)', size: 0, op: 0, initial: '', color: 'transparent', font: '10px' };
+    if (st.actorAt != null && byId[st.actorAt]) {
+      const a = 20, who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
+      tree.actor = { move: 'translate(' + Math.round(cx(st.actorAt) - wOf(st.actorAt) / 2 - a * 0.55) + 'px, ' + Math.round(cy(st.actorAt) - nh / 2 - a * 0.55) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: '10px' };
+    }
+    tree.legend = (S.legend || []).map(([state, label]) => {
+      if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '', ringStyle: 'solid' };
+      const look = this.cellLook(state, t);
+      const item = { label, fill: look.fill, ring: look.ring === 'transparent' ? 'rgba(255,255,255,0.18)' : look.ring, mark: look.mark && look.mark.length <= 2 && look.mark !== '✎' ? look.mark : '', ringStyle: 'solid' };
+      if (state === 'future') Object.assign(item, { fill: t.dead, ring: t.treeEdge });
+      if (state === 'out') Object.assign(item, { fill: t.dead, mark: '' });
+      if (state === 'buy') Object.assign(item, { ring: t.sceneText, ringStyle: 'dashed' });
+      return item;
+    });
+    tree.hasLegend = tree.legend.length > 0;
+    return tree;
+  }
+
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = Object.assign({}, THEMES[themeKey] || THEMES.max, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
     const S = SCENES[this.state.scene];
     const P = PROBLEMS.find((p) => p.id === S.id);
-    const kit = KIT[S.pattern];
+    const kit = Object.assign({}, KIT[S.pattern], S.kit || {});   // a story can bring its own quiz when the pattern's default is about another problem
     const steps = S.steps;
     const si = Math.min(this.state.step, steps.length - 1);
     const st = steps[si];
@@ -223,9 +298,9 @@ class Component extends DCLogic {
     const atEnd = si === steps.length - 1;
 
     // ---- one focus per beat: what changed since the step before is lifted, the rest steps back ----
-    const isGrid = S.visual === 'grid';
-    const now = isGrid ? { tiles: [], tiles2: [] } : this.tilesAt(S, st, t);
-    const before = prevSt && !isGrid ? this.tilesAt(S, prevSt, t) : null;
+    const isGrid = S.visual === 'grid', isTree = S.visual === 'tree', boxed = isGrid || isTree;
+    const now = boxed ? { tiles: [], tiles2: [] } : this.tilesAt(S, st, t);
+    const before = prevSt && !boxed ? this.tilesAt(S, prevSt, t) : null;
     const sameLook = (a, b) => a.fill === b.fill && a.ring === b.ring && a.mark === b.mark && a.op === b.op && a.v === b.v;
     const focusOn = (list, old, actorsHere) => {
       if (!old) return list;
@@ -243,6 +318,19 @@ class Component extends DCLogic {
     if (isGrid && prevSt && (!st.vals || !prevSt.vals || st.vals.length === prevSt.vals.length)) {
       const old = this.gridAt(S, prevSt, t).tiles;
       grid.tiles = focusOn(grid.tiles, old.length === grid.tiles.length ? old : null, []).map((x) => Object.assign(x, { lift: x.lift === 'translateY(-4px)' ? 'scale(1.06)' : 'none' }));
+    }
+    const tree = isTree ? this.treeAt(S, st, t) : { w: 0, h: 0, nodes: [], edges: [], label: '', legend: [], hasLegend: false, actor: blank.actor };
+    if (isTree) {
+      // one focus per beat, as for tiles: nodes whose look changed grow a touch, shown nodes that did not change step back
+      const old = prevSt ? this.treeAt(S, prevSt, t).nodes : null;
+      const same = (a, b) => a.fill === b.fill && a.ring === b.ring && a.mark === b.mark && a.op === b.op && a.v === b.v && a.x === b.x && a.y === b.y && a.tag === b.tag;
+      const changed = tree.nodes.map((x, i) => !old || !same(x, old[i]));
+      const dim = !!old && changed.some(Boolean) && !changed.every(Boolean);
+      tree.nodes = tree.nodes.map((x, i) => {
+        const focus = dim && changed[i] && x.op > 0, back = dim && !changed[i] && x.op > 0;
+        return Object.assign(x, { op: back ? Math.max(0.35, +(x.op * 0.65).toFixed(2)) : x.op, glow: back ? 'none' : x.glow,
+          move: 'translate(' + x.x + 'px, ' + x.y + 'px) scale(' + (focus ? 1.06 : x.grow) + ')' });
+      });
     }
 
     // ---- planks: water and the window frame, drawn with transforms only ----
@@ -277,7 +365,7 @@ class Component extends DCLogic {
     const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
     const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - 28, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
     let actors;
-    if (isGrid) {
+    if (boxed) {
       actors = [];
     } else if (S.cast === 'tp') {
       actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
@@ -323,7 +411,7 @@ class Component extends DCLogic {
       exampleIn: S.example[0], exampleOut: S.example[1].replace(/^(answer|after)\s*=\s*/, ''),
       // storyboard
       storyName: P.story, goal: S.goal,
-      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid, showActors: !isGrid, grid,
+      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid, isTree, showActors: !boxed, grid, tree,
       hasRow2: !!S.items2, rowLabels: S.rowLabels || ['', ''],
       tiles, tiles2, water, frame, showFrame, frameBottom: S.visual === 'planks' ? '0' : '3px', frameBar2: S.visual === 'planks' ? 0 : 1,
       tileW, tileH: S.tileH || 84, tileGap: pitch - tileW, tileFont: (S.font || 34) + 'px',

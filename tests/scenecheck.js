@@ -44,6 +44,45 @@ for (const id of SCENE_ORDER) {
   }
   if (!STORY_TASKS[id] || STORY_TASKS[id].split(/[.?!](\s|$)/).filter((x) => x && x.trim()).length > 5) { console.log(id, 'no plain-words task (or more than 5 sentences)'); bad++; }
   if (!PROBLEMS.find((p) => p.id === id).animated) { console.log(id, 'has a scene but is not marked animated in the catalog'); bad++; }
+  // tree stories: node ids unique, every parent exists, one root, no loops; every step's states name real nodes only
+  if (S.visual === 'tree') {
+    const STATES = new Set(['in', 'out', 'future', 'cur', 'hit', 'dup', 'ok', 'paint', 'stored', 'buy', 'best']);
+    const EDGES = new Set(['', 'path', 'out']);
+    const checkTree = (list, where) => {
+      const ids = new Set();
+      if (!Array.isArray(list) || !list.length) { console.log(id, where, 'tree is empty'); bad++; return ids; }
+      for (const n of list) { if (ids.has(n.id)) { console.log(id, where, 'duplicate node id', n.id); bad++; } ids.add(n.id); }
+      for (const n of list) if (n.parent != null && !ids.has(n.parent)) { console.log(id, where, 'node', n.id, 'has missing parent', n.parent); bad++; }
+      if (list.filter((n) => n.parent == null).length !== 1) { console.log(id, where, 'tree needs exactly one root'); bad++; }
+      const byId = Object.fromEntries(list.map((n) => [n.id, n]));
+      let deepest = 0;
+      for (const n of list) {
+        let d = 0, at = n;
+        while (at && at.parent != null && d <= list.length) { at = byId[at.parent]; d++; }
+        if (d > list.length) { console.log(id, where, 'loop through node', n.id); bad++; break; }
+        deepest = Math.max(deepest, d);
+      }
+      if (list.length > 16 || deepest > 4) { console.log(id, where, 'tree too big:', list.length, 'nodes, depth', deepest); bad++; }
+      return ids;
+    };
+    const base = checkTree(S.tree, 'tree');
+    if (!STORY_CAST[S.cast]) { console.log(id, 'tree cast missing from STORY_CAST', S.cast); bad++; }
+    S.steps.forEach((st, i) => {
+      const ids = st.tree ? checkTree(st.tree, 'step ' + i + ' tree') : base;
+      if (st.tree && (ids.size !== base.size || [...base].some((x) => !ids.has(x)))) { console.log(id, i, 'step tree has different nodes'); bad++; }
+      if (!st.nodes || typeof st.nodes !== 'object') { console.log(id, i, 'tree step has no nodes'); bad++; return; }
+      for (const [k, v] of Object.entries(st.nodes)) {
+        if (!ids.has(k)) { console.log(id, i, 'nodes names unknown node', k); bad++; }
+        if (!STATES.has(v)) { console.log(id, i, 'unknown node state', v); bad++; }
+      }
+      for (const [k, v] of Object.entries(st.edge || {})) {
+        if (!ids.has(k)) { console.log(id, i, 'edge names unknown node', k); bad++; }
+        if (!EDGES.has(v)) { console.log(id, i, 'unknown edge state', v); bad++; }
+      }
+      for (const key of ['vals', 'tags']) for (const k of Object.keys(st[key] || {})) if (!ids.has(k)) { console.log(id, i, key, 'names unknown node', k); bad++; }
+      if (st.actorAt != null && !ids.has(st.actorAt)) { console.log(id, i, 'actorAt is not a node', st.actorAt); bad++; }
+    });
+  }
   // render every step in every language, on both code tabs, with every fold open
   store['dsaviz-problem'] = id;
   const c = new Component({});

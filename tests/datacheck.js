@@ -266,5 +266,105 @@ console.log('predict the next step');
   check(DS.predict().total === 0, 'erasing progress clears the predict streak');
 }
 
+console.log('mock interviews');
+{
+  const { DS, store } = load(false);
+  const clock = (mo, d, h, mi) => DS.setClock(() => new Date(2026, mo - 1, d, h, mi || 0, 0).getTime());
+  const cands = [
+    { id: 'e1', title: 'E1', diff: 'Easy', pattern: 'Hash Map' }, { id: 'e2', title: 'E2', diff: 'Starter', pattern: 'Two Pointers' },
+    { id: 'm1', title: 'M1', diff: 'Medium', pattern: 'Hash Map' }, { id: 'm2', title: 'M2', diff: 'Medium', pattern: 'Stack' },
+    { id: 'h1', title: 'H1', diff: 'Hard', pattern: 'Stack' }
+  ];
+  const first = () => 0;
+  check(DS.mockSession() === null && DS.mockHistory().count === 0, 'no live session and no history at first');
+  // picking
+  const p30 = DS.mockPick(cands, { mins: 30, mix: 'standard' }, first);
+  check(p30.length === 1 && p30[0].diff === 'Medium', '30 minutes picks one problem, the harder half of the mix');
+  const p45 = DS.mockPick(cands, { mins: 45, mix: 'standard' }, first);
+  check(p45.length === 2 && p45[0].diff !== 'Medium' && p45[1].diff === 'Medium' && p45[0].id !== p45[1].id, '45 minutes picks two different problems, Easy then Medium');
+  check(DS.mockPick(cands, { mins: 60, mix: 'hard' }, first).map((p) => p.diff).join() === 'Medium,Hard', 'the tough mix is Medium then Hard');
+  check(DS.mockPick(cands, { mins: 45, mix: 'standard', pattern: 'Stack' }, first).every((p) => p.pattern === 'Stack'), 'a pattern focus keeps to that pattern');
+  clock(10, 20, 12);
+  DS.passCode('m1');
+  check(DS.mockPick(cands, { mins: 30, mix: 'standard' }, first)[0].id === 'm2', 'solved problems are skipped');
+  DS.passCode('m2');
+  check(DS.mockPick(cands, { mins: 30, mix: 'standard', pattern: 'Stack' }, first)[0].id === 'h1', 'with no unsolved problem of that difficulty, another unsolved one is picked');
+  check(DS.mockPick([], { mins: 45 }).length === 0 && DS.mockStart({ mins: 45 }, []) === null, 'nothing to pick starts nothing');
+  // the session store and its clock
+  clock(10, 21, 9);
+  const s0 = DS.mockStart({ mins: 45, mix: 'standard', lang: 'js' }, DS.mockPick(cands, { mins: 45, mix: 'standard' }, first));
+  check(s0 && s0.limit === 2700 && s0.left === 2700 && !s0.ended && s0.lang === 'js' && s0.problems.length === 2, 'a 45-minute session starts with 45 minutes on the clock');
+  check(JSON.parse(store['dsaviz-mock-v1']).v === 1, 'mock data is versioned in dsaviz-mock-v1');
+  const [pa, pb] = s0.problems.map((p) => p.id);
+  clock(10, 21, 9, 10);
+  check(DS.mockSession().used === 600 && DS.mockSession().left === 2100, 'the clock runs from the start time, so a reload carries on');
+  DS.mockRecord(pa, 'run', 2, 3);
+  DS.mockRecord(pa, 'submit', 6, 8);
+  DS.mockRecord(pa, 'submit', 4, 8);
+  const sA = DS.mockSession().problems[0];
+  check(sA.submitted && sA.best === 6 && sA.total === 8 && sA.runs === 1, 'the best submit is kept; runs are counted separately');
+  check(DS.mockRecord('nope', 'submit', 1, 1).problems.every((p) => p.id !== 'nope' && (p.id === pa || !p.submitted)), 'results for other problems are ignored');
+  check(!DS.mockSession().allSubmitted, 'not every problem is submitted yet');
+  DS.mockHint(pa); DS.mockHint(pb);
+  check(DS.mockSession().problems.reduce((a, p) => a + p.hints, 0) === 2, 'hints are counted per problem');
+  DS.mockNotes('restate, edge cases, plan');
+  check(DS.mockSession().notes === 'restate, edge cases, plan', 'think-aloud notes are kept');
+  DS.mockExtend(5);
+  check(DS.mockSession().limit === 3000, '+5 minutes extends the clock');
+  DS.mockExtend(100);
+  check(DS.mockSession().limit === 4500, 'extra time stops at 30 minutes');
+  check(DS.mockSave({ understanding: 4 }) === null, 'a session cannot be saved before it ends');
+  // time runs out
+  clock(10, 21, 11);
+  const over = DS.mockSession();
+  check(over.over && over.left === 0 && over.used === 4500, 'past the limit the clock reads zero and over');
+  const ended = DS.mockEnd();
+  check(ended.ended && ended.used === 4500, 'ending after time ran out records the full limit, not the late click');
+  DS.mockHint(pa); DS.mockRecord(pb, 'submit', 5, 5);
+  check(DS.mockSession().problems[1].submitted === false && DS.mockSession().problems[0].hints === 1, 'an ended session takes no more hints or results');
+  // rubric math
+  const all = (v) => ({ understanding: v, approach: v, code: v, correctness: v, complexity: v, communication: v });
+  check(DS.MOCK_AREAS.reduce((a, x) => a + x[1], 0) === 100 && DS.MOCK_AREAS.length === 6, 'six areas weighted to 100');
+  const top = DS.mockScore(all(4), 0), low = DS.mockScore(all(1), 0);
+  check(top.score === 100 && top.band === 'pass' && low.score === 0 && low.band === 'nohire', 'all 4s is 100 (pass), all 1s is 0 (no hire)');
+  const mid = DS.mockScore(all(3), 0);
+  check(mid.raw === 67 && mid.band === 'borderline', 'all 3s is 67, borderline: ' + mid.raw);
+  check(DS.mockScore(all(3), 2).score === 61 && DS.mockScore(all(3), 2).penalty === 6, 'each hint takes 3 points off');
+  check(DS.mockScore(Object.assign(all(4), { approach: 3 }), 0).score === 92, 'one area one level down costs a third of its weight');
+  check(DS.mockScore(all(1), 5).score === 0, 'the score never drops below zero');
+  const edge = DS.mockScore(Object.assign(all(4), { correctness: 1, understanding: 1 }), 0);
+  check(edge.score === 70 && edge.band === 'pass' && DS.mockScore(Object.assign(all(4), { correctness: 1, understanding: 1 }), 1).band === 'borderline', 'the pass line is 70; one hint below it is borderline');
+  check(DS.mockScore({ understanding: 4 }, 0).complete === false && DS.mockScore(Object.assign(all(4), { code: 5 }), 0).complete === false && DS.mockScore(Object.assign(all(4), { code: 2.5 }), 0).complete === false, 'missing, out-of-range or fractional scores are incomplete');
+  // saving to history
+  check(DS.mockSave({ understanding: 3 }) === null && DS.mockSession(), 'an incomplete rubric is not saved');
+  const xpBefore = DS.xp().total;
+  const res = DS.mockSave(all(3));
+  check(res && res.score === 61 && res.band === 'borderline' && res.hints === 2 && res.passed === 6 && res.total === 8, 'the saved result carries score, band, hints and tests: ' + JSON.stringify(res && { s: res.score, h: res.hints, p: res.passed, t: res.total }));
+  check(DS.mockSession() === null, 'saving clears the live session');
+  const today = DS.days()[DS.dayKey(new Date(2026, 9, 21).getTime())];
+  check(today && today.mock === 1 && DS.xp().total === xpBefore + DS.XP.mock && DS.streak().activeToday, 'a saved mock logs activity for the streak and XP');
+  // a second mock, a day later, ended by the learner
+  clock(10, 22, 18);
+  DS.mockStart({ mins: 30, mix: 'easy' }, DS.mockPick(cands, { mins: 30, mix: 'easy' }, first));
+  clock(10, 22, 18, 12);
+  check(DS.mockEnd().used === 720, 'ending early records the time used');
+  DS.mockSave(all(4));
+  const h = DS.mockHistory();
+  check(h.count === 2 && h.trend.length === 2 && h.trend[0].score === 61 && h.trend[1].score === 100, 'history keeps both mocks, oldest first');
+  check(h.best === 100 && h.avg === 81 && h.change === 39, 'trend: best, average and change since the last one');
+  check(DS.streak().current === 3, 'with the code pass the day before, mocks keep the streak going');
+  // abandoning, broken data and erase
+  DS.mockStart({ mins: 60 }, cands.slice(0, 2));
+  DS.mockAbandon();
+  check(DS.mockSession() === null && DS.mockHistory().count === 2, 'discarding a session keeps the history');
+  store['dsaviz-mock-v1'] = '{broken';
+  check(DS.mockSession() === null && DS.mockHistory().count === 0, 'a broken mock record reads as empty');
+  store['dsaviz-mock-v1'] = JSON.stringify({ v: 1, live: { problems: [], startedAt: 1, mins: 45 }, history: [{ at: 1, score: 'x' }, null] });
+  check(DS.mockSession() === null && DS.mockHistory().count === 0, 'a live session with no problems or bad history rows is ignored');
+  DS.mockStart({ mins: 45 }, cands.slice(0, 1));
+  DS.eraseProgress();
+  check(DS.mockSession() === null, 'erasing progress clears mock interviews');
+}
+
 console.log(problems ? problems + ' problem(s)' : 'data clean');
 if (problems) process.exitCode = 1;

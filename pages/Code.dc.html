@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Code — DSAMaxxing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&amp;family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+[style*="Anton"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}
+p[style*="Anton"],[style*="Anton"][style*="italic"],[style*="Anton"][style*="font-size: 11px"],[style*="Anton"][style*="font-size: 12px"],[style*="Anton"][style*="font-size: 13px"],[style*="Anton"][style*="font-size: 14px"],[style*="Anton"][style*="font-size: 15px"],[style*="Anton"][style*="font-size: 16px"],[style*="Anton"][style*="font-size: 17px"],[style*="Anton"][style*="font-size: 18px"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}
+header a,header button,nav a{white-space:nowrap}
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button,select,textarea{font:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+button:disabled{opacity:0.35;cursor:default}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1060px; box-sizing: border-box; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+
+<header style="height: 64px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid {{t.line}}">
+<a href="Home.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
+<nav aria-label="Breadcrumb" style="display: flex; gap: 8px; align-items: center; font-size: 14px; color: {{t.muted}}; white-space: nowrap"><a href="Patterns.dc.html">Library</a><span aria-hidden="true">/</span><a href="Story.dc.html" onClick="{{keepProblem}}">{{P.pattern}}</a><span aria-hidden="true">/</span><span aria-current="page" style="color: {{t.text}}; font-weight: 600">Code</span></nav>
+<div style="flex-grow: 1"></div>
+<label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: {{t.muted}}; white-space: nowrap">Problem
+<select aria-label="Problem" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 300px; padding: 0 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: 14px; font-weight: 600; cursor: pointer"><sc-for list="{{problems}}" as="pp" hint-placeholder-count="9"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></select>
+</label>
+<div role="group" aria-label="Theme" style="display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="4"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+</div>
+</header>
+
+<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 400px minmax(0, 1fr)">
+
+<aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">LeetCode {{P.n}} · {{P.story}}</span>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 26px; line-height: 1.15; font-weight: 600">{{P.title}}</h1>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">{{P.pattern}}</span>
+</div>
+</div>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
+<sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
+<div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none">
+<span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">in </span>{{ex.input}}</span>
+<span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">out </span>{{ex.output}}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Stuck? Old Hoot walks through it in the story. <a href="Story.dc.html" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Back to {{P.story}}</a></div>
+</aside>
+
+<main style="padding: 20px 24px; min-width: 0; min-height: 0">
+<!-- CODE PANE --> <!-- generated from shared/code_pane.html: editor, Run/Submit, console. Fills its parent's height; holes under cr.* come from CodeRunner.vals(t). -->
+<section aria-label="Code" style="height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<div role="group" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
+<sc-for list="{{cr.langs}}" as="lg" hint-placeholder-count="5"><button onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>
+</div>
+<div style="flex-grow: 1"></div>
+<span role="timer" aria-label="{{cr.clockLabel}}" style="display: flex; align-items: center; gap: 6px; padding: 0 6px; font-family: {{t.mono}}; font-size: 13px; font-weight: 700; color: {{cr.clockFg}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>{{cr.clock}}</span>
+<button onClick="{{cr.copy}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.copyLabel}}</button>
+<button onClick="{{cr.reset}}" aria-label="{{cr.resetAria}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{cr.resetBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.resetLabel}}</button>
+</div>
+<div ref="{{cr.ref}}" style="flex: 1 1 0; min-height: 260px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: hidden"></div>
+<sc-if value="{{cr.runnable}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<button onClick="{{cr.run}}" disabled="{{cr.busy}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>Run</button>
+<button onClick="{{cr.submit}}" disabled="{{cr.busy}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Submit</button>
+<input value="{{cr.custom}}" onChange="{{cr.setCustom}}" aria-label="Custom input for Run, written like the call's arguments in JSON" placeholder="{{cr.customHint}}" spellcheck="false" style="flex-grow: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: 13px">
+<span role="status" style="font-size: 13px; white-space: nowrap; color: {{cr.statusColor}}">{{cr.statusText}}</span>
+</div>
+</sc-if>
+<sc-if value="{{cr.notRunnable}}" hint-placeholder-val="{{ false }}">
+<div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; background: {{t.sunk}}; font-size: 14px; line-height: 1.5">Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.</div>
+</sc-if>
+<div aria-label="Output" role="region" style="flex: 0 1 auto; max-height: 48%; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 38px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output</span>
+<sc-if value="{{cr.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{cr.badgeBg}}; color: {{cr.badgeFg}}">{{cr.badge}}</span></sc-if>
+</div>
+<div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; min-height: 0">
+<sc-if value="{{cr.showHint}}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{cr.hint}}</span></sc-if>
+<sc-if value="{{cr.hasMsg}}" hint-placeholder-val="{{ false }}"><div style="padding: 10px 12px; border-radius: 10px; background: {{cr.msgBg}}; font-size: 14px; line-height: 1.5; white-space: pre-wrap; font-family: {{cr.msgFont}}">{{cr.msg}}</div></sc-if>
+<sc-for list="{{cr.rows}}" as="rw" hint-placeholder-count="3">
+<div style="flex-shrink: 0; padding: 10px 12px; border-radius: 10px; border: 1px solid {{rw.border}}; display: grid; grid-template-columns: 22px 92px minmax(0, 1fr); column-gap: 8px; row-gap: 3px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none; animation: rise 0.2s ease">
+<span aria-hidden="true" style="font-weight: 800; color: {{rw.markColor}}">{{rw.mark}}</span><span style="font-family: {{t.body}}; font-weight: 700">{{rw.title}}</span><span style="color: {{rw.markColor}}; font-family: {{t.body}}; font-weight: 600">{{rw.verdict}}</span>
+<span></span><span style="color: {{t.muted}}">input</span><span style="overflow-wrap: anywhere">{{rw.input}}</span>
+<sc-if value="{{rw.failed}}" hint-placeholder-val="{{ false }}"><span></span><span style="color: {{t.muted}}">expected</span><span style="overflow-wrap: anywhere">{{rw.expected}}</span></sc-if>
+<span></span><span style="color: {{t.muted}}">got</span><span style="overflow-wrap: anywhere; color: {{rw.gotColor}}">{{rw.got}}</span>
+<sc-if value="{{rw.hasLogs}}" hint-placeholder-val="{{ false }}"><span></span><span style="color: {{t.muted}}">printed</span><span style="white-space: pre-wrap; overflow-wrap: anywhere; color: {{t.text2}}">{{rw.logs}}</span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+<!-- /CODE PANE -->
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":1060}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
+const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+// @@CATALOG@@ — generated block, shared by every board that lists problems.
+// Company tags: where learners most often report meeting each problem in interviews. Times are typical first-solve times.
+const STAGES = [
+  { key: "strings", name: "Strings", meta: "bead necklaces", blurb: "A string is a necklace of letter-beads. You'll walk it from both ends, slide a window along it, and count its beads.", why: "Everyone has used text. It's the gentlest place to meet your first patterns." },
+  { key: "arrays", name: "Arrays", meta: "rows of lanterns", blurb: "An array is a row of numbered lanterns. The big ideas show up here: two friends walking inward, sliding windows, halving searches and grids you can turn.", why: "Most interview problems are arrays in disguise." },
+  { key: "hash", name: "Maps & sets", meta: "coat-check counters", blurb: "Hand over a coat, get a ticket, find it again instantly. Maps and sets turn “search everything” into “just look it up”.", why: "The most-used trick for turning O(n²) into O(n)." },
+  { key: "stacks", name: "Stacks, queues & heaps", meta: "plates, lines and triage", blurb: "A stack is a pile of plates, a queue is a ticket line, and a heap is a triage desk where the most urgent case is always on top.", why: "They power bracket-matching, 'next warmer day' puzzles, top-K lists and the BFS you'll meet later." },
+  { key: "linked", name: "Linked lists", meta: "train carriages", blurb: "Each carriage only knows the next one. You'll turn trains around, zip two trains together and catch loops with a tortoise and a hare.", why: "Your first real taste of pointers — you'll need them for trees." },
+  { key: "trees", name: "Trees", meta: "family trees", blurb: "One ancestor at the top, branches below. Explore deep down one branch first, or visit floor by floor.", why: "DFS and BFS begin here, on shapes with no loops." },
+  { key: "graphs", name: "Graphs & grids", meta: "islands and ripples", blurb: "Maps of islands, cities and friendships. Ripple outward with BFS, or explore every path with DFS and backtrack when you hit a wall.", why: "Trees with loops — so you learn to remember where you've been." },
+  { key: "dp", name: "Dynamic programming", meta: "notes to your future self", blurb: "Solve the small versions first and write the answers down, so you never solve the same thing twice.", why: "It comes last because it builds on the recursion from trees and graphs." }
+];
+
+// name, tagline, companion (name, role)
+const PATTERNS = [
+  ["Two Pointers", "Two friends walk toward each other", "Lumi & Roo", "two friends who start at opposite ends"],
+  ["Sliding Window", "A train window gliding past the view", "Wren", "the window-keeper on the night train"],
+  ["Hash Map", "The coat-check counter", "Cleo", "the coat-check clerk who never forgets a ticket"],
+  ["Prefix Sum", "A running tally in the margin", "Penny", "who writes the running total after every step"],
+  ["Binary Search", "Guess the number, halve the doubt", "Gus", "the number-guesser who halves the doubt"],
+  ["Matrix", "Turning the tiled floor", "Tilda", "the tiler who turns whole floors"],
+  ["Intervals", "The meeting-room diary", "Iris", "the scheduler with the fat diary"],
+  ["Greedy", "Take the best step you can see", "Jax", "the stone-hopper who always leaps as far as he can"],
+  ["Stack", "A pile of plates: last on, first off", "Pip", "the plate-stacker at the busy canteen"],
+  ["Heap", "The triage desk", "Nia", "the triage nurse who always knows who's next"],
+  ["In-place Reversal", "Turning the train around", "Cole", "the conductor who re-couples carriages"],
+  ["Fast & Slow Pointers", "The tortoise and the hare", "Tam & Hazel", "a tortoise and a hare on the same track"],
+  ["Depth-First Search", "The maze explorer with chalk", "Moss", "the explorer who goes deep before going wide"],
+  ["Breadth-First Search", "Ripples in a pond", "Rill", "the ripple that spreads one ring at a time"],
+  ["Backtracking", "Try, mark, undo", "Chalk", "who marks every path and rubs it out on the way back"],
+  ["Dynamic Programming", "Notes to your future self", "Sol", "the scribe who writes every small answer down"]
+];
+
+// id, LeetCode #, title, story title, synopsis, difficulty, minutes, companies, pattern, stage, status, popularity rank, order added, animated?
+const PROBLEMS = [
+  ["valid-anagram", 242, "Valid Anagram", "The Scrabble Swap", "Two friends each hold a bag of Scrabble tiles. Can one spell exactly the other's word — nothing extra, nothing missing? Cleo keeps a tally: add for one bag, subtract for the other, and check every count lands on zero.", "Starter", 8, ["Amazon", "Bloomberg", "Uber"], "Hash Map", "strings", "done", 3, 1, true],
+  ["valid-palindrome", 125, "Valid Palindrome", "The Mirror Hallway", "Lumi and Roo walk a hallway painted with letters, one from each end, stepping over spaces and commas. If every pair of letters they meet matches, the hallway is a perfect mirror.", "Easy", 10, ["Meta", "Microsoft", "Apple"], "Two Pointers", "strings", "done", 2, 2, true],
+  ["longest-substring", 3, "Longest Substring Without Repeating Characters", "The Train of Unique Faces", "Wren watches passengers through the train window. She wants the longest stretch where no face appears twice. When a familiar face shows up, the back of the window slides forward just past the first one.", "Medium", 25, ["Amazon", "Microsoft", "Google"], "Sliding Window", "strings", "done", 1, 3, true],
+  ["char-replacement", 424, "Longest Repeating Character Replacement", "The Paint Touch-up", "A painter may repaint at most k tiles. How long a stretch can she make one colour? Wren keeps the window honest: window size minus the most common colour must stay at or below k.", "Medium", 30, ["Google", "Amazon", "Uber"], "Sliding Window", "strings", "todo", 5, 30, true],
+  ["min-window", 76, "Minimum Window Substring", "The Shopping List Window", "Walking down a market street, find the shortest stretch of stalls that sells everything on your list. Grow the window until the list is covered, then squeeze it from the left.", "Hard", 45, ["Meta", "Amazon", "Google", "Airbnb"], "Sliding Window", "strings", "todo", 4, 31, false],
+  ["longest-palindrome", 5, "Longest Palindromic Substring", "The Echo Chamber", "Stand in the middle of a word and shout. The echo spreads both ways for as long as the letters match. Try every middle — including the gaps between letters — and keep the longest echo.", "Medium", 30, ["Amazon", "Microsoft", "Adobe"], "Two Pointers", "strings", "todo", 3, 32, false],
+
+  ["two-sum-ii", 167, "Two Sum II — Sorted", "The Lantern Bridge", "Six lanterns hang in a row from dimmest to brightest. The gate opens only for two lanterns whose glow adds up to exactly the target. Lumi starts at the dim end, Roo at the bright end, and they squeeze inward.", "Medium", 20, ["Amazon", "Adobe", "Google", "Meta"], "Two Pointers", "arrays", "now", 4, 4, true],
+  ["container", 11, "Container With Most Water", "The Rain Barrel Builders", "Two builders stand at the ends of a fence of uneven planks. The shorter plank always decides how much rain the barrel holds, so the builder at the shorter plank steps inward, hoping for a taller one.", "Medium", 25, ["Amazon", "Google", "Meta"], "Two Pointers", "arrays", "todo", 3, 20, true],
+  ["3sum", 15, "3Sum", "The Campfire Trio", "Three friends around a fire need glows that add up to zero. Sort them, fix one friend in place, and let the other two play the Lantern Bridge on everyone to their right. Skip twins so no trio repeats.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Two Pointers", "arrays", "todo", 2, 6, false],
+  ["trapping-rain", 42, "Trapping Rain Water", "The Valley After the Storm", "Rain falls on a row of rocks. The water above each rock rises to the lower of the tallest rock on its left and the tallest on its right. Two walkers from the ends carry those heights with them.", "Hard", 45, ["Amazon", "Google", "Goldman Sachs"], "Two Pointers", "arrays", "todo", 5, 7, false],
+  ["move-zeroes", 283, "Move Zeroes", "The Tidy Bookshelf", "Push every empty slot on a bookshelf to the right while keeping the books in their order. Roo reads each slot; Lumi places the next book wherever the tidy part ends.", "Starter", 8, ["Meta", "Amazon", "Apple"], "Two Pointers", "arrays", "done", 6, 33, false],
+  ["best-time-stock", 121, "Best Time to Buy and Sell Stock", "The Market Stall Diary", "Each morning you note the price of mangoes. Remember the cheapest morning so far; today's profit is today's price minus that. Keep the best profit you've ever seen.", "Easy", 15, ["Amazon", "Goldman Sachs", "Flipkart"], "Sliding Window", "arrays", "done", 1, 5, true],
+  ["product-except-self", 238, "Product of Array Except Self", "The Group Photo Scores", "Everyone in a group photo gets a score: the product of everybody else's numbers. Penny walks once from the left and once from the right, and multiplies the two notes she left at each seat.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Apple"], "Prefix Sum", "arrays", "todo", 2, 34, true],
+  ["subarray-sum-k", 560, "Subarray Sum Equals K", "The Coin Jar Checkpoints", "Drop coins in a jar and note the running total at every checkpoint. Two checkpoints whose totals differ by exactly k fence off a stretch that sums to k — Cleo remembers how often each total has appeared.", "Medium", 30, ["Meta", "Google", "Amazon"], "Prefix Sum", "arrays", "todo", 3, 35, true],
+  ["binary-search", 704, "Binary Search", "The Number-Guessing Game", "Gus has to find a number in a sorted row. Every guess tells him higher or lower, so half the row disappears each time. Eight guesses are enough for 256 numbers.", "Starter", 8, ["Microsoft", "Apple"], "Binary Search", "arrays", "done", 4, 36, true],
+  ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, true],
+  ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, true],
+  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, true],
+  ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, true],
+  ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, true],
+  ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, true],
+  ["subsets", 78, "Subsets", "The Picnic Basket Choices", "For every snack, Chalk asks one question: in the basket or not? Two branches per snack, and every path to the bottom is one possible basket.", "Medium", 25, ["Meta", "Amazon"], "Backtracking", "arrays", "todo", 2, 42, false],
+  ["permutations", 46, "Permutations", "The Seating Chart", "Seat guests one chair at a time. Try each unseated guest in the next chair, go deeper, then stand them back up and try the next.", "Medium", 25, ["Microsoft", "LinkedIn", "Amazon"], "Backtracking", "arrays", "todo", 3, 43, false],
+  ["combination-sum", 39, "Combination Sum", "The Exact Price Basket", "Fill a basket that costs exactly the target, reusing any item as often as you like. Chalk tries items in order so the same basket is never counted twice.", "Medium", 30, ["Amazon", "Airbnb"], "Backtracking", "arrays", "todo", 4, 44, false],
+
+  ["contains-duplicate", 217, "Contains Duplicate", "The Guest List", "At the door, Cleo checks every guest against her list. The moment someone is already on it, she knows someone came twice.", "Starter", 8, ["Amazon", "Apple"], "Hash Map", "hash", "done", 3, 8, true],
+  ["two-sum", 1, "Two Sum", "The Coat-Check Counter", "Guests arrive one by one. For each guest, Cleo checks her ticket book: is the partner who completes the target already here? If not, she writes this guest down and waits.", "Easy", 15, ["Amazon", "Google", "Meta", "Microsoft"], "Hash Map", "hash", "done", 1, 9, true],
+  ["group-anagrams", 49, "Group Anagrams", "The Letter-Sorting Office", "Every word goes into a pigeonhole labelled with its letters in alphabetical order. Words that share a label are anagrams of each other.", "Medium", 25, ["Amazon", "Uber", "Meta"], "Hash Map", "hash", "todo", 2, 10, false],
+  ["longest-consecutive", 128, "Longest Consecutive Sequence", "The Missing Page Hunt", "Torn diary pages lie scattered. Cleo only starts counting a run from a page whose previous page is missing, then counts upward — so every page is visited once.", "Medium", 25, ["Google", "Amazon"], "Hash Map", "hash", "todo", 4, 45, false],
+
+  ["valid-parentheses", 20, "Valid Parentheses", "The Stack of Plates", "Every opening bracket puts a plate on Pip's pile; every closing bracket must match the plate on top. An empty pile at the end means perfectly matched.", "Easy", 12, ["Amazon", "Meta", "Google"], "Stack", "stacks", "done", 1, 11, true],
+  ["daily-temperatures", 739, "Daily Temperatures", "The Weather Watchers", "Each chilly day waits on Pip's pile. When a warmer day arrives, every colder day on top finally gets its answer — how many days it waited — and leaves.", "Medium", 25, ["Amazon", "Google"], "Stack", "stacks", "todo", 2, 12, true],
+  ["min-stack", 155, "Min Stack", "The Plate Pile with a Memory", "Next to every plate, Pip writes the smallest plate in the pile at that moment. Taking a plate off takes its note with it.", "Medium", 15, ["Amazon", "Bloomberg"], "Stack", "stacks", "todo", 3, 46, false],
+  ["kth-largest", 215, "Kth Largest Element in an Array", "The Talent Show Top K", "Nia keeps only the k best acts in a small room, weakest at the door. A new act gets in only if it beats the weakest, who then leaves.", "Medium", 25, ["Meta", "Amazon", "Microsoft"], "Heap", "stacks", "todo", 1, 47, true],
+  ["top-k-frequent", 347, "Top K Frequent Elements", "The Most-Requested Songs", "Cleo tallies every song request; Nia keeps the k most-requested in her small room. The quieter songs never make it past the door.", "Medium", 25, ["Amazon", "Meta", "Apple"], "Heap", "stacks", "todo", 2, 48, true],
+  ["sliding-window-max", 239, "Sliding Window Maximum", "The Tallest in the Window", "As Wren's window slides, she keeps a line of candidates, tallest at the front. Anyone shorter than a newcomer can never be the tallest again, so they leave.", "Hard", 40, ["Amazon", "Google"], "Sliding Window", "stacks", "todo", 4, 49, false],
+
+  ["reverse-linked-list", 206, "Reverse Linked List", "Turning the Train Around", "Cole walks down the train unhooking each carriage and re-hooking it to face backward. Three hands are all he needs: the carriage behind, the one he holds, and the one ahead.", "Easy", 15, ["Amazon", "Microsoft", "Apple"], "In-place Reversal", "linked", "todo", 1, 13, true],
+  ["linked-list-cycle", 141, "Linked List Cycle", "The Tortoise and the Hare", "Tam walks one carriage at a time; Hazel runs two. If the track loops, the hare laps the tortoise and they meet. If it doesn't, Hazel reaches the end.", "Easy", 15, ["Amazon", "Microsoft", "Goldman Sachs"], "Fast & Slow Pointers", "linked", "todo", 2, 14, true],
+  ["middle-of-list", 876, "Middle of the Linked List", "Halfway Across the Bridge", "Hazel runs two carriages for every one Tam walks. When Hazel reaches the end of the train, Tam is standing in the middle.", "Starter", 8, ["Amazon", "Apple"], "Fast & Slow Pointers", "linked", "todo", 4, 50, true],
+  ["merge-two-lists", 21, "Merge Two Sorted Lists", "The Zipper Merge", "Two sorted trains meet at a junction. Lumi and Roo each watch one train and wave through whichever carriage is smaller next, zipping them into one sorted train.", "Easy", 12, ["Amazon", "Microsoft", "Apple"], "Two Pointers", "linked", "todo", 3, 51, false],
+  ["remove-nth", 19, "Remove Nth Node From End of List", "The Carriage Gap", "Send a scout n carriages ahead. Walk both together; when the scout reaches the end, you're standing just before the carriage to unhook.", "Medium", 20, ["Meta", "Amazon"], "Two Pointers", "linked", "todo", 5, 52, false],
+  ["merge-k-lists", 23, "Merge k Sorted Lists", "The Train Yard Merge", "k sorted trains pull into one yard. Nia keeps the front carriage of every train at her desk and always sends out the smallest one next.", "Hard", 40, ["Amazon", "Google", "Meta"], "Heap", "linked", "todo", 6, 53, true],
+
+  ["invert-tree", 226, "Invert Binary Tree", "The Mirror Garden", "Moss swaps each gardener's left and right flower beds, then asks their children to do the same. The whole garden ends up mirrored.", "Starter", 8, ["Google", "Amazon"], "Depth-First Search", "trees", "todo", 3, 54, false],
+  ["max-depth", 104, "Maximum Depth of Binary Tree", "The Tallest Branch", "Every branch asks its two children how deep they go, adds one for itself, and passes the bigger answer up to its parent.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Depth-First Search", "trees", "todo", 2, 15, false],
+  ["validate-bst", 98, "Validate Binary Search Tree", "The Orchard Rule", "In this orchard every tree on the left must be shorter and every tree on the right taller — not just than the parent, but than every ancestor. Moss carries the allowed range down with him.", "Medium", 25, ["Amazon", "Meta", "Microsoft", "Bloomberg"], "Depth-First Search", "trees", "todo", 4, 55, false],
+  ["level-order", 102, "Binary Tree Level Order Traversal", "Floors of the Treehouse", "Rill visits the treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.", "Medium", 25, ["Amazon", "Meta", "Microsoft"], "Breadth-First Search", "trees", "todo", 1, 16, false],
+  ["right-side-view", 199, "Binary Tree Right Side View", "The View from the Right Balcony", "Stand on the right balcony of every floor of the treehouse. The last person on each floor is the one you can see.", "Medium", 20, ["Meta", "Amazon"], "Breadth-First Search", "trees", "todo", 5, 56, false],
+
+  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, true],
+  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, true],
+  ["clone-graph", 133, "Clone Graph", "The Friendship Photocopier", "Moss photocopies a web of friends. He keeps a notebook of who's already copied, so nobody gets copied twice and every friendship is redrawn.", "Medium", 25, ["Meta", "Google", "Amazon"], "Depth-First Search", "graphs", "todo", 4, 57, false],
+  ["course-schedule", 207, "Course Schedule", "The Prerequisite Map", "Rill starts with every course that has no prerequisites, then unlocks the courses that were waiting on them. If some are never unlocked, there's a loop.", "Medium", 30, ["Amazon", "Microsoft", "Uber"], "Breadth-First Search", "graphs", "todo", 3, 58, false],
+  ["word-search", 79, "Word Search", "The Letter Maze", "Chalk traces the word letter by letter through a grid, marking each square as he goes and rubbing the mark out when a path fails.", "Medium", 30, ["Amazon", "Microsoft", "Bloomberg"], "Backtracking", "graphs", "todo", 5, 59, false],
+
+  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, true],
+  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, true],
+  ["max-subarray", 53, "Maximum Subarray", "The Hiker's Best Stretch", "A hiker logs every climb and drop. Sol keeps a running total of the current stretch; the moment it sinks below zero, starting fresh is better.", "Medium", 20, ["Amazon", "Microsoft", "LinkedIn"], "Dynamic Programming", "dp", "todo", 3, 60, false],
+  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, true],
+  ["lis", 300, "Longest Increasing Subsequence", "The Staircase of Heights", "Pick people from a line to build the longest staircase of rising heights, keeping their order. For each person, Sol asks how long a staircase could end with them.", "Medium", 30, ["Google", "Microsoft", "Amazon"], "Dynamic Programming", "dp", "todo", 5, 62, false],
+  ["word-break", 139, "Word Break", "The Dictionary Fence", "Can a long string be cut into dictionary words? Sol marks every position he can reach with a clean cut and checks whether the end gets a mark.", "Medium", 30, ["Amazon", "Google", "Meta"], "Dynamic Programming", "dp", "todo", 6, 63, false],
+  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, true]
+].map(([id, n, title, story, synopsis, diff, mins, cos, pattern, dtype, status, pop, added, animated]) =>
+  ({ id, n, title, story, synopsis, diff, time: mins + " min", mins, cos, pattern, dtype, status, pop, added, animated }));
+
+const COMPANY_TABS = [
+  ["MAANG", ["Meta", "Apple", "Amazon", "Netflix", "Google"]],
+  ["Amazon", ["Amazon"]], ["Google", ["Google"]], ["Meta", ["Meta"]], ["Microsoft", ["Microsoft"]], ["Apple", ["Apple"]],
+  ["Adobe", ["Adobe"]], ["Uber", ["Uber"]], ["Bloomberg", ["Bloomberg"]], ["LinkedIn", ["LinkedIn"]], ["Airbnb", ["Airbnb"]],
+  ["Goldman Sachs", ["Goldman Sachs"]], ["Flipkart", ["Flipkart"]]
+];
+const PROBLEM_KEY = "dsaviz-problem";
+function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Saved stories and the spaced-repetition deck (id -> { due: days from now, rated }).
+function readJSON(k, fallback) { try { const v = JSON.parse(window.localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } }
+function writeJSON(k, v) { try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function loadSaved() { const v = readJSON('dsaviz-saved', []); return Array.isArray(v) ? v : []; }
+function storeSaved(list) { writeJSON('dsaviz-saved', list); }
+function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function storeDeck(d) { writeJSON('dsaviz-deck', d); }
+// @@END@@
+
+// @@TESTS-SPEC@@ — generated block (from shared/tests_spec.js), used by the Code page and tests/specs.js.
+// One spec per problem with a story. Every input here was written for DSAMaxxing.
+//   fn        function name the runner calls (same in every language)
+//   params    argument names, in order (used to label inputs)
+//   sig       first line of the function in each language
+//   cmp       how a result is checked: 'exact', 'unordered' (any order) or 'float' (within 1e-6)
+//   examples  shown on the page and run by Run: [args, expected]
+//   hidden    only run by Submit
+//   ref       a JavaScript reference solution; tests/specs.js runs it on every case
+const CODE_LANGS = [['py', 'Python'], ['js', 'JavaScript'], ['java', 'Java'], ['cpp', 'C++'], ['go', 'Go']];
+const RUNNABLE = { py: true, js: true };
+const TEST_SPECS = {
+  'two-sum-ii': {
+    fn: 'twoSum', params: ['numbers', 'target'], cmp: 'exact',
+    ask: 'The lanterns are sorted from dimmest to brightest. Return the 1-based positions of the two lanterns whose glow adds up to target, smaller position first. There is always exactly one answer.',
+    sig: {
+      py: 'def twoSum(numbers: List[int], target: int) -> List[int]:',
+      js: 'function twoSum(numbers, target) {',
+      java: 'public int[] twoSum(int[] numbers, int target) {',
+      cpp: 'vector<int> twoSum(vector<int>& numbers, int target) {',
+      go: 'func twoSum(numbers []int, target int) []int {'
+    },
+    examples: [[[[1, 3, 4, 6, 8, 11], 10], [3, 4]], [[[-3, 0, 2, 5], -1], [1, 3]], [[[5, 5], 10], [1, 2]]],
+    hidden: [[[[2, 7, 11, 15, 20], 35], [4, 5]], [[[-10, -4, -1, 0, 3, 9], -14], [1, 2]], [[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 19], [9, 10]], [[[0, 0, 3, 4], 0], [1, 2]], [[[1, 6, 9, 14, 22, 30], 20], [2, 4]]],
+    ref: function (numbers, target) {
+      let l = 0, r = numbers.length - 1;
+      while (l < r) { const s = numbers[l] + numbers[r]; if (s === target) return [l + 1, r + 1]; if (s > target) r--; else l++; }
+      return [];
+    }
+  },
+  'valid-palindrome': {
+    fn: 'isPalindrome', params: ['s'], cmp: 'exact',
+    ask: 'Ignore everything that is not a letter or a digit, and ignore upper and lower case. Return true if what is left reads the same both ways.',
+    sig: {
+      py: 'def isPalindrome(s: str) -> bool:',
+      js: 'function isPalindrome(s) {',
+      java: 'public boolean isPalindrome(String s) {',
+      cpp: 'bool isPalindrome(string s) {',
+      go: 'func isPalindrome(s string) bool {'
+    },
+    examples: [[['Step on no pets!'], true], [['race a car'], false], [[' '], true]],
+    hidden: [[['No lemon, no melon'], true], [['0P'], false], [['ab_a'], true], [['Was it a car or a cat I saw?'], true], [['abca'], false]],
+    ref: function (s) {
+      const t = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return t === t.split('').reverse().join('');
+    }
+  },
+  container: {
+    fn: 'maxArea', params: ['height'], cmp: 'exact',
+    ask: 'Each number is a plank height. Pick two planks; the water between them is the shorter height times the distance between them. Return the most water any pair can hold.',
+    sig: {
+      py: 'def maxArea(height: List[int]) -> int:',
+      js: 'function maxArea(height) {',
+      java: 'public int maxArea(int[] height) {',
+      cpp: 'int maxArea(vector<int>& height) {',
+      go: 'func maxArea(height []int) int {'
+    },
+    examples: [[[[2, 5, 4, 8, 3]], 10], [[[1, 1]], 1], [[[4, 3, 2, 1, 4]], 16]],
+    hidden: [[[[1, 2, 1]], 2], [[[6, 1, 1, 1, 1, 1, 1, 6]], 42], [[[3, 9, 3, 4, 7, 2, 12, 6]], 45], [[[0, 0, 0]], 0], [[[10, 2, 2, 2, 2, 2, 2, 2, 2, 10]], 90]],
+    ref: function (height) {
+      let l = 0, r = height.length - 1, best = 0;
+      while (l < r) { best = Math.max(best, Math.min(height[l], height[r]) * (r - l)); if (height[l] < height[r]) l++; else r--; }
+      return best;
+    }
+  },
+  'longest-substring': {
+    fn: 'lengthOfLongestSubstring', params: ['s'], cmp: 'exact',
+    ask: 'Return the length of the longest stretch of s in which no character appears twice.',
+    sig: {
+      py: 'def lengthOfLongestSubstring(s: str) -> int:',
+      js: 'function lengthOfLongestSubstring(s) {',
+      java: 'public int lengthOfLongestSubstring(String s) {',
+      cpp: 'int lengthOfLongestSubstring(string s) {',
+      go: 'func lengthOfLongestSubstring(s string) int {'
+    },
+    examples: [[['lanterns'], 6], [['zzzz'], 1], [[''], 0]],
+    hidden: [[['abcadefa'], 6], [['abba'], 2], [['a b c'], 3], [['pqrstuvwxyzp'], 11], [['aab'], 2]],
+    ref: function (s) {
+      const last = new Map(); let left = 0, best = 0;
+      for (let r = 0; r < s.length; r++) { if (last.has(s[r]) && last.get(s[r]) >= left) left = last.get(s[r]) + 1; last.set(s[r], r); best = Math.max(best, r - left + 1); }
+      return best;
+    }
+  },
+  'char-replacement': {
+    fn: 'characterReplacement', params: ['s', 'k'], cmp: 'exact',
+    ask: 's holds only capital letters. You may repaint at most k of them to any other letter. Return the length of the longest stretch that can end up all one letter.',
+    sig: {
+      py: 'def characterReplacement(s: str, k: int) -> int:',
+      js: 'function characterReplacement(s, k) {',
+      java: 'public int characterReplacement(String s, int k) {',
+      cpp: 'int characterReplacement(string s, int k) {',
+      go: 'func characterReplacement(s string, k int) int {'
+    },
+    examples: [[['AABA', 0], 2], [['ABBB', 2], 4], [['ABCD', 1], 2]],
+    hidden: [[['AAAA', 2], 4], [['ABABBA', 1], 4], [['BAAAB', 2], 5], [['XYZ', 0], 1], [['AABBBCCCC', 3], 7]],
+    ref: function (s, k) {
+      const count = {}; let left = 0, top = 0, best = 0;
+      for (let r = 0; r < s.length; r++) {
+        count[s[r]] = (count[s[r]] || 0) + 1; top = Math.max(top, count[s[r]]);
+        if (r - left + 1 - top > k) { count[s[left]]--; left++; }
+        best = Math.max(best, r - left + 1);
+      }
+      return best;
+    }
+  },
+  'best-time-stock': {
+    fn: 'maxProfit', params: ['prices'], cmp: 'exact',
+    ask: 'prices[i] is the price of mangoes on day i. Buy on one day and sell on a later day. Return the biggest profit you can make, or 0 if every sale would lose money.',
+    sig: {
+      py: 'def maxProfit(prices: List[int]) -> int:',
+      js: 'function maxProfit(prices) {',
+      java: 'public int maxProfit(int[] prices) {',
+      cpp: 'int maxProfit(vector<int>& prices) {',
+      go: 'func maxProfit(prices []int) int {'
+    },
+    examples: [[[[9, 4, 6, 2, 7, 3]], 5], [[[8, 6, 4, 2]], 0], [[[3]], 0]],
+    hidden: [[[[1, 2, 3, 4, 5, 6]], 5], [[[2, 9, 1, 3]], 7], [[[5, 5, 5]], 0], [[[4, 1, 8, 0, 6]], 7], [[[10, 30, 5, 25, 1, 15]], 20]],
+    ref: function (prices) {
+      let low = Infinity, best = 0;
+      for (const p of prices) { low = Math.min(low, p); best = Math.max(best, p - low); }
+      return best;
+    }
+  },
+  'contains-duplicate': {
+    fn: 'containsDuplicate', params: ['nums'], cmp: 'exact',
+    ask: 'Return true if any value appears at least twice in nums, and false if every value is different.',
+    sig: {
+      py: 'def containsDuplicate(nums: List[int]) -> bool:',
+      js: 'function containsDuplicate(nums) {',
+      java: 'public boolean containsDuplicate(int[] nums) {',
+      cpp: 'bool containsDuplicate(vector<int>& nums) {',
+      go: 'func containsDuplicate(nums []int) bool {'
+    },
+    examples: [[[[4, 9, 2, 9]], true], [[[3, 1, 4, 5]], false], [[[]], false]],
+    hidden: [[[[0, -1, 0]], true], [[[7]], false], [[[-5, -4, -3, -2, -1]], false], [[[1, 1]], true], [[[100, 200, 300, 400, 500, 100]], true]],
+    ref: function (nums) { return new Set(nums).size !== nums.length; }
+  },
+  'two-sum': {
+    fn: 'twoSum', params: ['nums', 'target'], cmp: 'unordered',
+    ask: 'Return the two indexes (0-based) of the numbers in nums that add up to target. Each input has exactly one answer; you may return the two indexes in either order.',
+    sig: {
+      py: 'def twoSum(nums: List[int], target: int) -> List[int]:',
+      js: 'function twoSum(nums, target) {',
+      java: 'public int[] twoSum(int[] nums, int target) {',
+      cpp: 'vector<int> twoSum(vector<int>& nums, int target) {',
+      go: 'func twoSum(nums []int, target int) []int {'
+    },
+    examples: [[[[5, 9, 13, 2], 11], [1, 3]], [[[4, 4, 1], 8], [0, 1]], [[[-2, 6, 3], 1], [0, 2]]],
+    hidden: [[[[0, 4, 3, 0], 0], [0, 3]], [[[10, 20, 30, 40], 70], [2, 3]], [[[-1, -2, -3, -4, -5], -8], [2, 4]], [[[1, 5, 9], 14], [1, 2]], [[[7, 2, 8, 11, 5], 19], [2, 3]]],
+    ref: function (nums, target) {
+      const seen = new Map();
+      for (let i = 0; i < nums.length; i++) { if (seen.has(target - nums[i])) return [seen.get(target - nums[i]), i]; seen.set(nums[i], i); }
+      return [];
+    }
+  },
+  'valid-anagram': {
+    fn: 'isAnagram', params: ['s', 't'], cmp: 'exact',
+    ask: 's and t hold lowercase letters. Return true if t uses exactly the same letters as s, each the same number of times.',
+    sig: {
+      py: 'def isAnagram(s: str, t: str) -> bool:',
+      js: 'function isAnagram(s, t) {',
+      java: 'public boolean isAnagram(String s, String t) {',
+      cpp: 'bool isAnagram(string s, string t) {',
+      go: 'func isAnagram(s string, t string) bool {'
+    },
+    examples: [[['listen', 'silent'], true], [['tile', 'tide'], false], [['a', 'ab'], false]],
+    hidden: [[['', ''], true], [['aabbcc', 'abcabc'], true], [['aabb', 'abbb'], false], [['dusty', 'study'], true], [['abc', 'abd'], false]],
+    ref: function (s, t) { return s.length === t.length && s.split('').sort().join('') === t.split('').sort().join(''); }
+  }
+};
+
+// Starter code for a spec in one language: the signature plus an empty body.
+function starterCode(spec, lang) {
+  const sig = spec.sig[lang];
+  if (lang === 'py') return 'from typing import List\n\n' + sig + '\n    # Write your solution here.\n    pass\n';
+  if (lang === 'js') return sig + '\n  // Write your solution here.\n}\n';
+  if (lang === 'java') return 'class Solution {\n    ' + sig + '\n        // Write your solution here.\n    }\n}\n';
+  if (lang === 'cpp') return '#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    ' + sig + '\n        // Write your solution here.\n    }\n};\n';
+  return 'package main\n\n' + sig + '\n    // Write your solution here.\n}\n';
+}
+
+// Canonical JSON for comparing and printing results.
+function showValue(v) {
+  if (v === undefined) return 'undefined';
+  try { const s = JSON.stringify(v); return s === undefined ? String(v) : s; } catch (e) { return String(v); }
+}
+function showArgs(spec, args) { return spec.params.map((p, i) => p + ' = ' + showValue(args[i])).join(', '); }
+function sameResult(cmp, got, want) {
+  if (cmp === 'unordered' && Array.isArray(got) && Array.isArray(want)) {
+    const key = (a) => a.map(showValue).sort().join('|');
+    return got.length === want.length && key(got) === key(want);
+  }
+  if (cmp === 'float') {
+    const close = (a, b) => typeof a === 'number' && typeof b === 'number' && Math.abs(a - b) <= 1e-6;
+    if (Array.isArray(got) && Array.isArray(want)) return got.length === want.length && got.every((x, i) => close(x, want[i]));
+    return close(got, want);
+  }
+  return showValue(got) === showValue(want);
+}
+if (typeof module !== 'undefined' && module.exports) module.exports = { TEST_SPECS, CODE_LANGS, RUNNABLE, starterCode, showValue, showArgs, sameResult };
+// @@END-TESTS-SPEC@@
+
+// @@RUNNER@@ — generated block (from shared/runner.js): runs learner code off the main thread.
+// JavaScript runs in a Web Worker built from a Blob; Python runs in Pyodide inside another
+// worker, loaded on demand from a pinned jsDelivr URL. Nothing here uses eval on the page.
+const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
+const JS_TIME_LIMIT = 3000;
+const PY_TIME_LIMIT = 5000;
+
+// The worker script for one JavaScript run: a one-line prelude, the learner's code, then the
+// harness. The prelude is one line so error line numbers are the learner's line + 1.
+function jsWorkerSource(code, fn, cases) {
+  const prelude = 'var __logs = []; (function () { var fmt = function (a) { if (typeof a === "string") return a; try { var s = JSON.stringify(a); return s === undefined ? String(a) : s; } catch (e) { return String(a); } }; var log = function () { if (__logs.length < 200) __logs.push(Array.prototype.map.call(arguments, fmt).join(" ")); }; console.log = console.info = console.warn = console.error = console.debug = log; ["fetch", "XMLHttpRequest", "WebSocket", "EventSource", "importScripts", "indexedDB", "caches"].forEach(function (k) { try { self[k] = undefined; } catch (e) {} }); })();';
+  const harness = '\n;(function () {\n' +
+    '  var __f = null; try { __f = (typeof ' + fn + ' === "function") ? ' + fn + ' : null; } catch (__e) {}\n' +
+    '  if (!__f) { self.postMessage({ type: "fatal", error: "No function named ' + fn + ' was found. Keep the name from the starter code." }); return; }\n' +
+    '  var __cases = ' + JSON.stringify(cases) + ';\n' +
+    '  for (var __i = 0; __i < __cases.length; __i++) {\n' +
+    '    __logs = []; var __t0 = Date.now();\n' +
+    '    try { var __out = __f.apply(null, JSON.parse(JSON.stringify(__cases[__i]))); var __txt; try { __txt = JSON.stringify(__out); } catch (__e) { __txt = undefined; }\n' +
+    '      self.postMessage({ type: "case", i: __i, got: __txt === undefined ? null : JSON.parse(__txt), undef: __out === undefined, logs: __logs, ms: Date.now() - __t0 }); }\n' +
+    '    catch (__e) { self.postMessage({ type: "case", i: __i, error: (__e && __e.name ? __e.name + ": " : "") + (__e && __e.message ? __e.message : String(__e)), logs: __logs, ms: Date.now() - __t0 }); }\n' +
+    '  }\n' +
+    '  self.postMessage({ type: "done" });\n' +
+    '})();\n';
+  return prelude + '\n' + code + harness;
+}
+
+const PY_WORKER = [
+  'var py = null, ready = null;',
+  'function boot(url) {',
+  '  if (!ready) ready = new Promise(function (ok, bad) {',
+  '    try { importScripts(url + "pyodide.js"); } catch (e) { bad(new Error("Could not download Python. Check your connection.")); return; }',
+  '    loadPyodide({ indexURL: url }).then(function (p) { py = p; ok(); }, bad);',
+  '  });',
+  '  return ready;',
+  '}',
+  'var HARNESS = "import json\\nfrom typing import *\\ndef __run(args_json, name):\\n    fn = globals().get(name)\\n    if not callable(fn):\\n        raise NameError(\\"No function named \\" + name + \\" was found. Keep the name from the starter code.\\")\\n    return json.dumps(fn(*json.loads(args_json)))\\n";',
+  'function tidy(msg) { var lines = String(msg).trim().split("\\n"); var at = ""; for (var i = 0; i < lines.length; i++) { var m = lines[i].match(/File "<exec>", line (\\d+)/); if (m) at = " (line " + m[1] + ")"; } return lines[lines.length - 1] + at; }',
+  'self.onmessage = function (e) {',
+  '  var d = e.data;',
+  '  boot(d.url).then(function () {',
+  '    if (d.type === "load") { self.postMessage({ type: "ready" }); return; }',
+  '    var logs = [];',
+  '    py.setStdout({ batched: function (s) { if (logs.length < 200) logs.push(s); } });',
+  '    py.setStderr({ batched: function (s) { if (logs.length < 200) logs.push(s); } });',
+  '    var ns = py.globals.get("dict")();',
+  '    try { py.runPython(HARNESS, { globals: ns }); py.runPython(d.code, { globals: ns }); }',
+  '    catch (err) { self.postMessage({ type: "fatal", error: tidy(err.message), logs: logs }); ns.destroy(); return; }',
+  '    var run = ns.get("__run");',
+  '    for (var i = 0; i < d.cases.length; i++) {',
+  '      logs = []; var t0 = Date.now();',
+  '      try { var txt = run(JSON.stringify(d.cases[i]), d.fn); self.postMessage({ type: "case", i: i, got: JSON.parse(txt), undef: false, logs: logs, ms: Date.now() - t0 }); }',
+  '      catch (err) { self.postMessage({ type: "case", i: i, error: tidy(err.message), logs: logs, ms: Date.now() - t0 }); }',
+  '    }',
+  '    run.destroy(); ns.destroy();',
+  '    self.postMessage({ type: "done" });',
+  '  }, function (err) { self.postMessage({ type: "loadfail", error: err && err.message ? err.message : String(err) }); });',
+  '};'
+].join('\n');
+
+function canRunCode() { return typeof Worker !== 'undefined' && typeof Blob !== 'undefined' && typeof URL !== 'undefined' && !!URL.createObjectURL; }
+function blobWorker(src) {
+  const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+  const w = new Worker(url);
+  w.__url = url;
+  return w;
+}
+function killWorker(w) { if (!w) return; try { w.terminate(); } catch (e) {} try { URL.revokeObjectURL(w.__url); } catch (e) {} }
+
+// Run code against a list of argument arrays. Calls back with:
+//   onCase(i, { got, undef, error, logs, ms }), then onEnd({ fatal, timeout, line })
+// Returns a cancel function.
+function runJs(code, fn, cases, onCase, onEnd) {
+  let w, ended = false;
+  const end = (r) => { if (ended) return; ended = true; clearTimeout(timer); killWorker(w); onEnd(r || {}); };
+  try { w = blobWorker(jsWorkerSource(code, fn, cases)); } catch (e) { onEnd({ fatal: 'This browser blocked the code runner: ' + e.message }); return () => {}; }
+  const timer = setTimeout(() => end({ timeout: true }), JS_TIME_LIMIT);
+  w.onmessage = (e) => {
+    const d = e.data || {};
+    if (d.type === 'case') onCase(d.i, d);
+    else if (d.type === 'fatal') end({ fatal: d.error });
+    else if (d.type === 'done') end({});
+  };
+  w.onerror = (e) => {
+    if (e.preventDefault) e.preventDefault();
+    const line = e.lineno ? e.lineno - 1 : 0;
+    end({ fatal: String(e.message || 'Your code could not run.').replace(/^Uncaught /, '') + (line > 0 ? ' (line ' + line + ')' : ''), line });
+  };
+  return () => end({ cancelled: true });
+}
+
+// Python keeps one worker alive between runs (Pyodide takes a few seconds to load).
+const PY = { worker: null, state: 'off', waiters: [] };
+function loadPython(onState) {
+  if (PY.state === 'ready') { onState('ready'); return; }
+  PY.waiters.push(onState);
+  if (PY.state === 'loading') return;
+  PY.state = 'loading';
+  try { PY.worker = blobWorker(PY_WORKER); } catch (e) { PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', 'This browser blocked the code runner.')); return; }
+  PY.worker.onmessage = (e) => {
+    const d = e.data || {};
+    if (d.type === 'ready') { PY.state = 'ready'; PY.waiters.splice(0).forEach((f) => f('ready')); }
+    else if (d.type === 'loadfail') { killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', d.error)); }
+  };
+  PY.worker.onerror = (e) => { if (e.preventDefault) e.preventDefault(); killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', 'Python could not start.')); };
+  PY.worker.postMessage({ type: 'load', url: PYODIDE_URL });
+}
+function runPython(code, fn, cases, onCase, onEnd) {
+  let ended = false, timer = null;
+  const end = (r) => { if (ended) return; ended = true; clearTimeout(timer); onEnd(r || {}); };
+  loadPython((state, msg) => {
+    if (ended) return;
+    if (state !== 'ready') { end({ fatal: msg || 'Python could not load.' }); return; }
+    const w = PY.worker;
+    timer = setTimeout(() => {
+      // A runaway loop can only be stopped by killing the worker; Python reloads on the next run.
+      killWorker(w); PY.worker = null; PY.state = 'off';
+      end({ timeout: true });
+    }, PY_TIME_LIMIT);
+    w.onmessage = (e) => {
+      const d = e.data || {};
+      if (d.type === 'case') onCase(d.i, d);
+      else if (d.type === 'fatal') end({ fatal: d.error, logs: d.logs });
+      else if (d.type === 'done') end({});
+    };
+    w.postMessage({ type: 'run', url: PYODIDE_URL, code, fn, cases });
+  });
+  return () => end({ cancelled: true });
+}
+function stopPython() { killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters = []; }
+if (typeof module !== 'undefined' && module.exports) module.exports = { jsWorkerSource, JS_TIME_LIMIT };
+// @@END-RUNNER@@
+
+// @@CODE-PANE@@ — generated block (from shared/code_pane.js): the self-contained code pane.
+// Markup lives in shared/code_pane.html (holes under {{cr.*}}). A page uses it like this:
+//   constructor:          this.runner = new CodeRunner(this, problemId);
+//   componentDidMount:    this.runner.mount();
+//   componentWillUnmount: this.runner.unmount();
+//   renderVals:           return { t, cr: this.runner.vals(t, themeKey), ... };
+//   switching problem:    this.runner.setProblem(id);
+// Needs the @@TESTS-SPEC@@ and @@RUNNER@@ blocks, plus readJSON/writeJSON from the catalog.
+const CODE_KEY = 'dsaviz-code-v1';
+const CODE_LANG_KEY = 'dsaviz-lang';
+function loadCodeStore() { const v = readJSON(CODE_KEY, {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function savedCode(pid, lang) { const s = loadCodeStore(); return s[pid] && typeof s[pid][lang] === 'string' ? s[pid][lang] : null; }
+function storeCode(pid, lang, code) {
+  const s = loadCodeStore();
+  s[pid] = Object.assign({}, s[pid]);
+  if (code === null) delete s[pid][lang]; else s[pid][lang] = code;
+  writeJSON(CODE_KEY, s);
+}
+const pad2 = (n) => String(n).padStart(2, '0');
+
+class CodeRunner {
+  constructor(host, pid) {
+    this.host = host;
+    let lang = 'py';
+    try { const l = window.localStorage.getItem(CODE_LANG_KEY); if (CODE_LANGS.some(([k]) => k === l)) lang = l; } catch (e) {}
+    this.pid = TEST_SPECS[pid] ? pid : Object.keys(TEST_SPECS)[0];
+    this.s = { lang, code: savedCode(this.pid, lang) || starterCode(TEST_SPECS[this.pid], lang), out: null, busy: false, status: '',
+      custom: '', elapsed: 0, solvedIn: null, copied: false, confirmReset: false };
+    this.editor = null;
+    this.el = null;
+    this.ref = (el) => {
+      if (el === this.el) return;
+      this.el = el;
+      if (el) setTimeout(() => this.mountEditor(), 0);
+    };
+  }
+  set(patch) { Object.assign(this.s, patch); this.host.setState({}); }
+  spec() { return TEST_SPECS[this.pid]; }
+  mount() { this.clock = setInterval(() => { if (this.s.solvedIn === null) this.set({ elapsed: this.s.elapsed + 1 }); }, 1000); }
+  unmount() {
+    clearInterval(this.clock); clearTimeout(this.resetTimer); clearTimeout(this.copyTimer);
+    this.stopRun();
+    if (this.editor) { this.editor.destroy(); this.editor = null; }
+  }
+
+  // The CodeMirror bundle is wrapped in DS_EDITOR_LOAD by the site build and only runs here.
+  // Without it (the design canvas, an old browser) a plain textarea stands in.
+  mountEditor() {
+    const el = this.el;
+    if (!el || this.editor || typeof document === 'undefined' || !el.appendChild) return;
+    const t = this.tokens || THEMES.max;
+    const onChange = (code) => { this.s.code = code; storeCode(this.pid, this.s.lang, code); };
+    try {
+      if (!window.__dsEditor && typeof window.DS_EDITOR_LOAD === 'function') window.__dsEditor = window.DS_EDITOR_LOAD();
+      if (window.__dsEditor) { this.editor = window.__dsEditor.create(el, { doc: this.s.code, lang: this.s.lang, theme: t, onChange }); this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|'); return; }
+    } catch (e) { console.error(e); }
+    const ta = document.createElement('textarea');
+    ta.value = this.s.code; ta.spellcheck = false; ta.setAttribute('aria-label', 'Code editor');
+    const paint = (x) => { ta.style.cssText = 'width:100%;height:100%;box-sizing:border-box;border:0;resize:none;outline:none;padding:12px 16px;tab-size:4;font:14px/1.65 ' + x.mono + ';background:' + x.codeBg + ';color:' + x.text; };
+    paint(t);
+    ta.addEventListener('input', () => onChange(ta.value));
+    el.appendChild(ta);
+    this.editor = { getDoc: () => ta.value, setDoc: (s) => { ta.value = s; }, setLanguage() {}, setTheme: paint, destroy: () => ta.remove() };
+    this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|');
+  }
+  showCode() {
+    const code = savedCode(this.pid, this.s.lang) || starterCode(this.spec(), this.s.lang);
+    if (this.editor) { this.editor.setLanguage(this.s.lang); this.editor.setDoc(code); }
+    return code;
+  }
+  stopRun() { if (this.cancel) { const c = this.cancel; this.cancel = null; c(); } }
+  setProblem(pid) {
+    if (!TEST_SPECS[pid] || pid === this.pid) return;
+    this.stopRun();
+    this.pid = pid;
+    this.set({ code: this.showCode(), out: null, busy: false, status: '', custom: '', elapsed: 0, solvedIn: null });
+  }
+  setLang(lang) {
+    if (lang === this.s.lang) return;
+    this.stopRun();
+    try { window.localStorage.setItem(CODE_LANG_KEY, lang); } catch (e) {}
+    this.s.lang = lang;
+    this.set({ code: this.showCode(), out: null, busy: false, status: '' });
+  }
+  // Reset throws away the learner's code, so the first click only arms it for 3 seconds.
+  reset() {
+    clearTimeout(this.resetTimer);
+    if (!this.s.confirmReset) {
+      this.set({ confirmReset: true });
+      this.resetTimer = setTimeout(() => this.set({ confirmReset: false }), 3000);
+      return;
+    }
+    this.stopRun();
+    storeCode(this.pid, this.s.lang, null);
+    this.set({ confirmReset: false, code: this.showCode(), out: null, busy: false, status: '' });
+  }
+  copy() {
+    const code = this.editor ? this.editor.getDoc() : this.s.code;
+    try { if (typeof navigator !== 'undefined' && navigator.clipboard) navigator.clipboard.writeText(code); } catch (e) {}
+    clearTimeout(this.copyTimer);
+    this.set({ copied: true });
+    this.copyTimer = setTimeout(() => this.set({ copied: false }), 1500);
+  }
+  // Custom input is written like the call's arguments: [3, 8, 1], 9
+  customCase() {
+    const spec = this.spec();
+    const text = this.s.custom.trim();
+    if (!text) return null;
+    let args;
+    try { args = JSON.parse('[' + text + ']'); } catch (e) { return { error: 'Custom input should look like the arguments of a call, in JSON: ' + spec.examples[0][0].map(showValue).join(', ') + '. Strings need double quotes.' }; }
+    if (args.length !== spec.params.length) return { error: 'Custom input needs ' + spec.params.length + ' value' + (spec.params.length > 1 ? 's' : '') + ': ' + spec.params.join(', ') + '.' };
+    let want;
+    try { want = spec.ref.apply(null, JSON.parse(JSON.stringify(args))); } catch (e) { return { error: 'That custom input is outside what this problem allows.' }; }
+    return { args, want };
+  }
+  passCount(out) {
+    const spec = this.spec();
+    return out.cases.filter((c, i) => { const r = out.results[i]; return r && !r.error && !r.undef && sameResult(spec.cmp, r.got, c[1]); }).length;
+  }
+  execute(mode) {
+    if (this.s.busy) return;
+    const spec = this.spec(), lang = this.s.lang;
+    if (!RUNNABLE[lang]) return;
+    const code = this.editor ? this.editor.getDoc() : this.s.code;
+    let cases = mode === 'submit' ? spec.examples.concat(spec.hidden) : spec.examples.slice();
+    const titles = cases.map((c, i) => (i < spec.examples.length ? 'Example ' + (i + 1) : 'Hidden ' + (i - spec.examples.length + 1)));
+    if (mode === 'run') {
+      const cc = this.customCase();
+      if (cc && cc.error) { this.set({ out: { mode, results: [], fatal: cc.error, cases: [], titles: [], done: true }, status: '' }); return; }
+      if (cc) { cases = cases.concat([[cc.args, cc.want]]); titles.push('Custom'); }
+    }
+    if (!canRunCode()) { this.set({ out: { mode, results: [], fatal: 'This browser cannot run code here. Copy it to your IDE for now.', cases, titles, done: true } }); return; }
+    const out = { mode, cases, titles, results: [], fatal: null, timeout: false, done: false, t0: Date.now() };
+    const loading = lang === 'py' && PY.state !== 'ready';
+    this.set({ busy: true, out, status: loading ? 'Loading Python… (first run only)' : 'Running…' });
+    this.cancel = (lang === 'py' ? runPython : runJs)(code, spec.fn, cases.map((c) => c[0]),
+      (i, r) => { out.results[i] = r; if (this.s.out === out) this.set({ status: 'Running…' }); },
+      (end) => {
+        if (this.s.out !== out) return;
+        this.cancel = null;
+        out.done = true; out.fatal = end.fatal || null; out.timeout = !!end.timeout;
+        const passed = this.passCount(out);
+        const limit = (lang === 'py' ? PY_TIME_LIMIT : JS_TIME_LIMIT) / 1000;
+        const status = end.cancelled ? '' : end.timeout ? 'Stopped after ' + limit + ' seconds' : end.fatal ? 'Could not run' : passed + ' / ' + cases.length + ' passed · ' + (Date.now() - out.t0) + ' ms';
+        const solved = mode === 'submit' && passed === cases.length && this.s.solvedIn === null;
+        this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn });
+      });
+  }
+
+  vals(t) {
+    this.tokens = t;
+    const tk = [t.codeBg, t.text, t.accent, t.mono].join('|');
+    if (this.editor && this.editorTheme !== tk) { this.editorTheme = tk; Promise.resolve().then(() => this.editor && this.editor.setTheme(t)); }
+    const s = this.s, spec = this.spec(), lang = s.lang, out = s.out;
+    const runnable = !!RUNNABLE[lang];
+    const fail = t.diff.Hard[2];
+    const limit = (lang === 'py' ? PY_TIME_LIMIT : JS_TIME_LIMIT) / 1000;
+    let rows = [], badge = '', badgeOk = false, msg = '', msgBg = t.sunk, msgMono = false;
+    if (out) {
+      const passed = this.passCount(out), total = out.cases.length;
+      if (out.fatal) { msg = out.fatal; msgBg = t.warnBg; msgMono = true; }
+      else if (out.timeout) msg = 'Your code ran past ' + limit + ' seconds and was stopped. Is there a loop that never ends?';
+      if (out.mode === 'run') {
+        rows = out.cases.map(([args, want], i) => {
+          const r = out.results[i];
+          const ok = !!r && !r.error && !r.undef && sameResult(spec.cmp, r.got, want);
+          return {
+            title: out.titles[i], input: showArgs(spec, args), expected: showValue(want), failed: !ok,
+            got: !r ? (out.done ? 'did not run' : '…') : r.error ? r.error : r.undef ? 'nothing (did you forget to return?)' : showValue(r.got),
+            mark: !r ? '·' : ok ? '✓' : '✗', verdict: !r ? (out.done ? 'Skipped' : 'Running') : ok ? 'Passed' : r.error ? 'Error' : 'Wrong answer',
+            markColor: !r ? t.muted : ok ? t.ok : fail, gotColor: ok ? t.text : fail, border: ok || !r ? t.line : fail,
+            hasLogs: !!(r && r.logs && r.logs.length), logs: r && r.logs ? r.logs.join('\n') : ''
+          };
+        }).filter((row, i) => out.results[i] || !out.done || !out.fatal);
+        if (out.done && !out.fatal) { badge = passed + ' / ' + total + ' passed'; badgeOk = passed === total; }
+      } else if (out.done) {
+        badge = passed + ' / ' + total + ' tests passed'; badgeOk = passed === total;
+        if (!out.fatal) {
+          const firstBad = out.cases.findIndex((c, i) => { const r = out.results[i]; return !(r && !r.error && !r.undef && sameResult(spec.cmp, r.got, c[1])); });
+          if (firstBad < 0) msg = 'Accepted. Every test passed, including ' + spec.hidden.length + ' hidden ones' + (s.solvedIn !== null ? ', in ' + pad2(Math.floor(s.solvedIn / 60)) + ':' + pad2(s.solvedIn % 60) : '') + '.';
+          else msg = (msg ? msg + '\n\n' : '') + 'First failing input:\n' + showArgs(spec, out.cases[firstBad][0]);
+          msgBg = firstBad < 0 ? t.okBg : t.warnBg; msgMono = firstBad >= 0;
+        }
+      } else msg = 'Running ' + total + ' tests…';
+    }
+    const solved = s.solvedIn !== null;
+    const clock = pad2(Math.floor(s.elapsed / 60)) + ':' + pad2(s.elapsed % 60);
+    return {
+      ref: this.ref,
+      langs: CODE_LANGS.map(([k, label]) => ({ label: label === 'JavaScript' ? 'JS' : label, on: lang === k, bg: lang === k ? t.text : 'transparent', fg: lang === k ? t.bg : t.muted, pick: () => this.setLang(k) })),
+      clock, clockLabel: (solved ? 'Solved in ' : 'Time on this problem: ') + clock, clockFg: solved ? t.ok : t.muted,
+      copy: () => this.copy(), copyLabel: s.copied ? 'Copied' : 'Copy',
+      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset', resetBorder: s.confirmReset ? t.accent : t.line,
+      resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
+      runnable, notRunnable: !runnable, busy: s.busy,
+      run: () => this.execute('run'), submit: () => this.execute('submit'),
+      custom: s.custom, setCustom: (e) => this.set({ custom: e && e.target ? e.target.value : '' }),
+      customHint: 'Custom input, e.g. ' + spec.examples[0][0].map(showValue).join(', '),
+      statusText: s.status || (runnable ? (lang === 'py' && PY.state !== 'ready' ? 'Python loads on your first run' : 'Runs in your browser') : ''),
+      statusColor: s.busy ? t.accent : t.muted,
+      hasBadge: !!badge, badge, badgeBg: badgeOk ? t.okBg : t.warnBg, badgeFg: badgeOk ? t.ok : fail,
+      hasMsg: !!msg, msg, msgBg, msgFont: msgMono ? t.mono : t.body,
+      rows,
+      showHint: !out,
+      hint: runnable ? 'Run tries the ' + spec.examples.length + ' examples (plus your custom input). Submit adds ' + spec.hidden.length + ' hidden tests. Saved in this browser. In the editor, Esc then Tab moves focus on.' : 'Write it here, then copy it into your IDE to run it.'
+    };
+  }
+}
+// @@END-CODE-PANE@@
+
+// ---- page ----
+// Code page: the problem on the left, the shared code pane (CodeRunner) on the right.
+// Opened with ?problem=<id>, or with the problem last chosen anywhere on the site.
+const CODE_PROBLEMS = PROBLEMS.filter((p) => TEST_SPECS[p.id]);
+function queryProblem() {
+  try { const q = new URLSearchParams(window.location.search).get('problem'); return TEST_SPECS[q] ? q : null; } catch (e) { return null; }
+}
+function setQueryProblem(id) {
+  try {
+    const u = new URL(window.location.href);
+    if (id) u.searchParams.set('problem', id); else u.searchParams.delete('problem');
+    window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash);
+  } catch (e) {}
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const last = loadProblem();
+    const pid = queryProblem() || (last && TEST_SPECS[last.id] ? last.id : 'two-sum-ii');
+    this.state = { theme: loadTheme(), pid };
+    this.runner = new CodeRunner(this, pid);
+  }
+  componentDidMount() {
+    listenTheme(this);
+    this.runner.mount();
+    saveProblem(this.state.pid);
+    setQueryProblem(this.state.pid);
+  }
+  componentWillUnmount() {
+    unlistenTheme(this);
+    this.runner.unmount();
+    setQueryProblem(null);
+  }
+  pickProblem(pid) {
+    if (!TEST_SPECS[pid] || pid === this.state.pid) return;
+    saveProblem(pid);
+    setQueryProblem(pid);
+    this.runner.setProblem(pid);
+    this.setState({ pid });
+  }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
+    const spec = TEST_SPECS[this.state.pid];
+    const P = PROBLEMS.find((p) => p.id === this.state.pid);
+    return {
+      t, themeBtns: themeButtons(this, themeKey, t),
+      cr: this.runner.vals(t),
+      P, ask: spec.ask, diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2],
+      keepProblem: () => saveProblem(this.state.pid),
+      pid: this.state.pid,
+      problems: CODE_PROBLEMS.map((p) => ({ id: p.id, label: p.title })),
+      pickProblem: (e) => this.pickProblem(e && e.target ? e.target.value : e),
+      examples: spec.examples.map(([args, want]) => ({ input: showArgs(spec, args), output: showValue(want) }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

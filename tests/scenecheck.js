@@ -6,8 +6,8 @@ const store = {};
 const f = new Function('store', `const window = { localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } }, addEventListener(){}, removeEventListener(){} };
 const setInterval = () => 1, clearInterval = () => {};
 class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, o); } }
-${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS };`);
-const { SCENES, SCENE_ORDER, Component, PROBLEMS } = f(store);
+${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST };`);
+const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST } = f(store);
 let bad = 0;
 for (const id of SCENE_ORDER) {
   const S = SCENES[id];
@@ -25,6 +25,22 @@ for (const id of SCENE_ORDER) {
     const txt = JSON.stringify(st);
     if (/undefined|NaN/.test(txt)) { console.log(id, i, 'undefined/NaN in step', txt.slice(0, 200)); bad++; }
   });
+  // grid stories: every step's cells (and vals, if any) must be the same shape as items; path and actor stay on the grid
+  if (S.visual === 'grid') {
+    const R = S.items.length, C = R && S.items[0].length;
+    const shape = (g) => Array.isArray(g) && g.length === R && g.every((row) => Array.isArray(row) && row.length === C);
+    const inside = (p) => Array.isArray(p) && p.length === 2 && p[0] >= 0 && p[0] < R && p[1] >= 0 && p[1] < C;
+    if (!R || !C || !shape(S.items)) { console.log(id, 'grid items not rectangular'); bad++; }
+    if (R > 8 || C > 8) { console.log(id, 'grid larger than 8x8'); bad++; }
+    if (!STORY_CAST[S.cast]) { console.log(id, 'grid cast missing from STORY_CAST', S.cast); bad++; }
+    for (const [k, n] of [['rowHeads', R], ['colHeads', C]]) if (S[k] && S[k].length !== n) { console.log(id, k, 'length', S[k].length, '!=', n); bad++; }
+    S.steps.forEach((st, i) => {
+      if (!shape(st.cells)) { console.log(id, i, 'cells do not match items', R + 'x' + C); bad++; }
+      if (st.vals && !shape(st.vals)) { console.log(id, i, 'vals do not match items'); bad++; }
+      if (st.path && !st.path.every(inside)) { console.log(id, i, 'path leaves the grid'); bad++; }
+      if (st.actorAt && !inside(st.actorAt)) { console.log(id, i, 'actorAt off the grid'); bad++; }
+    });
+  }
   // render every step at every level/lang/chapter
   store['dsaviz-problem'] = id;
   const c = new Component({});

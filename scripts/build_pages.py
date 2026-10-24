@@ -9,8 +9,14 @@ across pages and live in one place; this script copies them back into every page
                                and its row count -> // @@SHEET-COUNT@@ ... // @@END-SHEET-COUNT@@ (Main, Home)
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@
   shared/drawer.html        -> between <!-- MENU DRAWER --> ... <!-- /MENU DRAWER -->
+  shared/tests_spec.js      -> between // @@TESTS-SPEC@@ ... // @@END-TESTS-SPEC@@
+  shared/runner.js          -> between // @@RUNNER@@ ... // @@END-RUNNER@@
+  shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
+  shared/code_pane.html     -> between <!-- CODE PANE --> ... <!-- /CODE PANE --> (after page bodies)
+  src/git/sim.js + lessons.js -> between // @@GITSIM@@ ... // @@END-GITSIM@@ (Git page)
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
+  src/code/code_body.html + code.js       -> Code
 
 Run from the repo root:  python3 scripts/build_pages.py
 """
@@ -43,12 +49,23 @@ def main():
                    'const SHEET_TOTAL = %d;\n// @@END-SHEET-COUNT@@' % sheet_total)
     drawer_js = read('shared', 'drawer.js')
     drawer_html = read('shared', 'drawer.html')
+    tests_spec = read('shared', 'tests_spec.js')
+    runner = read('shared', 'runner.js')
+    pane_js = read('shared', 'code_pane.js')
+    pane_html = read('shared', 'code_pane.html')
     bodies = {'Story': ('src', 'story', 'story_body.html')}
     scripts = {}
     for name in ['Revisit', 'Profile', 'Welcome']:
         bodies[name] = ('src', 'pages', name.lower() + '_body.html')
         scripts[name] = ('src', 'pages', name.lower() + '.js')
-    story_engine = ''.join(read('src', 'story', f) for f in ['scenes_tp.js', 'scenes_sw.js', 'scenes_hm.js', 'tail.js', 'comp.js'])
+    git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.\n'
+               + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
+    bodies['Code'] = ('src', 'code', 'code_body.html')
+    scripts['Code'] = ('src', 'code', 'code.js')
+    # The three original scene files first (scenes_tp.js opens the engine), then any newer scenes_*.js in name order.
+    first = ['scenes_tp.js', 'scenes_sw.js', 'scenes_hm.js']
+    more = sorted(f for f in os.listdir(os.path.join(ROOT, 'src', 'story')) if f.startswith('scenes_') and f.endswith('.js') and f not in first)
+    story_engine = ''.join(read('src', 'story', f) for f in first + more + ['tail.js', 'comp.js'])
 
     for f in sorted(os.listdir(PAGES)):
         if not f.endswith('.dc.html'):
@@ -63,6 +80,10 @@ def main():
         s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
         s = block(s, '// @@DRAWER@@', '// @@END-DRAWER@@', drawer_js)
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
+        s = block(s, '// @@TESTS-SPEC@@', '// @@END-TESTS-SPEC@@', tests_spec)
+        s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
+        s = block(s, '// @@CODE-PANE@@', '// @@END-CODE-PANE@@', pane_js)
+        s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
         name = f[:-len('.dc.html')]
         if name in bodies:
             body = read(*bodies[name])
@@ -77,6 +98,7 @@ def main():
             a = s.index('// ---- page ----')
             b = s.index('\n</script>')
             s = s[:a] + read(*scripts[name]).rstrip('\n') + '\n' + s[b:]
+        s = block(s, '<!-- CODE PANE -->', '<!-- /CODE PANE -->', pane_html)
         if s != before:
             with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(s)

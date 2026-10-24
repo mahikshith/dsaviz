@@ -11,13 +11,14 @@ try { ({ chromium } = require('playwright')); } catch (e) {
   process.exit(1);
 }
 
-const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Glossary', 'Basics'];
+const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Basics', 'Git'];
 const html = fs.readFileSync(path.join(__dirname, '..', 'dist', 'index.html'));
 const server = http.createServer((req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
-    // Same spirit as a strict sandbox: no eval, no external scripts.
-    'Content-Security-Policy': "script-src 'unsafe-inline'"
+    // Same spirit as a strict sandbox: no eval, no external scripts. The Code page's
+    // JavaScript runner needs blob: workers.
+    'Content-Security-Policy': "script-src 'unsafe-inline'; worker-src blob:"
   });
   res.end(html);
 });

@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 14 linked pages, 9 animated stories, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 15 linked pages, 9 animated stories, a step-by-step Git visual, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -19,7 +19,7 @@ Requirements: Node 18+ and Python 3.
 ```bash
 npm install          # React, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # logic back-test of every page + every animated story
+npm test             # logic back-test of every page + every animated story + every Git lesson step
 npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
 ```
 
@@ -34,9 +34,10 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the 58-problem catalog (`catalog.js`), the menu drawer. |
 | `src/story/` | The story engine: `scenes_tp.js` (Two Pointers), `scenes_sw.js` (Sliding Window), `scenes_hm.js` (Hash Map), `tail.js` (scene registry and quiz kits), `comp.js` (the player), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
+| `src/git/` | The Git page's model: `sim.js` (a small Git: files, staging area, commits, branches, origin, stash) and `lessons.js` (8 lessons, one command and one caption per step). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). |
-| `tests/` | `backtest.js`, `scenecheck.js`, `site-test.js`. |
+| `tests/` | `backtest.js`, `scenecheck.js`, `gitcheck.js` (replays every Git lesson and checks each step is consistent), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -53,6 +54,12 @@ Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrit
 2. Register it in `SCENE_LIST` in `src/story/tail.js`.
 3. Set its `animated` flag to `true` in `shared/catalog.js`.
 4. Run `npm run build && npm test`. `scenecheck.js` fails if a step kind has no code line or a narration is missing.
+
+## Add a Git lesson
+
+1. Add an entry to `GIT_LESSONS` in `src/git/lessons.js`: a start (`empty`, `local` or `cloned`) and steps of `[command, caption]`. Keep captions to one idea in short, everyday sentences.
+2. If a command is new, teach it to `gitRun` in `src/git/sim.js`.
+3. Run `npm run build && npm test`. `gitcheck.js` fails if Git would refuse a step, if a commit saves something that was not staged, or if a caption runs long.
 
 ## State
 

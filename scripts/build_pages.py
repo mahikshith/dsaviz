@@ -7,6 +7,7 @@ across pages and live in one place; this script copies them back into every page
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@
   shared/drawer.html        -> between <!-- MENU DRAWER --> ... <!-- /MENU DRAWER -->
+  src/git/sim.js + lessons.js -> between // @@GITSIM@@ ... // @@END-GITSIM@@ (Git page)
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
 
@@ -41,6 +42,8 @@ def main():
     for name in ['Revisit', 'Profile', 'Welcome']:
         bodies[name] = ('src', 'pages', name.lower() + '_body.html')
         scripts[name] = ('src', 'pages', name.lower() + '.js')
+    git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.\n'
+               + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
     story_engine = ''.join(read('src', 'story', f) for f in ['scenes_tp.js', 'scenes_sw.js', 'scenes_hm.js', 'tail.js', 'comp.js'])
 
     for f in sorted(os.listdir(PAGES)):
@@ -54,6 +57,7 @@ def main():
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@DRAWER@@', '// @@END-DRAWER@@', drawer_js)
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
+        s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
         name = f[:-len('.dc.html')]
         if name in bodies:
             body = read(*bodies[name])

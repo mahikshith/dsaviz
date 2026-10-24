@@ -113,6 +113,14 @@
       "h": 2020,
       "title": "Profile · heatmap, certificates, invites, reminders",
       "is_interactive": true
+    },
+    "Git.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "Git, visually · four zones, live commit graph, 8 lessons",
+      "w": 1440,
+      "x": 6080,
+      "y": 5160
     }
   },
   "createdOnFiles": {

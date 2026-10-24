@@ -72,7 +72,7 @@ button{font:inherit}
 <a href="Patterns.dc.html" style="height: 52px; padding: 0 24px; display: flex; align-items: center; border-radius: 999px; border: 1.5px solid {{t.text}}; font-size: 16px; font-weight: 600">Browse patterns</a>
 </div>
 <div style="display: flex; gap: 20px; font-size: 14px; color: {{t.muted}}">
-<span>Python · Java · C++ · JavaScript · Go</span><span>·</span><span>No card for the trial</span>
+<a href="Sheet.dc.html" aria-label="{{sheetAria}}" style="color: {{t.text}}; font-weight: 700"><span style="font-family: {{t.mono}}; font-size: 16px; color: {{t.accent}}">{{sheetTotal}}</span> practice problems</a><span>·</span><span>Python · Java · C++ · JavaScript · Go</span><span>·</span><span>No card for the trial</span>
 </div>
 </div>
 
@@ -674,11 +674,15 @@ function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof 
 function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 // @@END@@
 
+// @@SHEET-COUNT@@ — generated: how many problems the master sheet holds
+const SHEET_TOTAL = 553;
+// @@END-SHEET-COUNT@@
+
 // @@DRAWER@@ — shared menu logic (landing + home)
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
-  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Sheet.dc.html', 'Master sheet', '553 problems by pattern, with ticks and hints', null],
   ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
   ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
   ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],
@@ -811,6 +815,7 @@ class Component extends DCLogic {
     return {
       t, th,
       ...drawerVals(this, t, themeKey),
+      sheetTotal: SHEET_TOTAL, sheetAria: SHEET_TOTAL + ' practice problems on the master sheet',
       marqueeRef: this.marqueeRef,
       pauseMarquee: () => { this.marqueePaused = true; },
       resumeMarquee: () => { this.marqueePaused = false; },

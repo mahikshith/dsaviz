@@ -6,6 +6,7 @@ across pages and live in one place; this script copies them back into every page
   shared/themes_common.js   -> between // @@THEMES@@ ... // @@END-THEMES@@
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
   shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet page)
+                               and its row count -> // @@SHEET-COUNT@@ ... // @@END-SHEET-COUNT@@ (Main, Home)
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@
   shared/drawer.html        -> between <!-- MENU DRAWER --> ... <!-- /MENU DRAWER -->
   src/story/*               -> Story.dc.html markup and engine
@@ -14,6 +15,7 @@ across pages and live in one place; this script copies them back into every page
 Run from the repo root:  python3 scripts/build_pages.py
 """
 import os
+import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGES = os.path.join(ROOT, 'pages')
@@ -36,6 +38,9 @@ def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
     sheet = read('shared', 'sheet.js')
+    sheet_total = len(re.findall(r'^\s*\["[a-z0-9-]+", \d+, ', sheet, re.M))
+    sheet_count = ('// @@SHEET-COUNT@@ — generated: how many problems the master sheet holds\n'
+                   'const SHEET_TOTAL = %d;\n// @@END-SHEET-COUNT@@' % sheet_total)
     drawer_js = read('shared', 'drawer.js')
     drawer_html = read('shared', 'drawer.html')
     bodies = {'Story': ('src', 'story', 'story_body.html')}
@@ -55,6 +60,7 @@ def main():
         s = block(s, '// @@THEMES@@', '// @@END-THEMES@@', themes)
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
+        s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
         s = block(s, '// @@DRAWER@@', '// @@END-DRAWER@@', drawer_js)
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
         name = f[:-len('.dc.html')]

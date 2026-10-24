@@ -62,7 +62,8 @@ M.AI_LESSONS.forEach((L, li) => {
       if (s.date && !/^\d{4}(-\d{2}(-\d{2})?)?$/.test(s.date)) fail(where, 'source ' + (i + 1) + ' date should be YYYY, YYYY-MM or YYYY-MM-DD');
     });
   }
-  if (L.credit && (!L.credit.text || !URL_RE.test(L.credit.link || ''))) fail(where, 'credit needs text and an http(s) link');
+  // all lesson writing is our own: no content credits (AI-now sources are cited facts, kept under sources)
+  if ('credit' in L) fail(where, 'carries a content credit; lessons are 100% our own writing');
   // a slider must change what the lesson shows: its two ends give different captions or scenes
   if (L.param) {
     try {
@@ -74,9 +75,9 @@ M.AI_LESSONS.forEach((L, li) => {
   console.log('✓ ' + L.id + ': ' + nSteps + ' steps' + (L.param ? ', slider ' + L.param.label : '') + (L.sources ? ', ' + L.sources.length + ' sources' : ''));
 });
 trackIds.forEach((t) => { if (!M.AI_LESSONS.some((L) => L.track === t)) fail('tracks', 'no lessons in ' + t); });
-if (M.AI_LESSONS.length < 21) fail('lessons', 'only ' + M.AI_LESSONS.length + ' lessons (want 21+)');
-if (M.AI_LESSONS.filter((L) => L.track === 'ml').length < 11) fail('lessons', 'want at least 11 ML lessons');
-if (M.AI_LESSONS.filter((L) => L.track === 'now').length < 10) fail('lessons', 'want at least 10 AI-now lessons');
+if (M.AI_LESSONS.length < 29) fail('lessons', 'only ' + M.AI_LESSONS.length + ' lessons (want 29+)');
+if (M.AI_LESSONS.filter((L) => L.track === 'ml').length < 16) fail('lessons', 'want at least 16 ML lessons');
+if (M.AI_LESSONS.filter((L) => L.track === 'now').length < 13) fail('lessons', 'want at least 13 AI-now lessons');
 
 // The pages must carry the same lesson code (run the build after editing src/ai).
 ['AILesson', 'AIML'].forEach((n) => {

@@ -34,16 +34,6 @@ const SD_METHOD = [
   ['Zoom in', 'Pick the hard parts and design them properly.'],
   ['Scale', 'Find the bottleneck, fix it, repeat.']
 ];
-const SD_SDP = {
-  text: 'Adapted from the System Design Primer by Donne Martin, CC BY 4.0. Rewritten in our words and redrawn.',
-  repo: 'https://github.com/donnemartin/system-design-primer',
-  license: 'https://creativecommons.org/licenses/by/4.0/'
-};
-// Credits a lesson can carry (credit: key). Each names the work, its author and its licence; the lesson page shows the line.
-const SD_CREDITS = {
-  sdp: { name: 'System Design Primer', by: 'Donne Martin', lic: 'CC BY 4.0', repo: SD_SDP.repo, license: SD_SDP.license, note: 'Our words, redrawn.' },
-  kn: { name: 'LowLevelDesign', by: 'kousiknath', lic: 'MIT', repo: 'https://github.com/kousiknath/LowLevelDesign', license: 'https://opensource.org/license/mit', note: 'Problem idea only; our classes and words.' }
-};
 
 function sdNodeSize(n) {
   if (SD_CLASS_KINDS.indexOf(n.kind) >= 0) return { w: n.w || 190, h: 44 + 18 * (n.lines || []).length + (n.kind === 'iface' ? 14 : 0) };

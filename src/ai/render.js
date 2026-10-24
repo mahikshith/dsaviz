@@ -122,8 +122,10 @@ function aiFlatten(scene, C, focus) {
     if (b.val) text('bv:' + b.id, aiNum(b.vx, b.x + b.w / 2), aiNum(b.vy, b.y - 7), b.val, { fill: C.t, size: 12, anchor: b.vx !== undefined ? 'start' : 'middle', op: dimT(b.id), mono: true });
   });
   (scene.boxes || []).forEach((b) => {
-    const solid = b.solid; const c = col(b.c, 'l'); const op = aiNum(b.op, 1) * dim(b.id); const opT = aiNum(b.op, 1) * dimT(b.id);
-    R.push({ k: 'x:' + b.id, x: b.x, y: b.y, w: b.w, h: b.h, rx: aiNum(b.rx, 12), fill: solid ? C.a : C.sunk, stroke: solid ? C.a : c, sw: 2, dash: b.dash ? '6 6' : '', op });
+    // fill: a colour key for a filled box (concept lessons colour cells by state); solid is the accent fill.
+    const solid = b.solid || !!b.fill; const c = col(b.c, 'l'); const op = aiNum(b.op, 1) * dim(b.id); const opT = aiNum(b.op, 1) * dimT(b.id);
+    const bf = b.fill ? col(b.fill) : C.a;
+    R.push({ k: 'x:' + b.id, x: b.x, y: b.y, w: b.w, h: b.h, rx: aiNum(b.rx, 12), fill: solid ? bf : C.sunk, stroke: solid ? bf : c, sw: 2, dash: b.dash ? '6 6' : '', op });
     const cy = b.y + b.h / 2; const two = b.sub ? 9 : 0;
     if (b.label) text('xt:' + b.id, b.x + b.w / 2, cy + 5 - two, b.label, { fill: solid ? C.on : C.t, size: aiNum(b.size, 16), weight: 700, anchor: 'middle', op: opT, mono: !!b.mono });
     if (b.sub) text('xs:' + b.id, b.x + b.w / 2, cy + 5 + 12, b.sub, { fill: solid ? C.on : C.t2, size: 12, anchor: 'middle', op: opT, mono: !!b.subMono });
@@ -131,8 +133,9 @@ function aiFlatten(scene, C, focus) {
   });
   (scene.nodes || []).forEach((n) => {
     const r = aiNum(n.r, 22); const op = aiNum(n.op, 1) * dim(n.id); const opT = aiNum(n.op, 1) * dimT(n.id);
-    O.push({ k: 'n:' + n.id, cx: n.x, cy: n.y, r, fill: n.solid ? C.a : C.sunk, stroke: col(n.c, 'b'), sw: 2.5, dash: '', op });
-    if (n.label !== undefined && n.label !== '') text('nt:' + n.id, n.x, n.y + 5, n.label, { fill: n.solid ? C.on : C.t, size: 13, weight: 700, anchor: 'middle', op: opT, mono: true });
+    const nf = n.fill ? col(n.fill) : n.solid ? C.a : C.sunk; const on = n.solid || !!n.fill;
+    O.push({ k: 'n:' + n.id, cx: n.x, cy: n.y, r, fill: nf, stroke: n.fill ? nf : col(n.c, 'b'), sw: 2.5, dash: '', op });
+    if (n.label !== undefined && n.label !== '') text('nt:' + n.id, n.x, n.y + 5, n.label, { fill: on ? C.on : C.t, size: aiNum(n.size, 13), weight: 700, anchor: 'middle', op: opT, mono: true });
     if (n.sub) text('ns:' + n.id, n.x, aiNum(n.sy, n.y + r + 18), n.sub, { fill: n.sc ? col(n.sc) : C.t2, size: 13, anchor: 'middle', op: opT, mono: !!n.subMono });
     halo(n.id, n.x - r, n.y - r, r * 2, r * 2, r);
   });
@@ -145,8 +148,9 @@ function aiFlatten(scene, C, focus) {
   });
   (scene.tokens || []).forEach((k) => {
     const w = aiNum(k.w, aiTokW(k.text)); const op = aiNum(k.op, 1) * dim(k.id); const opT = aiNum(k.op, 1) * dimT(k.id);
-    R.push({ k: 'k:' + k.id, x: k.x - w / 2, y: k.y - 17, w, h: 34, rx: 8, fill: k.solid ? C.a : C.sunk, stroke: k.solid ? C.a : col(k.c, 'l'), sw: 2, dash: k.dash ? '5 5' : '', op });
-    text('kt:' + k.id, k.x, k.y + 5, k.text, { fill: k.solid ? C.on : C.t, size: 15, weight: 600, anchor: 'middle', op: opT, mono: true });
+    const kf = k.fill ? col(k.fill) : C.a; const ks = k.solid || !!k.fill;
+    R.push({ k: 'k:' + k.id, x: k.x - w / 2, y: k.y - 17, w, h: 34, rx: 8, fill: ks ? kf : C.sunk, stroke: ks ? kf : col(k.c, 'l'), sw: 2, dash: k.dash ? '5 5' : '', op });
+    text('kt:' + k.id, k.x, k.y + 5, k.text, { fill: ks ? C.on : C.t, size: 15, weight: 600, anchor: 'middle', op: opT, mono: true });
     if (k.sub) text('ks:' + k.id, k.x, k.y + 36, k.sub, { fill: k.sc ? col(k.sc) : C.t2, size: 12, anchor: 'middle', op: opT, mono: true });
     halo(k.id, k.x - w / 2, k.y - 17, w, 34, 8);
   });

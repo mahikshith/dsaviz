@@ -46,7 +46,7 @@ const DS = (function () {
     }
     return { done, star };
   }
-  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
+  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:', 'dsa:' (DSA concepts). Sheet ticks need no call: they are read from dsaviz-sheet-v1.
   function logActivity(kind, id) {
     if (!XP[kind] || kind === 'sheet') return null;
     const ts = now();

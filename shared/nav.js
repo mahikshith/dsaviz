@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
 ];
 // Which section each page belongs to.
-const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
+const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
   Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
 // The search box: "/" anywhere (outside a text field) opens it on the page that is showing.
 function searchShow(cmp) {

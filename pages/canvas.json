@@ -177,6 +177,22 @@
       "h": 1400,
       "title": "Contest calendar · next 14 days in your time, filters, add to calendar",
       "is_interactive": true
+    },
+    "Concepts.dc.html": {
+      "h": 920,
+      "is_interactive": true,
+      "title": "DSA concepts hub · animated lessons by track",
+      "w": 1440,
+      "x": 12160,
+      "y": 0
+    },
+    "ConceptLesson.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "DSA concept lesson player · steps, slider, now try",
+      "w": 1440,
+      "x": 12160,
+      "y": 1680
     }
   },
   "createdOnFiles": {
@@ -254,6 +270,8 @@
     "SDLesson.dc.html",
     "AIML.dc.html",
     "AILesson.dc.html",
+    "Concepts.dc.html",
+    "ConceptLesson.dc.html",
     "Contests.dc.html"
   ],
   "pages": [],

@@ -433,14 +433,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
 <sc-for list="{{stage.rows}}" as="r" hint-placeholder-count="4">
-<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.5fr) 140px; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid {{t.line}}">
+<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 240px; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid {{t.line}}">
 <span aria-label="{{r.statusLabel}}" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{r.statusRing}}; background: {{r.statusFill}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">{{r.statusMark}}</span>
 <button onClick="{{r.toggle}}" aria-expanded="{{r.open}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; justify-content: center"><span style="font-size: 15px; font-weight: 600">{{r.title}}</span><span style="font-family: {{t.display}}; font-style: italic; font-size: 14px; color: {{t.muted}}">{{r.story}} <span style="font-family: {{t.body}}; font-style: normal; color: {{t.accent}}">· story ▾</span></span></button>
 <span style="font-size: 13px; color: {{t.text2}}">{{r.pattern}}</span>
 <span style="justify-self: start; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{r.dBg}}; color: {{r.dFg}}">{{r.diff}}</span>
 <span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.text2}}">{{r.time}}</span>
 <span style="display: flex; flex-wrap: wrap; gap: 5px"><sc-for list="{{r.cos}}" as="co" hint-placeholder-count="3"><span style="padding: 2px 8px; border-radius: 6px; border: 1px solid {{t.line}}; font-size: 12px; color: {{t.text2}}">{{co}}</span></sc-for></span>
-<a href="Briefing.dc.html" onClick="{{r.go}}" style="justify-self: end; height: 36px; padding: 0 14px; border-radius: 999px; display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; background: {{r.ctaBg}}; color: {{r.ctaFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>{{r.cta}}</a>
+<a href="{{r.href}}" onClick="{{r.go}}" title="{{r.cta}}" style="justify-self: end; max-width: 100%; height: 36px; padding: 0 14px; border-radius: 999px; display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; background: {{r.ctaBg}}; color: {{r.ctaFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{r.cta}}</span></a>
 </div>
 <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
 <div data-prow-more style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 260px; gap: 14px; padding: 4px 22px 18px; border-bottom: 1px solid {{t.line}}; animation: rise 0.25s ease">
@@ -501,14 +501,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 </div>
 <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
-<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.5fr) 140px; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid {{t.line}}">
+<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 240px; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid {{t.line}}">
 <span aria-label="{{r.statusLabel}}" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{r.statusRing}}; background: {{r.statusFill}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">{{r.statusMark}}</span>
 <button onClick="{{r.toggle}}" aria-expanded="{{r.open}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; justify-content: center"><span style="display: flex; gap: 8px; align-items: center"><span style="font-size: 15px; font-weight: 600">{{r.title}}</span><sc-if value="{{r.isNew}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 7px; border-radius: 6px; background: {{t.coolBg}}; color: {{t.text}}; font-size: 11px; font-weight: 700">NEW</span></sc-if><sc-if value="{{r.hot}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 7px; border-radius: 6px; background: {{t.warnBg}}; color: {{t.text}}; font-size: 11px; font-weight: 700">POPULAR</span></sc-if></span><span style="font-family: {{t.display}}; font-style: italic; font-size: 14px; color: {{t.muted}}">{{r.story}} <span style="font-family: {{t.body}}; font-style: normal; color: {{t.accent}}">· story ▾</span></span></button>
 <span style="font-size: 13px; color: {{t.text2}}">{{r.dtypeName}}</span>
 <span style="justify-self: start; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{r.dBg}}; color: {{r.dFg}}">{{r.diff}}</span>
 <span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.text2}}">{{r.time}}</span>
 <span style="display: flex; flex-wrap: wrap; gap: 5px"><sc-for list="{{r.cos}}" as="co" hint-placeholder-count="3"><span style="padding: 2px 8px; border-radius: 6px; border: 1px solid {{t.line}}; font-size: 12px; color: {{t.text2}}">{{co}}</span></sc-for></span>
-<a href="Briefing.dc.html" onClick="{{r.go}}" style="justify-self: end; height: 36px; padding: 0 14px; border-radius: 999px; display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; background: {{r.ctaBg}}; color: {{r.ctaFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>{{r.cta}}</a>
+<a href="{{r.href}}" onClick="{{r.go}}" title="{{r.cta}}" style="justify-self: end; max-width: 100%; height: 36px; padding: 0 14px; border-radius: 999px; display: flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; background: {{r.ctaBg}}; color: {{r.ctaFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{r.cta}}</span></a>
 </div>
 <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
 <div data-prow-more style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 260px; gap: 14px; padding: 4px 22px 18px; border-bottom: 1px solid {{t.line}}; animation: rise 0.25s ease">
@@ -554,10 +554,10 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <div style="display: flex; flex-direction: column">
 <sc-for list="{{cp.rows}}" as="cr" hint-placeholder-count="2">
-<a href="Briefing.dc.html" onClick="{{cr.go}}" data-m="wrap" style="min-height: 44px; display: flex; gap: 10px; align-items: center; border-top: 1px solid {{t.line}}; font-size: 14px">
+<a href="{{cr.href}}" onClick="{{cr.go}}" data-m="wrap" style="min-height: 44px; display: flex; gap: 10px; align-items: center; border-top: 1px solid {{t.line}}; font-size: 14px">
 <span style="width: 8px; height: 8px; border-radius: 999px; background: {{cr.dot}}; flex-shrink: 0"></span>
 <span style="font-weight: 600">{{cr.title}}</span>
-<span style="font-family: {{t.display}}; font-style: italic; color: {{t.muted}}; flex-grow: 1">{{cr.story}}</span>
+<span style="flex-grow: 1; color: {{t.accent}}; font-size: 13px; font-weight: 700">{{cr.verb}}</span>
 <span style="font-size: 12px; color: {{t.muted}}">{{cr.diff}} · {{cr.time}}</span>
 </a>
 </sc-for>
@@ -739,6 +739,9 @@ const COMPANY_TABS = [
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
+// Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
+function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }
+function resumeLabel(p) { return resumeVerb(p) + ': ' + p.title; }
 // "Use it when": one line per pattern and sheet group, shown when a Revisit card is revealed.
 const PATTERN_WHEN = {
   "Two Pointers": "Use it when the input is sorted or symmetric and a pair from both ends can rule things out.",
@@ -1400,10 +1403,17 @@ function drawerVals(cmp, t, themeKey) {
     drawerStreak: st.current ? st.current + '-day streak' : 'No streak yet',
     drawerStreakLine: st.activeToday ? 'Today counts. Come back tomorrow.' : st.current ? 'Finish a story today to make it ' + (st.current + 1) : 'Finish one story to start your streak',
     themeBtns: themeButtons(cmp, themeKey, t),
-    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => ({
+    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => {
+      // "Continue the story" becomes "Continue: <problem title>" (or "Start: ...") and opens that problem.
+      if (href === 'Story.dc.html' && typeof loadProblem === 'function' && typeof PROBLEMS !== 'undefined') {
+        const cur = loadProblem() || PROBLEMS[0];
+        if (cur) { label = resumeLabel(cur); href = solveHref(cur.id); }
+      }
+      return {
       href, label, sub,
       go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
-    }))
+      };
+    })
   };
 }
 // @@END-DRAWER@@
@@ -2111,7 +2121,7 @@ class Component extends DCLogic {
         statusLabel: p.status === 'done' ? 'Solved' : p.status === 'now' ? 'In progress' : 'Not started',
         statusRing: p.status === 'done' ? t.ok : p.status === 'now' ? t.accent : t.line2,
         statusFill: p.status === 'done' ? t.ok : 'transparent',
-        cta: p.status === 'done' ? 'Replay' : p.status === 'now' ? 'Continue' : p.animated ? 'Play story' : 'Read story',
+        cta: resumeLabel(p), verb: resumeVerb(p), href: solveHref(p.id),
         go: () => saveProblem(p.id),
         open: this.state.expanded === p.id,
         toggle: () => this.setState({ expanded: this.state.expanded === p.id ? null : p.id }),
@@ -2252,7 +2262,7 @@ class Component extends DCLogic {
     };
     return {
       t, ...navVals(this, t, themeKey, 'Patterns'),
-      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; return { story: p.story, label: p.status === 'done' ? 'Replay' : p.status === 'now' ? 'Continue' : 'Start here', href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) }; })(),
+      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; return { story: p.title, label: resumeVerb(p), href: solveHref(p.id), go: () => saveProblem(p.id) }; })(),
       themeBtns: [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
         label, on: themeKey === k,
         bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,

@@ -53,7 +53,7 @@ class Component extends DCLogic {
     const spec = TEST_SPECS[this.state.pid];
     const P = specInfo(this.state.pid);
     return {
-      t, themeBtns: themeButtons(this, themeKey, t),
+      t, ...navVals(this, t, themeKey, 'Code'), themeBtns: themeButtons(this, themeKey, t),
       cr: this.runner.vals(t),
       P, ask: spec.ask, diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2],
       keepProblem: () => saveProblem(this.state.pid),

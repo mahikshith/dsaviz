@@ -86,7 +86,7 @@ else if (lf(page.slice(a, b + '// @@END-SHEET@@'.length)) !== lf(sheetSrc)) fail
 
 // ---- 3. counts in the UI come from the data ----
 const markup = page.slice(page.indexOf('<x-dc>'), page.indexOf('</x-dc>'));
-const visibleText = markup.replace(/<!-- MENU DRAWER -->[\s\S]*?<!-- \/MENU DRAWER -->/, '').replace(/<helmet>[\s\S]*?<\/helmet>/, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, '\n').replace(/\{\{[^}]*\}\}/g, '');
+const visibleText = markup.replace(/<!-- MENU DRAWER -->[\s\S]*?<!-- \/MENU DRAWER -->/, '').replace(/<!-- PILL NAV -->[\s\S]*?<!-- \/PILL NAV -->/, '').replace(/<helmet>[\s\S]*?<\/helmet>/, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, '\n').replace(/\{\{[^}]*\}\}/g, '');
 const ALLOWED = ["Today's 5", "today's 5"];
 visibleText.split('\n').map((x) => x.trim()).filter(Boolean).forEach((line) => {
   let rest = line; ALLOWED.forEach((w) => { rest = rest.split(w).join(''); });

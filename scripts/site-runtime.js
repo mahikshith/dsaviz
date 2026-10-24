@@ -196,6 +196,8 @@
     const fluid = r && r.hasAttribute('data-fluid') && window.innerWidth < 760;
     const z = fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
     if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
+    // The pill nav and the menu read --fit to stay at real size on phones (see shared/ui/nav.html).
+    if (document.documentElement.style.getPropertyValue('--fit') !== String(z)) document.documentElement.style.setProperty('--fit', String(z));
   }
   function paint() {
     fit();

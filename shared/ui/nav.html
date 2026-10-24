@@ -1,0 +1,51 @@
+<!-- PILL NAV -->
+<style>
+[data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
+[data-pn] a,[data-pn] button{transition:transform .22s cubic-bezier(.32,.72,0,1),background-color .2s,color .2s}
+[data-pn] a:active,[data-pn] button:active{transform:scale(.95);transition-duration:.12s}
+[data-pn] a:hover{opacity:1}
+[data-pn-item][data-on="false"]:hover{background:rgba(127,127,127,.12)!important}
+[data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+[data-ring]{animation:ds-ring .7s cubic-bezier(.33,1,.68,1) both}
+[data-rise]{animation:ds-rise .38s cubic-bezier(.33,1,.68,1) both}
+[data-fresh="true"]{animation:ds-pop .5s cubic-bezier(.34,1.56,.64,1) both}
+[data-shine]{animation:ds-shine .9s cubic-bezier(.65,0,.35,1) .35s both}
+@keyframes ds-ring{from{stroke-dashoffset:var(--len)}}
+@keyframes ds-rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes ds-pop{0%{transform:scale(.6)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes ds-shine{from{transform:translateX(-40px) skewX(-20deg)}to{transform:translateX(90px) skewX(-20deg)}}
+@media (prefers-reduced-motion: reduce){[data-ring],[data-rise],[data-fresh="true"]{animation:none}[data-shine]{display:none}[data-pn] a,[data-pn] button{transition:none}}
+@media (max-width: 759px){
+[data-pn-wrap]{position:fixed;top:auto;bottom:0;left:0;right:0;padding:0 8px 8px;zoom:calc(1 / var(--fit, 1))}
+[data-pn]{gap:2px!important;padding:0 4px!important}
+[data-pn-logo],[data-pn-streak],[data-pn-soon]{display:none!important}
+[data-pn-item]{padding:0 10px!important}
+[data-pn-item][data-on="false"] [data-pn-label]{display:none}
+[data-pn-item][data-extra="true"][data-on="false"]{display:none!important}
+[data-pn-items]{justify-content:space-around}
+body{padding-bottom:calc(80px / var(--fit, 1))}
+[data-drawer]{zoom:calc(1 / var(--fit, 1))}
+[data-drawer] aside{width:min(360px,86vw)!important}
+}
+</style>
+<div data-pn-wrap>
+<nav aria-label="Main" data-pn style="height: 60px; box-sizing: border-box; padding: 0 8px; border-radius: 30px; background: {{nav.glass}}; border: 1px solid {{t.line}}; box-shadow: 0 8px 24px {{nav.shadow}}; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; align-items: center; gap: 4px; font-family: {{t.body}}; color: {{t.text}}">
+<button onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 44px; padding: 0 16px 0 4px; flex-shrink: 0; display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700; white-space: nowrap">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
+<div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
+<sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="7">
+<sc-if value="{{ni.live}}" hint-placeholder-val="{{ true }}"><a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span></a></sc-if>
+<sc-if value="{{ni.soon}}" hint-placeholder-val="{{ false }}"><span aria-disabled="true" title="{{ni.title}}" data-pn-item data-pn-soon data-on="false" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; color: {{t.muted}}; cursor: default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span><span style="padding: 0 6px; border-radius: 999px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 600; line-height: 18px">Soon</span></span></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{nav.member}}" hint-placeholder-val="{{ true }}">
+<a href="Profile.dc.html" data-pn-streak aria-label="{{nav.streakLabel}}" title="{{nav.streakLabel}}" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{t.line}}; background: {{t.sunk}}; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{nav.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>{{nav.streak}}</a>
+<a href="Profile.dc.html" aria-label="Your profile" aria-current="{{nav.profileOn}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; background: {{nav.avatarBg}}; color: {{nav.avatarFg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800"><sc-if value="{{nav.hasName}}" hint-placeholder-val="{{ false }}">{{nav.initials}}</sc-if><sc-if value="{{nav.noName}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.userIcon}}"></path></svg></sc-if></a>
+</sc-if>
+<sc-if value="{{nav.guest}}" hint-placeholder-val="{{ false }}">
+<a href="Auth.dc.html" style="height: 44px; padding: 0 16px; flex-shrink: 0; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700; white-space: nowrap">Log in</a>
+</sc-if>
+</nav>
+</div>
+DRAWER_HTML
+<!-- /PILL NAV -->

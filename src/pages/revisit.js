@@ -26,6 +26,7 @@ class Component extends DCLogic {
     const deck = loadDeck();
     deck[id] = { due: days, rated: label };
     storeDeck(deck);
+    DS.rateCard(id);
     const right = this.state.picked === PROBLEMS.find((p) => p.id === id).pattern;
     this.setState({ results: this.state.results.concat([{ id, right, label, days }]), pos: this.state.pos + 1, picked: null });
   }
@@ -53,7 +54,7 @@ class Component extends DCLogic {
     const correct = results.filter((r) => r.right).length;
     const STRENGTH = [['Two Pointers', 92], ['Hash Map', 81], ['Sliding Window', 64], ['Binary Search', 38], ['Stack', 22]];
     return {
-      t, themeBtns: themeButtons(this, themeKey, t),
+      t, ...navVals(this, t, themeKey, 'Revisit'), themeBtns: themeButtons(this, themeKey, t),
       today: DAYS[now.getDay()] + ' ' + now.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now.getMonth()],
       headline: done ? 'All caught up. Your library is fresh.' : Q.length - this.state.pos + ' stories are fading. Bring them back in about ' + Math.max(2, (Q.length - this.state.pos) * 1.2).toFixed(0) + ' minutes.',
       progressLabel: done ? Q.length + ' / ' + Q.length + ' done' : 'Card ' + (pos + 1) + ' of ' + Q.length,

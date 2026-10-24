@@ -7,8 +7,13 @@ across pages and live in one place; this script copies them back into every page
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
   shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet page)
                                and its row count -> // @@SHEET-COUNT@@ ... // @@END-SHEET-COUNT@@ (Main, Home)
-  shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@
-  shared/drawer.html        -> between <!-- MENU DRAWER --> ... <!-- /MENU DRAWER -->
+  shared/data.js            -> between // @@DATA@@ ... // @@END-DATA@@ (every page; DS, the data layer)
+  shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@ (every page)
+  shared/ui.js              -> between // @@UI@@ ... // @@END-UI@@ (every page; component view models)
+  shared/nav.js             -> between // @@NAV@@ ... // @@END-NAV@@ (every page; NAV_PAGES filled from pages/)
+  shared/ui/nav.html + shared/drawer.html -> between <!-- PILL NAV --> ... <!-- /PILL NAV -->
+  shared/ui/tiles.html, rings.html, medals.html -> <!-- STAT TILES -->, <!-- RINGS -->, <!-- MEDALS --> blocks
+  The four script blocks are added after the catalog (or the themes) when a page lacks them.
   shared/tests_spec.js      -> between // @@TESTS-SPEC@@ ... // @@END-TESTS-SPEC@@
   shared/runner.js          -> between // @@RUNNER@@ ... // @@END-RUNNER@@
   shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
@@ -42,6 +47,21 @@ def block(src, start, end, new):
     return src[:i] + new.strip() + src[j:]
 
 
+# Script blocks every page gets, in this order, right after the catalog (or the themes on pages without one).
+SHARED_JS = [('// @@DATA@@', '// @@END-DATA@@', 'data.js'), ('// @@DRAWER@@', '// @@END-DRAWER@@', 'drawer.js'),
+             ('// @@UI@@', '// @@END-UI@@', 'ui.js'), ('// @@NAV@@', '// @@END-NAV@@', 'nav.js')]
+
+
+def ensure_blocks(s):
+    prev = '// @@END@@' if '// @@END@@' in s else '// @@END-THEMES@@'
+    for start, end, _ in SHARED_JS:
+        if start not in s:
+            i = s.index(prev) + len(prev)
+            s = s[:i] + '\n' + start + '\n' + end + s[i:]
+        prev = end
+    return s
+
+
 def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
@@ -49,8 +69,14 @@ def main():
     sheet_total = len(re.findall(r'^\s*\["[a-z0-9-]+", \d+, ', sheet, re.M))
     sheet_count = ('// @@SHEET-COUNT@@ — generated: how many problems the master sheet holds\n'
                    'const SHEET_TOTAL = %d;\n// @@END-SHEET-COUNT@@' % sheet_total)
-    drawer_js = read('shared', 'drawer.js')
     drawer_html = read('shared', 'drawer.html')
+    shared_js = {n: read('shared', n) for _, _, n in SHARED_JS}
+    built = sorted(f for f in os.listdir(PAGES) if f.endswith('.dc.html'))
+    shared_js['data.js'] = shared_js['data.js'].replace('/*@@SHEET-SIZE@@*/216', str(sheet_total))
+    shared_js['nav.js'] = shared_js['nav.js'].replace('/*@@PAGES@@*/[]', repr(built).replace("'", '"'))
+    drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
+    nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
+    ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html')]}
     tests_spec = read('shared', 'tests_spec.js')
     runner = read('shared', 'runner.js')
     pane_js = read('shared', 'code_pane.js')
@@ -84,7 +110,9 @@ def main():
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
         s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
-        s = block(s, '// @@DRAWER@@', '// @@END-DRAWER@@', drawer_js)
+        s = ensure_blocks(s)
+        for start, end, n in SHARED_JS:
+            s = block(s, start, end, shared_js[n])
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
         s = block(s, '// @@TESTS-SPEC@@', '// @@END-TESTS-SPEC@@', tests_spec)
         s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
@@ -107,6 +135,9 @@ def main():
             b = s.index('\n</script>')
             s = s[:a] + read(*scripts[name]).rstrip('\n') + '\n' + s[b:]
         s = block(s, '<!-- CODE PANE -->', '<!-- /CODE PANE -->', pane_html)
+        s = block(s, '<!-- PILL NAV -->', '<!-- /PILL NAV -->', nav_html)
+        for m, html in ui_html.items():
+            s = block(s, "<!-- " + m + " -->", "<!-- /" + m + " -->", html)
         if s != before:
             with open(path, 'w', encoding='utf-8') as fh:
                 fh.write(s)

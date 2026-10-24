@@ -1,0 +1,20 @@
+<!-- MEDALS -->
+<div role="list" aria-label="Pattern medals" style="display: flex; flex-wrap: wrap; gap: 16px 8px">
+<sc-for list="{{shelf.items}}" as="md" hint-placeholder-count="8">
+<div role="listitem" aria-label="{{md.aria}}" title="{{md.aria}}" style="width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+<div data-fresh="{{md.fresh}}" aria-hidden="true" style="width: 56px; height: 64px">
+<svg width="56" height="64" viewBox="0 0 56 64">
+<defs><linearGradient id="{{md.gid}}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{md.c1}}"></stop><stop offset="0.55" stop-color="{{md.c2}}"></stop><stop offset="1" stop-color="{{md.c3}}"></stop></linearGradient><clipPath id="{{md.cid}}"><polygon points="28,2 53,16.5 53,47.5 28,62 3,47.5 3,16.5"></polygon></clipPath></defs>
+<polygon points="28,2 53,16.5 53,47.5 28,62 3,47.5 3,16.5" fill="{{md.fill}}" stroke="{{md.stroke}}" stroke-width="{{md.sw}}" stroke-dasharray="{{md.dash}}"></polygon>
+<sc-if value="{{md.showProgress}}" hint-placeholder-val="{{ false }}"><polygon points="28,2 53,16.5 53,47.5 28,62 3,47.5 3,16.5" fill="none" stroke="{{t.accent}}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="{{md.progress}}"></polygon></sc-if>
+<sc-if value="{{md.showMark}}" hint-placeholder-val="{{ true }}"><text x="28" y="38" text-anchor="middle" font-size="16" font-weight="700" fill="{{md.ink}}" style="font-family: {{t.body}}">{{md.mark}}</text></sc-if>
+<sc-if value="{{md.lock}}" hint-placeholder-val="{{ false }}"><g transform="translate(20 22)" fill="none" stroke="{{md.ink}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="12" height="10" rx="2"></rect><path d="M4.5 8V5.5a3.5 3.5 0 0 1 7 0V8"></path></g></sc-if>
+<sc-if value="{{md.fresh}}" hint-placeholder-val="{{ false }}"><g clip-path="url(#{{md.cid}})"><rect data-shine x="0" y="-8" width="16" height="80" fill="#FFFFFF" opacity="0.6"></rect></g></sc-if>
+</svg>
+</div>
+<span style="font-size: 12px; font-weight: 600; text-align: center; line-height: 16px">{{md.label}}</span>
+<span style="font-size: 12px; text-align: center; line-height: 16px; color: {{md.subFg}}">{{md.sub}}</span>
+</div>
+</sc-for>
+</div>
+<!-- /MEDALS -->

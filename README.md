@@ -19,7 +19,7 @@ Requirements: Node 18+ and Python 3.
 ```bash
 npm install          # React, CodeMirror and esbuild, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # back-test of every page, every animated story, every test spec, the sheet, every Git lesson step and every system design lesson and every AI & ML lesson
+npm test             # back-test of every page, the data layer, every animated story, every test spec, the sheet, every Git lesson step and every system design lesson and every AI & ML lesson
 npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
 ```
 
@@ -31,7 +31,7 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | --- | --- |
 | `pages/*.dc.html` | One file per page: markup template, then a `<script type="text/x-dc">` with a `Component` class whose `renderVals()` fills the `{{holes}}`. |
 | `pages/canvas.json` | Board positions for the design-canvas view. |
-| `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the problem catalog (`catalog.js`), the master sheet (`sheet.js`, Sheet page only), the menu drawer. |
+| `shared/` | Code copied into every page by the build: themes (`themes_common.js`), the problem catalog (`catalog.js`), the master sheet (`sheet.js`, Sheet page only), the data layer `DS` (`data.js`), the pill nav and menu (`nav.js`, `drawer.js`, `ui/nav.html`) and the shared components (`ui.js`, `ui/tiles.html`, `ui/rings.html`, `ui/medals.html`). |
 | `src/story/` | The story engine: `scenes_tp.js` (Two Pointers, engine header), `scenes_sw.js`, `scenes_hm.js`, and one `scenes_<code>.js` per newer pattern; `tail.js` (scene registry and quiz kits), `tasks.js` (each problem in plain words), `comp.js` (the problem page), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
@@ -102,7 +102,7 @@ For decision trees and binary trees use `visual: 'tree'` (see `scenes_bt.js`, `s
 
 ## State
 
-Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, `dsaviz-code-v1` (code per problem and language), and `dsaviz-sd-progress` / `dsaviz-sd-lesson` (furthest step per system design lesson, and the lesson to open). The master sheet keeps ticks and stars in `dsaviz-sheet-v1` as `{ v: 1, done: { id: timestamp }, star: { id: 1 } }`, and can export or import that as a JSON file. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
+Progress lives in the browser's `localStorage` under `dsaviz-*` keys (kept from the old name so existing progress survives the rename): theme, user, problem, lang, saved, deck, prefs, onboard, `dsaviz-code-v1` (code per problem and language), and `dsaviz-sd-progress` / `dsaviz-sd-lesson` (furthest step per system design lesson, and the lesson to open). The master sheet keeps ticks and stars in `dsaviz-sheet-v1` as `{ v: 1, done: { id: timestamp }, star: { id: 1 } }`, and can export or import that as a JSON file. Pages read all learner data through `DS` in `shared/data.js`: streak, heatmap, XP, stories, sheet ticks and medals come from `dsaviz-activity-v1` and the keys above, so a new learner starts at zero. The league, buddies and feed need a server, so they are sample data marked with a Demo tag. [docs/BACKEND.md](docs/BACKEND.md) lists every function and where a real API plugs in. There is no backend yet. The contact form prepares an email to mahikshith97@gmail.com rather than sending one.
 
 ## Add a coding problem
 

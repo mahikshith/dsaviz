@@ -38,7 +38,7 @@ class Component extends DCLogic {
     const n = this.steps().length;
     const step = Math.max(0, Math.min(n - 1, i));
     this.setState({ step });
-    if (step === n - 1) this.stop();
+    if (step === n - 1) { this.stop(); DS.finishStory(this.state.scene); }
   }
   stop() { clearTimeout(this.timer); this.timer = null; if (this.state.playing) this.setState({ playing: false }); }
   // Autoplay: each beat holds long enough to read its caption (1.8 to 2.2 s), then moves on. It never loops.
@@ -81,6 +81,7 @@ class Component extends DCLogic {
     const deck = loadDeck();
     deck[this.state.scene] = { due: days, rated: label };
     storeDeck(deck);
+    if (!this.state.rated) DS.rateCard(this.state.scene);
     this.setState({ rated: label });
   }
 
@@ -403,7 +404,7 @@ class Component extends DCLogic {
     const btn = (primary) => ({ bg: primary ? t.accent : 'transparent', fg: primary ? t.onAccent : t.text, border: primary ? t.accent : t.line2 });
 
     return {
-      t, S, P, cr,
+      t, ...navVals(this, t, themeKey, 'Story'), S, P, cr,
       diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2], patternName: S.pattern,
       clock: cr.clock, clockLabel: cr.clockLabel,
       // the problem

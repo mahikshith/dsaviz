@@ -7,6 +7,13 @@ const STORY_EXTRA = {
   field: { btnBg: '#9FE870', btnFg: '#0C110B', activeBg: '#9FE870', activeFg: '#0C110B', scene: '#070B06', sceneText: '#C9EBB4', sceneMuted: '#6E8A60', dead: '#131B11', deadInk: '#435A38', hue: 95, sat: 70, water: 'rgba(159,232,112,0.28)', waterTop: '#9FE870' }
 };
 const say = (who, text) => [who, text];
+// Newer patterns register themselves from their own scenes_*.js file, so adding one never touches tail.js or comp.js:
+//   SCENE_REGISTRY.push(myScene);                 a function returning the scene
+//   PATTERN_KITS['Binary Search'] = { right, spot, ask, quiz: [[title, story] x4] };
+//   STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' };   color is a theme key
+const SCENE_REGISTRY = [];
+const PATTERN_KITS = {};
+const STORY_CAST = {};
 
 // ---------- The Lantern Bridge (hand-written) ----------
 function lanternScene() {

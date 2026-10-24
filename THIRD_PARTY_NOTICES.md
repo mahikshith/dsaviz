@@ -59,3 +59,15 @@ The build inlines these into the single-file site.
 ## Content
 
 The problems link to LeetCode by number and title only. Every problem statement, story, hint and test input on the site is written for DSAMaxxing. No problem text or examples are copied from LeetCode.
+
+### Attribution for adapted lesson material
+
+Every lesson is written in our own words and drawn by us. Where a permissive source seeded a lesson, the lesson page shows the credit line below.
+
+| Source | Licence | Used for | Lessons |
+| --- | --- | --- | --- |
+| [System Design Primer](https://github.com/donnemartin/system-design-primer), Donne Martin | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Topic outlines and the four-step answering method, rewritten and redrawn (changes: new wording, new diagrams, new numbers) | Scale up or out, Load balancer, Caching, CDN, Read replicas, Sharding, Consistent hashing, CAP and consistency, SQL or NoSQL, Database indexes, Message queue, Rate limiting, URL shortener, News feed |
+| [LowLevelDesign](https://github.com/kousiknath/LowLevelDesign), kousiknath | MIT | The problem idea only; no code is copied, and the classes are our own | Elevator system, Movie ticket booking |
+| [micrograd](https://github.com/karpathy/micrograd), Andrej Karpathy | MIT | The step-by-step idea of the backprop lesson; our numbers and code | A neuron and backprop |
+
+AI-now lessons list their primary sources (papers and lab posts, with dates) on the lesson page. They are cited, not copied. Hello Interview, Design Gurus, ByteByteGo, refactoring.guru and Designing Data-Intensive Applications are not used as sources; `tests/sdcheck.js` fails if a lesson names them.

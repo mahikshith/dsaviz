@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 21 linked pages, 40 animated stories covering all 16 patterns, a master sheet of 553 problems, a code editor that runs 104 problems' tests in JavaScript and Python in the browser, a step-by-step Git visual, a System design section (12 animated HLD and LLD lessons), 13 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 21 linked pages, 40 animated stories covering all 16 patterns, a master sheet of 553 problems, a code editor that runs 104 problems' tests in JavaScript and Python in the browser, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -36,14 +36,14 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
 | `src/git/` | The Git page's model: `sim.js` (a small Git: files, staging area, commits, branches, origin, stash) and `lessons.js` (8 lessons, one command and one caption per step). |
-| `src/ai/` | The AI & ML pages (`AIML` hub, `AILesson` player): `render.js` (scene to SVG, easing between steps) and `lessons.js` (13 lessons in two tracks; each step is one caption plus a scene of points, lines, nets, tokens, attention arcs or boxes and arrows; optional slider; sources for AI-now lessons). |
+| `src/ai/` | The AI & ML pages (`AIML` hub, `AILesson` player): `render.js` (scene to SVG, easing between steps) and `lessons.js` (21 lessons in two tracks: 11 ML foundations, 10 AI now; each step is one caption plus a scene of points, lines, nets, tokens, attention arcs or boxes and arrows; optional slider; sources for AI-now lessons). |
 | `shared/pattern_intros.js` | The Library's pattern map (`PATTERN_MAP`: hand-placed nodes on a 6 by 10 grid, edges meaning "learn this first") and one card per node (`PATTERN_INTROS`: clues, a 5 to 8 line template, two common mistakes, companion, and links to stories, first sheet problems and runnable problems). The "use it when" line itself comes from `PATTERN_WHEN` in `catalog.js`. The build adds `SHEET_INDEX` (sheet slugs per group) so the map can count ticks. |
 | `shared/tests_spec.js` | Test specs for 351 problems (every catalog problem plus popular sheet problems): signatures in 5 languages, 3 examples, 5+ hidden cases, comparator, JS reference. The top of the file documents how linked lists, trees, graphs, in-place answers and design classes are written as JSON. |
 | `shared/code_pane.html` + `code_pane.js` | The self-contained code pane (`CodeRunner`): language tabs, timer, editor, Run/Submit, custom input, console. Any page can drop it in with the `<!-- CODE PANE -->` and `// @@CODE-PANE@@` markers. |
 | `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
-| `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (9 HLD and 3 LLD lessons as data: nodes, links, steps). Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
+| `src/sd/` | System design: `engine.js` (frames, number formats, progress, node sizes) and `lessons.js` (20 HLD and 9 LLD lessons as data: nodes, links, steps). The hub shows three shelves: fundamentals, case studies (lessons with `method: true`) and LLD. Used by `SystemDesign` (the hub) and `SDLesson` (the player). |
 | `scripts/build_search.js` + `shared/search.js` | Site search. The build turns the catalog, sheet, specs, Git, system design and AI lessons and the glossary into `SITE_INDEX` (the `@@SEARCH@@` block, also holding the counts pages show); `search.js` scores queries. The pill nav's search box (press `/`) opens results grouped by type. `build_site.py` keeps one copy of the index in `dist/index.html`. |
 | `tests/` | `searchcheck.js` (index coverage, no duplicate keys, known queries), `copycheck.js` (fails on stale copy: old depth wording, trial claims, hard-coded counts), `backtest.js`, `mapcheck.js` (pattern map and intro cards), `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `sdcheck.js` (validates every system design lesson), `aicheck.js` (AI & ML lesson data), `site-test.js`. |
 
@@ -85,8 +85,8 @@ For decision trees and binary trees use `visual: 'tree'` (see `scenes_bt.js`, `s
 
 ## Add an AI & ML lesson
 
-1. Add an entry to `AI_LESSONS` in `src/ai/lessons.js` with `make(p)` returning 8 to 15 steps of `{ say, focus, scene }`. Captions are one plain sentence or two, at most 140 characters, and never name a colour (colours change with the theme).
-2. AI-now lessons need `sources`: title, org, date and an http(s) link to the primary source. Explain in our own words.
+1. Add an entry to `AI_LESSONS` in `src/ai/lessons.js` (and its id to `AI_ORDER`) with `make(p)` returning 8 to 15 steps of `{ say, focus, scene }`. Captions are one plain sentence or two, at most 140 characters, and never name a colour (colours change with the theme).
+2. AI-now lessons need `sources`: title, org, date and an http(s) link to the primary source. Explain in our own words. A slider must recompute real maths: `aicheck.js` fails if its two ends give the same lesson.
 3. Run `npm run build && npm test`. `aicheck.js` fails on long captions, missing references, off-canvas items or bad links.
 
 ## Add a Git lesson
@@ -97,9 +97,9 @@ For decision trees and binary trees use `visual: 'tree'` (see `scenes_bt.js`, `s
 
 ## Add a system design lesson
 
-1. Add an entry to `SD_LESSONS` in `src/sd/lessons.js`: `nodes` (box centres on a 1080 × 440 canvas; kinds `client`, `lb`, `server`, `cache`, `db`, `queue`, `cdn`, `dns`, `worker`, `limiter`, `car`, or `class`/`iface` with `lines`), `links`, and 8 to 15 steps. Each step has a `cmd`, one `say` caption (140 characters at most) and one `focus`, plus any of `add`, `drop`, `mark`, `sub`, `go` (requests along links), `nums` and `math`.
+1. Add an entry to `SD_LESSONS` in `src/sd/lessons.js` (and its id to `SD_ORDER`): `nodes` (box centres on a 1080 × 440 canvas; kinds `client`, `lb`, `server`, `cache`, `db`, `queue`, `cdn`, `dns`, `worker`, `limiter`, `car`, `net`, `watch`, or `class`/`iface` with `lines`), `links`, and 8 to 15 steps. Each step has a `cmd`, one `say` caption (140 characters at most) and one `focus`, plus any of `add`, `drop`, `mark`, `sub`, `go` (requests along links), `nums` and `math`.
 2. Put the arithmetic behind a number in `check` (`qps`, `gb`, `ms`, `cap`, `b62`) so the test recomputes it.
-3. HLD lessons adapted from the System Design Primer set `credit: 'sdp'`, which shows the CC BY 4.0 credit on the lesson. Write every word yourself.
+3. HLD lessons adapted from the System Design Primer set `credit: 'sdp'` (CC BY 4.0); LLD lessons whose problem idea comes from kousiknath/LowLevelDesign set `credit: 'kn'` (MIT). The lesson page shows the credit, and THIRD_PARTY_NOTICES.md lists it. Write every word yourself. A case study sets `method: true` and gives every step a `phase` 1 to 4; it must reach all four.
 4. Run `npm run build && npm test`. `sdcheck.js` fails if a step names a missing or hidden node, a request skips a drawn link, boxes overlap, a caption runs long, or a number disagrees with its check.
 
 ## State

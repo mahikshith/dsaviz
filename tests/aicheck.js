@@ -63,11 +63,20 @@ M.AI_LESSONS.forEach((L, li) => {
     });
   }
   if (L.credit && (!L.credit.text || !URL_RE.test(L.credit.link || ''))) fail(where, 'credit needs text and an http(s) link');
+  // a slider must change what the lesson shows: its two ends give different captions or scenes
+  if (L.param) {
+    try {
+      const lo = JSON.stringify(M.aiSteps(li, L.param.min)); const hi = JSON.stringify(M.aiSteps(li, L.param.max));
+      if (lo === hi) fail(where, 'slider does not change anything');
+    } catch (e) { /* reported above */ }
+  }
   let nSteps = 0; try { nSteps = M.aiSteps(li).length; } catch (e) { return; }
   console.log('✓ ' + L.id + ': ' + nSteps + ' steps' + (L.param ? ', slider ' + L.param.label : '') + (L.sources ? ', ' + L.sources.length + ' sources' : ''));
 });
 trackIds.forEach((t) => { if (!M.AI_LESSONS.some((L) => L.track === t)) fail('tracks', 'no lessons in ' + t); });
-if (M.AI_LESSONS.length < 10) fail('lessons', 'only ' + M.AI_LESSONS.length + ' lessons (want 10+)');
+if (M.AI_LESSONS.length < 21) fail('lessons', 'only ' + M.AI_LESSONS.length + ' lessons (want 21+)');
+if (M.AI_LESSONS.filter((L) => L.track === 'ml').length < 11) fail('lessons', 'want at least 11 ML lessons');
+if (M.AI_LESSONS.filter((L) => L.track === 'now').length < 10) fail('lessons', 'want at least 10 AI-now lessons');
 
 // The pages must carry the same lesson code (run the build after editing src/ai).
 ['AILesson', 'AIML'].forEach((n) => {

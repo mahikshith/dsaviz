@@ -19,6 +19,8 @@ const SD_KINDS = {
   queue: 'M3 7h4v10H3zM10 7h4v10h-4zM17 7h4v10h-4z',
   worker: 'M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2',
   limiter: 'M6 4h12l-1.5 16h-9zM6.5 9h11',
+  net: 'M2 12h5M17 12h5M7 8h10v8H7zM10 8V5M14 8V5',
+  watch: 'M3 12h4l3-7 4 14 3-7h4',
   class: '',
   iface: ''
 };
@@ -36,6 +38,11 @@ const SD_SDP = {
   text: 'Adapted from the System Design Primer by Donne Martin, CC BY 4.0. Rewritten in our words and redrawn.',
   repo: 'https://github.com/donnemartin/system-design-primer',
   license: 'https://creativecommons.org/licenses/by/4.0/'
+};
+// Credits a lesson can carry (credit: key). Each names the work, its author and its licence; the lesson page shows the line.
+const SD_CREDITS = {
+  sdp: { name: 'System Design Primer', by: 'Donne Martin', lic: 'CC BY 4.0', repo: SD_SDP.repo, license: SD_SDP.license, note: 'Our words, redrawn.' },
+  kn: { name: 'LowLevelDesign', by: 'kousiknath', lic: 'MIT', repo: 'https://github.com/kousiknath/LowLevelDesign', license: 'https://opensource.org/license/mit', note: 'Problem idea only; our classes and words.' }
 };
 
 function sdNodeSize(n) {

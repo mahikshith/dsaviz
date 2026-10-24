@@ -8,6 +8,8 @@
 //   componentWillUnmount: this.runner.unmount();
 //   renderVals:           return { t, cr: this.runner.vals(t, themeKey), ... };
 //   switching problem:    this.runner.setProblem(id);
+// The timer never starts on its own: cr.startClock / cr.pauseClock / cr.resetClock drive it (the mock interview keeps its own clock).
+// The last Run or Submit result is kept for this tab (sessionStorage), so coming back to a problem shows it again.
 // Needs the @@TESTS-SPEC@@ and @@RUNNER@@ blocks, plus readJSON/writeJSON from the catalog.
 const CODE_KEY = 'dsaviz-code-v1';
 const CODE_LANG_KEY = 'dsaviz-lang';
@@ -20,6 +22,12 @@ function storeCode(pid, lang, code) {
   writeJSON(CODE_KEY, s);
 }
 const pad2 = (n) => String(n).padStart(2, '0');
+const RUN_KEY = 'dsaviz-run-v1';
+function loadRuns() { try { const v = JSON.parse(window.sessionStorage.getItem(RUN_KEY)); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } }
+function keptRun(pid, lang) { const r = loadRuns()[pid]; return r && r.lang === lang && r.out && r.out.done ? r : null; }
+function keepRun(pid, lang, out, status) {
+  try { const all = loadRuns(); all[pid] = { lang, out, status }; window.sessionStorage.setItem(RUN_KEY, JSON.stringify(all)); } catch (e) {}
+}
 
 class CodeRunner {
   constructor(host, pid, opts) {
@@ -28,8 +36,9 @@ class CodeRunner {
     let lang = 'py';
     try { const l = window.localStorage.getItem(CODE_LANG_KEY); if (CODE_LANGS.some(([k]) => k === l)) lang = l; } catch (e) {}
     this.pid = this.known(pid) ? pid : Object.keys(TEST_SPECS)[0];
-    this.s = { lang, code: savedCode(this.pid, lang) || this.starter(lang), out: null, busy: false, status: '',
-      custom: '', elapsed: 0, solvedIn: null, copied: false, confirmReset: false };
+    const kept = keptRun(this.pid, lang);
+    this.s = { lang, code: savedCode(this.pid, lang) || this.starter(lang), out: kept ? kept.out : null, busy: false, status: kept ? kept.status : '',
+      custom: '', elapsed: 0, clockOn: false, solvedIn: null, copied: false, confirmReset: false };
     this.editor = null;
     this.el = null;
     this.ref = (el) => {
@@ -44,7 +53,21 @@ class CodeRunner {
   spec() { return TEST_SPECS[this.pid]; }
   known(pid) { return !!TEST_SPECS[pid] || (!!this.opts.starter && !!pid); }
   starter(lang) { const spec = this.spec(); return spec ? starterCode(spec, lang) : this.opts.starter ? this.opts.starter(this.pid, lang) : ''; }
-  mount() { this.clock = setInterval(() => { if (this.s.solvedIn === null) this.set({ elapsed: this.s.elapsed + 1 }); }, 1000); }
+  mount() { this.clock = setInterval(() => { if (this.s.clockOn && this.s.solvedIn === null) this.set({ elapsed: this.s.elapsed + 1 }); }, 1000); }
+  startClock() { if (this.s.solvedIn === null) this.set({ clockOn: true }); }
+  pauseClock() { this.set({ clockOn: false }); }
+  resetClock() { this.set({ clockOn: false, elapsed: 0, solvedIn: null }); }
+  // "Insert plan as comments": the plan's steps go into the learner's code in the chosen language.
+  insertPlan(plan) {
+    const spec = this.spec();
+    if (!plan || !spec) return;
+    const now = this.editor ? this.editor.getDoc() : this.s.code;
+    const code = insertPlanComments(now, plan, this.s.lang, spec.sig && spec.sig[this.s.lang]);
+    if (code === now) return;
+    if (this.editor) this.editor.setDoc(code);
+    storeCode(this.pid, this.s.lang, code);
+    this.set({ code });
+  }
   unmount() {
     clearInterval(this.clock); clearTimeout(this.resetTimer); clearTimeout(this.copyTimer);
     this.stopRun();
@@ -81,14 +104,16 @@ class CodeRunner {
     if (!this.known(pid) || pid === this.pid) return;
     this.stopRun();
     this.pid = pid;
-    this.set({ code: this.showCode(), out: null, busy: false, status: '', custom: '', elapsed: 0, solvedIn: null });
+    const kept = keptRun(pid, this.s.lang);
+    this.set({ code: this.showCode(), out: kept ? kept.out : null, busy: false, status: kept ? kept.status : '', custom: '', elapsed: 0, clockOn: false, solvedIn: null });
   }
   setLang(lang) {
     if (lang === this.s.lang) return;
     this.stopRun();
     try { window.localStorage.setItem(CODE_LANG_KEY, lang); } catch (e) {}
     this.s.lang = lang;
-    this.set({ code: this.showCode(), out: null, busy: false, status: '' });
+    const kept = keptRun(this.pid, lang);
+    this.set({ code: this.showCode(), out: kept ? kept.out : null, busy: false, status: kept ? kept.status : '' });
   }
   // Reset throws away the learner's code, so the first click only arms it for 3 seconds.
   reset() {
@@ -154,7 +179,8 @@ class CodeRunner {
         const solved = mode === 'submit' && passed === cases.length && this.s.solvedIn === null;
         if (solved && typeof DS !== 'undefined') DS.passCode(this.pid);
         if (this.opts.onResult && !end.cancelled) { try { this.opts.onResult(this.pid, mode, end.fatal || end.timeout ? 0 : passed, cases.length); } catch (e) {} }
-        this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn });
+        if (!end.cancelled) keepRun(this.pid, lang, out, status);
+        this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn, clockOn: solved ? false : this.s.clockOn });
       }, spec.io, lang === 'js' && spec.drive ? spec.drive.toString() : null);
   }
 
@@ -203,6 +229,10 @@ class CodeRunner {
       showLangs: !this.opts.hideLangs, showClock: !this.opts.hideClock, hasTests, noTests: !hasTests, elapsed: s.elapsed,
       langs: CODE_LANGS.map(([k, label]) => ({ label: label === 'JavaScript' ? 'JS' : label, on: lang === k, bg: lang === k ? t.text : 'transparent', fg: lang === k ? t.bg : t.muted, pick: () => this.setLang(k) })),
       clock, clockLabel: (solved ? 'Solved in ' : 'Time on this problem: ') + clock, clockFg: solved ? t.ok : t.muted,
+      clockIdle: !s.clockOn && s.elapsed === 0 && !solved, clockShown: s.clockOn || s.elapsed > 0 || solved, clockOn: s.clockOn,
+      startClock: () => this.startClock(), resetClock: () => this.resetClock(),
+      toggleClock: () => (s.clockOn ? this.pauseClock() : this.startClock()),
+      clockToggleLabel: s.clockOn ? 'Pause' : 'Resume', clockToggleAria: s.clockOn ? 'Pause the timer' : 'Resume the timer', canToggleClock: !solved,
       copy: () => this.copy(), copyLabel: s.copied ? 'Copied' : 'Copy',
       reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset', resetBorder: s.confirmReset ? t.accent : t.line,
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',

@@ -63,14 +63,8 @@ The build inlines these into the single-file site.
 
 Problems are known by their common titles only, and every problem has its own page on this site. Every problem statement, story, hint, example and test input on the site is written for DSAMaxxing. The SQL problems use our own tables, columns, rows and wording; `tests/sqlcheck.js` fails if a schema uses a table name common practice sets use. No problem text or examples are copied from other sites.
 
-### Attribution for adapted lesson material
+### Lesson material
 
-Every lesson is written in our own words and drawn by us. Where a permissive source seeded a lesson, the lesson page shows the credit line below.
+Every lesson (system design and AI & ML) is 100% our own writing, diagrams, numbers and examples. No lesson text, examples or worded ideas are adapted from any source, permissive or not; research was used only for the shape of the curriculum and general teaching ideas, so no lesson carries a content credit. `tests/sdcheck.js` and `tests/aicheck.js` fail if a lesson gains one.
 
-| Source | Licence | Used for | Lessons |
-| --- | --- | --- | --- |
-| [System Design Primer](https://github.com/donnemartin/system-design-primer), Donne Martin | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Topic outlines and the four-step answering method, rewritten and redrawn (changes: new wording, new diagrams, new numbers) | Scale up or out, Load balancer, Caching, CDN, Read replicas, Sharding, Consistent hashing, CAP and consistency, SQL or NoSQL, Database indexes, Message queue, Rate limiting, URL shortener, News feed |
-| [LowLevelDesign](https://github.com/kousiknath/LowLevelDesign), kousiknath | MIT | The problem idea only; no code is copied, and the classes are our own | Elevator system, Movie ticket booking |
-| [micrograd](https://github.com/karpathy/micrograd), Andrej Karpathy | MIT | The step-by-step idea of the backprop lesson; our numbers and code | A neuron and backprop |
-
-AI-now lessons list their primary sources (papers and lab posts, with dates) on the lesson page. They are cited, not copied. Hello Interview, Design Gurus, ByteByteGo, refactoring.guru and Designing Data-Intensive Applications are not used as sources; `tests/sdcheck.js` fails if a lesson names them.
+AI-now lessons list their primary sources (papers and lab posts, with dates) on the lesson page. They are references for facts, cited as sources, not adapted content. Hello Interview, Design Gurus, ByteByteGo, refactoring.guru and Designing Data-Intensive Applications are not used as sources; `tests/sdcheck.js` fails if a lesson names them.

@@ -8,11 +8,11 @@ const root = path.join(__dirname, '..');
 const src = ['engine.js', 'lessons.js'].map((f) => fs.readFileSync(path.join(root, 'src', 'sd', f), 'utf8').replace(/\r\n/g, '\n')).join('\n');
 const store = {};
 const sandbox = 'const window = { localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } } };\n';
-const E = new Function('store', sandbox + src + '\nreturn { SD_LESSONS, SD_CREDITS, SD_KINDS, SD_MARKS, SD_STEP_KEYS, SD_CLASS_KINDS, SD_W, SD_H, sdFrames, sdNodeSize, sdLinkOn, sdFindLink, sdBase62, sdFmtQps, sdFmtMs, sdFmtGb };')(store);
+const E = new Function('store', sandbox + src + '\nreturn { SD_LESSONS, SD_KINDS, SD_MARKS, SD_STEP_KEYS, SD_CLASS_KINDS, SD_W, SD_H, sdFrames, sdNodeSize, sdLinkOn, sdFindLink, sdBase62, sdFmtQps, sdFmtMs, sdFmtGb };')(store);
 let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };
 const BANNED = /hello ?interview|design ?gurus|bytebytego|refactoring\.guru|designing data-intensive|\bDDIA\b/i;
-const SECONDS = { day: 86400, month: 2592000 };
+const SECONDS = { minute: 60, hour: 3600, day: 86400, month: 2592000 };
 const near = (a, b) => (b === 0 ? a === 0 : Math.abs(a - b) / Math.abs(b) <= 0.15);
 
 const ids = new Set();
@@ -23,9 +23,8 @@ for (const L of E.SD_LESSONS) {
   if (!(L.track in tracks)) fail(where0, 'unknown track ' + L.track); else tracks[L.track]++;
   if (!L.title || !L.tag || !L.scenario) fail(where0, 'needs a title, tag and scenario');
   if (L.steps.length < 8 || L.steps.length > 15) fail(where0, L.steps.length + ' steps (want 8 to 15)');
-  if (L.credit && !(L.credit in E.SD_CREDITS)) fail(where0, 'unknown credit ' + L.credit);
-  if (L.credit === 'sdp' && L.track !== 'hld') fail(where0, 'the System Design Primer credit is for HLD lessons');
-  if (L.credit === 'kn' && L.track !== 'lld') fail(where0, 'the LowLevelDesign credit is for LLD lessons');
+  // all lesson writing is our own: a lesson may not carry a content credit of any kind
+  if ('credit' in L) fail(where0, 'carries a content credit; lessons are 100% our own writing');
   if (L.method && L.track !== 'hld') fail(where0, 'only HLD case studies use the four-step method');
   if (L.track === 'hld' && (!L.labels || L.labels.length !== 3)) fail(where0, 'HLD lessons need three number labels');
   // nodes: known kinds, inside the canvas, unique ids
@@ -105,9 +104,9 @@ for (const L of E.SD_LESSONS) {
   if (L.method) [1, 2, 3, 4].forEach((p) => { if (!frames.some((f) => f.phase === p)) fail(where0, 'four-step lesson never reaches step ' + p); });
   console.log('✓ ' + L.id.padEnd(10) + ' ' + L.track + ' ' + String(L.steps.length).padStart(2) + ' steps · ' + frames.map((f) => E.sdFmtQps(f.nums.qps)).filter((x, i, a) => a.indexOf(x) === i).join(' → '));
 }
-if (tracks.hld < 20) fail('lessons', 'want at least 20 HLD lessons, have ' + tracks.hld);
-if (tracks.lld < 9) fail('lessons', 'want at least 9 LLD lessons, have ' + tracks.lld);
-if (E.SD_LESSONS.filter((L) => L.method).length < 6) fail('lessons', 'want at least 6 four-step case studies');
+if (tracks.hld < 27) fail('lessons', 'want at least 27 HLD lessons, have ' + tracks.hld);
+if (tracks.lld < 13) fail('lessons', 'want at least 13 LLD lessons, have ' + tracks.lld);
+if (E.SD_LESSONS.filter((L) => L.method).length < 12) fail('lessons', 'want at least 12 four-step case studies');
 [[0.0006, '<1/s'], [23, '23/s'], [2300, '2.3k/s'], [40000, '40k/s']].forEach(([v, w]) => { if (E.sdFmtQps(v) !== w) fail('format', 'qps ' + v + ' → ' + E.sdFmtQps(v)); });
 [[0.5, '<1 ms'], [56, '56 ms'], [2400, '2.4 s'], [120000, '2 min']].forEach(([v, w]) => { if (E.sdFmtMs(v) !== w) fail('format', 'ms ' + v + ' → ' + E.sdFmtMs(v)); });
 [[0.01, '10 MB'], [2, '2 GB'], [3000, '3 TB'], [8640, '8.6 TB']].forEach(([v, w]) => { if (E.sdFmtGb(v) !== w) fail('format', 'gb ' + v + ' → ' + E.sdFmtGb(v)); });

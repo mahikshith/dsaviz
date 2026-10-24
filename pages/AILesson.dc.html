@@ -1098,13 +1098,13 @@ function aiPaint(S, t, textScale) {
 // axes, regions, paths, rings, edges, links, arrows, bars, boxes, nodes, points, tokens, labels.
 // The canvas is 960 x 540. All explanations are our own words.
 const AI_TRACKS = [
-  { id: 'ml', title: 'ML & data science foundations', short: 'ML foundations', blurb: 'How machines learn from examples: fit a line, vote with neighbours, split with questions, and spot overfitting.' },
-  { id: 'now', title: 'AI now', short: 'AI now', blurb: 'The ideas behind today’s models: attention, reasoning, agents, retrieval, experts and cheap fine-tuning.' }
+  { id: 'ml', title: 'ML & data science foundations', short: 'ML foundations', blurb: 'How machines learn from examples: fit lines and curves, vote, split, cluster, compress, and measure what went wrong.' },
+  { id: 'now', title: 'AI now', short: 'AI now', blurb: 'The ideas behind today’s models: tokens, attention, reasoning, agents, retrieval, experts, fine-tuning, distillation and evals.' }
 ];
 // Planned next, from the research curriculum. Shown on the hub as "next up", not as lessons.
 const AI_NEXT = {
-  ml: ['Logistic regression and the decision threshold', 'k-means clustering', 'PCA: squash many columns into two', 'pandas and SQL: group by and joins'],
-  now: ['Long context and “lost in the middle”', 'Multimodal models', 'Small and on-device models', 'Evals and benchmarks']
+  ml: ['Random forests', 'pandas and SQL: group by and joins', 'Optimizers: momentum and Adam'],
+  now: ['Long context and “lost in the middle”', 'Multimodal models', 'Small and on-device models', 'Preference tuning (DPO)']
 };
 
 // ---------- shared helpers ----------
@@ -1704,6 +1704,423 @@ function aiLora(p) {
   return s;
 }
 
+// ---------- shared: a small seeded random source, so every learner sees the same "random" data ----------
+function aiRng(seed) {
+  let s = seed >>> 0;
+  return () => { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; };
+}
+function aiGauss(rnd) { const u = Math.max(1e-9, rnd()); const v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+const aiSig = (z) => 1 / (1 + Math.exp(-z));
+const aiPct = (v) => Math.round(v * 100) + '%';
+
+// ---------- ML: logistic regression and the sigmoid ----------
+const AI_LOGI = (() => {
+  const fail = [0.8, 1.5, 2.2, 3.0, 3.6, 4.6, 5.8]; const pass = [4.1, 5.2, 6.0, 6.6, 7.3, 8.1, 9.0];
+  const X = fail.concat(pass); const Y = fail.map(() => 0).concat(pass.map(() => 1));
+  const loss = (w, b) => X.reduce((s, x, i) => { const p = Math.min(1 - 1e-12, Math.max(1e-12, aiSig(w * x + b))); return s - (Y[i] ? Math.log(p) : Math.log(1 - p)); }, 0) / X.length;
+  let w = 0; let b = 0;
+  for (let it = 0; it < 20000; it++) {
+    let gw = 0; let gb = 0;
+    X.forEach((x, i) => { const e = aiSig(w * x + b) - Y[i]; gw += e * x / X.length; gb += e / X.length; });
+    w -= 0.1 * gw; b -= 0.1 * gb;
+  }
+  // least-squares straight line through the same 0/1 labels, to show why a line is the wrong shape
+  const mx = X.reduce((a, c) => a + c, 0) / X.length; const my = Y.reduce((a, c) => a + c, 0) / Y.length;
+  const slope = X.reduce((s, x, i) => s + (x - mx) * (Y[i] - my), 0) / X.reduce((s, x) => s + (x - mx) * (x - mx), 0);
+  return { fail, pass, X, Y, loss, w, b, mid: -b / w, slope, icpt: my - slope * mx };
+})();
+function aiLogistic(p) {
+  const D = AI_LOGI; const wU = p; const bU = -wU * D.mid;
+  const sx = (v) => aiR(80 + (v / 10) * 480); const sy = (q) => aiR(420 - q * 280);
+  const axes = { x0: 80, y0: 480, x1: 570, y1: 70, xl: 'hours studied →', yl: '↑ chance of passing' };
+  const guide = { paths: [{ id: 'g1', pts: [[80, sy(1)], [570, sy(1)]], c: 'l', w: 1, dash: true }, { id: 'g0', pts: [[80, sy(0)], [570, sy(0)]], c: 'l', w: 1, dash: true }],
+    labels: [{ id: 'g1t', x: 72, y: sy(1) + 5, text: '1', c: 'm', size: 12, anchor: 'end' }, { id: 'g0t', x: 72, y: sy(0) + 5, text: '0', c: 'm', size: 12, anchor: 'end' }] };
+  const pts = (hl) => ({ points: D.fail.map((x, i) => ({ id: 'f' + i, x: sx(x), y: sy(0), c: 'b', r: 7, ring: hl && hl.indexOf('f' + i) >= 0 }))
+    .concat(D.pass.map((x, i) => ({ id: 'p' + i, x: sx(x), y: sy(1), c: 'a', r: 7, ring: hl && hl.indexOf('p' + i) >= 0 }))) });
+  const legend = { points: [{ id: 'lgP', x: 640, y: 80, c: 'a', r: 7, label: 'passed (1)' }, { id: 'lgF', x: 640, y: 108, c: 'b', r: 7, label: 'failed (0)' }] };
+  const curve = (w, b, id) => { const out = []; for (let i = 0; i <= 60; i++) { const x = (10 * i) / 60; out.push([sx(x), sy(aiSig(w * x + b))]); } return { id: id || 'sig', pts: out, c: 't', w: 3.5 }; };
+  const line = () => { const seg = aiClipY(sx(0), sy(D.icpt), sx(10), sy(D.slope * 10 + D.icpt), sy(1.15), sy(-0.15)); return { id: 'lin', pts: seg, c: 'c', w: 3 }; };
+  const ro = (w, b) => ({ labels: [
+    { id: 'r1', x: 640, y: 200, text: 'w = ' + aiFmt(w) + '   b = ' + aiFmt(b), c: 't', size: 15, mono: true },
+    { id: 'r2', x: 640, y: 232, text: 'log loss = ' + aiFmt(D.loss(w, b), 3), c: 'c', size: 18, weight: 700, mono: true },
+    { id: 'r3', x: 640, y: 262, text: 'best: w = ' + aiFmt(D.w) + ', loss ' + aiFmt(D.loss(D.w, D.b), 3), c: 'm', size: 13, mono: true }
+  ] });
+  const base = (hl) => aiScene({ axes }, guide, legend, pts(hl));
+  const at5 = aiSig(D.w * 5 + D.b);
+  const thr = { paths: [{ id: 'cut', pts: [[sx(D.mid), 80], [sx(D.mid), 470]], c: 'a', w: 2.5, dash: true }], labels: [{ id: 'cutT', x: sx(D.mid) + 8, y: 92, text: 'p = 0.5 at ' + aiFmt(D.mid, 1) + ' h', c: 'a', size: 13 }] };
+  // the most expensive point under the trained model: a confident mistake
+  let worst = 0; let worstL = -1;
+  D.X.forEach((x, i) => { const q = aiSig(D.w * x + D.b); const l = -(D.Y[i] ? Math.log(q) : Math.log(1 - q)); if (l > worstL) { worstL = l; worst = i; } });
+  const worstId = worst < D.fail.length ? 'f' + worst : 'p' + (worst - D.fail.length);
+  const lossU = D.loss(wU, bU); const lossB = D.loss(D.w, D.b);
+  const s = [];
+  s.push(aiStep('Fourteen students. Across is hours studied. Each dot sits at 1 if the student passed and 0 if they failed.', [], base()));
+  s.push(aiStep('We want the chance of passing. A straight line is the wrong shape: it runs below 0 and above 1.', ['lin'], aiScene(base(), { paths: [line()] })));
+  s.push(aiStep('The sigmoid fixes that. It bends any number into the range 0 to 1, flat at both ends and steep in the middle.', ['sig'], aiScene(base(), { paths: [curve(1.5, -7.5)] })));
+  s.push(aiStep('Logistic regression feeds a weighted sum, w × hours + b, into the sigmoid. The output reads as a probability.', ['sig', 'r1'], aiScene(base(), { paths: [curve(D.w, D.b)] }, ro(D.w, D.b))));
+  s.push(aiStep('Read it off: a student who studies 5 hours has about a ' + aiPct(at5) + ' chance of passing.', ['sig'], aiScene(base(), { paths: [curve(D.w, D.b)], points: [{ id: 'q5', x: sx(5), y: sy(at5), c: 't', r: 8, ring: true, hollow: true, label: aiPct(at5), lx: 14 }] }, ro(D.w, D.b))));
+  s.push(aiStep('To decide pass or fail, pick a threshold. At 0.5 the boundary falls at ' + aiFmt(D.mid, 1) + ' hours of study.', ['cut'], aiScene(base(), { paths: [curve(D.w, D.b)] }, thr, ro(D.w, D.b))));
+  s.push(aiStep('Training scores each dot by log loss: minus the log of the chance given to what really happened. Sure and wrong costs most.', [worstId], aiScene(base([worstId]), { paths: [curve(D.w, D.b)] }, thr, ro(D.w, D.b))));
+  s.push(aiStep('Gradient descent nudges w and b until the average log loss is as low as it goes: ' + aiFmt(lossB, 3) + ' for this data.', ['r2'], aiScene(base(), { paths: [curve(D.w, D.b)] }, ro(D.w, D.b))));
+  s.push(aiStep('Your slider sets w = ' + aiFmt(wU, 1) + ', keeping the same midpoint. Its log loss is ' + aiFmt(lossU, 3) + (lossU <= lossB + 0.002 ? ', as good as the best.' : ', worse than the best.'), ['sig', 'r2'], aiScene(base(), { paths: [curve(wU, bU)] }, thr, ro(wU, bU))));
+  s.push(aiStep('A small w gives a flat curve that is unsure about everyone. A big w is a hard step that pays heavily for every mistake.', ['sig'], aiScene(base(), { paths: [curve(wU, bU)] }, thr, ro(wU, bU))));
+  s.push(aiStep('With many inputs it is the same idea: one weight per input, one sum, one sigmoid. The boundary becomes a line or a plane.', ['cut'], aiScene(base(), { paths: [curve(D.w, D.b)] }, thr, ro(D.w, D.b))));
+  return s;
+}
+
+// ---------- ML: precision, recall and the confusion matrix ----------
+const AI_CM = {
+  spam: [0.95, 0.9, 0.85, 0.8, 0.72, 0.66, 0.58, 0.45, 0.35],
+  ham: [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.52, 0.62, 0.7, 0.12]
+};
+function aiCounts(T) {
+  const tp = AI_CM.spam.filter((v) => v >= T).length; const fn = AI_CM.spam.length - tp;
+  const fp = AI_CM.ham.filter((v) => v >= T).length; const tn = AI_CM.ham.length - fp;
+  return { tp, fn, fp, tn, prec: tp + fp ? tp / (tp + fp) : null, rec: tp / (tp + fn), acc: (tp + tn) / (tp + fn + fp + tn) };
+}
+function aiConfusion(p) {
+  const T = Math.round(p * 100) / 100; const K = aiCounts(T);
+  const sx = (v) => aiR(80 + v * 800);
+  const axisLine = { paths: [{ id: 'nl', pts: [[80, 196], [880, 196]], c: 'l', w: 1.5 }], labels: [{ id: 'nl0', x: 80, y: 218, text: '0', c: 'm', size: 12, anchor: 'middle' }, { id: 'nl1', x: 880, y: 218, text: '1', c: 'm', size: 12, anchor: 'middle' }, { id: 'nlT', x: 480, y: 218, text: 'spam score from the model →', c: 'm', size: 12, anchor: 'middle' },
+    { id: 'rowS', x: 70, y: 115, text: 'spam', c: 'a', size: 13, anchor: 'end', weight: 700 }, { id: 'rowH', x: 70, y: 165, text: 'not spam', c: 'b', size: 13, anchor: 'end', weight: 700 }] };
+  const dots = (pick) => ({ points: AI_CM.spam.map((v, i) => ({ id: 's' + i, x: sx(v), y: 110, c: 'a', r: 7, ring: pick && pick('s', v) }))
+    .concat(AI_CM.ham.map((v, i) => ({ id: 'h' + i, x: sx(v), y: 160, c: 'b', r: 7, ring: pick && pick('h', v) }))) });
+  const thr = { paths: [{ id: 'thr', pts: [[sx(T), 70], [sx(T), 200]], c: 't', w: 3 }], regions: [{ id: 'flag', x: sx(T), y: 84, w: aiR(880 - sx(T) + 6), h: 100, c: 'c', op: 0.1 }],
+    labels: [{ id: 'thrT', x: sx(T), y: 60, text: 'threshold ' + T.toFixed(2), c: 't', size: 13, anchor: 'middle', mono: true }] };
+  const top = (pick) => aiScene(axisLine, thr, dots(pick));
+  const ids = (k) => (k === 'tp' ? AI_CM.spam.map((v, i) => [v, 's' + i]).filter(([v]) => v >= T) : k === 'fn' ? AI_CM.spam.map((v, i) => [v, 's' + i]).filter(([v]) => v < T)
+    : k === 'fp' ? AI_CM.ham.map((v, i) => [v, 'h' + i]).filter(([v]) => v >= T) : AI_CM.ham.map((v, i) => [v, 'h' + i]).filter(([v]) => v < T)).map((x) => x[1]);
+  const cell = (id, x, y, n, name, c) => ({ id, x, y, w: 150, h: 80, label: String(n), sub: name, c, size: 22, mono: true });
+  const grid = { boxes: [cell('TP', 210, 280, K.tp, 'caught spam', 'ok'), cell('FN', 370, 280, K.fn, 'missed spam', 'bad'), cell('FP', 210, 370, K.fp, 'good mail flagged', 'bad'), cell('TN', 370, 370, K.tn, 'good mail kept', 'ok')],
+    labels: [{ id: 'cH1', x: 285, y: 268, text: 'flagged', c: 'm', size: 13, anchor: 'middle' }, { id: 'cH2', x: 445, y: 268, text: 'let through', c: 'm', size: 13, anchor: 'middle' },
+      { id: 'rH1', x: 200, y: 325, text: 'is spam', c: 'm', size: 13, anchor: 'end' }, { id: 'rH2', x: 200, y: 415, text: 'is not spam', c: 'm', size: 13, anchor: 'end' }] };
+  const fmtP = (v) => (v === null ? 'none flagged' : aiPct(v));
+  const pr = { labels: [{ id: 'prec', x: 600, y: 300, text: 'precision ' + fmtP(K.prec), c: 'a', size: 18, weight: 700, mono: true }, { id: 'rec', x: 600, y: 332, text: 'recall    ' + aiPct(K.rec), c: 'b', size: 18, weight: 700, mono: true }] };
+  const chart = (() => {
+    const X = (t) => aiR(600 + ((t - 0.05) / 0.9) * 300); const Yv = (v) => aiR(500 - v * 130);
+    const ts = []; for (let t = 0.05; t <= 0.951; t += 0.05) ts.push(Math.round(t * 100) / 100);
+    const P = ts.map((t) => [X(t), Yv(aiCounts(t).prec === null ? 1 : aiCounts(t).prec)]); const R = ts.map((t) => [X(t), Yv(aiCounts(t).rec)]);
+    return { paths: [{ id: 'chAx', pts: [[600, 362], [600, 500], [905, 500]], c: 'l', w: 1.5 }, { id: 'chP', pts: P, c: 'a', w: 3 }, { id: 'chR', pts: R, c: 'b', w: 3 }, { id: 'chNow', pts: [[X(Math.min(0.95, Math.max(0.05, T))), 366], [X(Math.min(0.95, Math.max(0.05, T))), 500]], c: 't', w: 2, dash: true }],
+      labels: [{ id: 'chX', x: 905, y: 522, text: 'threshold →', c: 'm', size: 12, anchor: 'end' }] };
+  })();
+  const s = [];
+  s.push(aiStep('Twenty emails. A model gave each a spam score from 0 to 1. The top row really is spam; the bottom row is good mail.', [], aiScene(axisLine, dots())));
+  s.push(aiStep('Pick a threshold, here ' + T.toFixed(2) + '. Every email scoring at or above it is flagged as spam.', ['thr', 'flag'], top()));
+  s.push(aiStep('True positives: spam we caught. ' + K.tp + ' of the 9 spam emails sit at or above the line.', ids('tp'), top((r, v) => r === 's' && v >= T)));
+  s.push(aiStep('False positives: good mail we flagged. ' + K.fp + ' of them. For email this is the costly mistake.', ids('fp'), top((r, v) => r === 'h' && v >= T)));
+  s.push(aiStep('False negatives: spam that slipped through. ' + K.fn + ' of them. Annoying, but nothing important is lost.', ids('fn'), top((r, v) => r === 's' && v < T)));
+  s.push(aiStep('True negatives: good mail let through, ' + K.tn + '. Every email lands in exactly one of these four groups.', ids('tn'), top((r, v) => r === 'h' && v < T)));
+  s.push(aiStep('Put the four counts in a 2 × 2 grid. That grid is the confusion matrix.', ['TP', 'FN', 'FP', 'TN'], aiScene(top(), grid)));
+  s.push(aiStep('Precision asks: of everything flagged, how much was really spam? ' + (K.prec === null ? 'Nothing is flagged, so it is undefined.' : K.tp + ' of ' + (K.tp + K.fp) + ' = ' + aiPct(K.prec) + '.'), ['TP', 'FP', 'prec'], aiScene(top(), grid, pr)));
+  s.push(aiStep('Recall asks: of all the spam, how much did we catch? ' + K.tp + ' of 9 = ' + aiPct(K.rec) + '.', ['TP', 'FN', 'rec'], aiScene(top(), grid, pr)));
+  s.push(aiStep('Accuracy is ' + aiPct(K.acc) + ' here, but it can mislead. If 1 email in 100 is spam, flagging nothing scores 99% and catches none.', ['TN'], aiScene(top(), grid, pr)));
+  s.push(aiStep('Slide the threshold up and precision tends to rise while recall falls. The two curves show the whole trade.', ['chP', 'chR'], aiScene(top(), grid, pr, chart)));
+  s.push(aiStep('Pick the threshold by the cost of each mistake: a spam filter guards precision, a disease screen guards recall.', ['thr'], aiScene(top(), grid, pr, chart)));
+  return s;
+}
+
+// ---------- ML: k-means clustering ----------
+const AI_KM = (() => {
+  const off = [[-0.8, 0.3], [0.5, 0.6], [0.2, -0.7], [-0.4, -0.5], [0.9, -0.1], [-0.1, 0.9], [0.6, -0.6], [-0.9, -0.3]];
+  const blobs = [[2.6, 7.2, 1.1], [7.3, 7.6, 0.9], [5.2, 2.6, 1.2]];
+  const P = []; blobs.forEach(([cx, cy, k]) => off.forEach(([dx, dy]) => P.push([aiR(cx + dx * k), aiR(cy + dy * k)])));
+  const init = [2, 5, 7, 1, 3, 9];
+  const d2 = (a, b) => (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]);
+  const run = (k) => {
+    let C = init.slice(0, k).map((i) => P[i].slice());
+    const hist = [];
+    for (let it = 0; it < 30; it++) {
+      const A = P.map((q) => { let best = 0; C.forEach((c, j) => { if (d2(q, c) < d2(q, C[best])) best = j; }); return best; });
+      const N = C.map((c, j) => { const m = P.filter((q, i) => A[i] === j); return m.length ? [m.reduce((s, q) => s + q[0], 0) / m.length, m.reduce((s, q) => s + q[1], 0) / m.length] : c; });
+      hist.push({ C: C.map((c) => c.slice()), A, N });
+      const moved = N.some((c, j) => d2(c, C[j]) > 1e-12);
+      C = N;
+      if (!moved) break;
+    }
+    const last = hist[hist.length - 1];
+    const inertia = P.reduce((s, q, i) => s + d2(q, last.N[last.A[i]]), 0);
+    return { hist, inertia, final: last };
+  };
+  const runs = {}; for (let k = 1; k <= 6; k++) runs[k] = run(k);
+  // the elbow: the k after which the drop in total distance shrinks the most
+  let bend = 2; let bestGain = -Infinity;
+  for (let k = 2; k <= 5; k++) { const gain = (runs[k - 1].inertia - runs[k].inertia) - (runs[k].inertia - runs[k + 1].inertia); if (gain > bestGain) { bestGain = gain; bend = k; } }
+  return { P, runs, bend };
+})();
+function aiKmeans(p) {
+  const k = Math.max(2, Math.min(5, Math.round(p)));
+  const D = AI_KM; const R = D.runs[k];
+  const [sx, sy] = aiScale(70, 530, 480, 60, 0, 10);
+  const axes = { x0: 70, y0: 480, x1: 530, y1: 60, xl: 'minutes per visit →', yl: '↑ visits per week' };
+  // group colours that stay apart in every theme; centres also carry a letter, and spokes show membership
+  const COL = ['a', 'b', 'ok', 't', 'm'];
+  const pts = (A) => ({ points: D.P.map((q, i) => ({ id: 'd' + i, x: sx(q[0]), y: sy(q[1]), c: A ? COL[A[i]] : 'm', r: 6 })) });
+  const cents = (C) => ({ points: C.map((c, j) => ({ id: 'c' + j, x: sx(c[0]), y: sy(c[1]), c: COL[j], r: 11, hollow: true, ring: true, label: 'ABCDE'[j], lx: 16, ly: -12, lc: 't' })) });
+  const spokes = (A, C) => ({ paths: D.P.map((q, i) => ({ id: 'sp' + i, pts: [[sx(q[0]), sy(q[1])], [sx(C[A[i]][0]), sy(C[A[i]][1])]], c: COL[A[i]], w: 1.2, dash: true, op: 0.7 })) });
+  const moves = (C, N) => ({ arrows: C.map((c, j) => ({ id: 'mv' + j, from: { x: sx(c[0]), y: sy(c[1]) }, to: { x: sx(N[j][0]), y: sy(N[j][1]) }, c: COL[j], w: 2.5, op: Math.hypot(N[j][0] - c[0], N[j][1] - c[1]) > 0.15 ? 1 : 0 })) });
+  const h = R.hist; const h1 = h[Math.min(1, h.length - 1)];
+  const elbow = (() => {
+    const X = (kk) => aiR(620 + ((kk - 1) / 5) * 280); const maxI = D.runs[1].inertia; const Yv = (v) => aiR(440 - (1 - v / maxI) * 0 - (v / maxI) * 220);
+    const pts2 = []; for (let kk = 1; kk <= 6; kk++) pts2.push([X(kk), Yv(D.runs[kk].inertia)]);
+    return { paths: [{ id: 'elAx', pts: [[620, 210], [620, 440], [905, 440]], c: 'l', w: 1.5 }, { id: 'el', pts: pts2, c: 'a', w: 3 }],
+      points: [{ id: 'elK', x: X(k), y: Yv(R.inertia), c: 'a', r: 8, ring: true, label: 'k = ' + k, lx: 12, ly: -12 }],
+      labels: [{ id: 'elT', x: 620, y: 196, text: 'total distance² by k', c: 'm', size: 13 }, { id: 'elX', x: 905, y: 462, text: 'k = 1 … 6 →', c: 'm', size: 12, anchor: 'end' }] };
+  })();
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 620, y: 110, text: txt, c: 't', size: 15, mono: true }] });
+  const s = [];
+  s.push(aiStep('Each dot is a shop customer: how long they stay per visit, and how often they come. No labels, just data.', [], aiScene({ axes }, pts())));
+  s.push(aiStep('k-means finds groups by itself. You only choose k, the number of groups. Your slider says k = ' + k + '.', [], aiScene({ axes }, pts(), ro('k = ' + k))));
+  s.push(aiStep('Start by dropping ' + k + ' centres onto the map, here on ' + k + ' customers picked at random.', h[0].C.map((c, j) => 'c' + j), aiScene({ axes }, pts(), cents(h[0].C), ro('k = ' + k))));
+  s.push(aiStep('Assign: every customer joins the centre nearest to it. The dashed lines show who joined whom.', [], aiScene({ axes }, pts(h[0].A), spokes(h[0].A, h[0].C), cents(h[0].C), ro('round 1'))));
+  s.push(aiStep('Update: move each centre to the average position of its members. Some centres travel a long way.', h[0].C.map((c, j) => 'mv' + j), aiScene({ axes }, pts(h[0].A), cents(h[0].N), moves(h[0].C, h[0].N), ro('round 1'))));
+  const switched = h1.A.filter((g, i) => g !== h[0].A[i]).length;
+  const moved1 = h1.N.some((c, j) => Math.hypot(c[0] - h1.C[j][0], c[1] - h1.C[j][1]) > 1e-9);
+  s.push(aiStep('Assign again with the new centres. ' + (switched ? switched + ' customer' + (switched > 1 ? 's switch' : ' switches') + ' group.' : 'Nobody switches group this time.'), [], aiScene({ axes }, pts(h1.A), spokes(h1.A, h1.C), cents(h1.C), ro('round 2'))));
+  s.push(aiStep(moved1 ? 'Update again. The moves get smaller each round.' : 'Update again. No centre moves: each already sits in the middle of its group.', [], aiScene({ axes }, pts(h1.A), cents(h1.N), moves(h1.C, h1.N), ro('round 2'))));
+  s.push(aiStep('After ' + h.length + ' rounds nothing changes, so it stops. With k = ' + k + ', each lettered centre marks one group.', [], aiScene({ axes }, pts(R.final.A), spokes(R.final.A, R.final.N), cents(R.final.N), ro(h.length + ' rounds, settled'))));
+  s.push(aiStep('Score the result by adding up each customer’s squared distance to its centre: ' + aiFmt(R.inertia, 1) + ' for k = ' + k + '.', ['ro'], aiScene({ axes }, pts(R.final.A), spokes(R.final.A, R.final.N), cents(R.final.N), ro('distance² = ' + aiFmt(R.inertia, 1)))));
+  s.push(aiStep('More groups nearly always lower that score, so it cannot pick k alone. Plot it for k = 1 to 6 and look for the bend.', ['el'], aiScene({ axes }, pts(R.final.A), spokes(R.final.A, R.final.N), cents(R.final.N), elbow)));
+  s.push(aiStep('The curve bends at k = ' + D.bend + ': after that, extra groups barely help. Your k = ' + k + (k === D.bend ? ' sits right on the bend.' : ' is off the bend. Try ' + D.bend + '.'), ['elK'], aiScene({ axes }, pts(R.final.A), spokes(R.final.A, R.final.N), cents(R.final.N), elbow)));
+  s.push(aiStep('Watch out: k-means likes round blobs of similar size, and bad starting centres can trap it. Smarter starts help.', [], aiScene({ axes }, pts(R.final.A), spokes(R.final.A, R.final.N), cents(R.final.N), elbow)));
+  return s;
+}
+
+// ---------- ML: PCA, squash two columns into one ----------
+const AI_PCA = (() => {
+  const ts = [-2, -1.7, -1.4, -1.2, -0.9, -0.7, -0.5, -0.3, -0.1, 0, 0.2, 0.4, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.8, 2.1];
+  const rnd = aiRng(11);
+  const P = ts.map((t) => [aiR(5 + 1.6 * t + aiGauss(rnd) * 0.4), aiR(5 + 1.0 * t + aiGauss(rnd) * 0.45)]);
+  const n = P.length; const mx = P.reduce((s, q) => s + q[0], 0) / n; const my = P.reduce((s, q) => s + q[1], 0) / n;
+  const sxx = P.reduce((s, q) => s + (q[0] - mx) * (q[0] - mx), 0) / n; const syy = P.reduce((s, q) => s + (q[1] - my) * (q[1] - my), 0) / n;
+  const sxy = P.reduce((s, q) => s + (q[0] - mx) * (q[1] - my), 0) / n;
+  const best = 0.5 * Math.atan2(2 * sxy, sxx - syy);
+  const along = (a) => sxx * Math.cos(a) * Math.cos(a) + 2 * sxy * Math.cos(a) * Math.sin(a) + syy * Math.sin(a) * Math.sin(a);
+  return { P, mx, my, total: sxx + syy, best, along };
+})();
+function aiPca(p) {
+  const D = AI_PCA; const ang = (p * Math.PI) / 180; const bestDeg = Math.round(((D.best * 180) / Math.PI + 180) % 180);
+  const S = 44; const ox = 300 - D.mx * S; const oy = 290 + D.my * S;
+  const X = (v) => aiR(ox + v * S); const Y = (v) => aiR(oy - v * S);
+  const axes = { x0: 70, y0: 505, x1: 540, y1: 50, xl: 'height →', yl: '↑ arm span' };
+  const pts = (op) => ({ points: D.P.map((q, i) => ({ id: 'd' + i, x: X(q[0]), y: Y(q[1]), c: 'a', r: 6, op: op || 1 })) });
+  const cross = { paths: [{ id: 'cx', pts: [[X(D.mx - 4.6), Y(D.my)], [X(D.mx + 4.6), Y(D.my)]], c: 'l', w: 1.5, dash: true }, { id: 'cy', pts: [[X(D.mx), Y(D.my - 5)], [X(D.mx), Y(D.my + 5)]], c: 'l', w: 1.5, dash: true }],
+    points: [{ id: 'mean', x: X(D.mx), y: Y(D.my), c: 't', r: 5, label: 'average', lx: 10, ly: 18 }] };
+  const axis = (a, id, c) => ({ id, pts: [[X(D.mx - 4.6 * Math.cos(a)), Y(D.my - 4.6 * Math.sin(a))], [X(D.mx + 4.6 * Math.cos(a)), Y(D.my + 4.6 * Math.sin(a))]], c, w: 3.5 });
+  const proj = (a) => {
+    const u = [Math.cos(a), Math.sin(a)];
+    const feet = D.P.map((q) => { const t = (q[0] - D.mx) * u[0] + (q[1] - D.my) * u[1]; return [D.mx + t * u[0], D.my + t * u[1]]; });
+    return { paths: D.P.map((q, i) => ({ id: 'pj' + i, pts: [[X(q[0]), Y(q[1])], [X(feet[i][0]), Y(feet[i][1])]], c: 'm', w: 1.2, dash: true })),
+      points: feet.map((f, i) => ({ id: 'ft' + i, x: X(f[0]), y: Y(f[1]), c: 't', r: 4, hollow: true })) };
+  };
+  const share = (a) => D.along(a) / D.total;
+  const bars = (a) => ({ bars: [
+    { id: 'bYou', x: 640, y: 150, w: aiR(260 * share(a)), h: 30, c: 'c', val: aiPct(share(a)), vx: aiR(650 + 260 * share(a)), vy: 171 },
+    { id: 'bBest', x: 640, y: 230, w: aiR(260 * share(D.best)), h: 30, c: 'a', val: aiPct(share(D.best)), vx: aiR(650 + 260 * share(D.best)), vy: 251 }
+  ], labels: [{ id: 'lYou', x: 640, y: 140, text: 'spread kept by your axis (' + p + '°)', c: 'm', size: 13 }, { id: 'lBest', x: 640, y: 220, text: 'spread kept by PC1 (' + bestDeg + '°)', c: 'm', size: 13 }] });
+  const s = [];
+  s.push(aiStep('Twenty people, two measurements each: height and arm span. Tall people tend to have long arms, so the dots lean.', [], aiScene({ axes }, pts())));
+  s.push(aiStep('PCA starts by centring: measure everything from the average person, the cross in the middle.', ['mean'], aiScene({ axes }, cross, pts())));
+  s.push(aiStep('Draw a line through the centre at your angle, ' + p + '°. We want one line that keeps as much of the spread as possible.', ['you'], aiScene({ axes }, cross, pts(), { paths: [axis(ang, 'you', 'c')] })));
+  s.push(aiStep('Drop each dot straight onto the line. Each person is now one number: how far along the line they land.', [], aiScene({ axes }, cross, pts(0.5), { paths: [axis(ang, 'you', 'c')] }, proj(ang))));
+  s.push(aiStep('Measure how spread out the landed dots are. Your axis keeps ' + aiPct(share(ang)) + ' of the total spread.', ['bYou'], aiScene({ axes }, cross, pts(0.5), { paths: [axis(ang, 'you', 'c')] }, proj(ang), bars(ang))));
+  s.push(aiStep('PCA turns the line until the spread is largest. Here that is ' + bestDeg + '°, keeping ' + aiPct(share(D.best)) + '. It is called PC1.', ['pc1', 'bBest'], aiScene({ axes }, cross, pts(0.5), { paths: [axis(D.best, 'pc1', 'a')] }, proj(D.best), bars(ang))));
+  s.push(aiStep('The maths: PC1 is the top eigenvector of the covariance matrix, the table of how the columns vary together.', ['pc1'], aiScene({ axes }, cross, pts(), { paths: [axis(D.best, 'pc1', 'a')] }, bars(ang))));
+  s.push(aiStep('PC2 sits at right angles to PC1 and holds the rest, ' + aiPct(1 - share(D.best)) + '. Little is lost by dropping it.', ['pc2'], aiScene({ axes }, cross, pts(), { paths: [axis(D.best, 'pc1', 'a'), axis(D.best + Math.PI / 2, 'pc2', 'b')] }, bars(ang))));
+  s.push(aiStep('With 100 columns, the first two or three components often keep most of the spread. That is how big tables get plotted in 2D.', ['pc1'], aiScene({ axes }, cross, pts(0.5), { paths: [axis(D.best, 'pc1', 'a')] }, proj(D.best), bars(ang))));
+  s.push(aiStep('Two cautions: put columns on the same scale first, and remember PCA finds directions of spread, not meaning.', [], aiScene({ axes }, cross, pts(), { paths: [axis(D.best, 'pc1', 'a')] }, bars(ang))));
+  return s;
+}
+
+// ---------- ML: the bias-variance picture ----------
+const AI_BV = (() => {
+  const f = (x) => 5 + 2.5 * Math.sin(x * 0.75);
+  const xs = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5];
+  const rnd = aiRng(7);
+  const sets = []; for (let k = 0; k < 12; k++) sets.push(xs.map((x) => f(x) + aiGauss(rnd) * 0.9));
+  const grid = []; for (let i = 0; i <= 36; i++) grid.push(0.5 + (9 * i) / 36);
+  const by = {};
+  for (let d = 1; d <= 7; d++) {
+    const fits = sets.map((ys) => aiPolyFit(xs, ys, d));
+    const vals = fits.map((g) => grid.map((x) => g(x)));
+    const mean = grid.map((x, j) => vals.reduce((s, v) => s + v[j], 0) / vals.length);
+    const bias2 = grid.reduce((s, x, j) => s + Math.pow(mean[j] - f(x), 2), 0) / grid.length;
+    const vari = grid.reduce((s, x, j) => s + vals.reduce((t, v) => t + Math.pow(v[j] - mean[j], 2), 0) / vals.length, 0) / grid.length;
+    by[d] = { fits, mean, bias2, vari };
+  }
+  let best = 1; for (let d = 2; d <= 7; d++) if (by[d].bias2 + by[d].vari < by[best].bias2 + by[best].vari) best = d;
+  return { f, xs, sets, grid, by, best, noise: 0.81 };
+})();
+function aiBiasVar(p) {
+  const deg = Math.max(1, Math.min(7, Math.round(p)));
+  const D = AI_BV;
+  const [sx, sy] = aiScale(70, 560, 480, 60, 0, 10);
+  const axes = { x0: 70, y0: 480, x1: 560, y1: 60, xl: 'x →', yl: '↑ y' };
+  const cl = (v) => aiR(Math.max(50, Math.min(490, sy(v))));
+  const truth = { paths: [{ id: 'truth', pts: D.grid.map((x) => [sx(x), cl(D.f(x))]), c: 'm', w: 2.5, dash: true }] };
+  const dots = (k) => ({ points: D.xs.map((x, i) => ({ id: 'd' + i, x: sx(x), y: cl(D.sets[k][i]), c: 'a', r: 6 })) });
+  const fit = (d, k, id, extra) => Object.assign({ id: id || 'fit', pts: D.grid.map((x) => [sx(x), cl(D.by[d].fits[k](x))]), c: 't', w: 3 }, extra || {});
+  const many = (d) => ({ paths: D.sets.map((ys, k) => fit(d, k, 'f' + k, { c: 'b', w: 1.5, op: 0.45 })) });
+  const mean = (d) => ({ paths: [{ id: 'mean', pts: D.grid.map((x, j) => [sx(x), cl(D.by[d].mean[j])]), c: 't', w: 4 }] });
+  const fmt = (v) => (v > 99 ? '> 99' : aiFmt(v));
+  const ro = (d) => ({ labels: [
+    { id: 'rd', x: 630, y: 90, text: 'degree ' + d, c: 't', size: 18, weight: 700, mono: true },
+    { id: 'rb', x: 630, y: 122, text: 'bias²     ' + fmt(D.by[d].bias2), c: 'c', size: 15, mono: true },
+    { id: 'rv', x: 630, y: 148, text: 'variance  ' + fmt(D.by[d].vari), c: 'b', size: 15, mono: true },
+    { id: 'rn', x: 630, y: 174, text: 'noise     ' + aiFmt(D.noise), c: 'm', size: 15, mono: true }
+  ] });
+  const chart = () => {
+    const X = (d) => aiR(630 + ((d - 1) / 6) * 270); const Yv = (e) => aiR(470 - Math.min(1, Math.log10(1 + e * 3) / Math.log10(1 + 3 * 4)) * 200);
+    const line = (key, c) => ({ id: 'ch' + key, pts: [1, 2, 3, 4, 5, 6, 7].map((d) => [X(d), Yv(key === 'tot' ? D.by[d].bias2 + D.by[d].vari : D.by[d][key])]), c, w: key === 'tot' ? 3.5 : 2.5 });
+    return { paths: [{ id: 'chAx', pts: [[630, 262], [630, 470], [905, 470]], c: 'l', w: 1.5 }, line('bias2', 'c'), line('vari', 'b'), line('tot', 't')],
+      points: [{ id: 'chBest', x: X(D.best), y: Yv(D.by[D.best].bias2 + D.by[D.best].vari), c: 't', r: 8, ring: true }, { id: 'chYou', x: X(deg), y: Yv(D.by[deg].bias2 + D.by[deg].vari), c: 'a', r: 6 }],
+      labels: [{ id: 'chT', x: 630, y: 248, text: 'bias², variance and their sum', c: 'm', size: 13 }, { id: 'chX', x: 905, y: 492, text: 'degree 1 … 7 →', c: 'm', size: 12, anchor: 'end' }] };
+  };
+  const tot = (d) => aiFmt(D.by[d].bias2 + D.by[d].vari);
+  const s = [];
+  s.push(aiStep('The dashed curve is the true pattern behind some data. In real life you never get to see it.', ['truth'], aiScene({ axes }, truth)));
+  s.push(aiStep('What you do get is a sample: ten points, each with some noise mixed in.', [], aiScene({ axes }, truth, dots(0))));
+  s.push(aiStep('Fit a curve of your degree, ' + deg + ', to those ten points.', ['fit'], aiScene({ axes }, truth, dots(0), { paths: [fit(deg, 0)] })));
+  s.push(aiStep('Draw a fresh sample from the same pattern and fit again. The curve comes out different.', ['fit'], aiScene({ axes }, truth, dots(1), { paths: [fit(deg, 1)] })));
+  s.push(aiStep('Do it twelve times. Twelve samples give twelve fits, all trying to find the same pattern.', [], aiScene({ axes }, truth, many(deg))));
+  s.push(aiStep('Average the twelve fits. Bias is how far that average sits from the truth: a habit of being wrong the same way.', ['mean', 'rb'], aiScene({ axes }, truth, many(deg), mean(deg), ro(deg))));
+  s.push(aiStep('Variance is how far single fits scatter around their average: how much the answer depends on luck of the sample.', ['rv'], aiScene({ axes }, truth, many(deg), mean(deg), ro(deg))));
+  s.push(aiStep('Expected error on new data ≈ bias² + variance + noise. Noise is in the data itself; no model can remove it.', ['rb', 'rv', 'rn'], aiScene({ axes }, truth, many(deg), mean(deg), ro(deg))));
+  s.push(aiStep('Degree 1 is too stiff: bias² ' + fmt(D.by[1].bias2) + ', variance only ' + fmt(D.by[1].vari) + '. Every fit misses the wave the same way.', ['mean'], aiScene({ axes }, truth, many(1), mean(1), ro(1))));
+  s.push(aiStep('Degree 7 is too loose: bias² ' + fmt(D.by[7].bias2) + ' but variance ' + fmt(D.by[7].vari) + '. The fits chase the noise and disagree.', [], aiScene({ axes }, truth, many(7), mean(7), ro(7))));
+  s.push(aiStep('Their sum is lowest at degree ' + D.best + '. Your degree ' + deg + ' scores ' + tot(deg) + ' against ' + tot(D.best) + ' at the best.', ['chtot', 'chBest'], aiScene({ axes }, truth, many(deg), mean(deg), ro(deg), chart())));
+  s.push(aiStep('More data or a penalty on wiggly curves shrinks variance, so a flexible model can be used safely.', ['chvari'], aiScene({ axes }, truth, mean(deg), ro(deg), chart())));
+  return s;
+}
+
+// ---------- AI now: tokens and byte-pair encoding ----------
+const AI_BPE = (() => {
+  const words = [['play', 5], ['played', 3], ['playing', 4], ['player', 2], ['plays', 3], ['replay', 2]];
+  let corpus = words.map(([w, n]) => ({ toks: w.split(''), n }));
+  const merges = []; const states = [corpus.map((x) => x.toks.slice())]; const tops = [];
+  for (let m = 0; m < 12; m++) {
+    const cnt = {}; const order = [];
+    corpus.forEach((x) => { for (let i = 0; i + 1 < x.toks.length; i++) { const k = x.toks[i] + '\u0001' + x.toks[i + 1]; if (!(k in cnt)) { cnt[k] = 0; order.push(k); } cnt[k] += x.n; } });
+    if (!order.length) break;
+    const ranked = order.slice().sort((a, b) => cnt[b] - cnt[a] || order.indexOf(a) - order.indexOf(b));
+    tops.push(ranked.slice(0, 5).map((k) => [k.split('\u0001'), cnt[k]]));
+    const [a, b] = ranked[0].split('\u0001');
+    merges.push([a, b, cnt[ranked[0]]]);
+    corpus = corpus.map((x) => { const out = []; for (let i = 0; i < x.toks.length; i++) { if (i + 1 < x.toks.length && x.toks[i] === a && x.toks[i + 1] === b) { out.push(a + b); i++; } else out.push(x.toks[i]); } return { toks: out, n: x.n }; });
+    states.push(corpus.map((x) => x.toks.slice()));
+  }
+  const chars = {}; words.forEach(([w]) => w.split('').forEach((c) => { chars[c] = 1; }));
+  const encode = (word, nm) => {
+    let t = word.split('');
+    merges.slice(0, nm).forEach(([a, b]) => { const out = []; for (let i = 0; i < t.length; i++) { if (i + 1 < t.length && t[i] === a && t[i + 1] === b) { out.push(a + b); i++; } else out.push(t[i]); } t = out; });
+    return t;
+  };
+  return { words, merges, states, tops, base: Object.keys(chars).length, encode };
+})();
+function aiTokens(p) {
+  const D = AI_BPE; const nm = Math.max(0, Math.min(D.merges.length, Math.round(p)));
+  const rowY = (r) => 96 + r * 64;
+  const chipsRow = (r, toks, hot) => { const out = []; let x = 150; toks.forEach((tk, i) => { const w = aiTokW(tk); out.push({ id: 'w' + r + '_' + i, x: aiR(x + w / 2), y: rowY(r), text: tk, c: hot && hot.indexOf(tk) >= 0 ? 'a' : 'l', solid: hot && hot.indexOf(tk) >= 0 }); x += w + 6; }); return out; };
+  const corpus = (state, hot) => ({ tokens: [].concat.apply([], state.map((toks, r) => chipsRow(r, toks, hot))), labels: D.words.map(([w, n], r) => ({ id: 'n' + r, x: 120, y: rowY(r) + 5, text: '×' + n, c: 'm', size: 14, anchor: 'end', mono: true })) });
+  const pairBars = (top) => ({ bars: top.map(([pr, n], i) => ({ id: 'pb' + i, x: 740, y: 90 + i * 44, w: aiR(n * 9), h: 26, c: i === 0 ? 'a' : 'm', val: String(n), vx: aiR(748 + n * 9), vy: 108 + i * 44 })),
+    labels: top.map(([pr], i) => ({ id: 'pl' + i, x: 728, y: 108 + i * 44, text: pr[0] + ' + ' + pr[1], c: 't2', size: 14, anchor: 'end', mono: true })).concat([{ id: 'pT', x: 620, y: 62, text: 'pair counts (weighted by ×)', c: 'm', size: 13 }]) });
+  const mergeList = (n) => ({ labels: D.merges.slice(0, n).map(([a, b], i) => ({ id: 'ml' + i, x: 640, y: 92 + i * 28, text: (i + 1) + '. ' + a + ' + ' + b + ' → ' + a + b, c: 't', size: 14, mono: true }))
+    .concat([{ id: 'mlT', x: 640, y: 62, text: n ? 'merges learned, in order' : 'no merges yet', c: 'm', size: 13 }]) });
+  const word = (toks, y, sub) => ({ tokens: aiTokenRow(toks, y, 6).map((k, i) => Object.assign(k, { id: 'nw' + i, c: 'a' })), labels: [{ id: 'nwT', x: 480, y: y + 44, text: sub, c: 'm', size: 13, anchor: 'middle' }] });
+  const first = D.merges[0]; const vocab = D.base + nm;
+  const newTok = D.encode('replaying', nm);
+  const s = [];
+  s.push(aiStep('A model reads numbers, not letters. So text is first cut into pieces called tokens, and each piece gets an id.', [], { tokens: aiTokenRow(['re', 'play', 'ing', ' it'], 230, 10).map((k, i) => Object.assign(k, { sub: 'id ' + [57, 12, 31, 8][i] })) }));
+  s.push(aiStep('One token per whole word needs a huge vocabulary, and a word it never saw, like replaying, has no id at all.', ['nw0'], aiScene({ tokens: D.words.map(([w], i) => ({ id: 'v' + i, x: 140 + (i % 3) * 170, y: 140 + Math.floor(i / 3) * 70, text: w, c: 'l' })) }, { tokens: [{ id: 'nw0', x: 480, y: 380, text: 'replaying', c: 'bad', dash: true, sub: 'not in the vocabulary' }] })));
+  s.push(aiStep('One token per letter never misses a word, but even short text becomes a long row, and long rows cost more.', [], word('replaying'.split(''), 260, '9 tokens for one word')));
+  s.push(aiStep('Byte-pair encoding sits between the two. Start from letters, with a small practice text and how often each word appears.', [], corpus(D.states[0])));
+  s.push(aiStep('Count every pair of neighbouring tokens. The most common pair is ' + first[0] + ' + ' + first[1] + ', seen ' + first[2] + ' times.', ['pb0'], aiScene(corpus(D.states[0], [first[0], first[1]]), pairBars(D.tops[0]))));
+  s.push(aiStep('Merge that pair into one new token, ' + first[0] + first[1] + ', everywhere it appears. The vocabulary grows by one.', [], aiScene(corpus(D.states[1], [first[0] + first[1]]), mergeList(1))));
+  s.push(aiStep(nm ? 'Repeat: count, merge the top pair, again and again. Your slider runs ' + nm + ' merge' + (nm > 1 ? 's' : '') + '.' : 'Your slider is at 0 merges, so the text is still plain letters. Slide it right.', nm ? ['ml' + (nm - 1)] : [], aiScene(corpus(D.states[nm]), mergeList(nm))));
+  const whole = D.words.filter((w, r) => D.states[nm][r].length === 1).map((w) => w[0]);
+  const wholeTxt = whole.length === D.words.length ? 'Every practice word is now one token. ' : whole.length ? whole.join(', ') + (whole.length > 1 ? ' are now one token each. ' : ' is now one token. ') : 'No whole word is one token yet. ';
+  s.push(aiStep(wholeTxt + 'Vocabulary: ' + D.base + ' letters + ' + nm + ' merge' + (nm === 1 ? '' : 's') + ' = ' + vocab + '.', [], aiScene(corpus(D.states[nm]), mergeList(nm))));
+  s.push(aiStep('A new word is split by replaying the merges in order. replaying becomes ' + newTok.length + ' token' + (newTok.length > 1 ? 's' : '') + ': ' + newTok.join(' · ') + '.', ['nw0'], aiScene(word(newTok, 300, newTok.length + ' tokens instead of 9 letters'), mergeList(nm))));
+  s.push(aiStep('Nothing is ever unknown: a rare word just falls back to smaller pieces, down to single letters if it must.', [], word(D.encode('replayer', nm), 300, 'replayer, never seen, still splits')));
+  s.push(aiStep('Tokens are the unit of cost. Prices and context limits are counted in tokens, and some languages need more per word.', [], word(newTok, 300, 'cost and context are counted in tokens')));
+  s.push(aiStep('Real tokenizers learn tens of thousands of merges from huge amounts of text, often starting from raw bytes.', [], aiScene(corpus(D.states[nm]), mergeList(nm))));
+  return s;
+}
+
+// ---------- AI now: evals and benchmarks ----------
+function aiEvals(p) {
+  const n = Math.max(20, Math.round(p));
+  const pa = 0.72; const pb = 0.67;
+  const se = (q) => Math.sqrt((q * (1 - q)) / n);
+  const ma = 1.96 * se(pa); const mb = 1.96 * se(pb); const md = 1.96 * Math.sqrt(se(pa) * se(pa) + se(pb) * se(pb));
+  const real = pa - pb > md;
+  const pts = (v) => Math.round(v * 1000) / 10;
+  const model = { id: 'model', x: 40, y: 220, w: 180, h: 90, label: 'model', sub: 'takes the exam', c: 'b' };
+  const exam = (id, y, label, sub, on) => ({ id, x: 600, y, w: 320, h: 80, label, sub, c: on ? 'a' : 'l', op: on === false ? 0.5 : 1 });
+  const exams = (hot) => ({ boxes: [exam('mc', 80, 'answer key', 'multiple choice, e.g. MMLU', hot === 'mc' || (hot ? false : undefined)), exam('tests', 230, 'unit tests', 'code must pass, e.g. SWE-bench', hot === 'tests' || (hot ? false : undefined)), exam('judge', 380, 'a judge', 'a model or people pick the better answer', hot === 'judge' || (hot ? false : undefined))] });
+  const arrow = (to) => ({ arrows: [{ id: 'ex', from: 'model', to, c: 'a', w: 3 }] });
+  const Yv = (v) => aiR(470 - v * 380);
+  const bar = (id, x, q, m, c, label) => ({ bars: [{ id, x, y: Yv(q), w: 90, h: aiR(q * 380), c, label, ly: 494, val: pts(q) + '%', vy: Yv(q + m) - 10 }],
+    paths: [{ id: id + 'e', pts: [[x + 45, Yv(Math.max(0, q - m))], [x + 45, Yv(Math.min(1, q + m))]], c: 't', w: 2.5 }, { id: id + 't', pts: [[x + 30, Yv(Math.min(1, q + m))], [x + 60, Yv(Math.min(1, q + m))]], c: 't', w: 2.5 }, { id: id + 'b', pts: [[x + 30, Yv(Math.max(0, q - m))], [x + 60, Yv(Math.max(0, q - m))]], c: 't', w: 2.5 }] });
+  const scores = aiScene(bar('bA', 300, pa, ma, 'a', 'model A'), bar('bB', 480, pb, mb, 'b', 'model B'), { paths: [{ id: 'base', pts: [[270, 470], [600, 470]], c: 'l', w: 1.5 }], labels: [
+    { id: 'nq', x: 660, y: 140, text: n.toLocaleString('en-US') + ' questions', c: 't', size: 18, weight: 700, mono: true },
+    { id: 'mA', x: 660, y: 176, text: 'A: ±' + pts(ma) + ' points', c: 'a', size: 14, mono: true },
+    { id: 'mB', x: 660, y: 202, text: 'B: ±' + pts(mb) + ' points', c: 'b', size: 14, mono: true },
+    { id: 'mD', x: 660, y: 238, text: 'gap 5 ± ' + pts(md) + ' points', c: real ? 'ok' : 'bad', size: 15, weight: 700, mono: true }
+  ] });
+  const leak = { boxes: [{ id: 'leak', x: 300, y: 70, w: 270, h: 70, label: 'test questions leaked', sub: 'into the training data', c: 'bad', dash: true }] };
+  const satur = (() => { const yrs = [0, 1, 2, 3, 4]; const v = [0.42, 0.61, 0.78, 0.88, 0.92]; return { paths: [{ id: 'sAx', pts: [[300, 120], [300, 460], [880, 460]], c: 'l', w: 1.5 }, { id: 'sat', pts: yrs.map((x, i) => [300 + x * 140, aiR(460 - v[i] * 330)]), c: 'a', w: 3.5 }, { id: 'cap', pts: [[300, aiR(460 - 0.95 * 330)], [880, aiR(460 - 0.95 * 330)]], c: 'm', w: 1.5, dash: true }],
+    labels: [{ id: 'sY', x: 310, y: 112, text: '↑ best score on one benchmark', c: 'm', size: 13 }, { id: 'sX', x: 880, y: 484, text: 'years →', c: 'm', size: 13, anchor: 'end' }, { id: 'sN', x: 880, y: 512, text: 'illustrative shape, not measured data', c: 'm', size: 12, anchor: 'end' }] }; })();
+  const s = [];
+  s.push(aiStep('A benchmark is a fixed exam: the same questions for every model, marked the same way, so scores can be compared.', ['model'], aiScene({ boxes: [model] }, exams())));
+  s.push(aiStep('Some exams have an answer key. MMLU asks multiple-choice questions across 57 subjects and counts the right ones.', ['mc'], aiScene({ boxes: [model] }, exams('mc'), arrow('mc'))));
+  s.push(aiStep('Code can be marked by tests. SWE-bench gives real GitHub issues; a fix counts only if the project’s tests pass.', ['tests'], aiScene({ boxes: [model] }, exams('tests'), arrow('tests'))));
+  s.push(aiStep('Open answers need a judge: people voting, or a strong model. Judges have habits, such as liking longer answers.', ['judge'], aiScene({ boxes: [model] }, exams('judge'), arrow('judge'))));
+  s.push(aiStep('One number hides a lot. HELM reports many measures across many tasks, not just accuracy.', [], aiScene({ boxes: [model] }, exams(), { arrows: [{ id: 'e1', from: 'model', to: 'mc', c: 'm' }, { id: 'e2', from: 'model', to: 'tests', c: 'm' }, { id: 'e3', from: 'model', to: 'judge', c: 'm' }] })));
+  s.push(aiStep('A score is an estimate. Model A gets 72% and model B 67% on the same ' + n.toLocaleString('en-US') + ' questions.', ['bA', 'bB'], scores));
+  s.push(aiStep('Each score wobbles by about ±1.96 × √(p(1 − p) ÷ n). With ' + n.toLocaleString('en-US') + ' questions that is ±' + pts(ma) + ' points for A.', ['bAe', 'mA'], scores));
+  s.push(aiStep(real ? 'The 5-point gap beats its margin of ±' + pts(md) + ', so A is very likely better. More questions buy certainty.' : 'The 5-point gap is inside its margin of ±' + pts(md) + ', so this exam cannot tell A from B. Add questions.', ['mD'], scores));
+  s.push(aiStep('Leaks inflate scores. If test questions were in the training data, the model may remember answers instead of reasoning.', ['leak'], aiScene(scores, leak)));
+  s.push(aiStep('Benchmarks also saturate: once top models score above 90%, the exam stops telling them apart, and harder ones appear.', ['sat'], satur));
+  s.push(aiStep('Easy tests can flatter too. Finding one fact in a long text is simpler than RULER’s harder long-context tasks.', ['cap'], satur));
+  s.push(aiStep('Keeping tests private helps against leaks, and double-blind setups are being tried so private scores can be trusted.', ['leak'], aiScene(scores, leak)));
+  s.push(aiStep('The best eval is your own: real examples from your task, held back from training, marked the same way every time.', ['model'], aiScene({ boxes: [model] }, exams())));
+  return s;
+}
+
+// ---------- AI now: distillation ----------
+function aiDistill(p) {
+  const T = Math.round(p * 10) / 10;
+  const cls = ['cat', 'tiger', 'dog', 'car', 'banana'];
+  const zt = [6, 3.5, 3, -1, -2];
+  const z0 = [1, 0.6, 0.5, 0.4, 0.3];
+  const qT = aiSoftmax(zt, T); const q1 = aiSoftmax(zt, 1);
+  const kl = (P, Q) => P.reduce((s, v, i) => s + (v > 0 ? v * Math.log(v / Q[i]) : 0), 0);
+  // train the student's five logits to match the teacher's soft targets at temperature T (gradient of the cross-entropy)
+  let z = z0.slice();
+  for (let it = 0; it < 300; it++) { const q = aiSoftmax(z, T); z = z.map((v, i) => v - 1.0 * (q[i] - qT[i]) / T); }
+  const qs0 = aiSoftmax(z0, T); const qs1 = aiSoftmax(z, T);
+  const teacher = { id: 'teacher', x: 40, y: 70, w: 210, h: 90, label: 'teacher', sub: 'big · slow · accurate', c: 'b' };
+  const student = { id: 'student', x: 40, y: 330, w: 210, h: 90, label: 'student', sub: 'small · fast', c: 'a' };
+  const chart = (id, y0, probs, c, title) => ({ bars: probs.map((v, i) => ({ id: id + i, x: 330 + i * 120, y: aiR(y0 - v * 150), w: 70, h: aiR(v * 150), c, label: cls[i], ly: y0 + 18, val: aiPct(v), vy: aiR(y0 - v * 150 - 7) })),
+    labels: [{ id: id + 'T', x: 330, y: y0 - 166, text: title, c: 'm', size: 13 }] });
+  const hard = [1, 0, 0, 0, 0];
+  const kl0 = kl(qT, qs0); const kl1 = kl(qT, qs1);
+  const s = [];
+  s.push(aiStep('A big teacher model is accurate, but slow and costly to run. We want something that fits on a phone.', ['teacher'], { boxes: [teacher, Object.assign({}, student, { op: 0.4 })] }));
+  s.push(aiStep('The student is a much smaller model. Trained on its own from labels, it usually ends up less accurate.', ['student'], { boxes: [teacher, student] }));
+  s.push(aiStep('Normal training uses hard labels: this photo is a cat, 100%, and every other class gets exactly 0.', ['h0'], aiScene({ boxes: [teacher, student] }, chart('h', 470, hard, 'm', 'hard label for one photo'))));
+  s.push(aiStep('The teacher gives more: cat ' + aiPct(q1[0]) + ', tiger ' + aiPct(q1[1]) + ', dog ' + aiPct(q1[2]) + ', and almost nothing for car or banana.', ['t0', 't1', 't2'], aiScene({ boxes: [teacher, student] }, chart('t', 230, q1, 'b', 'teacher at temperature 1'))));
+  s.push(aiStep('Those small numbers carry knowledge: a cat looks more like a tiger than like a car. Hard labels throw that away.', ['t1', 't3'], aiScene({ boxes: [teacher, student] }, chart('t', 230, q1, 'b', 'teacher at temperature 1'))));
+  s.push(aiStep('Temperature softens them: divide the teacher’s scores by T before softmax. At your T = ' + T + ', tiger gets ' + aiPct(qT[1]) + '.', ['t1'], aiScene({ boxes: [teacher, student] }, chart('t', 230, qT, 'b', 'teacher at temperature ' + T))));
+  s.push(aiStep('Before training, the student’s guesses at T = ' + T + ' are nearly flat. Their gap from the teacher, the KL divergence, is ' + aiFmt(kl0, 3) + '.', ['s0', 's1', 's2', 's3', 's4'], aiScene({ boxes: [teacher, student] }, chart('t', 230, qT, 'b', 'teacher at temperature ' + T), chart('s', 480, qs0, 'a', 'student before training'))));
+  s.push(aiStep('Training nudges the student to match the teacher’s soft bars. After 300 small steps the gap is ' + aiFmt(kl1, 4) + '.', ['s0', 's1', 's2', 's3', 's4'], aiScene({ boxes: [teacher, student], arrows: [{ id: 'teach', from: 'teacher', to: 'student', c: 'a', w: 3, label: 'soft targets', lx: 52 }] }, chart('t', 230, qT, 'b', 'teacher at temperature ' + T), chart('s', 480, qs1, 'a', 'student after training'))));
+  s.push(aiStep('In practice the loss mixes both: match the teacher’s soft targets, and still get the hard label right.', ['student'], aiScene({ boxes: [teacher, student] }, chart('t', 230, qT, 'b', 'teacher at temperature ' + T), chart('s', 480, qs1, 'a', 'student after training'))));
+  s.push(aiStep('DistilBERT is a well-known case: about 40% smaller and 60% faster than BERT, keeping about 97% of its language skill.', ['student'], { boxes: [Object.assign({}, teacher, { label: 'BERT' }), Object.assign({}, student, { label: 'DistilBERT', sub: '40% smaller · 60% faster' })], arrows: [{ id: 'teach', from: 'teacher', to: 'student', c: 'a', w: 3, label: 'distil', lx: 34 }] }));
+  s.push(aiStep('The same trick works for reasoning: train a fast model on a slow model’s worked answers, so careful habits become quick.', ['teach'], { boxes: [Object.assign({}, teacher, { label: 'slow reasoner', sub: 'writes steps' }), Object.assign({}, student, { label: 'fast model', sub: 'answers at once' })], arrows: [{ id: 'teach', from: 'teacher', to: 'student', c: 'a', w: 3, label: 'worked answers', lx: 64 }] }));
+  s.push(aiStep('Limits: a student rarely beats its teacher, and some model licences forbid training on their outputs. Check first.', ['teacher'], { boxes: [teacher, student] }));
+  return s;
+}
+
 const AI_LESSONS = [
   { id: 'gradient', track: 'ml', title: 'Fit a line by gradient descent', tag: 'linear regression', minutes: 4, make: aiGradient,
     idea: 'Learning is lowering one number, the loss, by taking small steps downhill.',
@@ -1786,8 +2203,52 @@ const AI_LESSONS = [
       { title: 'QLoRA: Efficient Finetuning of Quantized LLMs', org: 'Dettmers, Pagnoni, Holtzman, Zettlemoyer', date: '2023-05-23', link: 'https://arxiv.org/abs/2305.14314' },
       { title: 'PEFT: Parameter-Efficient Fine-Tuning of Billion-Scale Models on Low-Resource Hardware', org: 'Hugging Face', date: '2023-02-10', link: 'https://huggingface.co/blog/peft' },
       { title: 'Making LLMs even more accessible with bitsandbytes, 4-bit quantization and QLoRA', org: 'Hugging Face', date: '2023-05-24', link: 'https://huggingface.co/blog/4bit-transformers-bitsandbytes' }
+    ] },
+  { id: 'logistic', track: 'ml', title: 'Logistic regression and the sigmoid', tag: 'probabilities from a line', minutes: 4, make: aiLogistic,
+    idea: 'Squash a weighted sum through the sigmoid to get a probability, then train it on log loss.',
+    param: { label: 'Weight w (steepness)', min: 0.2, max: 4, step: 0.1, value: 1, digits: 1, hint: 'How steep the curve is around its midpoint. The log loss is recomputed for your w.' } },
+  { id: 'confusion', track: 'ml', title: 'Precision, recall and the confusion matrix', tag: 'judging a classifier', minutes: 4, make: aiConfusion,
+    idea: 'Four counts, two questions: of what we flagged, how much was right, and of what was there, how much we caught.',
+    param: { label: 'Threshold', min: 0.1, max: 0.9, step: 0.05, value: 0.5, digits: 2, hint: 'Emails scoring at or above this are flagged. Every count is recomputed.' } },
+  { id: 'kmeans', track: 'ml', title: 'k-means clustering', tag: 'groups without labels', minutes: 4, make: aiKmeans,
+    idea: 'Drop k centres, let points join the nearest, move centres to the middle, and repeat until nothing moves.',
+    param: { label: 'k, number of groups', min: 2, max: 5, step: 1, value: 3, digits: 0, hint: 'k-means really runs for your k. Watch the score on the elbow chart.' } },
+  { id: 'pca', track: 'ml', title: 'PCA: many columns into few', tag: 'directions of spread', minutes: 3, make: aiPca,
+    idea: 'Find the direction along which the data spreads most, and describe each point by where it lands on it.',
+    param: { label: 'Axis angle (degrees)', min: 0, max: 175, step: 5, value: 0, digits: 0, hint: 'Turn your axis and see how much of the spread it keeps.' } },
+  { id: 'biasvar', track: 'ml', title: 'The bias-variance picture', tag: 'stiff or jumpy', minutes: 4, make: aiBiasVar,
+    idea: 'Error on new data is bias² plus variance plus noise. Stiff models miss; flexible ones wobble.',
+    param: { label: 'Curve degree', min: 1, max: 7, step: 1, value: 3, digits: 0, hint: 'Twelve samples are fitted at your degree; bias² and variance are measured.' } },
+  { id: 'tokens', track: 'now', title: 'Tokens and byte-pair encoding', tag: 'how text becomes numbers', minutes: 4, make: aiTokens,
+    idea: 'Start from letters and keep merging the most common neighbouring pair into a new token.',
+    param: { label: 'Merges', min: 0, max: AI_BPE.merges.length, step: 1, value: 6, digits: 0, hint: 'Byte-pair encoding really runs this many merges on the practice text.' },
+    sources: [
+      { title: 'Neural Machine Translation of Rare Words with Subword Units', org: 'Sennrich, Haddow, Birch', date: '2015-08-31', link: 'https://arxiv.org/abs/1508.07909' }
+    ] },
+  { id: 'distill', track: 'now', title: 'Distillation: big teacher, small student', tag: 'soft targets', minutes: 4, make: aiDistill,
+    idea: 'A small model learns from a big model’s full probabilities, not just the right answer.',
+    param: { label: 'Temperature T', min: 1, max: 10, step: 0.5, value: 4, digits: 1, hint: 'The teacher’s scores are divided by T before softmax. Higher is softer.' },
+    sources: [
+      { title: 'Distilling the Knowledge in a Neural Network', org: 'Hinton, Vinyals, Dean', date: '2015-03-09', link: 'https://arxiv.org/abs/1503.02531' },
+      { title: 'DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter', org: 'Sanh, Debut, Chaumond, Wolf', date: '2019-10-02', link: 'https://arxiv.org/abs/1910.01108' },
+      { title: 'Distilling System 2 into System 1', org: 'Yu, Xu, Weston, Kulikov', date: '2024-07-08', link: 'https://arxiv.org/abs/2407.06023' }
+    ] },
+  { id: 'evals', track: 'now', title: 'Evals and benchmarks', tag: 'what a score is worth', minutes: 4, make: aiEvals,
+    idea: 'A benchmark is a fixed exam. Its score is an estimate that leaks, saturates and needs a margin of error.',
+    param: { label: 'Questions in the exam', min: 20, max: 2000, step: 20, value: 100, digits: 0, hint: 'More questions shrink the margin of error on each score.' },
+    sources: [
+      { title: 'Measuring Massive Multitask Language Understanding (MMLU)', org: 'Hendrycks, Burns, Basart, Zou et al.', date: '2020-09-07', link: 'https://arxiv.org/abs/2009.03300' },
+      { title: 'Holistic Evaluation of Language Models (HELM)', org: 'Liang, Bommasani, Lee, Tsipras et al.', date: '2022-11-16', link: 'https://arxiv.org/abs/2211.09110' },
+      { title: 'Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena', org: 'Zheng, Chiang, Sheng, Zhuang et al.', date: '2023-06-09', link: 'https://arxiv.org/abs/2306.05685' },
+      { title: 'SWE-bench: Can Language Models Resolve Real-World GitHub Issues?', org: 'Jimenez, Yang, Wettig, Yao et al.', date: '2023-10-10', link: 'https://arxiv.org/abs/2310.06770' },
+      { title: 'RULER: What’s the Real Context Size of Your Long-Context Language Models?', org: 'Hsieh, Sun, Kriman, Acharya et al.', date: '2024-04-09', link: 'https://arxiv.org/abs/2404.06654' },
+      { title: 'Piloting the world’s first double-blind AI evaluations', org: 'Google DeepMind', date: '2026-08-27', link: 'https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/' }
     ] }
 ];
+// Track order: ML from a line to clusters; AI now from tokens to evals (the capstone).
+const AI_ORDER = ['gradient', 'logistic', 'knn', 'tree', 'confusion', 'overfit', 'biasvar', 'kmeans', 'pca', 'backprop', 'embeddings',
+  'tokens', 'attention', 'systems', 'agents', 'rag', 'moe', 'lora', 'distill', 'jepa', 'evals'];
+AI_LESSONS.sort((a, b) => AI_ORDER.indexOf(a.id) - AI_ORDER.indexOf(b.id));
 const AI_STEP_CACHE = {};
 function aiSteps(i, p) {
   const L = AI_LESSONS[i];

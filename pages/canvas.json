@@ -139,7 +139,7 @@
       "y": 5160
     },
     "SystemDesign.dc.html": {
-      "h": 900,
+      "h": 1220,
       "is_interactive": true,
       "title": "System design hub · HLD and LLD tracks, progress, the 4-step method",
       "w": 1440,
@@ -152,14 +152,14 @@
       "title": "System design lesson · animated diagram, numbers strip, 12 lessons",
       "w": 1440,
       "x": 9120,
-      "y": 1020
+      "y": 1340
     },
     "AIML.dc.html": {
-      "h": 900,
+      "h": 1140,
       "is_interactive": true,
       "title": "AI & ML hub · two tracks: ML foundations and AI now",
       "w": 1440,
-      "x": 9120,
+      "x": 10640,
       "y": 0
     },
     "AILesson.dc.html": {
@@ -167,8 +167,8 @@
       "is_interactive": true,
       "title": "AI & ML lesson player · 13 animated lessons, sliders, sources",
       "w": 1440,
-      "x": 9120,
-      "y": 1020
+      "x": 10640,
+      "y": 1260
     }
   },
   "createdOnFiles": {

@@ -491,6 +491,7 @@ const MENU = [
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
   ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];
@@ -1377,6 +1378,7 @@ const MENU = [
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
   ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];
@@ -3248,6 +3250,7 @@ const MENU = [
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
   ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league and who’s learning what', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
 ];
@@ -8315,6 +8318,854 @@ class Component extends DCLogic {
 }
 
 return Component; } };
+window.DS_BOARDS["Git.dc.html"] = { template: "\n\n<div data-fit=\"{{L.rootW}}\" style=\"width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s\">\n\n<header style=\"height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 {{L.gutter}}px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid {{t.line}}\">\n<a href=\"Home.dc.html\" aria-label=\"DSAMaxxing home\" style=\"display: flex; align-items: center; gap: 8px\"><svg width=\"26\" height=\"26\" viewBox=\"0 0 30 30\" aria-hidden=\"true\"><rect x=\"1\" y=\"1\" width=\"28\" height=\"28\" rx=\"9\" fill=\"{{t.accent}}\"><\/rect><path d=\"M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5\" fill=\"none\" stroke=\"{{t.onAccent}}\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><\/path><\/svg><span style=\"font-family: {{t.display}}; font-size: 20px; font-weight: 700\">DSA<span style=\"color: {{t.accent}}\">Maxxing<\/span><\/span><\/a>\n<nav aria-label=\"Breadcrumb\" style=\"display: flex; gap: 8px; align-items: center; font-size: 14px; color: {{t.muted}}; white-space: nowrap\"><a href=\"Patterns.dc.html\">Library<\/a><span aria-hidden=\"true\">/<\/span><span style=\"color: {{t.text}}; font-weight: 600\">Git, visually<\/span><\/nav>\n<div style=\"flex-grow: 1\"><\/div>\n<sc-if value=\"{{L.desk}}\" hint-placeholder-val=\"{{ true }}\">\n<span style=\"font-size: 13px; color: {{t.muted}}\">Keys: <kbd style=\"font-family: {{t.mono}}; color: {{t.text2}}\">←<\/kbd> <kbd style=\"font-family: {{t.mono}}; color: {{t.text2}}\">→<\/kbd> <kbd style=\"font-family: {{t.mono}}; color: {{t.text2}}\">space<\/kbd><\/span>\n<div role=\"group\" aria-label=\"Theme\" style=\"display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: {{t.sunk}}\">\n<sc-for list=\"{{themeBtns}}\" as=\"tb\" hint-placeholder-count=\"4\"><button onClick=\"{{tb.pick}}\" aria-pressed=\"{{tb.on}}\" style=\"height: 34px; padding: 0 12px; border: 0; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}\">{{tb.label}}<\/button><\/sc-for>\n<\/div>\n<\/sc-if>\n<\/header>\n\n<div style=\"flex-grow: 1; min-height: 0; display: grid; grid-template-columns: {{L.cols}}\">\n\n<!-- lessons -->\n<nav aria-label=\"Git lessons\" style=\"box-sizing: border-box; min-width: 0; padding: {{L.navPad}}; border-right: {{L.navBorder}}; border-bottom: {{L.navBottom}}; display: flex; flex-direction: column; gap: 14px\">\n<sc-if value=\"{{L.desk}}\" hint-placeholder-val=\"{{ true }}\"><span style=\"font-family: {{t.display}}; font-size: 24px; line-height: 1\">Git, <span style=\"color: {{t.accent}}\">visually<\/span><\/span><\/sc-if>\n<div class=\"git-scroll\" style=\"display: flex; flex-direction: {{L.lessonDir}}; gap: 4px; overflow-x: {{L.lessonScroll}}\">\n<sc-for list=\"{{lessons}}\" as=\"ls\" hint-placeholder-count=\"8\">\n<button onClick=\"{{ls.pick}}\" aria-current=\"{{ls.cur}}\" style=\"flex-shrink: 0; min-height: 48px; padding: 6px 12px; border-radius: 10px; border: 1px solid {{ls.border}}; background: {{ls.bg}}; color: {{ls.fg}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left\"><span style=\"font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{ls.numFg}}\">{{ls.num}}<\/span><span style=\"display: flex; flex-direction: column; gap: 1px\"><span style=\"font-size: 15px; font-weight: 600; white-space: nowrap\">{{ls.title}}<\/span><sc-if value=\"{{L.desk}}\" hint-placeholder-val=\"{{ true }}\"><span style=\"font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}; white-space: nowrap\">{{ls.tag}}<\/span><\/sc-if><\/span><\/button>\n<\/sc-for>\n<\/div>\n<sc-if value=\"{{L.desk}}\" hint-placeholder-val=\"{{ true }}\">\n<div style=\"margin-top: auto; padding: 14px; border-radius: 12px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px\">\n<span style=\"font-size: 12px; font-weight: 700; color: {{t.muted}}\">How to read it<\/span>\n<div style=\"display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; font-size: 13px; color: {{t.text2}}\">\n<sc-for list=\"{{legend}}\" as=\"lg\" hint-placeholder-count=\"4\"><span style=\"justify-self: start; font-family: {{t.mono}}; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid {{lg.color}}; color: {{lg.color}}\">{{lg.badge}}<\/span><span>{{lg.text}}<\/span><\/sc-for>\n<\/div>\n<span style=\"font-size: 12px; line-height: 1.5; color: {{t.muted}}\">v1, v2… are versions of a file. Faded commits are left behind: no branch points to them.<\/span>\n<\/div>\n<\/sc-if>\n<\/nav>\n\n<main style=\"box-sizing: border-box; min-width: 0; padding: {{L.mainPad}}; display: flex; flex-direction: column; gap: 12px\">\n\n<!-- lesson title -->\n<div style=\"display: flex; align-items: center; gap: 14px; flex-wrap: wrap; min-height: 36px\">\n<h1 style=\"margin: 0; font-family: {{t.display}}; font-size: 30px; line-height: 1; font-weight: 700\">{{lesson.title}}<\/h1>\n<span style=\"font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}\">{{lesson.tag}}<\/span>\n<div style=\"flex-grow: 1\"><\/div>\n<span style=\"font-size: 13px; color: {{t.muted}}\">Lesson {{lesson.num}} of {{lesson.count}}<\/span>\n<sc-if value=\"{{nextLesson.show}}\" hint-placeholder-val=\"{{ false }}\"><button onClick=\"{{nextLesson.go}}\" style=\"height: 36px; padding: 0 14px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 13px; font-weight: 700\">Next: {{nextLesson.title}} →<\/button><\/sc-if>\n<\/div>\n\n<!-- now: command, output, caption, controls -->\n<section aria-label=\"Current step\" style=\"box-sizing: border-box; padding: 14px 18px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 12px 24px; align-items: center\">\n<div aria-live=\"polite\" aria-atomic=\"true\" style=\"min-width: 0; display: flex; flex-direction: column; gap: 6px\">\n<div style=\"display: flex; align-items: baseline; gap: 12px; min-width: 0\"><span style=\"font-family: {{t.mono}}; font-size: 13px; font-weight: 700; color: {{now.promptFg}}; flex-shrink: 0\">{{now.prompt}}<\/span><code style=\"font-family: {{t.mono}}; font-size: {{L.cmdSize}}px; font-weight: 700; color: {{now.cmdFg}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis\">{{now.cmd}}<\/code><\/div>\n<div style=\"min-height: 38px; font-family: {{t.mono}}; font-size: 12px; line-height: 1.6; color: {{t.muted}}; display: flex; flex-direction: column\">\n<sc-for list=\"{{now.out}}\" as=\"ol\" hint-placeholder-count=\"2\"><span style=\"white-space: nowrap; overflow: hidden; text-overflow: ellipsis\">{{ol}}<\/span><\/sc-for>\n<\/div>\n<p style=\"margin: 2px 0 0; font-size: 19px; line-height: 1.4; color: {{t.text}}\">{{now.say}}<\/p>\n<\/div>\n<div style=\"display: flex; flex-direction: column; gap: 10px; align-items: stretch\">\n<div style=\"display: flex; align-items: center; gap: 8px; justify-content: {{L.ctrlJustify}}\">\n<button onClick=\"{{restart}}\" aria-label=\"Back to the first step\" title=\"Restart\" style=\"width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 3-6.7\"><\/path><path d=\"M3 4v5h5\"><\/path><\/svg><\/button>\n<button onClick=\"{{prev}}\" disabled=\"{{atFirst}}\" aria-label=\"Previous step\" style=\"width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 6l-6 6 6 6\"><\/path><\/svg><\/button>\n<button onClick=\"{{togglePlay}}\" aria-label=\"{{playLabel}}\" style=\"height: 44px; min-width: 104px; padding: 0 18px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700\">{{playText}}<\/button>\n<button onClick=\"{{next}}\" disabled=\"{{atLast}}\" aria-label=\"Next step\" style=\"width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 6l6 6-6 6\"><\/path><\/svg><\/button>\n<\/div>\n<div style=\"display: flex; align-items: center; gap: 10px\">\n<span style=\"font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}; white-space: nowrap\">step {{stepNo}}/{{stepCount}}<\/span>\n<div role=\"group\" aria-label=\"Jump to a step\" style=\"flex-grow: 1; display: flex; gap: 3px\">\n<sc-for list=\"{{dots}}\" as=\"dt\" hint-placeholder-count=\"10\"><button onClick=\"{{dt.go}}\" aria-label=\"{{dt.label}}\" aria-current=\"{{dt.cur}}\" style=\"flex: 1 1 0; min-width: 0; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center\"><span style=\"display: block; width: 100%; height: 6px; border-radius: 999px; background: {{dt.bg}}\"><\/span><\/button><\/sc-for>\n<\/div>\n<\/div>\n<\/div>\n<\/section>\n\n<!-- commit graph -->\n<section aria-label=\"{{graph.label}}\" style=\"box-sizing: border-box; height: {{L.graphH}}; flex-grow: {{L.graphGrow}}; min-height: {{L.graphMin}}; flex-shrink: 0; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; overflow: hidden\">\n<div style=\"height: 34px; flex-shrink: 0; padding: 0 18px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid {{t.line}}\">\n<span style=\"font-size: 13px; font-weight: 700\">Commit graph<\/span>\n<span style=\"font-size: 12px; color: {{t.muted}}\">{{graph.note}}<\/span>\n<div style=\"flex-grow: 1\"><\/div>\n<sc-if value=\"{{L.desk}}\" hint-placeholder-val=\"{{ true }}\"><span style=\"font-size: 12px; color: {{t.muted}}\">newest on the right<\/span><\/sc-if>\n<\/div>\n<div class=\"git-scroll\" style=\"flex-grow: 1; min-height: 0; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center\">\n<div aria-hidden=\"true\" style=\"position: relative; flex-shrink: 0; width: {{graph.w}}px; height: {{graph.h}}px\">\n<svg width=\"{{graph.w}}\" height=\"{{graph.h}}\" style=\"position: absolute; left: 0; top: 0\" aria-hidden=\"true\"><path d=\"{{graph.faded}}\" fill=\"none\" stroke=\"{{t.line2}}\" stroke-width=\"2\" stroke-dasharray=\"4 5\"><\/path><path d=\"{{graph.live}}\" fill=\"none\" stroke=\"{{t.muted}}\" stroke-width=\"2.5\" stroke-linecap=\"round\"><\/path><\/svg>\n<sc-if value=\"{{graph.empty}}\" hint-placeholder-val=\"{{ false }}\"><span style=\"position: absolute; left: 24px; top: 50%; transform: translateY(-50%); font-size: 15px; color: {{t.muted}}\">{{graph.empty}}<\/span><\/sc-if>\n<sc-for list=\"{{graph.nodes}}\" as=\"nd\" hint-placeholder-count=\"4\">\n<div class=\"git-pop\" title=\"{{nd.title}}\" style=\"position: absolute; left: {{nd.x}}px; top: {{nd.y}}px; width: 34px; height: 34px; box-sizing: border-box; border-radius: 999px; border: 3px solid {{nd.ring}}; background: {{nd.bg}}; color: {{nd.fg}}; opacity: {{nd.op}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 10px; font-weight: 800; animation: {{nd.anim}}\">{{nd.id}}<\/div>\n<span style=\"position: absolute; left: {{nd.lx}}px; top: {{nd.ly}}px; width: 104px; text-align: center; font-size: 12px; color: {{t.text2}}; opacity: {{nd.op}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis\">{{nd.msg}}<\/span>\n<\/sc-for>\n<sc-for list=\"{{graph.pills}}\" as=\"pl\" hint-placeholder-count=\"2\">\n<span class=\"git-pop\" style=\"position: absolute; left: {{pl.x}}px; top: {{pl.y}}px; height: 22px; box-sizing: border-box; padding: 0 9px; border-radius: 999px; border: 1.5px {{pl.style}} {{pl.border}}; background: {{pl.bg}}; color: {{pl.fg}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: 11px; font-weight: 800; white-space: nowrap; animation: {{pl.anim}}\">{{pl.text}}<\/span>\n<\/sc-for>\n<\/div>\n<\/div>\n<\/section>\n\n<!-- four zones -->\n<section aria-label=\"Where your files are\" style=\"position: relative; flex-grow: {{L.zonesGrow}}; flex-shrink: 0; height: {{L.zonesH}}; min-height: {{L.zonesMin}}; display: grid; grid-template-columns: {{L.zoneCols}}\">\n<sc-for list=\"{{cells}}\" as=\"c\" hint-placeholder-count=\"7\">\n<sc-if value=\"{{c.zone}}\" hint-placeholder-val=\"{{ true }}\">\n<div style=\"box-sizing: border-box; min-width: 0; min-height: {{L.zoneMinH}}; padding: 14px; border-radius: 14px; background: {{t.surface}}; border: 1.5px solid {{c.border}}; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.3s\">\n<div style=\"display: flex; flex-direction: column; gap: 2px\">\n<span style=\"font-family: {{t.display}}; font-size: 20px; line-height: 1.1; font-weight: 700; color: {{c.titleFg}}\">{{c.title}}<\/span>\n<span style=\"font-size: 12px; color: {{t.muted}}\">{{c.sub}}<\/span>\n<\/div>\n<sc-for list=\"{{c.sections}}\" as=\"sec\" hint-placeholder-count=\"1\">\n<div style=\"display: flex; flex-direction: column; gap: 6px\">\n<sc-if value=\"{{sec.label}}\" hint-placeholder-val=\"{{ false }}\"><span style=\"font-size: 12px; font-weight: 600; color: {{t.text2}}\">{{sec.label}}<\/span><\/sc-if>\n<sc-for list=\"{{sec.chips}}\" as=\"ch\" hint-placeholder-count=\"2\">\n<div class=\"git-pop\" style=\"min-height: 34px; box-sizing: border-box; padding: 0 10px; border-radius: 8px; border: 1px solid {{ch.border}}; background: {{t.sunk}}; display: flex; align-items: center; gap: 8px; min-width: 0; animation: {{ch.anim}}\"><span style=\"font-family: {{t.mono}}; font-size: 13px; font-weight: 700; white-space: nowrap\">{{ch.text}}<\/span><span style=\"flex-grow: 1; min-width: 0; font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis\">{{ch.ver}}<\/span><sc-if value=\"{{ch.badge}}\" hint-placeholder-val=\"{{ true }}\"><span style=\"flex-shrink: 0; font-family: {{t.mono}}; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; border: 1px solid {{ch.color}}; color: {{ch.color}}\">{{ch.badge}}<\/span><\/sc-if><\/div>\n<\/sc-for>\n<sc-if value=\"{{sec.empty}}\" hint-placeholder-val=\"{{ false }}\"><span style=\"padding: 10px 12px; border-radius: 8px; border: 1px dashed {{t.line2}}; font-size: 13px; line-height: 1.45; color: {{t.muted}}\">{{sec.empty}}<\/span><\/sc-if>\n<\/div>\n<\/sc-for>\n<\/div>\n<\/sc-if>\n<sc-if value=\"{{c.gut}}\" hint-placeholder-val=\"{{ false }}\">\n<div aria-hidden=\"true\" style=\"display: flex; flex-direction: {{L.gutDir}}; align-items: center; justify-content: {{L.gutJustify}}; gap: {{L.gutGap}}; padding: {{L.gutPad}}\">\n<sc-for list=\"{{c.arrows}}\" as=\"ar\" hint-placeholder-count=\"2\"><span style=\"display: flex; flex-direction: {{L.arrowDir}}; align-items: center; gap: 2px; color: {{ar.fg}}; transition: color 0.3s\"><span style=\"font-size: 22px; line-height: 1; font-weight: 700\">{{ar.glyph}}<\/span><span style=\"font-family: {{t.mono}}; font-size: 11px; font-weight: 700; text-align: center; white-space: nowrap\">{{ar.label}}<\/span><\/span><\/sc-for>\n<\/div>\n<\/sc-if>\n<\/sc-for>\n<sc-for list=\"{{flights}}\" as=\"fl\" hint-placeholder-count=\"1\">\n<span class=\"git-fly\" aria-hidden=\"true\" style=\"position: absolute; left: {{fl.left}}px; top: 58px; width: 128px; height: 30px; box-sizing: border-box; padding: 0 10px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; box-shadow: 0 6px 24px {{t.shadow}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; pointer-events: none; --dx: {{fl.dx}}px; animation: {{fl.anim}}\">{{fl.label}}<\/span>\n<\/sc-for>\n<\/section>\n\n<\/main>\n<\/div>\n<\/div>\n", helmet: "\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Anton&amp;family=Outfit:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap\">\n<style>\n[style*=\"Anton\"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}\np[style*=\"Anton\"],[style*=\"Anton\"][style*=\"italic\"],[style*=\"Anton\"][style*=\"font-size: 11px\"],[style*=\"Anton\"][style*=\"font-size: 12px\"],[style*=\"Anton\"][style*=\"font-size: 13px\"],[style*=\"Anton\"][style*=\"font-size: 14px\"],[style*=\"Anton\"][style*=\"font-size: 15px\"],[style*=\"Anton\"][style*=\"font-size: 16px\"],[style*=\"Anton\"][style*=\"font-size: 17px\"],[style*=\"Anton\"][style*=\"font-size: 18px\"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}\nheader a,header button,nav a{white-space:nowrap}\nbody{margin:0}\na{color:inherit;text-decoration:none}a:hover{opacity:0.8}\nbutton{font:inherit}\nbutton:disabled{opacity:0.35;cursor:default}\nbutton:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offset:2px}\n@keyframes gitFlyA{0%{opacity:0;transform:translateX(0) scale(0.85)}12%{opacity:1;transform:translateX(0) scale(1)}78%{opacity:1;transform:translateX(var(--dx)) scale(1)}100%{opacity:0;transform:translateX(var(--dx)) scale(0.9)}}\n@keyframes gitFlyB{0%{opacity:0;transform:translateX(0) scale(0.85)}12%{opacity:1;transform:translateX(0) scale(1)}78%{opacity:1;transform:translateX(var(--dx)) scale(1)}100%{opacity:0;transform:translateX(var(--dx)) scale(0.9)}}\n@keyframes gitPopA{0%{opacity:0.15;transform:scale(0.92)}60%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}\n@keyframes gitPopB{0%{opacity:0.15;transform:scale(0.92)}60%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}\n@media (prefers-reduced-motion: reduce){.git-fly{display:none}.git-pop{animation:none!important}}\n.git-scroll{scrollbar-width:thin}\n<\/style>\n", defaults: {"theme": "max"}, factory: function (DCLogic, StreamableLogic, React) {
+
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
+const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// Streak week for the signed-in learner (Aarav): Mon–Thu done, today still open.
+const WEEK = [['M', true], ['T', true], ['W', true], ['T', true], ['F', false], ['S', false], ['S', false]];
+function streakDays(t) {
+  return WEEK.map(([d, on], i) => ({ d, bg: on ? t.flame : 'transparent', fg: on ? t.onAccent : t.muted, border: on ? t.flame : (i === 4 ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+
+// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.
+// A tiny, deterministic Git model for the Git page. It knows only what the lessons need:
+// files with versions (v1, v2...), a staging area, commits with parents, branches, HEAD,
+// one remote called origin, and a stash. gitRun(state, command) never mutates its input
+// and throws a plain-language Error when Git would refuse the command.
+const GIT_ZONES = ['work', 'stage', 'repo', 'remote'];
+const GIT_HASHES = ['a1f', 'b72', 'c3e', 'd94', 'e5b', 'f06', '1c8', '2da', '3fe', '47b', '5e1', '6a9', '7c2', '8d4', '9b0', '0ef', '4aa', 'c81', 'e27', '93d'];
+
+function gitEmpty() {
+  return { inited: false, work: {}, idx: {}, vers: {}, commits: {}, order: [], branches: {}, head: null, lanes: {}, remote: null, tracking: {}, stash: [], seq: 0 };
+}
+function gitCopy(s) { return JSON.parse(JSON.stringify(s)); }
+function gitHead(s) { return s.head ? s.branches[s.head] || null : null; }
+function gitTree(s, id) { return id ? s.commits[id].tree : {}; }
+function gitNames(...objs) { const set = {}; objs.forEach((o) => Object.keys(o).forEach((k) => { set[k] = 1; })); return Object.keys(set).sort(); }
+function gitAncestors(s, id) {
+  const seen = {}; const todo = id ? [id] : [];
+  while (todo.length) { const c = todo.pop(); if (seen[c]) continue; seen[c] = 1; s.commits[c].parents.forEach((p) => todo.push(p)); }
+  return seen;
+}
+function gitIsAncestor(s, a, b) { return !!(a && gitAncestors(s, b)[a]); }
+function gitMergeBase(s, a, b) {
+  const A = gitAncestors(s, a); const B = gitAncestors(s, b);
+  let best = null;
+  Object.keys(A).forEach((c) => { if (B[c] && (!best || s.commits[c].n > s.commits[best].n)) best = c; });
+  return best;
+}
+function gitStaged(s) { const h = gitTree(s, gitHead(s)); return gitNames(s.idx, h).filter((n) => s.idx[n] !== h[n]); }
+function gitUnstaged(s) { return gitNames(s.work, s.idx).filter((n) => n in s.idx && s.work[n] !== s.idx[n]); }
+function gitUntracked(s) { return Object.keys(s.work).filter((n) => !(n in s.idx)).sort(); }
+function gitClean(s) { return !gitStaged(s).length && !gitUnstaged(s).length; }
+function gitReachable(s) {
+  const roots = Object.values(s.branches).concat(Object.values(s.tracking));
+  const out = {};
+  roots.forEach((r) => { if (r) Object.assign(out, gitAncestors(s, r)); });
+  return out;
+}
+function gitLane(s, branch) {
+  if (s.lanes[branch] !== undefined) return s.lanes[branch];
+  const used = {};
+  Object.keys(s.lanes).forEach((b) => { if (b !== branch && b in s.branches) used[s.lanes[b]] = 1; });
+  let lane = branch === 'main' ? 0 : 1;
+  while (used[lane]) lane++;
+  s.lanes[branch] = lane;
+  return lane;
+}
+function gitMakeCommit(s, msg, tree, parents, extra) {
+  const id = GIT_HASHES[s.seq++ % GIT_HASHES.length];
+  s.commits[id] = Object.assign({ id, msg, tree: gitCopy(tree), parents, lane: gitLane(s, s.head || 'main'), n: s.order.length }, extra || {});
+  s.order.push(id);
+  return id;
+}
+// Point the working directory and staging area at a new snapshot. Untracked files stay.
+function gitCheckout(s, from, to) {
+  const changed = [];
+  gitNames(from, to).forEach((n) => {
+    if (from[n] === to[n]) return;
+    changed.push(n);
+    if (n in to) s.work[n] = to[n]; else delete s.work[n];
+  });
+  s.idx = gitCopy(to);
+  return changed;
+}
+function gitResolve(s, ref) {
+  let id;
+  const m = /^(.*)~(\d+)$/.exec(ref);
+  const base = m ? m[1] : ref;
+  if (base === 'HEAD') id = gitHead(s);
+  else if (base.indexOf('origin/') === 0) id = s.tracking[base.slice(7)];
+  else id = s.branches[base];
+  if (!id) throw new Error('Git does not know "' + ref + '" yet.');
+  for (let i = 0; m && i < Number(m[2]); i++) {
+    id = s.commits[id].parents[0];
+    if (!id) throw new Error(ref + ' goes back past the first commit.');
+  }
+  return id;
+}
+function gitNeedRepo(s) { if (!s.inited) throw new Error('Not a Git repository yet. Run git init first.'); }
+function gitNeedClean(s, what) { if (!gitClean(s)) throw new Error('You have uncommitted changes. Commit or stash them before you ' + what + '.'); }
+function gitNeedRemote(s) { if (!s.remote) throw new Error('There is no remote called origin.'); }
+function gitStatusLines(s) {
+  const out = ['On branch ' + s.head];
+  const here = gitHead(s); const there = s.tracking[s.head];
+  if (s.remote && there) {
+    const A = gitAncestors(s, here); const B = gitAncestors(s, there);
+    const ahead = Object.keys(A).filter((c) => !B[c]).length; const behind = Object.keys(B).filter((c) => !A[c]).length;
+    if (ahead && behind) out.push('You and origin/' + s.head + ' have ' + ahead + ' and ' + behind + ' different commits.');
+    else if (ahead) out.push('Ahead of origin/' + s.head + ' by ' + ahead + ' commit' + (ahead > 1 ? 's' : '') + '.');
+    else if (behind) out.push('Behind origin/' + s.head + ' by ' + behind + ' commit' + (behind > 1 ? 's' : '') + '.');
+    else out.push('Up to date with origin/' + s.head + '.');
+  }
+  const st = gitStaged(s); const un = gitUnstaged(s); const ut = gitUntracked(s);
+  if (st.length) out.push('Ready to commit: ' + st.join(', '));
+  if (un.length) out.push('Changed, not staged: ' + un.join(', '));
+  if (ut.length) out.push('Untracked: ' + ut.join(', '));
+  if (!st.length && !un.length && !ut.length) out.push('Nothing to commit. Everything is saved.');
+  return out;
+}
+function gitDiffLines(a, b, names) {
+  return names.map((n) => n + '   ' + (a[n] || 'none') + ' → ' + (b[n] || 'deleted'));
+}
+
+// Run one command. Returns { state, out, flows, fresh }.
+// flows: [{ from, to, label }] between GIT_ZONES, for the animation.
+// fresh: keys like 'stage:app.js', 'commit:c3e', 'ref:feature' that should light up.
+function gitRun(s0, cmd) {
+  const s = gitCopy(s0);
+  const out = []; const flows = []; const fresh = [];
+  const flow = (from, to, label) => flows.push({ from, to, label });
+  let m;
+  if (cmd === 'git init') {
+    if (s.inited) throw new Error('This folder is already a repository.');
+    s.inited = true; s.branches = { main: null }; s.head = 'main';
+    out.push('Created an empty repository in .git/');
+    fresh.push('ref:main');
+  } else if ((m = /^git clone (\S+)$/.exec(cmd))) {
+    if (s.inited) throw new Error('This folder is already a repository.');
+    s.inited = true; s.head = 'main'; s.branches = { main: null };
+    s.vers = { 'readme.md': 1, 'app.js': 1 };
+    const c1 = gitMakeCommit(s, 'Start project', { 'readme.md': 'v1' }, []);
+    const c2 = gitMakeCommit(s, 'Add app', { 'readme.md': 'v1', 'app.js': 'v1' }, [c1]);
+    s.remote = { branches: { main: c2 }, commits: [c1, c2] };
+    s.branches.main = c2; s.tracking = { main: c2 };
+    gitCheckout(s, {}, gitTree(s, c2));
+    out.push('Copied 2 commits from ' + m[1]);
+    flow('remote', 'repo', c1 + ' ' + c2); flow('repo', 'work', 'readme.md app.js');
+    fresh.push('commit:' + c1, 'commit:' + c2, 'work:readme.md', 'work:app.js');
+  } else if ((m = /^edit (\S+)$/.exec(cmd))) {
+    const v = 'v' + (s.vers[m[1]] = (s.vers[m[1]] || 0) + 1);
+    const isNew = !(m[1] in s.work);
+    s.work[m[1]] = v;
+    out.push((isNew ? 'Created ' : 'Saved ') + m[1] + ' (' + v + ')');
+    fresh.push('work:' + m[1]);
+  } else if ((m = /^git add (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    const names = m[1] === '.' ? gitNames(s.work, s.idx) : [m[1]];
+    const moved = [];
+    names.forEach((n) => {
+      if (!(n in s.work) && !(n in s.idx)) throw new Error('There is no file called ' + n + '.');
+      if (s.work[n] === s.idx[n]) return;
+      if (n in s.work) s.idx[n] = s.work[n]; else delete s.idx[n];
+      moved.push(n);
+    });
+    if (!moved.length) throw new Error('Nothing new to add: the staging area already has this version.');
+    flow('work', 'stage', moved.join(' '));
+    moved.forEach((n) => fresh.push('stage:' + n));
+  } else if ((m = /^git commit -m "([^"]+)"$/.exec(cmd))) {
+    gitNeedRepo(s);
+    const st = gitStaged(s);
+    if (!st.length) throw new Error('Nothing is staged, so there is nothing to commit. Use git add first.');
+    const parent = gitHead(s);
+    const id = gitMakeCommit(s, m[1], s.idx, parent ? [parent] : []);
+    s.branches[s.head] = id;
+    out.push('[' + s.head + ' ' + id + '] ' + m[1], st.length + ' file' + (st.length > 1 ? 's' : '') + ' saved in this commit');
+    flow('stage', 'repo', id);
+    fresh.push('commit:' + id, 'ref:' + s.head);
+  } else if (cmd === 'git status') {
+    gitNeedRepo(s);
+    gitStatusLines(s).forEach((l) => out.push(l));
+  } else if (cmd === 'git diff') {
+    gitNeedRepo(s);
+    const un = gitUnstaged(s);
+    if (un.length) gitDiffLines(s.idx, s.work, un).forEach((l) => out.push(l)); else out.push('No changes waiting outside the staging area.');
+  } else if (cmd === 'git diff --staged') {
+    gitNeedRepo(s);
+    const st = gitStaged(s);
+    if (st.length) gitDiffLines(gitTree(s, gitHead(s)), s.idx, st).forEach((l) => out.push(l)); else out.push('Nothing staged.');
+  } else if (cmd === 'git log --oneline') {
+    gitNeedRepo(s);
+    const A = gitAncestors(s, gitHead(s));
+    const list = Object.keys(A).sort((a, b) => s.commits[b].n - s.commits[a].n);
+    if (!list.length) out.push('No commits yet.');
+    list.slice(0, 3).forEach((c) => out.push(c + '  ' + s.commits[c].msg));
+    if (list.length > 3) out.push('… ' + (list.length - 3) + ' older');
+  } else if ((m = /^git branch -d (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    if (!(m[1] in s.branches)) throw new Error('There is no branch called ' + m[1] + '.');
+    if (m[1] === s.head) throw new Error('You cannot delete the branch you are on.');
+    if (!gitIsAncestor(s, s.branches[m[1]], gitHead(s))) throw new Error(m[1] + ' has commits that are not merged yet.');
+    delete s.branches[m[1]]; delete s.lanes[m[1]];
+    out.push('Deleted branch ' + m[1] + '. Its commits stay.');
+  } else if ((m = /^git branch (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    if (!gitHead(s)) throw new Error('Make a first commit before you branch.');
+    if (m[1] in s.branches) throw new Error('A branch called ' + m[1] + ' already exists.');
+    s.branches[m[1]] = gitHead(s);
+    out.push('New label ' + m[1] + ' on ' + gitHead(s) + '. You are still on ' + s.head + '.');
+    fresh.push('ref:' + m[1]);
+  } else if ((m = /^git switch (-c )?(\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    gitNeedClean(s, 'switch');
+    const name = m[2];
+    if (m[1]) {
+      if (name in s.branches) throw new Error('A branch called ' + name + ' already exists.');
+      if (!gitHead(s)) throw new Error('Make a first commit before you branch.');
+      s.branches[name] = gitHead(s);
+    } else if (!(name in s.branches)) throw new Error('There is no branch called ' + name + '.');
+    if (name === s.head) throw new Error('You are already on ' + name + '.');
+    const from = gitTree(s, gitHead(s));
+    s.head = name;
+    const changed = gitCheckout(s, from, gitTree(s, gitHead(s)));
+    out.push("Switched to " + (m[1] ? 'a new ' : '') + "branch '" + name + "'");
+    if (changed.length) { flow('repo', 'work', changed.join(' ')); changed.forEach((n) => fresh.push('work:' + n)); }
+    fresh.push('ref:' + name);
+  } else if ((m = /^git merge (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    gitNeedClean(s, 'merge');
+    gitMerge(s, m[1], out, flow, fresh);
+  } else if ((m = /^git rebase (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    gitNeedClean(s, 'rebase');
+    const onto = gitResolve(s, m[1]); const cur = gitHead(s);
+    if (gitIsAncestor(s, onto, cur)) throw new Error('Already up to date: ' + s.head + ' already sits on ' + m[1] + '.');
+    const base = gitMergeBase(s, cur, onto);
+    const list = [];
+    for (let c = cur; c && c !== base; c = s.commits[c].parents[0]) list.unshift(c);
+    let tip = onto;
+    list.forEach((c) => {
+      const before = gitTree(s, s.commits[c].parents[0]); const after = s.commits[c].tree;
+      const tree = gitCopy(gitTree(s, tip));
+      gitNames(before, after).forEach((n) => {
+        if (before[n] === after[n]) return;
+        if (tree[n] !== before[n]) throw new Error('Conflict in ' + n + ' while replaying ' + c + '.');
+        if (n in after) tree[n] = after[n]; else delete tree[n];
+      });
+      tip = gitMakeCommit(s, s.commits[c].msg, tree, [tip], { copyOf: c });
+      fresh.push('commit:' + tip);
+    });
+    const from = gitTree(s, cur);
+    s.branches[s.head] = tip;
+    const changed = gitCheckout(s, from, gitTree(s, tip));
+    out.push('Replayed ' + list.length + ' commit' + (list.length > 1 ? 's' : '') + ' on top of ' + m[1] + '.');
+    if (changed.length) flow('repo', 'work', changed.join(' '));
+  } else if (cmd === 'git push') {
+    gitNeedRepo(s); gitNeedRemote(s);
+    const here = gitHead(s); const there = s.remote.branches[s.head];
+    if (there && !gitIsAncestor(s, there, here)) throw new Error('Rejected: origin has commits you do not have. Pull first.');
+    const A = gitAncestors(s, here);
+    const add = Object.keys(A).filter((c) => s.remote.commits.indexOf(c) < 0).sort((a, b) => s.commits[a].n - s.commits[b].n);
+    if (!add.length) { out.push('Everything up to date.'); }
+    else {
+      add.forEach((c) => { s.remote.commits.push(c); fresh.push('remote:' + c); });
+      out.push('Sent ' + add.length + ' commit' + (add.length > 1 ? 's' : '') + ' to origin/' + s.head + '.');
+      flow('repo', 'remote', add.join(' '));
+    }
+    s.remote.branches[s.head] = here; s.tracking[s.head] = here;
+    fresh.push('ref:origin/' + s.head);
+  } else if (cmd === 'teammate push') {
+    gitNeedRemote(s);
+    const tip = s.remote.branches.main;
+    const tree = gitCopy(gitTree(s, tip));
+    tree['notes.md'] = 'v' + (s.vers['notes.md'] = (s.vers['notes.md'] || 0) + 1);
+    const keepHead = s.head; s.head = 'main';
+    const id = gitMakeCommit(s, 'Add notes', tree, [tip], { hidden: true });
+    s.head = keepHead;
+    s.remote.commits.push(id); s.remote.branches.main = id;
+    out.push('origin/main now has ' + id + ' Add notes. Your laptop does not know yet.');
+    fresh.push('remote:' + id);
+  } else if (cmd === 'git fetch') {
+    gitNeedRepo(s); gitNeedRemote(s);
+    const got = gitFetch(s);
+    out.push(got.length ? 'Downloaded ' + got.join(' ') + '. origin/main moved. Your files did not change.' : 'Nothing new on origin.');
+    if (got.length) { flow('remote', 'repo', got.join(' ')); got.forEach((c) => fresh.push('commit:' + c)); fresh.push('ref:origin/main'); }
+  } else if (cmd === 'git pull') {
+    gitNeedRepo(s); gitNeedRemote(s); gitNeedClean(s, 'pull');
+    const got = gitFetch(s);
+    if (got.length) { flow('remote', 'repo', got.join(' ')); got.forEach((c) => fresh.push('commit:' + c)); }
+    gitMerge(s, 'origin/' + s.head, out, flow, fresh);
+  } else if (cmd === 'git stash') {
+    gitNeedRepo(s);
+    const head = gitTree(s, gitHead(s));
+    const names = gitNames(gitStaged(s).concat(gitUnstaged(s)).reduce((o, n) => { o[n] = 1; return o; }, {}));
+    if (!names.length) throw new Error('Nothing to stash: no changes since the last commit.');
+    const entry = { label: 'WIP on ' + s.head, files: {} };
+    names.forEach((n) => { entry.files[n] = n in s.work ? s.work[n] : null; });
+    s.idx = gitCopy(head);
+    names.forEach((n) => { if (n in head) s.work[n] = head[n]; else delete s.work[n]; });
+    s.stash.unshift(entry);
+    out.push('Saved ' + names.join(', ') + ' to the stash. Files are back to the last commit.');
+    flow('work', 'repo', names.join(' '));
+    fresh.push('stash:0');
+  } else if (cmd === 'git stash pop') {
+    gitNeedRepo(s);
+    if (!s.stash.length) throw new Error('The stash is empty.');
+    const e = s.stash.shift(); const head = gitTree(s, gitHead(s));
+    const names = Object.keys(e.files).sort();
+    names.forEach((n) => {
+      if (s.work[n] !== head[n]) throw new Error('Conflict: ' + n + ' changed since you stashed.');
+      if (e.files[n] === null) delete s.work[n]; else s.work[n] = e.files[n];
+      fresh.push('work:' + n);
+    });
+    out.push('Brought back ' + names.join(', ') + '. The stash is empty again.');
+    flow('repo', 'work', names.join(' '));
+  } else if ((m = /^git reset --(soft|mixed|hard) (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s);
+    const target = gitResolve(s, m[2]); const old = gitHead(s);
+    const tree = gitTree(s, target);
+    s.branches[s.head] = target;
+    const moved = gitNames(gitTree(s, old), tree).filter((n) => gitTree(s, old)[n] !== tree[n]);
+    if (m[1] === 'soft') {
+      out.push(s.head + ' moved back to ' + target + '. The staging area still has your changes.');
+      if (moved.length) { flow('repo', 'stage', moved.join(' ')); moved.forEach((n) => fresh.push('stage:' + n)); }
+    } else if (m[1] === 'mixed') {
+      const unstaged = gitNames(s.idx, tree).filter((n) => s.idx[n] !== tree[n]);
+      s.idx = gitCopy(tree);
+      out.push(s.head + (old === target ? ' stays on ' : ' moved back to ') + target + '. Your edits are still in your files, not staged.');
+      if (unstaged.length) { flow(old === target ? 'stage' : 'repo', 'work', unstaged.join(' ')); unstaged.forEach((n) => fresh.push('work:' + n)); }
+    } else {
+      const lost = gitNames(s.work, s.idx, gitTree(s, old)).filter((n) => (n in s.idx || n in gitTree(s, old)) && s.work[n] !== tree[n]);
+      lost.forEach((n) => { if (n in tree) s.work[n] = tree[n]; else delete s.work[n]; fresh.push('work:' + n); });
+      s.idx = gitCopy(tree);
+      out.push(s.head + (old === target ? ' stays on ' : ' moved back to ') + target + '. Files match it again. The edits are gone.');
+      if (lost.length) flow('repo', 'work', lost.join(' '));
+    }
+    fresh.push('ref:' + s.head);
+  } else if ((m = /^git revert (\S+)$/.exec(cmd))) {
+    gitNeedRepo(s); gitNeedClean(s, 'revert');
+    const c = gitResolve(s, m[1]); const cm = s.commits[c];
+    const before = gitTree(s, cm.parents[0]); const after = cm.tree;
+    const head = gitHead(s); const tree = gitCopy(gitTree(s, head));
+    gitNames(before, after).forEach((n) => {
+      if (before[n] === after[n]) return;
+      if (tree[n] !== after[n]) throw new Error('Conflict in ' + n + ' while undoing ' + c + '.');
+      if (n in before) tree[n] = before[n]; else delete tree[n];
+    });
+    const id = gitMakeCommit(s, 'Undo ' + cm.msg, tree, [head]);
+    s.branches[s.head] = id;
+    const changed = gitCheckout(s, gitTree(s, head), tree);
+    out.push('[' + s.head + ' ' + id + '] Undo ' + cm.msg, 'New commit. ' + c + ' is still in history.');
+    if (changed.length) flow('repo', 'work', changed.join(' '));
+    fresh.push('commit:' + id, 'ref:' + s.head);
+  } else {
+    throw new Error('This page does not model "' + cmd + '".');
+  }
+  return { state: s, out, flows, fresh };
+}
+function gitFetch(s) {
+  const got = [];
+  s.remote.commits.forEach((c) => { if (s.commits[c].hidden) { delete s.commits[c].hidden; got.push(c); } });
+  s.tracking = gitCopy(s.remote.branches);
+  return got;
+}
+function gitMerge(s, ref, out, flow, fresh) {
+  const tip = gitResolve(s, ref); const cur = gitHead(s);
+  if (gitIsAncestor(s, tip, cur)) { out.push('Already up to date.'); return; }
+  const from = gitTree(s, cur);
+  if (gitIsAncestor(s, cur, tip)) {
+    s.branches[s.head] = tip;
+    const changed = gitCheckout(s, from, gitTree(s, tip));
+    out.push('Fast-forward: ' + s.head + ' slid ahead to ' + tip + '. No new commit.');
+    if (changed.length) { flow('repo', 'work', changed.join(' ')); changed.forEach((n) => fresh.push('work:' + n)); }
+    fresh.push('ref:' + s.head);
+    return;
+  }
+  const base = gitTree(s, gitMergeBase(s, cur, tip)); const ours = from; const theirs = gitTree(s, tip);
+  const tree = {};
+  gitNames(base, ours, theirs).forEach((n) => {
+    let v;
+    if (ours[n] === theirs[n]) v = ours[n];
+    else if (ours[n] === base[n]) v = theirs[n];
+    else if (theirs[n] === base[n]) v = ours[n];
+    else throw new Error('Conflict in ' + n + ': both sides changed it.');
+    if (v !== undefined) tree[n] = v;
+  });
+  const id = gitMakeCommit(s, 'Merge ' + ref, tree, [cur, tip]);
+  s.branches[s.head] = id;
+  const changed = gitCheckout(s, from, tree);
+  out.push('Merge commit ' + id + ' joins ' + cur + ' and ' + tip + '. It has two parents.');
+  if (changed.length) { flow('repo', 'work', changed.join(' ')); changed.forEach((n) => fresh.push('work:' + n)); }
+  fresh.push('commit:' + id, 'ref:' + s.head);
+}
+// Starting points for lessons: an empty folder, a local repo with two commits, or a clone.
+function gitStart(kind) {
+  let s = gitEmpty();
+  const steps = kind === 'local'
+    ? ['git init', 'edit readme.md', 'git add readme.md', 'git commit -m "Start project"', 'edit app.js', 'git add app.js', 'git commit -m "Add app"']
+    : kind === 'cloned' ? ['git clone github.com/you/app'] : [];
+  steps.forEach((c) => { s = gitRun(s, c).state; });
+  return s;
+}
+
+// Git lessons for the Git page. Each step is one command and one short caption.
+// start: 'empty' (a new folder), 'local' (two commits on main) or 'cloned' (copied from origin).
+// tests/gitcheck.js replays every step through gitRun, so a step that Git would refuse fails the build.
+const GIT_LESSONS = [
+  {
+    id: 'first-commit', title: 'Your first commit', tag: 'init · add · commit', start: 'empty',
+    steps: [
+      ['git init', 'Git makes a hidden .git folder. That is your local repository. It starts empty.'],
+      ['edit readme.md', 'You write a new file. Only your folder has it. Git calls it untracked.'],
+      ['git add readme.md', 'git add copies the file into the staging area. Think of packing a box.'],
+      ['git commit -m "Start project"', 'git commit seals the box and stores it. That is your first commit. main points to it.'],
+      ['edit app.js', 'Add a second file. Again, only your folder has it.'],
+      ['git add app.js', 'Stage it. The staging area holds exactly what the next commit will save.'],
+      ['git commit -m "Add app"', 'A second commit. It points back to the first one, so history grows in a line.'],
+      ['edit app.js', 'Change app.js. Your folder has v2 now. The last commit still has v1.'],
+      ['git add app.js', 'Stage the new version. The box now holds app.js v2.'],
+      ['git commit -m "Say hello"', 'Each commit is a full snapshot. You can go back to any of them later.']
+    ]
+  },
+  {
+    id: 'status-diff', title: 'What changed?', tag: 'status · diff', start: 'local',
+    steps: [
+      ['git log --oneline', 'We start with a small project. It has two commits on main.'],
+      ['edit app.js', 'You change app.js. Git has not looked yet.'],
+      ['git status', 'git status is your quick check. app.js changed, but it is not staged.'],
+      ['git diff', 'git diff shows what changed in your files. app.js went from v1 to v2.'],
+      ['git add app.js', 'Stage the change. It moves into the box for the next commit.'],
+      ['git diff', 'Plain git diff is empty now. It only compares your files with the staging area.'],
+      ['git diff --staged', 'Add --staged to see what the next commit will save.'],
+      ['edit readme.md', 'Now edit the readme too, but do not stage it.'],
+      ['git status', 'Status shows both. app.js is ready. readme.md is not.'],
+      ['git commit -m "Update app"', 'Only staged work goes in. The commit takes app.js and leaves readme.md alone.'],
+      ['git status', 'readme.md still waits in your folder. Stage it when you are ready.']
+    ]
+  },
+  {
+    id: 'branches', title: 'Branches', tag: 'branch · switch', start: 'local',
+    steps: [
+      ['git log --oneline', 'Two commits on main. HEAD marks the branch you are on.'],
+      ['git branch feature', 'git branch sticks a new label on the same commit. You are still on main.'],
+      ['git switch feature', 'git switch moves HEAD to feature. Your files stay the same, since both labels share a commit.'],
+      ['edit app.js', 'Start the new feature. Change app.js.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Add search"', 'The commit lands on feature. feature moves ahead. main stays put.'],
+      ['git switch main', 'Switch back. Git puts main’s app.js back in your folder. Your work is safe on feature.'],
+      ['git switch -c fix', 'switch -c makes a branch and moves onto it in one step.'],
+      ['edit readme.md', 'Fix a typo in the readme.'],
+      ['git add readme.md', 'Stage it.'],
+      ['git commit -m "Fix typo"', 'Now two lines grow from main. Branches are cheap, so use one per idea.']
+    ]
+  },
+  {
+    id: 'merge', title: 'Merging', tag: 'fast-forward · 3-way', start: 'local',
+    steps: [
+      ['git switch -c feature', 'Make a feature branch and move onto it.'],
+      ['edit app.js', 'Build the feature in app.js.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Add search"', 'Commit it. feature is one step ahead of main.'],
+      ['git switch main', 'Go back to main to bring the work in.'],
+      ['git merge feature', 'main has no new work of its own. Git just slides main forward. That is a fast-forward.'],
+      ['git branch -d feature', 'Remove the feature label. The commits stay, because main points at them now.'],
+      ['git switch -c login', 'Start another branch for a login page.'],
+      ['edit login.js', 'Write the login page.'],
+      ['git add login.js', 'Stage it.'],
+      ['git commit -m "Add login"', 'Commit it on login.'],
+      ['git switch main', 'Back on main. login.js leaves your folder, because main does not have it.'],
+      ['edit readme.md', 'Meanwhile, someone updates the readme on main.'],
+      ['git add readme.md', 'Stage it.'],
+      ['git commit -m "Update readme"', 'Now main and login each have a commit the other lacks. They have split apart.'],
+      ['git merge login', 'Sliding is not possible now. Git makes a merge commit with two parents. That is a 3-way merge.']
+    ]
+  },
+  {
+    id: 'rebase', title: 'Rebase', tag: 'replay commits', start: 'local',
+    steps: [
+      ['git switch -c feature', 'Make a feature branch.'],
+      ['edit app.js', 'Start the feature.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Add search"', 'First commit on feature.'],
+      ['edit app.js', 'Keep going.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Style search"', 'Second commit on feature.'],
+      ['git switch main', 'Meanwhile, main moves on.'],
+      ['edit readme.md', 'Change the readme on main.'],
+      ['git add readme.md', 'Stage it.'],
+      ['git commit -m "Update readme"', 'main and feature have split. A merge would join them with a merge commit.'],
+      ['git switch feature', 'Instead, go back to feature to rebase it.'],
+      ['git rebase main', 'Rebase lifts your two commits and replays them on top of main. The copies get new ids.'],
+      ['git switch main', 'Switch to main to bring the feature in.'],
+      ['git merge feature', 'feature now sits on top of main, so this is a fast-forward. History is one straight line.'],
+      ['git log --oneline', 'Rebase only commits nobody else has. It rewrites ids, which confuses teammates.']
+    ]
+  },
+  {
+    id: 'remote', title: 'Remotes', tag: 'push · fetch · pull', start: 'empty',
+    steps: [
+      ['git clone github.com/you/app', 'git clone copies the project from the server. origin/main remembers where the server’s main was.'],
+      ['edit app.js', 'Make a change.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Faster app"', 'Commit it. Your main moves ahead. origin/main stays behind.'],
+      ['git status', 'Status says you are one commit ahead of the server.'],
+      ['git push', 'git push sends your commit up. The server and origin/main catch up.'],
+      ['teammate push', 'A teammate pushes a commit. It is on the server, not on your laptop.'],
+      ['git status', 'Status still says up to date. Git only knows what it last downloaded.'],
+      ['git fetch', 'git fetch downloads new commits. origin/main moves. Your main and your files do not.'],
+      ['git status', 'Now Git can see you are one commit behind.'],
+      ['git pull', 'git pull is fetch plus merge. main slides forward and notes.md lands in your folder.']
+    ]
+  },
+  {
+    id: 'stash', title: 'Stash', tag: 'park unfinished work', start: 'local',
+    steps: [
+      ['edit app.js', 'You are halfway through a change to app.js.'],
+      ['edit readme.md', 'And the readme too.'],
+      ['git status', 'Two files changed, nothing committed.'],
+      ['git stash', 'An urgent bug comes in. git stash puts your edits on a shelf. Your files go back to the last commit.'],
+      ['git status', 'Clean again. Safe to work on something else.'],
+      ['edit fix.js', 'Write the quick fix.'],
+      ['git add fix.js', 'Stage it.'],
+      ['git commit -m "Fix crash"', 'Commit the fix. Your half-done work never got in the way.'],
+      ['git stash pop', 'Take your edits back off the shelf. Carry on where you left off.'],
+      ['git status', 'Both edits are back, waiting to be staged.']
+    ]
+  },
+  {
+    id: 'undo', title: 'Undo', tag: 'reset vs revert', start: 'local',
+    steps: [
+      ['edit app.js', 'Try out an idea in app.js.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Try idea"', 'Commit it. Then you change your mind.'],
+      ['git reset --soft HEAD~1', 'reset moves main back one commit. --soft keeps the change staged, ready to commit again.'],
+      ['git reset --mixed HEAD', '--mixed also empties the staging area. Your edit stays in app.js.'],
+      ['git reset --hard HEAD', '--hard throws the edit away. Files match the last commit. Use it with care.'],
+      ['edit app.js', 'Now a different case. Make a change.'],
+      ['git add app.js', 'Stage it.'],
+      ['git commit -m "Add bug"', 'Commit it. Say teammates already have this commit.'],
+      ['git revert HEAD', 'Do not rewrite shared history. git revert adds a new commit that undoes the old one.'],
+      ['git log --oneline', 'Both commits stay in history. Teammates get the undo, and nothing breaks.']
+    ]
+  }
+];
+// Replay a lesson: one frame per step with the state after it, plus what moved.
+function gitFrames(lesson) {
+  let s = gitStart(lesson.start);
+  return lesson.steps.map(([cmd, say]) => {
+    const prev = s;
+    const r = gitRun(s, cmd);
+    s = r.state;
+    return { cmd, say, prev, state: s, out: r.out, flows: r.flows, fresh: r.fresh };
+  });
+}
+// @@END-GITSIM@@
+
+// ---- page ----
+const GIT_CACHE = {};
+function gitLessonFrames(i) { return GIT_CACHE[i] || (GIT_CACHE[i] = gitFrames(GIT_LESSONS[i])); }
+// Desktop grid: 272px lesson rail, then 1120px of content: four 238px zones with three 56px gutters.
+const GIT_DESK = { zw: 238, gw: 56 };
+const GIT_ZONE_INFO = [
+  ['Working directory', 'Your folder. Where you edit.'],
+  ['Staging area', 'What the next commit will save.'],
+  ['Local repository', 'Commits saved in .git on your laptop.'],
+  ['Remote', 'origin: the shared copy on a server.']
+];
+const GIT_GUTS = [['add', ''], ['commit', ''], ['push', 'fetch']];
+function gitMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
+function gitVerb(cmd) {
+  if (cmd.indexOf('edit ') === 0) return 'edit';
+  if (cmd === 'teammate push') return 'teammate';
+  const w = cmd.split(' ');
+  return w[1] === 'stash' && w[2] === 'pop' ? 'pop' : w[1];
+}
+
+function gitGraphVals(t, f, width, mobile, pop) {
+  const s = f.state; const fresh = f.fresh;
+  const vis = s.order.filter((id) => !s.commits[id].hidden);
+  const reach = gitReachable(s);
+  const laneColor = [t.accent, t.right, t.flame, t.medFg];
+  // Rows: main's first-parent line is row 0, then each other branch (oldest tip first), then origin/*.
+  // Commits nobody points at keep the row they were made on, so they fade in place.
+  const lane = {}; let rows = 0;
+  const tipN = (b) => (s.branches[b] ? s.commits[s.branches[b]].n : 0);
+  const refs = ['main'].concat(Object.keys(s.branches).filter((b) => b !== 'main').sort((a, b) => tipN(a) - tipN(b)));
+  const tips = refs.map((b) => s.branches[b]).concat(Object.keys(s.tracking).map((b) => s.tracking[b]));
+  tips.forEach((tip) => {
+    let used = false;
+    for (let c = tip; c && lane[c] === undefined && !s.commits[c].hidden; c = s.commits[c].parents[0]) { lane[c] = rows; used = true; }
+    if (used) rows++;
+  });
+  vis.forEach((id) => { if (lane[id] === undefined) lane[id] = Math.min(s.commits[id].lane, Math.max(0, rows - 1)); });
+  const maxLane = vis.reduce((m, id) => Math.max(m, lane[id]), 0);
+  const step = mobile ? 92 : vis.length > 1 ? Math.min(124, (width - 140) / (vis.length - 1)) : 0;
+  const w = mobile ? Math.max(width, 200 + (vis.length - 1) * step) : width;
+  const h = 46 + maxLane * 80 + 76;
+  const pos = {};
+  vis.forEach((id, k) => { pos[id] = { x: 70 + k * step, y: 46 + lane[id] * 80 }; });
+  let live = ''; let faded = '';
+  // A branch bends away right after the commit it starts from; a merge bends in right before the merge commit.
+  // Keeping bends short stops a line from cutting through commits on the rows in between.
+  vis.forEach((id) => s.commits[id].parents.forEach((p, pi) => {
+    const a = pos[p]; const b = pos[id];
+    if (!a) return;
+    const k = Math.min(step, 124);
+    const d = a.y === b.y ? 'M' + a.x + ' ' + a.y + ' L' + b.x + ' ' + b.y
+      : pi === 0 ? 'M' + a.x + ' ' + a.y + ' C' + (a.x + k * 0.35) + ' ' + a.y + ' ' + (a.x + k * 0.3) + ' ' + b.y + ' ' + (a.x + k * 0.65) + ' ' + b.y + ' L' + b.x + ' ' + b.y
+      : 'M' + a.x + ' ' + a.y + ' L' + (b.x - k * 0.65) + ' ' + a.y + ' C' + (b.x - k * 0.3) + ' ' + a.y + ' ' + (b.x - k * 0.35) + ' ' + b.y + ' ' + b.x + ' ' + b.y;
+    if (reach[id] && reach[p]) live += d + ' '; else faded += d + ' ';
+  }));
+  const head = gitHead(s);
+  const nodes = vis.map((id) => {
+    const c = s.commits[id]; const p = pos[id]; const color = laneColor[lane[id] % laneColor.length];
+    const isHead = id === head; const on = fresh.indexOf('commit:' + id) >= 0;
+    return {
+      id, x: p.x - 17, y: p.y - 17, lx: p.x - 52, ly: p.y + 21,
+      msg: c.msg, title: id + ' ' + c.msg + (c.parents.length > 1 ? ' (two parents)' : ''),
+      ring: color, bg: isHead ? color : t.sunk, fg: isHead ? t.onAccent : t.text,
+      op: reach[id] ? 1 : 0.5, anim: on ? 'gitPop' + pop + ' 0.55s ease 0.7s both' : 'none'
+    };
+  });
+  const pills = [];
+  const est = (txt) => Math.round(txt.length * 7 + 20);
+  const byCommit = {};
+  Object.keys(s.branches).forEach((b) => { const id = s.branches[b]; if (id) (byCommit[id] = byCommit[id] || []).push(b); });
+  Object.keys(byCommit).forEach((id) => {
+    if (!pos[id]) return;
+    const names = byCommit[id].sort((a, b) => (a === s.head ? -1 : b === s.head ? 1 : a < b ? -1 : 1));
+    const hasHead = names[0] === s.head;
+    const text = (hasHead ? 'HEAD → ' : '') + names.join(', ');
+    const on = names.some((n) => fresh.indexOf('ref:' + n) >= 0);
+    pills.push({ text, x: pos[id].x - est(text) / 2, y: pos[id].y - 46, style: 'solid', border: hasHead ? t.accent : t.line2, bg: hasHead ? t.accent : t.sunk, fg: hasHead ? t.onAccent : t.text, anim: on ? 'gitPop' + pop + ' 0.5s ease 0.6s both' : 'none' });
+  });
+  Object.keys(s.tracking).forEach((b) => {
+    const id = s.tracking[b]; if (!pos[id]) return;
+    const text = 'origin/' + b; const on = fresh.indexOf('ref:origin/' + b) >= 0;
+    pills.push({ text, x: pos[id].x - est(text) / 2, y: pos[id].y + 40, style: 'dashed', border: t.right, bg: t.surface, fg: t.right, anim: on ? 'gitPop' + pop + ' 0.5s ease 0.6s both' : 'none' });
+  });
+  let empty = '';
+  if (!s.inited) empty = 'No repository yet. Commits will appear here.';
+  else if (!vis.length) { empty = ''; pills.push({ text: 'HEAD → ' + s.head + ' (no commits yet)', x: 24, y: h / 2 - 11, style: 'solid', border: t.accent, bg: t.accent, fg: t.onAccent, anim: fresh.indexOf('ref:' + s.head) >= 0 ? 'gitPop' + pop + ' 0.5s ease both' : 'none' }); }
+  const hidden = s.order.filter((id) => s.commits[id].hidden).length;
+  const behind = Object.keys(reach).length < vis.length;
+  const tipTxt = head ? 'HEAD is on ' + s.head + ' at ' + head + ', ' + s.commits[head].msg + '.' : '';
+  return {
+    label: 'Commit graph. ' + (s.inited ? vis.length + ' commits. ' + tipTxt : 'No repository yet.'),
+    w, h, nodes, pills, live: live || 'M0 0', faded: faded || 'M0 0', empty,
+    note: !s.inited ? '' : vis.length + ' commit' + (vis.length === 1 ? '' : 's') + (behind ? ' · faded ones are left behind' : '') + (hidden ? ' · origin has ' + hidden + ' you have not fetched' : '')
+  };
+}
+
+function gitZoneVals(t, f, pop) {
+  const s = f.state; const fresh = f.fresh;
+  const head = gitTree(s, gitHead(s));
+  const hit = (k) => fresh.indexOf(k) >= 0;
+  const chip = (text, ver, badge, color, key) => ({ text, ver, badge, color, border: hit(key) ? color : t.line, anim: hit(key) ? 'gitPop' + pop + ' 0.5s ease 0.75s both' : 'none' });
+  const red = (t.diff && t.diff.Hard && t.diff.Hard[0]) || t.flame;
+  // working directory
+  const work = gitNames(s.work, s.idx, head).map((n) => {
+    if (!(n in s.work)) return chip(n, 'deleted', 'deleted', red, 'work:' + n);
+    if (!(n in s.idx)) return chip(n, s.work[n], 'new', t.right, 'work:' + n);
+    if (s.work[n] !== s.idx[n]) return chip(n, s.work[n], 'edited', t.medFg, 'work:' + n);
+    if (s.idx[n] !== head[n]) return chip(n, s.work[n], 'staged', t.accent, 'work:' + n);
+    return chip(n, s.work[n], 'saved', t.muted, 'work:' + n);
+  });
+  // staging area: only what differs from the last commit
+  const staged = s.inited ? gitStaged(s).map((n) => chip(n, n in head ? head[n] + ' → ' + (s.idx[n] || 'gone') : s.idx[n], !(n in head) ? 'new file' : !(n in s.idx) ? 'delete' : 'change', t.accent, 'stage:' + n)) : [];
+  // local repository
+  const repo = [];
+  if (!s.inited) repo.push({ label: '', chips: [], empty: 'No repository yet. git init makes one.' });
+  else {
+    const hid = gitHead(s);
+    repo.push({
+      label: hid ? 'HEAD → ' + s.head + ' → ' + hid + ' “' + s.commits[hid].msg + '”' : 'HEAD → ' + s.head,
+      chips: Object.keys(head).sort().map((n) => chip(n, head[n], '', t.muted, 'snap:' + n)),
+      empty: hid ? '' : 'No commits yet.'
+    });
+    if (s.stash.length) repo.push({ label: 'Stash shelf', chips: s.stash.map((e, i) => chip('stash@{' + i + '}', Object.keys(e.files).join(' '), 'parked', t.right, 'stash:' + i)), empty: '' });
+  }
+  // remote
+  const remote = [];
+  if (!s.remote) remote.push({ label: '', chips: [], empty: 'No remote yet. git clone links one.' });
+  else {
+    const tip = s.remote.branches.main;
+    const list = s.remote.commits.slice().sort((a, b) => s.commits[b].n - s.commits[a].n).slice(0, 4);
+    remote.push({
+      label: 'main → ' + tip, empty: '',
+      chips: list.map((c) => chip(c, s.commits[c].msg, s.commits[c].hidden ? 'not on laptop' : '', t.right, 'remote:' + c))
+    });
+  }
+  return [
+    [{ label: '', chips: work, empty: work.length ? '' : 'An empty folder. Make a file to begin.' }],
+    [{ label: '', chips: staged, empty: staged.length ? '' : 'Empty. git add puts changes here.' }],
+    repo, remote
+  ];
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { theme: loadTheme(), lesson: 0, step: 0, playing: false, pop: 'A', mobile: gitMobile() };
+  }
+  componentDidMount() {
+    listenTheme(this);
+    this.onKey = (e) => {
+      if (!e || !e.key) return;
+      if (e.key === 'ArrowRight') { this.go(this.state.step + 1); if (e.preventDefault) e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { this.go(this.state.step - 1); if (e.preventDefault) e.preventDefault(); }
+      else if (e.key === ' ' && !(e.target && /BUTTON|INPUT|A/.test(e.target.tagName || ''))) { this.togglePlay(); if (e.preventDefault) e.preventDefault(); }
+    };
+    this.onResize = () => { const m = gitMobile(); if (m !== this.state.mobile) this.setState({ mobile: m }); };
+    try { window.addEventListener('keydown', this.onKey); window.addEventListener('resize', this.onResize); } catch (e) {}
+  }
+  componentWillUnmount() {
+    unlistenTheme(this); clearInterval(this.timer);
+    try { window.removeEventListener('keydown', this.onKey); window.removeEventListener('resize', this.onResize); } catch (e) {}
+  }
+  go(step, lesson) {
+    const L = lesson === undefined ? this.state.lesson : lesson;
+    const n = gitLessonFrames(L).length;
+    const k = Math.max(0, Math.min(n - 1, step));
+    if (k === this.state.step && L === this.state.lesson) return;
+    this.setState({ step: k, lesson: L, pop: this.state.pop === 'A' ? 'B' : 'A' });
+  }
+  stop() { clearInterval(this.timer); this.setState({ playing: false }); }
+  togglePlay() {
+    if (this.state.playing) { this.stop(); return; }
+    const n = gitLessonFrames(this.state.lesson).length;
+    if (this.state.step >= n - 1) this.go(0);
+    this.setState({ playing: true });
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      if (this.state.step >= gitLessonFrames(this.state.lesson).length - 1) { this.stop(); return; }
+      this.go(this.state.step + 1);
+    }, 2600);
+  }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
+    const mobile = !!this.state.mobile;
+    const frames = gitLessonFrames(this.state.lesson);
+    const f = frames[this.state.step];
+    const lesson = GIT_LESSONS[this.state.lesson];
+    const pop = this.state.pop;
+    const verb = gitVerb(f.cmd);
+    const isEdit = f.cmd.indexOf('edit ') === 0; const isMate = f.cmd === 'teammate push';
+    const W = mobile ? 420 : 1440;
+    const graph = gitGraphVals(t, f, mobile ? 388 : 1084, mobile, pop);
+    const zones = gitZoneVals(t, f, pop);
+    const into = {}; const from = {};
+    f.flows.forEach((fl) => { into[fl.to] = 1; from[fl.from] = 1; });
+    const cells = [];
+    GIT_ZONES.forEach((z, i) => {
+      const hot = into[z] || from[z];
+      cells.push({ zone: true, gut: false, title: GIT_ZONE_INFO[i][0], sub: GIT_ZONE_INFO[i][1], sections: zones[i], border: into[z] ? t.accent : hot ? t.line2 : t.line, titleFg: into[z] ? t.accent : t.text, arrows: [] });
+      if (i < 3) {
+        const fwd = f.flows.some((fl) => GIT_ZONES.indexOf(fl.from) <= i && GIT_ZONES.indexOf(fl.to) > i);
+        const back = f.flows.some((fl) => GIT_ZONES.indexOf(fl.from) > i && GIT_ZONES.indexOf(fl.to) <= i);
+        const arrows = [{ glyph: mobile ? '↓' : '→', label: fwd ? verb : GIT_GUTS[i][0], fg: fwd ? t.accent : t.muted }];
+        if (back || GIT_GUTS[i][1]) arrows.push({ glyph: mobile ? '↑' : '←', label: back ? verb : GIT_GUTS[i][1], fg: back ? t.accent : t.muted });
+        cells.push({ zone: false, gut: true, arrows, sections: [] });
+      }
+    });
+    const center = (z) => GIT_ZONES.indexOf(z) * (GIT_DESK.zw + GIT_DESK.gw) + GIT_DESK.zw / 2;
+    const flights = mobile ? [] : f.flows.map((fl, k) => ({
+      label: fl.label, left: center(fl.from) - 64, dx: center(fl.to) - center(fl.from),
+      anim: 'gitFly' + pop + ' 1.1s cubic-bezier(.45,.05,.3,1) ' + (k * 0.8).toFixed(1) + 's both'
+    }));
+    const n = frames.length;
+    const out = f.out.slice(0, 3);
+    const nextL = this.state.lesson + 1 < GIT_LESSONS.length && this.state.step === n - 1;
+    return {
+      t, themeBtns: themeButtons(this, themeKey, t),
+      L: {
+        desk: !mobile, rootW: W, rootH: mobile ? 'auto' : '900px', gutter: mobile ? 16 : 24,
+        cols: mobile ? 'minmax(0, 1fr)' : '272px minmax(0, 1fr)',
+        navPad: mobile ? '12px 16px' : '20px 16px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
+        lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
+        mainPad: mobile ? '14px 16px 24px' : '16px 24px 18px',
+        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 330px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', cmdSize: mobile ? 17 : 22,
+        graphH: mobile ? 'auto' : 'auto', graphGrow: mobile ? '0' : '1', graphMin: mobile ? '0' : (graph.h + 44) + 'px',
+        zoneCols: mobile ? 'minmax(0, 1fr)' : GIT_DESK.zw + 'px ' + GIT_DESK.gw + 'px ' + GIT_DESK.zw + 'px ' + GIT_DESK.gw + 'px ' + GIT_DESK.zw + 'px ' + GIT_DESK.gw + 'px ' + GIT_DESK.zw + 'px',
+        zonesMin: mobile ? '0' : '276px', zonesH: mobile ? 'auto' : '276px', zonesGrow: mobile ? '1' : '0', zoneMinH: mobile ? '0' : '100%',
+        gutDir: mobile ? 'row' : 'column', gutGap: mobile ? '24px' : '22px', gutPad: mobile ? '6px 0' : '52px 0 0', gutJustify: mobile ? 'center' : 'flex-start', arrowDir: mobile ? 'row' : 'column'
+      },
+      lessons: GIT_LESSONS.map((ls, i) => {
+        const cur = i === this.state.lesson;
+        return {
+          num: String(i + 1).padStart(2, '0'), title: ls.title, tag: ls.tag, cur: cur ? 'page' : 'false',
+          bg: cur ? t.sunk : 'transparent', fg: cur ? t.text : t.text2, border: cur ? t.accent : 'transparent', numFg: cur ? t.accent : t.muted,
+          pick: () => { this.stop(); this.go(0, i); }
+        };
+      }),
+      legend: [['new', t.right, 'A file Git is not tracking yet'], ['edited', t.medFg, 'Changed, not staged yet'], ['staged', t.accent, 'Packed for the next commit'], ['saved', t.muted, 'Same as the last commit']].map(([badge, color, text]) => ({ badge, color, text })),
+      lesson: { title: lesson.title, tag: lesson.tag, num: this.state.lesson + 1, count: GIT_LESSONS.length },
+      nextLesson: { show: nextL, title: nextL ? GIT_LESSONS[this.state.lesson + 1].title : '', go: () => { this.stop(); this.go(0, Math.min(GIT_LESSONS.length - 1, this.state.lesson + 1)); } },
+      now: {
+        prompt: isEdit ? 'you' : isMate ? 'teammate' : '$', promptFg: isEdit || isMate ? t.right : t.accent,
+        cmd: isEdit ? 'edit ' + f.cmd.slice(5) + ' in your editor' : isMate ? 'git push (from their laptop)' : f.cmd,
+        cmdFg: isEdit || isMate ? t.text2 : t.text,
+        out, say: f.say
+      },
+      stepNo: this.state.step + 1, stepCount: n,
+      atFirst: this.state.step === 0, atLast: this.state.step === n - 1,
+      dots: frames.map((fr, i) => ({ label: 'Step ' + (i + 1) + ': ' + fr.cmd, cur: i === this.state.step ? 'step' : 'false', bg: i === this.state.step ? t.accent : i < this.state.step ? t.text2 : t.line2, go: () => { this.stop(); this.go(i); } })),
+      restart: () => { this.stop(); this.go(0); },
+      prev: () => { this.stop(); this.go(this.state.step - 1); },
+      next: () => { this.stop(); this.go(this.state.step + 1); },
+      togglePlay: () => this.togglePlay(),
+      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson step by step',
+      graph, cells, flights
+    };
+  }
+}
+
+return Component; } };
 </script>
 <script>
 window.DS_EDITOR_LOAD = function () {
@@ -8541,8 +9392,16 @@ return DSEditor;
     tmp.innerHTML = window.DS_BOARDS[name].helmet || '';
     for (const el of [...tmp.children]) { const k = el.outerHTML; if (seen.has(k)) continue; seen.add(k); document.head.appendChild(el); }
   }
-  function fit() { document.documentElement.style.zoom = Math.max(0.25, Math.min(1.6, window.innerWidth / 1440)); }
+  // Pages are laid out at 1440px and zoomed to fit. A page can declare another layout width with
+  // data-fit on its root (the Git page uses a 420px stacked layout on phones).
+  function fit() {
+    const r = document.querySelector('#app > div');
+    const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
+    const z = Math.max(0.25, Math.min(1.6, window.innerWidth / w));
+    if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
+  }
   function paint() {
+    fit();
     const r = document.querySelector('#app > div');
     if (!r) return;
     const bg = getComputedStyle(r).backgroundColor;

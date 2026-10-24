@@ -129,6 +129,14 @@
       "w": 1440,
       "x": 7600,
       "y": 1140
+    },
+    "Git.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "Git, visually · four zones, live commit graph, 8 lessons",
+      "w": 1440,
+      "x": 6080,
+      "y": 5160
     }
   },
   "createdOnFiles": {

@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 16 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 17 linked pages, 32 animated stories, a code editor that runs JavaScript and Python in the browser, a step-by-step Git visual, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -19,7 +19,7 @@ Requirements: Node 18+ and Python 3.
 ```bash
 npm install          # React, CodeMirror and esbuild, used only to bundle the site
 npm run build        # sync shared code into pages/, then bundle dist/index.html
-npm test             # logic back-test of every page, every animated story, every test spec
+npm test             # back-test of every page, every animated story, every test spec, the sheet and every Git lesson step
 npm run test:browser # optional; needs: npm install --no-save playwright && npx playwright install chromium
 ```
 
@@ -35,12 +35,13 @@ Edit, then `npm run build`, then refresh `dist/index.html`.
 | `src/story/` | The story engine: `scenes_tp.js` (Two Pointers, engine header), `scenes_sw.js`, `scenes_hm.js`, and one `scenes_<code>.js` per newer pattern; `tail.js` (scene registry and quiz kits), `comp.js` (the player), `story_body.html` (its markup). |
 | `src/pages/` | Sources for the Revisit, Profile and Welcome pages. |
 | `src/code/` | The Code page (`code_body.html`, `code.js`: problem on the left, code pane on the right) and the CodeMirror editor entry (`editor.js`). |
+| `src/git/` | The Git page's model: `sim.js` (a small Git: files, staging area, commits, branches, origin, stash) and `lessons.js` (8 lessons, one command and one caption per step). |
 | `shared/tests_spec.js` | Test spec per problem: signatures in 5 languages, 3 examples, hidden cases, comparator, JS reference. |
 | `shared/code_pane.html` + `code_pane.js` | The self-contained code pane (`CodeRunner`): language tabs, timer, editor, Run/Submit, custom input, console. Any page can drop it in with the `<!-- CODE PANE -->` and `// @@CODE-PANE@@` markers. |
 | `shared/runner.js` | Runs learner code: JavaScript in a Blob Web Worker (3 s limit), Python in Pyodide from jsDelivr (5 s limit). |
 | `scripts/build_pages.py` | Copies `shared/` and `src/` into the matching blocks of `pages/`. |
 | `scripts/build_site.py` + `site-runtime.js` | Bundles all pages into `dist/index.html` with a small React renderer (no eval). It runs `scripts/build_editor.js` (esbuild) and inlines the editor inside `window.DS_EDITOR_LOAD`, so it is only parsed until the Code page opens. |
-| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case through the real worker harness), `site-test.js`. |
+| `tests/` | `backtest.js`, `scenecheck.js`, `sheetcheck.js` (master sheet integrity), `specs.js` (every spec complete; JS references pass every case), `gitcheck.js` (replays every Git lesson), `site-test.js`. |
 
 Edit shared code in `shared/` or `src/`, not inside `pages/`; the build overwrites those blocks.
 
@@ -73,6 +74,12 @@ STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'left', radius: '999px' }; 
 Use `visual: 'letters'` with per-step `cells` states (`in`, `out`, `cur`, `hit`, `dup`, `ok`, `paint`, `stored`, `buy`, `best`) or `visual: 'planks'` for bar heights. Give `actorLabels` one name for a single walker or two names for an L/R pair.
 
 For maps, floors and tables use `visual: 'grid'` (see `scenes_mx.js`, `scenes_df.js`, `scenes_bf.js`, `scenes_dp.js`). `items` is a 2D array of values, up to 8 by 8, and every step carries `cells`, a 2D array of the same state names in the same shape. Optional per step: `vals` (the values at that moment, for tables that fill in or tiles that move), `path` (a list of `[r, c]` drawn as a line under the tiles) and `actorAt: [r, c]` (the companion's badge; `cast` must be a `STORY_CAST` key). Optional per scene: `rowHeads`/`colHeads` to replace the faint indices, `legend` as `[[state, label]]` (use `'path'` for the line), and `maxTile`. Code lines can carry a third element naming the step kinds they serve, and `lines: tagLines(code)` builds the lines map. `scenecheck.js` fails if any step's grid is a different shape from `items`.
+
+## Add a Git lesson
+
+1. Add an entry to `GIT_LESSONS` in `src/git/lessons.js`: a start (`empty`, `local` or `cloned`) and steps of `[command, caption]`. Keep captions to one idea in short, everyday sentences.
+2. If a command is new, teach it to `gitRun` in `src/git/sim.js`.
+3. Run `npm run build && npm test`. `gitcheck.js` fails if Git would refuse a step, if a commit saves something that was not staged, or if a caption runs long.
 
 ## State
 

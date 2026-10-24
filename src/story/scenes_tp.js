@@ -2,9 +2,9 @@
 const LEVELS = [['kid', 'Kid'], ['builder', 'Builder'], ['expert', 'Expert']];
 const LANGS = [['py', 'Python'], ['java', 'Java'], ['cpp', 'C++'], ['js', 'JS'], ['go', 'Go']];
 const STORY_EXTRA = {
-  paper: { btnBg: '#1D1B18', btnFg: '#FFFDF8', activeBg: '#1D1B18', activeFg: '#FFFDF8', scene: '#1B1E26', sceneText: '#F3F0E8', sceneMuted: '#9DA2AE', dead: '#2A2E38', deadInk: '#6E7380', hue: 42, sat: 90, water: 'rgba(111,152,230,0.45)', waterTop: '#8FB0EA' },
-  ink: { btnBg: '#F5A06E', btnFg: '#111317', activeBg: '#ECE9E2', activeFg: '#111317', scene: '#0B0D11', sceneText: '#F3F0E8', sceneMuted: '#8B909B', dead: '#1C1F26', deadInk: '#5A5F6A', hue: 42, sat: 92, water: 'rgba(111,152,230,0.4)', waterTop: '#6F98E6' },
-  field: { btnBg: '#9FE870', btnFg: '#0C110B', activeBg: '#9FE870', activeFg: '#0C110B', scene: '#070B06', sceneText: '#C9EBB4', sceneMuted: '#6E8A60', dead: '#131B11', deadInk: '#435A38', hue: 95, sat: 70, water: 'rgba(159,232,112,0.28)', waterTop: '#9FE870' }
+  paper: { btnBg: '#1D1B18', btnFg: '#FFFDF8', activeBg: '#1D1B18', activeFg: '#FFFDF8', scene: '#1B1E26', sceneText: '#F3F0E8', sceneMuted: '#9DA2AE', dead: '#2A2E38', deadInk: '#6E7380', hue: 42, sat: 90, water: 'rgba(111,152,230,0.45)', waterTop: '#8FB0EA', path: '#8FB0EA' },
+  ink: { btnBg: '#F5A06E', btnFg: '#111317', activeBg: '#ECE9E2', activeFg: '#111317', scene: '#0B0D11', sceneText: '#F3F0E8', sceneMuted: '#8B909B', dead: '#1C1F26', deadInk: '#5A5F6A', hue: 42, sat: 92, water: 'rgba(111,152,230,0.4)', waterTop: '#6F98E6', path: '#8FB0EA' },
+  field: { btnBg: '#9FE870', btnFg: '#0C110B', activeBg: '#9FE870', activeFg: '#0C110B', scene: '#070B06', sceneText: '#C9EBB4', sceneMuted: '#6E8A60', dead: '#131B11', deadInk: '#435A38', hue: 95, sat: 70, water: 'rgba(159,232,112,0.28)', waterTop: '#9FE870', path: '#6FD3E0' }
 };
 const say = (who, text) => [who, text];
 // Newer patterns register themselves from their own scenes_*.js file, so adding one never touches tail.js or comp.js:

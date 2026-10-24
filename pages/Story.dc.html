@@ -48,7 +48,7 @@ button:disabled{opacity:0.35;cursor:default}
 
 <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 260px minmax(0, 1fr) 480px">
 
-<aside style="border-right: 1px solid {{t.line}}; padding: 22px 20px; display: flex; flex-direction: column; gap: 22px; overflow: hidden">
+<aside style="border-right: 1px solid {{t.line}}; padding: 22px 20px; display: flex; flex-direction: column; gap: 22px; overflow-y: auto">
 <div style="display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">LeetCode {{P.n}}</span><button onClick="{{toggleSave}}" aria-pressed="{{saved}}" aria-label="Save this story to Revisit" style="height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 12px; font-weight: 700; display: flex; gap: 5px; align-items: center"><span style="color: {{t.accent}}">{{saveIcon}}</span>{{saveLabel}}</button></div>
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 22px; line-height: 1.2; font-weight: 600">{{P.title}}</h1>
@@ -89,7 +89,7 @@ button:disabled{opacity:0.35;cursor:default}
 
 <sc-if value="{{isWalk}}" hint-placeholder-val="{{ true }}">
 <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px">
-<div style="position: relative; height: 300px; box-sizing: border-box; padding: 56px 0 12px; border-radius: 18px; background: {{t.scene}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 10px; overflow: hidden">
+<div style="position: relative; height: 300px; box-sizing: border-box; padding: 56px 0 12px; border-radius: 18px; background: {{t.scene}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; align-items: center; justify-content: {{sceneJustify}}; gap: 10px; overflow: hidden">
 <div style="position: absolute; left: 18px; top: 16px; display: flex; gap: 8px; align-items: center">
 <svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="23" rx="15" ry="15" fill="{{t.owl}}"></ellipse><path d="M8 12 L12 4 L16 11 M24 11 L28 4 L32 12" fill="{{t.owl}}"></path><circle cx="14" cy="20" r="6" fill="{{t.sceneText}}"></circle><circle cx="26" cy="20" r="6" fill="{{t.sceneText}}"></circle><circle cx="14" cy="20" r="2.6" fill="{{t.scene}}"></circle><circle cx="26" cy="20" r="2.6" fill="{{t.scene}}"></circle><path d="M18 26 L20 30 L22 26 Z" fill="{{t.left}}"></path></svg>
 <span style="font-size: 13px; color: {{t.sceneMuted}}; max-width: 380px">{{S.goal}}</span>
@@ -135,6 +135,23 @@ button:disabled{opacity:0.35;cursor:default}
 </div>
 </sc-if>
 
+<sc-if value="{{isGrid}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 24px; align-items: center">
+<div role="img" aria-label="{{grid.label}}" style="position: relative; flex-shrink: 0; width: {{grid.w}}px; height: {{grid.h}}px">
+<sc-for list="{{grid.cols}}" as="gc" hint-placeholder-count="5"><span aria-hidden="true" style="position: absolute; top: 0; left: {{gc.x}}px; width: {{gc.w}}px; text-align: center; font-family: {{t.mono}}; font-size: 11px; line-height: 12px; color: {{t.sceneMuted}}; opacity: 0.8">{{gc.label}}</span></sc-for>
+<sc-for list="{{grid.rows}}" as="gr" hint-placeholder-count="5"><span aria-hidden="true" style="position: absolute; left: 0; top: {{gr.y}}px; width: {{gr.w}}px; height: {{gr.h}}px; display: flex; align-items: center; justify-content: flex-end; font-family: {{t.mono}}; font-size: 11px; color: {{t.sceneMuted}}; opacity: 0.8; white-space: nowrap">{{gr.label}}</span></sc-for>
+<svg aria-hidden="true" width="{{grid.w}}" height="{{grid.h}}" style="position: absolute; left: 0; top: 0; overflow: visible"><polyline points="{{grid.line}}" fill="none" stroke="{{t.path}}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="{{grid.lineOp}}"></polyline></svg>
+<sc-for list="{{grid.tiles}}" as="gt" hint-placeholder-count="25"><div style="position: absolute; left: {{gt.left}}px; top: {{gt.top}}px; width: {{gt.size}}px; height: {{gt.size}}px; box-sizing: border-box; border-radius: 8px; border: 2px solid {{gt.ring}}; background: {{gt.fill}}; color: {{gt.ink}}; opacity: {{gt.op}}; box-shadow: {{gt.glow}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: {{gt.font}}; font-weight: 600; transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease">{{gt.v}}<span aria-hidden="true" style="position: absolute; top: 1px; right: 3px; font-size: 10px; line-height: 11px; font-weight: 700; color: {{gt.markColor}}">{{gt.mark}}</span></div></sc-for>
+<div aria-hidden="true" style="position: absolute; left: {{grid.actor.left}}px; top: {{grid.actor.top}}px; width: {{grid.actor.size}}px; height: {{grid.actor.size}}px; border-radius: 999px; background: {{grid.actor.color}}; color: {{t.scene}}; border: 2px solid {{t.scene}}; opacity: {{grid.actor.op}}; display: flex; align-items: center; justify-content: center; font-size: {{grid.actor.font}}; font-weight: 800; transition: left 0.5s cubic-bezier(.5,1.4,.4,1), top 0.5s cubic-bezier(.5,1.4,.4,1), opacity 0.3s">{{grid.actor.initial}}</div>
+</div>
+<sc-if value="{{grid.hasLegend}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 7px">
+<sc-for list="{{grid.legend}}" as="gl" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: {{t.sceneText}}; white-space: nowrap"><span aria-hidden="true" style="position: relative; width: 16px; height: 16px; box-sizing: border-box; border-radius: 4px; border: 2px solid {{gl.ring}}; background: {{gl.fill}}; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #1D1B18">{{gl.mark}}</span>{{gl.label}}</div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
 <sc-if value="{{isPlanks}}" hint-placeholder-val="{{ false }}">
 <div style="position: relative; width: {{S.width}}px; height: 162px; border-bottom: 2px solid {{t.sceneMuted}}">
 <div style="position: absolute; bottom: 0; left: {{water.left}}px; width: {{water.width}}px; height: {{water.height}}px; background: {{t.water}}; border-top: 2px solid {{t.waterTop}}; transition: all 0.5s ease"></div>
@@ -145,6 +162,7 @@ button:disabled{opacity:0.35;cursor:default}
 </div>
 </sc-if>
 
+<sc-if value="{{showActors}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; width: {{S.width}}px; height: 60px">
 <sc-for list="{{actors}}" as="a" hint-placeholder-count="2">
 <div style="position: absolute; top: 0; left: {{a.x}}px; width: 56px; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: left 0.55s cubic-bezier(.5,1.6,.4,1)">
@@ -153,6 +171,7 @@ button:disabled{opacity:0.35;cursor:default}
 </div>
 </sc-for>
 </div>
+</sc-if>
 </div>
 
 <sc-if value="{{hasBoard}}" hint-placeholder-val="{{ false }}">
@@ -445,7 +464,7 @@ const PROBLEMS = [
   ["binary-search", 704, "Binary Search", "The Number-Guessing Game", "Gus has to find a number in a sorted row. Every guess tells him higher or lower, so half the row disappears each time. Eight guesses are enough for 256 numbers.", "Starter", 8, ["Microsoft", "Apple"], "Binary Search", "arrays", "done", 4, 36, true],
   ["search-rotated", 33, "Search in Rotated Sorted Array", "The Spun Bookshelf", "A sorted bookshelf was spun around a hidden point. Whichever way Gus splits it, one half is still in order — check which half, and whether the book could be in it.", "Medium", 30, ["Amazon", "Meta", "Microsoft", "LinkedIn"], "Binary Search", "arrays", "todo", 1, 37, true],
   ["find-min-rotated", 153, "Find Minimum in Rotated Sorted Array", "The Lowest Step", "A staircase was cut and the pieces swapped. To find the lowest step, compare the middle step with the last one: that tells you which side the drop is on.", "Medium", 20, ["Amazon", "Microsoft"], "Binary Search", "arrays", "todo", 3, 38, true],
-  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, false],
+  ["rotate-image", 48, "Rotate Image", "The Turning Tile Floor", "Tilda must turn a square floor of painted tiles a quarter-turn clockwise without lifting them all at once. First flip across the diagonal, then mirror each row.", "Medium", 25, ["Amazon", "Microsoft", "Apple"], "Matrix", "arrays", "todo", 6, 21, true],
   ["merge-intervals", 56, "Merge Intervals", "The Meeting Room Diary", "Iris sorts the meetings by start time and walks through them. If a meeting starts before the last one ends, she simply stretches the last one.", "Medium", 25, ["Google", "Meta", "Amazon", "Bloomberg"], "Intervals", "arrays", "todo", 1, 39, true],
   ["insert-interval", 57, "Insert Interval", "The Late Booking", "A new meeting arrives late. Iris copies every meeting that ends before it, merges everything that overlaps it, then copies the rest.", "Medium", 25, ["Google", "LinkedIn"], "Intervals", "arrays", "todo", 5, 40, true],
   ["jump-game", 55, "Jump Game", "The Stepping Stones", "Each stone says how far Jax can leap from it. He tracks the farthest stone he could reach so far; if he's ever standing past that point, he's stuck.", "Medium", 20, ["Amazon", "Microsoft"], "Greedy", "arrays", "todo", 4, 41, true],
@@ -478,19 +497,19 @@ const PROBLEMS = [
   ["level-order", 102, "Binary Tree Level Order Traversal", "Floors of the Treehouse", "Rill visits the treehouse one floor at a time: everyone on this floor, then everyone they point to on the floor below.", "Medium", 25, ["Amazon", "Meta", "Microsoft"], "Breadth-First Search", "trees", "todo", 1, 16, false],
   ["right-side-view", 199, "Binary Tree Right Side View", "The View from the Right Balcony", "Stand on the right balcony of every floor of the treehouse. The last person on each floor is the one you can see.", "Medium", 20, ["Meta", "Amazon"], "Breadth-First Search", "trees", "todo", 5, 56, false],
 
-  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, false],
-  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, false],
+  ["number-of-islands", 200, "Number of Islands", "Islands on the Map", "Moss scans the map. Each time he steps on land nobody has explored, he's found a new island — then he chalks every connected patch of land so it's never counted again.", "Medium", 30, ["Amazon", "Google", "Meta", "Uber"], "Depth-First Search", "graphs", "todo", 1, 17, true],
+  ["rotting-oranges", 994, "Rotting Oranges", "The Spreading Ripple", "Every rotten orange spoils its neighbours one minute later, like a ripple. Rill counts how many rings it takes to reach every fresh orange — or finds one it never reaches.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Breadth-First Search", "graphs", "todo", 2, 22, true],
   ["clone-graph", 133, "Clone Graph", "The Friendship Photocopier", "Moss photocopies a web of friends. He keeps a notebook of who's already copied, so nobody gets copied twice and every friendship is redrawn.", "Medium", 25, ["Meta", "Google", "Amazon"], "Depth-First Search", "graphs", "todo", 4, 57, false],
   ["course-schedule", 207, "Course Schedule", "The Prerequisite Map", "Rill starts with every course that has no prerequisites, then unlocks the courses that were waiting on them. If some are never unlocked, there's a loop.", "Medium", 30, ["Amazon", "Microsoft", "Uber"], "Breadth-First Search", "graphs", "todo", 3, 58, false],
   ["word-search", 79, "Word Search", "The Letter Maze", "Chalk traces the word letter by letter through a grid, marking each square as he goes and rubbing the mark out when a path fails.", "Medium", 30, ["Amazon", "Microsoft", "Bloomberg"], "Backtracking", "graphs", "todo", 5, 59, false],
 
-  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, false],
-  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, false],
+  ["climbing-stairs", 70, "Climbing Stairs", "Notes on the Staircase", "You can climb one or two steps at a time. Sol notes that the ways to reach any step are the ways to reach the step below plus the step two below.", "Easy", 12, ["Amazon", "Google", "Adobe"], "Dynamic Programming", "dp", "todo", 1, 18, true],
+  ["house-robber", 198, "House Robber", "The Careful Night Walk", "Walking down a street of houses, you can't take from two neighbours. At each house Sol asks: is it better to take this one plus the best from two back, or skip it?", "Medium", 25, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 2, 19, true],
   ["max-subarray", 53, "Maximum Subarray", "The Hiker's Best Stretch", "A hiker logs every climb and drop. Sol keeps a running total of the current stretch; the moment it sinks below zero, starting fresh is better.", "Medium", 20, ["Amazon", "Microsoft", "LinkedIn"], "Dynamic Programming", "dp", "todo", 3, 60, false],
-  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, false],
+  ["coin-change", 322, "Coin Change", "The Exact Change Counter", "Make exact change with the fewest coins. Sol writes the best answer for every smaller amount first, then builds each bigger one from those notes.", "Medium", 30, ["Amazon", "Google", "Microsoft"], "Dynamic Programming", "dp", "todo", 4, 61, true],
   ["lis", 300, "Longest Increasing Subsequence", "The Staircase of Heights", "Pick people from a line to build the longest staircase of rising heights, keeping their order. For each person, Sol asks how long a staircase could end with them.", "Medium", 30, ["Google", "Microsoft", "Amazon"], "Dynamic Programming", "dp", "todo", 5, 62, false],
   ["word-break", 139, "Word Break", "The Dictionary Fence", "Can a long string be cut into dictionary words? Sol marks every position he can reach with a clean cut and checks whether the end gets a mark.", "Medium", 30, ["Amazon", "Google", "Meta"], "Dynamic Programming", "dp", "todo", 6, 63, false],
-  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, false]
+  ["unique-paths", 62, "Unique Paths", "The Grid Walker's Notebook", "A robot can only move right or down. The number of ways into any square is the ways from above plus the ways from the left — Sol fills the grid like a notebook.", "Medium", 20, ["Google", "Amazon"], "Dynamic Programming", "dp", "todo", 7, 64, true]
 ].map(([id, n, title, story, synopsis, diff, mins, cos, pattern, dtype, status, pop, added, animated]) =>
   ({ id, n, title, story, synopsis, diff, time: mins + " min", mins, cos, pattern, dtype, status, pop, added, animated }));
 
@@ -516,9 +535,9 @@ function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 const LEVELS = [['kid', 'Kid'], ['builder', 'Builder'], ['expert', 'Expert']];
 const LANGS = [['py', 'Python'], ['java', 'Java'], ['cpp', 'C++'], ['js', 'JS'], ['go', 'Go']];
 const STORY_EXTRA = {
-  paper: { btnBg: '#1D1B18', btnFg: '#FFFDF8', activeBg: '#1D1B18', activeFg: '#FFFDF8', scene: '#1B1E26', sceneText: '#F3F0E8', sceneMuted: '#9DA2AE', dead: '#2A2E38', deadInk: '#6E7380', hue: 42, sat: 90, water: 'rgba(111,152,230,0.45)', waterTop: '#8FB0EA' },
-  ink: { btnBg: '#F5A06E', btnFg: '#111317', activeBg: '#ECE9E2', activeFg: '#111317', scene: '#0B0D11', sceneText: '#F3F0E8', sceneMuted: '#8B909B', dead: '#1C1F26', deadInk: '#5A5F6A', hue: 42, sat: 92, water: 'rgba(111,152,230,0.4)', waterTop: '#6F98E6' },
-  field: { btnBg: '#9FE870', btnFg: '#0C110B', activeBg: '#9FE870', activeFg: '#0C110B', scene: '#070B06', sceneText: '#C9EBB4', sceneMuted: '#6E8A60', dead: '#131B11', deadInk: '#435A38', hue: 95, sat: 70, water: 'rgba(159,232,112,0.28)', waterTop: '#9FE870' }
+  paper: { btnBg: '#1D1B18', btnFg: '#FFFDF8', activeBg: '#1D1B18', activeFg: '#FFFDF8', scene: '#1B1E26', sceneText: '#F3F0E8', sceneMuted: '#9DA2AE', dead: '#2A2E38', deadInk: '#6E7380', hue: 42, sat: 90, water: 'rgba(111,152,230,0.45)', waterTop: '#8FB0EA', path: '#8FB0EA' },
+  ink: { btnBg: '#F5A06E', btnFg: '#111317', activeBg: '#ECE9E2', activeFg: '#111317', scene: '#0B0D11', sceneText: '#F3F0E8', sceneMuted: '#8B909B', dead: '#1C1F26', deadInk: '#5A5F6A', hue: 42, sat: 92, water: 'rgba(111,152,230,0.4)', waterTop: '#6F98E6', path: '#8FB0EA' },
+  field: { btnBg: '#9FE870', btnFg: '#0C110B', activeBg: '#9FE870', activeFg: '#0C110B', scene: '#070B06', sceneText: '#C9EBB4', sceneMuted: '#6E8A60', dead: '#131B11', deadInk: '#435A38', hue: 95, sat: 70, water: 'rgba(159,232,112,0.28)', waterTop: '#9FE870', path: '#6FD3E0' }
 };
 const say = (who, text) => [who, text];
 // Newer patterns register themselves from their own scenes_*.js file, so adding one never touches tail.js or comp.js:
@@ -1054,6 +1073,98 @@ function scrabbleScene() {
     steps
   };
 }
+// ---------- Breadth-First Search: Rill, the ripple that spreads one ring at a time ----------
+// The crate is a visual: 'grid'. One step is one minute: one full ring of the ripple.
+
+// The Spreading Ripple — Rotting Oranges
+function orangesScene() {
+  const crate = [
+    [2, 1, 1, 0, 1],
+    [1, 1, 0, 1, 1],
+    [0, 1, 0, 1, 0],
+    [1, 1, 1, 1, 0],
+    [0, 0, 0, 1, 2]
+  ];
+  const R = crate.length, C = crate[0].length;
+  const g = crate.map((row) => row.slice());
+  const when = crate.map((row) => row.map((v) => (v === 2 ? 0 : -1)));   // minute each orange went bad
+  let queue = [];
+  let fresh = 0;
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+    if (g[r][c] === 2) queue.push([r, c]);
+    if (g[r][c] === 1) fresh++;
+  }
+  const startFresh = fresh;
+  const where = (p) => 'row ' + p[0] + ', column ' + p[1];
+  const log = [];
+  const steps = [];
+  steps.push({ kind: 'intro', minute: 0, vals: g.map((row) => row.slice()), when: when.map((x) => x.slice()), fresh, queued: queue.length, spread: 0, board: [['min 0', queue.length + ' bad', 'fresh']],
+    dialog: [say('hoot', 'A crate of oranges. A 1 is fresh, a 2 has gone bad, a 0 is an empty slot.'), say('rill', 'Each minute, a bad orange spoils the fresh ones right next to it. Up, down, left, right.'), say('hoot', 'How many minutes until none are fresh?')],
+    nar: { kid: 'Two oranges are bad: one in the top-left corner and one in the bottom-right. Each minute, the bad spreads to the fresh oranges touching them, like a ripple in a pond.', builder: 'Put every bad orange in a queue and count the fresh ones (' + fresh + '). Each minute, take everyone in the queue and spoil their fresh neighbours. The new bad ones join the queue for the next minute.', expert: 'Multi-source BFS (breadth-first search: visit everything 1 step away, then 2 steps, and so on). Starting from all bad oranges at once, ring k is exactly the oranges whose nearest bad orange is k steps away.' } });
+  let minute = 0;
+  while (queue.length && fresh) {
+    minute++;
+    const next = [];
+    for (const [r, c] of queue) {
+      for (const [nr, nc] of [[r + 1, c], [r - 1, c], [r, c + 1], [r, c - 1]]) {
+        if (nr >= 0 && nr < R && nc >= 0 && nc < C && g[nr][nc] === 1) {
+          g[nr][nc] = 2; fresh--; when[nr][nc] = minute; next.push([nr, nc]);
+        }
+      }
+    }
+    const from = queue.length;
+    queue = next;
+    log.unshift(['min ' + minute, '+' + next.length, 'fresh']);
+    steps.push({ kind: 'spread', minute, vals: g.map((row) => row.slice()), when: when.map((x) => x.slice()), fresh, queued: next.length, spread: next.length, board: log.map(([k, v], i) => [k, v, i === 0 ? 'fresh' : '']),
+      dialog: [say('rill', 'Minute ' + minute + '. The ' + from + ' orange' + (from === 1 ? '' : 's') + ' that went bad last time spoil their neighbours: ' + next.map(where).join('; ') + '.'), say('hoot', fresh ? fresh + ' fresh orange' + (fresh === 1 ? ' is' : 's are') + ' left.' : 'That was the last fresh orange.')],
+      nar: { kid: 'Minute ' + minute + ': the ripple moves one ring out. ' + next.length + ' more orange' + (next.length === 1 ? '' : 's') + ' go bad. ' + (fresh ? fresh + ' fresh one' + (fresh === 1 ? '' : 's') + ' left.' : 'None are fresh now!'), builder: 'minutes = ' + minute + '. Pop the ' + from + ' queued orange' + (from === 1 ? '' : 's') + '; each fresh neighbour becomes 2, fresh -= 1, and joins the queue. Queue size now: ' + next.length + '.', expert: 'Level ' + minute + ' of the BFS. Each orange enters the queue once, when it first goes bad, so it is never counted twice.' } });
+  }
+  const answer = fresh === 0 ? minute : -1;
+  steps.push({ kind: 'done', minute, vals: g.map((row) => row.slice()), when: when.map((x) => x.slice()), fresh, queued: queue.length, spread: 0, board: log.map(([k, v]) => [k, v, '']), done: true,
+    dialog: [say('rill', 'No fresh oranges are left.'), say('hoot', 'It took ' + answer + ' minutes for the whole crate to go bad.')],
+    nar: { kid: 'Every orange has gone bad. It took ' + answer + ' minutes, one ring of the ripple per minute.', builder: 'fresh == 0 → return minutes = ' + answer + '. (If any fresh orange could never be reached, we would return -1.)', expert: 'Each square enters the queue at most once and checks 4 neighbours: O(R·C) time, O(R·C) queue space.' } });
+  const T = { intro: ['Bad oranges queued', 'plain'], spread: ['One minute → one ring spoils', 'warn'], done: [answer + ' minutes in all', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
+    st.cells = st.vals.map((row, r) => row.map((v, c) => {
+      if (v === 0) return 'out';
+      if (v === 1) return 'in';
+      if (!st.done && st.kind === 'spread' && st.when[r][c] === st.minute) return 'hit';
+      return 'dup';
+    }));
+    const gone = startFresh - st.fresh;
+    st.meter = { text: 'fresh left: ' + st.fresh + ' / ' + startFresh, pct: (gone / startFresh) * 100, mark: 100, markLabel: 'all spoiled' };
+    st.watch = [['minutes', st.minute, 'left'], ['fresh', st.fresh, 'right'], ['spoiled now', st.spread, 'left'], ['queue size', st.queued, 'right'], ['ripple ring', st.kind === 'intro' ? 'start' : 'ring ' + st.minute, 'text'], ['result', st.done ? answer : '…', st.done ? 'ok' : 'text']];
+    delete st.when; delete st.minute; delete st.fresh; delete st.queued; delete st.spread;
+  });
+  const code = {
+    py: [['def orangesRotting(grid):', ''], ['    R, C = len(grid), len(grid[0])', ''], ['    queue, fresh = [], 0', ''], ['    for r in range(R):', ''], ['        for c in range(C):', ''], ['            if grid[r][c] == 2: queue.append((r, c))', '', 'intro'], ['            if grid[r][c] == 1: fresh += 1', ''], ['    D = ((1, 0), (-1, 0), (0, 1), (0, -1))', ''], ['    minutes = 0', ''], ['    while queue and fresh:', ''], ['        minutes += 1', '  # one ring', 'spread'], ['        nxt = []', ''], ['        for r, c in queue:', ''], ['            for dy, dx in D:', ''], ['                y, x = r + dy, c + dx', ''], ['                if 0 <= y < R and 0 <= x < C \\', ''], ['                        and grid[y][x] == 1:', ''], ['                    grid[y][x] = 2', ''], ['                    fresh -= 1', ''], ['                    nxt.append((y, x))', ''], ['        queue = nxt', ''], ['    return minutes if fresh == 0 else -1', '', 'done']],
+    java: [['int orangesRotting(int[][] g) {', ''], ['    int R = g.length, C = g[0].length, fresh = 0;', ''], ['    Deque<int[]> q = new ArrayDeque<>();', ''], ['    for (int r = 0; r < R; r++)', ''], ['        for (int c = 0; c < C; c++) {', ''], ['            if (g[r][c] == 2) q.add(new int[]{r, c});', '', 'intro'], ['            if (g[r][c] == 1) fresh++;', ''], ['        }', ''], ['    int[][] D = {{1,0},{-1,0},{0,1},{0,-1}};', ''], ['    int minutes = 0;', ''], ['    while (!q.isEmpty() && fresh > 0) {', ''], ['        minutes++;', '  // one ring', 'spread'], ['        for (int k = q.size(); k > 0; k--) {', ''], ['            int[] p = q.poll();', ''], ['            for (int[] d : D) {', ''], ['                int y = p[0] + d[0], x = p[1] + d[1];', ''], ['                if (y < 0 || x < 0) continue;', ''], ['                if (y >= R || x >= C) continue;', ''], ['                if (g[y][x] != 1) continue;', ''], ['                g[y][x] = 2; fresh--;', ''], ['                q.add(new int[]{y, x});', ''], ['            }', ''], ['        }', ''], ['    }', ''], ['    return fresh == 0 ? minutes : -1;', '', 'done'], ['}', '']],
+    cpp: [['int orangesRotting(vector<vector<int>>& g) {', ''], ['    int R = g.size(), C = g[0].size(), fresh = 0;', ''], ['    queue<pair<int,int>> q;', ''], ['    for (int r = 0; r < R; r++)', ''], ['        for (int c = 0; c < C; c++) {', ''], ['            if (g[r][c] == 2) q.push({r, c});', '', 'intro'], ['            if (g[r][c] == 1) fresh++;', ''], ['        }', ''], ['    int D[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};', ''], ['    int minutes = 0;', ''], ['    while (!q.empty() && fresh > 0) {', ''], ['        minutes++;', '  // one ring', 'spread'], ['        for (int k = q.size(); k > 0; k--) {', ''], ['            auto [r, c] = q.front(); q.pop();', ''], ['            for (auto& d : D) {', ''], ['                int y = r + d[0], x = c + d[1];', ''], ['                if (y < 0 || x < 0) continue;', ''], ['                if (y >= R || x >= C) continue;', ''], ['                if (g[y][x] != 1) continue;', ''], ['                g[y][x] = 2; fresh--;', ''], ['                q.push({y, x});', ''], ['            }', ''], ['        }', ''], ['    }', ''], ['    return fresh == 0 ? minutes : -1;', '', 'done'], ['}', '']],
+    js: [['function orangesRotting(g) {', ''], ['  const R = g.length, C = g[0].length;', ''], ['  let queue = [], fresh = 0;', ''], ['  for (let r = 0; r < R; r++)', ''], ['    for (let c = 0; c < C; c++) {', ''], ['      if (g[r][c] === 2) queue.push([r, c]);', '', 'intro'], ['      if (g[r][c] === 1) fresh++;', ''], ['    }', ''], ['  const D = [[1, 0], [-1, 0], [0, 1], [0, -1]];', ''], ['  let minutes = 0;', ''], ['  while (queue.length && fresh) {', ''], ['    minutes++;', '  // one ring', 'spread'], ['    const next = [];', ''], ['    for (const [r, c] of queue)', ''], ['      for (const [dy, dx] of D) {', ''], ['        const y = r + dy, x = c + dx;', ''], ['        if (g[y]?.[x] !== 1) continue;', ''], ['        g[y][x] = 2; fresh--;', ''], ['        next.push([y, x]);', ''], ['      }', ''], ['    queue = next;', ''], ['  }', ''], ['  return fresh === 0 ? minutes : -1;', '', 'done'], ['}', '']],
+    go: [['func orangesRotting(g [][]int) int {', ''], ['    R, C, fresh := len(g), len(g[0]), 0', ''], ['    queue := [][2]int{}', ''], ['    for r := 0; r < R; r++ {', ''], ['        for c := 0; c < C; c++ {', ''], ['            switch g[r][c] {', ''], ['            case 2:', ''], ['                queue = append(queue, [2]int{r, c})', '', 'intro'], ['            case 1:', ''], ['                fresh++', ''], ['            }', ''], ['        }', ''], ['    }', ''], ['    D := [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}', ''], ['    minutes := 0', ''], ['    for len(queue) > 0 && fresh > 0 {', ''], ['        minutes++', '  // one ring', 'spread'], ['        next := [][2]int{}', ''], ['        for _, p := range queue {', ''], ['            for _, d := range D {', ''], ['                y, x := p[0]+d[0], p[1]+d[1]', ''], ['                if y < 0 || x < 0 {', ''], ['                    continue', ''], ['                }', ''], ['                if y < R && x < C && g[y][x] == 1 {', ''], ['                    g[y][x] = 2', ''], ['                    fresh--', ''], ['                    next = append(next, [2]int{y, x})', ''], ['                }', ''], ['            }', ''], ['        }', ''], ['        queue = next', ''], ['    }', ''], ['    if fresh > 0 {', ''], ['        return -1', ''], ['    }', ''], ['    return minutes', '', 'done'], ['}', '']]
+  };
+  return {
+    id: 'rotting-oranges', pattern: 'Breadth-First Search', cast: 'rill', short: 'Oranges', visual: 'grid', items: crate, width: 420, maxTile: 44,
+    board: true, boardTitle: 'Ripple log',
+    gridLabel: 'Orange crate', legend: [['in', 'fresh (1)'], ['hit', 'spoiled this minute'], ['dup', 'bad (2)'], ['out', 'empty slot (0)']],
+    goal: 'How many minutes until no orange is fresh?', status: ['Ripple spreading…', answer + ' minutes'],
+    lines: tagLines(code), code,
+    rules: [['Queue every bad orange, count the fresh', 'intro'], ['Each minute, the queued ones spoil their neighbours', 'spread'], ['No fresh left → report the minutes', 'done']],
+    complexity: [['O(R·C)', 'each orange joins the queue once'], ['O(R·C)', 'the queue can hold a whole ring']],
+    quest: ['A crate of oranges sits in a warm shed. Two have already gone bad. Every minute, a bad orange spoils any fresh orange touching it: above, below, left or right.', 'Rill wants to know how many minutes pass before no fresh orange is left. If some fresh orange can never be reached, the answer is -1.'],
+    example: ['grid = [[2,1,1,0,1],[1,1,0,1,1],[0,1,0,1,0],[1,1,1,1,0],[0,0,0,1,2]]', 'answer = ' + answer],
+    hints: ['Old Hoot: “Everything that goes bad in the same minute is the same distance from a bad orange. What does that remind you of?”', '“Think of ripples. Start from all the bad oranges at once and spread one ring per minute.”', '“Queue the bad ones. Each minute, empty the queue: spoil fresh neighbours and queue them for next minute. Count the minutes.”'],
+    clues: ['spreads to neighbours', 'everything spreads at the same time', 'count the minutes (rings)'],
+    quizFb: ['Old Hoot: “Yes! All the bad oranges spread together, one ring per minute, and the rings count the minutes.”', 'Old Hoot: “Going deep down one path spoils oranges in the wrong order. You would get the wrong number of minutes.”', 'Old Hoot: “There are 14 fresh oranges but it only takes a few minutes. Many spoil in the same minute.”', 'Old Hoot: “The bad oranges are in two corners. Distance from one corner ignores the other one.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(orangesScene);
+PATTERN_KITS['Breadth-First Search'] = { right: 0, spot: 'Why rings, not one path?', ask: 'How should Rill count the minutes?',
+  quiz: [['Ripple out, ring by ring', 'Every bad orange spreads to its neighbours at the same time'], ['Follow one path deep', 'Chase one bad orange as far as it goes, then try the next'], ['Count the fresh oranges', 'The answer is how many fresh ones there are'], ['Measure from one corner', 'Minutes = steps from the top-left square']] };
+STORY_CAST.rill = { name: 'Rill', initial: 'R', color: 'right', radius: '999px' };
 // ---------- Binary Search: Gus guesses the middle and halves the doubt ----------
 
 // Cells for a search window: outside [lo, hi] is ruled out, mid is the guess.
@@ -1255,6 +1366,381 @@ SCENE_REGISTRY.push(guessScene, shelfScene, stepScene);
 PATTERN_KITS['Binary Search'] = { right: 1, spot: 'Why halve, not walk?', ask: 'How should Gus search?',
   quiz: [['Check every one', 'Walk the row from the start'], ['Halve the doubt', 'Look at the middle, drop the wrong half'], ['Keep a running total', 'Write the sum so far at every step'], ['A notebook of everything seen', 'Write down every value you pass']] };
 STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'right', radius: '999px' };
+// ---------- Depth-First Search: Moss, the explorer who goes deep before going wide ----------
+// The map is a visual: 'grid'. The trail (path) is Moss's chain of open calls, from where he landed to where he stands.
+
+// Islands on the Map — Number of Islands
+function islandsScene() {
+  const map = [
+    ['1', '1', '0', '0', '0'],
+    ['1', '1', '0', '1', '1'],
+    ['0', '0', '0', '1', '0'],
+    ['0', '1', '0', '0', '0'],
+    ['1', '1', '1', '0', '1']
+  ];
+  const R = map.length, C = map[0].length;
+  const g = map.map((row) => row.slice());
+  const owner = map.map((row) => row.map(() => -1));   // which island chalked each square
+  const land = map.flat().filter((x) => x === '1').length;
+  const where = (r, c) => 'row ' + r + ', column ' + c;
+  const dirName = (a, b) => (b[0] > a[0] ? 'down' : b[0] < a[0] ? 'up' : b[1] > a[1] ? 'right' : 'left');
+  const steps = [];
+  const trail = [];
+  let islands = 0, size = 0, chalked = 0, last = null;
+  steps.push({ kind: 'intro', r: '—', c: '—', vals: map.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: [], actorAt: [0, 0],
+    dialog: [say('hoot', 'A sea map, 5 squares by 5. A 1 is land, a 0 is water. How many islands are there?'), say('moss', 'Land squares that touch up, down, left or right are the same island.'), say('hoot', 'So when you find land, explore all of it before you count again.')],
+    nar: { kid: 'Moss reads the map row by row. When he steps on new land, that is a new island. He chalks every square of it so he never counts it twice.', builder: 'Scan every square. On an unvisited "1", add one to islands and call chalk(r, c), which marks the square and spreads to its four neighbours.', expert: 'Count connected components in a grid graph: each square is a node, with edges to its 4 neighbours. One DFS (depth-first search: follow a path as deep as it goes, then back up) per component.' } });
+  const visit = (r, c) => {
+    if (r < 0 || c < 0 || r >= R || c >= C || g[r][c] !== '1') return;
+    g[r][c] = '#'; owner[r][c] = islands - 1; size++; chalked++;
+    trail.push([r, c]);
+    const first = trail.length === 1;
+    const parent = trail.length > 1 ? trail[trail.length - 2] : null;
+    const backed = !first && last && (last[0] !== parent[0] || last[1] !== parent[1]);
+    const dir = parent ? dirName(parent, [r, c]) : '';
+    const st = { kind: first ? 'found' : 'chalk', r, c, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: trail.map((p) => p.slice()), actorAt: [r, c] };
+    if (first) {
+      st.dialog = [say('moss', 'Land at ' + where(r, c) + ', and no chalk on it.'), say('hoot', 'Then it is a new island. That makes ' + islands + '. Chalk it and explore.')];
+      st.nar = { kid: 'Moss finds land with no chalk. It must be a new island! That is island number ' + islands + '. He chalks the square.', builder: 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', then chalk(' + r + ', ' + c + ') writes "#" there.', expert: 'The scan only starts a DFS on an unvisited land square, so each component is counted exactly once, at its first square in reading order.' };
+    } else if (backed) {
+      st.dialog = [say('moss', 'Dead end. I walk back along my trail to ' + where(parent[0], parent[1]) + '.'), say('moss', 'From there, ' + dir + ' is land. Chalked!')];
+      st.nar = { kid: 'Moss hit water or chalk on every side, so he walked back along his trail. Then he found more land ' + dir + ' and chalked it.', builder: 'Some chalk() calls returned at once (water, chalk or the edge). Back in chalk(' + parent[0] + ', ' + parent[1] + '), the ' + dir + ' call lands on fresh land: grid[' + r + '][' + c + '] = "#".', expert: 'Returning from a call is the “back up” half of DFS. The drawn trail is the call stack: ' + trail.length + ' calls deep right now.' };
+    } else {
+      st.dialog = [say('moss', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('hoot', 'Chalk it and keep going deeper.')];
+      st.nar = { kid: 'Moss steps ' + dir + ' and finds more land. Same island! He chalks it and keeps going.', builder: 'chalk(' + r + ', ' + c + ') from chalk(' + parent[0] + ', ' + parent[1] + '): it is "1", so mark it "#". This island has ' + size + ' squares so far.', expert: 'Each square is marked before its neighbours are tried, so no square is entered twice. Trail depth: ' + trail.length + '.' };
+    }
+    steps.push(st);
+    last = [r, c];
+    visit(r + 1, c); visit(r - 1, c); visit(r, c + 1); visit(r, c - 1);
+    trail.pop();
+  };
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+    if (g[r][c] === '1') { islands++; size = 0; last = null; visit(r, c); }
+  }
+  steps.push({ kind: 'done', r: R - 1, c: C - 1, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: [], actorAt: [R - 1, C - 1], done: true,
+    dialog: [say('moss', 'I’ve read the last square. Every bit of land has chalk on it.'), say('hoot', 'You found ' + islands + ' islands, and counted each one once.')],
+    nar: { kid: 'The whole map is read and all land is chalked. There are ' + islands + ' islands!', builder: 'The scan ends → return islands = ' + islands + '.', expert: 'Every square is scanned once and chalked at most once: O(R·C) time. The trail can grow to R·C calls in the worst case, so O(R·C) space.' } });
+  const T = { intro: ['Ready to read the map', 'plain'], found: ['New land → new island', 'warn'], chalk: ['Land next door → chalk it', 'cool'], done: [islands + ' islands found!', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
+    const cur = st.islands - 1;
+    st.cells = st.vals.map((row, r) => row.map((v, c) => {
+      if (v === '0') return 'out';
+      if (v === '1') return 'in';
+      if (st.done) return 'stored';
+      if (st.kind !== 'intro' && r === st.r && c === st.c) return st.kind === 'found' ? 'hit' : 'cur';
+      return st.owner[r][c] === cur ? 'ok' : 'stored';
+    }));
+    st.path = st.trail.length > 1 ? st.trail : null;
+    st.meter = { text: 'land chalked: ' + st.chalked + ' / ' + land, pct: (st.chalked / land) * 100, mark: 100, markLabel: 'all ' + land + ' land squares' };
+    st.watch = [['r', st.r, 'left'], ['c', st.c, 'left'], ['grid[r][c]', st.kind === 'intro' ? '—' : st.done ? '"' + st.vals[st.r][st.c] + '"' : '"#"', 'right'], ['islands', st.islands, st.done ? 'ok' : 'text'], ['this island', st.kind === 'intro' ? 0 : st.size, 'text'], ['trail depth', st.trail.length, 'right']];
+    delete st.owner; delete st.trail; delete st.islands; delete st.size; delete st.chalked; delete st.r; delete st.c;
+  });
+  const code = {
+    py: [['def numIslands(grid):', ''], ['    rows, cols = len(grid), len(grid[0])', ''], ['    def chalk(r, c):', ''], ['        if not (0 <= r < rows and 0 <= c < cols):', ''], ['            return', ''], ['        if grid[r][c] != "1":', ''], ['            return', '  # water or chalk'], ['        grid[r][c] = "#"', '  # chalk it', 'chalk'], ['        chalk(r + 1, c); chalk(r - 1, c)', ''], ['        chalk(r, c + 1); chalk(r, c - 1)', ''], ['    islands = 0', '', 'intro'], ['    for r in range(rows):', ''], ['        for c in range(cols):', ''], ['            if grid[r][c] == "1":', ''], ['                islands += 1', '  # new island', 'found'], ['                chalk(r, c)', ''], ['    return islands', '', 'done']],
+    java: [['int numIslands(char[][] g) {', ''], ['    int islands = 0;', '', 'intro'], ['    for (int r = 0; r < g.length; r++)', ''], ['        for (int c = 0; c < g[0].length; c++)', ''], ['            if (g[r][c] == \'1\') {', ''], ['                islands++;', '  // new island', 'found'], ['                chalk(g, r, c);', ''], ['            }', ''], ['    return islands;', '', 'done'], ['}', ''], ['void chalk(char[][] g, int r, int c) {', ''], ['    if (r < 0 || c < 0 || r >= g.length) return;', ''], ['    if (c >= g[0].length || g[r][c] != \'1\') return;', ''], ['    g[r][c] = \'#\';', '  // chalk it', 'chalk'], ['    chalk(g, r + 1, c); chalk(g, r - 1, c);', ''], ['    chalk(g, r, c + 1); chalk(g, r, c - 1);', ''], ['}', '']],
+    cpp: [['void chalk(vector<vector<char>>& g, int r, int c) {', ''], ['    if (r < 0 || c < 0 || r >= g.size()) return;', ''], ['    if (c >= g[0].size() || g[r][c] != \'1\') return;', ''], ['    g[r][c] = \'#\';', '  // chalk it', 'chalk'], ['    chalk(g, r + 1, c); chalk(g, r - 1, c);', ''], ['    chalk(g, r, c + 1); chalk(g, r, c - 1);', ''], ['}', ''], ['int numIslands(vector<vector<char>>& g) {', ''], ['    int islands = 0;', '', 'intro'], ['    for (int r = 0; r < g.size(); r++)', ''], ['        for (int c = 0; c < g[0].size(); c++)', ''], ['            if (g[r][c] == \'1\') {', ''], ['                islands++;', '  // new island', 'found'], ['                chalk(g, r, c);', ''], ['            }', ''], ['    return islands;', '', 'done'], ['}', '']],
+    js: [['function numIslands(g) {', ''], ['  const chalk = (r, c) => {', ''], ['    if (r < 0 || c < 0 || r >= g.length) return;', ''], ['    if (c >= g[0].length || g[r][c] !== "1") return;', ''], ['    g[r][c] = "#";', '  // chalk it', 'chalk'], ['    chalk(r + 1, c); chalk(r - 1, c);', ''], ['    chalk(r, c + 1); chalk(r, c - 1);', ''], ['  };', ''], ['  let islands = 0;', '', 'intro'], ['  for (let r = 0; r < g.length; r++)', ''], ['    for (let c = 0; c < g[0].length; c++)', ''], ['      if (g[r][c] === "1") {', ''], ['        islands++;', '  // new island', 'found'], ['        chalk(r, c);', ''], ['      }', ''], ['  return islands;', '', 'done'], ['}', '']],
+    go: [['func numIslands(g [][]byte) int {', ''], ['    var chalk func(r, c int)', ''], ['    chalk = func(r, c int) {', ''], ['        if r < 0 || c < 0 || r >= len(g) ||', ''], ['            c >= len(g[0]) || g[r][c] != \'1\' {', ''], ['            return', '  // water or chalk'], ['        }', ''], ['        g[r][c] = \'#\'', '  // chalk it', 'chalk'], ['        chalk(r+1, c); chalk(r-1, c)', ''], ['        chalk(r, c+1); chalk(r, c-1)', ''], ['    }', ''], ['    islands := 0', '', 'intro'], ['    for r := range g {', ''], ['        for c := range g[r] {', ''], ['            if g[r][c] == \'1\' {', ''], ['                islands++', '  // new island', 'found'], ['                chalk(r, c)', ''], ['            }', ''], ['        }', ''], ['    }', ''], ['    return islands', '', 'done'], ['}', '']]
+  };
+  return {
+    id: 'number-of-islands', pattern: 'Depth-First Search', cast: 'moss', short: 'Islands', visual: 'grid', items: map, width: 420, maxTile: 44,
+    gridLabel: 'Sea map', legend: [['in', 'land, no chalk yet'], ['cur', 'Moss is here'], ['ok', 'chalked: this island'], ['stored', 'chalked: earlier island'], ['out', 'water'], ['path', 'Moss’s trail']],
+    goal: 'Count the islands. Each one counts once.', status: ['Reading the map…', islands + ' islands'],
+    lines: tagLines(code), code,
+    rules: [['Start with zero islands', 'intro'], ['Unchalked land → a new island', 'found'], ['Chalk it, then try all four neighbours', 'chalk'], ['Map read → report the count', 'done']],
+    complexity: [['O(R·C)', 'each square is read once and chalked at most once'], ['O(R·C)', 'the trail can wind through every square']],
+    quest: ['An old sea map shows a 5 by 5 patch of ocean. Each square is either land (1) or water (0). Land squares that touch up, down, left or right belong to the same island.', 'The harbour master wants to know: how many separate islands are there? Moss has a stick of chalk.'],
+    example: ['grid = 11000 / 11011 / 00010 / 01000 / 11101', 'answer = 4'],
+    hints: ['Old Hoot: “Counting land squares gives 12, but many of them are the same island. How can you tell you’ve seen an island before?”', '“When you find new land, explore the whole island right away. Mark every square you step on.”', '“Scan the map. Unmarked land → islands += 1, then chalk it and its land neighbours, and theirs, until none are left.”'],
+    clues: ['a grid of land and water', 'touching land is one island', 'never count an island twice'],
+    quizFb: ['Old Hoot: “That counts squares, not islands. The top-left island alone has 4 squares.”', 'Old Hoot: “Islands bend across rows. The one at the bottom-left uses rows 3 and 4.”', 'Old Hoot: “Yes! Find land, chalk the whole island at once, and the scan will never count it again.”', 'Old Hoot: “Comparing every pair is slow, and two squares can share an island without touching each other.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(islandsScene);
+PATTERN_KITS['Depth-First Search'] = { right: 2, spot: 'Why chalk, not count?', ask: 'How should Moss count the islands?',
+  quiz: [['Count every land square', 'Each 1 on the map is an island'], ['Count runs in each row', 'An island is a stretch of land in one row'], ['Chalk each island you find', 'Explore all of it at once, so it is never counted again'], ['Compare every pair of squares', 'Check which land squares touch which']] };
+STORY_CAST.moss = { name: 'Moss', initial: 'M', color: 'left', radius: '999px' };
+// ---------- Dynamic Programming: Sol, the scribe who writes every small answer down ----------
+// The notebook is a visual: 'grid'. A 2D table for Unique Paths; a one-row grid for the 1D stories.
+// A blank tile is a note Sol has not written yet.
+
+// The Grid Walker's Notebook — Unique Paths
+function gridWalkerScene() {
+  const m = 4, n = 4;
+  const ways = [...Array(m)].map(() => Array(n).fill(0));
+  const shown = [...Array(m)].map(() => Array(n).fill(''));
+  const snap = () => shown.map((row) => row.slice());
+  const steps = [];
+  const total = m * n;
+  let written = 0;
+  steps.push({ kind: 'intro', vals: snap(), at: null, from: [], written, r: '—', c: '—', up: '—', left: '—', actorAt: [0, 0],
+    dialog: [say('hoot', 'A robot starts in the top-left square and wants the bottom-right one. It may only move right or down.'), say('sol', 'How many different routes are there? I’ll write the answer for every square, small ones first.')],
+    nar: { kid: 'Sol has a notebook shaped like the floor. In each square he will write how many different ways the robot can get there.', builder: 'ways[r][c] = number of routes from (0, 0) to (r, c). The answer is ways[3][3]. Start with a table of zeros.', expert: 'Dynamic programming (DP: solve small versions first and store them). Every route into (r, c) arrives from above or from the left, so ways[r][c] = ways[r−1][c] + ways[r][c−1].' } });
+  for (let c = 0; c < n; c++) { ways[0][c] = 1; shown[0][c] = 1; written++; }
+  steps.push({ kind: 'edge', vals: snap(), at: null, row: 0, from: [], written, r: 0, c: '0..3', up: '—', left: '—', actorAt: [0, n - 1],
+    dialog: [say('sol', 'The top row is easy. The robot can only keep moving right to get there.'), say('hoot', 'So there is exactly 1 way into each of those squares.')],
+    nar: { kid: 'To reach any square in the top row, the robot just goes right, right, right. Only 1 way each. Sol writes 1s.', builder: 'ways[0][c] = 1 for every c.', expert: 'Base case: the first row has a single monotone route.' } });
+  for (let r = 0; r < m; r++) { if (!shown[r][0]) written++; ways[r][0] = 1; shown[r][0] = 1; }
+  steps.push({ kind: 'side', vals: snap(), at: null, col: 0, from: [], written, r: '0..3', c: 0, up: '—', left: '—', actorAt: [m - 1, 0],
+    dialog: [say('sol', 'Same for the left column. The robot can only keep moving down.'), say('hoot', '1 way into each of those too.')],
+    nar: { kid: 'To reach a square in the left column, the robot just goes down. Only 1 way each. More 1s in the notebook.', builder: 'ways[r][0] = 1 for every r.', expert: 'Second base case: the first column. Both edges together seed the table.' } });
+  for (let r = 1; r < m; r++) for (let c = 1; c < n; c++) {
+    ways[r][c] = ways[r - 1][c] + ways[r][c - 1]; shown[r][c] = ways[r][c]; written++;
+    const up = ways[r - 1][c], left = ways[r][c - 1];
+    steps.push({ kind: 'fill', vals: snap(), at: [r, c], from: [[r - 1, c], [r, c - 1]], written, r, c, up, left, actorAt: [r, c],
+      dialog: [say('sol', 'Row ' + r + ', column ' + c + '. From above: ' + up + ' ways. From the left: ' + left + ' ways.'), say('hoot', 'Every route comes from one of those two. So ' + up + ' + ' + left + ' = ' + ways[r][c] + '.')],
+      nar: { kid: 'The robot can only arrive from the square above or the square to the left. Sol adds their notes: ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', builder: 'ways[' + r + '][' + c + '] = ways[' + (r - 1) + '][' + c + '] + ways[' + r + '][' + (c - 1) + '] = ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', expert: 'Both notes were written earlier (row by row, left to right), so each square costs O(1). No route is counted twice: its last move is either down or right, never both.' } });
+  }
+  const answer = ways[m - 1][n - 1];
+  const route = [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [3, 3]];
+  steps.push({ kind: 'done', vals: snap(), at: [m - 1, n - 1], from: [], written, r: m - 1, c: n - 1, up: ways[m - 2][n - 1], left: ways[m - 1][n - 2], actorAt: [m - 1, n - 1], path: route, done: true,
+    dialog: [say('sol', 'The bottom-right square says ' + answer + '.'), say('hoot', 'The drawn line is just one of those ' + answer + ' routes. Sol never had to walk any of them.')],
+    nar: { kid: 'The last square says ' + answer + '. There are ' + answer + ' different routes! The drawn line shows one of them.', builder: 'return ways[3][3] = ' + answer + '.', expert: 'O(m·n) time and space; one row of notes is enough to get O(n) space. The count is also the binomial C(6, 3) = 20.' } });
+  const T = { intro: ['Empty notebook', 'plain'], edge: ['Top row → 1 way each', 'cool'], side: ['Left column → 1 way each', 'cool'], fill: ['Above + left', 'warn'], done: [answer + ' routes!', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
+    const from = new Set(st.from.map(([r, c]) => r + ',' + c));
+    st.cells = st.vals.map((row, r) => row.map((v, c) => {
+      if (st.done) return r === m - 1 && c === n - 1 ? 'ok' : 'stored';
+      if (st.at && st.at[0] === r && st.at[1] === c) return 'cur';
+      if (from.has(r + ',' + c)) return 'buy';
+      if (st.kind === 'edge' && r === 0) return 'cur';
+      if (st.kind === 'side' && c === 0 && r > 0) return 'cur';
+      return v === '' ? 'future' : 'stored';
+    }));
+    st.meter = { text: 'notes written: ' + st.written + ' / ' + total, pct: (st.written / total) * 100, mark: 100, markLabel: 'all ' + total + ' squares' };
+    st.watch = [['r', st.r, 'left'], ['c', st.c, 'left'], ['ways[r-1][c]', st.up, 'right'], ['ways[r][c-1]', st.left, 'right'], ['ways[r][c]', st.kind === 'fill' || st.done ? st.vals[st.at[0]][st.at[1]] : st.kind === 'intro' ? '—' : 1, 'text'], ['answer', st.done ? answer : '…', st.done ? 'ok' : 'text']];
+    delete st.at; delete st.from; delete st.written; delete st.r; delete st.c; delete st.up; delete st.left; delete st.row; delete st.col;
+  });
+  const code = {
+    py: [['def uniquePaths(m, n):', ''], ['    ways = [[0] * n for _ in range(m)]', '', 'intro'], ['    for c in range(n):', ''], ['        ways[0][c] = 1', '  # top row', 'edge'], ['    for r in range(m):', ''], ['        ways[r][0] = 1', '  # left side', 'side'], ['    for r in range(1, m):', ''], ['        for c in range(1, n):', ''], ['            ways[r][c] = ways[r-1][c] + ways[r][c-1]', '', 'fill'], ['    return ways[m-1][n-1]', '', 'done']],
+    java: [['int uniquePaths(int m, int n) {', ''], ['    int[][] ways = new int[m][n];', '', 'intro'], ['    for (int c = 0; c < n; c++)', ''], ['        ways[0][c] = 1;', '  // top row', 'edge'], ['    for (int r = 0; r < m; r++)', ''], ['        ways[r][0] = 1;', '  // left side', 'side'], ['    for (int r = 1; r < m; r++)', ''], ['        for (int c = 1; c < n; c++)', ''], ['            ways[r][c] = ways[r-1][c] + ways[r][c-1];', '', 'fill'], ['    return ways[m-1][n-1];', '', 'done'], ['}', '']],
+    cpp: [['int uniquePaths(int m, int n) {', ''], ['    vector<vector<int>> ways(m, vector<int>(n, 0));', '', 'intro'], ['    for (int c = 0; c < n; c++)', ''], ['        ways[0][c] = 1;', '  // top row', 'edge'], ['    for (int r = 0; r < m; r++)', ''], ['        ways[r][0] = 1;', '  // left side', 'side'], ['    for (int r = 1; r < m; r++)', ''], ['        for (int c = 1; c < n; c++)', ''], ['            ways[r][c] = ways[r-1][c] + ways[r][c-1];', '', 'fill'], ['    return ways[m-1][n-1];', '', 'done'], ['}', '']],
+    js: [['function uniquePaths(m, n) {', ''], ['  const ways = Array.from({ length: m },', '', 'intro'], ['    () => Array(n).fill(0));', ''], ['  for (let c = 0; c < n; c++)', ''], ['    ways[0][c] = 1;', '  // top row', 'edge'], ['  for (let r = 0; r < m; r++)', ''], ['    ways[r][0] = 1;', '  // left side', 'side'], ['  for (let r = 1; r < m; r++)', ''], ['    for (let c = 1; c < n; c++)', ''], ['      ways[r][c] = ways[r-1][c] + ways[r][c-1];', '', 'fill'], ['  return ways[m-1][n-1];', '', 'done'], ['}', '']],
+    go: [['func uniquePaths(m, n int) int {', ''], ['    ways := make([][]int, m)', '', 'intro'], ['    for r := range ways {', ''], ['        ways[r] = make([]int, n)', ''], ['    }', ''], ['    for c := 0; c < n; c++ {', ''], ['        ways[0][c] = 1', '  // top row', 'edge'], ['    }', ''], ['    for r := 0; r < m; r++ {', ''], ['        ways[r][0] = 1', '  // left side', 'side'], ['    }', ''], ['    for r := 1; r < m; r++ {', ''], ['        for c := 1; c < n; c++ {', ''], ['            ways[r][c] = ways[r-1][c] + ways[r][c-1]', '', 'fill'], ['        }', ''], ['    }', ''], ['    return ways[m-1][n-1]', '', 'done'], ['}', '']]
+  };
+  return {
+    id: 'unique-paths', pattern: 'Dynamic Programming', cast: 'sol', short: 'Grid', visual: 'grid', items: shown.map((row) => row.map(() => '')), width: 420, maxTile: 48,
+    gridLabel: 'Sol’s notebook', legend: [['cur', 'writing now'], ['buy', 'notes it adds up'], ['stored', 'written'], ['future', 'not yet'], ['path', 'one route']],
+    goal: 'How many routes from the top-left to the bottom-right?', status: ['Filling the notebook…', answer + ' routes'],
+    lines: tagLines(code), code,
+    rules: [['Start with an empty notebook', 'intro'], ['Top row: 1 way each', 'edge'], ['Left column: 1 way each', 'side'], ['Any other square: above + left', 'fill'], ['Read the bottom-right note', 'done']],
+    complexity: [['O(m·n)', 'one quick sum per square'], ['O(m·n)', 'one note per square']],
+    quest: ['A little robot stands in the top-left corner of a 4 by 4 floor. Its battery only lets it roll right or down, one square at a time.', 'Sol wants to know how many different routes lead to the bottom-right corner, without walking every one of them.'],
+    example: ['m = 4, n = 4', 'answer = 20'],
+    hints: ['Old Hoot: “Look at the last move of any route into a square. Where could the robot have been just before?”', '“It was either just above or just to the left. Every route comes through one of those two.”', '“Fill the edges with 1s. Then each square = the note above + the note on the left. Read the corner.”'],
+    clues: ['moves only right or down', 'count the routes', 'small answers build bigger ones'],
+    quizFb: ['Old Hoot: “Walking every route works here, but a 15 by 15 floor has over 40 million routes.”', 'Old Hoot: “There is no best move here. We need to count all routes, not pick one.”', 'Old Hoot: “Two friends from both ends need a row to squeeze. A floor of routes has nothing to squeeze.”', 'Old Hoot: “Yes! Each square only needs the notes above and to its left. Write them down and add.”'],
+    steps
+  };
+}
+
+// Notes on the Staircase — Climbing Stairs
+function staircaseScene() {
+  const n = 6;
+  const ways = Array(n + 1).fill(0);
+  const shown = Array(n + 1).fill('');
+  const steps = [];
+  const row = () => [shown.slice()];
+  steps.push({ kind: 'intro', vals: row(), i: '—', a: '—', b: '—', at: -1, from: [], actorAt: [0, 0],
+    dialog: [say('hoot', 'Six stairs up to the attic. You can climb one stair or two stairs at a time.'), say('sol', 'How many different ways to reach the top? I’ll note the answer for each stair, from the bottom up.')],
+    nar: { kid: 'Sol makes one note per stair. Each note says how many ways there are to reach that stair.', builder: 'ways[i] = number of ways to reach stair i. Stairs 0 to 6, so the list has 7 slots. The answer is ways[6].', expert: 'A 1D DP: each state depends only on the two states before it.' } });
+  ways[0] = 1; ways[1] = 1; shown[0] = 1; shown[1] = 1;
+  steps.push({ kind: 'base', vals: row(), i: '0, 1', a: '—', b: '—', at: 1, from: [], actorAt: [0, 1],
+    dialog: [say('sol', 'Standing at the bottom counts as 1 way. Stair 1 can only be reached one way: one small step.'), say('hoot', 'Two notes to start with.')],
+    nar: { kid: 'At the bottom (stair 0) there is 1 way: you are already there. Stair 1 has only 1 way: one small step.', builder: 'ways[0] = 1 and ways[1] = 1.', expert: 'Base cases. ways[0] = 1 counts the empty climb, which makes the sum rule work for stair 2.' } });
+  for (let i = 2; i <= n; i++) {
+    ways[i] = ways[i - 1] + ways[i - 2]; shown[i] = ways[i];
+    steps.push({ kind: 'fill', vals: row(), i, a: ways[i - 1], b: ways[i - 2], at: i, from: [i - 1, i - 2], actorAt: [0, i],
+      dialog: [say('sol', 'To land on stair ' + i + ', your last move was one stair from ' + (i - 1) + ', or two stairs from ' + (i - 2) + '.'), say('hoot', ways[i - 1] + ' + ' + ways[i - 2] + ' = ' + ways[i] + ' ways.')],
+      nar: { kid: 'You reach stair ' + i + ' from stair ' + (i - 1) + ' or from stair ' + (i - 2) + '. Add their notes: ' + ways[i - 1] + ' + ' + ways[i - 2] + ' = ' + ways[i] + '.', builder: 'ways[' + i + '] = ways[' + (i - 1) + '] + ways[' + (i - 2) + '] = ' + ways[i - 1] + ' + ' + ways[i - 2] + ' = ' + ways[i] + '.', expert: 'The last move splits all climbs into two groups that never overlap, so adding them counts each climb once.' } });
+  }
+  steps.push({ kind: 'done', vals: row(), i: n, a: ways[n - 1], b: ways[n - 2], at: n, from: [], actorAt: [0, n], done: true,
+    dialog: [say('sol', 'The note on stair 6 says ' + ways[n] + '.'), say('hoot', 'That is ' + ways[n] + ' different ways up, and you only did 5 additions.')],
+    nar: { kid: 'Stair 6 says ' + ways[n] + '. There are ' + ways[n] + ' different ways to climb to the attic!', builder: 'return ways[6] = ' + ways[n] + '.', expert: 'O(n) time. Only the last two notes are ever read, so two variables would give O(1) space. (These are the Fibonacci numbers.)' } });
+  const T = { intro: ['Empty notes', 'plain'], base: ['Bottom and stair 1 → 1 way', 'cool'], fill: ['One back + two back', 'warn'], done: [ways[n] + ' ways up!', 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
+    st.cells = [st.vals[0].map((v, c) => {
+      if (st.done) return c === n ? 'ok' : 'stored';
+      if (st.kind === 'base' && c <= 1) return 'cur';
+      if (c === st.at) return 'cur';
+      if (st.from.includes(c)) return 'buy';
+      return v === '' ? 'future' : 'stored';
+    })];
+    const k = st.vals[0].filter((v) => v !== '').length;
+    st.meter = { text: 'stairs noted: ' + k + ' / ' + (n + 1), pct: (k / (n + 1)) * 100, mark: 100, markLabel: 'top stair' };
+    st.watch = [['i', st.i, 'left'], ['ways[i-1]', st.a, 'right'], ['ways[i-2]', st.b, 'right'], ['ways[i]', st.kind === 'fill' || st.done ? st.vals[0][st.at] : '—', 'left'], ['n', n, 'text'], ['answer', st.done ? ways[n] : '…', st.done ? 'ok' : 'text']];
+    delete st.i; delete st.a; delete st.b; delete st.at; delete st.from;
+  });
+  const code = {
+    py: [['def climbStairs(n):', ''], ['    ways = [0] * (n + 1)', '', 'intro'], ['    ways[0] = ways[1] = 1', '', 'base'], ['    for i in range(2, n + 1):', ''], ['        ways[i] = ways[i - 1] + ways[i - 2]', '', 'fill'], ['    return ways[n]', '', 'done']],
+    java: [['int climbStairs(int n) {', ''], ['    int[] ways = new int[n + 1];', '', 'intro'], ['    ways[0] = ways[1] = 1;', '', 'base'], ['    for (int i = 2; i <= n; i++)', ''], ['        ways[i] = ways[i - 1] + ways[i - 2];', '', 'fill'], ['    return ways[n];', '', 'done'], ['}', '']],
+    cpp: [['int climbStairs(int n) {', ''], ['    vector<int> ways(n + 1, 0);', '', 'intro'], ['    ways[0] = ways[1] = 1;', '', 'base'], ['    for (int i = 2; i <= n; i++)', ''], ['        ways[i] = ways[i - 1] + ways[i - 2];', '', 'fill'], ['    return ways[n];', '', 'done'], ['}', '']],
+    js: [['function climbStairs(n) {', ''], ['  const ways = Array(n + 1).fill(0);', '', 'intro'], ['  ways[0] = ways[1] = 1;', '', 'base'], ['  for (let i = 2; i <= n; i++)', ''], ['    ways[i] = ways[i - 1] + ways[i - 2];', '', 'fill'], ['  return ways[n];', '', 'done'], ['}', '']],
+    go: [['func climbStairs(n int) int {', ''], ['    ways := make([]int, n+1)', '', 'intro'], ['    ways[0], ways[1] = 1, 1', '', 'base'], ['    for i := 2; i <= n; i++ {', ''], ['        ways[i] = ways[i-1] + ways[i-2]', '', 'fill'], ['    }', ''], ['    return ways[n]', '', 'done'], ['}', '']]
+  };
+  return {
+    id: 'climbing-stairs', pattern: 'Dynamic Programming', cast: 'sol', short: 'Stairs', visual: 'grid', items: [shown.map(() => '')], rowHeads: ['ways'], width: 420, maxTile: 54,
+    gridLabel: 'Notes for stairs 0 to 6', legend: [['cur', 'writing now'], ['buy', 'notes it adds up'], ['stored', 'written'], ['future', 'not yet']],
+    goal: 'How many ways to climb 6 stairs, 1 or 2 at a time?', status: ['Climbing…', ways[n] + ' ways'],
+    lines: tagLines(code), code,
+    rules: [['Make one blank note per stair', 'intro'], ['Bottom and stair 1: 1 way each', 'base'], ['Any other stair: one back + two back', 'fill'], ['Read the top stair’s note', 'done']],
+    complexity: [['O(n)', 'one addition per stair'], ['O(n)', 'one note per stair (two would do)']],
+    quest: ['Six creaky stairs lead up to the attic. You can take one stair or skip ahead two, as you like.', 'Sol wants to know how many different ways there are to get to the top.'],
+    example: ['n = 6', 'answer = 13'],
+    hints: ['Old Hoot: “Think about your very last move onto the top stair. What could it have been?”', '“It was a 1-stair move from stair 5 or a 2-stair move from stair 4. So the top needs the notes for 5 and 4.”', '“ways[i] = ways[i − 1] + ways[i − 2], starting from ways[0] = ways[1] = 1. Fill upward.”'],
+    clues: ['1 or 2 stairs per move', 'count every way', 'each stair builds on the two below'],
+    quizFb: ['Old Hoot: “Listing every climb works for 6 stairs. For 45 stairs there are over a billion.”', 'Old Hoot: “Always taking two stairs finds one climb, but we need to count all of them.”', 'Old Hoot: “There is no pair to squeeze toward here. Each stair depends on the stairs just below it.”', 'Old Hoot: “Yes! Each stair adds the two notes below it. Write them down once, never redo them.”'],
+    steps
+  };
+}
+
+// The Careful Night Walk — House Robber
+function nightWalkScene() {
+  const loot = [2, 7, 9, 3, 1, 5];
+  const n = loot.length;
+  const best = Array(n).fill('');
+  const steps = [];
+  const grid = () => [loot.slice(), best.slice()];
+  steps.push({ kind: 'intro', vals: grid(), i: '—', take: '—', skip: '—', at: -1, from: [], actorAt: [0, 0],
+    dialog: [say('hoot', 'Six houses left a treat bag on the step. Neighbours share a doorbell: take from two side by side and it rings.'), say('sol', 'Top row is what each house left. In the row below, I’ll note the most I can carry home by each house.')],
+    nar: { kid: 'Sol walks down the street. Under each house he notes the most treats he could have by then, never taking from two houses side by side.', builder: 'best[i] = the most you can collect from houses 0..i with no two neighbours. The answer is best[5].', expert: 'A 1D DP over prefixes. The no-neighbours rule means best[i] only depends on best[i−1] and best[i−2].' } });
+  best[0] = loot[0];
+  steps.push({ kind: 'first', vals: grid(), i: 0, take: loot[0], skip: 0, at: 0, from: [], actorAt: [1, 0],
+    dialog: [say('sol', 'Only one house so far. Take its ' + loot[0] + '.'), say('hoot', 'Nothing to lose yet.')],
+    nar: { kid: 'With only the first house, the best plan is to take its ' + loot[0] + ' treats.', builder: 'best[0] = loot[0] = ' + loot[0] + '.', expert: 'Base case: a one-house street.' } });
+  for (let i = 1; i < n; i++) {
+    const take = loot[i] + (i > 1 ? best[i - 2] : 0), skip = best[i - 1];
+    const took = take > skip;
+    best[i] = took ? take : skip;
+    const back2 = i > 1 ? best[i - 2] : 0;
+    steps.push({ kind: took ? 'take' : 'skip', vals: grid(), i, take, skip, at: i, from: took ? (i > 1 ? [i - 2] : []) : [i - 1], actorAt: [1, i],
+      dialog: took
+        ? [say('sol', 'House ' + i + ' left ' + loot[i] + '. Take it, plus my note from two houses back: ' + loot[i] + ' + ' + back2 + ' = ' + take + '.'), say('hoot', 'Skipping would only keep ' + skip + '. Take it.')]
+        : [say('sol', 'House ' + i + ' left ' + loot[i] + '. Taking it gives ' + loot[i] + ' + ' + back2 + ' = ' + take + '.'), say('hoot', 'But skipping keeps ' + skip + ', which is more. Walk past it.')],
+      nar: took
+        ? { kid: 'Take this house (' + loot[i] + ') plus the best from two houses back (' + back2 + ') = ' + take + '. That beats ' + skip + ', so Sol writes ' + take + '.', builder: 'take = loot[' + i + '] + best[' + (i - 2) + '] = ' + take + ', skip = best[' + (i - 1) + '] = ' + skip + '. best[' + i + '] = ' + take + '.', expert: 'Taking house i forbids house i−1, so it pairs with the best plan ending by i−2. max(take, skip) covers both cases.' }
+        : { kid: 'Taking this house only gives ' + take + '. Skipping it keeps ' + skip + '. Sol skips and writes ' + skip + '.', builder: 'take = ' + take + ' < skip = ' + skip + ' → best[' + i + '] = best[' + (i - 1) + '] = ' + skip + '.', expert: 'A skip copies the previous note forward. The table never goes down from left to right.' } });
+  }
+  const answer = best[n - 1];
+  steps.push({ kind: 'done', vals: grid(), i: n - 1, take: '—', skip: '—', at: n - 1, from: [], actorAt: [1, n - 1], done: true,
+    dialog: [say('sol', 'The last note says ' + answer + '.'), say('hoot', 'That is 2 + 9 + 5, and no two of those houses are neighbours.')],
+    nar: { kid: 'The last note says ' + answer + '. That is the most Sol can carry home without ringing a bell.', builder: 'return best[5] = ' + answer + '.', expert: 'O(n) time. Only two earlier notes are read, so two variables would give O(1) space.' } });
+  const T = { intro: ['Empty notes', 'plain'], first: ['One house → take it', 'cool'], take: ['Take it + two back', 'warn'], skip: ['Skip it → copy the last note', 'cool'], done: ['Most treats: ' + answer, 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
+    st.cells = [
+      loot.map((_, c) => (c === st.at && !st.done ? 'cur' : 'in')),
+      st.vals[1].map((v, c) => {
+        if (st.done) return c === n - 1 ? 'ok' : 'stored';
+        if (c === st.at) return 'cur';
+        if (st.from.includes(c)) return 'buy';
+        return v === '' ? 'future' : 'stored';
+      })
+    ];
+    const k = st.vals[1].filter((v) => v !== '').length;
+    st.meter = { text: 'houses noted: ' + k + ' / ' + n, pct: (k / n) * 100, mark: 100, markLabel: 'end of the street' };
+    st.watch = [['i', st.i, 'left'], ['loot[i]', st.at >= 0 ? loot[st.at] : '—', 'left'], ['take', st.take, 'right'], ['skip', st.skip, 'right'], ['best[i]', st.at >= 0 ? st.vals[1][st.at] : '—', 'text'], ['answer', st.done ? answer : '…', st.done ? 'ok' : 'text']];
+    delete st.i; delete st.take; delete st.skip; delete st.at; delete st.from;
+  });
+  const code = {
+    py: [['def rob(loot):', ''], ['    best = [0] * len(loot)', '', 'intro'], ['    best[0] = loot[0]', '', 'first'], ['    for i in range(1, len(loot)):', ''], ['        take = loot[i] + (best[i-2] if i > 1 else 0)', ''], ['        skip = best[i - 1]', ''], ['        if take > skip:', ''], ['            best[i] = take', '  # take it', 'take'], ['        else:', ''], ['            best[i] = skip', '  # walk past', 'skip'], ['    return best[-1]', '', 'done']],
+    java: [['int rob(int[] loot) {', ''], ['    int[] best = new int[loot.length];', '', 'intro'], ['    best[0] = loot[0];', '', 'first'], ['    for (int i = 1; i < loot.length; i++) {', ''], ['        int take = loot[i] + (i > 1 ? best[i-2] : 0);', ''], ['        int skip = best[i - 1];', ''], ['        if (take > skip)', ''], ['            best[i] = take;', '  // take it', 'take'], ['        else', ''], ['            best[i] = skip;', '  // walk past', 'skip'], ['    }', ''], ['    return best[loot.length - 1];', '', 'done'], ['}', '']],
+    cpp: [['int rob(vector<int>& loot) {', ''], ['    vector<int> best(loot.size(), 0);', '', 'intro'], ['    best[0] = loot[0];', '', 'first'], ['    for (int i = 1; i < loot.size(); i++) {', ''], ['        int take = loot[i] + (i > 1 ? best[i-2] : 0);', ''], ['        int skip = best[i - 1];', ''], ['        if (take > skip)', ''], ['            best[i] = take;', '  // take it', 'take'], ['        else', ''], ['            best[i] = skip;', '  // walk past', 'skip'], ['    }', ''], ['    return best.back();', '', 'done'], ['}', '']],
+    js: [['function rob(loot) {', ''], ['  const best = Array(loot.length).fill(0);', '', 'intro'], ['  best[0] = loot[0];', '', 'first'], ['  for (let i = 1; i < loot.length; i++) {', ''], ['    const take = loot[i] + (i > 1 ? best[i-2] : 0);', ''], ['    const skip = best[i - 1];', ''], ['    if (take > skip)', ''], ['      best[i] = take;', '  // take it', 'take'], ['    else', ''], ['      best[i] = skip;', '  // walk past', 'skip'], ['  }', ''], ['  return best[loot.length - 1];', '', 'done'], ['}', '']],
+    go: [['func rob(loot []int) int {', ''], ['    best := make([]int, len(loot))', '', 'intro'], ['    best[0] = loot[0]', '', 'first'], ['    for i := 1; i < len(loot); i++ {', ''], ['        take, skip := loot[i], best[i-1]', ''], ['        if i > 1 {', ''], ['            take += best[i-2]', ''], ['        }', ''], ['        if take > skip {', ''], ['            best[i] = take', '  // take it', 'take'], ['        } else {', ''], ['            best[i] = skip', '  // walk past', 'skip'], ['        }', ''], ['    }', ''], ['    return best[len(loot)-1]', '', 'done'], ['}', '']]
+  };
+  return {
+    id: 'house-robber', pattern: 'Dynamic Programming', cast: 'sol', short: 'Street', visual: 'grid', items: [loot.slice(), loot.map(() => '')], rowHeads: ['loot', 'best'], width: 420, maxTile: 54,
+    gridLabel: 'Six houses: treats left, and Sol’s best so far', legend: [['cur', 'this house'], ['buy', 'note it builds on'], ['stored', 'written'], ['future', 'not yet']],
+    goal: 'Most treats, never from two houses side by side', status: ['Walking the street…', answer + ' treats'],
+    lines: tagLines(code), code,
+    rules: [['Make one blank note per house', 'intro'], ['First house: take it', 'first'], ['This house + two back beats the last note → take', 'take'], ['Otherwise skip and copy the last note', 'skip'], ['Read the last note', 'done']],
+    complexity: [['O(n)', 'one choice per house'], ['O(n)', 'one note per house (two would do)']],
+    quest: ['On treat night, six houses on Lantern Lane leave bags on their steps: 2, 7, 9, 3, 1 and 5 treats. Next-door neighbours share one doorbell. Take from two side by side and it rings.', 'Sol walks the street once. What is the most he can carry home without the bell ringing?'],
+    example: ['loot = [2, 7, 9, 3, 1, 5]', 'answer = 16   (2 + 9 + 5)'],
+    hints: ['Old Hoot: “At each house you have two choices. What are they, and what does each one cost you?”', '“Take this house and you can’t have taken the one before. Skip it and you keep whatever you had.”', '“best[i] = max(loot[i] + best[i − 2], best[i − 1]). Walk left to right.”'],
+    clues: ['no two neighbours', 'take or skip at each house', 'the best so far builds on earlier bests'],
+    quizFb: ['Old Hoot: “Trying every take-or-skip mix is 2 choices per house. For 100 houses that is far too many.”', 'Old Hoot: “Grabbing the biggest bag first takes 9, then 5, then 2 here, which happens to work. Try [3, 4, 3]: grab 4, and you miss 3 + 3 = 6.”', 'Old Hoot: “Two friends from both ends compare far-apart houses. The rule here is about next-door neighbours.”', 'Old Hoot: “Yes! At each house, compare taking it (plus the note two back) with skipping it. Write the better one down.”'],
+    steps
+  };
+}
+
+// The Exact Change Counter — Coin Change
+function changeScene() {
+  const coins = [1, 3, 4], amount = 6;
+  const INF = Infinity;
+  const best = [0].concat(Array(amount).fill(INF));
+  const show = (v) => (v === INF ? '∞' : v);
+  const row = () => [best.map(show)];
+  const steps = [];
+  steps.push({ kind: 'intro', vals: row(), a: '—', tries: '—', win: '—', at: 0, from: [], actorAt: [0, 0],
+    dialog: [say('hoot', 'Coins of 1, 3 and 4. A customer needs exactly 6 in change, using as few coins as possible.'), say('sol', 'I’ll write the fewest coins for every amount from 0 to 6. Making 0 takes no coins.'), say('hoot', 'And the rest?'), say('sol', 'Unknown for now. I mark them ∞, meaning “no way found yet”.')],
+    nar: { kid: 'Sol writes one note for each amount from 0 to 6. Each note will say the fewest coins that make that amount. Zero needs zero coins.', builder: 'best[a] = fewest coins that add up to a. best[0] = 0; every other amount starts at infinity.', expert: 'Unbounded-coin DP: each coin may be used again and again. ∞ marks “no way found yet”. In Java, C++ and Go, amount + 1 plays ∞, since no answer needs more coins than the amount.' } });
+  for (let a = 1; a <= amount; a++) {
+    const tries = [];
+    for (const c of coins) {
+      if (c <= a) {
+        const v = best[a - c] + 1;
+        tries.push([c, v]);
+        if (v < best[a]) best[a] = v;
+      }
+    }
+    const win = tries.find(([, v]) => v === best[a]);
+    const tryText = tries.map(([c, v]) => 'a ' + c + ' leaves ' + (a - c) + ' → ' + v).join('; ');
+    steps.push({ kind: 'fill', vals: row(), a, tries: tries.map(([c, v]) => c + ':' + v).join(' '), win: win[0], at: a, from: [a - win[0]], actorAt: [0, a],
+      dialog: [say('sol', 'To make ' + a + ', I try each coin that fits: ' + tryText + '.'), say('hoot', 'Fewest is ' + best[a] + (best[a] === 1 ? ' coin' : ' coins') + ', using a ' + win[0] + ' first.')],
+      nar: { kid: 'To make ' + a + ', Sol tries each coin and looks up what is left in his notes. Using a ' + win[0] + ' is best: ' + (a - win[0]) + ' takes ' + best[a - win[0]] + ', plus this coin = ' + best[a] + '.', builder: 'best[' + a + '] = min over coins c ≤ ' + a + ' of best[' + a + ' − c] + 1 = ' + best[a] + ' (coin ' + win[0] + ').', expert: a === amount ? 'Greedy (biggest coin first) would pay 4 + 1 + 1 = 3 coins. The table finds 3 + 3 = 2, because it checks every last coin.' : 'Each amount checks ' + coins.length + ' coins at most: O(amount × coins) in total.' } });
+  }
+  const answer = best[amount] === INF ? -1 : best[amount];
+  steps.push({ kind: 'done', vals: row(), a: amount, tries: '—', win: '—', at: amount, from: [], actorAt: [0, amount], done: true,
+    dialog: [say('sol', 'The note for 6 says ' + answer + '.'), say('hoot', 'Two coins: 3 + 3. The biggest-coin-first trick would have used three.')],
+    nar: { kid: 'Making 6 takes just ' + answer + ' coins: a 3 and another 3.', builder: 'best[6] = ' + answer + ' is not ∞ → return ' + answer + '. (If it were still ∞, return -1.)', expert: 'O(amount · k) time for k coins, O(amount) space.' } });
+  const T = { intro: ['0 needs no coins', 'plain'], fill: ['Try each coin, keep the fewest', 'warn'], done: ['Fewest coins: ' + answer, 'ok'] };
+  steps.forEach((st) => {
+    st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
+    st.cells = [st.vals[0].map((v, c) => {
+      if (st.done) return c === amount ? 'ok' : 'stored';
+      if (st.kind === 'fill' && c === st.at) return 'cur';
+      if (st.from.includes(c)) return 'buy';
+      return v === '∞' ? 'future' : 'stored';
+    })];
+    const k = st.vals[0].filter((v) => v !== '∞').length;
+    st.meter = { text: 'amounts solved: ' + k + ' / ' + (amount + 1), pct: (k / (amount + 1)) * 100, mark: 100, markLabel: 'amount 6' };
+    st.watch = [['a', st.a, 'left'], ['coin used', st.win, 'right'], ['best[a - coin]', st.kind === 'fill' ? st.vals[0][st.at - st.win] : '—', 'right'], ['best[a]', st.kind === 'intro' ? '—' : st.vals[0][st.at], 'left'], ['tries', st.tries, 'text'], ['answer', st.done ? answer : '…', st.done ? 'ok' : 'text']];
+    delete st.a; delete st.tries; delete st.win; delete st.at; delete st.from;
+  });
+  const code = {
+    py: [['def coinChange(coins, amount):', ''], ['    inf = float("inf")', ''], ['    best = [0] + [inf] * amount', '', 'intro'], ['    for a in range(1, amount + 1):', ''], ['        for c in coins:', ''], ['            if c <= a:', ''], ['                best[a] = min(best[a], best[a-c] + 1)', '', 'fill'], ['    ans = best[amount]', ''], ['    return ans if ans < inf else -1', '', 'done']],
+    java: [['int coinChange(int[] coins, int amount) {', ''], ['    int[] best = new int[amount + 1];', ''], ['    Arrays.fill(best, amount + 1);', '  // plays ∞'], ['    best[0] = 0;', '', 'intro'], ['    for (int a = 1; a <= amount; a++)', ''], ['        for (int c : coins)', ''], ['            if (c <= a && best[a-c] + 1 < best[a])', ''], ['                best[a] = best[a-c] + 1;', '', 'fill'], ['    return best[amount] > amount ? -1 : best[amount];', '', 'done'], ['}', '']],
+    cpp: [['int coinChange(vector<int>& coins, int amount) {', ''], ['    vector<int> best(amount + 1, amount + 1);', ''], ['    best[0] = 0;', '', 'intro'], ['    for (int a = 1; a <= amount; a++)', ''], ['        for (int c : coins)', ''], ['            if (c <= a && best[a-c] + 1 < best[a])', ''], ['                best[a] = best[a-c] + 1;', '', 'fill'], ['    return best[amount] > amount ? -1 : best[amount];', '', 'done'], ['}', '']],
+    js: [['function coinChange(coins, amount) {', ''], ['  const best = Array(amount + 1).fill(Infinity);', ''], ['  best[0] = 0;', '', 'intro'], ['  for (let a = 1; a <= amount; a++)', ''], ['    for (const c of coins)', ''], ['      if (c <= a)', ''], ['        best[a] = Math.min(best[a], best[a-c] + 1);', '', 'fill'], ['  const ans = best[amount];', ''], ['  return ans === Infinity ? -1 : ans;', '', 'done'], ['}', '']],
+    go: [['func coinChange(coins []int, amount int) int {', ''], ['    best := make([]int, amount+1)', ''], ['    for a := 1; a <= amount; a++ {', ''], ['        best[a] = amount + 1', '  // plays ∞', 'intro'], ['    }', ''], ['    for a := 1; a <= amount; a++ {', ''], ['        for _, c := range coins {', ''], ['            if c <= a && best[a-c]+1 < best[a] {', ''], ['                best[a] = best[a-c] + 1', '', 'fill'], ['            }', ''], ['        }', ''], ['    }', ''], ['    if best[amount] > amount {', ''], ['        return -1', ''], ['    }', ''], ['    return best[amount]', '', 'done'], ['}', '']]
+  };
+  return {
+    id: 'coin-change', pattern: 'Dynamic Programming', cast: 'sol', short: 'Change', visual: 'grid', items: [best.map(() => '')], rowHeads: ['fewest'], width: 420, maxTile: 54,
+    gridLabel: 'Fewest coins for amounts 0 to 6', legend: [['cur', 'amount being solved'], ['buy', 'note it builds on'], ['stored', 'solved'], ['future', '∞: not solved yet']],
+    goal: 'Make exactly 6 with the fewest coins (1, 3 and 4)', status: ['Counting change…', answer + ' coins'],
+    lines: tagLines(code), code,
+    rules: [['0 takes no coins; the rest start at ∞', 'intro'], ['For each amount, try every coin and keep the fewest', 'fill'], ['Read the note for the full amount', 'done']],
+    complexity: [['O(amount · k)', 'each amount tries all k coins'], ['O(amount)', 'one note per amount']],
+    quest: ['The corner shop has only three kinds of coin: 1, 3 and 4. A customer is owed exactly 6.', 'Sol wants to hand over the fewest coins possible. Grabbing the biggest coin first looks smart. Is it?'],
+    example: ['coins = [1, 3, 4]   amount = 6', 'answer = 2   (3 + 3)'],
+    hints: ['Old Hoot: “Grab a 4 first and you need 4 + 1 + 1. Is that really the fewest?”', '“Whatever coin you hand over last, the rest is a smaller amount. Have you solved that smaller amount already?”', '“best[a] = min over coins c of best[a − c] + 1. Fill amounts from 1 up to 6.”'],
+    clues: ['fewest coins', 'any coin can be used many times', 'biggest-first can be wrong'],
+    quizFb: ['Old Hoot: “Trying every mix of coins explodes quickly. 100 in coins of 1, 3 and 4 has thousands of mixes.”', 'Old Hoot: “Biggest first gives 4 + 1 + 1 = 3 coins. But 3 + 3 is only 2. Greedy fails here.”', 'Old Hoot: “Two friends could find a pair, but change can need any number of coins.”', 'Old Hoot: “Yes! Solve every smaller amount first. Each new amount just tries each coin and looks up the rest.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(gridWalkerScene, staircaseScene, nightWalkScene, changeScene);
+PATTERN_KITS['Dynamic Programming'] = { right: 3, spot: 'Why notes, not every path?', ask: 'How should Sol work it out?',
+  quiz: [['Try every possibility', 'List every route or mix, one by one'], ['Take the best-looking move', 'Grab the biggest step each time'], ['Two friends from both ends', 'One at each end, walking inward'], ['Write small answers down', 'Solve smaller versions first and reuse the notes']] };
+STORY_CAST.sol = { name: 'Sol', initial: 'S', color: 'right', radius: '8px' };
 // ---------- Fast & Slow Pointers: Tam the tortoise and Hazel the hare ----------
 // When both stand on the same carriage, nudge them apart a little so both stay visible.
 function fsPlace(st) {
@@ -1867,6 +2353,89 @@ SCENE_REGISTRY.push(diaryScene, bookingScene);
 PATTERN_KITS['Intervals'] = { right: 3, spot: 'Why sort first, not compare every pair?', ask: 'How should Iris tidy the diary?',
   quiz: [['Compare every pair', 'Check each meeting against every other one'], ['A pile of plates', 'Put each meeting on top and lift off the ones it closes'], ['Mark every hour', 'Shade each hour on a chart and read off the shaded runs'], ['Sort and sweep', 'Go through in order of start and keep only the latest block']] };
 STORY_CAST.iris = { name: 'Iris', initial: 'I', color: 'left', radius: '10px' };
+// ---------- Matrix: Tilda, the tiler who turns whole floors ----------
+// The floor is a visual: 'grid'. Each step carries the tile numbers after the move (vals) and a state per tile (cells).
+
+// The Turning Tile Floor — Rotate Image
+function tileFloorScene() {
+  const n = 4;
+  const floor = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]];
+  const m = floor.map((row) => row.slice());
+  // where every tile must end up after a quarter-turn clockwise
+  const goal = floor.map((_, r) => floor.map((__, c) => floor[n - 1 - c][r]));
+  const copy = () => m.map((row) => row.slice());
+  const diag = [...Array(n).keys()].map((i) => [i, i]);
+  const steps = [];
+  const swapped = new Set();
+  let moves = 0;
+  steps.push({ kind: 'intro', vals: copy(), i: '—', j: '—', a: '—', b: '—', phase: 'start', moves, path: diag, actorAt: [0, 0], focus: [],
+    dialog: [say('hoot', 'Sixteen painted tiles. The owner wants the floor turned a quarter-turn to the right.'), say('tilda', 'I can’t lift the whole floor. I can only swap two tiles at a time.'), say('hoot', 'Then fold it first, and mirror it after.')],
+    nar: { kid: 'Tilda will turn the floor in two moves. First she folds it along the fold line, from the top-left corner to the bottom-right. Then she flips every row.', builder: 'Rotate in place in two passes: transpose (swap m[i][j] with m[j][i]), then reverse each row. The diagonal tiles never move in the first pass.', expert: 'A 90° clockwise turn = transpose ∘ horizontal flip. Both are self-inverse swaps, so the turn needs O(1) extra space (no second grid).' } });
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+    const a = m[i][j], b = m[j][i];
+    m[i][j] = b; m[j][i] = a; moves++;
+    swapped.add(i + ',' + j); swapped.add(j + ',' + i);
+    steps.push({ kind: 'swap', vals: copy(), i, j, a, b, phase: 'fold', moves, path: diag, actorAt: [i, j], focus: [[i, j], [j, i]], swapped: new Set(swapped),
+      dialog: [say('tilda', 'Tile ' + a + ' sits at row ' + i + ', column ' + j + '. Its mirror spot is row ' + j + ', column ' + i + ', where ' + b + ' is.'), say('hoot', 'Swap them. Each pair across the line trades once.')],
+      nar: { kid: 'Tiles ' + a + ' and ' + b + ' face each other across the fold line. Tilda swaps them.', builder: 'i = ' + i + ', j = ' + j + ': swap m[' + i + '][' + j + '] and m[' + j + '][' + i + ']. Now m[' + i + '][' + j + '] = ' + b + '.', expert: 'Only j > i is visited, so each off-diagonal pair is swapped exactly once: n(n−1)/2 = 6 swaps for n = 4.' } });
+  }
+  for (let r = 0; r < n; r++) {
+    const before = m[r].slice();
+    m[r].reverse(); moves += 2;
+    steps.push({ kind: 'mirror', vals: copy(), i: r, j: '—', a: before[0], b: before[n - 1], phase: 'mirror', moves, path: null, actorAt: [r, n - 1], focus: [], row: r, done: r === n - 1,
+      dialog: r === n - 1
+        ? [say('tilda', 'Last row. ' + before.join(' ') + ' becomes ' + m[r].join(' ') + '.'), say('hoot', 'Every tile is where a quarter-turn would put it. The floor is turned.')]
+        : [say('tilda', 'Row ' + r + ' reads ' + before.join(' ') + '. I flip it end to end.'), say('hoot', 'Now it reads ' + m[r].join(' ') + '.')],
+      nar: r === n - 1
+        ? { kid: 'Tilda flips the last row. Look at the top row: 13 9 5 1. That was the left side, read from the bottom up. The floor has turned!', builder: 'Reverse row ' + r + '. All rows done: m now equals the rotated floor, with no second grid used.', expert: 'Total work: 6 transpose swaps + 8 reverse swaps = 14 swaps for 16 tiles. O(n²) time, O(1) extra space.' }
+        : { kid: 'Tilda flips row ' + r + ' so its first tile goes last. ' + before.join(' ') + ' becomes ' + m[r].join(' ') + '.', builder: 'row.reverse() on row ' + r + ': swap the ends and walk inward, 2 swaps for 4 tiles.', expert: 'Reversing a row is an in-place two-pointer swap: n/2 swaps per row.' } });
+  }
+  const T = { intro: ['Fold line drawn', 'plain'], swap: ['Across the line → swap', 'cool'], mirror: ['Flip the row end to end', 'warn'] };
+  steps.forEach((st) => {
+    st.verdict = st.done ? 'Quarter-turn done!' : T[st.kind][0];
+    st.tone = st.done ? 'ok' : T[st.kind][1];
+    st.done = !!st.done;
+    const focus = new Set(st.focus.map(([r, c]) => r + ',' + c));
+    st.cells = floor.map((row, r) => row.map((_, c) => {
+      if (st.done) return 'ok';
+      if (st.kind === 'mirror') return r === st.row ? 'cur' : r < st.row ? 'ok' : 'stored';
+      if (focus.has(r + ',' + c)) return 'cur';
+      if (r === c) return 'buy';
+      if (st.swapped && st.swapped.has(r + ',' + c)) return 'stored';
+      return 'in';
+    }));
+    const k = st.vals.reduce((sum, row, r) => sum + row.filter((v, c) => v === goal[r][c]).length, 0);
+    st.meter = { text: 'tiles in place: ' + k + ' / 16', pct: (k / 16) * 100, mark: 100, markLabel: 'all 16 turned' };
+    st.watch = [['i', st.i, 'left'], ['j', st.j, 'left'], [st.kind === 'mirror' ? 'row[0] was' : 'm[i][j] was', st.a, 'right'], [st.kind === 'mirror' ? 'row[-1] was' : 'm[j][i] was', st.b, 'right'], ['pass', st.phase, 'text'], ['swaps', st.moves, st.done ? 'ok' : 'text']];
+    delete st.swapped; delete st.focus; delete st.phase; delete st.a; delete st.b; delete st.i; delete st.j; delete st.moves; delete st.row;
+  });
+  const code = {
+    py: [['def rotate(m):', ''], ['    n = len(m)', '', 'intro'], ['    for i in range(n):', ''], ['        for j in range(i + 1, n):', ''], ['            m[i][j], m[j][i] = m[j][i], m[i][j]', '', 'swap'], ['    for row in m:', ''], ['        row.reverse()', '  # mirror', 'mirror']],
+    java: [['void rotate(int[][] m) {', ''], ['    int n = m.length;', '', 'intro'], ['    for (int i = 0; i < n; i++)', ''], ['        for (int j = i + 1; j < n; j++) {', ''], ['            int t = m[i][j];', ''], ['            m[i][j] = m[j][i];', '  // fold', 'swap'], ['            m[j][i] = t;', ''], ['        }', ''], ['    for (int[] row : m)', ''], ['        for (int l = 0, r = n - 1; l < r; l++, r--) {', ''], ['            int t = row[l];', ''], ['            row[l] = row[r];', '  // mirror', 'mirror'], ['            row[r] = t;', ''], ['        }', ''], ['}', '']],
+    cpp: [['void rotate(vector<vector<int>>& m) {', ''], ['    int n = m.size();', '', 'intro'], ['    for (int i = 0; i < n; i++)', ''], ['        for (int j = i + 1; j < n; j++)', ''], ['            swap(m[i][j], m[j][i]);', '  // fold', 'swap'], ['    for (auto& row : m)', ''], ['        reverse(row.begin(), row.end());', '  // mirror', 'mirror'], ['}', '']],
+    js: [['function rotate(m) {', ''], ['  const n = m.length;', '', 'intro'], ['  for (let i = 0; i < n; i++)', ''], ['    for (let j = i + 1; j < n; j++)', ''], ['      [m[i][j], m[j][i]] = [m[j][i], m[i][j]];', '', 'swap'], ['  for (const row of m)', ''], ['    row.reverse();', '  // mirror', 'mirror'], ['}', '']],
+    go: [['func rotate(m [][]int) {', ''], ['    n := len(m)', '', 'intro'], ['    for i := 0; i < n; i++ {', ''], ['        for j := i + 1; j < n; j++ {', ''], ['            m[i][j], m[j][i] = m[j][i], m[i][j]', '', 'swap'], ['        }', ''], ['    }', ''], ['    for _, row := range m {', ''], ['        for l, r := 0, n-1; l < r; l, r = l+1, r-1 {', ''], ['            row[l], row[r] = row[r], row[l]', ' // mirror', 'mirror'], ['        }', ''], ['    }', ''], ['}', '']]
+  };
+  return {
+    id: 'rotate-image', pattern: 'Matrix', cast: 'tilda', short: 'Tile Floor', visual: 'grid', items: floor, width: 420, maxTile: 50,
+    gridLabel: 'Tile floor', legend: [['buy', 'on the fold line'], ['cur', 'moving now'], ['stored', 'folded'], ['ok', 'in its final spot'], ['path', 'fold line']],
+    goal: 'Turn the floor a quarter-turn right, two tiles at a time', status: ['Floor unturned', 'Floor turned'],
+    lines: tagLines(code), code,
+    rules: [['Draw the fold line from corner to corner', 'intro'], ['Swap each tile with its twin across the line', 'swap'], ['Then flip every row end to end', 'mirror']],
+    complexity: [['O(n²)', 'every tile is touched a fixed number of times'], ['O(1)', 'swaps only, no second floor']],
+    quest: ['The owner of the old bathhouse wants his tiled floor turned a quarter-turn to the right. The tiles are glued in a 4 by 4 square, numbered 1 to 16.', 'Tilda has no spare floor to work on. She may only swap two tiles at a time. Can she turn it?'],
+    example: ['m = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]', 'after = [[13,9,5,1],[14,10,6,2],[15,11,7,3],[16,12,8,4]]'],
+    hints: ['Old Hoot: “After the turn, the top row is the old left column, read bottom to top. What simple moves could get you close?”', '“Swap every tile with its twin across the corner-to-corner line. Rows become columns. Is the order right yet?”', '“Fold across the diagonal, then flip each row end to end. Two easy passes make one turn.”'],
+    clues: ['a square of tiles', 'turn it a quarter-turn', 'no spare floor (in place)'],
+    quizFb: ['Old Hoot: “A fresh floor would work, but there isn’t one. The turn has to happen in place.”', 'Old Hoot: “Yes! Folding turns rows into columns. Flipping each row then puts them in the right order.”', 'Old Hoot: “Flipping rows alone gives a mirror image, not a turn. Tile 1 would land top-right, not where it belongs.”', 'Old Hoot: “Sliding rows down moves them, but no row ever turns into a column. The floor would not rotate.”'],
+    steps
+  };
+}
+
+SCENE_REGISTRY.push(tileFloorScene);
+PATTERN_KITS['Matrix'] = { right: 1, spot: 'Why fold, not lift?', ask: 'How should Tilda turn the floor?',
+  quiz: [['Lay a fresh floor', 'Copy every tile into a new square, turned'], ['Fold, then mirror', 'Swap across the corner-to-corner line, then flip each row'], ['Flip every row', 'Turn each row end to end and stop'], ['Slide the rows down', 'Move every row one place lower, wrapping around']] };
+STORY_CAST.tilda = { name: 'Tilda', initial: 'T', color: 'left', radius: '8px' };
 // ---------- Prefix Sum: Penny writes the running total after every step ----------
 
 // The Group Photo Scores — Product of Array Except Self
@@ -2272,6 +2841,12 @@ function shuffled(arr, seed) {
   if (a.every((x, i) => x === arr[i]) && a.length > 1) [a[0], a[1]] = [a[1], a[0]];
   return a;
 }
+// Code lines may carry a third element naming the step kinds they serve ('fill|edge'); this builds the lines map from those tags.
+function tagLines(code) {
+  const out = {};
+  Object.keys(code).forEach((lang) => { out[lang] = {}; code[lang].forEach(([, , tag], i) => { (tag || '').split('|').filter(Boolean).forEach((k) => { if (!out[lang][k]) out[lang][k] = i + 1; }); }); });
+  return out;
+}
 const isBrace = (c) => /^[\s})\]]*$/.test(c) || /^\s*}\s*(else\s*{)?\s*$/.test(c);
 
 class Component extends DCLogic {
@@ -2354,7 +2929,7 @@ class Component extends DCLogic {
     const ch = this.state.chapter;
     const lines = S.lines[this.state.lang] || S.lines.py;
     const found = st.done;
-    const pitch = S.pitch, tileW = S.tile;
+    const pitch = S.pitch || 0, tileW = S.tile || 0;
 
     // ---- the row of things the cast walks along ----
     const cellLook = (state) => {
@@ -2423,6 +2998,45 @@ class Component extends DCLogic {
         };
       });
     }
+    // ---- the 2D grid: S.items (or st.vals) is rows of values, st.cells the matching rows of states ----
+    let grid = { tiles: [], cols: [], rows: [], w: 0, h: 0, line: '', lineOp: 0, label: '', legend: [], hasLegend: false,
+      actor: { left: 0, top: 0, size: 0, op: 0, initial: '', color: 'transparent', font: '10px' } };
+    if (S.visual === 'grid') {
+      const vals = st.vals || S.items, R = vals.length, C = vals[0].length;
+      const gap = 6, padL = S.rowHeads ? 52 : 20, padT = 18;
+      const maxW = (S.board ? 380 : 470) - padL, maxH = 214 - padT;
+      const gp = Math.floor(Math.min(S.maxTile || 58, maxH / R, maxW / C)), size = gp - gap;
+      const at = (r, c) => [padL + c * gp + size / 2, padT + r * gp + size / 2];
+      const onPath = new Set((st.path || []).map(([r, c]) => r + ',' + c));
+      grid.w = padL + C * gp - gap; grid.h = padT + R * gp - gap;
+      grid.label = (S.gridLabel || 'Grid') + ', ' + R + ' rows by ' + C + ' columns. ' + st.verdict + (st.actorAt ? '. ' + ((STORY_CAST[S.cast] || {}).name || 'The guide') + ' is at row ' + st.actorAt[0] + ', column ' + st.actorAt[1] : '') + '.';
+      grid.tiles = [];
+      for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+        const look = Object.assign({}, cellLook(st.cells[r][c]));
+        if (st.cells[r][c] === 'out') { look.ink = t.sceneMuted; look.op = 1; }
+        const v = vals[r][c] == null ? '' : String(vals[r][c]);
+        const mark = look.mark && look.mark.length <= 2 ? look.mark : '';
+        const ring = onPath.has(r + ',' + c) && look.ring === 'transparent' ? t.path : look.ring;
+        grid.tiles.push({ v, left: padL + c * gp, top: padT + r * gp, size, fill: look.fill, ink: look.ink, ring, op: look.op || 1, glow: look.glow || 'none',
+          font: Math.max(12, Math.min(22, Math.round(size * (v.length > 2 ? 0.34 : 0.44)))) + 'px', mark, markColor: look.markColor || t.sceneMuted });
+      }
+      const heads = (list, n) => Array.from({ length: n }, (_, i) => (list ? String(list[i]) : String(i)));
+      grid.cols = heads(S.colHeads, C).map((label, c) => ({ label, x: padL + c * gp, w: size }));
+      grid.rows = heads(S.rowHeads, R).map((label, r) => ({ label, y: padT + r * gp, h: size, w: padL - 8 }));
+      grid.line = (st.path || []).map(([r, c]) => at(r, c).join(',')).join(' ');
+      grid.lineOp = (st.path || []).length > 1 ? 0.9 : 0;
+      if (st.actorAt) {
+        const a = Math.max(18, Math.min(22, Math.round(size * 0.5)));
+        const who = STORY_CAST[S.cast] || { initial: '?', color: 'left' };
+        grid.actor = { left: padL + st.actorAt[1] * gp - a * 0.55, top: padT + st.actorAt[0] * gp - a * 0.55, size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.round(a * 0.5) + 'px' };
+      }
+      grid.legend = (S.legend || []).map(([state, label]) => {
+        if (state === 'path') return { label, fill: 'transparent', ring: t.path, mark: '' };
+        const look = cellLook(state);
+        return { label, fill: look.fill, ring: look.ring === 'transparent' ? 'rgba(255,255,255,0.18)' : look.ring, mark: look.mark && look.mark.length <= 2 ? look.mark : '' };
+      });
+      grid.hasLegend = grid.legend.length > 0;
+    }
     const base = { v: '', pos: 0, fill: 'transparent', ink: t.text, glow: 'none', ring: 'transparent', op: 1, strike: 'none', lift: 'none', mark: '', idxColor: t.sceneMuted, x: 0, h: 0 };
     tiles = tiles.map((x) => Object.assign({}, base, x));
     const tiles2 = (S.items2 || []).map((c, i) => {
@@ -2448,7 +3062,9 @@ class Component extends DCLogic {
     const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
     const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - 28, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
     let actors;
-    if (S.cast === 'tp') {
+    if (S.visual === 'grid') {
+      actors = [];
+    } else if (S.cast === 'tp') {
       actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
     } else if (S.cast === 'sw') {
       const lx = st.L === st.R ? -18 : 0;
@@ -2534,7 +3150,7 @@ class Component extends DCLogic {
       keepProblem: () => saveProblem(S.id),
       shownHints: S.hints.slice(0, this.state.hints), hintCount: this.state.hints, moreHints: this.state.hints < S.hints.length,
       revealHint: () => this.setState({ hints: Math.min(S.hints.length, this.state.hints + 1) }),
-      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks',
+      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid: S.visual === 'grid', showActors: S.visual !== 'grid', grid, sceneJustify: S.visual === 'grid' ? 'center' : 'flex-end',
       hasRow2: !!S.items2, rowLabels: S.rowLabels || ['', ''],
       tiles, tiles2, water, frame, showFrame,
       rowWidth: S.items.length * pitch - (pitch - tileW),

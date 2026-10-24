@@ -1,6 +1,8 @@
 // @@CODE-PANE@@ — generated block (from shared/code_pane.js): the self-contained code pane.
 // Markup lives in shared/code_pane.html (holes under {{cr.*}}). A page uses it like this:
-//   constructor:          this.runner = new CodeRunner(this, problemId);
+//   constructor:          this.runner = new CodeRunner(this, problemId, opts);
+//     opts.starter(pid, lang)  starter code for a problem with no test spec yet (the pane then edits only)
+//     opts.hideLangs / opts.hideClock  the host page draws its own language tabs or timer
 //   componentDidMount:    this.runner.mount();
 //   componentWillUnmount: this.runner.unmount();
 //   renderVals:           return { t, cr: this.runner.vals(t, themeKey), ... };
@@ -19,12 +21,13 @@ function storeCode(pid, lang, code) {
 const pad2 = (n) => String(n).padStart(2, '0');
 
 class CodeRunner {
-  constructor(host, pid) {
+  constructor(host, pid, opts) {
     this.host = host;
+    this.opts = opts || {};
     let lang = 'py';
     try { const l = window.localStorage.getItem(CODE_LANG_KEY); if (CODE_LANGS.some(([k]) => k === l)) lang = l; } catch (e) {}
-    this.pid = TEST_SPECS[pid] ? pid : Object.keys(TEST_SPECS)[0];
-    this.s = { lang, code: savedCode(this.pid, lang) || starterCode(TEST_SPECS[this.pid], lang), out: null, busy: false, status: '',
+    this.pid = this.known(pid) ? pid : Object.keys(TEST_SPECS)[0];
+    this.s = { lang, code: savedCode(this.pid, lang) || this.starter(lang), out: null, busy: false, status: '',
       custom: '', elapsed: 0, solvedIn: null, copied: false, confirmReset: false };
     this.editor = null;
     this.el = null;
@@ -36,6 +39,8 @@ class CodeRunner {
   }
   set(patch) { Object.assign(this.s, patch); this.host.setState({}); }
   spec() { return TEST_SPECS[this.pid]; }
+  known(pid) { return !!TEST_SPECS[pid] || (!!this.opts.starter && !!pid); }
+  starter(lang) { const spec = this.spec(); return spec ? starterCode(spec, lang) : this.opts.starter ? this.opts.starter(this.pid, lang) : ''; }
   mount() { this.clock = setInterval(() => { if (this.s.solvedIn === null) this.set({ elapsed: this.s.elapsed + 1 }); }, 1000); }
   unmount() {
     clearInterval(this.clock); clearTimeout(this.resetTimer); clearTimeout(this.copyTimer);
@@ -64,13 +69,13 @@ class CodeRunner {
     this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|');
   }
   showCode() {
-    const code = savedCode(this.pid, this.s.lang) || starterCode(this.spec(), this.s.lang);
+    const code = savedCode(this.pid, this.s.lang) || this.starter(this.s.lang);
     if (this.editor) { this.editor.setLanguage(this.s.lang); this.editor.setDoc(code); }
     return code;
   }
   stopRun() { if (this.cancel) { const c = this.cancel; this.cancel = null; c(); } }
   setProblem(pid) {
-    if (!TEST_SPECS[pid] || pid === this.pid) return;
+    if (!this.known(pid) || pid === this.pid) return;
     this.stopRun();
     this.pid = pid;
     this.set({ code: this.showCode(), out: null, busy: false, status: '', custom: '', elapsed: 0, solvedIn: null });
@@ -120,7 +125,7 @@ class CodeRunner {
   execute(mode) {
     if (this.s.busy) return;
     const spec = this.spec(), lang = this.s.lang;
-    if (!RUNNABLE[lang]) return;
+    if (!spec || !RUNNABLE[lang]) return;
     const code = this.editor ? this.editor.getDoc() : this.s.code;
     let cases = mode === 'submit' ? spec.examples.concat(spec.hidden) : spec.examples.slice();
     const titles = cases.map((c, i) => (i < spec.examples.length ? 'Example ' + (i + 1) : 'Hidden ' + (i - spec.examples.length + 1)));
@@ -151,8 +156,10 @@ class CodeRunner {
     this.tokens = t;
     const tk = [t.codeBg, t.text, t.accent, t.mono].join('|');
     if (this.editor && this.editorTheme !== tk) { this.editorTheme = tk; Promise.resolve().then(() => this.editor && this.editor.setTheme(t)); }
-    const s = this.s, spec = this.spec(), lang = s.lang, out = s.out;
-    const runnable = !!RUNNABLE[lang];
+    const s = this.s, spec = this.spec(), lang = s.lang;
+    const out = spec ? s.out : null;
+    const hasTests = !!spec;
+    const runnable = hasTests && !!RUNNABLE[lang];
     const fail = t.diff.Hard[2];
     const limit = (lang === 'py' ? PY_TIME_LIMIT : JS_TIME_LIMIT) / 1000;
     let rows = [], badge = '', badgeOk = false, msg = '', msgBg = t.sunk, msgMono = false;
@@ -187,22 +194,23 @@ class CodeRunner {
     const clock = pad2(Math.floor(s.elapsed / 60)) + ':' + pad2(s.elapsed % 60);
     return {
       ref: this.ref,
+      showLangs: !this.opts.hideLangs, showClock: !this.opts.hideClock, hasTests, noTests: !hasTests, elapsed: s.elapsed,
       langs: CODE_LANGS.map(([k, label]) => ({ label: label === 'JavaScript' ? 'JS' : label, on: lang === k, bg: lang === k ? t.text : 'transparent', fg: lang === k ? t.bg : t.muted, pick: () => this.setLang(k) })),
       clock, clockLabel: (solved ? 'Solved in ' : 'Time on this problem: ') + clock, clockFg: solved ? t.ok : t.muted,
       copy: () => this.copy(), copyLabel: s.copied ? 'Copied' : 'Copy',
       reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset', resetBorder: s.confirmReset ? t.accent : t.line,
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
-      runnable, notRunnable: !runnable, busy: s.busy,
+      runnable, notRunnable: hasTests && !runnable, busy: s.busy,
       run: () => this.execute('run'), submit: () => this.execute('submit'),
       custom: s.custom, setCustom: (e) => this.set({ custom: e && e.target ? e.target.value : '' }),
-      customHint: 'Custom input, e.g. ' + spec.examples[0][0].map(showValue).join(', '),
+      customHint: spec ? 'Custom input, e.g. ' + spec.examples[0][0].map(showValue).join(', ') : '',
       statusText: s.status || (runnable ? (lang === 'py' && PY.state !== 'ready' ? 'Python loads on your first run' : 'Runs in your browser') : ''),
       statusColor: s.busy ? t.accent : t.muted,
       hasBadge: !!badge, badge, badgeBg: badgeOk ? t.okBg : t.warnBg, badgeFg: badgeOk ? t.ok : fail,
       hasMsg: !!msg, msg, msgBg, msgFont: msgMono ? t.mono : t.body,
       rows,
       showHint: !out,
-      hint: runnable ? 'Run tries the ' + spec.examples.length + ' examples (plus your custom input). Submit adds ' + spec.hidden.length + ' hidden tests. Saved in this browser. In the editor, Esc then Tab moves focus on.' : 'Write it here, then copy it into your IDE to run it.'
+      hint: !hasTests ? '' : runnable ? 'Run tries the ' + spec.examples.length + ' examples (plus your custom input). Submit adds ' + spec.hidden.length + ' hidden tests. Saved in this browser. In the editor, Esc then Tab moves focus on.' : 'Write it here, then copy it into your IDE to run it.'
     };
   }
 }

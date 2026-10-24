@@ -6,6 +6,7 @@ across pages and live in one place; this script copies them back into every page
   shared/themes_common.js   -> between // @@THEMES@@ ... // @@END-THEMES@@
   shared/catalog.js         -> between // @@CATALOG@@ ... // @@END@@
   shared/sheet.js           -> between // @@SHEET@@ ... // @@END-SHEET@@ (Sheet page)
+                               and its row count -> // @@SHEET-COUNT@@ ... // @@END-SHEET-COUNT@@ (Main, Home)
   shared/data.js            -> between // @@DATA@@ ... // @@END-DATA@@ (every page; DS, the data layer)
   shared/drawer.js          -> between // @@DRAWER@@ ... // @@END-DRAWER@@ (every page)
   shared/ui.js              -> between // @@UI@@ ... // @@END-UI@@ (every page; component view models)
@@ -18,6 +19,8 @@ across pages and live in one place; this script copies them back into every page
   shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
   shared/code_pane.html     -> between <!-- CODE PANE --> ... <!-- /CODE PANE --> (after page bodies)
   src/git/sim.js + lessons.js -> between // @@GITSIM@@ ... // @@END-GITSIM@@ (Git page)
+  src/sd/engine.js + lessons.js -> between // @@SDLESSONS@@ ... // @@END-SDLESSONS@@ (SystemDesign, SDLesson)
+  src/ai/render.js + lessons.js -> between // @@AILESSONS@@ ... // @@END-AILESSONS@@ (AI & ML pages)
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
   src/code/code_body.html + code.js       -> Code
@@ -25,6 +28,7 @@ across pages and live in one place; this script copies them back into every page
 Run from the repo root:  python3 scripts/build_pages.py
 """
 import os
+import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGES = os.path.join(ROOT, 'pages')
@@ -62,9 +66,13 @@ def main():
     themes = read('shared', 'themes_common.js')
     catalog = read('shared', 'catalog.js')
     sheet = read('shared', 'sheet.js')
+    sheet_total = len(re.findall(r'^\s*\["[a-z0-9-]+", \d+, ', sheet, re.M))
+    sheet_count = ('// @@SHEET-COUNT@@ — generated: how many problems the master sheet holds\n'
+                   'const SHEET_TOTAL = %d;\n// @@END-SHEET-COUNT@@' % sheet_total)
     drawer_html = read('shared', 'drawer.html')
     shared_js = {n: read('shared', n) for _, _, n in SHARED_JS}
     built = sorted(f for f in os.listdir(PAGES) if f.endswith('.dc.html'))
+    shared_js['data.js'] = shared_js['data.js'].replace('/*@@SHEET-SIZE@@*/216', str(sheet_total))
     shared_js['nav.js'] = shared_js['nav.js'].replace('/*@@PAGES@@*/[]', repr(built).replace("'", '"'))
     drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
@@ -80,12 +88,16 @@ def main():
         scripts[name] = ('src', 'pages', name.lower() + '.js')
     git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.\n'
                + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
+    sd_lessons = ('// @@SDLESSONS@@ — generated from src/sd/engine.js and src/sd/lessons.js; edit those, then build.\n'
+                  + read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '// @@END-SDLESSONS@@')
+    ai_lessons = ('// @@AILESSONS@@ — generated from src/ai/render.js and src/ai/lessons.js; edit those, then build.\n'
+                  + read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '// @@END-AILESSONS@@')
     bodies['Code'] = ('src', 'code', 'code_body.html')
     scripts['Code'] = ('src', 'code', 'code.js')
     # The three original scene files first (scenes_tp.js opens the engine), then any newer scenes_*.js in name order.
     first = ['scenes_tp.js', 'scenes_sw.js', 'scenes_hm.js']
     more = sorted(f for f in os.listdir(os.path.join(ROOT, 'src', 'story')) if f.startswith('scenes_') and f.endswith('.js') and f not in first)
-    story_engine = ''.join(read('src', 'story', f) for f in first + more + ['tail.js', 'comp.js'])
+    story_engine = ''.join(read('src', 'story', f) for f in first + more + ['tail.js', 'tasks.js', 'comp.js'])
 
     for f in sorted(os.listdir(PAGES)):
         if not f.endswith('.dc.html'):
@@ -97,6 +109,7 @@ def main():
         s = block(s, '// @@THEMES@@', '// @@END-THEMES@@', themes)
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
+        s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
         s = ensure_blocks(s)
         for start, end, n in SHARED_JS:
             s = block(s, start, end, shared_js[n])
@@ -105,6 +118,8 @@ def main():
         s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
         s = block(s, '// @@CODE-PANE@@', '// @@END-CODE-PANE@@', pane_js)
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
+        s = block(s, '// @@SDLESSONS@@', '// @@END-SDLESSONS@@', sd_lessons)
+        s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)
         name = f[:-len('.dc.html')]
         if name in bodies:
             body = read(*bodies[name])

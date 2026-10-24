@@ -55,7 +55,7 @@ class Component extends DCLogic {
     const cells = hm.cells.map((c, i) => {
       const d = new Date(c.ts);
       const label = DAYNAMES[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
-      const parts = [c.story ? plural(c.story, 'story', 'stories') : '', c.sheet ? plural(c.sheet, 'sheet tick') : '', c.code ? plural(c.code, 'passed test') : '', c.revisit ? plural(c.revisit, 'revisit card') : ''].filter(Boolean);
+      const parts = [c.story ? plural(c.story, 'story', 'stories') : '', c.sheet ? plural(c.sheet, 'sheet tick') : '', c.code ? plural(c.code, 'passed test') : '', c.lesson ? plural(c.lesson, 'lesson') : '', c.revisit ? plural(c.revisit, 'revisit card') : ''].filter(Boolean);
       return { n: c.n, d, label, parts, bg: c.future ? 'transparent' : levels[c.level], border: i === dayIdx ? '2px solid ' + t.text : c.future ? '1px dashed ' + t.line : '0',
         tip: label + ': ' + (c.n ? parts.join(', ') : 'no learning'), pick: () => { if (!c.future) this.setState({ day: i }); } };
     });
@@ -113,7 +113,7 @@ class Component extends DCLogic {
       day: {
         date: sel.label + (dayIdx === todayIdx ? ' · today' : ''),
         head: sel.n ? plural(sel.n, 'thing') + ' done' : dayIdx === todayIdx ? 'Nothing yet today' : 'A rest day',
-        line: sel.n ? sel.parts.join(' · ') : dayIdx === todayIdx ? 'Finish a story, tick a sheet problem or pass a code test. Each one lights up today.' : 'Nothing that day. Rest days happen.'
+        line: sel.n ? sel.parts.join(' · ') : dayIdx === todayIdx ? 'Finish a story or lesson, tick a sheet problem or pass a code test. Each one lights up today.' : 'Nothing that day. Rest days happen.'
       },
       legend: levels,
       certs: CERTS.map(({ name, mark, have, need, when }, i) => {

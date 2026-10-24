@@ -35,7 +35,7 @@
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
 <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
-<sc-for list="{{themeBtns}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+<sc-for list="{{themeBtns}}" as="dtb" hint-placeholder-count="3"><button onClick="{{dtb.pick}}" aria-pressed="{{dtb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{dtb.bg}}; color: {{dtb.fg}}">{{dtb.label}}</button></sc-for>
 </div>
 </div>
 <sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>

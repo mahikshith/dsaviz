@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>System design — DSAMaxxing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Outfit:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap">
+<style>
+[style*="Anton"]{font-weight:400!important;text-transform:uppercase;letter-spacing:0.01em!important}
+p[style*="Anton"],[style*="Anton"][style*="italic"],[style*="Anton"][style*="font-size: 11px"],[style*="Anton"][style*="font-size: 12px"],[style*="Anton"][style*="font-size: 13px"],[style*="Anton"][style*="font-size: 14px"],[style*="Anton"][style*="font-size: 15px"],[style*="Anton"][style*="font-size: 16px"],[style*="Anton"][style*="font-size: 17px"],[style*="Anton"][style*="font-size: 18px"]{font-family:'Outfit',system-ui,sans-serif!important;text-transform:none;letter-spacing:normal!important;font-weight:500!important;font-style:normal!important}
+header a,header button,nav a{white-space:nowrap}
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{opacity:0.8}
+button{font:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+</style>
+</helmet>
+<div data-fit="{{L.rootW}}" style="width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+
+<!-- PILL NAV -->
+<style>
+[data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
+[data-pn] a,[data-pn] button{transition:transform .22s cubic-bezier(.32,.72,0,1),background-color .2s,color .2s}
+[data-pn] a:active,[data-pn] button:active{transform:scale(.95);transition-duration:.12s}
+[data-pn] a:hover{opacity:1}
+[data-pn-item][data-on="false"]:hover{background:rgba(127,127,127,.12)!important}
+[data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+[data-ring]{animation:ds-ring .7s cubic-bezier(.33,1,.68,1) both}
+[data-rise]{animation:ds-rise .38s cubic-bezier(.33,1,.68,1) both}
+[data-fresh="true"]{animation:ds-pop .5s cubic-bezier(.34,1.56,.64,1) both}
+[data-shine]{animation:ds-shine .9s cubic-bezier(.65,0,.35,1) .35s both}
+@keyframes ds-ring{from{stroke-dashoffset:var(--len)}}
+@keyframes ds-rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes ds-pop{0%{transform:scale(.6)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes ds-shine{from{transform:translateX(-40px) skewX(-20deg)}to{transform:translateX(90px) skewX(-20deg)}}
+@media (prefers-reduced-motion: reduce){[data-ring],[data-rise],[data-fresh="true"]{animation:none}[data-shine]{display:none}[data-pn] a,[data-pn] button{transition:none}}
+@media (max-width: 759px){
+[data-pn-wrap]{position:fixed;top:auto;bottom:0;left:0;right:0;padding:0 8px 8px;zoom:calc(1 / var(--fit, 1))}
+[data-pn]{gap:2px!important;padding:0 4px!important}
+[data-pn-logo],[data-pn-streak],[data-pn-soon]{display:none!important}
+[data-pn-item]{padding:0 10px!important}
+[data-pn-item][data-on="false"] [data-pn-label]{display:none}
+[data-pn-item][data-extra="true"][data-on="false"]{display:none!important}
+[data-pn-items]{justify-content:space-around}
+body{padding-bottom:calc(80px / var(--fit, 1))}
+[data-drawer]{zoom:calc(1 / var(--fit, 1))}
+[data-drawer] aside{width:min(360px,86vw)!important}
+}
+</style>
+<div data-pn-wrap>
+<nav aria-label="Main" data-pn style="height: 60px; box-sizing: border-box; padding: 0 8px; border-radius: 30px; background: {{nav.glass}}; border: 1px solid {{t.line}}; box-shadow: 0 8px 24px {{nav.shadow}}; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; align-items: center; gap: 4px; font-family: {{t.body}}; color: {{t.text}}">
+<button onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 44px; padding: 0 16px 0 4px; flex-shrink: 0; display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 20px; font-weight: 700; white-space: nowrap">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
+<div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
+<sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="7">
+<sc-if value="{{ni.live}}" hint-placeholder-val="{{ true }}"><a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span></a></sc-if>
+<sc-if value="{{ni.soon}}" hint-placeholder-val="{{ false }}"><span aria-disabled="true" title="{{ni.title}}" data-pn-item data-pn-soon data-on="false" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; white-space: nowrap; color: {{t.muted}}; cursor: default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span><span style="padding: 0 6px; border-radius: 999px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 600; line-height: 18px">Soon</span></span></sc-if>
+</sc-for>
+</div>
+<sc-if value="{{nav.member}}" hint-placeholder-val="{{ true }}">
+<a href="Profile.dc.html" data-pn-streak aria-label="{{nav.streakLabel}}" title="{{nav.streakLabel}}" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{t.line}}; background: {{t.sunk}}; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{nav.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>{{nav.streak}}</a>
+<a href="Profile.dc.html" aria-label="Your profile" aria-current="{{nav.profileOn}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; background: {{nav.avatarBg}}; color: {{nav.avatarFg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800"><sc-if value="{{nav.hasName}}" hint-placeholder-val="{{ false }}">{{nav.initials}}</sc-if><sc-if value="{{nav.noName}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.userIcon}}"></path></svg></sc-if></a>
+</sc-if>
+<sc-if value="{{nav.guest}}" hint-placeholder-val="{{ false }}">
+<a href="Auth.dc.html" style="height: 44px; padding: 0 16px; flex-shrink: 0; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 14px; font-weight: 700; white-space: nowrap">Log in</a>
+</sc-if>
+</nav>
+</div>
+<sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
+<div data-drawer style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
+<aside aria-label="Menu" onKeyDown="{{drawerKey}}" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 10px; align-items: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
+<div style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 700">{{drawerStreak}}</span><span style="font-size: 13px; color: {{t.muted}}">{{drawerStreakLine}}</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{drawerWeek}}" as="dwk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{dwk.border}}; background: {{dwk.bg}}; color: {{dwk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{dwk.d}}</span></sc-for>
+</div>
+
+<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Go to my home</a>
+</div>
+</sc-if>
+<sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
+<div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 16px; font-weight: 700">Keep a streak. Climb the league.</span>
+<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Sign in to save progress, keep your daily streak and see where you rank this week.</span>
+<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Start 3-day free trial</a>
+<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Preview as a signed-in learner</button>
+</div>
+</sc-if>
+<nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
+<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
+</sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
+<div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{themeBtns}}" as="dtb" hint-placeholder-count="3"><button onClick="{{dtb.pick}}" aria-pressed="{{dtb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{dtb.bg}}; color: {{dtb.fg}}">{{dtb.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>
+</aside>
+<button onClick="{{closeDrawer}}" aria-label="Close menu" style="flex-grow: 1; height: 100vh; border: 0; background: rgba(10,10,10,0.4); cursor: pointer"></button>
+</div>
+</sc-if>
+<!-- /PILL NAV -->
+<main style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: {{L.pad}}; display: flex; flex-direction: column; gap: 20px">
+
+<!-- hero -->
+<section aria-label="System design" style="display: grid; grid-template-columns: {{L.heroCols}}; gap: 20px; align-items: stretch">
+<div style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h1}}px; line-height: 0.95; font-weight: 700">System <span style="color: {{t.accent}}">design</span></h1>
+<p style="margin: 0; max-width: 720px; font-size: 18px; line-height: 1.45; color: {{t.text2}}">Big systems, one picture at a time. Every lesson is a diagram you step through: requests move, boxes light up and the numbers update as the design changes.</p>
+</div>
+<div style="box-sizing: border-box; padding: 18px 20px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; justify-content: center">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><span style="font-size: 14px; font-weight: 700">Your progress</span><span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">{{total.done}} of {{total.count}} lessons finished</span></div>
+<div role="progressbar" aria-label="Lessons finished" aria-valuemin="0" aria-valuemax="{{total.count}}" aria-valuenow="{{total.done}}" style="height: 8px; border-radius: 999px; background: {{t.line}}"><div style="width: {{total.pct}}%; height: 8px; border-radius: 999px; background: {{t.accent}}; transition: width 0.4s"></div></div>
+<a href="SDLesson.dc.html" onClick="{{resume.pick}}" style="align-self: flex-start; height: 44px; padding: 0 18px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">{{resume.text}} →</a>
+</div>
+</section>
+
+<!-- tracks + method -->
+<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: {{L.gridCols}}; gap: 20px; align-items: stretch">
+
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="2">
+<section aria-label="{{tr.name}}" style="box-sizing: border-box; min-width: 0; padding: 18px 18px 14px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><h2 style="margin: 0; font-family: {{t.display}}; font-size: 26px; line-height: 1; font-weight: 700">{{tr.name}}</h2><span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.accent}}">{{tr.code}}</span></div>
+<span style="font-size: 14px; line-height: 1.4; color: {{t.text2}}">{{tr.blurb}}</span>
+<div style="display: flex; align-items: center; gap: 10px"><div aria-hidden="true" style="flex-grow: 1; height: 6px; border-radius: 999px; background: {{t.line}}"><div style="width: {{tr.pct}}%; height: 6px; border-radius: 999px; background: {{t.ok}}"></div></div><span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}">{{tr.done}}/{{tr.count}} done</span></div>
+</div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{tr.lessons}}" as="ls" hint-placeholder-count="9">
+<li><a href="SDLesson.dc.html" onClick="{{ls.pick}}" aria-label="{{ls.aria}}" style="min-height: 46px; box-sizing: border-box; padding: 6px 10px; border-radius: 10px; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; background: {{ls.bg}}"><span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ls.title}}</span><span style="font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ls.tag}} · {{ls.steps}} steps</span></span><span style="height: 24px; box-sizing: border-box; padding: 0 9px; border-radius: 999px; border: 1px solid {{ls.chipBorder}}; color: {{ls.chipFg}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: 11px; font-weight: 700; white-space: nowrap">{{ls.chip}}</span></a></li>
+</sc-for>
+</ol>
+<sc-if value="{{tr.hasSoon}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Coming next</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{tr.soon}}" as="sn" hint-placeholder-count="4"><span style="height: 28px; padding: 0 10px; border-radius: 999px; border: 1px dashed {{t.line2}}; color: {{t.text2}}; display: flex; align-items: center; font-size: 13px">{{sn}}</span></sc-for></div>
+</div>
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">How a lesson works</span>
+<sc-for list="{{how}}" as="hw" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: {{t.text2}}"><span aria-hidden="true" style="flex-shrink: 0; width: 12px; height: 12px; border-radius: 999px; background: {{hw.color}}"></span><span>{{hw.text}}</span></div></sc-for>
+</div>
+<div style="padding: 14px; border-radius: 12px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Numbers worth knowing</span>
+<div style="display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 13px">
+<sc-for list="{{facts}}" as="fc" hint-placeholder-count="5"><span style="font-family: {{t.mono}}; font-weight: 700; color: {{t.text}}; white-space: nowrap">{{fc.a}}</span><span style="color: {{t.text2}}">{{fc.b}}</span></sc-for>
+</div>
+</div>
+</sc-if>
+</section>
+</sc-for>
+
+<section aria-label="The four-step interview method" style="box-sizing: border-box; min-width: 0; padding: 18px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.accent}}; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.accent}}">IN THE INTERVIEW</span>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 26px; line-height: 1; font-weight: 700">The four-step method</h2>
+<span style="font-size: 14px; line-height: 1.4; color: {{t.text2}}">Any design question, in the same order. Spend most of your time on steps 2 and 3.</span>
+</div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{method}}" as="mt" hint-placeholder-count="4">
+<li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px 12px; border-radius: 12px; background: {{t.sunk}}"><span style="width: 40px; height: 40px; border-radius: 12px; background: {{mt.bg}}; color: {{mt.fg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: 22px; font-weight: 700">{{mt.n}}</span><span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 16px; font-weight: 700">{{mt.name}}</span><span style="font-size: 13px; line-height: 1.4; color: {{t.text2}}">{{mt.text}}</span><span style="font-family: {{t.mono}}; font-size: 11px; color: {{t.muted}}">{{mt.time}}</span></span></li>
+</sc-for>
+</ol>
+<a href="SDLesson.dc.html" onClick="{{methodGo}}" style="height: 44px; border-radius: 999px; border: 1.5px solid {{t.accent}}; color: {{t.text}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Watch it on the URL shortener →</a>
+<p style="margin: auto 0 0; font-size: 12px; line-height: 1.5; color: {{t.muted}}">The method and the HLD lessons adapt topics from the <a href="https://github.com/donnemartin/system-design-primer" style="color: {{t.text2}}; text-decoration: underline">System Design Primer</a> by Donne Martin (<a href="https://creativecommons.org/licenses/by/4.0/" style="color: {{t.text2}}; text-decoration: underline">CC BY 4.0</a>), rewritten in our words and redrawn.</p>
+</section>
+
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":900}}'>
+// @@THEMES@@ — generated block, shared by every board.
+const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const SERIF = "'Fraunces', Georgia, serif";
+const SANS = "'Instrument Sans', system-ui, sans-serif";
+const POSTER = "'Anton', Impact, sans-serif";
+const OUTFIT = "'Outfit', system-ui, sans-serif";
+const THEMES = {
+  // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO,
+    diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
+  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
+    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
+  ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E', link: '#F5A06E',
+    band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#17332D', '#9FE0CE'], Easy: ['#6FCF97', '#1F3A2A', '#8EDDAE'], Medium: ['#E8B04A', '#3D3218', '#F2C66D'], Hard: ['#F07A5F', '#44221B', '#F79B85'] } },
+  field: { bg: '#0C110B', surface: '#111910', sunk: '#18231A', line: '#23321F', line2: '#2E4228', text: '#C9EBB4', text2: '#B4D3A1', muted: '#7F9C70', faint: '#435A38', accent: '#9FE870', onAccent: '#0C110B', left: '#E8B04A', right: '#9FE870', ok: '#9FE870', okBg: '#1E3316', warnBg: '#3A2C12', coolBg: '#1B2A16', medFg: '#E8B04A', owl: '#4F6B3F', logoL: '#E8B04A', logoR: '#9FE870', codeBg: '#070B06', hl: '#1D2E17', flame: '#E8B04A', link: '#9FE870',
+    band: '#070B06', bandText: '#C9EBB4', bandMuted: '#7F9C70', bandAccent: '#9FE870', shadow: 'rgba(0,0,0,0.6)', display: MONO, body: MONO, mono: MONO,
+    diff: { Starter: ['#8FD3C1', '#132A22', '#9FE0CE'], Easy: ['#9FE870', '#1E3316', '#B8F08F'], Medium: ['#E8B04A', '#3A2C12', '#F0C574'], Hard: ['#F07A5F', '#3A1A12', '#F79B85'] } }
+};
+const THEME_KEY = 'dsaviz-theme';
+const USER_KEY = 'dsaviz-user';
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
+function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
+function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+function themeButtons(cmp, themeKey, t) {
+  return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
+    label, on: themeKey === k,
+    bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
+    pick: () => { saveTheme(k); cmp.setState({ theme: k }); }
+  }));
+}
+function listenTheme(cmp) {
+  cmp.onStorage = (e) => {
+    if (e.key === THEME_KEY && THEMES[e.newValue]) cmp.setState({ theme: e.newValue });
+    if (e.key === USER_KEY) cmp.setState({ user: e.newValue === '1' });
+  };
+  try { window.addEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+function unlistenTheme(cmp) {
+  try { window.removeEventListener('storage', cmp.onStorage); } catch (e) {}
+}
+// This week's streak strip, Monday first, from the real activity log (DS in shared/data.js).
+function streakDays(t) {
+  return DS.streak().week.map((w) => ({ d: w.d, bg: w.on ? t.flame : 'transparent', fg: w.on ? t.onAccent : t.muted, border: w.on ? t.flame : (w.today ? t.text : t.line2) }));
+}
+// @@END-THEMES@@
+// @@DATA@@ — generated block (from shared/data.js): DS, the one data layer every page reads.
+// Real learner data lives in this browser's localStorage. Features that need a server (league, buddies,
+// other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
+// docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
+const DS = (function () {
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem' };
+  const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5 };
+  const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit]];
+  const LEVEL_XP = 500;
+  const SHEET_SIZE = 553; // rows in the master sheet; the build fills in the count from shared/sheet.js
+  const DAY = 86400000;
+  let now = () => Date.now();
+
+  function store() { try { return window.localStorage; } catch (e) { return null; } }
+  function get(k) { const s = store(); try { return s ? s.getItem(k) : null; } catch (e) { return null; } }
+  function set(k, v) { const s = store(); try { if (s) s.setItem(k, v); } catch (e) {} }
+  // Parsed reads are cached by their raw string, so a render can ask many times for free.
+  const cache = {};
+  function json(k, fallback) {
+    const raw = get(k);
+    if (cache[k] && cache[k].raw === raw) return cache[k].val;
+    let val = fallback;
+    try { const v = JSON.parse(raw); if (v != null && typeof v === 'object') val = v; } catch (e) {}
+    cache[k] = { raw, val };
+    return val;
+  }
+  const pad = (n) => String(n).padStart(2, '0');
+  function dayKey(ts) { const d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function midnight(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+  function addDays(ts, n) { const d = new Date(ts); d.setDate(d.getDate() + n); return d.getTime(); }
+
+  // -- the activity log: { v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }
+  function readLog() {
+    const o = json(KEY.log, null);
+    const out = { v: 1, days: {}, stories: {}, code: {}, lessons: {} };
+    if (!o || o.v !== 1) return out;
+    ['days', 'stories', 'code', 'lessons'].forEach((k) => { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) out[k] = o[k]; });
+    return out;
+  }
+  function readSheet() {
+    const o = json(KEY.sheet, null);
+    const done = {}, star = {};
+    if (o && o.v === 1) {
+      if (o.done && typeof o.done === 'object') Object.keys(o.done).forEach((k) => { const ts = Number(o.done[k]); if (isFinite(ts) && ts > 0) done[k] = ts; });
+      if (o.star && typeof o.star === 'object') Object.keys(o.star).forEach((k) => { if (o.star[k]) star[k] = 1; });
+    }
+    return { done, star };
+  }
+  // kind: 'story' | 'code' | 'lesson' | 'revisit'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:'. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
+  function logActivity(kind, id) {
+    if (!XP[kind] || kind === 'sheet') return null;
+    const ts = now();
+    const log = JSON.parse(JSON.stringify(readLog()));
+    const k = dayKey(ts);
+    const day = log.days[k] = Object.assign({ story: 0, code: 0, lesson: 0, revisit: 0, xp: 0 }, log.days[k]);
+    day[kind] = (day[kind] || 0) + 1;
+    let first = true;
+    if (kind === 'story' || kind === 'code' || kind === 'lesson') {
+      const book = kind === 'story' ? log.stories : kind === 'code' ? log.code : log.lessons;
+      first = !(id in book);
+      if (first && id) book[id] = ts;
+    }
+    if (first) day.xp = (day.xp || 0) + XP[kind];
+    set(KEY.log, JSON.stringify(log));
+    return { day: k, first, xp: first ? XP[kind] : 0 };
+  }
+
+  // -- per-day activity: the log plus sheet ticks, keyed by local date
+  function days() {
+    const log = readLog(), sheet = readSheet();
+    const out = {};
+    const at = (k) => out[k] || (out[k] = { story: 0, code: 0, lesson: 0, sheet: 0, revisit: 0, xp: 0, total: 0 });
+    Object.keys(log.days).forEach((k) => {
+      const d = log.days[k] || {}, o = at(k);
+      ['story', 'code', 'lesson', 'revisit'].forEach((x) => { o[x] += Math.max(0, Number(d[x]) || 0); });
+      o.xp += Math.max(0, Number(d.xp) || 0);
+    });
+    Object.keys(sheet.done).forEach((id) => { const o = at(dayKey(sheet.done[id])); o.sheet++; o.xp += XP.sheet; });
+    Object.keys(out).forEach((k) => { const o = out[k]; o.total = o.story + o.code + o.lesson + o.sheet + o.revisit; if (!o.total) delete out[k]; });
+    return out;
+  }
+
+  // -- streak: consecutive active days. A streak that ran through yesterday is still alive today (atRisk).
+  function streak() {
+    const map = days();
+    const today = midnight(now());
+    const on = (ts) => !!map[dayKey(ts)];
+    const activeToday = on(today);
+    let current = 0;
+    let cur = activeToday ? today : addDays(today, -1);
+    while (on(cur)) { current++; cur = addDays(cur, -1); }
+    const keys = Object.keys(map).sort();
+    let longest = 0, run = 0, prev = null;
+    keys.forEach((k) => {
+      const [y, m, d] = k.split('-').map(Number);
+      const ts = new Date(y, m - 1, d).getTime();
+      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + 1 : 1;
+      longest = Math.max(longest, run);
+      prev = ts;
+    });
+    // This week, Monday first.
+    const dow = (new Date(today).getDay() + 6) % 7;
+    const monday = addDays(today, -dow);
+    const week = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => {
+      const ts = addDays(monday, i);
+      return { d, date: dayKey(ts), on: on(ts), today: i === dow, future: ts > today };
+    });
+    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week };
+  }
+
+  // -- heatmap: `weeks` columns ending this week, Sunday first (GitHub layout)
+  function heatmap(weeks) {
+    weeks = weeks || 26;
+    const map = days();
+    const today = midnight(now());
+    const start = addDays(today, -(new Date(today).getDay()) - (weeks - 1) * 7);
+    const cells = [];
+    let total = 0, active = 0;
+    for (let i = 0; i < weeks * 7; i++) {
+      const ts = addDays(start, i);
+      const k = dayKey(ts);
+      const d = map[k];
+      const n = d ? d.total : 0;
+      const future = ts > today;
+      if (!future) { total += n; if (n) active++; }
+      cells.push({ date: k, ts, n, story: d ? d.story : 0, sheet: d ? d.sheet : 0, code: d ? d.code : 0, lesson: d ? d.lesson : 0, revisit: d ? d.revisit : 0,
+        level: n === 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 6 ? 3 : 4, future, today: ts === today });
+    }
+    return { weeks, cells, total, activeDays: active, todayIndex: cells.findIndex((c) => c.today) };
+  }
+
+  // -- XP: earned per day, so "this week" is a real sum
+  function xp() {
+    const map = days();
+    const today = midnight(now());
+    const monday = addDays(today, -((new Date(today).getDay() + 6) % 7));
+    let total = 0, week = 0, todayXp = 0;
+    Object.keys(map).forEach((k) => {
+      const [y, m, d] = k.split('-').map(Number);
+      const ts = new Date(y, m - 1, d).getTime();
+      total += map[k].xp;
+      if (ts >= monday && ts <= today) week += map[k].xp;
+      if (ts === today) todayXp += map[k].xp;
+    });
+    const level = Math.floor(total / LEVEL_XP) + 1;
+    const into = total % LEVEL_XP;
+    return { total, week, today: todayXp, level, into, need: LEVEL_XP, pct: Math.round((into / LEVEL_XP) * 100) };
+  }
+
+  // -- problems and stories
+  function stories() { const s = readLog().stories; return { ids: Object.keys(s), count: Object.keys(s).length, at: s }; }
+  function lessons() { const l = readLog().lessons; return { ids: Object.keys(l), count: Object.keys(l).length }; }
+  function codePasses() { const c = readLog().code; return { ids: Object.keys(c), count: Object.keys(c).length }; }
+  function sheet() { const s = readSheet(); return { ticked: Object.keys(s.done).length, starred: Object.keys(s.star).length, total: typeof SHEET !== 'undefined' && SHEET.length ? SHEET.length : SHEET_SIZE, done: s.done }; }
+  function problemStatus(id) {
+    const log = readLog();
+    if (id in log.stories || id in log.code) return 'done';
+    return get(KEY.problem) === id ? 'now' : 'todo';
+  }
+  // The catalog ships every problem as "todo"; this makes `p.status` read the learner's real progress.
+  function bindCatalog(list) {
+    (list || []).forEach((p) => { try { Object.defineProperty(p, 'status', { get: () => problemStatus(p.id), configurable: true, enumerable: true }); } catch (e) {} });
+  }
+  function patterns(list, pats) {
+    return (pats || []).map(([name, tag, who]) => {
+      const all = (list || []).filter((p) => p.pattern === name);
+      const done = all.filter((p) => problemStatus(p.id) === 'done').length;
+      return { name, tag, companion: who, done, total: all.length, pct: all.length ? Math.round((done / all.length) * 100) : 0 };
+    });
+  }
+
+  // -- medals: bronze = first story in the pattern, silver = half its stories, gold = all of them and each rated in Revisit
+  const TIERS = ['bronze', 'silver', 'gold'];
+  function medals(list, pats) {
+    const deck = json(KEY.deck, {});
+    const seen = json(KEY.medals, {});
+    return patterns(list, pats).filter((p) => p.total > 0).map((p) => {
+      const ids = (list || []).filter((x) => x.pattern === p.name).map((x) => x.id);
+      const rated = ids.filter((id) => problemStatus(id) === 'done' && deck[id]).length;
+      const half = Math.ceil(p.total / 2);
+      const tier = p.done === p.total && rated === p.total ? 'gold' : p.done >= half ? 'silver' : p.done >= 1 ? 'bronze' : null;
+      const nextTier = tier === 'gold' ? null : TIERS[tier ? TIERS.indexOf(tier) + 1 : 0];
+      const next = !nextTier ? null : nextTier === 'bronze' ? { tier: nextTier, have: 0, need: 1, unit: 'story' }
+        : nextTier === 'silver' ? { tier: nextTier, have: p.done, need: half, unit: 'stories' }
+        : p.done < p.total ? { tier: nextTier, have: p.done, need: p.total, unit: 'stories' } : { tier: nextTier, have: rated, need: p.total, unit: 'rated' };
+      if (next) next.pct = Math.round((next.have / Math.max(1, next.need)) * 100);
+      const key = p.name + ':' + tier;
+      return { pattern: p.name, mark: p.name.split(/[\s&-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), tier, next, fresh: !!tier && !seen[key], key, done: p.done, total: p.total };
+    });
+  }
+  function markMedalsSeen(list) {
+    const seen = Object.assign({}, json(KEY.medals, {}));
+    (list || []).forEach((m) => { if (m.tier) seen[m.key] = 1; });
+    set(KEY.medals, JSON.stringify(seen));
+  }
+
+  // -- the learner, as far as this browser knows them
+  function profile() {
+    const ob = json(KEY.onboard, {});
+    const prefs = json(KEY.prefs, {});
+    const name = typeof ob.name === 'string' && ob.name.trim() ? ob.name.trim().slice(0, 40) : '';
+    const initials = name ? name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '';
+    const s = stories(), sh = sheet();
+    return { name, initials, signedIn: get(KEY.user) === '1', isNew: !s.count && !sh.ticked && !codePasses().count && !lessons().count,
+      lang: prefs.lang || '', goal: prefs.goal || '', reason: ob.reason || '', date: ob.date || '', demo: false };
+  }
+
+  // -- demo-only data: these need accounts and a server. The learner's own row is always real.
+  const PEOPLE = [['Priya Iyer', 'Chennai', 2140, 31], ['Karthik Reddy', 'Hyderabad', 1985, 27], ['Sneha Kulkarni', 'Pune', 1760, 22], ['Arjun Mehta', 'Jaipur', 1640, 19],
+    ['Fatima Shaikh', 'Mumbai', 1590, 17], ['Vikram Singh', 'Chandigarh', 1520, 15], ['Ananya Rao', 'Bengaluru', 1470, 12], ['Rohit Verma', 'Delhi', 1400, 5],
+    ['Meera Nair', 'Kochi', 1350, 2], ['Aditya Joshi', 'Indore', 1290, 9], ['Kavya Pillai', 'Thiruvananthapuram', 1240, 8], ['Harsh Agarwal', 'Lucknow', 1180, 6],
+    ['Ritika Banerjee', 'Kolkata', 1120, 4], ['Rahul Menon', 'Noida', 1060, 7], ['Pooja Desai', 'Surat', 990, 3], ['Nikhil Bhat', 'Mangaluru', 920, 2],
+    ['Zoya Khan', 'Bhopal', 860, 1], ['Aman Chauhan', 'Dehradun', 780, 1], ['Lakshmi Narayanan', 'Coimbatore', 690, 1]];
+  const BOARDS = { league: [1, 19], all: [42, 19], friends: [1, 6], college: [3, 12] };
+  function leaderboard(tab) {
+    tab = BOARDS[tab] ? tab : 'league';
+    const [scale, size] = BOARDS[tab];
+    const me = profile(), x = xp(), st = streak();
+    const pool = tab === 'friends' ? PEOPLE.filter((p, i) => [6, 7, 8, 1, 4, 15].includes(i)) : PEOPLE.slice(0, size);
+    const rows = pool.map(([name, where, w, streakDays], i) => ({ name, where, xp: Math.round(w * scale), streak: streakDays, me: false, seed: i }))
+      .concat([{ name: me.name || 'You', where: 'This browser', xp: tab === 'league' || tab === 'friends' ? x.week : x.total, streak: st.current, me: true, seed: 99 }])
+      .sort((a, b) => b.xp - a.xp || (a.me ? 1 : -1));
+    rows.forEach((r, i) => { r.rank = i + 1; });
+    const you = rows.find((r) => r.me);
+    const promoteAt = tab === 'league' ? rows[6] : null;
+    return { demo: true, tab, rows, you: { rank: you.rank, of: rows.length, xp: you.xp, toPromotion: promoteAt && !promoteAt.me && you.rank > 7 ? promoteAt.xp - you.xp + 1 : 0 } };
+  }
+  function buddies() {
+    return { demo: true, list: [['Ananya Rao', 'AR', 'Final year · PES University', 12, true], ['Rohit Verma', 'RV', 'SDE-1 · Bengaluru', 5, false], ['Meera Nair', 'MN', 'M.Tech · IIIT Hyderabad', 2, false]]
+      .map(([name, initials, where, streakDays, today]) => ({ name, initials, where, streak: streakDays, learnedToday: today })) };
+  }
+  function feed() {
+    return { demo: true, list: [['Sneha in Pune', 'started', 'The Campfire Trio', '2P'], ['Karthik in Bengaluru', 'finished', 'Islands on the Map', 'DFS'],
+      ['Farhan in Hyderabad', 'hit a 30-day streak on', 'The Coat-Check Counter', 'HM'], ['Divya in Chennai', 'unlocked', 'Stacks, queues & heaps', 'LVL'],
+      ['Rahul in Gurugram', 'started a mock on', 'The Train Yard Merge', 'MOCK'], ['Neha in Kolkata', 'solved at expert depth', 'The Exact Change Counter', 'DP']]
+      .map(([who, verb, what, tag]) => ({ who, verb, what, tag })) };
+  }
+
+  return {
+    KEY, XP, XP_RULES, LEVEL_XP, dayKey,
+    logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
+    days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    leaderboard, buddies, feed,
+    setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
+  };
+})();
+if (typeof PROBLEMS !== 'undefined') DS.bindCatalog(PROBLEMS);
+// @@END-DATA@@
+// @@DRAWER@@ — shared menu logic (every page with the pill nav)
+const MENU = [
+  ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
+  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
+  ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
+  ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],
+  ['Profile.dc.html', 'My profile', 'Heatmap, medals, certificates, reminders', null],
+  ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
+  ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
+  ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
+  ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
+  ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
+  ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
+  ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
+];
+function drawerVals(cmp, t, themeKey) {
+  const user = cmp.state.user !== undefined ? !!cmp.state.user : loadUser();
+  const st = DS.streak();
+  return {
+    drawerOpen: !!cmp.state.drawer,
+    openDrawer: () => cmp.setState({ drawer: true }),
+    closeDrawer: () => cmp.setState({ drawer: false }),
+    drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
+    user, guest: !user,
+    signIn: () => { saveUser(true); cmp.setState({ user: true }); },
+    signOut: () => { saveUser(false); cmp.setState({ user: false, drawer: false }); },
+    drawerWeek: streakDays(t),
+    drawerStreak: st.current ? st.current + '-day streak' : 'No streak yet',
+    drawerStreakLine: st.activeToday ? 'Today counts. Come back tomorrow.' : st.current ? 'Finish a story today to make it ' + (st.current + 1) : 'Finish one story to start your streak',
+    themeBtns: themeButtons(cmp, themeKey, t),
+    menu: MENU.filter(([href]) => typeof NAV_PAGES === 'undefined' || NAV_PAGES.includes(href)).map(([href, label, sub, tab]) => ({
+      href, label, sub,
+      go: () => { if (tab) { try { window.localStorage.setItem('dsaviz-interview-tab', tab); } catch (e) {} } }
+    }))
+  };
+}
+// @@END-DRAWER@@
+// @@UI@@ — generated block (from shared/ui.js): view models for the shared components.
+// Markup lives in shared/ui/*.html; the build copies it between the STAT TILES, RINGS and MEDALS comment markers.
+// Every builder takes the theme tokens `t` first, so all four themes work.
+const ICONS = {
+  home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
+  learn: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
+  sheet: 'M10 6h10M10 12h10M10 18h10M3.5 6l1.5 1.5 2.5-3M3.5 12l1.5 1.5 2.5-3M3.5 18l1.5 1.5 2.5-3',
+  code: 'M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16',
+  git: 'M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9',
+  design: 'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01',
+  ai: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  flame: 'M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z',
+  check: 'M5 12l5 5L20 7',
+  bolt: 'M13 2L4 14h7l-1 8 9-12h-7z',
+  story: 'M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z',
+  lock: 'M7 11h10v9H7zM9 11V8a3 3 0 0 1 6 0v3',
+  user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0'
+};
+// Filled icons; the rest are stroked.
+const ICON_FILLED = { flame: 1, bolt: 1 };
+// Medal metals (light, mid, shadow) from the Gym Buddy spec. Theme-independent, like real metal.
+const METALS = { bronze: ['#F2BE95', '#B97A4E', '#6E3F22'], silver: ['#F7F8FA', '#B8BCC6', '#62666F'], gold: ['#FFEAA8', '#E0B04A', '#8E6618'] };
+const TIER_NAME = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
+function tint(c, a) { return /^#[0-9a-f]{6}$/i.test(c) ? c + a : c; }
+function iconVals(name, color) {
+  const filled = !!ICON_FILLED[name];
+  return { d: ICONS[name] || '', fill: filled ? color : 'none', stroke: filled ? 'none' : color };
+}
+// Reduced motion is read once; the CSS also turns animation off, this only drops the stagger delay.
+function reducedMotion() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+
+// Stat tiles: icon box, big number, small unit, short label, optional 4px progress bar.
+// items: [{ icon, color, value, unit, label, pct }] (pct 0-100 or null)
+function statTiles(t, items) {
+  const still = reducedMotion();
+  return {
+    cols: items.length,
+    list: items.map((it, i) => Object.assign(iconVals(it.icon, it.color), {
+      value: String(it.value), unit: it.unit || '', label: it.label, fg: it.color, box: tint(it.color, '22'),
+      bar: it.pct != null, pct: Math.max(0, Math.min(100, Math.round(it.pct || 0))) + '%',
+      delay: still ? '0ms' : i * 50 + 'ms'
+    }))
+  };
+}
+
+// Concentric progress rings, outermost first, a stroke/3 gap between them. A ring at zero hides its cap.
+// rings: [{ label, value, pct, color }]
+function ringSet(t, rings, size, stroke) {
+  size = size || 152; stroke = stroke || 12;
+  const c = size / 2;
+  const gap = stroke / 3;
+  const arcs = rings.map((r, i) => {
+    const radius = c - stroke / 2 - i * (stroke + gap);
+    const len = 2 * Math.PI * radius;
+    const pct = Math.max(0, Math.min(100, r.pct || 0));
+    return { r: radius.toFixed(2), len: len.toFixed(2), offset: (len * (1 - pct / 100)).toFixed(2), color: r.color, op: pct > 0 ? 1 : 0 };
+  });
+  return {
+    size, c, stroke, arcs,
+    legend: rings.map((r) => ({ label: r.label, value: r.value, color: r.color })),
+    aria: rings.map((r) => r.label + ' ' + r.value).join(', '),
+    empty: rings.every((r) => !r.pct)
+  };
+}
+
+// Medal shelf: earned medals in metal, the next one outlined with an accent progress line, the rest locked.
+// medals: DS.medals(...) output. fresh: keys that should shine once.
+function medalShelf(t, medals, slots, fresh) {
+  slots = slots || 8;
+  const rank = { gold: 3, silver: 2, bronze: 1 };
+  const open = medals.filter((m) => m.next).sort((a, b) => b.next.pct - a.next.pct || b.done - a.done);
+  const next = open[0] || null;
+  // The next medal sits on its own slot: when it upgrades an earned one, it shows that metal plus the progress line.
+  const earned = medals.filter((m) => m.tier && m !== next).sort((a, b) => rank[b.tier] - rank[a.tier] || b.done - a.done);
+  const locked = medals.filter((m) => !m.tier && m !== next);
+  const total = medals.length * 3;
+  const got = medals.reduce((s, m) => s + (m.tier ? rank[m.tier] : 0), 0);
+  const freshSet = fresh || {};
+  const items = [];
+  const base = (m, i) => ({ gid: 'dsm-g' + i, cid: 'dsm-c' + i, mark: m.mark, label: m.pattern, pathLen: 100, progress: '0 100', showProgress: false, fresh: false, lock: false, showMark: true, sw: '1.5', dash: 'none', op: 1 });
+  earned.forEach((m) => {
+    if (items.length >= slots) return;
+    const [c1, c2, c3] = METALS[m.tier];
+    const fr = !!freshSet[m.key];
+    items.push(Object.assign(base(m, items.length), { c1, c2, c3, fill: 'url(#dsm-g' + items.length + ')', stroke: c3, ink: '#2A1A0A',
+      sub: TIER_NAME[m.tier], subFg: t.text2, fresh: fr, aria: m.pattern + ': ' + TIER_NAME[m.tier] + ' medal' + (fr ? ', just earned' : '') }));
+  });
+  if (next && items.length < slots) {
+    const metal = next.tier ? METALS[next.tier] : null;
+    items.push(Object.assign(base(next, items.length), { c1: metal ? metal[0] : t.sunk, c2: metal ? metal[1] : t.sunk, c3: metal ? metal[2] : t.sunk,
+      fill: metal ? 'url(#dsm-g' + items.length + ')' : t.sunk, stroke: metal ? metal[2] : t.line2, ink: metal ? '#2A1A0A' : t.text,
+      showProgress: true, progress: Math.max(2, next.next.pct) + ' 100', sub: next.next.have + ' of ' + next.next.need, subFg: t.accent,
+      label: next.pattern, aria: (next.tier ? TIER_NAME[next.tier] + ' earned. ' : '') + 'Next: ' + TIER_NAME[next.next.tier] + ' in ' + next.pattern + ', ' + next.next.have + ' of ' + next.next.need + ' ' + next.next.unit }));
+  }
+  locked.forEach((m) => {
+    if (items.length >= slots) return;
+    items.push(Object.assign(base(m, items.length), { c1: t.bg, c2: t.bg, c3: t.bg, fill: 'transparent', stroke: t.line2, ink: t.faint, dash: '3 3',
+      showMark: false, lock: true, sub: 'Locked', subFg: t.muted, aria: m.pattern + ': locked' }));
+  });
+  return {
+    items, got, total, empty: got === 0,
+    caption: got + ' of ' + total,
+    nextLine: next ? TIER_NAME[next.next.tier] + ' · ' + next.pattern + ' · ' + next.next.have + ' of ' + next.next.need + ' ' + next.next.unit : 'Every medal earned'
+  };
+}
+// @@END-UI@@
+// @@NAV@@ — generated block (from shared/nav.js): the floating pill nav at the top of every page.
+// Markup: shared/ui/nav.html, copied between the PILL NAV comment markers together with the menu drawer.
+// A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
+// NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
+// whose page is not built yet shows as "Soon" instead of a dead link.
+const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Code.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
+// key, label, page, icon, hidden on phones unless active
+const NAV_ITEMS = [
+  ['home', 'Home', 'Home.dc.html', 'home', false],
+  ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
+  ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
+  ['code', 'Code', 'Code.dc.html', 'code', false],
+  ['git', 'Git', 'Git.dc.html', 'git', true],
+  ['design', 'System design', 'SystemDesign.dc.html', 'design', true],
+  ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
+];
+// Which section each page belongs to.
+const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
+  Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
+function navVals(cmp, t, themeKey, page) {
+  const section = NAV_SECTION[page] || '';
+  const me = DS.profile();
+  const st = DS.streak();
+  const dv = drawerVals(cmp, t, themeKey);
+  return Object.assign(dv, {
+    nav: {
+      glass: tint(t.surface, 'EB'), shadow: t.shadow,
+      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+        const on = key === section;
+        const live = NAV_PAGES.includes(href);
+        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+          live, soon: !live, title: live ? label : label + ' · coming soon',
+          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text2 };
+      }),
+      streak: st.current, streakLabel: st.current ? st.current + '-day streak' : 'No streak yet',
+      flame: st.current ? t.flame : t.muted,
+      initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
+      profileOn: page === 'Profile' ? 'page' : 'false',
+      avatarBg: page === 'Profile' ? t.accent : t.sunk, avatarFg: page === 'Profile' ? t.onAccent : t.text,
+      guest: dv.guest && page === 'Main', member: !(dv.guest && page === 'Main')
+    }
+  });
+}
+// @@END-NAV@@
+
+// @@SDLESSONS@@ — generated from src/sd/engine.js and src/sd/lessons.js; edit those, then build.
+// System design lesson engine, shared by the hub (SystemDesign) and the player (SDLesson).
+// A lesson is a diagram (nodes + links) and a list of steps. Each step changes the diagram a little
+// (add, drop, mark, sub), sends requests along links (go), names one focus node and carries the
+// back-of-envelope numbers forward. sdFrames() turns the step list into full snapshots.
+// tests/sdcheck.js validates every lesson; run it after editing src/sd/lessons.js.
+
+// The diagram is drawn on a fixed 1080 x 440 canvas. Node positions are box centres on it.
+const SD_W = 1080;
+const SD_H = 440;
+const SD_KINDS = {
+  client: 'M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM11 18h2',
+  car: 'M5 15l1.6-5h10.8l1.6 5M3.5 15h17v4h-17zM7 19v1.5M17 19v1.5M7.5 17h.01M16.5 17h.01',
+  dns: 'M12 3v18M5 5h10l2.5 2.5L15 10H5zM19 12H9l-2.5 2.5L9 17h10z',
+  cdn: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM3 12h18M12 3c3.5 3.5 3.5 14.5 0 18M12 3c-3.5 3.5-3.5 14.5 0 18',
+  lb: 'M3 12h6M9 12l5-6h7M9 12l5 6h7M9 12h12',
+  server: 'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01',
+  cache: 'M13 2L5 14h6l-1 8 8-12h-6z',
+  db: 'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3',
+  queue: 'M3 7h4v10H3zM10 7h4v10h-4zM17 7h4v10h-4z',
+  worker: 'M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2',
+  limiter: 'M6 4h12l-1.5 16h-9zM6.5 9h11',
+  class: '',
+  iface: ''
+};
+const SD_CLASS_KINDS = ['class', 'iface'];
+// Badge text for each mark state. A mark can also be [state, 'own text'].
+const SD_MARKS = { hot: 'busy', down: 'down', hit: 'hit', miss: 'miss', new: 'new', stale: 'stale', good: 'ok', bad: 'broken' };
+const SD_STEP_KEYS = ['cmd', 'say', 'focus', 'phase', 'add', 'drop', 'mark', 'sub', 'go', 'par', 'nums', 'math', 'check'];
+const SD_METHOD = [
+  ['Ask', 'Who uses it, what must it do, how big will it get?'],
+  ['Sketch', 'Draw the fewest boxes that work end to end.'],
+  ['Zoom in', 'Pick the hard parts and design them properly.'],
+  ['Scale', 'Find the bottleneck, fix it, repeat.']
+];
+const SD_SDP = {
+  text: 'Adapted from the System Design Primer by Donne Martin, CC BY 4.0. Rewritten in our words and redrawn.',
+  repo: 'https://github.com/donnemartin/system-design-primer',
+  license: 'https://creativecommons.org/licenses/by/4.0/'
+};
+
+function sdNodeSize(n) {
+  if (SD_CLASS_KINDS.indexOf(n.kind) >= 0) return { w: n.w || 190, h: 44 + 18 * (n.lines || []).length + (n.kind === 'iface' ? 14 : 0) };
+  return { w: n.w || 136, h: 64 };
+}
+function sdNode(L, id) { return L.nodes.find((n) => n.id === id); }
+// A link [a, b, hideWhen?] is drawn while both ends are visible and hideWhen (a node id) is not.
+function sdLinkOn(link, vis) { return vis.indexOf(link[0]) >= 0 && vis.indexOf(link[1]) >= 0 && !(link[2] && vis.indexOf(link[2]) >= 0); }
+function sdFindLink(L, a, b) { return L.links.find((k) => (k[0] === a && k[1] === b) || (k[0] === b && k[1] === a)); }
+// Where the straight line from a's centre towards b leaves a's box.
+function sdEdge(n, toward) {
+  const s = sdNodeSize(n); const dx = toward.x - n.x; const dy = toward.y - n.y;
+  const k = Math.min(dx ? (s.w / 2 + 4) / Math.abs(dx) : Infinity, dy ? (s.h / 2 + 4) / Math.abs(dy) : Infinity);
+  return { x: n.x + dx * k, y: n.y + dy * k };
+}
+function sdMarkOf(v) { if (!v) return null; return Array.isArray(v) ? { state: v[0], text: v[1] } : { state: v, text: SD_MARKS[v] }; }
+
+function sdFrames(L) {
+  let vis = L.nodes.filter((n) => n.on).map((n) => n.id);
+  let marks = {}; let subs = {}; let math = L.math || ''; let phase = 0;
+  const nums = Object.assign({ qps: null, ms: null, gb: null }, L.nums || {});
+  let prevNums = Object.assign({}, nums);
+  return L.steps.map((s, i) => {
+    const before = vis.slice();
+    (s.add || []).forEach((id) => { if (vis.indexOf(id) < 0) vis.push(id); });
+    (s.drop || []).forEach((id) => { vis = vis.filter((x) => x !== id); });
+    marks = Object.assign({}, marks); subs = Object.assign({}, subs);
+    Object.keys(s.mark || {}).forEach((k) => { if (s.mark[k] == null) delete marks[k]; else marks[k] = s.mark[k]; });
+    Object.keys(s.sub || {}).forEach((k) => { if (s.sub[k] == null) delete subs[k]; else subs[k] = s.sub[k]; });
+    Object.keys(marks).forEach((k) => { if (vis.indexOf(k) < 0) delete marks[k]; });
+    Object.keys(subs).forEach((k) => { if (vis.indexOf(k) < 0) delete subs[k]; });
+    if (s.nums) Object.assign(nums, s.nums);
+    if (s.math) math = s.math;
+    if (s.phase) phase = s.phase;
+    const changed = Object.keys(nums).filter((k) => nums[k] !== prevNums[k] && i > 0);
+    prevNums = Object.assign({}, nums);
+    const hops = (s.go || []).map((h, k) => ({ from: h[0], to: h[1], label: h[2] || '', tone: h[3] || 'req', at: h[4] != null ? h[4] : s.par ? 0 : k }));
+    return {
+      i, cmd: s.cmd, say: s.say, focus: s.focus, phase, math, check: s.check || null,
+      vis: vis.slice(), added: vis.filter((x) => before.indexOf(x) < 0),
+      marks, subs, nums: Object.assign({}, nums), changed, hops
+    };
+  });
+}
+
+// Number formatting for the numbers strip.
+function sdTrim(x) { return String(Math.round(x * 10) / 10).replace(/\.0$/, ''); }
+function sdFmtQps(v) {
+  if (v == null) return '—';
+  if (v === 0) return '0/s';
+  if (v < 1) return '<1/s';
+  if (v < 1000) return Math.round(v).toLocaleString('en-US') + '/s';
+  if (v < 1e6) return sdTrim(v / 1000) + 'k/s';
+  return sdTrim(v / 1e6) + 'M/s';
+}
+function sdFmtMs(v) {
+  if (v == null) return '—';
+  if (v < 1) return '<1 ms';
+  if (v < 1000) return Math.round(v) + ' ms';
+  if (v < 60000) return sdTrim(v / 1000) + ' s';
+  return sdTrim(v / 60000) + ' min';
+}
+function sdFmtGb(v) {
+  if (v == null) return '—';
+  if (v === 0) return '0';
+  if (v < 1) return sdTrim(v * 1000) + ' MB';
+  if (v < 1000) return sdTrim(v) + ' GB';
+  return sdTrim(v / 1000) + ' TB';
+}
+// Short-code alphabet for the URL shortener lesson: a-z, then A-Z, then 0-9.
+const SD_B62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+function sdBase62(n) { let s = ''; do { s = SD_B62[n % 62] + s; n = Math.floor(n / 62); } while (n > 0); return s; }
+
+// Progress is kept per lesson as the furthest step reached (1-based).
+const SD_PROGRESS_KEY = 'dsaviz-sd-progress';
+const SD_LESSON_KEY = 'dsaviz-sd-lesson';
+function sdLoadProgress() { try { const v = JSON.parse(window.localStorage.getItem(SD_PROGRESS_KEY) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } }
+function sdSaveProgress(p) { try { window.localStorage.setItem(SD_PROGRESS_KEY, JSON.stringify(p)); } catch (e) {} }
+function sdPickLesson(id) { try { window.localStorage.setItem(SD_LESSON_KEY, id); } catch (e) {} }
+function sdLoadLesson() { try { return window.localStorage.getItem(SD_LESSON_KEY) || ''; } catch (e) { return ''; } }
+
+// Widen infrastructure boxes (sized for the monospace Terminal theme) so their label and every sub line the lesson shows fit on one line.
+// Runs once at load, so a box keeps one width for the whole lesson and links never jump.
+function sdAutoWidths(lessons) {
+  lessons.forEach((L) => L.nodes.forEach((n) => {
+    if (SD_CLASS_KINDS.indexOf(n.kind) >= 0) return;
+    let sub = 0;
+    L.steps.forEach((s) => { const v = s.sub && s.sub[n.id]; if (v) sub = Math.max(sub, v.length); });
+    const need = 62 + Math.max(n.label.length * 9.2, sub * 7.3);
+    n.w = Math.max(n.w || 136, Math.ceil(need / 4) * 4);
+  }));
+}
+
+// System design lessons. HLD lessons marked credit: 'sdp' adapt topics from the System Design
+// Primer (Donne Martin, CC BY 4.0); all wording here is ours. Shape of a lesson: see src/sd/engine.js.
+// Step fields: cmd (scenario bar), say (one caption, max 140 chars), focus (one node), add/drop
+// (show or remove nodes), mark ({id: state}), sub ({id: text}), go ([from, to, label, tone, at]),
+// par (all hops at once), nums ({qps, ms, gb}), math (napkin line), check (tests/sdcheck.js recomputes):
+//   qps: [events, 'day'|'month']  qps ≈ events / seconds (within 15%)
+//   gb: [items, bytes each]       gb ≈ items × bytes / 1e9 (within 15%)
+//   ms: [a, b, ...]               ms equals the sum of the parts
+//   cap: [per server, fits]       working servers on the diagram × per server ≥ qps, exactly when fits
+//   b62: [number, code]           the number written in base 62 is the code
+function sdN(id, kind, label, x, y, more) { return Object.assign({ id, kind, label, x, y }, more || {}); }
+
+const SD_LESSONS = [
+  {
+    id: 'scale', track: 'hld', title: 'Scale up or out', tag: 'vertical · horizontal', credit: 'sdp',
+    scenario: 'A photo app grows from 1,000 to 100,000 users.',
+    labels: ['Requests per second', 'Typical response', 'Photos stored'],
+    nums: { qps: 23, ms: 80, gb: 5 },
+    math: '1,000 users × 2,000 requests a day ÷ 86,400 s ≈ 23 a second',
+    nodes: [
+      sdN('users', 'client', 'Users', 110, 220, { on: true }),
+      sdN('lb', 'lb', 'Load balancer', 330, 220, { w: 150 }),
+      sdN('s2', 'server', 'Server 2', 580, 60),
+      sdN('app', 'server', 'Server 1', 580, 170, { on: true }),
+      sdN('s3', 'server', 'Server 3', 580, 280),
+      sdN('s4', 'server', 'Server 4', 580, 390),
+      sdN('db', 'db', 'Database', 930, 220, { on: true })
+    ],
+    links: [['users', 'app', 'lb'], ['users', 'lb'], ['lb', 'app'], ['lb', 's2'], ['lb', 's3'], ['lb', 's4'], ['app', 'db'], ['s2', 'db'], ['s3', 'db'], ['s4', 'db']],
+    steps: [
+      { cmd: '1,000 users · one server', say: 'Every app starts like this: users talk to one server, and the server keeps its data in a database.', focus: 'app',
+        go: [['users', 'app', 'GET'], ['app', 'db', 'read'], ['db', 'app', 'row', 'back'], ['app', 'users', '200', 'back']], check: { qps: [2e6, 'day'], cap: [1000, true] } },
+      { cmd: 'growth: 100,000 users', say: 'The app gets popular. About 2,300 requests now arrive every second, and one server can handle about 1,000.', focus: 'app',
+        mark: { app: 'hot' }, sub: { app: 'CPU 100%' }, nums: { qps: 2300, ms: 900 }, par: true,
+        go: [['users', 'app', 'GET'], ['users', 'app', 'GET', 'req', 0.4], ['users', 'app', 'GET', 'req', 0.8]],
+        math: '100,000 users × 2,000 requests a day ÷ 86,400 s ≈ 2,300 a second', check: { qps: [2e8, 'day'], cap: [1000, false] } },
+      { cmd: 'scale up: a bigger machine', say: 'Scaling up means buying a bigger server, with more CPU and memory. Nothing else in the design has to change.', focus: 'app',
+        mark: { app: ['new', '32 cores'] }, sub: { app: 'up to 3,000/s' }, nums: { ms: 90 }, check: { cap: [3000, true] } },
+      { cmd: 'the catch', say: 'A bigger box has a ceiling and a steep price. And if that one server crashes, the whole app goes down with it.', focus: 'app',
+        mark: { app: 'down' }, sub: { app: 'crashed' }, check: { cap: [3000, false] } },
+      { cmd: 'scale out: add servers', say: 'Scaling out means adding more ordinary servers that share the work. Each one runs exactly the same code.', focus: 's2',
+        add: ['s2', 's3'], mark: { app: null, s2: 'new', s3: 'new' }, sub: { app: '1,000/s', s2: '1,000/s', s3: '1,000/s' }, check: { cap: [1000, true] } },
+      { cmd: 'who picks a server?', say: 'Users cannot pick a server themselves. A load balancer stands in front and hands each request to one of them.', focus: 'lb',
+        add: ['lb'], mark: { s2: null, s3: null, lb: 'new' }, go: [['users', 'lb', 'GET']] },
+      { cmd: 'spread the load', say: 'Requests now spread across three servers. Each one carries about a third of the traffic.', focus: 'lb',
+        mark: { lb: null }, sub: { app: '~770/s', s2: '~770/s', s3: '~770/s' }, nums: { ms: 85 }, par: true,
+        go: [['lb', 's2', 'GET'], ['lb', 'app', 'GET'], ['lb', 's3', 'GET']], math: '2,300 ÷ 3 servers ≈ 770 a second each', check: { cap: [1000, true] } },
+      { cmd: 'server 3 fails', say: 'Server 3 dies and the other two keep the app up. But two servers top out at 2,000 a second, which is not enough.', focus: 's3',
+        mark: { s3: 'down', app: 'hot', s2: 'hot' }, sub: { s3: 'crashed', app: '1,150/s', s2: '1,150/s' }, nums: { ms: 400 },
+        math: '2,300 ÷ 2 servers = 1,150 each, over the 1,000 limit', check: { cap: [1000, false] } },
+      { cmd: 'keep a spare', say: 'Run one spare server. When any one fails, the other three can still carry 2,300 requests a second.', focus: 's4',
+        add: ['s4'], mark: { s4: 'new', app: null, s2: null }, sub: { app: '~770/s', s2: '~770/s', s4: '~770/s' }, nums: { ms: 85 },
+        go: [['lb', 's4', 'GET']], math: 'plan for one failure: 3 working × 1,000 ≥ 2,300', check: { cap: [1000, true] } },
+      { cmd: 'servers keep no state', say: 'This works because servers keep no user data in memory. Shared data lives in the database, so any server can answer.', focus: 'db',
+        mark: { s4: null }, go: [['lb', 's4', 'GET'], ['s4', 'db', 'read'], ['db', 's4', 'row', 'back']] },
+      { cmd: 'rule of thumb', say: 'Scale up first while it is cheap and simple. Scale out when you need more room or must survive a crash.', focus: 'lb' }
+    ]
+  },
+  {
+    id: 'lb', track: 'hld', title: 'Load balancer', tag: 'round robin · health checks', credit: 'sdp',
+    scenario: 'Three users, three servers, one front door.',
+    labels: ['Requests per second', 'Wait for the next request', 'Storage'],
+    nums: { qps: 900, ms: 60, gb: null },
+    math: 'storage is not part of this lesson',
+    nodes: [
+      sdN('u1', 'client', 'User A', 110, 80, { on: true }),
+      sdN('u2', 'client', 'User B', 110, 220, { on: true }),
+      sdN('u3', 'client', 'User C', 110, 360, { on: true }),
+      sdN('lb', 'lb', 'Load balancer', 450, 220, { on: true, w: 150 }),
+      sdN('s1', 'server', 'Server 1', 820, 80, { on: true }),
+      sdN('s2', 'server', 'Server 2', 820, 220, { on: true }),
+      sdN('s3', 'server', 'Server 3', 820, 360, { on: true })
+    ],
+    links: [['u1', 'lb'], ['u2', 'lb'], ['u3', 'lb'], ['lb', 's1'], ['lb', 's2'], ['lb', 's3']],
+    steps: [
+      { cmd: 'one address for everyone', say: 'A load balancer sits between users and servers. Users only ever see its address, never the servers behind it.', focus: 'lb',
+        go: [['u1', 'lb', 'GET'], ['u2', 'lb', 'GET', 'req', 0.3], ['u3', 'lb', 'GET', 'req', 0.6]], par: true },
+      { cmd: 'policy: round robin', say: 'Round robin hands requests out in turn: server 1, then 2, then 3, then back to 1.', focus: 's1',
+        go: [['u1', 'lb', 'GET'], ['lb', 's1', 'GET']], sub: { s1: '1 open' } },
+      { cmd: 'round robin · next', say: 'The next request goes to server 2. Round robin never checks how busy a server is.', focus: 's2',
+        go: [['u2', 'lb', 'GET'], ['lb', 's2', 'GET']], sub: { s2: '1 open' } },
+      { cmd: 'round robin · next', say: 'Then server 3. It is simple and fair, and it works well when every request costs about the same.', focus: 's3',
+        go: [['u3', 'lb', 'GET'], ['lb', 's3', 'GET']], sub: { s3: '1 open' } },
+      { cmd: 'POST /export-video', say: 'But some requests are heavy. Server 1 is now stuck on a video export that takes 30 seconds.', focus: 's1',
+        mark: { s1: 'hot' }, sub: { s1: 'export, 30 s' }, go: [['lb', 's1', 'export']] },
+      { cmd: 'round robin · next', say: 'Round robin still sends the next request to server 1. That user now waits behind the export.', focus: 's1',
+        go: [['u1', 'lb', 'GET'], ['lb', 's1', 'GET']], nums: { ms: 2400 }, sub: { s2: '0 open', s3: '0 open' } },
+      { cmd: 'policy: least connections', say: 'Least connections sends each request to the server with the fewest open requests right now.', focus: 'lb',
+        go: [['u2', 'lb', 'GET'], ['lb', 's2', 'GET']], nums: { ms: 60 }, sub: { s2: '1 open' } },
+      { cmd: 'least connections · next', say: 'Server 3 has nothing open, so it gets the next one. The busy server is left alone to finish.', focus: 's3',
+        go: [['u3', 'lb', 'GET'], ['lb', 's3', 'GET']], sub: { s3: '1 open' } },
+      { cmd: 'GET /health every 5 s', say: 'The load balancer also pings each server every few seconds. A server that stops answering is taken out.', focus: 'lb',
+        mark: { s1: null }, sub: { s1: '0 open', s2: '0 open', s3: '0 open' }, par: true,
+        go: [['lb', 's1', 'ok?'], ['lb', 's2', 'ok?'], ['lb', 's3', 'ok?'], ['s1', 'lb', 'ok', 'back', 0.9], ['s3', 'lb', 'ok', 'back', 0.9]] },
+      { cmd: 'server 2 misses its checks', say: 'Server 2 did not answer. The load balancer stops sending it work until it passes its checks again.', focus: 's2',
+        mark: { s2: 'down' }, sub: { s2: 'out of rotation' }, nums: { qps: 900 }, go: [['u2', 'lb', 'GET'], ['lb', 's3', 'GET']] },
+      { cmd: 'policy: hash(user id)', say: 'Hashing the user ID sends the same user to the same server every time. That helps when a server keeps warm data per user.', focus: 's3',
+        go: [['u1', 'lb', 'user A'], ['lb', 's3', 'user A']] },
+      { cmd: 'layer 4 or layer 7', say: 'A layer 4 balancer only sees addresses and ports. A layer 7 balancer reads the request, so it can route /video elsewhere.', focus: 'lb',
+        sub: { lb: 'L7 reads paths' } }
+    ]
+  },
+  {
+    id: 'cache', track: 'hld', title: 'Caching', tag: 'cache-aside · hit · miss', credit: 'sdp',
+    scenario: 'Profile pages read the same rows again and again.',
+    labels: ['Reads per second', 'Time for one read', 'Cache memory'],
+    nums: { qps: 5000, ms: 55, gb: 0 },
+    math: 'app 5 ms + database 50 ms = 55 ms per read',
+    nodes: [
+      sdN('u', 'client', 'Users', 110, 220, { on: true }),
+      sdN('app', 'server', 'App server', 430, 220, { on: true }),
+      sdN('cache', 'cache', 'Cache', 800, 80),
+      sdN('db', 'db', 'Database', 800, 360, { on: true })
+    ],
+    links: [['u', 'app'], ['app', 'cache'], ['app', 'db']],
+    steps: [
+      { cmd: 'GET /profile/42', say: 'Without a cache, every read goes to the database. Here a database read takes about 50 ms.', focus: 'db',
+        go: [['u', 'app', 'GET'], ['app', 'db', 'read 42'], ['db', 'app', 'row', 'back'], ['app', 'u', '200', 'back']], check: { ms: [5, 50] } },
+      { cmd: '5,000 reads a second', say: 'Most apps read the same few things again and again. A small set of popular profiles gets most of the reads.', focus: 'db',
+        mark: { db: 'hot' }, sub: { db: '5,000 reads/s' }, par: true, go: [['app', 'db', 'read'], ['app', 'db', 'read', 'req', 0.4], ['app', 'db', 'read', 'req', 0.8]] },
+      { cmd: 'add a cache', say: 'A cache keeps hot data in memory. A memory read takes about 1 ms, far faster than the database.', focus: 'cache',
+        add: ['cache'], mark: { cache: 'new' }, sub: { cache: 'empty' } },
+      { cmd: 'GET /profile/42 · check the cache', say: 'With cache-aside, the app asks the cache first. The cache is still empty, so this is a miss.', focus: 'cache',
+        mark: { cache: 'miss' }, go: [['u', 'app', 'GET'], ['app', 'cache', 'get 42'], ['cache', 'app', 'miss', 'bad']] },
+      { cmd: 'miss · read the database', say: 'On a miss, the app reads the row from the database, just as before.', focus: 'db',
+        go: [['app', 'db', 'read 42'], ['db', 'app', 'row', 'back']], nums: { ms: 56 }, math: 'app 5 + cache 1 + database 50 = 56 ms on a miss', check: { ms: [5, 1, 50] } },
+      { cmd: 'set 42 in the cache', say: 'Then the app writes the row into the cache, so the next reader finds it there.', focus: 'cache',
+        mark: { cache: null }, sub: { cache: '1 key' }, go: [['app', 'cache', 'set 42'], ['app', 'u', '200', 'back']] },
+      { cmd: 'GET /profile/42 again', say: 'The next read of profile 42 is a hit. It skips the database and comes back in about 6 ms.', focus: 'cache',
+        mark: { cache: 'hit' }, nums: { ms: 6 }, math: 'app 5 + cache 1 = 6 ms on a hit',
+        go: [['u', 'app', 'GET'], ['app', 'cache', 'get 42'], ['cache', 'app', 'hit', 'back'], ['app', 'u', '200', 'back']], check: { ms: [5, 1] } },
+      { cmd: 'hit rate 90%', say: 'If 9 of every 10 reads are hits, the database sees only one read in ten. Its load drops tenfold.', focus: 'db',
+        mark: { db: null }, sub: { db: '500 reads/s', cache: '4,500 hits/s' }, math: '5,000 reads × 10% misses = 500 reads a second on the database' },
+      { cmd: 'UPDATE profile 42', say: 'Now the user changes their name. The database has the new name, but the cache still holds the old one.', focus: 'cache',
+        mark: { cache: 'stale' }, go: [['u', 'app', 'PUT'], ['app', 'db', 'write']] },
+      { cmd: 'delete 42 on write', say: 'Fix it by deleting the cached copy on every write. The next read misses and loads the fresh row.', focus: 'cache',
+        mark: { cache: null }, go: [['app', 'cache', 'delete 42']] },
+      { cmd: 'set 42 ttl=300s', say: 'Also give every key a time to live. Even if a delete is missed, stale data is gone after five minutes.', focus: 'cache',
+        sub: { cache: 'ttl 5 min' } },
+      { cmd: 'cache is full', say: 'Memory is small, so a full cache must evict something. LRU drops the key nobody has read for the longest.', focus: 'cache',
+        sub: { cache: 'LRU · 2 GB full' }, nums: { gb: 2 }, math: '1,000,000 hot profiles × 2 KB ≈ 2 GB of memory', check: { gb: [1e6, 2000] } }
+    ]
+  },
+  {
+    id: 'cdn', track: 'hld', title: 'CDN', tag: 'edge · pull · DNS', credit: 'sdp',
+    scenario: 'A logo image, one server in Virginia, users in Mumbai.',
+    labels: ['Origin requests per second', 'Time to load the image', 'Origin traffic per day'],
+    nums: { qps: 12, ms: 250, gb: 200 },
+    math: '1,000,000 loads × 200 KB = 200 GB a day from the origin',
+    nodes: [
+      sdN('dns', 'dns', 'DNS', 120, 90, { on: true }),
+      sdN('user', 'client', 'You, in Mumbai', 120, 330, { on: true, w: 160 }),
+      sdN('edge', 'cdn', 'CDN edge, Mumbai', 520, 330, { w: 170 }),
+      sdN('origin', 'server', 'Origin, Virginia', 920, 330, { on: true, w: 170 })
+    ],
+    links: [['user', 'dns'], ['user', 'origin', 'edge'], ['user', 'edge'], ['edge', 'origin']],
+    steps: [
+      { cmd: 'GET /logo.png', say: 'Without a CDN, every image comes from one origin server in Virginia. From Mumbai that trip takes about 250 ms.', focus: 'origin',
+        go: [['user', 'origin', 'GET'], ['origin', 'user', 'png', 'back']] },
+      { cmd: '1,000,000 loads a day', say: 'A million users loading the same image means a million long trips, and the origin pays for every byte.', focus: 'origin',
+        mark: { origin: 'hot' }, sub: { origin: '200 GB/day out' }, par: true,
+        go: [['user', 'origin', 'GET'], ['user', 'origin', 'GET', 'req', 0.4], ['user', 'origin', 'GET', 'req', 0.8]], check: { qps: [1e6, 'day'], gb: [1e6, 2e5] } },
+      { cmd: 'add a CDN', say: 'A CDN is a network of servers spread around the world. Each keeps copies of your static files close to users.', focus: 'edge',
+        add: ['edge'], mark: { edge: 'new' }, sub: { edge: 'empty' } },
+      { cmd: 'where is logo.png?', say: 'When your browser asks DNS for the image address, DNS answers with the CDN server nearest to you.', focus: 'dns',
+        mark: { edge: null }, go: [['user', 'dns', 'where?'], ['dns', 'user', 'Mumbai edge', 'back']] },
+      { cmd: 'first visitor · miss', say: 'The first visitor in Mumbai gets a miss. The edge fetches the image from the origin once and keeps a copy.', focus: 'edge',
+        mark: { edge: 'miss' }, nums: { ms: 270 }, math: 'edge 20 ms + origin trip 250 ms = 270 ms, once',
+        go: [['user', 'edge', 'GET'], ['edge', 'origin', 'fetch'], ['origin', 'edge', 'png', 'back'], ['edge', 'user', 'png', 'back']], check: { ms: [20, 250] } },
+      { cmd: 'every visitor after · hit', say: 'Every visitor after that is served from Mumbai in about 20 ms. The origin is not touched at all.', focus: 'edge',
+        mark: { edge: 'hit' }, sub: { edge: 'has logo.png' }, nums: { ms: 20 }, go: [['user', 'edge', 'GET'], ['edge', 'user', 'png', 'back']] },
+      { cmd: '50 edges worldwide', say: 'With 50 edge servers, the origin now sends the image about 50 times a day instead of a million.', focus: 'origin',
+        mark: { origin: null }, sub: { origin: '50 fetches/day' }, nums: { qps: 0.0006, gb: 0.01 },
+        math: '50 edges × 200 KB = 10 MB a day from the origin', check: { qps: [50, 'day'], gb: [50, 2e5] } },
+      { cmd: 'pull or push', say: 'This is a pull CDN: edges fetch a file on its first request. A push CDN gets files uploaded ahead of time.', focus: 'edge',
+        mark: { edge: null } },
+      { cmd: 'deploy logo.v2.png', say: 'Edges keep files for a set time. To ship a new logo at once, give it a new name such as logo.v2.png.', focus: 'edge',
+        sub: { edge: 'has logo.v2.png' }, go: [['user', 'edge', 'GET v2'], ['edge', 'origin', 'fetch'], ['origin', 'edge', 'png', 'back']] },
+      { cmd: 'GET /cart', say: 'Personal pages like your cart skip the CDN cache. Images, scripts and video are the best fit for a CDN.', focus: 'user',
+        nums: { ms: 270 }, math: 'pass-through: edge 20 + origin 250 = 270 ms',
+        go: [['user', 'edge', 'GET /cart'], ['edge', 'origin', 'pass'], ['origin', 'edge', 'cart', 'back'], ['edge', 'user', 'cart', 'back']], check: { ms: [20, 250] } }
+    ]
+  },
+  {
+    id: 'replicas', track: 'hld', title: 'Read replicas', tag: 'primary · replica · failover', credit: 'sdp',
+    scenario: 'A social app reads ten times more than it writes.',
+    labels: ['Queries per second on the primary', 'Time for one query', 'Data in each copy'],
+    nums: { qps: 11000, ms: 40, gb: 500 },
+    math: '10,000 reads + 1,000 writes = 11,000 queries a second',
+    nodes: [
+      sdN('app', 'server', 'App servers', 140, 220, { on: true, w: 150 }),
+      sdN('primary', 'db', 'Primary', 540, 220, { on: true }),
+      sdN('r1', 'db', 'Replica 1', 920, 80),
+      sdN('r2', 'db', 'Replica 2', 920, 360)
+    ],
+    links: [['app', 'primary'], ['primary', 'r1'], ['primary', 'r2'], ['app', 'r1'], ['app', 'r2']],
+    steps: [
+      { cmd: 'one database', say: 'One database handles every read and every write. Most apps read far more than they write, often ten to one.', focus: 'primary',
+        go: [['app', 'primary', 'read'], ['primary', 'app', 'rows', 'back']] },
+      { cmd: '11,000 queries a second', say: 'At 11,000 queries a second this database is at its limit, even though only 1,000 of them are writes.', focus: 'primary',
+        mark: { primary: 'hot' }, sub: { primary: '11,000 q/s' }, par: true,
+        go: [['app', 'primary', 'read'], ['app', 'primary', 'read', 'req', 0.4], ['app', 'primary', 'write', 'req', 0.8]] },
+      { cmd: 'add two replicas', say: 'A replica is a full copy of the database that stays in sync. We add two of them.', focus: 'r1',
+        add: ['r1', 'r2'], mark: { r1: 'new', r2: 'new' }, math: '500 million rows × 1 KB = 500 GB in every copy', check: { gb: [5e8, 1000] } },
+      { cmd: 'INSERT post', say: 'Every write still goes to one place, the primary. That keeps a single, clear order of changes.', focus: 'primary',
+        mark: { r1: null, r2: null }, go: [['app', 'primary', 'write']] },
+      { cmd: 'ship the change log', say: 'The primary sends each change to the replicas, and they apply it in the same order.', focus: 'primary',
+        par: true, go: [['primary', 'r1', 'change'], ['primary', 'r2', 'change']] },
+      { cmd: 'SELECT feed', say: 'Reads now go to the two replicas, about 5,000 each. The primary is left with just the writes.', focus: 'r1',
+        mark: { primary: null }, sub: { primary: 'writes only', r1: '5,000 reads/s', r2: '5,000 reads/s' }, nums: { qps: 1000 },
+        math: '10,000 reads ÷ 2 replicas = 5,000 each; primary keeps 1,000 writes', par: true,
+        go: [['app', 'r1', 'read'], ['app', 'r2', 'read']] },
+      { cmd: 'write, then read at once', say: 'Copying takes a moment. A read sent to a replica right after a write may not see that write yet.', focus: 'r2',
+        mark: { r2: 'stale' }, go: [['app', 'primary', 'write'], ['app', 'r2', 'read'], ['r2', 'app', 'old row', 'bad']] },
+      { cmd: 'read your own writes', say: 'A common fix: for a few seconds after a user writes, send that user’s reads to the primary.', focus: 'primary',
+        mark: { r2: null }, nums: { qps: 1200 }, go: [['app', 'primary', 'read'], ['primary', 'app', 'new row', 'back']] },
+      { cmd: 'the primary crashes', say: 'If the primary crashes, writes stop. Reads keep working from the replicas.', focus: 'primary',
+        mark: { primary: 'down' }, sub: { primary: 'crashed' }, nums: { qps: 0 }, go: [['app', 'r1', 'read'], ['r1', 'app', 'rows', 'back']] },
+      { cmd: 'failover', say: 'The system promotes the most up-to-date replica to be the new primary. Writes resume there.', focus: 'r1',
+        mark: { r1: ['new', 'promoted'] }, sub: { r1: 'new primary' }, nums: { qps: 6000 }, math: 'new primary: 1,000 writes + 5,000 reads = 6,000 a second',
+        go: [['app', 'r1', 'write']] },
+      { cmd: 'sync or async copying', say: 'Async copying is fast but can lose the last few writes in a crash. Sync copying waits for a replica: slower, safer.', focus: 'r1' }
+    ]
+  },
+  {
+    id: 'sharding', track: 'hld', title: 'Sharding', tag: 'shard key · hot shard · ring', credit: 'sdp',
+    scenario: 'One users table has outgrown one machine.',
+    labels: ['Writes per second', 'Time for one write', 'Total data'],
+    nums: { qps: 40000, ms: 20, gb: 4000 },
+    math: '1 billion users × 4 KB = 4 TB',
+    nodes: [
+      sdN('app', 'server', 'App', 150, 220, { on: true }),
+      sdN('big', 'db', 'Users DB', 660, 220, { on: true }),
+      sdN('s0', 'db', 'Shard 0', 660, 60),
+      sdN('s1', 'db', 'Shard 1', 660, 170),
+      sdN('s2', 'db', 'Shard 2', 660, 280),
+      sdN('s3', 'db', 'Shard 3', 660, 390)
+    ],
+    links: [['app', 'big'], ['app', 's0'], ['app', 's1'], ['app', 's2'], ['app', 's3']],
+    steps: [
+      { cmd: 'one huge table', say: 'Our users table holds 4 TB and takes 40,000 writes a second. Replicas help reads, but every write still hits one machine.', focus: 'big',
+        mark: { big: 'hot' }, sub: { big: '40,000 writes/s' }, par: true,
+        go: [['app', 'big', 'write'], ['app', 'big', 'write', 'req', 0.4], ['app', 'big', 'write', 'req', 0.8]], check: { gb: [1e9, 4000] } },
+      { cmd: 'split the table', say: 'Sharding splits one table into parts. Each shard holds some of the users, on its own machine.', focus: 's1',
+        drop: ['big'], add: ['s0', 's1', 's2'], mark: { s0: 'new', s1: 'new', s2: 'new' }, sub: { s0: '1.3 TB', s1: '1.3 TB', s2: '1.3 TB' },
+        math: '4 TB ÷ 3 shards ≈ 1.3 TB each' },
+      { cmd: 'shard = user_id % 3', say: 'We pick the user ID as the shard key. user_id mod 3 tells us which shard owns each user.', focus: 'app',
+        mark: { s0: null, s1: null, s2: null } },
+      { cmd: 'write user 7 · 7 % 3 = 1', say: 'User 7 gives 7 mod 3 = 1, so their row lives on shard 1.', focus: 's1',
+        go: [['app', 's1', 'user 7']] },
+      { cmd: 'read user 9 · 9 % 3 = 0', say: 'User 9 lands on shard 0. Each lookup touches exactly one shard, so the load spreads out.', focus: 's0',
+        go: [['app', 's0', 'user 9']], sub: { s0: '13k writes/s', s1: '13k writes/s', s2: '13k writes/s' }, math: '40,000 writes ÷ 3 shards ≈ 13,000 each' },
+      { cmd: 'a celebrity signs up', say: 'Keys are not all equal. A celebrity on shard 2 draws millions of reads, and that shard runs hot.', focus: 's2',
+        mark: { s2: 'hot' }, sub: { s2: 'celebrity here' }, par: true,
+        go: [['app', 's2', 'read'], ['app', 's2', 'read', 'req', 0.4], ['app', 's2', 'read', 'req', 0.8]] },
+      { cmd: 'top 10 users by followers', say: 'A question about all users must ask every shard and merge the answers. That is slower and harder.', focus: 'app',
+        mark: { s2: null }, sub: { s2: '13k writes/s' }, par: true, nums: { ms: 60 },
+        go: [['app', 's0', 'top 10?'], ['app', 's1', 'top 10?'], ['app', 's2', 'top 10?'], ['s0', 'app', '10', 'back', 1], ['s1', 'app', '10', 'back', 1], ['s2', 'app', '10', 'back', 1]] },
+      { cmd: 'shard = user_id % 4', say: 'To grow, we add shard 3 and switch to mod 4. Now most users map to a different shard than before.', focus: 's3',
+        add: ['s3'], mark: { s3: 'new' }, sub: { s3: 'empty' }, nums: { ms: 20 } },
+      { cmd: 'mod 3 → mod 4', say: 'With plain mod, about 3 of every 4 users must move to another machine. That is a huge copy job.', focus: 's3',
+        mark: { s0: 'stale', s1: 'stale', s2: 'stale', s3: null }, sub: { s0: '75% must move', s1: '75% must move', s2: '75% must move' },
+        math: 'mod 3 → mod 4: only 1 user in 4 keeps the same shard' },
+      { cmd: 'consistent hashing', say: 'Consistent hashing puts shards and keys on a ring. A new shard takes keys only from its neighbours, about a quarter.', focus: 's3',
+        mark: { s0: null, s1: null, s2: null }, sub: { s0: 'gives 25%', s1: 'gives 25%', s2: 'gives 25%', s3: 'takes 25%' },
+        math: 'ring: about 1 key in 4 moves, the rest stay put' },
+      { cmd: 'when it is worth it', say: 'Sharding adds real work: routing, moving data and cross-shard queries. Reach for it after caching and replicas run out.', focus: 'app',
+        sub: { s0: '1 TB', s1: '1 TB', s2: '1 TB', s3: '1 TB' }, math: '4 TB ÷ 4 shards = 1 TB each' }
+    ]
+  },
+  {
+    id: 'queue', track: 'hld', title: 'Message queue', tag: 'async jobs · workers · retries', credit: 'sdp',
+    scenario: 'Users upload videos that take minutes to process.',
+    labels: ['Uploads per second', 'Time until the user hears back', 'New video per day'],
+    nums: { qps: 2, ms: 120000, gb: 8640 },
+    math: '172,800 uploads a day × 50 MB ≈ 8.6 TB of new video',
+    nodes: [
+      sdN('u', 'client', 'User', 110, 220, { on: true }),
+      sdN('api', 'server', 'Web server', 390, 220, { on: true }),
+      sdN('q', 'queue', 'Job queue', 660, 220),
+      sdN('w1', 'worker', 'Worker 1', 940, 90),
+      sdN('w2', 'worker', 'Worker 2', 940, 350)
+    ],
+    links: [['u', 'api'], ['api', 'q'], ['q', 'w1'], ['q', 'w2']],
+    steps: [
+      { cmd: 'POST /video', say: 'A user uploads a video. Turning it into five sizes takes about two minutes of hard work.', focus: 'api',
+        go: [['u', 'api', 'upload']], check: { qps: [172800, 'day'], gb: [172800, 5e7] } },
+      { cmd: 'process it inline', say: 'If the web server does that work before it replies, the user stares at a spinner for two whole minutes.', focus: 'api',
+        mark: { api: 'hot' }, sub: { api: 'busy for 2 min' }, go: [['api', 'u', 'done, finally', 'back']] },
+      { cmd: 'add a queue', say: 'A queue is a waiting line for jobs. The web server drops a job in and replies right away.', focus: 'q',
+        add: ['q'], mark: { q: 'new', api: null }, sub: { api: null, q: 'empty' } },
+      { cmd: 'POST /video · reply fast', say: 'The user hears back in 200 ms: we have your video and it will be ready soon.', focus: 'api',
+        mark: { q: null }, sub: { q: '1 waiting' }, nums: { ms: 200 },
+        go: [['u', 'api', 'upload'], ['api', 'q', 'job'], ['api', 'u', '202 accepted', 'back']] },
+      { cmd: 'a worker takes the job', say: 'A worker takes the next job from the queue and does the slow part on its own time.', focus: 'w1',
+        add: ['w1'], mark: { w1: 'new' }, sub: { q: 'empty', w1: 'encoding' }, go: [['q', 'w1', 'job']] },
+      { cmd: '6 pm rush', say: 'At 6 pm uploads spike. Jobs pile up in the queue, but the web server stays fast.', focus: 'q',
+        mark: { w1: null, q: 'hot' }, sub: { q: '300 waiting' }, nums: { qps: 10 }, par: true,
+        go: [['api', 'q', 'job'], ['api', 'q', 'job', 'req', 0.4], ['api', 'q', 'job', 'req', 0.8]] },
+      { cmd: 'add a worker', say: 'Add more workers to drain the line faster. The queue lets each side grow on its own.', focus: 'w2',
+        add: ['w2'], mark: { q: null, w2: 'new' }, sub: { q: '40 waiting', w2: 'encoding' }, par: true,
+        go: [['q', 'w1', 'job'], ['q', 'w2', 'job']] },
+      { cmd: 'worker 1 crashes', say: 'Worker 1 crashes halfway through a job. The job was never marked done, so the queue still has it.', focus: 'w1',
+        mark: { w1: 'down', w2: null }, sub: { w1: 'crashed' }, nums: { qps: 2 } },
+      { cmd: 'retry after a timeout', say: 'After a timeout the queue hands that job to another worker. Nothing is lost.', focus: 'q',
+        go: [['q', 'w2', 'same job']] },
+      { cmd: 'safe to run twice', say: 'A retried job may run twice, so jobs must be safe to repeat. Writing the same output file twice does no harm.', focus: 'w2',
+        mark: { w2: 'good' } },
+      { cmd: 'queue limit 10,000', say: 'Give the queue a size limit. When it is full, ask clients to slow down rather than run out of memory.', focus: 'q',
+        mark: { w2: null }, sub: { q: 'max 10,000' }, go: [['u', 'api', 'upload'], ['api', 'u', '503 try later', 'bad']] }
+    ]
+  },
+  {
+    id: 'ratelimit', track: 'hld', title: 'Rate limiting', tag: 'token bucket · 429', credit: 'sdp',
+    scenario: 'One buggy script floods a public API.',
+    labels: ['Requests reaching the API', 'Limiter check', 'Counter memory'],
+    nums: { qps: 3000, ms: 0.5, gb: 0 },
+    math: 'one script: 3,000 requests a second',
+    nodes: [
+      sdN('u', 'client', 'Script', 110, 250, { on: true }),
+      sdN('lim', 'limiter', 'Rate limiter', 480, 250, { on: true, w: 150 }),
+      sdN('api', 'server', 'API', 880, 250, { on: true }),
+      sdN('store', 'cache', 'Counter store', 480, 70, { w: 150 })
+    ],
+    links: [['u', 'lim'], ['lim', 'api'], ['lim', 'store']],
+    steps: [
+      { cmd: 'a flood of requests', say: 'One buggy script can send thousands of requests a second and slow the API for everyone. A rate limiter guards the door.', focus: 'lim',
+        mark: { api: 'hot' }, par: true, go: [['u', 'lim', 'req'], ['u', 'lim', 'req', 'req', 0.3], ['u', 'lim', 'req', 'req', 0.6], ['lim', 'api', 'req', 'req', 1]] },
+      { cmd: 'capacity 5 · refill 1 a second', say: 'Picture a bucket of 5 tokens per user. Each request spends one token, and one token drips back every second.', focus: 'lim',
+        mark: { api: null }, sub: { lim: 'tokens 5 of 5' }, math: 'bucket: 5 tokens; refill: 1 token a second' },
+      { cmd: 'request 1', say: 'A request arrives. There is a token, so it passes and the bucket drops to 4.', focus: 'lim',
+        sub: { lim: 'tokens 4 of 5' }, go: [['u', 'lim', 'req'], ['lim', 'api', 'req']] },
+      { cmd: 'requests 2 to 5, all at once', say: 'Four more arrive together. The bucket allows short bursts, so all four pass and it is now empty.', focus: 'lim',
+        sub: { lim: 'tokens 0 of 5' },
+        go: [['u', 'lim', 'req', 'req', 0], ['u', 'lim', 'req', 'req', 0.25], ['u', 'lim', 'req', 'req', 0.5], ['u', 'lim', 'req', 'req', 0.75], ['lim', 'api', '×4', 'req', 1.2]] },
+      { cmd: 'request 6', say: 'The sixth request finds no token. The limiter answers 429 Too Many Requests, and the API never sees it.', focus: 'lim',
+        mark: { lim: ['bad', 'empty'] }, go: [['u', 'lim', 'req'], ['lim', 'u', '429', 'bad']] },
+      { cmd: 'one second later', say: 'One second later a token is back, so the script may send one more request.', focus: 'lim',
+        mark: { lim: null }, sub: { lim: 'tokens 1 of 5' }, go: [['u', 'lim', 'req'], ['lim', 'api', 'req']] },
+      { cmd: 'the long run', say: 'Over time a user averages at most 1 request a second, with bursts of up to 5. You tune both numbers.', focus: 'api',
+        sub: { lim: 'tokens 0 of 5' }, nums: { qps: 1 }, math: 'average ≤ refill rate (1 a second); burst ≤ bucket size (5)' },
+      { cmd: '1,000,000 users', say: 'Each user needs just two numbers: tokens left and the last refill time. A million users fit in about 100 MB.', focus: 'store',
+        add: ['store'], mark: { store: 'new' }, sub: { store: '2 numbers per user' }, nums: { gb: 0.1, ms: 1 },
+        math: '1,000,000 users × 100 bytes = 100 MB', go: [['lim', 'store', 'tokens?'], ['store', 'lim', '3', 'back']], check: { gb: [1e6, 100] } },
+      { cmd: 'many limiter servers', say: 'With several limiter servers, keep the counters in one shared fast store, so every server sees the same bucket.', focus: 'store',
+        mark: { store: null } },
+      { cmd: 'compare: 5 per minute window', say: 'A fixed window just counts requests per minute. But a client can send 5 at 0:59 and 5 more at 1:00.', focus: 'lim',
+        mark: { lim: ['stale', 'window'] }, math: 'fixed window edge: 5 + 5 = 10 requests in 2 seconds' },
+      { cmd: 'Retry-After: 1', say: 'A good limiter tells the client when to try again, so well-behaved apps can back off politely.', focus: 'u',
+        mark: { lim: null }, go: [['u', 'lim', 'req'], ['lim', 'u', '429 · wait 1 s', 'bad']] }
+    ]
+  },
+  {
+    id: 'shortener', track: 'hld', title: 'URL shortener', tag: 'case study · the 4 steps', credit: 'sdp', method: true,
+    scenario: 'Design a service that turns long links into short ones.',
+    labels: ['Requests per second', 'Time to redirect', 'Storage for 5 years'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('u', 'client', 'Users', 110, 220, { on: true }),
+      sdN('lb', 'lb', 'Load balancer', 320, 220, { w: 150 }),
+      sdN('idgen', 'worker', 'ID counter', 570, 70),
+      sdN('api', 'server', 'API servers', 570, 220, { on: true, w: 150 }),
+      sdN('cache', 'cache', 'Cache', 910, 70),
+      sdN('db', 'db', 'Links DB', 910, 220, { on: true }),
+      sdN('rep', 'db', 'Replica', 910, 370)
+    ],
+    links: [['u', 'api', 'lb'], ['u', 'lb'], ['lb', 'api'], ['api', 'idgen'], ['api', 'cache'], ['api', 'db'], ['db', 'rep']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'Start with the job: turn a long URL into a short one, and send visitors from the short one to the long one.', focus: 'u' },
+      { phase: 1, cmd: 'step 1 · scale', say: 'Then ask about scale. Say 100 million new links a month, and people click links 10 times more than they create them.', focus: 'u' },
+      { phase: 1, cmd: 'napkin · writes', say: '100 million a month is about 40 new links a second. Clicks are ten times that, about 400 a second.', focus: 'api',
+        nums: { qps: 40 }, math: '100,000,000 ÷ 2,592,000 s in a month ≈ 40 new links a second', check: { qps: [1e8, 'month'] } },
+      { phase: 1, cmd: 'napkin · storage', say: 'Five years of links at 500 bytes each comes to about 3 TB. That fits on a few machines.', focus: 'db',
+        nums: { gb: 3000 }, math: '100M × 12 months × 5 years = 6 billion links × 500 B = 3 TB', check: { gb: [6e9, 500] } },
+      { phase: 2, cmd: 'POST /links · GET /{code}', say: 'Now sketch the simplest design: one API with two calls, create a link and follow a link, plus one database.', focus: 'api',
+        go: [['u', 'api', 'POST'], ['api', 'db', 'save'], ['api', 'u', 'short link', 'back']] },
+      { phase: 2, cmd: 'id 125 → base 62 → "cb"', say: 'Give each link a number, then write it in base 62 with a-z, A-Z and 0-9. Seven characters cover 3.5 trillion links.', focus: 'api',
+        math: '62 to the power 7 ≈ 3.5 trillion codes', check: { b62: [125, 'cb'] } },
+      { phase: 2, cmd: 'GET /cb', say: 'A visitor opens the short link. The API looks up the code and answers with a redirect to the long URL.', focus: 'db',
+        nums: { qps: 400, ms: 30 }, math: '1 billion clicks a month ÷ 2,592,000 s ≈ 400 a second',
+        go: [['u', 'api', 'GET /cb'], ['api', 'db', 'find cb'], ['db', 'api', 'long URL', 'back'], ['api', 'u', '301 redirect', 'back']], check: { qps: [1e9, 'month'] } },
+      { phase: 3, cmd: 'step 3 · unique IDs', say: 'Zoom in on the hard part, unique numbers. A counter service hands out blocks of 1,000 IDs, so servers never clash.', focus: 'idgen',
+        add: ['idgen'], mark: { idgen: 'new' }, sub: { idgen: 'next block 5,000' }, go: [['api', 'idgen', 'next block'], ['idgen', 'api', '5,000-5,999', 'back']] },
+      { phase: 3, cmd: 'links(code, long_url, created)', say: 'One table is enough: the code as the key, the long URL and a date. Lookups by key are fast.', focus: 'db',
+        mark: { idgen: null }, sub: { db: 'key: code' } },
+      { phase: 4, cmd: 'step 4 · reads ≫ writes', say: 'Clicks outnumber new links ten to one, and links never change. A cache answers most clicks without the database.', focus: 'cache',
+        add: ['cache'], mark: { cache: 'hit' }, nums: { ms: 5 },
+        go: [['u', 'api', 'GET /cb'], ['api', 'cache', 'cb?'], ['cache', 'api', 'hit', 'back'], ['api', 'u', '301', 'back']] },
+      { phase: 4, cmd: 'more API servers', say: 'Put a load balancer in front and run several API servers. They keep no state, so adding more is easy.', focus: 'lb',
+        add: ['lb'], mark: { cache: null, lb: 'new' }, go: [['u', 'lb', 'GET'], ['lb', 'api', 'GET']] },
+      { phase: 4, cmd: 'find the weak spot', say: 'The database is now the single point of failure. Add a replica for reads and backups, and shard by code if it outgrows one box.', focus: 'rep',
+        add: ['rep'], mark: { lb: null, rep: 'new' }, go: [['db', 'rep', 'copy']] },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'That is the four-step method end to end. Use the same order on any design question.', focus: 'api',
+        mark: { rep: null } }
+    ]
+  },
+  {
+    id: 'solid', track: 'lld', title: 'SOLID in one picture', tag: 'five rules for classes',
+    scenario: 'A checkout that totals, prints and saves invoices.',
+    math: 'one class, four jobs: four reasons to change',
+    nodes: [
+      sdN('god', 'class', 'InvoiceManager', 540, 220, { on: true, w: 230, lines: ['total()', 'printPdf()', 'saveToDb()', 'sendEmail()'] }),
+      sdN('chk', 'class', 'Checkout', 160, 200, { lines: ['run(invoice)'] }),
+      sdN('inv', 'class', 'Invoice', 160, 370, { lines: ['items', 'total()'] }),
+      sdN('printer', 'iface', 'Printer', 530, 90, { lines: ['print(invoice)'] }),
+      sdN('store', 'iface', 'Store', 530, 330, { lines: ['save(invoice)'] }),
+      sdN('pdf', 'class', 'PdfPrinter', 890, 40, { lines: ['print(invoice)'] }),
+      sdN('html', 'class', 'HtmlPrinter', 890, 145, { lines: ['print(invoice)'] }),
+      sdN('sql', 'class', 'SqlStore', 890, 290, { lines: ['save(invoice)'] }),
+      sdN('mem', 'class', 'TestStore', 890, 395, { lines: ['save(invoice)'] })
+    ],
+    links: [['chk', 'inv'], ['chk', 'pdf', 'printer'], ['chk', 'sql', 'store'], ['chk', 'printer'], ['printer', 'pdf'], ['printer', 'html'], ['chk', 'store'], ['store', 'sql'], ['store', 'mem']],
+    steps: [
+      { cmd: 'class InvoiceManager', say: 'Here is one class that totals an invoice, prints a PDF, saves to the database and sends email. It works, for now.', focus: 'god' },
+      { cmd: 'S · single responsibility', say: 'S: give each class one reason to change. Totals, printing and saving now live in separate small classes.', focus: 'chk',
+        drop: ['god'], add: ['chk', 'inv', 'pdf', 'sql'], mark: { chk: 'new' }, math: 'one job per class: a change to printing touches only the printer',
+        go: [['chk', 'inv', 'total()'], ['chk', 'pdf', 'print()'], ['chk', 'sql', 'save()']] },
+      { cmd: 'new need: HTML receipts', say: 'O: open to extension, closed to edits. We want HTML receipts too, without rewriting Checkout again.', focus: 'chk',
+        mark: { chk: ['hot', 'would change'] } },
+      { cmd: 'interface Printer', say: 'Add a Printer interface. PdfPrinter and HtmlPrinter both fit it, and Checkout knows only Printer.', focus: 'printer',
+        add: ['printer', 'html'], mark: { chk: null, printer: 'new', html: 'new' }, math: 'new format = one new class; Checkout is untouched',
+        go: [['chk', 'printer', 'print()'], ['printer', 'html', 'print()']] },
+      { cmd: 'printer = new HtmlPrinter()', say: 'L: any Printer must work wherever a Printer is expected. Swap one in, and nothing else breaks.', focus: 'html',
+        mark: { printer: null, html: 'good' }, math: 'any Printer must work wherever a Printer is asked for', go: [['chk', 'printer', 'print()'], ['printer', 'html', 'print()']] },
+      { cmd: 'PdfPrinter.print() throws', say: 'A printer that throws "not supported" on print breaks that promise. Every caller would need a special case.', focus: 'pdf',
+        mark: { html: null, pdf: ['bad', 'breaks L'] }, math: 'a stand-in that throws forces special cases on every caller', go: [['chk', 'printer', 'print()'], ['printer', 'pdf', 'print()'], ['pdf', 'printer', 'error!', 'bad']] },
+      { cmd: 'interface Store', say: 'I: keep interfaces small. Checkout only saves, so its Store has just save(), not load, export and purge.', focus: 'store',
+        add: ['store'], mark: { pdf: null, store: ['new', 'save() only'] }, math: 'Checkout sees one method, so it depends on one method', go: [['chk', 'store', 'save()'], ['store', 'sql', 'save()']] },
+      { cmd: 'new TestStore()', say: 'D: depend on ideas, not details. Checkout needs a Store, not SQL, so a test can plug in a TestStore.', focus: 'mem',
+        add: ['mem'], mark: { store: null, mem: 'new' }, math: 'swap SqlStore for TestStore and Checkout never notices', go: [['chk', 'store', 'save()'], ['store', 'mem', 'save()']] },
+      { cmd: 'new Checkout(new HtmlPrinter(), new SqlStore())', say: 'The parts are wired together once at start-up. Checkout never creates its own helpers.', focus: 'chk',
+        mark: { mem: null }, math: 'build the parts once at the edge, pass them in', go: [['chk', 'printer', 'print()'], ['printer', 'html', 'print()'], ['chk', 'store', 'save()'], ['store', 'sql', 'save()']] },
+      { cmd: 'SOLID', say: 'Small classes, small interfaces, and arrows that point at ideas instead of details. That is SOLID in one picture.', focus: 'printer',
+        math: 'S one job · O add, do not edit · L swaps work · I small interfaces · D depend on ideas' }
+    ]
+  },
+  {
+    id: 'strategy', track: 'lld', title: 'Strategy pattern', tag: 'swap behaviour at runtime',
+    scenario: 'A maps app builds routes for cars, bikes and walking.',
+    math: 'one method, one if per travel mode',
+    nodes: [
+      sdN('app', 'client', 'Map screen', 170, 70, { on: true }),
+      sdN('nav0', 'class', 'Navigator', 540, 220, { on: true, w: 240, lines: ['if mode == car: ...', 'else if mode == bike: ...', 'else if mode == walk: ...'] }),
+      sdN('nav', 'class', 'Navigator', 170, 250, { lines: ['strategy: RouteStrategy', 'setStrategy(s)', 'route(a, b)'], w: 220 }),
+      sdN('rs', 'iface', 'RouteStrategy', 540, 220, { lines: ['build(a, b)'] }),
+      sdN('car', 'class', 'CarRoute', 900, 50, { lines: ['build(a, b)'] }),
+      sdN('bike', 'class', 'BikeRoute', 900, 160, { lines: ['build(a, b)'] }),
+      sdN('walk', 'class', 'WalkRoute', 900, 270, { lines: ['build(a, b)'] }),
+      sdN('bus', 'class', 'BusRoute', 900, 385, { lines: ['build(a, b)'] })
+    ],
+    links: [['app', 'nav0'], ['app', 'nav'], ['nav', 'rs'], ['rs', 'car'], ['rs', 'bike'], ['rs', 'walk'], ['rs', 'bus']],
+    steps: [
+      { cmd: 'route(a, b, mode)', say: 'This Navigator picks a route with one long if-else. Every new travel mode means editing this same method.', focus: 'nav0',
+        go: [['app', 'nav0', 'route()']] },
+      { cmd: 'new mode: bus', say: 'Adding buses touches the code for cars, bikes and walking too. One slip can break all of them.', focus: 'nav0',
+        mark: { nav0: ['hot', 'edit again'] }, math: 'every new mode reopens the same method' },
+      { cmd: 'pull each branch out', say: 'The Strategy pattern moves each way of doing the job into its own class. Each one builds a route its own way.', focus: 'bike',
+        drop: ['nav0'], add: ['car', 'bike', 'walk'], mark: { nav0: null, car: 'new', bike: 'new', walk: 'new' } },
+      { cmd: 'interface RouteStrategy', say: 'All three follow one interface, RouteStrategy, with a single method: build(a, b).', focus: 'rs',
+        add: ['rs'], mark: { car: null, bike: null, walk: null, rs: 'new' } },
+      { cmd: 'class Navigator', say: 'The Navigator now holds one strategy and calls it. It does not know or care which one it has.', focus: 'nav',
+        add: ['nav'], mark: { rs: null, nav: 'new' }, math: 'Navigator knows the interface, not the classes behind it' },
+      { cmd: 'nav.setStrategy(new CarRoute())', say: 'The screen picks a strategy and hands it to the Navigator.', focus: 'car',
+        mark: { nav: null, car: ['good', 'in use'] }, go: [['app', 'nav', 'setStrategy()']] },
+      { cmd: 'nav.route(home, office)', say: 'route() simply passes the call on. CarRoute does the work and returns a path along the roads.', focus: 'car',
+        go: [['app', 'nav', 'route()'], ['nav', 'rs', 'build()'], ['rs', 'car', 'build()'], ['car', 'rs', 'path', 'back'], ['rs', 'nav', 'path', 'back']] },
+      { cmd: 'user taps Bike', say: 'Swap at runtime: the screen hands over BikeRoute, and the very next route follows bike lanes.', focus: 'bike',
+        mark: { car: null, bike: ['good', 'in use'] }, go: [['app', 'nav', 'setStrategy()'], ['nav', 'rs', 'build()'], ['rs', 'bike', 'build()']] },
+      { cmd: 'class BusRoute', say: 'Adding buses is now one new class. The Navigator and the other strategies stay untouched.', focus: 'bus',
+        add: ['bus'], mark: { bus: 'new' }, math: 'new mode = one new class, zero edits' },
+      { cmd: 'when to use it', say: 'Reach for Strategy when there are several ways to do one job and you want to pick or swap them at runtime.', focus: 'rs',
+        mark: { bus: null } }
+    ]
+  },
+  {
+    id: 'parking', track: 'lld', title: 'Parking lot', tag: 'classes · then a flow',
+    scenario: 'Cars enter, park in a spot that fits, and pay by the hour.',
+    math: 'list the nouns: vehicle, lot, spot, ticket, gate, fee',
+    nodes: [
+      sdN('car', 'car', 'Car KA-01', 110, 220, { on: true }),
+      sdN('gate', 'class', 'EntryGate', 380, 70, { lines: ['admit(vehicle)'] }),
+      sdN('ticket', 'class', 'Ticket', 380, 220, { lines: ['spot, timeIn'] }),
+      sdN('exit', 'class', 'ExitGate', 380, 370, { lines: ['pay(ticket)'] }),
+      sdN('lot', 'class', 'ParkingLot', 700, 70, { lines: ['spots', 'findSpot(size)'] }),
+      sdN('spot', 'class', 'Spot', 945, 220, { lines: ['id, size', 'free'] }),
+      sdN('fee', 'iface', 'FeeRule', 700, 365, { lines: ['price(hours)'] }),
+      sdN('hourly', 'class', 'HourlyFee', 945, 365, { lines: ['₹40 per hour'] })
+    ],
+    links: [['car', 'gate'], ['gate', 'lot'], ['lot', 'spot'], ['gate', 'ticket'], ['car', 'exit'], ['exit', 'ticket'], ['exit', 'fee'], ['fee', 'hourly'], ['exit', 'lot']],
+    steps: [
+      { cmd: 'requirements', say: 'Start with the nouns in the problem: vehicle, lot, spot, ticket, gate and fee. Each one is a candidate class.', focus: 'car' },
+      { cmd: 'class ParkingLot, class Spot', say: 'ParkingLot owns all the spots. Each Spot knows its size and whether it is free.', focus: 'lot',
+        add: ['lot', 'spot'], mark: { lot: 'new', spot: 'new' }, math: 'a lot has many spots; a spot belongs to one lot' },
+      { cmd: 'class EntryGate, class Ticket', say: 'EntryGate asks the lot for a spot and prints a Ticket. The ticket records the spot and the time in.', focus: 'gate',
+        add: ['gate', 'ticket'], mark: { lot: null, spot: null, gate: 'new', ticket: 'new' } },
+      { cmd: 'class ExitGate, interface FeeRule', say: 'ExitGate reads the ticket and asks a FeeRule for the price. HourlyFee is one rule; a weekend rate could be another.', focus: 'fee',
+        add: ['exit', 'fee', 'hourly'], mark: { gate: null, ticket: null, exit: 'new', fee: 'new', hourly: 'new' }, math: 'FeeRule is a strategy: swap pricing without touching the gates' },
+      { cmd: 'KA-01 arrives · size small', say: 'Now run it. A small car pulls up at the entry gate.', focus: 'gate',
+        mark: { exit: null, fee: null, hourly: null }, go: [['car', 'gate', 'admit()']] },
+      { cmd: 'lot.findSpot(small)', say: 'The gate asks the lot for a free small spot. The lot checks its spots, nearest first.', focus: 'lot',
+        go: [['gate', 'lot', 'findSpot()'], ['lot', 'spot', 'free?']] },
+      { cmd: 'spot S-12 is free', say: 'Spot S-12 is free. The lot marks it taken and hands it back to the gate.', focus: 'spot',
+        mark: { spot: ['good', 'S-12 taken'] }, go: [['spot', 'lot', 'S-12', 'back'], ['lot', 'gate', 'S-12', 'back']] },
+      { cmd: 'new Ticket(S-12, 09:00)', say: 'The gate creates a ticket for spot S-12 at 09:00 and hands it to the driver.', focus: 'ticket',
+        mark: { ticket: ['new', 'S-12 · 09:00'] }, go: [['gate', 'ticket', 'new'], ['gate', 'car', 'ticket', 'back']] },
+      { cmd: 'leave at 12:00', say: 'At 12:00 the car leaves. The exit gate reads the ticket: three hours parked.', focus: 'exit',
+        mark: { ticket: null }, go: [['car', 'exit', 'ticket'], ['exit', 'ticket', 'read'], ['ticket', 'exit', '3 hours', 'back']] },
+      { cmd: 'fee.price(3)', say: 'The exit gate asks the FeeRule for the price. HourlyFee answers 3 × ₹40 = ₹120.', focus: 'hourly',
+        math: '3 hours × ₹40 = ₹120', go: [['exit', 'fee', 'price(3)'], ['fee', 'hourly', 'price(3)'], ['hourly', 'fee', '₹120', 'back'], ['fee', 'exit', '₹120', 'back']] },
+      { cmd: 'lot.free(S-12)', say: 'After payment, the gate tells the lot to free S-12, so the next car can use it.', focus: 'spot',
+        mark: { spot: null }, go: [['exit', 'lot', 'free(S-12)'], ['lot', 'spot', 'free']] },
+      { cmd: 'the lot is full', say: 'If no spot fits, findSpot returns nothing, and the gate shows Full instead of printing a ticket.', focus: 'lot',
+        mark: { lot: ['bad', 'full'] }, go: [['car', 'gate', 'admit()'], ['gate', 'lot', 'findSpot()'], ['lot', 'gate', 'none', 'bad']] },
+      { cmd: 'two gates, one spot', say: 'Two gates might grab the same spot at once. Lock the spot while you check and take it, so only one car wins.', focus: 'spot',
+        mark: { lot: null, spot: ['stale', 'locked'] }, math: 'check and take in one locked step' }
+    ]
+  }
+];
+sdAutoWidths(SD_LESSONS);
+// @@END-SDLESSONS@@
+
+// ---- page ----
+function sdHubMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
+const SD_HUB_TRACKS = [
+  ['hld', 'High-level design', 'HLD', 'The big boxes: servers, caches, databases and queues, and how they stay fast and up as traffic grows.'],
+  ['lld', 'Low-level design', 'LLD', 'The classes inside one box: clear jobs, small interfaces, and patterns you can swap at runtime.']
+];
+const SD_SOON = ['Observer pattern', 'Elevator', 'LRU cache', 'Movie booking'];
+const SD_FACTS = [
+  ['1 day', '≈ 86,400 s, call it 100,000'],
+  ['1M a day', '≈ 12 per second'],
+  ['memory read', 'about 0.1 microseconds'],
+  ['SSD read', 'about 0.1 ms'],
+  ['across an ocean', 'about 150 ms there and back']
+];
+const SD_TIMES = ['about 5 minutes', 'about 10 minutes', 'about 15 minutes', 'about 10 minutes'];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { theme: loadTheme(), mobile: sdHubMobile(), progress: sdLoadProgress() };
+  }
+  componentDidMount() {
+    listenTheme(this);
+    this.onResize = () => { const m = sdHubMobile(); if (m !== this.state.mobile) this.setState({ mobile: m }); };
+    try { window.addEventListener('resize', this.onResize); } catch (e) {}
+  }
+  componentWillUnmount() { unlistenTheme(this); try { window.removeEventListener('resize', this.onResize); } catch (e) {} }
+  renderVals() {
+    const themeKey = this.state.theme || this.props.theme || 'max';
+    const t = THEMES[themeKey] || THEMES.max;
+    const mobile = !!this.state.mobile;
+    const prog = this.state.progress || {};
+    const seen = (x) => Math.min(prog[x.id] || 0, x.steps.length);
+    const isDone = (x) => seen(x) >= x.steps.length;
+    const tracks = SD_HUB_TRACKS.map(([key, name, code, blurb]) => {
+      const list = SD_LESSONS.filter((x) => x.track === key);
+      const done = list.filter(isDone).length;
+      return {
+        name, code, blurb, count: list.length, done, pct: Math.round((done / list.length) * 100),
+        soon: key === 'lld' ? SD_SOON : [], hasSoon: key === 'lld',
+        lessons: list.map((x, i) => {
+          const got = seen(x); const fin = isDone(x);
+          return {
+            num: String(i + 1).padStart(2, '0'), title: x.title, tag: x.tag, steps: x.steps.length,
+            chip: fin ? 'done' : got ? got + ' of ' + x.steps.length : 'start', bg: 'transparent',
+            chipFg: fin ? t.ok : got ? t.text : t.muted, chipBorder: fin ? t.ok : got ? t.line2 : t.line,
+            aria: x.title + ', ' + x.steps.length + ' steps, ' + (fin ? 'finished' : got ? got + ' seen' : 'not started'),
+            pick: () => sdPickLesson(x.id)
+          };
+        })
+      };
+    });
+    const doneAll = SD_LESSONS.filter(isDone).length;
+    const next = SD_LESSONS.find((x) => seen(x) > 0 && !isDone(x)) || SD_LESSONS.find((x) => !isDone(x)) || SD_LESSONS[0];
+    const started = SD_LESSONS.some((x) => seen(x) > 0);
+    return {
+      t, ...navVals(this, t, themeKey, 'SystemDesign'), themeBtns: themeButtons(this, themeKey, t),
+      L: {
+        desk: !mobile, rootW: mobile ? 420 : 1440, rootH: mobile ? 'auto' : '900px', gutter: mobile ? 16 : 32,
+        pad: mobile ? '20px 16px 28px' : '22px 32px 24px', h1: mobile ? 44 : 64,
+        heroCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 420px',
+        gridCols: mobile ? 'minmax(0, 1fr)' : 'repeat(3, minmax(0, 1fr))'
+      },
+      total: { done: doneAll, count: SD_LESSONS.length, pct: Math.round((doneAll / SD_LESSONS.length) * 100) },
+      resume: { text: (started ? 'Continue: ' : 'Start with: ') + next.title, pick: () => sdPickLesson(next.id) },
+      tracks,
+      facts: SD_FACTS.map(([a, b]) => ({ a, b })),
+      how: [[t.accent, 'Requests travel as dots along the arrows.'], [t.right === t.accent ? t.left : t.right, 'Replies and refusals get their own colours, shown in each lesson.'], [t.text2, 'Step with ← and →, or press Play and watch.'], [t.ok, 'The numbers strip redoes the napkin math each step.']].map(([color, text]) => ({ color, text })),
+      method: SD_METHOD.map(([name, text], i) => ({ n: i + 1, name, text, time: SD_TIMES[i], bg: i === 0 ? t.accent : t.surface, fg: i === 0 ? t.onAccent : t.accent })),
+      methodGo: () => sdPickLesson('shortener')
+    };
+  }
+}
+</script>
+</body>
+</html>

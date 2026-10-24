@@ -83,9 +83,9 @@
       "y": 0
     },
     "Story.dc.html": {
-      "h": 1152,
+      "h": 900,
       "is_interactive": true,
-      "title": "Story player · 16 animated stories · predict mode · build-it puzzle",
+      "title": "Problem page · 32 animated stories · watch it, then write it",
       "w": 1440,
       "x": 6080,
       "y": 1140
@@ -137,6 +137,38 @@
       "w": 1440,
       "x": 6080,
       "y": 5160
+    },
+    "SystemDesign.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "System design hub · HLD and LLD tracks, progress, the 4-step method",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "SDLesson.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "System design lesson · animated diagram, numbers strip, 12 lessons",
+      "w": 1440,
+      "x": 9120,
+      "y": 1020
+    },
+    "AIML.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "AI & ML hub · two tracks: ML foundations and AI now",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "AILesson.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "AI & ML lesson player · 13 animated lessons, sliders, sources",
+      "w": 1440,
+      "x": 9120,
+      "y": 1020
     }
   },
   "createdOnFiles": {
@@ -209,7 +241,11 @@
     "Story.dc.html",
     "Code.dc.html",
     "Glossary.dc.html",
-    "Basics.dc.html"
+    "Basics.dc.html",
+    "SystemDesign.dc.html",
+    "SDLesson.dc.html",
+    "AIML.dc.html",
+    "AILesson.dc.html"
   ],
   "pages": [],
   "title": "DSA Story Studio"

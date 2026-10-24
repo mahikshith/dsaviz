@@ -13,7 +13,7 @@ There is no server yet. `DS` has two kinds of functions:
 
 | Key | Written by | Shape |
 | --- | --- | --- |
-| `dsaviz-activity-v1` | `DS.logActivity` | `{ v: 1, days: { 'YYYY-MM-DD': { story, code, revisit, xp } }, stories: { id: ts }, code: { id: ts } }` |
+| `dsaviz-activity-v1` | `DS.logActivity` | `{ v: 1, days: { 'YYYY-MM-DD': { story, code, lesson, revisit, xp } }, stories: { id: ts }, code: { id: ts }, lessons: { id: ts } }` |
 | `dsaviz-sheet-v1` | Sheet page | `{ v: 1, done: { slug: ts }, star: { slug: 1 } }`. DS only reads it. |
 | `dsaviz-deck` | Story and Revisit pages | `{ id: { due, rated } }` |
 | `dsaviz-onboard` | Welcome page | `{ name, reason, level, goal, lang, time, channel, date }` |
@@ -30,21 +30,23 @@ Days are local calendar dates, so a streak follows the learner's own midnight.
 | A story reaches its last step | `DS.finishStory(id)` | `src/story/comp.js`, `go()` |
 | A story or revisit card is rated | `DS.rateCard(id)` | `src/story/comp.js` `rate()` (first rating only), `src/pages/revisit.js` `rate()` |
 | Every code test passes on Submit | `DS.passCode(id)` | `shared/code_pane.js`, where `solved` is set |
+| A Git, system design or AI & ML lesson reaches its last step | `DS.finishLesson('git:' / 'sd:' / 'ai:' + id)` | `go()` in `pages/Git.dc.html`, `pages/SDLesson.dc.html`, `pages/AILesson.dc.html` |
 | A sheet box is ticked | nothing to call | DS reads the tick timestamps in `dsaviz-sheet-v1` |
 
 ## Real functions
 
 | Function | Returns | A real API would |
 | --- | --- | --- |
-| `logActivity(kind, id)` | `{ day, first, xp }` or `null` for an unknown kind. `kind` is `'story'`, `'code'` or `'revisit'`. | `POST /me/activity { kind, id, at }`. Keep writing locally first so it works offline, then sync. |
-| `finishStory(id)`, `passCode(id)`, `rateCard(id)` | same as `logActivity` | same |
-| `days()` | `{ 'YYYY-MM-DD': { story, code, sheet, revisit, xp, total } }`, active days only | `GET /me/activity?from=&to=` |
+| `logActivity(kind, id)` | `{ day, first, xp }` or `null` for an unknown kind. `kind` is `'story'`, `'code'`, `'lesson'` or `'revisit'`. | `POST /me/activity { kind, id, at }`. Keep writing locally first so it works offline, then sync. |
+| `finishStory(id)`, `passCode(id)`, `finishLesson(id)`, `rateCard(id)` | same as `logActivity` | same |
+| `days()` | `{ 'YYYY-MM-DD': { story, code, lesson, sheet, revisit, xp, total } }`, active days only | `GET /me/activity?from=&to=` |
 | `streak()` | `{ current, longest, activeToday, atRisk, week: [{ d, date, on, today, future }] }`. `week` is Monday first. A streak that ran through yesterday stays alive today with `atRisk: true`. | compute on the server from the same days, so it agrees across devices |
 | `heatmap(weeks = 26)` | `{ weeks, cells: [{ date, ts, n, story, sheet, code, revisit, level 0-4, future, today }], total, activeDays, todayIndex }`, Sunday-first columns | `GET /me/heatmap?weeks=26` |
 | `xp()` | `{ total, week, today, level, into, need, pct }`. 500 XP a level. | `GET /me/xp` |
-| `XP`, `XP_RULES` | points per event: story 50, code 30, sheet tick 10, revisit card 5 | server config |
+| `XP`, `XP_RULES` | points per event: story 50, code 30, lesson 30, sheet tick 10, revisit card 5 | server config |
 | `stories()` | `{ ids, count, at: { id: ts } }` | `GET /me/stories` |
 | `codePasses()` | `{ ids, count }` | `GET /me/code` |
+| `lessons()` | `{ ids, count }`, ids prefixed `git:`, `sd:`, `ai:` | `GET /me/lessons` |
 | `sheet()` | `{ ticked, starred, total, done }` | `GET /me/sheet`; the Sheet page already exports and imports this shape |
 | `problemStatus(id)` | `'done'`, `'now'` (the open problem) or `'todo'` | derived from the above |
 | `bindCatalog(PROBLEMS)` | makes each problem's `status` a live getter over `problemStatus`. Runs automatically on pages with the catalog. | none |
@@ -75,4 +77,4 @@ To switch one of these to a server, keep its return shape, fetch into a cache wh
 | `ringSet(t, [{ label, value, pct, color }], size, stroke)` | `shared/ui/rings.html` | `rings` |
 | `medalShelf(t, DS.medals(...), slots, freshKeys)` | `shared/ui/medals.html` | `shelf` |
 
-The nav lists Home, Learn, Sheet, Code, Git, System design and AI/ML. A section whose page is not in `pages/` yet shows as "Soon"; the build fills `NAV_PAGES` from the folder. Below 760px the nav moves to a fixed bar at the bottom at real size, using the `--fit` zoom that `scripts/site-runtime.js` sets. Every animation stops under `prefers-reduced-motion`.
+The nav lists Home, Learn, Sheet, Code, Git, System design and AI/ML. Every section now has a page; a section whose page is missing from `pages/` would show as "Soon", because the build fills `NAV_PAGES` from the folder. The one-screen pages (Story, Code, Git, System design, AI & ML and their lesson players) keep their 900px layouts: the nav replaces their old header. Below 760px the nav moves to a fixed bar at the bottom at real size, using the `--fit` zoom that `scripts/site-runtime.js` sets. Every animation stops under `prefers-reduced-motion`.

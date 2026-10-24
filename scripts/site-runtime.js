@@ -188,11 +188,13 @@
     for (const el of [...tmp.children]) { const k = el.outerHTML; if (seen.has(k)) continue; seen.add(k); document.head.appendChild(el); }
   }
   // Pages are laid out at 1440px and zoomed to fit. A page can declare another layout width with
-  // data-fit on its root (the Git page uses a 420px stacked layout on phones).
+  // data-fit on its root (the Git page uses a 420px stacked layout on phones). A page whose root
+  // carries data-fluid (the problem page) has its own phone layout below 760px and is shown there at zoom 1.
   function fit() {
     const r = document.querySelector('#app > div');
     const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
-    const z = Math.max(0.25, Math.min(1.6, window.innerWidth / w));
+    const fluid = r && r.hasAttribute('data-fluid') && window.innerWidth < 760;
+    const z = fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
     if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
     // The pill nav and the menu read --fit to stay at real size on phones (see shared/ui/nav.html).
     if (document.documentElement.style.getPropertyValue('--fit') !== String(z)) document.documentElement.style.setProperty('--fit', String(z));
@@ -205,5 +207,6 @@
     if (bg && bg !== 'rgba(0, 0, 0, 0)') { document.documentElement.style.background = bg; document.body.style.background = bg; }
   }
   fit(); window.addEventListener('resize', fit); setInterval(paint, 400);
+  try { new MutationObserver(fit).observe(document.getElementById('app'), { childList: true }); } catch (e) {}
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));
 })();

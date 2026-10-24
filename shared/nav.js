@@ -16,7 +16,7 @@ const NAV_ITEMS = [
 ];
 // Which section each page belongs to.
 const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Glossary: 'learn', Basics: 'learn', Interview: 'learn',
-  Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', AIML: 'ai' };
+  Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
 function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();

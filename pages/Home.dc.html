@@ -28,8 +28,8 @@ button,input{font:inherit}
 <header style="height: 76px; flex-shrink: 0; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid {{t.line}}">
 <button onClick="{{openDrawer}}" aria-label="Open menu" style="width: 46px; height: 46px; border-radius: 14px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
 <a href="Main.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
-<nav aria-label="Main" style="display: flex; gap: 22px; margin-left: 16px; font-size: 15px; font-weight: 500">
-<a href="Home.dc.html" style="font-weight: 700">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Revisit.dc.html" style="color: {{t.muted}}">Revisit</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Glossary.dc.html" style="color: {{t.muted}}">Glossary</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
+<nav aria-label="Main" style="display: flex; gap: 12px; margin-left: 4px; font-size: 15px; font-weight: 500">
+<a href="Home.dc.html" style="font-weight: 700">Home</a><a href="Patterns.dc.html" style="color: {{t.muted}}">Library</a><a href="Sheet.dc.html" style="color: {{t.muted}}">Sheet</a><a href="Revisit.dc.html" style="color: {{t.muted}}">Revisit</a><a href="Interview.dc.html" style="color: {{t.muted}}">Interview prep</a><a href="Glossary.dc.html" style="color: {{t.muted}}">Glossary</a><a href="Leaderboard.dc.html" style="color: {{t.muted}}">Leaderboard</a>
 </nav>
 <div style="flex-grow: 1"></div>
 <a href="Auth.dc.html" style="height: 40px; padding: 0 14px; border-radius: 999px; background: {{t.warnBg}}; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700">Trial · 2 days left<span style="color: {{t.accent}}">See plans →</span></a>
@@ -251,7 +251,7 @@ button,input{font:inherit}
 </div>
 </sc-if>
 <nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{menu}}" as="mi" hint-placeholder-count="9">
+<sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
@@ -447,6 +447,7 @@ function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
   ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
   ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],

@@ -48,7 +48,7 @@ button,input{font:inherit}
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; font-weight: 600; letter-spacing: -0.02em">Welcome back, Aarav.</h1>
 <p style="margin: 0; font-size: 17px; line-height: 1.5; color: {{t.text2}}">{{goalLine}}</p>
 <div style="display: flex; gap: 28px; margin-top: 6px">
-<sc-for list="{{stats}}" as="st" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: {{t.mono}}; font-size: 24px; font-weight: 700">{{st.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{st.k}}</span></div></sc-for>
+<sc-for list="{{stats}}" as="st" hint-placeholder-count="5"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: {{t.mono}}; font-size: 24px; font-weight: 700">{{st.v}}</span><span style="font-size: 13px; color: {{t.muted}}">{{st.k}}</span></div></sc-for>
 </div>
 </div>
 <div style="position: relative; width: 150px; height: 150px">
@@ -443,11 +443,15 @@ function loadDeck() { const v = readJSON('dsaviz-deck', {}); return v && typeof 
 function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 // @@END@@
 
+// @@SHEET-COUNT@@ — generated: how many problems the master sheet holds
+const SHEET_TOTAL = 553;
+// @@END-SHEET-COUNT@@
+
 // @@DRAWER@@ — shared menu logic (landing + home)
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, daily story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
-  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Sheet.dc.html', 'Master sheet', '553 problems by pattern, with ticks and hints', null],
   ['Story.dc.html', 'Continue the story', 'The Lantern Bridge · step 3 of 6', null],
   ['Revisit.dc.html', 'Revisit', '5 stories fading · about 6 minutes', null],
   ['Profile.dc.html', 'My profile', 'Heatmap, certificates, buddies, reminders', null],
@@ -546,7 +550,8 @@ class Component extends DCLogic {
         { v: PROBLEMS.filter((p) => p.status === 'done').length, k: 'stories solved' },
         { v: PATTERNS.filter(([n]) => PROBLEMS.some((p) => p.pattern === n && p.status !== 'todo')).length, k: 'patterns started' },
         { v: '142', k: 'minutes this week' },
-        { v: '1,240', k: 'XP this week' }
+        { v: '1,240', k: 'XP this week' },
+        { v: SHEET_TOTAL, k: 'problems on the sheet' }
       ],
       mini: {
         no: this.state.mini + 1, line,

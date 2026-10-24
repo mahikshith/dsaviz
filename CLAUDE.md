@@ -4,9 +4,9 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 
 ## Workflow
 
-- Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `<!-- MENU DRAWER -->`, the Story engine, and the bodies and scripts of Revisit, Profile and Welcome. Edit `shared/` or `src/` and run `npm run build`.
+- Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@RUNNER@@`, `@@CODE-PANE@@`, `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
 - Other page markup and page-specific scripts are edited directly in `pages/*.dc.html`.
-- After any change: `npm run build && npm test`. Both tests must print "all clear" or "all scenes clean".
+- After any change: `npm run build && npm test`. The tests must print "all clear", "all scenes clean" and "all specs pass".
 - `dist/index.html` is generated and committed so the site opens without a build. Rebuild it before committing.
 
 ## Conventions

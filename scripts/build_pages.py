@@ -13,6 +13,7 @@ across pages and live in one place; this script copies them back into every page
   shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
   shared/code_pane.html     -> between <!-- CODE PANE --> ... <!-- /CODE PANE --> (after page bodies)
   src/git/sim.js + lessons.js -> between // @@GITSIM@@ ... // @@END-GITSIM@@ (Git page)
+  src/ai/render.js + lessons.js -> between // @@AILESSONS@@ ... // @@END-AILESSONS@@ (AI & ML pages)
   src/story/*               -> Story.dc.html markup and engine
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
   src/code/code_body.html + code.js       -> Code
@@ -55,6 +56,8 @@ def main():
         scripts[name] = ('src', 'pages', name.lower() + '.js')
     git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.\n'
                + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
+    ai_lessons = ('// @@AILESSONS@@ — generated from src/ai/render.js and src/ai/lessons.js; edit those, then build.\n'
+                  + read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '// @@END-AILESSONS@@')
     bodies['Code'] = ('src', 'code', 'code_body.html')
     scripts['Code'] = ('src', 'code', 'code.js')
     # The three original scene files first (scenes_tp.js opens the engine), then any newer scenes_*.js in name order.
@@ -78,6 +81,7 @@ def main():
         s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
         s = block(s, '// @@CODE-PANE@@', '// @@END-CODE-PANE@@', pane_js)
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
+        s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)
         name = f[:-len('.dc.html')]
         if name in bodies:
             body = read(*bodies[name])

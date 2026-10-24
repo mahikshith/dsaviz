@@ -1,10 +1,9 @@
-// System design lessons. HLD lessons marked credit: 'sdp' adapt topics from the System Design
-// Primer (Donne Martin, CC BY 4.0); all wording here is ours. Shape of a lesson: see src/sd/engine.js.
-// LLD lessons marked credit: 'kn' take the problem idea from kousiknath/LowLevelDesign (MIT); classes and words are ours.
+// System design lessons. Every lesson, word and diagram here is our own; lessons carry no content credits.
+// Shape of a lesson: see src/sd/engine.js.
 // Step fields: cmd (scenario bar), say (one caption, max 140 chars), focus (one node), add/drop
 // (show or remove nodes), mark ({id: state}), sub ({id: text}), go ([from, to, label, tone, at]),
 // par (all hops at once), nums ({qps, ms, gb}), math (napkin line), check (tests/sdcheck.js recomputes):
-//   qps: [events, 'day'|'month']  qps ≈ events / seconds (within 15%)
+//   qps: [events, 'minute'|'hour'|'day'|'month']  qps ≈ events / seconds (within 15%)
 //   gb: [items, bytes each]       gb ≈ items × bytes / 1e9 (within 15%)
 //   ms: [a, b, ...]               ms equals the sum of the parts
 //   cap: [per server, fits]       working servers on the diagram × per server ≥ qps, exactly when fits
@@ -13,7 +12,7 @@ function sdN(id, kind, label, x, y, more) { return Object.assign({ id, kind, lab
 
 const SD_LESSONS = [
   {
-    id: 'scale', track: 'hld', title: 'Scale up or out', tag: 'vertical · horizontal', credit: 'sdp',
+    id: 'scale', track: 'hld', title: 'Scale up or out', tag: 'vertical · horizontal',
     scenario: 'A photo app grows from 1,000 to 100,000 users.',
     labels: ['Requests per second', 'Typical response', 'Photos stored'],
     nums: { qps: 23, ms: 80, gb: 5 },
@@ -58,7 +57,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'lb', track: 'hld', title: 'Load balancer', tag: 'round robin · health checks', credit: 'sdp',
+    id: 'lb', track: 'hld', title: 'Load balancer', tag: 'round robin · health checks',
     scenario: 'Three users, three servers, one front door.',
     labels: ['Requests per second', 'Wait for the next request', 'Storage'],
     nums: { qps: 900, ms: 60, gb: null },
@@ -102,7 +101,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'cache', track: 'hld', title: 'Caching', tag: 'cache-aside · hit · miss', credit: 'sdp',
+    id: 'cache', track: 'hld', title: 'Caching', tag: 'cache-aside · hit · miss',
     scenario: 'Profile pages read the same rows again and again.',
     labels: ['Reads per second', 'Time for one read', 'Cache memory'],
     nums: { qps: 5000, ms: 55, gb: 0 },
@@ -143,7 +142,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'cdn', track: 'hld', title: 'CDN', tag: 'edge · pull · DNS', credit: 'sdp',
+    id: 'cdn', track: 'hld', title: 'CDN', tag: 'edge · pull · DNS',
     scenario: 'A logo image, one server in Virginia, users in Mumbai.',
     labels: ['Origin requests per second', 'Time to load the image', 'Origin traffic per day'],
     nums: { qps: 12, ms: 250, gb: 200 },
@@ -183,7 +182,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'replicas', track: 'hld', title: 'Read replicas', tag: 'primary · replica · failover', credit: 'sdp',
+    id: 'replicas', track: 'hld', title: 'Read replicas', tag: 'primary · replica · failover',
     scenario: 'A social app reads ten times more than it writes.',
     labels: ['Queries per second on the primary', 'Time for one query', 'Data in each copy'],
     nums: { qps: 11000, ms: 40, gb: 500 },
@@ -224,7 +223,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'sharding', track: 'hld', title: 'Sharding', tag: 'shard key · hot shard · ring', credit: 'sdp',
+    id: 'sharding', track: 'hld', title: 'Sharding', tag: 'shard key · hot shard · ring',
     scenario: 'One users table has outgrown one machine.',
     labels: ['Writes per second', 'Time for one write', 'Total data'],
     nums: { qps: 40000, ms: 20, gb: 4000 },
@@ -270,7 +269,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'queue', track: 'hld', title: 'Message queue', tag: 'async jobs · workers · retries', credit: 'sdp',
+    id: 'queue', track: 'hld', title: 'Message queue', tag: 'async jobs · workers · retries',
     scenario: 'Users upload videos that take minutes to process.',
     labels: ['Uploads per second', 'Time until the user hears back', 'New video per day'],
     nums: { qps: 2, ms: 120000, gb: 8640 },
@@ -312,7 +311,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'ratelimit', track: 'hld', title: 'Rate limiting', tag: 'token bucket · 429', credit: 'sdp',
+    id: 'ratelimit', track: 'hld', title: 'Rate limiting', tag: 'token bucket · 429',
     scenario: 'One buggy script floods a public API.',
     labels: ['Requests reaching the API', 'Limiter check', 'Counter memory'],
     nums: { qps: 3000, ms: 0.5, gb: 0 },
@@ -352,7 +351,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'shortener', track: 'hld', title: 'URL shortener', tag: 'case study · the 4 steps', credit: 'sdp', method: true,
+    id: 'shortener', track: 'hld', title: 'URL shortener', tag: 'case study · the 4 steps', method: true,
     scenario: 'Design a service that turns long links into short ones.',
     labels: ['Requests per second', 'Time to redirect', 'Storage for 5 years'],
     nums: { qps: null, ms: null, gb: null },
@@ -519,7 +518,7 @@ const SD_LESSONS = [
   },
   // ---------- HLD fundamentals ----------
   {
-    id: 'hashing', track: 'hld', title: 'Consistent hashing', tag: 'ring · virtual nodes', credit: 'sdp',
+    id: 'hashing', track: 'hld', title: 'Consistent hashing', tag: 'ring · virtual nodes',
     scenario: 'A cache cluster of four nodes holds 10 million keys.',
     labels: ['Lookups per second', 'Time for one lookup', 'Data in the cluster'],
     nums: { qps: 50000, ms: 1, gb: 10 },
@@ -563,7 +562,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'cap', track: 'hld', title: 'CAP and consistency', tag: 'partitions · strong · eventual', credit: 'sdp',
+    id: 'cap', track: 'hld', title: 'CAP and consistency', tag: 'partitions · strong · eventual',
     scenario: 'A bank keeps two copies of every balance, in Mumbai and Delhi.',
     labels: ['Writes per second', 'Time for one write', 'Balances stored'],
     nums: { qps: 1200, ms: 5, gb: 5 },
@@ -603,7 +602,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'sqlnosql', track: 'hld', title: 'SQL or NoSQL', tag: 'tables · documents · key-value', credit: 'sdp',
+    id: 'sqlnosql', track: 'hld', title: 'SQL or NoSQL', tag: 'tables · documents · key-value',
     scenario: 'A shop needs orders, product pages and live view counts.',
     labels: ['Writes per second', 'Time for one query', 'Orders stored'],
     nums: { qps: 300, ms: 10, gb: null },
@@ -638,7 +637,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'indexes', track: 'hld', title: 'Database indexes', tag: 'B-tree · composite · cost', credit: 'sdp',
+    id: 'indexes', track: 'hld', title: 'Database indexes', tag: 'B-tree · composite · cost',
     scenario: 'Find one user by email among 100 million rows.',
     labels: ['Lookups per second', 'Time for one lookup', 'Index size'],
     nums: { qps: 2000, ms: 100000, gb: null },
@@ -797,7 +796,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'feed', track: 'hld', title: 'News feed', tag: 'case study · fan-out', credit: 'sdp', method: true,
+    id: 'feed', track: 'hld', title: 'News feed', tag: 'case study · fan-out', method: true,
     scenario: 'Design the home feed of a social app.',
     labels: ['Feed reads per second', 'Time to load a feed', 'Feed cache size'],
     nums: { qps: null, ms: null, gb: null },
@@ -1121,7 +1120,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'elevator', track: 'lld', title: 'Elevator system', tag: 'state · scheduler strategy', credit: 'kn',
+    id: 'elevator', track: 'lld', title: 'Elevator system', tag: 'state · scheduler strategy',
     scenario: 'Two elevators serve ten floors. Keep waits short.',
     math: 'nouns: button, request, elevator, system, scheduler',
     nodes: [
@@ -1157,7 +1156,7 @@ const SD_LESSONS = [
     ]
   },
   {
-    id: 'movies', track: 'lld', title: 'Movie ticket booking', tag: 'seat holds · races', credit: 'kn',
+    id: 'movies', track: 'lld', title: 'Movie ticket booking', tag: 'seat holds · races',
     scenario: 'Users pick a show and seats, then pay. No seat is ever sold twice.',
     math: 'nouns: movie, show, seat, hold, booking, payment',
     nodes: [
@@ -1195,10 +1194,495 @@ const SD_LESSONS = [
       { cmd: 'many servers', say: 'With many servers the hold must live in one shared place, such as the seat’s database row, not in one server’s memory.', focus: 'lock',
         mark: { seat: null, lock: null } }
     ]
+  },
+  // ---------- third batch: HLD ----------
+  {
+    id: 'dcache', track: 'hld', title: 'Distributed cache', tag: 'many nodes · replicas · hot keys',
+    scenario: 'One cache box is full. Spread the keys over many.',
+    labels: ['Reads per second', 'Time for one read', 'Hot data size'],
+    nums: { qps: 50000, ms: 1, gb: 40 },
+    math: 'one cache box answers most reads from memory in about 1 ms',
+    nodes: [
+      sdN('app', 'server', 'App servers', 130, 220, { on: true }),
+      sdN('c1', 'cache', 'Cache A', 500, 60, { on: true }),
+      sdN('c2', 'cache', 'Cache B', 500, 170),
+      sdN('c3', 'cache', 'Cache C', 500, 280),
+      sdN('c3b', 'cache', 'C replica', 500, 280),
+      sdN('c4', 'cache', 'Cache D', 500, 390),
+      sdN('rep', 'cache', 'C replica', 760, 330),
+      sdN('db', 'db', 'Database', 950, 220, { on: true })
+    ],
+    links: [['app', 'c1'], ['app', 'c2'], ['app', 'c3'], ['app', 'c3b'], ['app', 'c4'], ['app', 'db'], ['c3', 'rep']],
+    steps: [
+      { cmd: 'one cache box', say: 'The app keeps hot data in one cache box. Most reads come back from memory in about 1 ms, and the database rests.', focus: 'c1',
+        go: [['app', 'c1', 'get'], ['c1', 'app', 'hit', 'back']], check: { qps: [4.32e9, 'day'], ms: [1] } },
+      { cmd: 'the data grows', say: 'The hot data grows to 100 million keys of 1 KB each: 100 GB. One box has 64 GB of memory, so it cannot hold it all.', focus: 'c1',
+        mark: { c1: 'hot' }, sub: { c1: '64 GB, full' }, nums: { gb: 100 }, math: '100,000,000 keys × 1 KB = 100 GB', check: { gb: [1e8, 1000] } },
+      { cmd: 'and so does traffic', say: 'Traffic grows too, to 200,000 reads a second. One box can answer about 100,000.', focus: 'c1',
+        nums: { qps: 200000 }, math: '200,000 reads ÷ 100,000 per box = at least 2 boxes', check: { qps: [1.728e10, 'day'] } },
+      { cmd: 'spread over four nodes', say: 'Spread the keys over four cache nodes. Each holds about a quarter, 25 GB, and answers about a quarter of the reads.', focus: 'c2',
+        add: ['c2', 'c3', 'c4'], mark: { c1: null, c2: 'new', c3: 'new', c4: 'new' }, sub: { c1: '25 GB · 50k/s', c2: '25 GB · 50k/s', c3: '25 GB · 50k/s', c4: '25 GB · 50k/s' },
+        math: '100 GB ÷ 4 = 25 GB; 200,000 ÷ 4 = 50,000 reads a second each' },
+      { cmd: 'get user:42', say: 'Every app server must agree on who owns a key. Each hashes the key the same way, so user:42 always goes to B.', focus: 'c2',
+        mark: { c2: null, c3: null, c4: null }, sub: { app: 'hash(key) → B' }, go: [['app', 'c2', 'get user:42'], ['c2', 'app', 'hit', 'back']] },
+      { cmd: 'add a fifth node?', say: 'With hash mod 4, adding a fifth node moves about 80% of keys, and they all miss at once. A hash ring moves only about 20%.', focus: 'app',
+        math: 'mod 4 → mod 5 keeps only 1 key in 5 in place; a ring moves 1 in 5' },
+      { cmd: 'cache C crashes', say: 'Cache C crashes. Its keys now miss and fall through to the database, which suddenly gets a quarter of all reads.', focus: 'c3',
+        mark: { c3: 'down', db: 'hot' }, sub: { c3: 'crashed', app: null }, nums: { ms: 51 }, math: 'cache 1 + database 50 = 51 ms for every key that lived on C',
+        go: [['app', 'c3', 'get', 'bad'], ['app', 'db', 'read'], ['db', 'app', 'row', 'back']], check: { ms: [1, 50] } },
+      { cmd: 'keep a replica', say: 'Plan ahead: each node streams its writes to a replica. C comes back, and from now on its replica copies every change.', focus: 'rep',
+        add: ['rep'], mark: { c3: null, db: null, rep: 'new' }, sub: { c3: '25 GB · 50k/s' }, nums: { ms: 1 }, math: 'every write on C is copied to its replica', go: [['c3', 'rep', 'copy']], check: { ms: [1] } },
+      { cmd: 'C crashes again', say: 'C crashes again. This time its replica is promoted in its place, so those reads still come from memory.', focus: 'c3b',
+        drop: ['c3', 'rep'], add: ['c3b'], mark: { c3b: ['new', 'promoted'] }, go: [['app', 'c3b', 'get'], ['c3b', 'app', 'hit', 'back']] },
+      { cmd: 'one very hot key', say: 'One key, a famous user’s profile, gets 30,000 reads a second. They all land on B, which runs hot.', focus: 'c2',
+        mark: { c3b: null, c2: 'hot' }, sub: { c2: '30k/s on one key' }, par: true,
+        go: [['app', 'c2', 'get'], ['app', 'c2', 'get', 'req', 0.4], ['app', 'c2', 'get', 'req', 0.8]] },
+      { cmd: 'copy hot keys near the app', say: 'Keep very hot keys in each app server’s own memory for a few seconds. Most of those reads never leave the app.', focus: 'app',
+        mark: { c2: null }, sub: { c2: '25 GB · 50k/s', app: 'local copy, 5 s' } },
+      { cmd: 'each node is still a cache', say: 'Each node still works like one cache: it evicts the least recently used keys when full, and every key has a time to live.', focus: 'c4' }
+    ]
+  },
+  // ---------- third batch: HLD case studies (the four-step method) ----------
+  {
+    id: 'typeahead', track: 'hld', title: 'Search autocomplete', tag: 'case study · trie · top-k', method: true,
+    scenario: 'Design the suggestions that appear as you type in a search box.',
+    labels: ['Requests per second', 'Time for suggestions', 'Memory for phrases'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('u', 'client', 'Users', 110, 220, { on: true }),
+      sdN('api', 'server', 'Suggest servers', 420, 220, { on: true }),
+      sdN('trie', 'cache', 'Trie (memory)', 800, 80),
+      sdN('db', 'db', 'Phrase counts', 800, 230, { on: true }),
+      sdN('logs', 'queue', 'Search log', 420, 380),
+      sdN('agg', 'worker', 'Aggregator', 800, 380)
+    ],
+    links: [['u', 'api'], ['api', 'trie'], ['api', 'db', 'trie'], ['api', 'logs'], ['logs', 'agg'], ['agg', 'db'], ['db', 'trie']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'As someone types, show the five most popular searches that start with those letters. It has to feel instant.', focus: 'u' },
+      { phase: 1, cmd: 'napkin · traffic', say: '10 million people search 10 times a day, typing about 5 letters each. That is 500 million requests a day.', focus: 'api',
+        nums: { qps: 5800 }, math: '10M × 10 × 5 = 500M a day ÷ 86,400 s ≈ 5,800 a second', check: { qps: [5e8, 'day'] } },
+      { phase: 1, cmd: 'napkin · memory', say: 'Keep the 10 million most searched phrases at about 50 bytes each. That is 500 MB, small enough to keep in memory.', focus: 'db',
+        nums: { gb: 0.5 }, math: '10,000,000 phrases × 50 bytes = 500 MB', check: { gb: [1e7, 50] } },
+      { phase: 2, cmd: 'GET /suggest?q=ca', say: 'Sketch: one call, GET /suggest?q=ca. A server scans the phrase table for rows that start with ca and sorts them.', focus: 'db',
+        mark: { db: 'hot' }, nums: { ms: 400 }, math: 'up 30 + scan and sort 340 + down 30 = 400 ms', check: { ms: [30, 340, 30] },
+        go: [['u', 'api', '?q=ca'], ['api', 'db', 'starts with ca'], ['db', 'api', 'rows', 'back'], ['api', 'u', '5 phrases', 'back']] },
+      { phase: 3, cmd: 'step 3 · a trie', say: 'Zoom in: a trie stores phrases letter by letter. Walk c, then a, and every phrase below that spot starts with ca.', focus: 'trie',
+        add: ['trie'], mark: { db: null, trie: 'new' }, sub: { trie: 'c → a → …' }, go: [['api', 'trie', 'walk c, a']] },
+      { phase: 3, cmd: 'keep a top 5 at every node', say: 'Searching the whole branch below ca is still slow. So every node keeps its own top 5 list, ready to hand back.', focus: 'trie',
+        mark: { trie: null }, sub: { trie: 'top 5 at each node' }, math: 'lookup = walk the prefix, then read one short list' },
+      { phase: 3, cmd: 'GET /suggest?q=ca · again', say: 'Now a request walks two letters and reads one short list. The whole round trip drops to about 65 ms.', focus: 'trie',
+        mark: { trie: 'hit' }, nums: { ms: 65 }, math: 'up 30 + walk and read 5 + down 30 = 65 ms', check: { ms: [30, 5, 30] },
+        go: [['u', 'api', '?q=ca'], ['api', 'trie', 'node ca'], ['trie', 'api', 'top 5', 'back'], ['api', 'u', '5 phrases', 'back']] },
+      { phase: 3, cmd: 'napkin · memory again', say: 'Top 5 lists at about 100 million nodes cost about 5 GB. One server’s memory still holds the whole trie.', focus: 'trie',
+        mark: { trie: null }, nums: { gb: 5 }, math: '100,000,000 nodes × 50 bytes of top-5 links = 5 GB', check: { gb: [1e8, 50] } },
+      { phase: 3, cmd: 'what is popular changes', say: 'Each search is written to a log instead of straight into the trie. Lookups never wait for counting.', focus: 'logs',
+        add: ['logs'], mark: { logs: 'new' }, go: [['api', 'logs', '"cat videos"']] },
+      { phase: 3, cmd: 'count every hour', say: 'An aggregator reads the log every hour and adds up how often each phrase was searched.', focus: 'agg',
+        add: ['agg'], mark: { logs: null, agg: 'new' }, go: [['logs', 'agg', 'an hour of logs'], ['agg', 'db', 'new counts']] },
+      { phase: 4, cmd: 'step 4 · swap in a new trie', say: 'Scale: a fresh trie is built from the counts off to the side, then swapped in whole. Readers never see half an update.', focus: 'trie',
+        mark: { agg: null, trie: ['new', 'v2'] }, go: [['db', 'trie', 'build v2']] },
+      { phase: 4, cmd: 'fewer requests', say: 'Browsers help: ask only when typing pauses, and keep answers for an hour. That cuts requests about in half.', focus: 'u',
+        mark: { trie: null }, sub: { u: 'pause, then ask' }, nums: { qps: 2900 }, math: 'half of 500M = 250M a day ÷ 86,400 s ≈ 2,900 a second', check: { qps: [2.5e8, 'day'] } },
+      { phase: 4, cmd: 'copies and shards', say: 'Copy the trie to several servers, since they only read it. Split it by first letter if it outgrows one machine.', focus: 'api',
+        sub: { api: 'copies of the trie', trie: 'a–m · n–z' } },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'Filter out offensive phrases before they reach any list. That is the four steps, end to end.', focus: 'trie' }
+    ]
+  },
+  {
+    id: 'notify', track: 'hld', title: 'Notification system', tag: 'case study · queues · retries', method: true,
+    scenario: 'Design one service that sends push, email and text messages.',
+    labels: ['Notifications per second', 'Time to hand off', 'Records kept per day'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('svc', 'server', 'App services', 110, 220, { on: true }),
+      sdN('api', 'server', 'Notify API', 360, 220, { on: true }),
+      sdN('prefs', 'db', 'Settings', 360, 380),
+      sdN('q', 'queue', 'Queues', 580, 220),
+      sdN('wpush', 'worker', 'Push worker', 800, 80),
+      sdN('wmail', 'worker', 'Email worker', 800, 220),
+      sdN('wsms', 'worker', 'SMS worker', 800, 360),
+      sdN('prov', 'net', 'Providers', 990, 220)
+    ],
+    links: [['svc', 'api'], ['api', 'prefs'], ['api', 'q'], ['q', 'wpush'], ['q', 'wmail'], ['q', 'wsms'], ['wpush', 'prov'], ['wmail', 'prov'], ['wsms', 'prov']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'Many parts of an app need to tell users things: an order shipped, a friend replied. Build one service they all call.', focus: 'svc' },
+      { phase: 1, cmd: 'three channels', say: 'Three channels: phone push, email and text message. Users choose which they want, and nothing should arrive at 3 am.', focus: 'api' },
+      { phase: 1, cmd: 'napkin · traffic', say: 'About 10 million pushes, 1 million emails and 100,000 texts a day. On average that is about 130 a second.', focus: 'api',
+        nums: { qps: 130 }, math: '10M + 1M + 0.1M = 11.1M a day ÷ 86,400 s ≈ 130 a second', check: { qps: [1.11e7, 'day'] } },
+      { phase: 1, cmd: 'napkin · records', say: 'Keep a 200-byte record of each one, to answer support questions and stop repeats. That is about 2.2 GB a day.', focus: 'api',
+        nums: { gb: 2.2 }, math: '11,100,000 × 200 bytes ≈ 2.2 GB a day', check: { gb: [1.11e7, 200] } },
+      { phase: 2, cmd: 'POST /notify', say: 'Sketch: services call POST /notify with a user and a message. The API answers at once and leaves the slow work for later.', focus: 'q',
+        add: ['q'], mark: { q: 'new' }, go: [['svc', 'api', 'POST /notify'], ['api', 'svc', '202 accepted', 'back'], ['api', 'q', 'enqueue']] },
+      { phase: 2, cmd: 'read the settings', say: 'First the API reads the user’s settings: which channels are on, and whether it is quiet time where they live.', focus: 'prefs',
+        add: ['prefs'], mark: { q: null, prefs: 'new' }, go: [['api', 'prefs', 'settings?'], ['prefs', 'api', 'push, email', 'back']] },
+      { phase: 3, cmd: 'step 3 · one queue per channel', say: 'Zoom in: one queue per channel, each with its own workers. A slow email provider can never hold up push.', focus: 'q',
+        add: ['wpush', 'wmail', 'wsms'], mark: { prefs: null }, sub: { q: 'one per channel' }, par: true, go: [['q', 'wpush', 'push'], ['q', 'wmail', 'email']] },
+      { phase: 3, cmd: 'hand off to a provider', say: 'Workers pass each message to an outside provider: Apple or Google for push, a mail or text company for the rest.', focus: 'prov',
+        add: ['prov'], nums: { ms: 230 }, math: 'API 10 + queue 5 + worker 15 + provider 200 = 230 ms', check: { ms: [10, 5, 15, 200] },
+        go: [['wpush', 'prov', 'send'], ['prov', 'wpush', 'ok', 'back']] },
+      { phase: 3, cmd: 'the text provider times out', say: 'The text provider times out. The worker tries again after 1 s, 2 s, then 4 s, and then parks the message for a person.', focus: 'wsms',
+        mark: { wsms: 'hot' }, sub: { wsms: 'retry in 4 s' }, go: [['wsms', 'prov', 'send'], ['prov', 'wsms', 'timeout', 'bad']] },
+      { phase: 3, cmd: 'no double sends', say: 'Retries can send twice. Every message carries an ID, and a worker skips any ID it has already sent.', focus: 'q',
+        mark: { wsms: null }, sub: { wsms: null, q: 'skip seen IDs' } },
+      { phase: 4, cmd: 'step 4 · 5 million fans at once', say: 'A goal alert goes to 5 million fans within five minutes. The queues soak up the burst while workers drain it.', focus: 'q',
+        mark: { q: 'hot' }, nums: { qps: 16700 }, math: '1,000,000 a minute ÷ 60 s ≈ 16,700 a second', check: { qps: [1e6, 'minute'] },
+        par: true, go: [['api', 'q', 'alert'], ['api', 'q', 'alert', 'req', 0.4], ['api', 'q', 'alert', 'req', 0.8]] },
+      { phase: 4, cmd: 'add workers', say: 'Workers keep no state, so add more while the queues are long and remove them when they drain.', focus: 'wpush',
+        mark: { q: null }, sub: { wpush: '40 copies' } },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'Cap each user at a few alerts an hour so nobody gets buried. That is the four steps, end to end.', focus: 'prefs',
+        sub: { prefs: 'max 10 an hour' } }
+    ]
+  },
+  {
+    id: 'crawler', track: 'hld', title: 'Web crawler', tag: 'case study · frontier · politeness', method: true,
+    scenario: 'Design a crawler that downloads a billion pages a month.',
+    labels: ['Pages fetched per second', 'Time for one fetch', 'Pages stored per month'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('frontier', 'queue', 'URL frontier', 140, 220, { on: true }),
+      sdN('fetch', 'worker', 'Fetchers', 450, 220, { on: true }),
+      sdN('dns', 'dns', 'DNS cache', 450, 70),
+      sdN('web', 'net', 'The web', 800, 70, { on: true }),
+      sdN('store', 'db', 'Page store', 800, 220),
+      sdN('parse', 'worker', 'Parser', 800, 370),
+      sdN('seen', 'cache', 'Seen URLs', 450, 370)
+    ],
+    links: [['frontier', 'fetch'], ['fetch', 'dns'], ['fetch', 'web'], ['fetch', 'store'], ['store', 'parse'], ['parse', 'seen'], ['seen', 'frontier'], ['parse', 'frontier', 'seen']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'A crawler starts from a few links, downloads each page, finds the links inside, and repeats. Search engines are fed this way.', focus: 'frontier' },
+      { phase: 1, cmd: 'two rules', say: 'Two rules: never download the same page twice, and be polite, so no single website gets hammered.', focus: 'web' },
+      { phase: 1, cmd: 'napkin · traffic', say: 'Goal: 1 billion pages a month. That is about 400 downloads every second, day and night.', focus: 'fetch',
+        nums: { qps: 386 }, math: '1,000,000,000 ÷ 2,592,000 s in a month ≈ 386 a second', check: { qps: [1e9, 'month'] } },
+      { phase: 1, cmd: 'napkin · storage', say: 'At about 100 KB a page, a month of pages is 100 TB. Pages go to cheap bulk storage, not a database.', focus: 'fetch',
+        nums: { gb: 100000 }, math: '1,000,000,000 pages × 100 KB = 100 TB a month', check: { gb: [1e9, 1e5] } },
+      { phase: 2, cmd: 'the loop', say: 'Sketch the loop: take a URL from the frontier, download the page, and save it.', focus: 'store',
+        add: ['store'], go: [['frontier', 'fetch', 'next URL'], ['fetch', 'web', 'GET'], ['web', 'fetch', 'html', 'back'], ['fetch', 'store', 'save']] },
+      { phase: 2, cmd: 'find the links', say: 'A parser reads each saved page and pulls out every link. Those links go back into the frontier.', focus: 'parse',
+        add: ['parse'], go: [['store', 'parse', 'page'], ['parse', 'frontier', '42 links']] },
+      { phase: 3, cmd: 'step 3 · repeats', say: 'Zoom in on repeats. Before a link joins the frontier, check a set of every URL already seen, and skip it if found.', focus: 'seen',
+        add: ['seen'], mark: { seen: 'new' }, go: [['parse', 'seen', 'seen this?'], ['seen', 'frontier', 'new ones only']] },
+      { phase: 3, cmd: 'a very big set', say: 'Ten billion seen URLs at 8 bytes each is 80 GB. A Bloom filter fits in far less, at the cost of rare false alarms.', focus: 'seen',
+        mark: { seen: null }, sub: { seen: 'Bloom filter' }, math: '10,000,000,000 URLs × 8 bytes = 80 GB' },
+      { phase: 3, cmd: 'politeness', say: 'Zoom in on politeness. The frontier keeps one line per website and waits about a second between visits to the same site.', focus: 'frontier',
+        sub: { frontier: 'one line per site' } },
+      { phase: 3, cmd: 'robots.txt', say: 'Before crawling a site, read its robots.txt and obey it. Some paths are off limits, and some sites ask for slower visits.', focus: 'web',
+        go: [['fetch', 'web', 'robots.txt'], ['web', 'fetch', 'rules', 'back']] },
+      { phase: 3, cmd: 'look up the address', say: 'Each download first needs the site’s address. A local DNS cache answers repeat lookups without another 20 ms trip.', focus: 'dns',
+        add: ['dns'], nums: { ms: 520 }, math: 'DNS 20 + download 500 = 520 ms on a first visit', check: { ms: [20, 500] },
+        go: [['fetch', 'dns', 'where is it?'], ['dns', 'fetch', 'IP address', 'back']] },
+      { phase: 4, cmd: 'step 4 · many fetchers', say: 'About 400 pages a second at half a second each means about 200 downloads in flight at once. Run many fetchers.', focus: 'fetch',
+        nums: { ms: 500 }, sub: { fetch: '200 in flight' }, math: '400 a second × 0.5 s = 200 downloads at once', check: { ms: [500] } },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'Split the frontier by website across machines, and revisit busy pages more often. That is the four steps, end to end.', focus: 'frontier',
+        sub: { frontier: 'split by site' } }
+    ]
+  },
+  {
+    id: 'dlimit', track: 'hld', title: 'Rate limiter at scale', tag: 'case study · shared counters', method: true,
+    scenario: 'Design a limit of 100 requests a minute that holds across many servers.',
+    labels: ['Requests per second', 'Added by the check', 'Counter memory'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('u', 'client', 'Clients', 100, 220, { on: true }),
+      sdN('lb', 'lb', 'Load balancer', 300, 220),
+      sdN('g1', 'limiter', 'Gateway 1', 560, 70, { on: true }),
+      sdN('g2', 'limiter', 'Gateway 2', 560, 220),
+      sdN('g3', 'limiter', 'Gateway 3', 560, 370),
+      sdN('store', 'cache', 'Counter store', 880, 70),
+      sdN('api', 'server', 'API servers', 880, 300, { on: true })
+    ],
+    links: [['u', 'g1', 'lb'], ['u', 'lb'], ['lb', 'g1'], ['lb', 'g2'], ['lb', 'g3'], ['g1', 'api'], ['g2', 'api'], ['g3', 'api'], ['g1', 'store'], ['g2', 'store'], ['g3', 'store']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'Each user may make 100 requests a minute, counted across every server. Request 101 gets 429 Too Many Requests.', focus: 'g1' },
+      { phase: 1, cmd: 'napkin · traffic', say: '10 million users send about 1 billion requests a day, about 11,600 a second. The check must add almost no delay.', focus: 'api',
+        nums: { qps: 11600 }, math: '1,000,000,000 ÷ 86,400 s ≈ 11,600 a second', check: { qps: [1e9, 'day'] } },
+      { phase: 1, cmd: 'napkin · memory', say: 'Each user needs a counter or two, about 100 bytes. Ten million users fit in about 1 GB of memory.', focus: 'g1',
+        nums: { gb: 1 }, math: '10,000,000 users × 100 bytes = 1 GB', check: { gb: [1e7, 100] } },
+      { phase: 2, cmd: 'one gateway', say: 'Sketch: one gateway counts each user’s requests in its own memory and turns away the 101st in a minute.', focus: 'g1',
+        sub: { g1: 'user 7: 42 of 100' }, go: [['u', 'g1', 'req'], ['g1', 'api', 'req']] },
+      { phase: 2, cmd: 'many gateways', say: 'Real traffic needs many gateways behind a load balancer. Each still counts alone, so a user gets 100 per gateway.', focus: 'lb',
+        add: ['lb', 'g2', 'g3'], mark: { lb: 'new' }, sub: { g1: 'user 7: 100', g2: 'user 7: 100', g3: 'user 7: 100' }, par: true,
+        math: '3 gateways × 100 = 300 a minute: three times the limit', go: [['u', 'lb', 'req'], ['lb', 'g1', 'req', 'req', 0.6], ['lb', 'g2', 'req', 'req', 0.6], ['lb', 'g3', 'req', 'req', 0.6]] },
+      { phase: 3, cmd: 'step 3 · shared counters', say: 'Zoom in: move the counters into one shared store. Every gateway asks it, so they all see the same number.', focus: 'store',
+        add: ['store'], mark: { lb: null, store: 'new' }, sub: { g1: null, g2: null, g3: null }, nums: { ms: 1 }, math: 'one trip to the store ≈ 1 ms', check: { ms: [1] },
+        go: [['g2', 'store', 'user 7?'], ['store', 'g2', '43', 'back']] },
+      { phase: 3, cmd: 'a race', say: 'Two gateways read 99 at the same moment. Both allow the request and both write 100, so 101 requests got through.', focus: 'store',
+        mark: { store: ['bad', 'race'] }, par: true, go: [['g1', 'store', 'read: 99'], ['g3', 'store', 'read: 99']] },
+      { phase: 3, cmd: 'one atomic step', say: 'Fix: one atomic step that adds 1 and returns the new count. The store runs these one at a time for each key.', focus: 'store',
+        mark: { store: ['good', 'add 1, atomic'] },
+        go: [['g1', 'store', 'add 1'], ['store', 'g1', '100', 'back'], ['g3', 'store', 'add 1'], ['store', 'g3', '101', 'bad'], ['g3', 'lb', '429', 'bad'], ['lb', 'u', '429', 'bad']] },
+      { phase: 3, cmd: 'a sliding window', say: 'Count in a sliding window, not fixed minutes, so a burst at 0:59 and another at 1:00 cannot both slip through.', focus: 'store',
+        mark: { store: null }, sub: { store: 'two counters a user' }, math: 'estimate = this minute + last minute × the share still in the window' },
+      { phase: 4, cmd: 'step 4 · split the store', say: '11,600 checks a second is easy for a few store nodes. Split users across them by hashing the user ID.', focus: 'store',
+        sub: { store: 'split by user' } },
+      { phase: 4, cmd: 'fewer trips', say: 'To save trips, a gateway can take 10 requests’ worth at once and spend them locally. A little drift, far less traffic.', focus: 'g2',
+        sub: { g2: 'holds 10 locally' }, math: '11,600 ÷ 10 ≈ 1,160 store calls a second' },
+      { phase: 4, cmd: 'the store goes down', say: 'If the store fails, choose: fail open and let traffic through, or fail closed and refuse it. Most public APIs fail open.', focus: 'store',
+        mark: { store: 'down' } },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'Send Retry-After with every 429 so clients slow down. That is the four steps, end to end.', focus: 'g2',
+        mark: { store: null } }
+    ]
+  },
+  {
+    id: 'drive', track: 'hld', title: 'File storage and sync', tag: 'case study · chunks · metadata', method: true,
+    scenario: 'Design a drive that keeps files in sync across devices.',
+    labels: ['Uploads per second', 'Time to sync a small edit', 'New data per day'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('lap', 'client', 'Laptop', 110, 90, { on: true }),
+      sdN('phone', 'client', 'Phone', 110, 350, { on: true }),
+      sdN('feed', 'queue', 'Change feed', 430, 60),
+      sdN('api', 'server', 'API servers', 430, 220, { on: true }),
+      sdN('blob', 'db', 'Block storage', 800, 220),
+      sdN('meta', 'db', 'Metadata DB', 800, 380)
+    ],
+    links: [['lap', 'api'], ['phone', 'api'], ['api', 'blob'], ['api', 'meta'], ['api', 'feed'], ['feed', 'phone'], ['feed', 'lap'], ['lap', 'blob']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'Save a file on one device and see it on every other one. Files can be huge, and nothing may ever be lost.', focus: 'lap' },
+      { phase: 1, cmd: 'napkin · traffic', say: '50 million users save about 2 files a day. That is 100 million uploads, about 1,200 a second.', focus: 'api',
+        nums: { qps: 1160 }, math: '50M × 2 = 100M a day ÷ 86,400 s ≈ 1,160 a second', check: { qps: [1e8, 'day'] } },
+      { phase: 1, cmd: 'napkin · storage', say: 'Files average about 1 MB, so 100 TB of new data arrives every day. That calls for bulk storage, not a database.', focus: 'api',
+        nums: { gb: 100000 }, math: '100,000,000 files × 1 MB = 100 TB a day', check: { gb: [1e8, 1e6] } },
+      { phase: 2, cmd: 'upload', say: 'Sketch: upload to the API, which keeps the bytes in block storage and one row about the file in a database.', focus: 'api',
+        add: ['blob', 'meta'], go: [['lap', 'api', 'upload'], ['api', 'blob', 'bytes'], ['api', 'meta', 'row']] },
+      { phase: 2, cmd: 'metadata', say: 'That row is the metadata: name, folder, size, version and the list of pieces. It is small; the bytes live elsewhere.', focus: 'meta',
+        sub: { meta: 'name, version, chunks' } },
+      { phase: 3, cmd: 'step 3 · chunks', say: 'Zoom in: cut every file into 4 MB chunks named by a hash of their bytes. A dropped upload resumes from the last chunk.', focus: 'blob',
+        sub: { blob: 'chunks by hash' }, math: 'a 1 GB video = 1,000 MB ÷ 4 MB = 250 chunks' },
+      { phase: 3, cmd: 'edit one paragraph', say: 'Change one paragraph of a big file, and only the chunk that changed is sent. Every other chunk is already stored.', focus: 'blob',
+        go: [['lap', 'api', 'chunk 7 only'], ['api', 'blob', 'chunk 7'], ['api', 'meta', 'version 8']] },
+      { phase: 3, cmd: 'the same file twice', say: 'If two people upload the same file, its chunks have the same hashes, so each chunk is stored only once.', focus: 'blob',
+        mark: { blob: ['good', 'stored once'] } },
+      { phase: 3, cmd: 'tell the other devices', say: 'Then the API posts a change to a feed. The phone is listening, and pulls the new version in about half a second.', focus: 'feed',
+        add: ['feed'], mark: { blob: null, feed: 'new' }, nums: { ms: 500 }, math: 'upload 400 + save the row 50 + tell the phone 50 = 500 ms', check: { ms: [400, 50, 50] },
+        go: [['api', 'feed', 'v8'], ['feed', 'phone', 'changed'], ['phone', 'api', 'get v8']] },
+      { phase: 3, cmd: 'two offline edits', say: 'Laptop and phone both edit while offline. Each save says which version it started from, so the later one becomes a copy.', focus: 'meta',
+        mark: { feed: null, meta: ['stale', '2 edits of v8'] } },
+      { phase: 4, cmd: 'step 4 · split the metadata', say: 'Scale: metadata is small and busy, so shard it by user. Block storage grows on its own and keeps three copies of every chunk.', focus: 'meta',
+        mark: { meta: null }, sub: { meta: 'sharded by user', blob: '3 copies of each' } },
+      { phase: 4, cmd: 'upload straight to storage', say: 'Devices upload chunks straight to block storage with a short-lived signed link, so API servers never carry the bytes.', focus: 'blob',
+        go: [['lap', 'api', 'link?'], ['api', 'lap', 'signed link', 'back'], ['lap', 'blob', 'chunk']] },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'Keep old versions for 30 days so people can undo mistakes. That is the four steps, end to end.', focus: 'meta' }
+    ]
+  },
+  {
+    id: 'leaderboard', track: 'hld', title: 'Leaderboard', tag: 'case study · sorted sets', method: true,
+    scenario: 'Design a live top 10 and a rank for every player.',
+    labels: ['Score updates per second', 'Time to read a rank', 'Memory for the board'],
+    nums: { qps: null, ms: null, gb: null },
+    math: 'the napkin fills in as we go',
+    nodes: [
+      sdN('players', 'client', 'Players', 110, 220, { on: true }),
+      sdN('game', 'server', 'Game servers', 420, 220, { on: true }),
+      sdN('board', 'cache', 'Sorted set', 800, 90),
+      sdN('db', 'db', 'Scores DB', 800, 350, { on: true })
+    ],
+    links: [['players', 'game'], ['game', 'board'], ['game', 'db'], ['board', 'db']],
+    steps: [
+      { phase: 1, cmd: 'step 1 · requirements', say: 'A game shows each player their rank and the top 10, live, while scores keep changing.', focus: 'players' },
+      { phase: 1, cmd: 'napkin · traffic', say: '10 million daily players finish about 10 games each. That is 100 million score updates a day, about 1,200 a second.', focus: 'game',
+        nums: { qps: 1160 }, math: '10M × 10 = 100M a day ÷ 86,400 s ≈ 1,160 a second', check: { qps: [1e8, 'day'] } },
+      { phase: 1, cmd: 'napkin · memory', say: 'Each player needs about 100 bytes: an ID and a score. Ten million players fit in about 1 GB of memory.', focus: 'game',
+        nums: { gb: 1 }, math: '10,000,000 players × 100 bytes = 1 GB', check: { gb: [1e7, 100] } },
+      { phase: 2, cmd: 'sort a table', say: 'Sketch: keep scores in a database table and sort it whenever someone asks for the top 10.', focus: 'db',
+        go: [['players', 'game', 'top 10?'], ['game', 'db', 'ORDER BY score']] },
+      { phase: 2, cmd: 'what is my rank?', say: 'Sorting 10 million rows on every request is far too slow. “What is my rank?” means counting everyone above you.', focus: 'db',
+        mark: { db: 'hot' }, nums: { ms: 2000 }, math: 'count every row above me: about 2 s on 10 million rows', check: { ms: [2000] } },
+      { phase: 3, cmd: 'step 3 · a sorted set', say: 'Zoom in: a sorted set keeps members in score order at all times. Inside, it pairs a skip list with a hash map.', focus: 'board',
+        add: ['board'], mark: { db: null, board: 'new' }, sub: { board: 'skip list + map' } },
+      { phase: 3, cmd: 'game over: +50', say: 'A finished game adds points with one call. The set moves the player to the right place in about 23 steps.', focus: 'board',
+        mark: { board: null }, math: 'log2 of 10,000,000 ≈ 23 steps', go: [['players', 'game', 'game over'], ['game', 'board', 'add 50 to me']] },
+      { phase: 3, cmd: 'top 10', say: 'The top 10 is just the first ten members, read from the high end. It takes about a millisecond.', focus: 'board',
+        mark: { board: 'hit' }, nums: { ms: 6 }, math: 'server 5 + sorted set 1 = 6 ms', check: { ms: [5, 1] },
+        go: [['game', 'board', 'top 10'], ['board', 'game', '10 rows', 'back']] },
+      { phase: 3, cmd: 'my rank', say: 'Your rank is how many members sit above you. The skip list counts them as it walks down, in about 23 steps too.', focus: 'board',
+        mark: { board: null }, go: [['game', 'board', 'rank of me?'], ['board', 'game', '#18,204', 'back']] },
+      { phase: 3, cmd: 'ties', say: 'Two players tie on 900 points. Break ties by who got there first, by building the time into the stored score.', focus: 'board',
+        math: 'stored = points, plus a tiny bonus for reaching them earlier' },
+      { phase: 4, cmd: 'step 4 · survive a crash', say: 'Memory can be lost, so every update also goes to the database. After a crash, the set is rebuilt from it.', focus: 'db',
+        go: [['game', 'db', 'save'], ['db', 'board', 'rebuild']] },
+      { phase: 4, cmd: 'a billion players', say: 'One set handles this load easily. For a billion players, split by region and add up counts across sets to find a global rank.', focus: 'board',
+        sub: { board: 'split by region' } },
+      { phase: 4, cmd: 'ask · sketch · zoom in · scale', say: 'Weekly boards are a fresh set each week, with old ones archived. That is the four steps, end to end.', focus: 'board',
+        sub: { board: 'week 43' } }
+    ]
+  },
+  // ---------- third batch: LLD ----------
+  {
+    id: 'vending', track: 'lld', title: 'Vending machine', tag: 'State pattern',
+    scenario: 'A snack machine that behaves differently depending on what happened before.',
+    math: 'four states: Idle, HasMoney, Dispensing, SoldOut',
+    nodes: [
+      sdN('user', 'client', 'Buyer', 100, 80, { on: true }),
+      sdN('vm', 'class', 'VendingMachine', 340, 80, { on: true, w: 220, lines: ['state', 'insertCoin()', 'select(item)'] }),
+      sdN('inv', 'class', 'Inventory', 230, 330, { lines: ['item → count'] }),
+      sdN('st', 'iface', 'State', 700, 80, { w: 210, lines: ['insertCoin()', 'select()', 'dispense()'] }),
+      sdN('idle', 'class', 'Idle', 500, 370, { lines: ['waits for a coin'] }),
+      sdN('has', 'class', 'HasMoney', 720, 370, { lines: ['holds the credit'] }),
+      sdN('disp', 'class', 'Dispensing', 940, 370, { lines: ['drops the item'] }),
+      sdN('sold', 'class', 'SoldOut', 940, 210, { lines: ['returns coins'] })
+    ],
+    links: [['user', 'vm'], ['vm', 'st'], ['st', 'idle'], ['st', 'has'], ['st', 'disp'], ['st', 'sold'], ['vm', 'inv']],
+    steps: [
+      { cmd: 'requirements', say: 'A snack machine takes coins, lets you pick, drops the snack and gives change. What a button does depends on what came before.', focus: 'vm' },
+      { cmd: 'one big if-else', say: 'A first try puts an if-else in every method: if idle do this, if paid do that. Each new situation means editing them all.', focus: 'vm',
+        mark: { vm: ['hot', 'if state == …'] }, math: 'every method × every state = one tangled switch' },
+      { cmd: 'interface State', say: 'The State pattern gives each situation its own class behind one State interface. The machine just holds the current one.', focus: 'st',
+        add: ['st'], mark: { vm: null, st: 'new' }, math: 'one class per situation, all behind one State interface' },
+      { cmd: 'four states', say: 'Four states: Idle, HasMoney, Dispensing and SoldOut. Each answers the same three calls in its own way.', focus: 'idle',
+        add: ['idle', 'has', 'disp', 'sold'], mark: { st: null, idle: ['good', 'current'] } },
+      { cmd: 'select(A3) with no coin', say: 'Press A3 with no money in. The machine passes the call to Idle, which answers “insert a coin first”. Nothing changes.', focus: 'idle',
+        go: [['user', 'vm', 'select(A3)'], ['vm', 'st', 'select()'], ['st', 'idle', 'select()'], ['idle', 'st', 'coin first', 'bad']] },
+      { cmd: 'insertCoin(₹20)', say: 'Insert ₹20. Idle accepts it and sets the machine’s current state to HasMoney.', focus: 'has',
+        mark: { idle: null, has: ['good', 'current · ₹20'] }, go: [['user', 'vm', 'insert ₹20'], ['vm', 'st', 'insertCoin()'], ['st', 'idle', 'insertCoin()']] },
+      { cmd: 'select(A3)', say: 'Press A3 again. HasMoney checks the price and the stock, then hands over to Dispensing.', focus: 'disp',
+        add: ['inv'], mark: { has: null, disp: ['good', 'current'] },
+        go: [['user', 'vm', 'select(A3)'], ['vm', 'inv', 'A3 in stock?'], ['inv', 'vm', '1 left', 'back'], ['vm', 'st', 'select()'], ['st', 'has', 'select()']] },
+      { cmd: 'dispense()', say: 'Dispensing drops the ₹15 snack, returns ₹5 change, and sets the state back to Idle.', focus: 'idle',
+        mark: { disp: null, idle: ['good', 'current'] }, math: '₹20 paid − ₹15 price = ₹5 change',
+        go: [['st', 'disp', 'dispense()'], ['vm', 'user', 'snack + ₹5', 'back']] },
+      { cmd: 'that was the last one', say: 'That was the last snack left. The machine moves to SoldOut, which hands back any coin straight away.', focus: 'sold',
+        mark: { idle: null, sold: ['good', 'current'], inv: ['bad', '0 left'] }, go: [['user', 'vm', 'insert ₹20'], ['vm', 'user', '₹20 back', 'bad']] },
+      { cmd: 'add a state', say: 'Need a Maintenance mode? Write one new State class. The machine and the other states hardly change.', focus: 'st',
+        mark: { inv: null }, math: 'new behaviour = one new class, not an edit in every method' },
+      { cmd: 'who picks the next state?', say: 'Here each state picks the next one. The rules sit next to the behaviour, but the states must know about each other.', focus: 'st' }
+    ]
+  },
+  {
+    id: 'decorator', track: 'lld', title: 'Decorator pattern', tag: 'wrap to add behaviour',
+    scenario: 'Add logging, retries and a cache to an HTTP client, in any mix.',
+    math: 'one interface; each layer holds the next one inside',
+    nodes: [
+      sdN('app', 'client', 'Your code', 90, 260, { on: true }),
+      sdN('iface', 'iface', 'HttpClient', 520, 70, { w: 200, lines: ['get(url)'] }),
+      sdN('cache', 'class', 'Caching', 290, 260, { lines: ['inner', 'memory first'] }),
+      sdN('retry', 'class', 'Retrying', 510, 260, { lines: ['inner', 'up to 3 tries'] }),
+      sdN('logd', 'class', 'Logging', 730, 260, { lines: ['inner', 'logs each call'] }),
+      sdN('base', 'class', 'BasicClient', 950, 260, { on: true, lines: ['calls the network'] }),
+      sdN('net', 'net', 'Network', 950, 400, { on: true })
+    ],
+    links: [['app', 'base', 'logd'], ['app', 'logd', 'retry'], ['app', 'retry', 'cache'], ['app', 'cache'], ['cache', 'retry'], ['retry', 'logd'], ['logd', 'base'], ['base', 'net'],
+      ['iface', 'cache'], ['iface', 'retry'], ['iface', 'logd'], ['iface', 'base']],
+    steps: [
+      { cmd: 'requirements', say: 'Your code calls an HTTP client to fetch data. Now you want logging, automatic retries and a cache, in any mix.', focus: 'base',
+        go: [['app', 'base', 'get(url)'], ['base', 'net', 'GET'], ['net', 'base', 'data', 'back'], ['base', 'app', 'data', 'back']] },
+      { cmd: 'a subclass for every mix?', say: 'One subclass per mix means LoggingClient, RetryingLoggingClient and more. Three extras already make seven classes.', focus: 'base',
+        mark: { base: ['hot', '7 subclasses?'] }, math: '3 extras → 2³ − 1 = 7 mixes, each its own class' },
+      { cmd: 'interface HttpClient', say: 'Instead, everything shares one small interface, HttpClient, with a single method: get(url).', focus: 'iface',
+        add: ['iface'], mark: { base: null, iface: 'new' }, math: 'one interface; each layer holds the next one inside' },
+      { cmd: 'class Logging', say: 'A decorator implements HttpClient and holds another one inside. Logging writes a line, then calls the inner client.', focus: 'logd',
+        add: ['logd'], mark: { iface: null, logd: 'new' }, go: [['app', 'logd', 'get(url)'], ['logd', 'base', 'get(url)'], ['base', 'net', 'GET']] },
+      { cmd: 'wrap it again', say: 'Wrap the logger in a Retrying decorator. Your code calls the outer layer and cannot tell how many layers there are.', focus: 'retry',
+        add: ['retry'], mark: { logd: null, retry: 'new' }, go: [['app', 'retry', 'get(url)'], ['retry', 'logd', 'get(url)'], ['logd', 'base', 'get(url)']] },
+      { cmd: 'the first try fails', say: 'The network drops the first try. The error travels back up, and Retrying catches it and calls the inner client again.', focus: 'retry',
+        mark: { retry: null },
+        go: [['base', 'net', 'GET'], ['net', 'base', 'timeout', 'bad'], ['base', 'logd', 'error', 'bad'], ['logd', 'retry', 'error', 'bad'], ['retry', 'logd', 'try 2']] },
+      { cmd: 'try 2 works', say: 'The second try gets through. Logging wrote down both attempts, and your code simply receives the data.', focus: 'logd',
+        mark: { retry: ['good', '2 of 3 tries'] },
+        go: [['logd', 'base', 'get(url)'], ['base', 'net', 'GET'], ['net', 'base', 'data', 'back'], ['base', 'logd', 'data', 'back'], ['logd', 'retry', 'data', 'back'], ['retry', 'app', 'data', 'back']] },
+      { cmd: 'add a cache outside', say: 'Add Caching as the outer layer. A repeat request is answered from memory and never reaches the network.', focus: 'cache',
+        add: ['cache'], mark: { retry: null, cache: 'hit' }, go: [['app', 'cache', 'get(url)'], ['cache', 'app', 'data', 'back']] },
+      { cmd: 'order matters', say: 'Order matters. With the cache outside, hits skip retries and logging. Put Logging outermost to log the hits as well.', focus: 'cache',
+        mark: { cache: null }, math: 'new Caching(new Retrying(new Logging(new BasicClient())))' },
+      { cmd: 'built at start-up', say: 'The layers are chosen when the app starts, often from settings. Turning retries off is one line, not a new class.', focus: 'app' },
+      { cmd: 'when to use it', say: 'Use a decorator to add behaviour around calls without editing the class. Too many thin layers can be hard to debug.', focus: 'iface' }
+    ]
+  },
+  {
+    id: 'command', track: 'lld', title: 'Command and undo', tag: 'actions as objects',
+    scenario: 'Give a text editor undo and redo for every action.',
+    math: 'each action is an object with do() and undo()',
+    nodes: [
+      sdN('user', 'client', 'You', 90, 80, { on: true }),
+      sdN('btn', 'class', 'Toolbar', 300, 80, { on: true, lines: ['buttons, shortcuts'] }),
+      sdN('cmd', 'iface', 'Command', 560, 80, { w: 200, lines: ['do()', 'undo()'] }),
+      sdN('ins', 'class', 'InsertText', 330, 250, { lines: ['where, what'] }),
+      sdN('bold', 'class', 'MakeBold', 790, 250, { lines: ['range, old style'] }),
+      sdN('editor', 'class', 'Editor', 560, 390, { on: true, lines: ['text'] }),
+      sdN('hist', 'class', 'History', 880, 390, { lines: ['done: stack', 'redo: stack'] })
+    ],
+    links: [['user', 'btn'], ['btn', 'editor', 'cmd'], ['btn', 'cmd'], ['cmd', 'ins'], ['cmd', 'bold'], ['ins', 'editor'], ['bold', 'editor'], ['btn', 'hist'], ['hist', 'ins'], ['hist', 'bold']],
+    steps: [
+      { cmd: 'requirements', say: 'A text editor needs undo and redo for every action: typing, deleting, making text bold. Buttons and shortcuts trigger them.', focus: 'btn' },
+      { cmd: 'change the text directly?', say: 'If each button edits the text directly, nothing remembers what happened. There is nothing to undo.', focus: 'editor',
+        mark: { editor: ['bad', 'no record'] }, go: [['user', 'btn', 'Bold'], ['btn', 'editor', 'make bold']] },
+      { cmd: 'interface Command', say: 'The Command pattern wraps each action in an object with two methods: do() and undo().', focus: 'cmd',
+        add: ['cmd'], mark: { editor: null, cmd: 'new' } },
+      { cmd: 'class InsertText', say: 'InsertText remembers where it typed and what. Its undo() removes exactly that text again.', focus: 'ins',
+        add: ['ins'], mark: { cmd: null, ins: 'new' }, math: 'InsertText(at 2, "big ")' },
+      { cmd: 'class MakeBold', say: 'MakeBold remembers the range and the old style. Its undo() puts the old style back.', focus: 'bold',
+        add: ['bold'], mark: { ins: null, bold: 'new' } },
+      { cmd: 'type “big ”', say: 'Type “big ”. The toolbar builds an InsertText and runs do(). The text now reads “a big cat”.', focus: 'ins',
+        mark: { bold: null, editor: ['good', 'a big cat'] }, go: [['user', 'btn', 'type'], ['btn', 'cmd', 'new Insert'], ['cmd', 'ins', 'do()'], ['ins', 'editor', 'insert']] },
+      { cmd: 'class History', say: 'Every command that ran is pushed onto a done stack in History. That stack is the undo list.', focus: 'hist',
+        add: ['hist'], mark: { hist: 'new' }, math: 'done: [Insert]', go: [['btn', 'hist', 'push Insert']] },
+      { cmd: 'bold “big”', say: 'Make “big” bold. MakeBold runs and is pushed too, so the done stack now holds two commands.', focus: 'bold',
+        mark: { hist: null, editor: ['good', 'a big cat, bold'] }, math: 'done: [Insert, Bold]',
+        go: [['user', 'btn', 'Bold'], ['btn', 'cmd', 'new Bold'], ['cmd', 'bold', 'do()'], ['bold', 'editor', 'bold'], ['btn', 'hist', 'push Bold']] },
+      { cmd: 'Ctrl+Z', say: 'Press undo. History pops MakeBold, calls its undo(), and moves it onto the redo stack.', focus: 'hist',
+        mark: { editor: ['good', 'a big cat'] }, math: 'done: [Insert]   redo: [Bold]',
+        go: [['user', 'btn', 'Ctrl+Z'], ['btn', 'hist', 'undo'], ['hist', 'bold', 'undo()'], ['bold', 'editor', 'unbold']] },
+      { cmd: 'Ctrl+Y', say: 'Redo pops it back and runs do() again. Typing anything new empties the redo stack.', focus: 'hist',
+        mark: { editor: ['good', 'a big cat, bold'] }, math: 'done: [Insert, Bold]   redo: []',
+        go: [['user', 'btn', 'Ctrl+Y'], ['btn', 'hist', 'redo'], ['hist', 'bold', 'do()'], ['bold', 'editor', 'bold']] },
+      { cmd: 'more uses', say: 'Commands are plain objects, so you can also queue them, save them to replay later, or send them to other users.', focus: 'cmd',
+        mark: { editor: null } }
+    ]
+  },
+  {
+    id: 'splitter', track: 'lld', title: 'Expense splitter', tag: 'balances · fewer payments',
+    scenario: 'Friends share trip costs. Who owes whom, in as few payments as possible?',
+    math: 'each person: what they paid minus their share',
+    nodes: [
+      sdN('grp', 'class', 'Group', 190, 80, { on: true, lines: ['members', 'expenses'] }),
+      sdN('exp', 'class', 'Expense', 190, 250, { lines: ['paid by, amount', 'split rule'] }),
+      sdN('split', 'iface', 'SplitRule', 560, 250, { w: 200, lines: ['shares(amount)'] }),
+      sdN('eq', 'class', 'EqualSplit', 450, 390, { lines: ['amount ÷ people'] }),
+      sdN('ex', 'class', 'ExactSplit', 700, 390, { lines: ['amount per person'] }),
+      sdN('bal', 'class', 'Balances', 900, 80, { lines: ['person → net'] }),
+      sdN('asha', 'client', 'Asha', 200, 90),
+      sdN('ben', 'client', 'Ben', 880, 90),
+      sdN('chen', 'client', 'Chen', 200, 350),
+      sdN('dev', 'client', 'Dev', 880, 350)
+    ],
+    links: [['grp', 'exp'], ['exp', 'split'], ['split', 'eq'], ['split', 'ex'], ['exp', 'bal'],
+      ['asha', 'ben'], ['asha', 'chen'], ['asha', 'dev'], ['ben', 'chen'], ['ben', 'dev'], ['chen', 'dev']],
+    steps: [
+      { cmd: 'requirements', say: 'Friends share costs on a trip. Anyone can add an expense, split it in different ways, and see who owes whom.', focus: 'grp' },
+      { cmd: 'class Expense', say: 'Each Expense records who paid, how much, and how to split it. A Group keeps the members and every expense.', focus: 'exp',
+        add: ['exp'], mark: { exp: 'new' } },
+      { cmd: 'interface SplitRule', say: 'How to split is a choice that varies, so it sits behind a SplitRule interface: equal shares or exact amounts.', focus: 'split',
+        add: ['split', 'eq', 'ex'], mark: { exp: null, split: 'new' } },
+      { cmd: 'hotel ₹1,200 · equal', say: 'Asha pays ₹1,200 for the hotel, split equally. EqualSplit gives each of the four friends a share of ₹300.', focus: 'eq',
+        mark: { split: null }, math: '₹1,200 ÷ 4 people = ₹300 each', go: [['grp', 'exp', 'add hotel'], ['exp', 'split', 'shares(1,200)'], ['split', 'eq', '÷ 4']] },
+      { cmd: 'dinner ₹800 · taxi ₹400', say: 'Ben pays ₹800 for dinner, split equally. Chen pays ₹400 for a taxi, split exactly: Ben 100, Chen 100, Dev 200.', focus: 'ex',
+        math: 'taxi: Asha 0 + Ben 100 + Chen 100 + Dev 200 = ₹400',
+        go: [['grp', 'exp', 'add dinner'], ['grp', 'exp', 'add taxi'], ['exp', 'split', 'shares()'], ['split', 'ex', 'exact']] },
+      { cmd: 'class Balances', say: 'Balances keeps one number per person: what they paid minus their share. The four numbers always add up to zero.', focus: 'bal',
+        add: ['bal'], mark: { bal: 'new' }, math: 'Asha +700 · Ben +200 · Chen −200 · Dev −700 = 0', go: [['exp', 'bal', 'update']] },
+      { cmd: 'pay back each expense', say: 'Paying back every expense one by one takes eight transfers. Here are six of them, for the hotel and the dinner.', focus: 'asha',
+        drop: ['grp', 'exp', 'split', 'eq', 'ex', 'bal'], add: ['asha', 'ben', 'chen', 'dev'],
+        go: [['ben', 'asha', '₹300'], ['chen', 'asha', '₹300'], ['dev', 'asha', '₹300'], ['asha', 'ben', '₹200'], ['chen', 'ben', '₹200'], ['dev', 'ben', '₹200']] },
+      { cmd: 'and two for the taxi', say: 'Two more for the taxi: Ben and Dev pay Chen. Eight transfers for one weekend is a lot of hassle.', focus: 'chen',
+        go: [['ben', 'chen', '₹100'], ['dev', 'chen', '₹200']] },
+      { cmd: 'only the net matters', say: 'Only each person’s net number matters. Asha is owed ₹700 and Ben ₹200. Chen owes ₹200 and Dev owes ₹700.', focus: 'dev',
+        mark: { asha: ['good', 'owed ₹700'], ben: ['good', 'owed ₹200'], chen: ['bad', 'owes ₹200'], dev: ['bad', 'owes ₹700'] } },
+      { cmd: 'biggest debt first', say: 'Match the biggest debtor with the biggest creditor: Dev pays Asha ₹700, and both are square.', focus: 'asha',
+        mark: { dev: ['good', 'square'], asha: ['good', 'square'] }, go: [['dev', 'asha', '₹700']] },
+      { cmd: 'then the rest', say: 'Then Chen pays Ben ₹200: two transfers instead of eight. Greedy is not always the fewest possible, but it is close and fast.', focus: 'ben',
+        mark: { chen: ['good', 'square'], ben: ['good', 'square'] }, go: [['chen', 'ben', '₹200']] },
+      { cmd: 'money needs care', say: 'Store money in whole paise, not decimals. When ₹100 splits three ways, one person takes the spare paisa.', focus: 'chen',
+        math: '10,000 paise ÷ 3 = 3,333 + 3,333 + 3,334' }
+    ]
   }
 ];
 // Hub and rail order: HLD fundamentals, then HLD case studies (method lessons), then LLD.
-const SD_ORDER = ['scale', 'lb', 'cache', 'cdn', 'replicas', 'sharding', 'hashing', 'cap', 'sqlnosql', 'indexes', 'queue', 'idempotency', 'ratelimit', 'observability',
-  'shortener', 'chat', 'feed', 'ride', 'video', 'payments', 'solid', 'strategy', 'observer', 'factory', 'singleton', 'lru', 'parking', 'elevator', 'movies'];
+const SD_ORDER = ['scale', 'lb', 'cache', 'dcache', 'cdn', 'replicas', 'sharding', 'hashing', 'cap', 'sqlnosql', 'indexes', 'queue', 'idempotency', 'ratelimit', 'observability',
+  'shortener', 'chat', 'feed', 'ride', 'video', 'payments', 'typeahead', 'notify', 'crawler', 'dlimit', 'drive', 'leaderboard',
+  'solid', 'strategy', 'observer', 'factory', 'singleton', 'decorator', 'command', 'vending', 'lru', 'parking', 'elevator', 'movies', 'splitter'];
 SD_LESSONS.sort((a, b) => SD_ORDER.indexOf(a.id) - SD_ORDER.indexOf(b.id));
 sdAutoWidths(SD_LESSONS);

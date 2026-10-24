@@ -7,8 +7,55 @@ const store = {};
 const f = new Function('store', `const window = { localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } }, addEventListener(){}, removeEventListener(){} };
 const setInterval = () => 1, clearInterval = () => {};
 class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, o); } }
-${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS, SCENE_INPUT, runFromText, predictQuestion, predictKind };`);
-const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS, SCENE_INPUT, runFromText, predictQuestion, predictKind } = f(store);
+${script}; return { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS, SCENE_INPUT, runFromText, predictQuestion, predictKind, graphBox, graphEdgeKey };`);
+const { SCENES, SCENE_ORDER, Component, PROBLEMS, STORY_CAST, STORY_TASKS, SCENE_INPUT, runFromText, predictQuestion, predictKind, graphBox, graphEdgeKey } = f(store);
+// graph stories: at most 12 nodes with unique ids inside the unit box, edges between real nodes, no two nodes drawn on top of
+// each other (checked at the desktop and the phone size), and every step's states, notes and actor name real nodes and edges
+const NODE_STATES = new Set(['in', 'out', 'future', 'cur', 'hit', 'dup', 'ok', 'paint', 'stored', 'buy', 'best']);
+const EDGE_STATES = new Set(['', 'path', 'out', 'active', 'hide']);
+function checkGraph(S, where, report) {
+  const G = S.graph;
+  if (!G || !Array.isArray(G.nodes) || !Array.isArray(G.edges) || !G.nodes.length) { report(where + ' graph needs nodes and edges'); return; }
+  const ids = new Set();
+  for (const n of G.nodes) {
+    if (typeof n.id !== 'string') report(where + ' node ids are strings, got ' + JSON.stringify(n.id));
+    if (ids.has(n.id)) report(where + ' duplicate node id ' + n.id);
+    ids.add(n.id);
+    if (!(n.x >= 0 && n.x <= 1 && n.y >= 0 && n.y <= 1)) report(where + ' node ' + n.id + ' is outside the unit box');
+    if (n.label == null || String(n.label).length > 3) report(where + ' node ' + n.id + ' needs a label of 1 to 3 characters');
+  }
+  if (G.nodes.length > 12) report(where + ' graph has ' + G.nodes.length + ' nodes (at most 12)');
+  const keys = new Set();
+  for (const e of G.edges) {
+    const k = graphEdgeKey(e);
+    if (!ids.has(e.from) || !ids.has(e.to)) report(where + ' edge ' + k + ' names a node that does not exist');
+    if (e.from === e.to) report(where + ' edge ' + k + ' loops on one node');
+    if (keys.has(k)) report(where + ' duplicate edge ' + k);
+    keys.add(k);
+  }
+  for (const phone of [false, true]) {
+    const B = graphBox(phone ? Object.assign({}, S, { phone: true, AV: 348 }) : S, phone), list = G.nodes;
+    for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
+      const [a, b] = [B.pos[list[i].id], B.pos[list[j].id]];
+      if (Math.hypot(a[0] - b[0], a[1] - b[1]) < 2 * B.r + 6) report(where + ' nodes ' + list[i].id + ' and ' + list[j].id + ' overlap' + (phone ? ' on a phone' : ''));
+    }
+  }
+  if (!STORY_CAST[S.cast]) report(where + ' graph cast missing from STORY_CAST ' + S.cast);
+  S.steps.forEach((st, i) => {
+    if (!st.nodes || typeof st.nodes !== 'object') { report(where + ' ' + i + ' graph step has no nodes'); return; }
+    for (const [k, v] of Object.entries(st.nodes)) {
+      if (!ids.has(k)) report(where + ' ' + i + ' nodes names unknown node ' + k);
+      if (!NODE_STATES.has(v)) report(where + ' ' + i + ' unknown node state ' + v);
+    }
+    for (const [k, v] of Object.entries(st.edges || {})) {
+      if (!keys.has(k)) report(where + ' ' + i + ' edges names unknown edge ' + k);
+      if (!EDGE_STATES.has(v)) report(where + ' ' + i + ' unknown edge state ' + v);
+    }
+    for (const k of Object.keys(st.vals || {})) if (!ids.has(k)) report(where + ' ' + i + ' vals names unknown node ' + k);
+    if (st.actorAt != null && !ids.has(st.actorAt)) report(where + ' ' + i + ' actorAt is not a node ' + st.actorAt);
+  });
+}
+
 let bad = 0;
 for (const id of SCENE_ORDER) {
   const S = SCENES[id];
@@ -83,6 +130,7 @@ for (const id of SCENE_ORDER) {
       if (st.actorAt != null && !ids.has(st.actorAt)) { console.log(id, i, 'actorAt is not a node', st.actorAt); bad++; }
     });
   }
+  if (S.visual === 'graph') checkGraph(S, id, (m) => { console.log(m); bad++; });
   // render every step in every language, on both code tabs, with every fold open
   store['dsaviz-problem'] = id;
   const c = new Component({});
@@ -139,7 +187,32 @@ const REF = {
     for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) if (g[r][c] === '1') { n++; const q = [[r, c]]; g[r][c] = '0'; while (q.length) { const [a, b] = q.pop(); [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => { const x = a + dr, y = b + dc; if (x >= 0 && y >= 0 && x < R && y < C && g[x][y] === '1') { g[x][y] = '0'; q.push([x, y]); } }); } }
     return n;
   },
-  'max-depth': (v) => { const d = (nd) => (nd ? 1 + Math.max(d(nd.l), d(nd.r)) : 0); return d(levelKids(v.arr)); }
+  'max-depth': (v) => { const d = (nd) => (nd ? 1 + Math.max(d(nd.l), d(nd.r)) : 0); return d(levelKids(v.arr)); },
+  // a loop of needs means no order: colour search for a back arrow
+  'course-schedule': (v) => {
+    const out = Array.from({ length: v.n }, () => []), mark = Array(v.n).fill(0);
+    v.pre.forEach(([a, b]) => out[b].push(a));
+    const loop = (x) => { if (mark[x] === 1) return true; if (mark[x] === 2) return false; mark[x] = 1; const r = out[x].some(loop); mark[x] = 2; return r; };
+    return !out.some((_, x) => loop(x));
+  },
+  // the last road whose removal leaves every town connected
+  'redundant-connection': (v) => {
+    const n = v.edges.length;
+    for (let skip = n - 1; skip >= 0; skip--) {
+      const seen = new Set([1]), todo = [1];
+      while (todo.length) { const x = todo.pop(); v.edges.forEach(([a, b], i) => { if (i === skip) return; const y = a === x ? b : b === x ? a : 0; if (y && !seen.has(y)) { seen.add(y); todo.push(y); } }); }
+      if (seen.size === n) return v.edges[skip];
+    }
+    return null;
+  },
+  // Bellman-Ford: relax every road n times
+  'network-delay-time': (v) => {
+    const d = Array(v.n + 1).fill(Infinity); d[v.k] = 0;
+    for (let r = 0; r < v.n; r++) v.times.forEach(([a, b, w]) => { if (d[a] + w < d[b]) d[b] = d[a] + w; });
+    const m = Math.max.apply(null, d.slice(1));
+    return m === Infinity ? -1 : m;
+  },
+  'largest-rectangle-in-histogram': (v) => { let b = 0; for (let i = 0; i < v.nums.length; i++) { let lo = Infinity; for (let j = i; j < v.nums.length; j++) { lo = Math.min(lo, v.nums[j]); b = Math.max(b, lo * (j - i + 1)); } } return b; }
 };
 const BAD = ['', '[1, 2', 'hello world and more', '1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12', '[[1, 2], 3', 'null', '1 / 22 / 333'];
 let runs = 0;
@@ -175,6 +248,8 @@ for (const id of Object.keys(SCENE_INPUT)) {
       S.steps.forEach((st, i) => { if (!Array.isArray(st.cells) || st.cells.length !== R || st.cells.some((row) => row.length !== C)) { console.log(where, i, 'cells do not match items'); bad++; } });
     } else if (S.visual === 'tree') {
       if (S.tree.length > 15) { console.log(where, 'tree has more than 15 nodes'); bad++; }
+    } else if (S.visual === 'graph') {
+      checkGraph(S, where, (m) => { console.log(m); bad++; });
     } else if (S.items.length > 9) { console.log(where, 'more than 9 items'); bad++; }
     if (S.width && S.width > 640) { console.log(where, 'row is too wide for the stage:', S.width); bad++; }
     S.steps.forEach((st, i) => {

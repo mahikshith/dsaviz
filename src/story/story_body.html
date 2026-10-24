@@ -66,6 +66,23 @@
 </div>
 </sc-if>
 
+<sc-if value="{{isGraph}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin-right: {{boardPad}}px; margin-bottom: auto">
+<div role="img" aria-label="{{graph.label}}" style="position: relative; flex-shrink: 0; width: {{graph.w}}px; height: {{graph.h}}px">
+<sc-for list="{{graph.edges}}" as="ge" hint-placeholder-count="6"><div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 100px; height: {{ge.thick}}px; border-radius: 3px; background: {{ge.color}}; opacity: {{ge.op}}; transform: {{ge.move}}; transform-origin: 0 50%; transition: {{move}}, background-color 320ms cubic-bezier(.2,.8,.2,1), opacity 320ms cubic-bezier(.2,.8,.2,1)"></div></sc-for>
+<sc-for list="{{graph.arrows}}" as="ga" hint-placeholder-count="0"><div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: {{ga.size}}px; height: {{ga.size}}px; background: {{ga.color}}; clip-path: polygon(0 0, 100% 50%, 0 100%); opacity: {{ga.op}}; transform: {{ga.move}}; transform-origin: 100% 50%; transition: {{move}}, background-color 320ms cubic-bezier(.2,.8,.2,1), opacity 320ms cubic-bezier(.2,.8,.2,1)"></div></sc-for>
+<sc-for list="{{graph.weights}}" as="gw" hint-placeholder-count="0"><span aria-hidden="true" style="position: absolute; left: 0; top: 0; padding: 0 3px; border-radius: 4px; background: {{t.scene}}; font-family: {{t.mono}}; font-size: {{gw.font}}; font-weight: 700; line-height: 1.15; color: {{gw.ink}}; white-space: nowrap; opacity: {{gw.op}}; transform: {{gw.move}}; transition: opacity 320ms cubic-bezier(.2,.8,.2,1)">{{gw.v}}</span></sc-for>
+<sc-for list="{{graph.nodes}}" as="gn" hint-placeholder-count="6"><div style="position: absolute; left: 0; top: 0; width: {{gn.d}}px; height: {{gn.d}}px; box-sizing: border-box; border-radius: 999px; border: 2px {{gn.ringStyle}} {{gn.ring}}; background: {{gn.fill}}; color: {{gn.ink}}; opacity: {{gn.op}}; box-shadow: {{gn.glow}}; transform: {{gn.move}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: {{gn.font}}; font-weight: 700; white-space: nowrap; transition: {{move}}, opacity 320ms cubic-bezier(.2,.8,.2,1)">{{gn.v}}<span aria-hidden="true" style="position: absolute; right: -6px; top: -7px; min-width: {{gn.markSize}}px; height: {{gn.markSize}}px; padding: 0 2px; box-sizing: border-box; border-radius: 999px; background: {{t.scene}}; font-size: {{gn.markFont}}; line-height: {{gn.markSize}}px; text-align: center; color: {{gn.markColor}}; opacity: {{gn.markOp}}">{{gn.mark}}</span><span style="position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: 3px; padding: 0 3px; border-radius: 4px; background: {{t.scene}}; font-family: {{t.mono}}; font-size: {{gn.tagFont}}; font-weight: 600; line-height: 1.1; color: {{t.sceneText}}; white-space: nowrap; opacity: {{gn.tagOp}}; transition: opacity 200ms ease-out">{{gn.tag}}</span></div></sc-for>
+<div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: {{graph.actor.size}}px; height: {{graph.actor.size}}px; border-radius: 999px; background: {{graph.actor.color}}; color: {{t.scene}}; border: 2px solid {{t.scene}}; opacity: {{graph.actor.op}}; transform: {{graph.actor.move}}; display: flex; align-items: center; justify-content: center; font-size: {{graph.actor.font}}; font-weight: 800; transition: {{move}}, opacity 200ms ease-out">{{graph.actor.initial}}</div>
+</div>
+<sc-if value="{{graph.hasLegend}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; max-width: 600px">
+<sc-for list="{{graph.legend}}" as="gl" hint-placeholder-count="4"><div style="display: flex; align-items: center; gap: 6px; font-size: {{graph.legendFont}}; color: {{t.sceneText}}; white-space: nowrap"><span aria-hidden="true" style="width: {{graph.swatch}}; height: {{gl.h}}; box-sizing: border-box; border-radius: {{gl.radius}}; border: 2px {{gl.ringStyle}} {{gl.ring}}; background: {{gl.fill}}; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: #1D1B18">{{gl.mark}}</span>{{gl.label}}</div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
 <sc-if value="{{isGrid}}" hint-placeholder-val="{{ false }}">
 <div class="pp-gridwrap" style="display: flex; gap: 24px; align-items: center; margin-right: {{boardPad}}px; margin-bottom: auto">
 <div role="img" aria-label="{{grid.label}}" style="position: relative; flex-shrink: 0; width: {{grid.w}}px; height: {{grid.h}}px">

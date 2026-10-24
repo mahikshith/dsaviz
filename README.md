@@ -4,7 +4,7 @@ Data structures and algorithms, taught as animated stories. Every problem has a 
 
 ## See it
 
-Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 22 linked pages, 40 animated stories covering all 16 patterns, a master sheet of 553 problems, a code editor that runs 351 problems' tests in JavaScript and Python in the browser plus SQL practice on SQLite, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
+Open `dist/index.html` in any browser by double-clicking it. That one file is the whole website: 22 linked pages, 47 animated stories covering all 16 patterns plus the Graphs and Tries groups, a master sheet of 553 problems, a code editor that runs 351 problems' tests in JavaScript and Python in the browser plus SQL practice on SQLite, a step-by-step Git visual, a System design section (29 animated lessons: 14 HLD fundamentals, 6 four-step case studies, 9 LLD), 21 animated AI & ML lessons, and four themes: Max (the default: near-black, volt lime, Anton headlines, Outfit body), light, dark and terminal. It needs no server and no internet apart from the web fonts.
 
 Or serve it locally:
 
@@ -101,11 +101,13 @@ The Predict toggle builds each question from `rules`: the words after "→" are 
 
 Add the problem in plain words to `STORY_TASKS` in `src/story/tasks.js` (two to four short sentences: the real task first, then the characters). `scenecheck.js` fails without it.
 
-Use `visual: 'letters'` with per-step `cells` states (`in`, `out`, `cur`, `hit`, `dup`, `ok`, `paint`, `stored`, `buy`, `best`) or `visual: 'planks'` for bar heights. Give `actorLabels` one name for a single walker or two names for an L/R pair.
+Use `visual: 'letters'` with per-step `cells` states (`in`, `out`, `cur`, `hit`, `dup`, `ok`, `paint`, `stored`, `buy`, `best`; optional per-step `vals` relabel the tiles, as in the LRU Cache rack) or `visual: 'planks'` for bar heights. Give `actorLabels` one name for a single walker or two names for an L/R pair.
 
 For maps, floors and tables use `visual: 'grid'` (see `scenes_mx.js`, `scenes_df.js`, `scenes_bf.js`, `scenes_dp.js`). `items` is a 2D array of values, up to 8 by 8, and every step carries `cells`, a 2D array of the same state names in the same shape. Optional per step: `vals` (the values at that moment, for tables that fill in or tiles that move), `path` (a list of `[r, c]` drawn as a line under the tiles) and `actorAt: [r, c]` (the companion's badge; `cast` must be a `STORY_CAST` key). Optional per scene: `rowHeads`/`colHeads` to replace the faint indices, `legend` as `[[state, label]]` (use `'path'` for the line), and `maxTile`. Code lines can carry a third element naming the step kinds they serve, and `lines: tagLines(code)` builds the lines map. `scenecheck.js` fails if any step's grid is a different shape from `items`.
 
 For decision trees and binary trees use `visual: 'tree'` (see `scenes_bt.js`, `scenes_dft.js`, `scenes_bft.js`). `tree` is a list of `{ id, label, parent, side }` (one root, up to about 16 nodes and depth 4; `side: 'L'` or `'R'` keeps a lone child on its own side). The engine lays it out top-down. Every step carries `nodes`, a map from id to a state name; a node missing from the map is hidden, so a tree can grow as it is explored. Optional per step: `edge` (id → `'path'` or `'out'`, for the line into that node), `actorAt` (a node id), `vals` (id → new label), `tags` (id → a short note drawn beside the node; set `tags: true` on the scene) and `tree` (a reshaped copy with the same ids, for moves such as swapping children). A scene can also bring its own `kit` (quiz) when the pattern's default quiz is about another problem. `scenecheck.js` fails on duplicate ids, missing parents, loops, or a step that names a node that does not exist.
+
+For networks use `visual: 'graph'` (see `scenes_gp.js`). `graph` is `{ nodes: [{ id, label, x, y }], edges: [{ from, to, w, directed }] }`: string ids, labels of up to 3 characters, and hand-placed `x`, `y` in a unit box (0 to 1) that the engine scales to the stage; custom input can place nodes round a ring with `ringGraph(ids)`. Every step carries `nodes` (id → a cell state; a node missing from the map is hidden). Optional per step: `edges` (edge key `from-to` → `'path'`, `'active'`, `'out'` or `'hide'`), `vals` (id → a short note under the node, such as a distance, an in-degree or a parent) and `actorAt` (a node id). `w` draws a weight at the middle of the edge, `directed` an arrowhead. On a phone the nodes and type are drawn bigger so labels stay at 12px or more after the stage is zoomed. `scenecheck.js` fails on more than 12 nodes, an edge or state naming a missing node or edge, or two nodes drawn on top of each other at the desktop or the phone size.
 
 ## Add an AI & ML lesson
 
@@ -146,7 +148,7 @@ Add an entry to `SQL_SPECS` in `shared/sql_spec.js`, keyed by the sheet's slug: 
 
 ## Known gaps
 
-- 40 of 57 catalog problems have an animated story, covering all 16 patterns. The rest have story, synopsis and briefing. Pages read these counts from `SITE_INDEX.counts`, so they stay current.
+- 47 of 62 catalog problems have an animated story, covering all 16 patterns plus Graphs and Tries. The rest have story, synopsis and briefing. Pages read these counts from `SITE_INDEX.counts`, so they stay current.
 - Language basics: only chapter 03 is written.
 - Pages are laid out at 1440px and scaled down on small screens. Two pages have their own phone layout: the problem page (`Story.dc.html`, `data-fluid`: below 760px it stacks problem, example, animation and code) and the Git page (`data-fit`).
 - Success stories on the landing page are labelled illustrative. Replace them with real, consented stories before launch.

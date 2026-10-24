@@ -15,6 +15,26 @@ function tagLines(code) {
   Object.keys(code).forEach((lang) => { out[lang] = {}; code[lang].forEach(([, , tag], i) => { (tag || '').split('|').filter(Boolean).forEach((k) => { if (!out[lang][k]) out[lang][k] = i + 1; }); }); });
   return out;
 }
+// Graph geometry, shared by the page and tests/scenecheck.js. S.graph.nodes carry hand-placed x, y in a unit box (0 to 1);
+// the box is scaled into the stage. On a phone (S.phone, from phoneScene) the box takes the stage's real width and grows
+// taller, so nodes stay apart, with labels and notes at 12px or more.
+function graphBox(S, phone) {
+  const r = phone ? 17 : 18, font = phone ? 14 : 14, tagFont = 12, wFont = 12;
+  const W = phone ? (S.AV || 348) - 8 : S.graphW || (S.board ? 400 : 560), H = phone ? 232 : 186;
+  const mx = r + 10, mt = r + 12, mb = r + tagFont + 8;
+  const pos = {};
+  S.graph.nodes.forEach((n) => { pos[n.id] = [Math.round(mx + n.x * (W - 2 * mx)), Math.round(mt + n.y * (H - mt - mb))]; });
+  return { r, font, tagFont, wFont, W, H, pos, arrow: 9, actor: phone ? 22 : 20 };
+}
+function graphEdgeKey(e) { return e.id || e.from + '-' + e.to; }
+// Nodes spread evenly round an ellipse, for custom input (up to 8 nodes stay apart in both sizes).
+function ringGraph(ids, labels) {
+  const n = ids.length;
+  return ids.map((id, i) => {
+    const a = -Math.PI / 2 + (2 * Math.PI * i) / n;
+    return { id, label: labels ? labels[i] : String(id), x: +(0.5 + 0.5 * Math.cos(a)).toFixed(3), y: +(0.5 + 0.5 * Math.sin(a)).toFixed(3) };
+  });
+}
 // Motion: one curve family for the whole storyboard. The helmet CSS swaps these for fades under reduced motion.
 const MOVE = 'transform 420ms cubic-bezier(.45,.05,.2,1)';   // on-screen moves: actors, the window frame, the line marker
 const SETTLE = 'transform 320ms cubic-bezier(.2,.8,.2,1), opacity 320ms cubic-bezier(.2,.8,.2,1)'; // tiles lift, dim and land
@@ -40,7 +60,7 @@ function stageWidth() {
 function phoneScene(S0) {
   const AV = stageWidth();
   const S = Object.assign({}, S0, { phone: true, AV });
-  if (S0.visual === 'grid' || S0.visual === 'tree') return S;
+  if (S0.visual === 'grid' || S0.visual === 'tree' || S0.visual === 'graph') return S;
   const n = Math.max(S0.items.length, (S0.items2 || []).length);
   const pitch = Math.min(S0.pitch, Math.floor((AV + 4) / n));
   const tile = S0.visual === 'planks' ? Math.max(12, Math.round(S0.tile * pitch / S0.pitch))
@@ -264,7 +284,7 @@ class Component extends DCLogic {
     } else if (S.visual === 'letters' && st.cells) {
       tiles = S.items.map((c, i) => {
         const look = cellLook(st.cells[i]);
-        return { v: c, fill: look.fill, ink: look.ink, ring: look.ring, glow: look.glow || 'none', lift: look.lift || 'none', op: look.op || 1, mark: look.mark || String(i), idxColor: look.markColor || t.sceneMuted };
+        return { v: st.vals ? st.vals[i] : c, fill: look.fill, ink: look.ink, ring: look.ring, glow: look.glow || 'none', lift: look.lift || 'none', op: look.op || 1, mark: look.mark || String(i), idxColor: look.markColor || t.sceneMuted };
       });
     } else if (S.visual === 'letters') {
       tiles = S.items.map((c, i) => {
@@ -422,9 +442,86 @@ class Component extends DCLogic {
     return tree;
   }
 
+  // The graph: S.graph = { nodes: [{ id, label, x, y }], edges: [{ from, to, w, directed }] }. Per step: st.nodes (id → state; a node
+  // missing from the map is hidden), st.edges (edge key "from-to" → 'path', 'active', 'out' or 'hide'), st.vals (id → a short note
+  // under the node: a distance, an in-degree, a parent) and st.actorAt (a node id). Nodes and the actor move by transform only.
+  graphAt(S, st, t) {
+    const phone = !!S.phone, B = graphBox(S, phone), byId = {};
+    S.graph.nodes.forEach((n) => { byId[n.id] = n; });
+    const shown = (id) => !!(st.nodes && st.nodes[id]);
+    const es = st.edges || {};
+    const keys = new Set(S.graph.edges.map(graphEdgeKey));
+    const edges = [], weights = [], arrows = [];
+    S.graph.edges.forEach((e) => {
+      const key = graphEdgeKey(e), state = es[key] || '';
+      const [x1, y1] = B.pos[e.from], [x2, y2] = B.pos[e.to];
+      const len = Math.hypot(x2 - x1, y2 - y1) || 1, ux = (x2 - x1) / len, uy = (y2 - y1) / len;
+      // two one-way links between the same pair are drawn side by side
+      const off = e.directed && keys.has(e.to + '-' + e.from) ? 6 : 0;
+      const nx = -uy * off, ny = ux * off;
+      const head = e.directed ? B.arrow : 0;
+      const ax = x1 + ux * B.r + nx, ay = y1 + uy * B.r + ny, bx = x2 - ux * (B.r + head * 0.7) + nx, by = y2 - uy * (B.r + head * 0.7) + ny;
+      const L = Math.max(1, Math.hypot(bx - ax, by - ay)), ang = Math.atan2(uy, ux) * 180 / Math.PI;
+      const thick = state === 'path' ? 5 : state === 'active' ? 4 : 2;
+      const color = state === 'path' ? t.path : state === 'active' ? t.left : t.treeEdge;
+      const op = !shown(e.from) || !shown(e.to) || state === 'hide' ? 0 : state === 'out' ? 0.3 : 1;
+      edges.push({ key, thick, color, op, move: 'translate(' + ax.toFixed(1) + 'px, ' + (ay - thick / 2).toFixed(1) + 'px) rotate(' + ang.toFixed(2) + 'deg) scaleX(' + (L / 100).toFixed(4) + ')' });
+      if (head) {
+        const tx = x2 - ux * B.r + nx, ty = y2 - uy * B.r + ny;
+        arrows.push({ size: head, color, op, move: 'translate(' + (tx - head).toFixed(1) + 'px, ' + (ty - head / 2).toFixed(1) + 'px) rotate(' + ang.toFixed(2) + 'deg)' });
+      }
+      if (e.w != null) {
+        const side = off ? 2.4 : 1;
+        const wx = (x1 + x2) / 2 + nx * side - uy * B.wFont * 0.85, wy = (y1 + y2) / 2 + ny * side + ux * B.wFont * 0.85;
+        weights.push({ v: String(e.w), font: B.wFont + 'px', op: op ? (state === 'out' ? 0.5 : 1) : 0, ink: state === 'active' ? t.left : t.sceneText,
+          move: 'translate(' + wx.toFixed(1) + 'px, ' + wy.toFixed(1) + 'px) translate(-50%, -50%)' });
+      }
+    });
+    const nodes = S.graph.nodes.map((n) => {
+      const state = st.nodes && st.nodes[n.id];
+      const look = Object.assign({}, this.cellLook(state || 'in', t));
+      if (state === 'out') { look.ink = t.sceneMuted; look.op = 1; look.mark = '✗'; look.markColor = t.sceneMuted; }
+      if (state === 'future') { look.fill = t.dead; look.ink = t.sceneText; look.ring = t.treeEdge; look.op = 1; }
+      if (state === 'buy') look.ring = t.sceneText;
+      const mark = look.mark && look.mark.length <= 2 && look.mark !== '✎' ? look.mark : '';
+      const tag = st.vals && st.vals[n.id] != null ? String(st.vals[n.id]) : '';
+      const [x, y] = B.pos[n.id];
+      return { id: n.id, v: String(n.label), x: x - B.r, y: y - B.r, d: B.r * 2, fill: look.fill, ink: look.ink, ring: look.ring, glow: look.glow || 'none', op: state ? look.op || 1 : 0,
+        grow: state ? 1 : 0.6, mark, markColor: look.markColor || t.sceneMuted, markOp: mark ? 1 : 0, tag, tagOp: tag ? 1 : 0, ringStyle: state === 'buy' ? 'dashed' : 'solid',
+        font: B.font + 'px', tagFont: B.tagFont + 'px', markFont: (phone ? 12 : 10) + 'px', markSize: phone ? 16 : 14 };
+    });
+    const graph = { w: B.W, h: B.H, nodes, edges, arrows, weights };
+    const castName = (STORY_CAST[S.cast] || {}).name || 'The guide';
+    const nameOf = (id) => String(byId[id].label);
+    const count = S.graph.nodes.filter((n) => shown(n.id)).length;
+    const lit = S.graph.edges.filter((e) => ['path', 'active'].includes(es[graphEdgeKey(e)]) && shown(e.from) && shown(e.to));
+    graph.label = (S.graphLabel || 'Graph') + ', ' + count + (count === 1 ? ' node' : ' nodes') + ' shown. ' + st.verdict.replace(/[.!?]$/, '') +
+      (lit.length ? '. Highlighted: ' + lit.map((e) => nameOf(e.from) + (e.directed ? ' to ' : ' and ') + nameOf(e.to)).join(', ') : '') +
+      (st.actorAt != null && byId[st.actorAt] ? '. ' + castName + ' is at ' + nameOf(st.actorAt) : '') +
+      (st.vals && Object.keys(st.vals).some(shown) ? '. Notes: ' + S.graph.nodes.filter((n) => shown(n.id) && st.vals[n.id] != null).map((n) => nameOf(n.id) + ' ' + st.vals[n.id]).join(', ') : '') + '.';
+    graph.actor = { move: 'translate(0px, 0px)', size: 0, op: 0, initial: '', color: 'transparent', font: '10px' };
+    if (st.actorAt != null && byId[st.actorAt]) {
+      const a = B.actor, who = STORY_CAST[S.cast] || { initial: '?', color: 'left' }, [x, y] = B.pos[st.actorAt];
+      graph.actor = { move: 'translate(' + Math.round(x - B.r - a * 0.45) + 'px, ' + Math.round(y - B.r - a * 0.45) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.round(a * 0.5) + 'px' };
+    }
+    graph.legend = (S.legend || []).map(([state, label]) => {
+      if (state === 'path' || state === 'active') return { label, fill: state === 'path' ? t.path : t.left, ring: state === 'path' ? t.path : t.left, mark: '', ringStyle: 'solid', radius: '3px', h: '6px' };
+      const look = this.cellLook(state, t);
+      const item = { label, fill: look.fill, ring: look.ring === 'transparent' ? 'rgba(255,255,255,0.18)' : look.ring, mark: look.mark && look.mark.length <= 2 && look.mark !== '✎' ? look.mark : '', ringStyle: 'solid', radius: '999px', h: '14px' };
+      if (state === 'future') Object.assign(item, { fill: t.dead, ring: t.treeEdge });
+      if (state === 'out') Object.assign(item, { fill: t.dead, mark: '' });
+      if (state === 'buy') Object.assign(item, { ring: t.sceneText, ringStyle: 'dashed' });
+      return item;
+    });
+    graph.hasLegend = graph.legend.length > 0;
+    graph.legendFont = '12px';
+    graph.swatch = '14px';
+    return graph;
+  }
+
   // The actors under a row of tiles for one step (none for grids and trees).
   castAt(S, st, t) {
-    const pitch = S.pitch || 0, tileW = S.tile || 0, found = st.done, boxed = S.visual === 'grid' || S.visual === 'tree';
+    const pitch = S.pitch || 0, tileW = S.tile || 0, found = st.done, boxed = S.visual === 'grid' || S.visual === 'tree' || S.visual === 'graph';
     const half = S.phone ? 14 : 28;   // half the actor box: 56px on desktop, 28px on phones (labels overflow it, centred)
     const mouthSmile = 'M20 35 Q28 41 36 35', mouthFlat = 'M21 36 L35 36';
     const actorAt = (idx, o) => Object.assign({ x: idx * pitch + tileW / 2 - half, eye: 3.2, mouth: mouthSmile, extra: '', extraFill: 'transparent', size: 40 }, o);
@@ -472,7 +569,7 @@ class Component extends DCLogic {
     const atEnd = si === steps.length - 1;
 
     // ---- one focus per beat: what changed since the step before is lifted, the rest steps back ----
-    const isGrid = S.visual === 'grid', isTree = S.visual === 'tree', boxed = isGrid || isTree;
+    const isGrid = S.visual === 'grid', isTree = S.visual === 'tree', isGraph = S.visual === 'graph', boxed = isGrid || isTree || isGraph;
     const now = boxed ? { tiles: [], tiles2: [] } : this.tilesAt(S, st, t);
     const before = prevSt && !boxed ? this.tilesAt(S, prevSt, t) : null;
     const sameLook = (a, b) => a.fill === b.fill && a.ring === b.ring && a.mark === b.mark && a.op === b.op && a.v === b.v;
@@ -504,6 +601,19 @@ class Component extends DCLogic {
         const focus = dim && changed[i] && x.op > 0, back = dim && !changed[i] && x.op > 0;
         return Object.assign(x, { op: back ? Math.max(0.35, +(x.op * 0.65).toFixed(2)) : x.op, glow: back ? 'none' : x.glow,
           move: 'translate(' + x.x + 'px, ' + x.y + 'px) scale(' + (focus ? 1.06 : x.grow) + ')' });
+      });
+    }
+    const graph = isGraph ? this.graphAt(S, st, t) : { w: 0, h: 0, nodes: [], edges: [], arrows: [], weights: [], label: '', legend: [], hasLegend: false, legendFont: '12px', swatch: '14px', actor: blank.actor };
+    if (isGraph) {
+      // one focus per beat: nodes whose look or note changed grow a touch, the rest step back
+      const old = prevSt ? this.graphAt(S, prevSt, t).nodes : null;
+      const same = (a, b) => a.fill === b.fill && a.ring === b.ring && a.mark === b.mark && a.op === b.op && a.tag === b.tag;
+      const changed = graph.nodes.map((x, i) => !old || !same(x, old[i]));
+      const dim = !!old && changed.some(Boolean) && !changed.every(Boolean);
+      graph.nodes = graph.nodes.map((x, i) => {
+        const focus = dim && changed[i] && x.op > 0, back = dim && !changed[i] && x.op > 0;
+        return Object.assign(x, { op: back ? Math.max(0.4, +(x.op * 0.7).toFixed(2)) : x.op, glow: back ? 'none' : x.glow,
+          move: 'translate(' + x.x + 'px, ' + x.y + 'px) scale(' + (focus ? 1.08 : x.grow) + ')' });
       });
     }
 
@@ -574,7 +684,7 @@ class Component extends DCLogic {
       exampleIn: SCENES[S.id].example[0], exampleOut: SCENES[S.id].example[1].replace(/^(answer|after)\s*=\s*/, ''),
       // storyboard
       storyName: P.story, goal: S.goal,
-      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid, isTree, showActors: !boxed, grid, tree,
+      isLanterns: S.visual === 'lanterns', isLetters: S.visual === 'letters', isPlanks: S.visual === 'planks', isGrid, isTree, isGraph, showActors: !boxed, grid, tree, graph,
       hasRow2: !!S.items2, rowLabels: S.rowLabels || ['', ''],
       tiles, tiles2, water, frame, showFrame, frameBottom: S.visual === 'planks' ? '0' : '3px', frameBar2: S.visual === 'planks' ? 0 : 1,
       tileW, tileH: S.tileH || 84, tileGap: pitch - tileW, tileFont: (S.font || 34) + 'px',

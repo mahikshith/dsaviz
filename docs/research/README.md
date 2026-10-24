@@ -4,7 +4,7 @@ What this folder is for: research for turning dsaviz into **DSAMaxxing**. Each s
 
 ## Rules we followed
 
-- **Bot checks stop crawling.** If a site serves a bot check, CAPTCHA or rate limit, we stop and record the gap. We never route around it. prachub.com is the one case so far.
+- **Bot checks stop crawling.** If a site serves a bot check, CAPTCHA or rate limit, we stop and record the gap. We never route around it. Blocked so far: prachub.com, LeetCode, HackerRank, Codeforces, OpenAI blog, OpenReview.
 - **robots.txt is respected.** See [extracts/robots.md](extracts/robots.md). algosimplified's content signals allow reference use only and forbid AI training. GitHub disallows `/tree`, `/raw` and `/search`, so we read only repo roots and topic pages.
 - **Login-only pages are skipped** and noted, never entered.
 - **Copyright.**
@@ -28,6 +28,11 @@ What this folder is for: research for turning dsaviz into **DSAMaxxing**. Each s
 | Visual teaching | [NeetCode](platforms/neetcode.md) | [links](links/neetcode.md) | in guide | 10 pages |
 | Visual teaching | [ByteByteGo](platforms/bytebytego.md) | [links](links/bytebytego.md) | in guide | 9 pages |
 | Course platforms | [Scaler](platforms/scaler.md), [InterviewBit](platforms/interviewbit.md), [Coursera](platforms/coursera.md), [CodeSignal](platforms/codesignal.md) | [scaler](links/scaler.md), [ib](links/interviewbit.md), [coursera](links/coursera.md), [codesignal](links/codesignal.md) | in guide | 37 pages |
+| More DSA platforms | [summary: platforms-more](platforms-more.md), plus 17 guides in `platforms/` | `links/<site>.md` | in guides | 14 crawled; LeetCode, HackerRank and Codeforces blocked |
+| System design (HLD/LLD) | [system-design](system-design.md) | [links](links/system-design.md) | in guide | 22 pages |
+| ML & data science | [ml-data-science](ml-data-science.md) | [links](links/ml-data-science.md) | in guide | 15 sources |
+| AI now | [ai-now](ai-now.md) | [links](links/ai-now.md) | in guide | 60 primary sources |
+| Skills | skills.md on branch `dsamaxxing/skills` | n/a | n/a | 8 installed, 2 rejected |
 | Our own look | [Gym Buddy visual language](gym-buddy-visual-language.md) | n/a | `mahikshith/workout` | done |
 
 ## dsaviz today
@@ -39,32 +44,83 @@ What this folder is for: research for turning dsaviz into **DSAMaxxing**. Each s
 - Pages: Library (learning path, by pattern, by company), Revisit (a spaced-review demo), Profile (heatmap, certificates), Leaderboard, Interview, Glossary and Basics.
 - Progress lives in localStorage. Streak and league figures are demo data.
 
-## Feature gap
+## Feature parity checklist
 
-✓ = has it, ◐ = partial or demo, ✗ = missing. "Us" is dsaviz today.
+Every feature seen on any researched site, who has it, and where DSAMaxxing stands. **Have** means we already do it; **Better** means we do it better than any rival seen; **Building** means an open PR does it; **Planned** means it's queued with a PR name. Every missing item has a plan.
 
-| Feature | Us | algomaster | algosimplified | codolio | NeetCode | VisuAlgo / USFCA | Plan |
-|---|---|---|---|---|---|---|---|
-| Animated, scrubbable step-through | ◐ (9 stories) | ✓ (647 animations) | ✗ | ✗ | ✗ | ✓ | More stories (PR 4+) |
-| Story and characters per pattern | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | Our moat: keep it |
-| Code panel with active-line highlight | ✓ | ✓ | ✗ | ✗ | ✗ | VisuAlgo pseudocode | Keep it |
-| Input presets / custom input in visualizer | ✗ | ✓ | ✗ | ✗ | ✗ | ✓ | Add to the player |
-| Speed control and keyboard transport | ◐ | ✓ | ✗ | ✗ | ✗ | ✓ | Add (Space, arrows, +/−) |
-| Pattern-first master sheet with filters | ◐ (58) | ✓ (300) | ✓ (207 + more) | ✓ (company) | ✓ (150) | ✗ | Our own sheet (PR 3) |
-| Company tags | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | Expand them |
-| Favourites and revision stars | ◐ | ✓ | ✓ | ✓ | ✗ | ✗ | PR 3 |
-| Random unsolved pick | ✗ | ✓ | ✓ | ✗ | ✗ | ✗ | PR 3 |
-| Daily challenge, seeded by date | ◐ (demo) | ✗ | ✓ (stale) | ✗ | ✗ | ✗ | PR 2/3 |
-| Spaced-repetition revisit queue | ◐ (demo) | ✗ | ✗ | ✓ | ✗ | ✗ | Make it real, local |
-| Streak, heatmap, XP | ◐ (demo) | ✓ | ✗ | ✓ | ✓ | ✗ | Real localStorage data |
-| Progress export/import | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | Add (no rival has it) |
-| Pattern roadmap graph | ◐ (8-stage path) | ✓ | ✗ | ✗ | ✓ | ✗ | Rings on the path |
-| System design track | ✗ | ✓ | ✓ (HLD sheet, links broken) | ✗ | ◐ | ✗ | Later, seeded from CC BY primer |
-| LLD / concurrency | ✗ | ✓ | ✓ | ✗ | ✗ | ✗ | Later |
-| AI/ML track | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | Later (MIT/Apache sources) |
-| Mock interview / timer | ◐ | ✓ | ✗ | ✗ | ✓ (Versus) | ✗ | Local timer and rubric |
-| Shareable stats card | ◐ (copy text) | ✗ | ✗ | ✓ | ✗ | ✗ | Client-rendered PNG |
-| Link and count integrity checks | ✗ | n/a | ✗ (broken) | n/a | n/a | n/a | Build-time test |
+### Learn: explanations and visuals
+
+| Feature | Who has it | DSAMaxxing | PR |
+|---|---|---|---|
+| Animated, scrubbable step-through per problem | algomaster (647), VisuAlgo, USFCA | **Better**: 25 stories with a cast, code-line sync and a watch panel; more coming | #3 #4 #5, `stories-grid` |
+| Story or characters per pattern | nobody | **Better** (unique) | n/a |
+| Pseudocode/code panel synced to the step | VisuAlgo, algomaster | **Have**, in 5 languages | n/a |
+| Grid/matrix and DP-table visuals | VisuAlgo, USFCA | **Building** | `stories-grid` |
+| Tree and graph visuals (DFS/BFS/backtracking trees) | VisuAlgo, USFCA, hello-algo | **Planned** | `stories-tree` |
+| Custom input and input presets in the visualizer | VisuAlgo, USFCA, algomaster | **Planned** | `player-input` |
+| Speed control and keyboard transport | VisuAlgo, USFCA | **Building** (one-page player) | `problem-page` |
+| One-page problem view (statement, example, animation, code) | LeetCode, NeetCode, algomaster | **Building** | `problem-page` |
+| Plain one-level explanation with a "go deeper" fold | Brilliant, CS50 Shorts | **Building** (replaces the Kid/Builder/Expert switch) | `problem-page` |
+| Predict-the-next-step questions | Brilliant, VisuAlgo e-lecture quiz | **Have** (predict mode) | n/a |
+| Concept lessons before problems | algomaster, Educative, Scaler, hello-algo | **Partial** (Basics, Glossary) | `pattern-intros` |
+| "Use it when" card per pattern | Educative Grokking, NeetCode | **Planned** | `pattern-intros` |
+| Video lessons | NeetCode, AlgoExpert, CS50, takeUforward | **Not planned**: animated stories replace video | n/a |
+| Text-to-speech narration | algomaster (tts keyframes) | **Planned** (Web Speech API, local) | `narration` |
+
+### Practise: problems and code
+
+| Feature | Who has it | DSAMaxxing | PR |
+|---|---|---|---|
+| In-browser editor | LeetCode, NeetCode, algomaster, CodeSignal, AlgoExpert | **Building**: CodeMirror 6 | #8 |
+| Run and submit against hidden tests | LeetCode, NeetCode, CSES, InterviewBit | **Building**: JS and Python run in the browser; tests for 9 problems | #8, then `tests-all` |
+| Java/C++/Go execution | LeetCode, HackerRank | **Planned** (WASM toolchains or Judge0-style API later) | `runner-more-langs` |
+| Test specs for every animated problem | LeetCode | **Planned** | `tests-all` |
+| Master sheet with pattern groups and filters | algomaster, algosimplified, NeetCode, takeUforward, codolio | **Building**: 216 problems, our own curation | #6 |
+| Company tags and filter | algomaster, codolio, InterviewBit, LeetCode | **Have** (catalog), on the sheet | #6 |
+| Random unsolved pick | algomaster, algosimplified | **Building** | #6 |
+| Daily challenge or problem of the day | algosimplified, GfG, freeCodeCamp, LeetCode | **Building** ("Today's 5") | #6 |
+| Revision stars and favourites | algomaster, algosimplified, codolio | **Building** | #6 |
+| Spaced-repetition revisit queue | codolio | **Partial** (demo Revisit page) | `revisit-real` |
+| Notes per problem | codolio, LeetCode | **Planned** | `notes` |
+| Mock interview timer and self-score rubric | algomaster, NeetCode Versus, Hello Interview | **Partial** (Interview page) | `interview-mock` |
+| Contest calendar | codolio, AtCoder | **Planned** (static list) | `contests` |
+| SQL and concurrency tracks | algomaster, algosimplified | **Planned** (later) | n/a |
+
+### Progress and motivation
+
+| Feature | Who has it | DSAMaxxing | PR |
+|---|---|---|---|
+| Local-first progress, no login needed | algosimplified, freeCodeCamp, NeetCode (logged out) | **Have** | n/a |
+| Progress export and import | nobody seen | **Better** (unique) | #6 |
+| Streak and heatmap from real activity | codolio, NeetCode, takeUforward, InterviewBit | **Partial** (demo data) | `progress-real` |
+| Progress rings per pattern and tier | takeUforward, NeetCode, InterviewBit | **Building** (sheet), more planned | #6, `components` |
+| Medals and badges | InterviewBit, Gym Buddy (ours) | **Partial** (certificates) | `components` |
+| XP toasts and celebrations | algomaster, prachub | **Partial** | `components` |
+| Shareable stats card (image) | codolio | **Partial** (copy text) | `share-card` |
+| Leaderboard | algomaster, codolio, InterviewBit | **Partial** (demo; real needs a backend) | `backend` (later) |
+| Roadmap or dependency graph | roadmap.sh, NeetCode, algomaster | **Partial** (8-stage path) | `pattern-map` |
+
+### Sections beyond DSA
+
+| Feature | Who has it | DSAMaxxing | PR |
+|---|---|---|---|
+| System design (HLD) course | ByteByteGo, Hello Interview, Design Gurus, algomaster | **Planned**, seeded from system-design-primer (CC BY) | `sd-hld` |
+| LLD and design patterns | refactoring.guru, algomaster, Design Gurus | **Planned**, seeded from kousiknath/LowLevelDesign (MIT) and our own words | `sd-lld` |
+| ML & data science | Kaggle Learn, fast.ai, Google MLCC, d2l | **Planned**, seeded from Google MLCC (CC BY) and the HF course (Apache-2.0) | `ml-track` |
+| AI now (reasoning, JEPA, agents, RAG, MoE…) | nobody in one place | **Planned**: unique | `ai-now` |
+| Git, visual and one-screen | algomaster | **Building** | `git-visual` |
+
+### Platform
+
+| Feature | Who has it | DSAMaxxing | PR |
+|---|---|---|---|
+| Mobile-friendly layout | most | **Partial** (scaled 1440 layout) | `mobile` |
+| Mobile app | algomaster, NeetCode | **Not planned** (a PWA later) | `pwa` |
+| Theme choice | algomaster, CodeSignal | **Better** (Max, Light, Dark, Terminal) | #1 |
+| Search across the site | algosimplified, GfG | **Partial** (library search) | `search` |
+| AI tutor or hints | Scaler, Educative, CodeSignal, NeetBot | **Partial** (3 hints per problem); AI later | `ai-tutor` (later) |
+| Link and count integrity tests | nobody | **Better** | #6 |
+| Accessibility passes | rarely visible | **Have** (each UI PR runs one) | ongoing |
 
 ## What DSAMaxxing takes, in order
 

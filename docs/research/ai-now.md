@@ -333,3 +333,26 @@ Cast: **Phone** with a tiny brain meter. Step-through: slider of precision 16-bi
 |---|---|---|---|---|---|
 | Neural Machine Translation of Rare Words with Subword Units (BPE for NLP) | Sennrich, Haddow, Birch | 2015-08 (arXiv) | <https://arxiv.org/abs/1508.07909> | Introduces byte-pair encoding as a subword tokenizer; source for the tokens lesson. | arXiv licence (verify) |
 | Attention Is All You Need | Vaswani et al. (Google) | 2017-06-12 (arXiv) | <https://arxiv.org/abs/1706.03762> | The transformer; source for the attention lesson. | arXiv licence (verify) |
+
+### Added during build (2026-10-25): diffusion, preference tuning, vision transformers
+
+Each row was checked on the source's own page (arXiv abstract pages fetched one at a time, at least 15 s apart, per arXiv's crawl-delay; Hugging Face blog pages fetched normally). No bot check was met. Titles, authors and dates are as the page shows them; these are references for facts, not adapted content.
+
+| Title | Authors/org | Date | Link | What it adds | License |
+|---|---|---|---|---|---|
+| Deep Unsupervised Learning using Nonequilibrium Thermodynamics | Sohl-Dickstein, Weiss, Maheswaranathan, Ganguli | 2015-03-12 | <https://arxiv.org/abs/1503.03585> | The original idea: destroy data with noise step by step, learn to undo it. | arXiv non-exclusive licence |
+| Denoising Diffusion Probabilistic Models | Ho, Jain, Abbeel | 2020-06-19 | <https://arxiv.org/abs/2006.11239> | Train by predicting the added noise; the recipe behind modern diffusion. | arXiv non-exclusive licence |
+| Denoising Diffusion Implicit Models | Song, Meng, Ermon | 2020-10-06 | <https://arxiv.org/abs/2010.02502> | Deterministic sampling that can skip steps (fewer steps, faster). | arXiv non-exclusive licence |
+| Score-Based Generative Modeling through Stochastic Differential Equations | Song, Sohl-Dickstein, Kingma, Kumar et al. | 2020-11-26 | <https://arxiv.org/abs/2011.13456> | Continuous-time view linking diffusion and score matching. | arXiv non-exclusive licence |
+| High-Resolution Image Synthesis with Latent Diffusion Models | Rombach, Blattmann, Lorenz, Esser et al. | 2021-12-20 | <https://arxiv.org/abs/2112.10752> | Run diffusion in a compressed latent space, then decode. | arXiv non-exclusive licence |
+| Classifier-Free Diffusion Guidance | Ho, Salimans | 2022-07-26 | <https://arxiv.org/abs/2207.12598> | Steering samples toward a condition such as a text prompt. | arXiv non-exclusive licence |
+| The Annotated Diffusion Model | Hugging Face (blog) | 2022-06-07 | <https://huggingface.co/blog/annotated-diffusion> | Beginner walk-through of a diffusion model. | none shown on page |
+| Deep reinforcement learning from human preferences | Christiano, Leike, Brown, Martic et al. | 2017-06-12 | <https://arxiv.org/abs/1706.03741> | Learning a reward from pairwise human comparisons. | arXiv non-exclusive licence |
+| Training language models to follow instructions with human feedback | Ouyang, Wu, Jiang, Almeida et al. | 2022-03-04 | <https://arxiv.org/abs/2203.02155> | The RLHF recipe for language models (re-checked). | arXiv non-exclusive licence |
+| Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback | Bai, Jones, Ndousse, Askell et al. | 2022-04-12 | <https://arxiv.org/abs/2204.05862> | RLHF on helpfulness and harmlessness preference data. | CC BY 4.0 |
+| Direct Preference Optimization: Your Language Model is Secretly a Reward Model | Rafailov, Sharma, Mitchell, Ermon et al. | 2023-05-29 | <https://arxiv.org/abs/2305.18290> | Tune on preference pairs directly, no reward model or RL loop (re-checked). | CC BY 4.0 |
+| Illustrating Reinforcement Learning from Human Feedback (RLHF) | Hugging Face (blog) | 2022-12-09 | <https://huggingface.co/blog/rlhf> | Beginner overview of the RLHF pipeline. | none shown on page |
+| An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale | Dosovitskiy, Beyer, Kolesnikov, Weissenborn et al. | 2020-10-22 | <https://arxiv.org/abs/2010.11929> | Vision transformer: image patches as tokens. | arXiv non-exclusive licence |
+| Training data-efficient image transformers & distillation through attention | Touvron, Cord, Douze, Massa et al. | 2020-12-23 | <https://arxiv.org/abs/2012.12877> | DeiT: training ViTs on less data, with distillation. | arXiv non-exclusive licence |
+| Masked Autoencoders Are Scalable Vision Learners | He, Chen, Xie, Li et al. | 2021-11-11 | <https://arxiv.org/abs/2111.06377> | Hide a high share of patches (e.g. 75%) and learn to fill them in. | CC BY 4.0 |
+| Visual Instruction Tuning (LLaVA) | Liu, Li, Wu, Lee | 2023-04-17 | <https://arxiv.org/abs/2304.08485> | A vision encoder feeding image tokens to a language model (re-checked). | CC BY 4.0 |

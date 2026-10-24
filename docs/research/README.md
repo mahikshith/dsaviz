@@ -33,6 +33,7 @@ What this folder is for: research for turning dsaviz into **DSAMaxxing**. Each s
 | ML & data science | [ml-data-science](ml-data-science.md) | [links](links/ml-data-science.md) | in guide | 15 sources |
 | AI now | [ai-now](ai-now.md) | [links](links/ai-now.md) | in guide | 60 primary sources |
 | Skills | skills.md on branch `dsamaxxing/skills` | n/a | n/a | 8 installed, 2 rejected |
+| Visual teaching | [Git visualizer (algomaster.io)](git-visualizer.md) | [links](links/git-visualizer.md) | in guide | 7 pages |
 | Our own look | [Gym Buddy visual language](gym-buddy-visual-language.md) | n/a | `mahikshith/workout` | done |
 
 ## dsaviz today

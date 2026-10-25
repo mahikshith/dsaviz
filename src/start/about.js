@@ -26,15 +26,15 @@ const START_ABOUT = {
     sources: [PY_TUT + 'introduction.html', PY_TUT + 'interpreter.html']
   },
   'first-run': {
-    what: 'The print command shows text on the screen. Text goes inside quote marks, so the computer knows where the text starts and ends. Text written this way is called a string.',
+    what: 'The print function shows text on the screen. A function is a named tool that does one job. Text goes inside quote marks, so the computer knows where the text starts and ends. Text written this way is called a string.',
     analogy: 'Quote marks work like the two ends of a sticky label. Everything between them is the words to show.',
     uses: ['A game that shows "Game over" when you lose', 'A quiz app that shows your score', 'A website that shows "Welcome back" after you sign in'],
     before: ['what-is-a-program'],
     words: [
-      ['print', 'A command that shows something on the screen.'],
+      ['print', 'A function that shows something on the screen.'],
       ['string', 'Text inside quote marks, such as "hello". It can hold letters, digits and spaces.'],
       ['quotes', 'The marks " or \' around a string. They show where the text starts and ends.'],
-      ['command', 'A word that tells the computer to do one job.'],
+      ['function', 'A named tool that does one job. print is a function.'],
       ['output', 'What a program shows or gives back.']
     ],
     math: null,
@@ -57,14 +57,14 @@ const START_ABOUT = {
       ['float', 'A number with a decimal point, such as 3.5.'],
       ['//', 'Divide and keep only the whole part. So 7 // 2 is 3.'],
       ['%', 'Divide and keep only what is left over. So 7 % 2 is 1.'],
-      ['order of operations', 'The rule about which sums happen first. * and / go before + and -.']
+      ['order of operations', 'The rule about which sums happen first. *, /, // and % go before + and -.']
     ],
     math: {
       lines: ['7 = 2 \\times 3 + 1', '7 \\mathbin{//} 2 = 3', '7 \\mathbin{\\%} 2 = 1'],
       symbols: [
         ['7', 'the number we are sharing out'],
-        ['2', 'the size of each group'],
-        ['3', 'how many whole groups fit in 7 (the answer to //)'],
+        ['2', 'how many friends share'],
+        ['3', 'how many each friend gets (the answer to //)'],
         ['1', 'what is left over (the answer to %)'],
         ['\\times', 'multiply']
       ],
@@ -75,11 +75,11 @@ const START_ABOUT = {
         'Check it: 5 × 3 + 2 = 17.'
       ]
     },
-    steps: ['Write the sum inside print, such as print(12 + 30).', 'Python works out brackets first.', 'Then it does * and /, from left to right.', 'Then it does + and -, from left to right.', 'It shows the answer.'],
+    steps: ['Write the sum inside print, such as print(12 + 30).', 'Python works out brackets first.', 'Then it does *, /, // and % from left to right.', 'Then it does + and -, from left to right.', 'It shows the answer.'],
     use: ['You need a number worked out while the program runs.', 'You want whole groups and a leftover, using // and %.'],
     avoid: ['Using / when you need a whole number. It always gives a decimal, such as 3.5.', 'Relying on order of operations without brackets when a reader could be unsure.'],
     mistakes: ['Forgetting that * and / go before + and -. Fix: 2 + 3 * 4 is 14, not 20. Use brackets to change the order: (2 + 3) * 4.', 'Using x to multiply. Fix: the sign is *.', 'Expecting 7 / 2 to give 3. Fix: / gives 3.5. Use // to get 3.'],
-    cheat: ['+  -  *  /', '7 / 2 gives 3.5', '7 // 2 gives 3', '7 % 2 gives 1', 'brackets go first', '* and / before + and -'],
+    cheat: ['+  -  *  /', '7 / 2 gives 3.5', '7 // 2 gives 3', '7 % 2 gives 1', 'brackets go first', '* / // % before + and -'],
     next: ['variables'],
     sources: [PY_TUT + 'introduction.html#numbers', PY_LIB + 'stdtypes.html#numeric-types-int-float-complex', PY_REF + 'expressions.html#operator-precedence']
   },
@@ -105,12 +105,12 @@ const START_ABOUT = {
     sources: [PY_TUT + 'errors.html', PY_LIB + 'exceptions.html']
   },
   variables: {
-    what: 'A variable is a name that holds a value. You write name = value, and Python stores the value under that name. You can put a new value in at any time.',
+    what: 'A variable is a box with a name tag that holds a value. You write name = value, and Python puts the value in the box with that name. You can put a new value in at any time.',
     analogy: 'Picture a box with a name tag on it. You put something inside, and you can swap it later.',
     uses: ['A game that keeps your score', 'A shopping app that remembers how many items are in your basket', 'A music player that remembers the song number'],
     before: ['calculator'],
     words: [
-      ['variable', 'A name that points to a value, so you can use the value later.'],
+      ['variable', 'A box with a name tag that holds a value, so you can use the value later.'],
       ['value', 'A piece of data, such as the number 12 or the text "hi".'],
       ['assignment', 'Putting a value into a variable with the = sign.'],
       ['name', 'The label you pick for a variable, such as score.'],
@@ -121,7 +121,7 @@ const START_ABOUT = {
     use: ['You need to remember something while the program runs.', 'You use the same value in many places and want to change it in one.'],
     avoid: ['Names that say nothing, such as x, when a clearer name fits.', 'Using a name before you have stored a value in it.'],
     mistakes: ['Using a name before giving it a value. Fix: store a value first, then use it.', 'Thinking = means "equal to" as in maths. Fix: it means "store this". The next lessons show how to ask if two values are equal.', 'Mixing capital letters, such as Score and score. Fix: they are two different names. Pick one style.'],
-    cheat: ['score = 0', 'score = score + 1', 'a name holds one value at a time', 'new value replaces the old', 'no spaces in names: use my_score'],
+    cheat: ['score = 0', 'score = score + 1', 'a name holds one value at a time', 'new value replaces the old', 'a name has no spaces: write my_score, with an underscore _ between the words'],
     next: ['types'],
     sources: [PY_TUT + 'introduction.html#using-python-as-a-calculator', PY_REF + 'simple_stmts.html#assignment-statements']
   },
@@ -148,19 +148,19 @@ const START_ABOUT = {
     sources: [PY_LIB + 'stdtypes.html', PY_FUNCS]
   },
   'input-output': {
-    what: 'The input command asks a question and waits for an answer. The answer always comes back as text, even if the person types digits. Convert it with int() if you need a number.',
-    analogy: 'A paper form has a blank line. Whatever the person writes is only ink, until you read it as a number.',
+    what: 'The input function asks a question and waits for an answer. The answer always comes back as text, even if the person types digits. Convert it with int() if you need a number.',
+    analogy: 'A paper form has a blank line. A paper form holds only marks. You must read the marks as a number before you add them.',
     uses: ['A game that asks for your player name', 'A calculator app that reads the numbers you type', 'A sign-in page that reads your username'],
     before: ['types'],
     words: [
-      ['input', 'A command that shows a question, waits, and gives back what the person typed.'],
+      ['input', 'A function that shows a question, waits, and gives back what the person typed.'],
       ['string', 'Text. Everything input gives back is a string.'],
-      ['int()', 'A command that turns text such as "8" into the whole number 8.'],
+      ['int()', 'A function that turns text such as "8" into the whole number 8.'],
       ['prompt', 'The question you put inside input(), such as "Your name? ".'],
       ['output', 'What the program shows with print.']
     ],
     math: null,
-    steps: ['Write name = input("Your name? ").', 'The program shows the question and waits.', 'The person types and presses Enter.', 'The typed text is stored in name.', 'For a number, wrap it: age = int(input("Age? ")).'],
+    steps: ['Write name = input("Your name? ").', 'The program shows the question and waits.', 'The person types and presses Enter.', 'The typed text is stored in name.', 'For a number, put int( ) around it: age = int(input("Age? ")). The input part runs first.'],
     use: ['The program needs something from the person using it.', 'You want to make a program feel like a conversation.'],
     avoid: ['Doing sums on the raw answer before converting it.', 'Converting text that is not a number, such as "ten".'],
     mistakes: ['Adding two answers and getting "53" instead of 8. Fix: both are text, so + joins them. Convert with int() first.', 'Forgetting the space at the end of the question. Fix: write "Age? " so the answer does not touch the question.', 'Calling int() on words. Fix: int only works on text made of digits.'],
@@ -175,7 +175,7 @@ const START_ABOUT = {
     before: ['types'],
     words: [
       ['comparison', 'A question about two values, such as age >= 10.'],
-      ['boolean', 'A value that is only True or False.'],
+      ['bool', 'A value that is only True or False. Its type is called bool.'],
       ['==', 'Asks "are these two equal?".'],
       ['!=', 'Asks "are these two different?".'],
       ['<  >  <=  >=', 'Less than, greater than, at most, at least.']
@@ -212,7 +212,7 @@ const START_ABOUT = {
   },
   'and-or-not': {
     what: 'The words and, or and not join True/False questions. The word and needs both sides True. The word or needs at least one side True. The word not flips the answer.',
-    analogy: 'To enter a club you need a ticket and a wristband. With or, either one is enough. With not, you may enter only if you are not on the banned list.',
+    analogy: 'To enter the treehouse you need a badge and the password. With or, either one is enough. With not, you may enter only if you are not on the banned list.',
     uses: ['A game door that needs a key and a high enough level', 'A website that lets you in with a password or a saved sign-in', 'A shop that gives a discount to children or seniors'],
     before: ['if-else'],
     words: [
@@ -223,7 +223,7 @@ const START_ABOUT = {
       ['truth table', 'A small chart listing the answer for every True/False mix.']
     ],
     math: null,
-    steps: ['Write each small question on its own, such as badge and age >= 12.', 'Python works out each side to True or False.', 'It joins them with and, or or not.', 'The final True or False decides the path.'],
+    steps: ['Write each small question on its own, such as badge and password == "owl".', 'Python works out each side to True or False.', 'It joins them with and, or or not.', 'The final True or False decides the path.'],
     use: ['One rule depends on two or more facts.', 'You want to say "anything except this".'],
     avoid: ['Long mixes of and, or and not without brackets.', 'Writing the same question twice when one would do.'],
     mistakes: ['Writing x == 1 or 2 instead of x == 1 or x == 2. Fix: each side of or needs its own full question.', 'Mixing up and with or. Fix: say the rule out loud. "Both" means and. "Either" means or.', 'Forgetting brackets. Fix: and goes before or, so add brackets to be clear.'],
@@ -233,7 +233,7 @@ const START_ABOUT = {
   },
   'edge-cases': {
     what: 'An edge case is an unusual input at the edge of what your program expects. Examples are zero, a negative number and the exact boundary value. Test these first, because bugs hide there.',
-    analogy: 'A bridge sign says "maximum 3 tonnes". The engineer tests exactly 3 tonnes, not only a bicycle.',
+    analogy: 'A lift sign says "no more than 3 people". A tester tries exactly 3 people, not only 1.',
     uses: ['A game that must not let your health go below zero', 'A ticket app that checks a child is exactly the age limit', 'A shop that handles an empty basket'],
     before: ['and-or-not'],
     words: [
@@ -241,7 +241,7 @@ const START_ABOUT = {
       ['boundary', 'The exact value where the rule changes, such as 10 in "10 or more".'],
       ['bug', 'A mistake in a program that makes it do the wrong thing.'],
       ['test', 'Running a program with chosen inputs to see if the answers are right.'],
-      ['empty', 'Holding nothing, such as an empty string or zero items.']
+      ['empty', 'Holding nothing, such as zero items.']
     ],
     math: null,
     steps: ['Read the rule, such as "10 cups or more get a discount".', 'List the odd inputs: zero, a negative, one step below the boundary, exactly on it, one step above.', 'Run the program with each one.', 'Check each answer against the rule.', 'Fix the line that is wrong, then test them all again.'],
@@ -268,7 +268,7 @@ const START_ABOUT = {
     steps: ['Ask a question with input and store the answer.', 'Use if to check the answer.', 'Use elif for the other choices.', 'Use else for any answer you did not plan for.', 'Print the ending for the path chosen.'],
     use: ['You want to practise input and if together.', 'You want a program people can play with.'],
     avoid: ['Forgetting an else, so an odd answer gives no ending.', 'Checking the answer with = instead of ==.'],
-    mistakes: ['Typing "Left" when the program checks "left". Fix: use .lower() on the answer, or tell the player what to type.', 'Writing = in the if line. Fix: use == to compare.', 'Forgetting the else. Fix: add one so every answer gets an ending.'],
+    mistakes: ['Typing "Left" when the program checks "left". Fix: tell the player to type small letters, or check both: door == "left" or door == "Left".', 'Writing = in the if line. Fix: use == to compare.', 'Forgetting the else. Fix: add one so every answer gets an ending.'],
     cheat: ['door = input("Left or right? ")', 'if door == "left":', 'elif door == "right":', 'else:', 'every path ends with a print'],
     next: ['for-range'],
     sources: [PY_TUT + 'controlflow.html#if-statements', PY_LIB + 'stdtypes.html#str.lower']
@@ -924,10 +924,10 @@ const START_ABOUT = {
       ['override', 'Setting the same name on an object, which hides the class value for that object.']
     ],
     math: null,
-    steps: ['Write a name inside the class, outside any method: maker = "Jay".', 'Build objects. They do not store maker themselves.', 'Reading bot1.maker finds it on the class.', 'Setting bot2.maker = "Sam" creates a new name on bot2 only.', 'bot1 still sees the class value.'],
+    steps: ['Write a name inside the class, outside any method: maker = "Jay".', 'Build objects. They do not store maker themselves.', 'Reading bot1.maker finds it on the class.', 'Setting bot2.maker = "Maria" creates a new name on bot2 only.', 'bot1 still sees the class value.'],
     use: ['Every object of the class should share the same value.', 'You want a constant that belongs to the class.'],
     avoid: ['Putting a list on the class when each object needs its own.', 'Setting through an object and expecting all to see it.'],
-    mistakes: ['Setting a value through one object and expecting every object to see it. Fix: set it on the class, such as Robot.maker = "Sam".', 'Putting a list on the class and changing it from an object. Fix: the list is shared, so use an instance attribute.', 'Forgetting the class name. Fix: write Robot.maker to reach the shared value.'],
+    mistakes: ['Setting a value through one object and expecting every object to see it. Fix: set it on the class, such as Robot.maker = "Maria".', 'Putting a list on the class and changing it from an object. Fix: the list is shared, so use an instance attribute.', 'Forgetting the class name. Fix: write Robot.maker to reach the shared value.'],
     cheat: ['maker = "Jay" in the class', 'objects read it from the class', 'bot2.maker = ... only changes bot2', 'Robot.maker = ... changes all', 'object first, then class'],
     next: ['encapsulation'],
     sources: [PY_TUT + 'classes.html#class-and-instance-variables']

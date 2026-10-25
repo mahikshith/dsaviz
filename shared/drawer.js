@@ -2,6 +2,7 @@
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
+  ['Concepts.dc.html', 'DSA concepts', 'Big-O, sorts, hashing, trees, graphs and math, animated', null],
   ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
   ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],

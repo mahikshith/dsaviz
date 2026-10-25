@@ -21,7 +21,7 @@ SITE_INDEX.items.forEach(([type]) => { byType[type] = (byType[type] || 0) + 1; }
 Object.keys(S.SEARCH_TYPES).forEach((type) => { if (!byType[type]) fail('no items of type ' + type); });
 Object.keys(byType).forEach((type) => { if (!S.SEARCH_TYPES[type]) fail('unknown type ' + type); });
 const C = SITE_INDEX.counts;
-const want = { start: C.start, story: C.stories, pattern: C.patterns, problem: C.runnable + C.sql, git: C.git, sd: C.sd, ai: C.ai, term: C.terms, sheet: C.sheet };
+const want = { start: C.start, story: C.stories, pattern: C.patterns, problem: C.runnable + C.sql, git: C.git, sd: C.sd, ai: C.ai, dsa: C.dsa, term: C.terms, sheet: C.sheet };
 Object.keys(want).forEach((type) => { if (byType[type] !== want[type]) fail(type + ': ' + byType[type] + ' items, counts say ' + want[type]); });
 if (C.sheet < 500) fail('sheet count looks wrong: ' + C.sheet);
 if (C.storyPatterns !== C.patterns) console.log('  note: stories cover ' + C.storyPatterns + ' of ' + C.patterns + ' patterns');
@@ -43,7 +43,7 @@ Object.entries(S.SEARCH_TYPES).forEach(([type, [, page]]) => {
 const first = (q) => { const g = S.siteSearch(q); return g.length ? g[0].type + ':' + g[0].items[0].id : '(none)'; };
 [['two sum', 'story:two-sum'], ['lru', 'story:lru-cache'], ['rebase', 'git:rebase'], ['attention', 'ai:attention'],
   ['sliding window', 'pattern:Sliding Window'], ['enumerate', 'term:enumerate'], ['sharding', 'sd:sharding'],
-  ['lantern bridge', 'story:two-sum-ii'], ['design hashset', 'problem:design-hashset'], ['rotting orngs', 'story:rotting-oranges']]
+  ['lantern bridge', 'story:two-sum-ii'], ['design hashset', 'problem:design-hashset'], ['rotting orngs', 'story:rotting-oranges'], ['bubble sort', 'dsa:bubble'], ['open addressing', 'dsa:openaddr']]
   .forEach(([q, k]) => { const got = first(q); if (got !== k) fail('"' + q + '" first result ' + got + ', expected ' + k); else console.log('  ✓ "' + q + '" → ' + k); });
 const g = S.siteSearch('tree');
 const flat = [].concat(...g.map((x) => x.items));

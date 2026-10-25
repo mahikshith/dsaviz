@@ -11,7 +11,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> None",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-vowels-of-a-string",
@@ -24,7 +27,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "valid-palindrome",
@@ -39,7 +45,12 @@
    "story": "valid-palindrome",
    "kind": "code",
    "sig": "(str) -> bool",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "move-zeroes",
@@ -54,7 +65,12 @@
    "story": "move-zeroes",
    "kind": "code",
    "sig": "(List[int]) -> None",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "remove-duplicates-from-sorted-array",
@@ -67,7 +83,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "remove-element",
@@ -80,7 +101,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sort-array-by-parity",
@@ -93,7 +117,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "squares-of-a-sorted-array",
@@ -106,7 +133,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "merge-strings-alternately",
@@ -119,7 +151,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> str",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "merge-sorted-array",
@@ -132,7 +167,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int, List[int], int) -> None",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "merge-two-lists",
@@ -147,7 +187,12 @@
    "story": "merge-two-lists",
    "kind": "code",
    "sig": "(Optional[ListNode], Optional[ListNode]) -> Optional[ListNode]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "is-subsequence",
@@ -160,7 +205,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "valid-palindrome-ii",
@@ -173,7 +221,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "backspace-string-compare",
@@ -186,7 +237,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-duplicates-from-sorted-array-ii",
@@ -199,7 +253,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "two-sum-ii",
@@ -215,7 +272,12 @@
    "story": "two-sum-ii",
    "kind": "code",
    "sig": "(List[int], int) -> List[int]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "boats-to-save-people",
@@ -228,7 +290,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-nth",
@@ -243,7 +308,11 @@
    "story": "remove-nth",
    "kind": "code",
    "sig": "(Optional[ListNode], int) -> Optional[ListNode]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "sort-colors",
@@ -256,7 +325,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> None",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "container",
@@ -271,7 +344,12 @@
    "story": "container",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "3sum",
@@ -286,7 +364,11 @@
    "story": "3sum",
    "kind": "code",
    "sig": "(List[int]) -> List[List[int]]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "3sum-closest",
@@ -299,7 +381,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-palindrome",
@@ -314,7 +399,11 @@
    "story": "longest-palindrome",
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "next-permutation",
@@ -327,7 +416,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> None",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "trapping-rain",
@@ -342,7 +434,11 @@
    "story": "trapping-rain",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "maximum-average-subarray-i",
@@ -355,7 +451,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> float",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "best-time-stock",
@@ -370,7 +469,12 @@
    "story": "best-time-stock",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "contains-duplicate-ii",
@@ -383,7 +487,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> bool",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-difference-between-highest-and-lowest-of-k-scores",
@@ -396,7 +503,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-number-of-vowels-in-a-substring-of-given-length",
@@ -409,7 +519,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, int) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-points-you-can-obtain-from-cards",
@@ -422,7 +535,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-size-subarray-sum",
@@ -435,7 +551,12 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[int]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "subarray-product-less-than-k",
@@ -448,7 +569,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-substring",
@@ -463,7 +587,12 @@
    "story": "longest-substring",
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "max-consecutive-ones-iii",
@@ -476,7 +605,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "longest-subarray-of-1s-after-deleting-one-element",
@@ -489,7 +622,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "char-replacement",
@@ -504,7 +640,11 @@
    "story": "char-replacement",
    "kind": "code",
    "sig": "(str, int) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "permutation-in-string",
@@ -517,7 +657,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-all-anagrams-in-a-string",
@@ -530,7 +674,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> List[int]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "fruit-into-baskets",
@@ -543,7 +691,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-subarrays-with-sum",
@@ -556,7 +707,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "count-number-of-nice-subarrays",
@@ -569,7 +723,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-substrings-containing-all-three-characters",
@@ -582,7 +739,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "min-window",
@@ -597,7 +757,11 @@
    "story": "min-window",
    "kind": "code",
    "sig": "(str, str) -> str",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "sliding-window-max",
@@ -612,7 +776,11 @@
    "story": "sliding-window-max",
    "kind": "code",
    "sig": "(List[int], int) -> List[int]",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "subarrays-with-k-different-integers",
@@ -625,7 +793,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "substring-with-concatenation-of-all-words",
@@ -638,7 +809,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, List[str]) -> List[int]",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "contains-duplicate",
@@ -653,7 +827,12 @@
    "story": "contains-duplicate",
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "valid-anagram",
@@ -668,7 +847,12 @@
    "story": "valid-anagram",
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-the-difference-of-two-arrays",
@@ -681,7 +865,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> List[List[int]]",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "two-sum",
@@ -696,7 +883,12 @@
    "story": "two-sum",
    "kind": "code",
    "sig": "(List[int], int) -> List[int]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "ransom-note",
@@ -709,7 +901,12 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "first-unique-character-in-a-string",
@@ -722,7 +919,12 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "isomorphic-strings",
@@ -735,7 +937,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-number-of-balloons",
@@ -748,7 +953,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "intersection-of-two-arrays",
@@ -761,7 +969,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> List[int]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-good-pairs",
@@ -774,7 +985,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "unique-number-of-occurrences",
@@ -787,7 +1001,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "word-pattern",
@@ -800,7 +1017,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "majority-element",
@@ -813,7 +1033,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "group-anagrams",
@@ -828,7 +1053,12 @@
    "story": "group-anagrams",
    "kind": "code",
    "sig": "(List[str]) -> List[List[str]]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "determine-if-two-strings-are-close",
@@ -841,7 +1071,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "equal-row-and-column-pairs",
@@ -854,7 +1087,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-consecutive",
@@ -869,7 +1105,11 @@
    "story": "longest-consecutive",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "4sum-ii",
@@ -882,7 +1122,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int], List[int], List[int]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "valid-sudoku",
@@ -895,7 +1138,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> bool",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "insert-delete-getrandom-o1",
@@ -910,7 +1157,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {insert(1), remove(1), getRandom(0)}",
-   "words": 35
+   "words": 35,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "lru-cache",
@@ -925,7 +1175,11 @@
    "story": "lru-cache",
    "kind": "code",
    "sig": "class {get(1), put(2)}",
-   "words": 32
+   "words": 32,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "first-missing-positive",
@@ -938,7 +1192,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "running-sum-of-1d-array",
@@ -951,7 +1208,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 6
+   "words": 6,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-the-highest-altitude",
@@ -964,7 +1226,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-pivot-index",
@@ -977,7 +1242,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-middle-index-in-array",
@@ -990,7 +1258,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "range-sum-query-immutable",
@@ -1003,7 +1274,11 @@
    "story": null,
    "kind": "code",
    "sig": "class {sumRange(2)}",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "number-of-ways-to-split-array",
@@ -1016,7 +1291,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "product-except-self",
@@ -1031,7 +1309,12 @@
    "story": "product-except-self",
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "xor-queries-of-a-subarray",
@@ -1044,7 +1327,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[List[int]]) -> List[int]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "range-sum-query-2d-immutable",
@@ -1057,7 +1343,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {sumRegion(4)}",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "corporate-flight-bookings",
@@ -1070,7 +1359,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> List[int]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "subarray-sum-k",
@@ -1085,7 +1377,11 @@
    "story": "subarray-sum-k",
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "subarray-sums-divisible-by-k",
@@ -1098,7 +1394,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "contiguous-array",
@@ -1111,7 +1411,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "continuous-subarray-sum",
@@ -1124,7 +1427,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> bool",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "make-sum-divisible-by-p",
@@ -1137,7 +1443,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "matrix-block-sum",
@@ -1150,7 +1459,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> List[List[int]]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-submatrices-that-sum-to-target",
@@ -1163,7 +1475,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-search",
@@ -1178,7 +1493,12 @@
    "story": "binary-search",
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "guess-number-higher-or-lower",
@@ -1191,7 +1511,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, Callable[[int], int]) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "search-insert-position",
@@ -1204,7 +1527,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "first-bad-version",
@@ -1217,7 +1545,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, Callable[[int], bool]) -> int",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sqrtx",
@@ -1232,7 +1563,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-smallest-letter-greater-than-target",
@@ -1245,7 +1579,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], str) -> str",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-first-and-last-position-of-element-in-sorted-array",
@@ -1258,7 +1595,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> List[int]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "search-a-2d-matrix",
@@ -1271,7 +1612,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> bool",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "peak-index-in-a-mountain-array",
@@ -1284,7 +1630,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-peak-element",
@@ -1297,7 +1646,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "single-element-in-a-sorted-array",
@@ -1310,7 +1662,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-min-rotated",
@@ -1325,7 +1680,11 @@
    "story": "find-min-rotated",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "search-rotated",
@@ -1340,7 +1699,11 @@
    "story": "search-rotated",
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-k-closest-elements",
@@ -1353,7 +1716,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int, int) -> List[int]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "koko-eating-bananas",
@@ -1366,7 +1732,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "capacity-to-ship-packages-within-d-days",
@@ -1379,7 +1749,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-number-of-days-to-make-m-bouquets",
@@ -1392,7 +1765,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int, int) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "time-based-key-value-store",
@@ -1405,7 +1781,11 @@
    "story": null,
    "kind": "code",
    "sig": "class {set(3), get(2)}",
-   "words": 32
+   "words": 32,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-minimum-in-rotated-sorted-array-ii",
@@ -1418,7 +1798,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-in-mountain-array",
@@ -1431,7 +1814,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, any) -> int",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "split-array-largest-sum",
@@ -1444,7 +1830,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "median-of-two-sorted-arrays",
@@ -1457,7 +1846,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> float",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "transpose-matrix",
@@ -1470,7 +1862,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reshape-the-matrix",
@@ -1483,7 +1878,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int, int) -> List[List[int]]",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "matrix-diagonal-sum",
@@ -1496,7 +1894,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "pascals-triangle",
@@ -1509,7 +1910,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[List[int]]",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "count-negative-numbers-in-a-sorted-matrix",
@@ -1522,7 +1926,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "determine-whether-matrix-can-be-obtained-by-rotation",
@@ -1535,7 +1942,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], List[List[int]]) -> bool",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rotate-image",
@@ -1550,7 +1960,12 @@
    "story": "rotate-image",
    "kind": "code",
    "sig": "(List[List[int]]) -> None",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "spiral-matrix",
@@ -1563,7 +1978,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "spiral-matrix-ii",
@@ -1576,7 +1996,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[List[int]]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "diagonal-traverse",
@@ -1589,7 +2012,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[int]",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sort-the-matrix-diagonally",
@@ -1602,7 +2028,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "set-matrix-zeroes",
@@ -1615,7 +2044,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> None",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "search-a-2d-matrix-ii",
@@ -1628,7 +2061,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> bool",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "game-of-life",
@@ -1641,7 +2078,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> None",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "summary-ranges",
@@ -1654,7 +2094,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[str]",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "meeting-rooms",
@@ -1667,7 +2110,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> bool",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "merge-intervals",
@@ -1682,7 +2130,12 @@
    "story": "merge-intervals",
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "insert-interval",
@@ -1697,7 +2150,11 @@
    "story": "insert-interval",
    "kind": "code",
    "sig": "(List[List[int]], List[int]) -> List[List[int]]",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "remove-covered-intervals",
@@ -1710,7 +2167,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "interval-list-intersections",
@@ -1723,7 +2183,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], List[List[int]]) -> List[List[int]]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "non-overlapping-intervals",
@@ -1736,7 +2199,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "minimum-number-of-arrows-to-burst-balloons",
@@ -1749,7 +2216,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "meeting-rooms-ii",
@@ -1762,7 +2232,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "car-pooling",
@@ -1775,7 +2249,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> bool",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "my-calendar-i",
@@ -1788,7 +2265,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {book(2)}",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "my-calendar-ii",
@@ -1801,7 +2281,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {book(2)}",
-   "words": 34
+   "words": 34,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-number-of-events-that-can-be-attended",
@@ -1814,7 +2297,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "my-calendar-iii",
@@ -1827,7 +2313,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {book(2)}",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-interval-to-include-each-query",
@@ -1840,7 +2329,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], List[int]) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "assign-cookies",
@@ -1853,7 +2345,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "lemonade-change",
@@ -1866,7 +2361,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "can-place-flowers",
@@ -1879,7 +2377,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> bool",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "split-a-string-in-balanced-strings",
@@ -1892,7 +2393,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-units-on-a-truck",
@@ -1905,7 +2409,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-palindrome-build",
@@ -1918,7 +2425,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximize-sum-of-array-after-k-negations",
@@ -1931,7 +2441,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "best-time-to-buy-and-sell-stock-ii",
@@ -1944,7 +2457,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "minimum-add-to-make-parentheses-valid",
@@ -1957,7 +2475,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "increasing-triplet-subsequence",
@@ -1970,7 +2491,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "jump-game",
@@ -1985,7 +2509,12 @@
    "story": "jump-game",
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "jump-game-ii",
@@ -1998,7 +2527,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "gas-station",
@@ -2011,7 +2544,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> int",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "merge-triplets-to-form-target-triplet",
@@ -2024,7 +2561,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], List[int]) -> bool",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "hand-of-straights",
@@ -2037,7 +2577,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "partition-labels",
@@ -2050,7 +2593,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> List[int]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "valid-parenthesis-string",
@@ -2063,7 +2610,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> bool",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "dota2-senate",
@@ -2076,7 +2626,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "task-scheduler",
@@ -2089,7 +2642,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], int) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "minimum-number-of-taps-to-open-to-water-a-garden",
@@ -2102,7 +2659,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[int]) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "candy",
@@ -2115,7 +2675,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "valid-parentheses",
@@ -2130,7 +2693,12 @@
    "story": "valid-parentheses",
    "kind": "code",
    "sig": "(str) -> bool",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "baseball-game",
@@ -2143,7 +2711,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-all-adjacent-duplicates-in-string",
@@ -2156,7 +2727,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "make-the-string-great",
@@ -2169,7 +2743,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "next-greater-element-i",
@@ -2182,7 +2759,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> List[int]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "implement-queue-using-stacks",
@@ -2195,7 +2775,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {push(1), pop(0), peek(0), empty(0)}",
-   "words": 32
+   "words": 32,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "removing-stars-from-a-string",
@@ -2208,7 +2791,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "min-stack",
@@ -2223,7 +2809,12 @@
    "story": "min-stack",
    "kind": "code",
    "sig": "class {push(1), pop(0), top(0), getMin(0)}",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "evaluate-reverse-polish-notation",
@@ -2236,7 +2827,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "simplify-path",
@@ -2249,7 +2844,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-remove-to-make-valid-parentheses",
@@ -2262,7 +2860,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "basic-calculator-ii",
@@ -2275,7 +2876,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "decode-string",
@@ -2288,7 +2892,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "daily-temperatures",
@@ -2303,7 +2911,12 @@
    "story": "daily-temperatures",
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "online-stock-span",
@@ -2316,7 +2929,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {next(1)}",
-   "words": 31
+   "words": 31,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "asteroid-collision",
@@ -2329,7 +2945,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "car-fleet",
@@ -2342,7 +2962,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[int], List[int]) -> int",
-   "words": 28
+   "words": 28,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "largest-rectangle-in-histogram",
@@ -2357,7 +2981,11 @@
    "story": "largest-rectangle-in-histogram",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "longest-valid-parentheses",
@@ -2370,7 +2998,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "basic-calculator",
@@ -2383,7 +3014,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "last-stone-weight",
@@ -2396,7 +3030,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "kth-largest-element-in-a-stream",
@@ -2409,7 +3048,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {add(1)}",
-   "words": 34
+   "words": 34,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "the-k-weakest-rows-in-a-matrix",
@@ -2422,7 +3064,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> List[int]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "take-gifts-from-the-richest-pile",
@@ -2435,7 +3080,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "kth-largest",
@@ -2450,7 +3098,12 @@
    "story": "kth-largest",
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "top-k-frequent",
@@ -2465,7 +3118,11 @@
    "story": "top-k-frequent",
    "kind": "code",
    "sig": "(List[int], int) -> List[int]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "top-k-frequent-words",
@@ -2478,7 +3135,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], int) -> List[str]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "k-closest-points-to-origin",
@@ -2491,7 +3151,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> List[List[int]]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "sort-characters-by-frequency",
@@ -2504,7 +3168,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reorganize-string",
@@ -2517,7 +3184,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "furthest-building-you-can-reach",
@@ -2530,7 +3200,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int, int) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "single-threaded-cpu",
@@ -2543,7 +3216,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[int]",
-   "words": 28
+   "words": 28,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-subsequence-score",
@@ -2556,7 +3232,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int], int) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "merge-k-lists",
@@ -2571,7 +3250,11 @@
    "story": "merge-k-lists",
    "kind": "code",
    "sig": "(List[Optional[ListNode]]) -> Optional[ListNode]",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-median-from-data-stream",
@@ -2584,7 +3267,11 @@
    "story": null,
    "kind": "code",
    "sig": "class {addNum(1), findMedian(0)}",
-   "words": 37
+   "words": 37,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "minimum-cost-to-hire-k-workers",
@@ -2597,7 +3284,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int], int) -> float",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "ipo",
@@ -2610,7 +3300,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int, List[int], List[int]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-number-of-refueling-stops",
@@ -2623,7 +3316,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int, List[List[int]]) -> int",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sliding-window-median",
@@ -2636,7 +3332,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> List[float]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-linked-list",
@@ -2651,7 +3350,12 @@
    "story": "reverse-linked-list",
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "palindrome-linked-list",
@@ -2664,7 +3368,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "maximum-twin-sum-of-a-linked-list",
@@ -2677,7 +3385,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "swapping-nodes-in-a-linked-list",
@@ -2690,7 +3401,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], int) -> Optional[ListNode]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "swap-nodes-in-pairs",
@@ -2703,7 +3417,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-linked-list-ii",
@@ -2716,7 +3433,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], int, int) -> Optional[ListNode]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "add-two-numbers-ii",
@@ -2729,7 +3450,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], Optional[ListNode]) -> Optional[ListNode]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rotate-list",
@@ -2742,7 +3466,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], int) -> Optional[ListNode]",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reorder-list",
@@ -2755,7 +3482,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> None",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "reverse-nodes-in-k-group",
@@ -2768,7 +3499,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], int) -> Optional[ListNode]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "middle-of-list",
@@ -2783,7 +3517,12 @@
    "story": "middle-of-list",
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "linked-list-cycle",
@@ -2798,7 +3537,12 @@
    "story": "linked-list-cycle",
    "kind": "code",
    "sig": "(Optional[ListNode]) -> bool",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "happy-number",
@@ -2811,7 +3555,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "intersection-of-two-linked-lists",
@@ -2824,7 +3572,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], Optional[ListNode]) -> Optional[ListNode]",
-   "words": 33
+   "words": 33,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "delete-the-middle-node-of-a-linked-list",
@@ -2837,7 +3588,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "linked-list-cycle-ii",
@@ -2850,7 +3604,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "convert-sorted-list-to-binary-search-tree",
@@ -2863,7 +3621,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[TreeNode]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-duplicate-number",
@@ -2876,7 +3637,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "circular-array-loop",
@@ -2889,7 +3654,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "invert-tree",
@@ -2904,7 +3672,12 @@
    "story": "invert-tree",
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> Optional[TreeNode]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "max-depth",
@@ -2919,7 +3692,12 @@
    "story": "max-depth",
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "same-tree",
@@ -2932,7 +3710,12 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], Optional[TreeNode]) -> bool",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "flood-fill",
@@ -2945,7 +3728,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int, int, int) -> List[List[int]]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "island-perimeter",
@@ -2958,7 +3744,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-if-path-exists-in-graph",
@@ -2971,7 +3760,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]], int, int) -> bool",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "validate-bst",
@@ -2986,7 +3778,11 @@
    "story": "validate-bst",
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> bool",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "keys-and-rooms",
@@ -2999,7 +3795,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-islands",
@@ -3014,7 +3813,12 @@
    "story": "number-of-islands",
    "kind": "code",
    "sig": "(List[List[str]]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "max-area-of-island",
@@ -3027,7 +3831,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "clone-graph",
@@ -3042,7 +3850,11 @@
    "story": "clone-graph",
    "kind": "code",
    "sig": "(Optional[Node]) -> Optional[Node]",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "number-of-closed-islands",
@@ -3055,7 +3867,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-enclaves",
@@ -3068,7 +3883,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "surrounded-regions",
@@ -3081,7 +3899,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> None",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "count-sub-islands",
@@ -3094,7 +3915,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], List[List[int]]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "pacific-atlantic-water-flow",
@@ -3107,7 +3931,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "number-of-provinces",
@@ -3120,7 +3948,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-eventual-safe-states",
@@ -3133,7 +3965,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[int]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "evaluate-division",
@@ -3146,7 +3981,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]], List[float], List[List[str]]) -> List[float]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-increasing-path-in-a-matrix",
@@ -3159,7 +3997,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-depth-of-binary-tree",
@@ -3172,7 +4013,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "average-of-levels-in-binary-tree",
@@ -3185,7 +4029,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[float]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "level-order",
@@ -3200,7 +4047,12 @@
    "story": "level-order",
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[List[int]]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "right-side-view",
@@ -3215,7 +4067,11 @@
    "story": "right-side-view",
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[int]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "maximum-level-sum-of-a-binary-tree",
@@ -3228,7 +4084,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-zigzag-level-order-traversal",
@@ -3241,7 +4100,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[List[int]]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "populating-next-right-pointers-in-each-node",
@@ -3254,7 +4116,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> Optional[TreeNode]",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "all-nodes-distance-k-in-binary-tree",
@@ -3267,7 +4132,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], TreeNode, int) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "shortest-path-in-binary-matrix",
@@ -3280,7 +4148,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "nearest-exit-from-entrance-in-maze",
@@ -3293,7 +4165,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]], List[int]) -> int",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rotting-oranges",
@@ -3308,7 +4183,11 @@
    "story": "rotting-oranges",
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "01-matrix",
@@ -3321,7 +4200,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "shortest-bridge",
@@ -3334,7 +4217,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "course-schedule",
@@ -3349,7 +4235,11 @@
    "story": "course-schedule",
    "kind": "code",
    "sig": "(int, List[List[int]]) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "course-schedule-ii",
@@ -3362,7 +4252,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> List[int]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "open-the-lock",
@@ -3375,7 +4269,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], str) -> int",
-   "words": 31
+   "words": 31,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "snakes-and-ladders",
@@ -3388,7 +4285,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 41
+   "words": 41,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "word-ladder",
@@ -3401,7 +4301,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str, List[str]) -> int",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "shortest-path-in-a-grid-with-obstacles-elimination",
@@ -3414,7 +4318,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "bus-routes",
@@ -3427,7 +4334,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]], int, int) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-watch",
@@ -3440,7 +4350,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[str]",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "letter-combinations-of-a-phone-number",
@@ -3453,7 +4366,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> List[str]",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "subsets",
@@ -3468,7 +4385,12 @@
    "story": "subsets",
    "kind": "code",
    "sig": "(List[int]) -> List[List[int]]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "subsets-ii",
@@ -3481,7 +4403,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[List[int]]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "combinations",
@@ -3494,7 +4419,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> List[List[int]]",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "combination-sum-iii",
@@ -3507,7 +4435,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> List[List[int]]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "permutations",
@@ -3522,7 +4453,12 @@
    "story": "permutations",
    "kind": "code",
    "sig": "(List[int]) -> List[List[int]]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "permutations-ii",
@@ -3535,7 +4471,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[List[int]]",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "combination-sum",
@@ -3550,7 +4489,11 @@
    "story": "combination-sum",
    "kind": "code",
    "sig": "(List[int], int) -> List[List[int]]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "combination-sum-ii",
@@ -3563,7 +4506,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> List[List[int]]",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "generate-parentheses",
@@ -3576,7 +4523,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[str]",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "word-search",
@@ -3591,7 +4542,11 @@
    "story": "word-search",
    "kind": "code",
    "sig": "(List[List[str]], str) -> bool",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "restore-ip-addresses",
@@ -3604,7 +4559,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> List[str]",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "palindrome-partitioning",
@@ -3617,7 +4575,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> List[List[str]]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "maximum-length-of-a-concatenated-string-with-unique-characters",
@@ -3630,7 +4592,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "matchsticks-to-square",
@@ -3643,7 +4608,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "partition-to-k-equal-sum-subsets",
@@ -3656,7 +4624,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> bool",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "n-queens",
@@ -3669,7 +4640,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[List[str]]",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "n-queens-ii",
@@ -3682,7 +4657,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sudoku-solver",
@@ -3695,7 +4673,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> None",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "permutation-sequence",
@@ -3708,7 +4689,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> str",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "unique-paths-iii",
@@ -3721,7 +4705,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-invalid-parentheses",
@@ -3734,7 +4721,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> List[str]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "fibonacci-number",
@@ -3747,7 +4737,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "n-th-tribonacci-number",
@@ -3760,7 +4753,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "climbing-stairs",
@@ -3775,7 +4771,12 @@
    "story": "climbing-stairs",
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "min-cost-climbing-stairs",
@@ -3788,7 +4789,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "house-robber",
@@ -3803,7 +4808,12 @@
    "story": "house-robber",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "house-robber-ii",
@@ -3816,7 +4826,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "delete-and-earn",
@@ -3829,7 +4843,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "solving-questions-with-brainpower",
@@ -3842,7 +4859,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "max-subarray",
@@ -3857,7 +4877,12 @@
    "story": "max-subarray",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "maximum-product-subarray",
@@ -3870,7 +4895,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "best-time-to-buy-and-sell-stock-with-cooldown",
@@ -3883,7 +4912,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "best-time-to-buy-and-sell-stock-with-transaction-fee",
@@ -3896,7 +4928,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "unique-paths",
@@ -3911,7 +4946,11 @@
    "story": "unique-paths",
    "kind": "code",
    "sig": "(int, int) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "minimum-path-sum",
@@ -3924,7 +4963,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "coin-change",
@@ -3939,7 +4981,11 @@
    "story": "coin-change",
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "perfect-squares",
@@ -3952,7 +4998,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "coin-change-ii",
@@ -3965,7 +5014,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[int]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "combination-sum-iv",
@@ -3978,7 +5030,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "partition-equal-subset-sum",
@@ -3991,7 +5046,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "word-break",
@@ -4006,7 +5065,11 @@
    "story": "word-break",
    "kind": "code",
    "sig": "(str, List[str]) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "minimum-cost-for-tickets",
@@ -4019,7 +5082,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "decode-ways",
@@ -4032,7 +5098,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "lis",
@@ -4047,7 +5117,11 @@
    "story": "lis",
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "longest-common-subsequence",
@@ -4060,7 +5134,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "edit-distance",
@@ -4073,7 +5151,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "best-time-to-buy-and-sell-stock-iii",
@@ -4086,7 +5168,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "best-time-to-buy-and-sell-stock-iv",
@@ -4099,7 +5184,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[int]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-profit-in-job-scheduling",
@@ -4112,7 +5200,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int], List[int]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "burst-balloons",
@@ -4125,7 +5216,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "regular-expression-matching",
@@ -4138,7 +5232,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-duplicates-from-sorted-list",
@@ -4151,7 +5248,12 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "convert-binary-number-in-a-linked-list-to-integer",
@@ -4164,7 +5266,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-linked-list-elements",
@@ -4177,7 +5282,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], int) -> Optional[ListNode]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-linked-list",
@@ -4190,7 +5298,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {get(1), addAtHead(1), addAtTail(1), addAtIndex(2), deleteAtIndex(1)}",
-   "words": 39
+   "words": 39,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "add-two-numbers",
@@ -4203,7 +5314,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], Optional[ListNode]) -> Optional[ListNode]",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "odd-even-linked-list",
@@ -4216,7 +5331,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "partition-list",
@@ -4229,7 +5347,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode], int) -> Optional[ListNode]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-duplicates-from-sorted-list-ii",
@@ -4242,7 +5363,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "copy-list-with-random-pointer",
@@ -4255,7 +5379,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 32
+   "words": 32,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sort-list",
@@ -4268,7 +5395,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "final-prices-with-a-special-discount-in-a-shop",
@@ -4281,7 +5411,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "next-greater-element-ii",
@@ -4294,7 +5427,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-k-digits",
@@ -4307,7 +5443,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, int) -> str",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "remove-duplicate-letters",
@@ -4320,7 +5459,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "132-pattern",
@@ -4333,7 +5475,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> bool",
-   "words": 6
+   "words": 6,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sum-of-subarray-minimums",
@@ -4346,7 +5491,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
@@ -4359,7 +5507,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximal-rectangle",
@@ -4372,7 +5523,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "shortest-subarray-with-sum-at-least-k",
@@ -4385,7 +5539,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-visible-people-in-a-queue",
@@ -4398,7 +5555,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-inorder-traversal",
@@ -4411,7 +5571,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[int]",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-preorder-traversal",
@@ -4424,7 +5587,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[int]",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-postorder-traversal",
@@ -4437,7 +5603,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[int]",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "merge-two-binary-trees",
@@ -4450,7 +5619,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], Optional[TreeNode]) -> Optional[TreeNode]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "univalued-binary-tree",
@@ -4463,7 +5635,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> bool",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "symmetric-tree",
@@ -4476,7 +5651,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> bool",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "diameter-of-binary-tree",
@@ -4489,7 +5668,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "balanced-binary-tree",
@@ -4502,7 +5685,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> bool",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "path-sum",
@@ -4515,7 +5702,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "subtree-of-another-tree",
@@ -4528,7 +5718,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], Optional[TreeNode]) -> bool",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "leaf-similar-trees",
@@ -4541,7 +5735,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], Optional[TreeNode]) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sum-of-left-leaves",
@@ -4554,7 +5751,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-paths",
@@ -4567,7 +5767,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[str]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "search-in-a-binary-search-tree",
@@ -4580,7 +5783,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> Optional[TreeNode]",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "range-sum-of-bst",
@@ -4593,7 +5799,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int, int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-absolute-difference-in-bst",
@@ -4606,7 +5815,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "convert-sorted-array-to-binary-search-tree",
@@ -4619,7 +5831,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> Optional[TreeNode]",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "path-sum-ii",
@@ -4632,7 +5847,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> List[List[int]]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sum-root-to-leaf-numbers",
@@ -4645,7 +5863,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "count-good-nodes-in-binary-tree",
@@ -4658,7 +5879,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "path-sum-iii",
@@ -4671,7 +5895,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "lowest-common-ancestor-of-a-binary-search-tree",
@@ -4684,7 +5911,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int, int) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "insert-into-a-binary-search-tree",
@@ -4697,7 +5928,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> Optional[TreeNode]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "delete-node-in-a-bst",
@@ -4710,7 +5944,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> Optional[TreeNode]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "kth-smallest-element-in-a-bst",
@@ -4723,7 +5960,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "binary-search-tree-iterator",
@@ -4736,7 +5977,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {next(0), hasNext(0)}",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "flatten-binary-tree-to-linked-list",
@@ -4749,7 +5993,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> None",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "lowest-common-ancestor-of-a-binary-tree",
@@ -4762,7 +6009,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], int, int) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "construct-binary-tree-from-preorder-and-inorder-traversal",
@@ -4775,7 +6025,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> Optional[TreeNode]",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "construct-binary-tree-from-inorder-and-postorder-traversal",
@@ -4788,7 +6042,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> Optional[TreeNode]",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "construct-binary-search-tree-from-preorder-traversal",
@@ -4801,7 +6058,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> Optional[TreeNode]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-zigzag-path-in-a-binary-tree",
@@ -4814,7 +6074,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "house-robber-iii",
@@ -4827,7 +6090,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "delete-nodes-and-return-forest",
@@ -4840,7 +6106,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode], List[int]) -> List[TreeNode]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "unique-binary-search-trees",
@@ -4853,7 +6122,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-maximum-path-sum",
@@ -4866,7 +6138,11 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "serialize-and-deserialize-binary-tree",
@@ -4879,7 +6155,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {serialize(1), deserialize(1)} driven",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-tree-cameras",
@@ -4892,7 +6171,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "vertical-order-traversal-of-a-binary-tree",
@@ -4905,7 +6187,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[TreeNode]) -> List[List[int]]",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-town-judge",
@@ -4918,7 +6203,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "find-center-of-star-graph",
@@ -4931,7 +6220,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "is-graph-bipartite",
@@ -4944,7 +6236,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> bool",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "possible-bipartition",
@@ -4957,7 +6253,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> bool",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "redundant-connection",
@@ -4972,7 +6271,11 @@
    "story": "redundant-connection",
    "kind": "code",
    "sig": "(List[List[int]]) -> List[int]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "number-of-operations-to-make-network-connected",
@@ -4985,7 +6288,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "satisfiability-of-equality-equations",
@@ -4998,7 +6304,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> bool",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "accounts-merge",
@@ -5011,7 +6320,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> List[List[str]]",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "most-stones-removed-with-same-row-or-column",
@@ -5024,7 +6336,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-height-trees",
@@ -5037,7 +6352,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> List[int]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-all-possible-recipes-from-given-supplies",
@@ -5050,7 +6368,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], List[List[str]], List[str]) -> List[str]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "course-schedule-iv",
@@ -5063,7 +6384,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]], List[List[int]]) -> List[bool]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "network-delay-time",
@@ -5078,7 +6402,11 @@
    "story": "network-delay-time",
    "kind": "code",
    "sig": "(List[List[int]], int, int) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "path-with-maximum-probability",
@@ -5091,7 +6419,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]], List[float], int, int) -> float",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "path-with-minimum-effort",
@@ -5104,7 +6435,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-ways-to-arrive-at-destination",
@@ -5117,7 +6451,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "min-cost-to-connect-all-points",
@@ -5130,7 +6467,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "cheapest-flights-within-k-stops",
@@ -5143,7 +6484,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]], int, int, int) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "build-a-matrix-with-conditions",
@@ -5156,7 +6501,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]], List[List[int]]) -> List[List[int]]",
-   "words": 28
+   "words": 28,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reconstruct-itinerary",
@@ -5169,7 +6517,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> List[str]",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "swim-in-rising-water",
@@ -5182,7 +6533,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 36
+   "words": 36,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "critical-connections-in-a-network",
@@ -5195,7 +6549,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> List[List[int]]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree",
@@ -5208,7 +6565,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[List[int]]) -> List[List[int]]",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-cost-to-make-at-least-one-valid-path-in-a-grid",
@@ -5221,7 +6581,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-common-prefix",
@@ -5234,7 +6597,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> str",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "implement-trie-prefix-tree",
@@ -5249,7 +6616,11 @@
    "story": "implement-trie-prefix-tree",
    "kind": "code",
    "sig": "class {insert(1), search(1), startsWith(1)}",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "design-add-and-search-words-data-structure",
@@ -5262,7 +6633,11 @@
    "story": null,
    "kind": "code",
    "sig": "class {addWord(1), search(1)}",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "replace-words",
@@ -5275,7 +6650,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], str) -> str",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "map-sum-pairs",
@@ -5288,7 +6666,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {insert(2), sum(1)}",
-   "words": 32
+   "words": 32,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "search-suggestions-system",
@@ -5301,7 +6682,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], str) -> List[List[str]]",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-length-of-the-longest-common-prefix",
@@ -5314,7 +6698,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-xor-of-two-numbers-in-an-array",
@@ -5327,7 +6714,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "word-search-ii",
@@ -5340,7 +6730,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]], List[str]) -> List[str]",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sum-of-prefix-scores-of-strings",
@@ -5353,7 +6746,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> List[int]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "prefix-and-suffix-search",
@@ -5366,7 +6762,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {f(2)}",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "height-checker",
@@ -5379,7 +6778,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "relative-ranks",
@@ -5392,7 +6794,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[str]",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "relative-sort-array",
@@ -5405,7 +6810,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> List[int]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sort-array-by-increasing-frequency",
@@ -5418,7 +6826,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sort-integers-by-the-number-of-1-bits",
@@ -5431,7 +6842,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sort-an-array",
@@ -5444,7 +6858,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "insertion-sort-list",
@@ -5457,7 +6874,10 @@
    "story": null,
    "kind": "code",
    "sig": "(Optional[ListNode]) -> Optional[ListNode]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "custom-sort-string",
@@ -5470,7 +6890,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> str",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "h-index",
@@ -5483,7 +6906,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "largest-number",
@@ -5496,7 +6922,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> str",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-parking-system",
@@ -5509,7 +6938,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {addCar(1)}",
-   "words": 33
+   "words": 33,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-recent-calls",
@@ -5522,7 +6954,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {ping(1)}",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-hashset",
@@ -5535,7 +6970,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {add(1), remove(1), contains(1)}",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-hashmap",
@@ -5548,7 +6986,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {put(2), get(1), remove(1)}",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-circular-queue",
@@ -5561,7 +7002,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {enQueue(1), deQueue(0), Front(0), Rear(0), isEmpty(0), isFull(0)}",
-   "words": 35
+   "words": 35,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-circular-deque",
@@ -5574,7 +7018,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {insertFront(1), insertLast(1), deleteFront(0), deleteLast(0), getFront(0), getRear(0), isEmpty(0), isFull(0)}",
-   "words": 38
+   "words": 38,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-browser-history",
@@ -5587,7 +7034,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {visit(1), back(1), forward(1)}",
-   "words": 32
+   "words": 32,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "snapshot-array",
@@ -5600,7 +7050,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {set(2), snap(0), get(2)}",
-   "words": 33
+   "words": 33,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-underground-system",
@@ -5613,7 +7066,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {checkIn(3), checkOut(3), getAverageTime(2)}",
-   "words": 34
+   "words": 34,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-twitter",
@@ -5626,7 +7082,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {postTweet(2), getNewsFeed(1), follow(2), unfollow(2)}",
-   "words": 31
+   "words": 31,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "lfu-cache",
@@ -5639,7 +7098,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {get(1), put(2)}",
-   "words": 35
+   "words": 35,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "all-oone-data-structure",
@@ -5652,7 +7114,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {inc(1), dec(1), getMaxKey(0), getMinKey(0)}",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-frequency-stack",
@@ -5665,7 +7130,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {push(1), pop(0)}",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "defanging-an-ip-address",
@@ -5678,7 +7146,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 4
+   "words": 4,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "length-of-last-word",
@@ -5691,7 +7162,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-index-of-the-first-occurrence-in-a-string",
@@ -5704,7 +7178,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rotate-string",
@@ -5717,7 +7194,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "repeated-substring-pattern",
@@ -5730,7 +7210,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> bool",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "string-matching-in-an-array",
@@ -5743,7 +7226,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> List[str]",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-words-in-a-string",
@@ -5756,7 +7242,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "string-compression",
@@ -5769,7 +7258,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "string-to-integer-atoi",
@@ -5782,7 +7274,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "zigzag-conversion",
@@ -5795,7 +7290,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, int) -> str",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-happy-prefix",
@@ -5808,7 +7306,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "shortest-palindrome",
@@ -5821,7 +7322,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-duplicate-substring",
@@ -5834,7 +7338,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> str",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "text-justification",
@@ -5847,7 +7354,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], int) -> List[str]",
-   "words": 31
+   "words": 31,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "pascals-triangle-ii",
@@ -5860,7 +7370,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[int]",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "unique-paths-ii",
@@ -5873,7 +7386,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "triangle",
@@ -5886,7 +7402,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximal-square",
@@ -5899,7 +7418,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[str]]) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "palindromic-substrings",
@@ -5912,7 +7434,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-palindromic-subsequence",
@@ -5925,7 +7450,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "delete-operation-for-two-strings",
@@ -5938,7 +7466,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "interleaving-string",
@@ -5951,7 +7482,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str, str) -> bool",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "distinct-subsequences",
@@ -5964,7 +7498,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-insertion-steps-to-make-a-string-palindrome",
@@ -5977,7 +7514,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "wildcard-matching",
@@ -5990,7 +7530,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> bool",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "dungeon-game",
@@ -6003,7 +7546,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 34
+   "words": 34,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "target-sum",
@@ -6016,7 +7562,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "last-stone-weight-ii",
@@ -6029,7 +7578,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 24
+   "words": 24,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "ones-and-zeroes",
@@ -6042,7 +7594,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str], int, int) -> int",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "maximum-length-of-pair-chain",
@@ -6055,7 +7610,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-longest-increasing-subsequence",
@@ -6068,7 +7626,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "largest-divisible-subset",
@@ -6081,7 +7642,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "longest-string-chain",
@@ -6094,7 +7658,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[str]) -> int",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "profitable-schemes",
@@ -6107,7 +7674,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int, List[int], List[int]) -> int",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "russian-doll-envelopes",
@@ -6120,7 +7690,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-score-triangulation-of-polygon",
@@ -6133,7 +7706,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "beautiful-arrangement",
@@ -6146,7 +7722,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-number-of-work-sessions-to-finish-the-tasks",
@@ -6159,7 +7738,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], int) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "palindrome-partitioning-ii",
@@ -6172,7 +7754,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-cost-to-cut-a-stick",
@@ -6185,7 +7770,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, List[int]) -> int",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "strange-printer",
@@ -6198,7 +7786,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "shortest-path-visiting-all-nodes",
@@ -6211,7 +7802,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-1-bits",
@@ -6224,7 +7818,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "power-of-two",
@@ -6237,7 +7835,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> bool",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "single-number",
@@ -6250,7 +7851,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "counting-bits",
@@ -6263,7 +7869,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[int]",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "missing-number",
@@ -6276,7 +7886,11 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "hamming-distance",
@@ -6289,7 +7903,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-difference",
@@ -6302,7 +7919,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> str",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "binary-number-with-alternating-bits",
@@ -6315,7 +7935,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> bool",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-bits",
@@ -6328,7 +7951,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "minimum-flips-to-make-a-or-b-equal-to-c",
@@ -6341,7 +7967,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int, int) -> int",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-original-array-of-prefix-xor",
@@ -6354,7 +7983,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "sum-of-two-integers",
@@ -6367,7 +7999,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> int",
-   "words": 7
+   "words": 7,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "single-number-ii",
@@ -6380,7 +8015,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 15
+   "words": 15,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "single-number-iii",
@@ -6393,7 +8031,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "bitwise-and-of-numbers-range",
@@ -6406,7 +8047,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> int",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "gray-code",
@@ -6419,7 +8063,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[int]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "fizz-buzz",
@@ -6432,7 +8079,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> List[str]",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "subtract-the-product-and-sum-of-digits-of-an-integer",
@@ -6445,7 +8095,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 5
+   "words": 5,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "palindrome-number",
@@ -6458,7 +8111,11 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> bool",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "add-digits",
@@ -6471,7 +8128,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "plus-one",
@@ -6484,7 +8144,12 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "starter",
+    "core",
+    "all"
+   ]
   },
   {
    "id": "roman-to-integer",
@@ -6497,7 +8162,11 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "excel-sheet-column-number",
@@ -6510,7 +8179,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "excel-sheet-column-title",
@@ -6523,7 +8195,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> str",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "ugly-number",
@@ -6536,7 +8211,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> bool",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "greatest-common-divisor-of-strings",
@@ -6549,7 +8227,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> str",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "check-if-it-is-a-straight-line",
@@ -6562,7 +8243,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> bool",
-   "words": 9
+   "words": 9,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rectangle-overlap",
@@ -6575,7 +8259,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int]) -> bool",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "integer-to-roman",
@@ -6588,7 +8275,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> str",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-integer",
@@ -6601,7 +8291,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 14
+   "words": 14,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "factorial-trailing-zeroes",
@@ -6614,7 +8307,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "powx-n",
@@ -6629,7 +8325,11 @@
    "story": null,
    "kind": "code",
    "sig": "(float, int) -> float",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "core",
+    "all"
+   ]
   },
   {
    "id": "multiply-strings",
@@ -6642,7 +8342,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, str) -> str",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "ugly-number-ii",
@@ -6655,7 +8358,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 11
+   "words": 11,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "count-primes",
@@ -6668,7 +8374,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 8
+   "words": 8,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-the-winner-of-the-circular-game",
@@ -6681,7 +8390,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int) -> int",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rectangle-area",
@@ -6694,7 +8406,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int, int, int, int, int, int, int, int) -> int",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "valid-square",
@@ -6707,7 +8422,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int], List[int], List[int], List[int]) -> bool",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "max-points-on-a-line",
@@ -6720,7 +8438,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "number-of-digit-one",
@@ -6733,7 +8454,10 @@
    "story": null,
    "kind": "code",
    "sig": "(int) -> int",
-   "words": 12
+   "words": 12,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "erect-the-fence",
@@ -6746,7 +8470,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "range-sum-query-mutable",
@@ -6759,7 +8486,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {update(2), sumRange(2)}",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "count-of-smaller-numbers-after-self",
@@ -6772,7 +8502,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> List[int]",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "reverse-pairs",
@@ -6785,7 +8518,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 13
+   "words": 13,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "create-sorted-array-through-instructions",
@@ -6798,7 +8534,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "the-skyline-problem",
@@ -6811,7 +8550,10 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> List[List[int]]",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "range-module",
@@ -6824,7 +8566,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {addRange(2), queryRange(2), removeRange(2)}",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "recyclable-and-low-fat-products",
@@ -6837,7 +8582,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> snack_id",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "find-customer-referee",
@@ -6850,7 +8598,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> name",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "big-countries",
@@ -6863,7 +8614,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> name, people, area",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "article-views-i",
@@ -6876,7 +8630,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> writer",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "invalid-tweets",
@@ -6889,7 +8646,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> note_id",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "combine-two-tables",
@@ -6902,7 +8662,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> first_name, last_name, city, region",
-   "words": 22
+   "words": 22,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "replace-employee-id-with-the-unique-identifier",
@@ -6915,7 +8678,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> badge_no, name",
-   "words": 17
+   "words": 17,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "customer-who-visited-but-did-not-make-any-transactions",
@@ -6928,7 +8694,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> shopper_id, count_no_pay",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "employees-earning-more-than-their-managers",
@@ -6941,7 +8710,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> crew",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "customers-who-never-order",
@@ -6954,7 +8726,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> buyer",
-   "words": 10
+   "words": 10,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "duplicate-emails",
@@ -6967,7 +8742,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> email",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rising-temperature",
@@ -6980,7 +8758,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> reading_id",
-   "words": 34
+   "words": 34,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "delete-duplicate-emails",
@@ -6993,7 +8774,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> signup_id, email",
-   "words": 23
+   "words": 23,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "average-selling-price",
@@ -7006,7 +8790,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> item_id, avg_price",
-   "words": 29
+   "words": 29,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "queries-quality-and-percentage",
@@ -7019,7 +8806,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> term, quality, poor_pct",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "patients-with-a-condition",
@@ -7032,7 +8822,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> pet_id, name, tags",
-   "words": 28
+   "words": 28,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "second-highest-salary",
@@ -7045,7 +8838,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> second_wage",
-   "words": 16
+   "words": 16,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "nth-highest-salary",
@@ -7058,7 +8854,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> nth_wage",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "rank-scores",
@@ -7071,7 +8870,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> score, place",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "consecutive-numbers",
@@ -7084,7 +8886,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> face",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "department-highest-salary",
@@ -7097,7 +8902,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> team, member, pay",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "managers-with-at-least-5-direct-reports",
@@ -7110,7 +8918,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> lead",
-   "words": 18
+   "words": 18,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "confirmation-rate",
@@ -7123,7 +8934,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> account_id, rate",
-   "words": 25
+   "words": 25,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "monthly-transactions-i",
@@ -7136,7 +8950,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> month, country, tx_count, ok_count, tx_total, ok_total",
-   "words": 21
+   "words": 21,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "game-play-analysis-iv",
@@ -7149,7 +8966,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> fraction",
-   "words": 26
+   "words": 26,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "exchange-seats",
@@ -7162,7 +8982,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> chair_id, guest",
-   "words": 20
+   "words": 20,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "department-top-three-salaries",
@@ -7175,7 +8998,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> team, member, pay",
-   "words": 19
+   "words": 19,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "trips-and-users",
@@ -7188,7 +9014,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> day, cancel_rate",
-   "words": 42
+   "words": 42,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "human-traffic-of-stadium",
@@ -7201,7 +9030,10 @@
    "story": null,
    "kind": "sql",
    "sig": "sql -> visit_id, day, crowd",
-   "words": 27
+   "words": 27,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "print-in-order",
@@ -7214,7 +9046,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {first(1), second(1), third(1)} driven",
-   "words": 50
+   "words": 50,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "traffic-light-controlled-intersection",
@@ -7227,7 +9062,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {carArrived(5)} driven",
-   "words": 51
+   "words": 51,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "print-foobar-alternately",
@@ -7240,7 +9078,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {foo(1), bar(1)} driven",
-   "words": 37
+   "words": 37,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "print-zero-even-odd",
@@ -7253,7 +9094,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {zero(1), even(1), odd(1)} driven",
-   "words": 30
+   "words": 30,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "building-h2o",
@@ -7266,7 +9110,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {hydrogen(1), oxygen(1)} driven",
-   "words": 47
+   "words": 47,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "fizz-buzz-multithreaded",
@@ -7279,7 +9126,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {fizz(1), buzz(1), fizzbuzz(1), number(1)} driven",
-   "words": 37
+   "words": 37,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "the-dining-philosophers",
@@ -7292,7 +9142,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {wantsToEat(6)} driven",
-   "words": 59
+   "words": 59,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "design-bounded-blocking-queue",
@@ -7305,7 +9158,10 @@
    "story": null,
    "kind": "code",
    "sig": "class {enqueue(1), dequeue(0), size(0)} driven",
-   "words": 59
+   "words": 59,
+   "lists": [
+    "all"
+   ]
   },
   {
    "id": "web-crawler-multithreaded",
@@ -7318,7 +9174,10 @@
    "story": null,
    "kind": "code",
    "sig": "(str, any) -> List[str]",
-   "words": 60
+   "words": 60,
+   "lists": [
+    "all"
+   ]
   }
  ]
 }

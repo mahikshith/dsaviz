@@ -310,7 +310,7 @@ def main():
         s = block(s, '// @@SQL-PANE@@', '// @@END-SQL-PANE@@', read('shared', 'sql_pane.js'))
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
         s = block(s, '// @@SDLESSONS@@', '// @@END-SDLESSONS@@', sd_lessons)
-        for key, marker in (('ai', 'AI-ABOUT'), ('sd', 'SD-ABOUT'), ('concepts', 'CONCEPT-ABOUT')):
+        for key, marker in (('ai', 'AI-ABOUT'), ('sd', 'SD-ABOUT'), ('concepts', 'CONCEPT-ABOUT'), ('start', 'START-ABOUT')):
             if '// @@' + marker + '@@' in s:
                 s = block(s, '// @@' + marker + '@@', '// @@END-' + marker + '@@', abouts[key])
         s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)

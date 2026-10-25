@@ -2,6 +2,7 @@
 //   ai:       src/ai/about_ml.js + about_now.js      -> const AI_ABOUT       (// @@AI-ABOUT@@)
 //   sd:       src/sd/about_hld.js + about_lld.js     -> const SD_ABOUT       (// @@SD-ABOUT@@)
 //   concepts: src/concepts/about_a.js + about_b.js   -> const CONCEPT_ABOUT  (// @@CONCEPT-ABOUT@@)
+//   start:    src/start/about.js                     -> const START_ABOUT    (// @@START-ABOUT@@)
 // A missing file adds nothing (that track shows no About tab yet). Math is rendered here with KaTeX (MIT) to
 // MathML, which browsers draw natively, so the pages need no math fonts or scripts. Prints JSON:
 // { ai: block, sd: block, concepts: block }, each block the JS text between its markers.
@@ -13,7 +14,8 @@ const ROOT = path.join(__dirname, '..');
 const SETS = {
   ai: ['AI_ABOUT', 'AI-ABOUT', [['ai', 'about_ml.js', 'AI_ABOUT_ML'], ['ai', 'about_now.js', 'AI_ABOUT_NOW']]],
   sd: ['SD_ABOUT', 'SD-ABOUT', [['sd', 'about_hld.js', 'SD_ABOUT_HLD'], ['sd', 'about_lld.js', 'SD_ABOUT_LLD']]],
-  concepts: ['CONCEPT_ABOUT', 'CONCEPT-ABOUT', [['concepts', 'about_a.js', 'CONCEPT_ABOUT_A'], ['concepts', 'about_b.js', 'CONCEPT_ABOUT_B']]]
+  concepts: ['CONCEPT_ABOUT', 'CONCEPT-ABOUT', [['concepts', 'about_a.js', 'CONCEPT_ABOUT_A'], ['concepts', 'about_b.js', 'CONCEPT_ABOUT_B']]],
+  start: ['START_ABOUT', 'START-ABOUT', [['start', 'about.js', 'START_ABOUT']]]
 };
 const tex = (s, display) => katex.renderToString(s, { output: 'mathml', displayMode: !!display, throwOnError: true });
 const out = {};

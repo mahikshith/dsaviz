@@ -1653,7 +1653,8 @@ function solveHref(id) { return 'Code.dc.html?problem=' + encodeURIComponent(sol
 // the first time a learner opens that lesson (remembered in dsaviz-about-seen), Watch it after that.
 // aboutVals(cmp, key, a, t, link): key is the lesson's id, a its about data ({ what, analogy, uses, before, words,
 // math: { lines: [mathml], symbols: [[mathml, meaning]], example }, steps, use, avoid, mistakes, cheat, next }),
-// link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name).
+// link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name); watchLabel names
+// the other tab (Watch it by default).
 const ABOUT_SEEN_KEY = 'dsaviz-about-seen';
 function aboutSeenList() { try { const v = JSON.parse(window.localStorage.getItem(ABOUT_SEEN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function markAboutSeen(key) {
@@ -1664,7 +1665,7 @@ function markAboutSeen(key) {
 }
 // Puts build-time MathML (our own about files, rendered by KaTeX in scripts/build_about.js) into an element.
 function aboutMath(html) { return (el) => { if (el && el.nodeType === 1 && el.getAttribute('data-math') !== html) { el.innerHTML = html; el.setAttribute('data-math', html); } }; }
-function aboutVals(cmp, key, a, t, link) {
+function aboutVals(cmp, key, a, t, link, watchLabel) {
   const v = cmp.state.aboutView;
   let view = !a ? 'watch' : v && v.key === key ? v.view : aboutSeenList().includes(key) ? 'watch' : 'about';
   if (view === 'about') markAboutSeen(key);
@@ -1686,7 +1687,7 @@ function aboutVals(cmp, key, a, t, link) {
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
   };
-  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', 'Watch it'), tab('about', 'About this lesson')] : [], A };
+  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About this lesson')] : [], A };
 }
 // @@END-ABOUT@@
 // @@CONTESTS@@ — generated block (from shared/contests.js): the contest calendar's rules (Contests page).

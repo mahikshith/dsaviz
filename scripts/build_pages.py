@@ -27,6 +27,11 @@ across pages and live in one place; this script copies them back into every page
   shared/runner.js          -> between // @@RUNNER@@ ... // @@END-RUNNER@@
   shared/code_pane.js       -> between // @@CODE-PANE@@ ... // @@END-CODE-PANE@@
   shared/code_pane.html     -> between <!-- CODE PANE --> ... <!-- /CODE PANE --> (after page bodies)
+  shared/facts.js           -> between // @@FACTS@@ ... // @@END-FACTS@@ (Code, Story: input, output, constraints, target)
+  shared/approaches.js      -> between // @@APPROACHES@@ ... // @@END-APPROACHES@@ (Code, Story: brute force to best)
+  shared/approach_pane.js   -> between // @@APPROACH-PANE@@ ... // @@END-APPROACH-PANE@@ (Code, Story), after the code pane
+  shared/lists.js           -> between // @@LISTS@@ ... // @@END-LISTS@@ (Sheet: Starter, Core and All lists), after the sheet
+  shared/ui/facts.html, approaches.html -> <!-- PROBLEM FACTS -->, <!-- APPROACH PANE --> blocks
   shared/sql_spec.js        -> between // @@SQL-SPEC@@ ... // @@END-SQL-SPEC@@ (Code page; its ids also join SHEET_RUN)
   shared/sql_pane.js        -> between // @@SQL-PANE@@ ... // @@END-SQL-PANE@@ (Code page)
   shared/sql_pane.html      -> between <!-- SQL PANE --> ... <!-- /SQL PANE --> (Code page body)
@@ -188,7 +193,12 @@ def main():
     shared_js['nav.js'] = shared_js['nav.js'].replace('/*@@PAGES@@*/[]', repr(built).replace("'", '"'))
     drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
-    ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html')]}
+    ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html'),
+                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html')]}
+    # The problem page blocks: facts, approaches and their pane, placed after the code pane on the Code and Story pages.
+    approach_js = [('// @@FACTS@@', '// @@END-FACTS@@', read('shared', 'facts.js')),
+                   ('// @@APPROACHES@@', '// @@END-APPROACHES@@', read('shared', 'approaches.js')),
+                   ('// @@APPROACH-PANE@@', '// @@END-APPROACH-PANE@@', read('shared', 'approach_pane.js'))]
     intros = read('shared', 'pattern_intros.js').rstrip()
     end = '// @@END-INTROS@@'
     # The roadmap (shared/roadmap.js) rides in the same block: the Map tab draws PATTERN_MAP inside it.
@@ -251,6 +261,11 @@ def main():
         s = block(s, '// @@THEMES@@', '// @@END-THEMES@@', themes)
         s = block(s, '// @@CATALOG@@', '// @@END@@', catalog)
         s = block(s, '// @@SHEET@@', '// @@END-SHEET@@', sheet)
+        if f == 'Sheet.dc.html':
+            if '// @@LISTS@@' not in s:
+                i = s.index('// @@END-SHEET@@') + len('// @@END-SHEET@@')
+                s = s[:i] + chr(10) + '// @@LISTS@@' + chr(10) + '// @@END-LISTS@@' + s[i:]
+            s = block(s, '// @@LISTS@@', '// @@END-LISTS@@', read('shared', 'lists.js'))
         s = block(s, '// @@SHEET-COUNT@@', '// @@END-SHEET-COUNT@@', sheet_count)
         s = ensure_blocks(s)
         for start, end, n in SHARED_JS:
@@ -263,6 +278,15 @@ def main():
         s = block(s, '// @@RUNNER@@', '// @@END-RUNNER@@', runner)
         s = block(s, '// @@MOCK-HINTS@@', '// @@END-MOCK-HINTS@@', hints)
         s = block(s, '// @@CODE-PANE@@', '// @@END-CODE-PANE@@', pane_js)
+        name0 = f[:-len('.dc.html')]
+        if name0 in ('Code', 'Story'):
+            prev = '// @@END-CODE-PANE@@'
+            for start, end, src in approach_js:
+                if start not in s:
+                    i = s.index(prev) + len(prev)
+                    s = s[:i] + '\n' + start + '\n' + end + s[i:]
+                s = block(s, start, end, src)
+                prev = end
         s = block(s, '// @@SQL-SPEC@@', '// @@END-SQL-SPEC@@', sql_spec)
         s = block(s, '// @@SQL-PANE@@', '// @@END-SQL-PANE@@', read('shared', 'sql_pane.js'))
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)

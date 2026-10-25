@@ -11,13 +11,14 @@ const START_CAST = {
   hoot: { name: 'Old Hoot', initial: 'H', color: 'muted', role: 'the mentor who has seen every bug twice' },
   dot: { name: 'Dot', initial: 'D', color: 'accent', role: 'new to coding, so she asks the questions you are thinking' },
   bolt: { name: 'Bolt', initial: 'B', color: 'right', role: 'a robot who does exactly what it is told, nothing more' },
-  penny: { name: 'Penny', initial: 'P', color: 'left', role: 'who keeps every count and every list tidy' }
+  penny: { name: 'Penny', initial: 'P', color: 'left', role: 'who keeps every count and every list tidy' },
+  pip: { name: 'Pip', initial: 'P', color: 'ok', role: 'the plate-stacker at the busy canteen, who knows which plate is on top' }
 };
 // The ladder: levels, each made of parts (the chapters learners see). Lessons say their level and part.
 const START_LEVELS = [
   { n: 1, title: 'Basics', blurb: 'From your first line of code to your first real problem.' },
-  { n: 2, title: 'Functions in depth', blurb: 'Recursion, the call stack and functions that hand back functions.' },
-  { n: 3, title: 'Objects', blurb: 'Classes, objects and what a name really points at.' },
+  { n: 2, title: 'Functions in depth', blurb: 'Calls, the call stack, scope, arguments, functions as values, closures and recursion.' },
+  { n: 3, title: 'Objects and classes', blurb: 'Blueprints, objects, references, family trees, and when a class is not worth it.' },
   { n: 4, title: 'Writing better code', blurb: 'Names, small functions, tests and tidy files.' },
   { n: 5, title: 'Waiting without freezing', blurb: 'Async code: the event loop, tasks and callbacks.' }
 ];
@@ -28,10 +29,16 @@ const START_PARTS = [
   { n: 4, level: 1, title: 'Reusing and organising', blurb: 'Write functions, look things up, fix bugs.' },
   { n: 5, level: 1, title: 'The bridge', blurb: 'Plan in words, then read a real problem.' },
   { n: 6, level: 1, title: 'After your first problems', blurb: 'Count the steps your code takes.' },
-  { n: 7, level: 2, title: 'Calls and the stack', blurb: 'Functions that call functions, even themselves.' },
-  { n: 8, level: 3, title: 'Blueprints and references', blurb: 'Make objects and follow the arrows.' },
-  { n: 9, level: 4, title: 'Code people can read', blurb: 'Clear names and short functions.' },
-  { n: 10, level: 5, title: 'The event loop', blurb: 'A queue of jobs that never blocks.' }
+  { n: 7, level: 2, title: 'Calls and the stack', blurb: 'What a call does, the pile of plates, and where names live.' },
+  { n: 8, level: 2, title: 'Arguments in depth', blurb: 'Defaults, names, any number of inputs, and shared lists.' },
+  { n: 9, level: 2, title: 'Functions as values', blurb: 'Hand a function over, and functions that remember.' },
+  { n: 10, level: 2, title: 'Calling yourself', blurb: 'Recursion, plate by plate.' },
+  { n: 11, level: 3, title: 'Blueprints and objects', blurb: 'Classes, self, __init__, data and methods.' },
+  { n: 12, level: 3, title: 'Names and shared data', blurb: 'Follow the arrows, share data, guard it.' },
+  { n: 13, level: 3, title: 'Family trees', blurb: 'Inheritance, super() and the same call doing different things.' },
+  { n: 14, level: 3, title: 'Building well', blurb: 'Parts, special methods, contracts, and when to skip the class.' },
+  { n: 15, level: 4, title: 'Code people can read', blurb: 'Clear names and short functions.' },
+  { n: 16, level: 5, title: 'The event loop', blurb: 'A queue of jobs that never blocks.' }
 ];
 function startLevel(c) { return c.level || 1; }
 // What a lesson can teach. A runnable problem's needs (needs.js) use the same keys.
@@ -41,7 +48,12 @@ const START_NEEDS_KEYS = {
   while: 'while loops', accumulate: 'running totals', lists: 'lists', scan: 'looping over a list', strings: 'strings',
   nested: 'nested loops', functions: 'functions', return: 'return values', dicts: 'dictionaries', debug: 'debugging',
   plan: 'planning in words', problems: 'reading a problem', bigo: 'counting steps', recursion: 'recursion', stack: 'the call stack',
-  objects: 'objects', refs: 'references', style: 'clean code', async: 'async code'
+  calls: 'calling functions', scope: 'scope', defaults: 'default and keyword arguments', varargs: 'any number of arguments',
+  mutation: 'shared lists in calls', callbacks: 'functions as values', closures: 'closures',
+  objects: 'classes and objects', self: 'self', init: '__init__', methods: 'attributes and methods', refs: 'references',
+  classattrs: 'class attributes', encapsulation: 'encapsulation', inheritance: 'inheritance', super: 'super()',
+  polymorphism: 'polymorphism', composition: 'composition', dunder: 'special methods', interfaces: 'abstract classes',
+  design: 'when to use a class', style: 'clean code', async: 'async code'
 };
 const START_STAGES = [['story', 'Story'], ['watch', 'Watch it run'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
 const START_EASE_MS = 600;
@@ -239,7 +251,7 @@ function stFlatten(scene, C, focus) {
   (scene.arrows || []).forEach((a) => {
     const [x1, y1] = a.from, [x2, y2] = a.to, L = Math.hypot(x2 - x1, y2 - y1) || 1, ux = (x2 - x1) / L, uy = (y2 - y1) / L, s = 10;
     const c = col(a.c, 'm'), op = dim(a.id);
-    P.push({ k: 'ar:' + a.id, pts: [[x1, y1], [x2 - ux * 6, y2 - uy * 6]], mode: 'L', fill: 'none', stroke: c, sw: 3, dash: a.dash ? '7 7' : '', op });
+    P.push({ k: 'ar:' + a.id, pts: [[x1, y1], [x2 - ux * 6, y2 - uy * 6]], mode: 'L', fill: 'none', stroke: c, sw: a.thin ? 2 : 3, dash: a.dash ? (a.thin ? '5 5' : '7 7') : '', op });
     P.push({ k: 'ah:' + a.id, pts: [[x2, y2], [x2 - ux * s - uy * s * 0.6, y2 - uy * s + ux * s * 0.6], [x2 - ux * s + uy * s * 0.6, y2 - uy * s - ux * s * 0.6]], mode: 'Z', fill: c, stroke: 'none', sw: 0, dash: '', op });
     if (a.label) text('arl:' + a.id, (x1 + x2) / 2 + (a.lx || 0), (y1 + y2) / 2 + (a.ly === undefined ? -10 : a.ly), a.label, { fill: C.t2, size: 15, op: dimT(a.id) });
   });
@@ -262,9 +274,10 @@ function stFlatten(scene, C, focus) {
     if (k.sub) text('ks:' + k.id, k.x, k.y + 40, k.sub, { fill: C.t2, size: 14, mono: true, op: dimT(k.id) });
     halo(k.id, k.x - w / 2, k.y - 18, w, 36, 9);
   });
+  (scene.dots || []).forEach((d) => O.push({ k: 'dt:' + d.id, cx: d.x, cy: d.y, r: d.r || 5, fill: col(d.c, 't2'), stroke: 'none', sw: 0, dash: '', op: dim(d.id) }));
   (scene.cast || []).forEach((p) => {
     const who = START_CAST[p.id] || START_CAST.hoot, r = p.r || 26, op = dim('cast:' + p.id);
-    const solid = p.id === 'dot', c = solid ? C.a : p.id === 'bolt' ? C.b : p.id === 'penny' ? C.c : C.t2;
+    const solid = p.id === 'dot', c = solid ? C.a : p.id === 'bolt' ? C.b : p.id === 'penny' ? C.c : p.id === 'pip' ? C.ok : C.t2;
     O.push({ k: 'cs:' + p.id, cx: p.x, cy: p.y, r, fill: solid ? C.a : C.sunk, stroke: c, sw: 2.5, dash: '', op });
     text('csi:' + p.id, p.x, p.y + 8, who.initial, { fill: solid ? C.on : C.t, size: 22, weight: 800, op });
     text('csn:' + p.id, p.x, p.y + r + 24, who.name, { fill: C.t2, size: 17, weight: 600, op: dimT('cast:' + p.id) });
@@ -274,19 +287,20 @@ function stFlatten(scene, C, focus) {
   return { rects: R, paths: P, tags: [], circles: O, texts: T, halos: H };
 }
 // Problems in a scene: missing ids, duplicates, items off the canvas, NaN.
-function stSceneProblems(scene, focus) {
+function stSceneProblems(scene, focus, view) {
+  const V = view || ST_VIEW;
   const out = [], ids = {};
-  ['boxes', 'tokens', 'arrows', 'labels', 'screens', 'cards'].forEach((k) => (scene[k] || []).forEach((it) => {
+  ['boxes', 'tokens', 'arrows', 'labels', 'screens', 'cards', 'dots'].forEach((k) => (scene[k] || []).forEach((it) => {
     if (!it.id) out.push(k + ' item without an id');
     else if (ids[it.id]) out.push('duplicate id ' + it.id); else ids[it.id] = 1;
     let xs, ys;
     if (k === 'arrows') { xs = [it.from[0], it.to[0]]; ys = [it.from[1], it.to[1]]; }
     else if (k === 'tokens') { const w = it.w || stTokW(it.text, it.size); xs = [it.x - w / 2, it.x + w / 2]; ys = [it.y - 18, it.y + 18]; }
-    else if (k === 'labels') { xs = [it.x]; ys = [it.y]; }
+    else if (k === 'labels' || k === 'dots') { xs = [it.x]; ys = [it.y]; }
     else if (k === 'cards') { xs = [it.x, it.x + it.w]; ys = [it.y, it.y + 20 + it.lines.length * 30]; }
     else { xs = [it.x, it.x + (it.w || 0)]; ys = [it.y, it.y + (it.h || 0)]; }
     if (xs.concat(ys).some((v) => typeof v !== 'number' || !isFinite(v))) out.push(it.id + ' has a bad number');
-    else if (xs.some((v) => v < -2 || v > ST_VIEW.w + 2) || ys.some((v) => v < -2 || v > ST_VIEW.h + 2)) out.push(it.id + ' is off the canvas');
+    else if (xs.some((v) => v < -2 || v > V.w + 2) || ys.some((v) => v < -2 || v > V.h + 2)) out.push(it.id + ' is off the canvas');
   }));
   (scene.cast || []).forEach((p) => { if (!START_CAST[p.id]) out.push('unknown cast ' + p.id); ids['cast:' + p.id] = 1; });
   (focus || []).forEach((f) => { if (!ids[f]) out.push('focus on missing id ' + f); });
@@ -316,6 +330,206 @@ function stQueue(waiting, running, done, y) {
     { tokens: waiting.map((j, i) => ({ id: 'job:' + j, x: 100, y: y + i * 46, text: j, w: 120 })) },
     { tokens: running ? [{ id: 'job:' + running, x: 360, y, text: running, w: 120, solid: true }] : [] },
     { tokens: done.map((j, i) => ({ id: 'job:' + j, x: 540, y: y + i * 46, text: j, w: 120 })) });
+}
+
+// Objects for the Level 3 stories: a box with a type tag and one row per field. fields: [[name, value]] where a value
+// that starts with '→' is drawn as a dot (the start of an arrow). Returns scene layers; dots sit at x + w - 16.
+function stObj(id, tag, x, y, fields, o) {
+  const w = (o && o.w) || 200, h = 22 + Math.max(1, fields.length) * 40;
+  const rows = fields.map(([n, v], i) => ({ n, v, y: y + 32 + i * 40 }));
+  return {
+    boxes: [Object.assign({ id, tag, x, y, w, h, text: '', tc: (o && o.tc) || 'a', c: (o && o.c) || 'l', dash: o && o.dash }, o && o.box)],
+    labels: rows.map((r, i) => ({ id: id + ':n' + i, x: x + 14, y: r.y + 5, text: r.n, anchor: 'start', mono: true, size: 15, c: 't2' })),
+    tokens: rows.filter((r) => r.v !== '' && String(r.v).charAt(0) !== '→').map((r) => ({ id: id + ':v' + rows.indexOf(r), x: x + w - 14 - stTokW(r.v, 15) / 2, y: r.y, text: String(r.v), size: 15, solid: o && (o.lit || []).includes(r.n) })),
+    dots: rows.filter((r) => String(r.v).charAt(0) === '→').map((r) => ({ id: id + ':d' + rows.indexOf(r), x: x + w - 16, y: r.y }))
+  };
+}
+// The family tree: classes as boxes, an arrow from each child up to its parent. nodes: [[id, name, x, y, parent id]].
+function stFamily(nodes, o) {
+  const w = (o && o.w) || 150, h = 52, at = {};
+  nodes.forEach((n) => { at[n[0]] = n; });
+  return {
+    boxes: nodes.map(([id, name, x, y]) => ({ id: 'cls:' + id, x, y, w, h, text: name, size: 17, tag: 'class', tc: 'b', c: 'b', solid: o && (o.lit || []).includes(id) })),
+    arrows: nodes.filter((n) => n[4] && at[n[4]]).map(([id, , x, y, p]) => ({ id: 'isa:' + id, from: [x + w / 2, y - 14], to: [at[p][2] + w / 2, at[p][3] + h + 4], c: 'm', label: (o && o.noLabel) ? '' : 'is a', lx: 22, ly: 4 }))
+  };
+}
+
+// ---------- "Watch it run" as a picture ----------
+// The call stack is a pile of plates (the main program at the bottom, the running call on top). A name holding a plain
+// value shows it on its plate; a name that points at an object (a list, a dict, an object, a class, a function worth
+// showing) gets an arrow to that object's box. Classes form a family tree above the objects, each child pointing to
+// its parent. One layout for every step of a trace, so the canvas never jumps and each step eases into the next.
+const ST_MEM = { plateX: 8, plateW: 276, row: 40, heapX: 330, objW: 236, clsW: 140, gap: 16, top: 40 };
+function stMemNeeded(trace) { return !!trace && (trace.steps || []).some((s) => s.h || (s.s || []).length > 1); }
+function stMemShown(step) {
+  const H = step.h || {}, refs = {}, fromFrame = {}, fromField = {};
+  const bump = (id, o) => { if (!id || !H[id]) return; refs[id] = (refs[id] || 0) + 1; if (o) o[id] = 1; };
+  (step.s || []).forEach((f, fi) => f[2].forEach((v) => { if (v[3]) { bump(v[3]); if (fi > 0) fromFrame[v[3]] = 1; } }));
+  if (step.rr) { bump(step.rr); fromFrame[step.rr] = 1; }
+  Object.keys(H).forEach((id) => { const o = H[id]; o[2].forEach((fl) => bump(fl[3], fromField)); bump(o[3], fromField); (o[4] || []).forEach((b) => bump(b, fromField)); });
+  const subs = {}; Object.keys(H).forEach((id) => (H[id][4] || []).forEach((b) => { subs[b] = 1; }));
+  const show = {};
+  Object.keys(H).forEach((id) => {
+    const [, kind, fields, , bases] = H[id];
+    if (kind === 'function') show[id] = fields.length > 0 || refs[id] > 1 || !!fromFrame[id] || !!fromField[id];
+    else if (kind === 'class') show[id] = !!fromField[id] || (bases || []).length > 0 || !!subs[id] || refs[id] > 1;
+    else show[id] = true;
+  });
+  return { show, fromField };
+}
+// The layout of one step: plates, class boxes and object boxes with their positions (canvas height not applied yet).
+function stMemLayout(step) {
+  const H = step.h || {}, { show } = stMemShown(step), M = ST_MEM;
+  // classes by depth in the family tree
+  const depth = {};
+  const dOf = (id, seen) => { if (depth[id] !== undefined) return depth[id]; if ((seen || {})[id]) return 0; const bs = (H[id][4] || []).filter((b) => show[b]); const d = bs.length ? 1 + Math.max(...bs.map((b) => dOf(b, Object.assign({ [id]: 1 }, seen)))) : 0; depth[id] = d; return d; };
+  const classes = Object.keys(H).filter((id) => H[id][1] === 'class' && show[id]);
+  classes.forEach((id) => dOf(id));
+  const boxes = {};
+  let y = M.top;
+  const levels = Math.max(-1, ...classes.map((id) => depth[id])) + 1;
+  for (let d = 0; d < levels; d++) {
+    const row = classes.filter((id) => depth[id] === d);
+    let hRow = 0;
+    row.forEach((id, i) => {
+      const o = H[id], rows = o[2].length + (o[5].length ? 1 : 0), h = 22 + Math.max(1, rows) * 34;
+      boxes[id] = { x: M.heapX + i * (M.clsW + 12), y, w: M.clsW, h, cls: true };
+      hRow = Math.max(hRow, h);
+    });
+    y += hRow + 34;
+  }
+  // other objects: column B if a name on a plate points at them, column C if only other objects do
+  const onPlate = {};
+  (step.s || []).forEach((f) => f[2].forEach((v) => { if (v[3]) onPlate[v[3]] = 1; }));
+  if (step.rr) onPlate[step.rr] = 1;
+  const others = Object.keys(H).filter((id) => H[id][1] !== 'class' && show[id]);
+  const colY = [y + (levels ? 10 : 0), y + (levels ? 10 : 0)];
+  others.forEach((id) => {
+    const o = H[id], col = onPlate[id] ? 0 : 1;
+    const summary = stMemSummary(o, show);
+    const rows = summary ? 1 : Math.max(1, o[2].length), h = 22 + rows * 40;
+    boxes[id] = { x: M.heapX + col * (M.objW + 44), y: colY[col], w: M.objW, h, summary };
+    colY[col] += h + M.gap + 8;
+  });
+  // plates, main program first
+  const plates = (step.s || []).map((f, fi) => {
+    const vars = f[2];
+    const ret = fi === step.s.length - 1 && step.e === 'return';
+    return { key: fi, name: f[0], vars, ret, h: 26 + Math.max(1, vars.length) * M.row + (ret ? 40 : 0) };
+  });
+  const stackH = plates.reduce((n, p) => n + p.h + 18, 0);
+  const heapH = Math.max(y, colY[0], colY[1]);
+  const wide = Math.max(M.heapX + M.objW, ...Object.keys(boxes).map((id) => boxes[id].x + boxes[id].w)) + 12;
+  return { H, show, boxes, plates, stackH: stackH + M.top, heapH, w: Math.max(640, wide) };
+}
+// A list, tuple or set of plain values reads best on one line: [3, 1, 4].
+function stMemSummary(o, show) {
+  if (!['list', 'tuple', 'set'].includes(o[1])) return '';
+  if (o[2].some((fl) => fl[3] && show[fl[3]])) return '';
+  const vals = o[2].map((fl) => fl[1]);
+  const s = o[1] === 'tuple' ? '(' + vals.join(', ') + (vals.length === 1 ? ',)' : ')') : o[1] === 'set' ? (vals.length ? '{' + vals.join(', ') + '}' : 'set()') : '[' + vals.join(', ') + ']';
+  return s.length > 24 ? s.slice(0, 22) + '…]' : s;
+}
+// Every step of a trace as a scene, on one canvas: { w, h, scenes }.
+function stMemScenes(trace) {
+  const steps = (trace && trace.steps) || [];
+  const lays = steps.map((s) => stMemLayout(s));
+  const W = Math.max(640, ...lays.map((l) => l.w)), Hh = Math.max(240, ...lays.map((l) => Math.max(l.stackH, l.heapH) + 16));
+  const clip = (s, n) => { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const scenes = lays.map((L, si) => {
+    const step = steps[si], prev = si > 0 ? steps[si - 1] : null, M = ST_MEM;
+    const was = {};
+    if (prev) {
+      (prev.s || []).forEach((f, fi) => f[2].forEach((v) => { was['v' + fi + ':' + v[0]] = v[3] || v[1]; }));
+      Object.keys(prev.h || {}).forEach((id) => prev.h[id][2].forEach((fl) => { was[id + ':' + fl[0]] = fl[3] || fl[1]; }));
+    }
+    const S = { boxes: [], tokens: [], arrows: [], labels: [], dots: [] };
+    S.labels.push({ id: 'hd:stack', x: M.plateX + 4, y: 20, text: 'Call stack', anchor: 'start', size: 14, weight: 700, c: 'm' });
+    if (Object.keys(L.boxes).length) S.labels.push({ id: 'hd:heap', x: M.heapX, y: 20, text: 'Objects', anchor: 'start', size: 14, weight: 700, c: 'm' });
+    const target = (id, fromX, fromY) => {
+      const b = L.boxes[id]; if (!b) return null;
+      if (b.x > fromX + 4) return [b.x - 3, Math.min(b.y + b.h - 10, Math.max(b.y + 14, fromY))];
+      return fromY < b.y ? [b.x + b.w - 24, b.y - 3] : [b.x + b.w - 24, b.y + b.h + 3];
+    };
+    // plates, the pile standing on the bottom of the canvas
+    let base = Hh - 12;
+    L.plates.forEach((p, i) => {
+      const top = i === L.plates.length - 1, y = base - p.h;
+      base = y - 18;
+      const running = top && step.e !== 'end';
+      S.boxes.push({ id: 'plate:' + p.key, x: M.plateX, y, w: M.plateW, h: p.h, rx: 18, text: '', tag: clip(p.name, 22), tc: running ? 'a' : 'm', c: running ? 'a' : 'l' });
+      if (!p.vars.length) S.labels.push({ id: 'pe:' + p.key, x: M.plateX + M.plateW / 2, y: y + 38, text: 'no names yet', size: 14, c: 'm' });
+      p.vars.forEach((v, k) => {
+        const ry = y + 34 + k * M.row, key = 'v' + p.key + ':' + v[0];
+        const changed = !!prev && was[key] !== (v[3] || v[1]);
+        S.labels.push({ id: 'pn:' + key, x: M.plateX + 14, y: ry + 5, text: clip(v[0], 11), anchor: 'start', mono: true, size: 15, c: 't2' });
+        const ref = v[3] && L.boxes[v[3]];
+        if (ref) {
+          const at = [M.plateX + M.plateW - 18, ry];
+          S.dots.push({ id: 'pd:' + key, x: at[0], y: at[1], c: changed ? 'a' : 't2' });
+          const to = target(v[3], at[0], ry);
+          if (to) S.arrows.push({ id: 'pa:' + key, from: [at[0] + 6, at[1]], to, c: 'a', thin: true });
+        } else {
+          const txt = v[2] === 'function' || v[2] === 'class' ? v[2] : clip(v[1], 14);
+          S.tokens.push({ id: 'pv:' + key, x: M.plateX + M.plateW - 14 - stTokW(txt, 15) / 2, y: ry, text: txt, size: 15, solid: changed });
+        }
+      });
+      if (top && step.e === 'return') {
+        const txt = 'returns ' + clip(step.r, 12);
+        const ry = y + p.h - 26;
+        S.tokens.push({ id: 'ret', x: M.plateX + M.plateW - 14 - stTokW(txt, 14) / 2, y: ry, text: txt, size: 14, solid: true });
+        if (step.rr && L.boxes[step.rr]) { const to = target(step.rr, M.plateX + M.plateW, ry); if (to) S.arrows.push({ id: 'ra', from: [M.plateX + M.plateW + 2, ry], to, c: 'a', thin: true }); }
+      }
+    });
+    // objects and classes
+    Object.keys(L.boxes).forEach((id) => {
+      const b = L.boxes[id], o = L.H[id], kind = o[1];
+      const tag = kind === 'class' ? 'class ' + o[0] : kind === 'object' ? o[0] + ' object' : kind === 'function' ? 'function ' + o[0] : o[0];
+      const fresh = !!prev && !(prev.h || {})[id];
+      S.boxes.push({ id: 'ob:' + id, x: b.x, y: b.y, w: b.w, h: b.h, text: '', tag: clip(tag, b.cls ? 15 : 24), tc: b.cls ? 'b' : 'a', c: b.cls ? 'b' : fresh ? 'a' : 'l' });
+      if (b.summary) {
+        S.tokens.push({ id: 'os:' + id, x: b.x + b.w / 2, y: b.y + 32, text: b.summary, size: 15 });
+        return;
+      }
+      const rh = b.cls ? 34 : 40;
+      const fields = o[2].slice();
+      if (!fields.length && !(b.cls && o[5].length)) S.labels.push({ id: 'oe:' + id, x: b.x + b.w / 2, y: b.y + 37, text: kind === 'function' ? 'remembers nothing' : kind === 'class' ? 'no shared data' : 'empty', size: 14, c: 'm' });
+      fields.forEach((fl, k) => {
+        const ry = b.y + 32 + k * rh, key = id + ':' + fl[0];
+        const changed = !!prev && !fresh && was[key] !== (fl[3] || fl[1]);
+        const nm = kind === 'list' || kind === 'tuple' ? '[' + fl[0] + ']' : fl[0];
+        S.labels.push({ id: 'on:' + key, x: b.x + 12, y: ry + 5, text: clip(nm, b.cls ? 7 : 10), anchor: 'start', mono: true, size: 14, c: 't2' });
+        const ref = fl[3] && L.boxes[fl[3]];
+        if (ref) {
+          const at = [b.x + b.w - 16, ry];
+          S.dots.push({ id: 'od:' + key, x: at[0], y: at[1], c: changed ? 'a' : 't2' });
+          const to = target(fl[3], at[0], ry);
+          if (to) S.arrows.push({ id: 'oa:' + key, from: [at[0] + 6, at[1]], to, c: 'm', thin: true });
+        } else {
+          const txt = clip(fl[1], b.cls ? 7 : 12);
+          S.tokens.push({ id: 'ov:' + key, x: b.x + b.w - 10 - stTokW(txt, 14) / 2, y: ry, text: txt, size: 14, solid: changed });
+        }
+      });
+      if (b.cls && o[5].length) S.labels.push({ id: 'om:' + id, x: b.x + 12, y: b.y + 32 + fields.length * rh + 5, text: clip(o[5].join(' '), 15), anchor: 'start', mono: true, size: 13, c: 'm' });
+      // an object points at its class (dashed), a class at its parent ("is a")
+      if (o[3] && L.boxes[o[3]]) { const c = L.boxes[o[3]]; S.arrows.push({ id: 'oc:' + id, from: [b.x + 30, b.y - 14], to: [c.x + c.w / 2, c.y + c.h + 3], c: 'm', dash: true, thin: true }); }
+      (o[4] || []).forEach((p) => { const c = L.boxes[p]; if (c) S.arrows.push({ id: 'isa:' + id + ':' + p, from: [b.x + b.w / 2, b.y - 14], to: [c.x + c.w / 2, c.y + c.h + 3], c: 'b', label: 'is a', lx: 20, ly: 4 }); });
+    });
+    return S;
+  });
+  return { w: W, h: Hh, scenes };
+}
+
+// The picture in words, for screen readers: the plates from the top, then the objects and what points at them.
+function stMemSay(step) {
+  if (!step) return '';
+  const H = step.h || {}, { show } = stMemShown(step), name = {};
+  Object.keys(H).forEach((id) => { const o = H[id]; name[id] = o[1] === 'class' ? 'class ' + o[0] : o[1] === 'object' ? 'a ' + o[0] + ' object' : o[1] === 'function' ? 'function ' + o[0] : 'a ' + o[0]; });
+  const val = (v) => (v[3] && show[v[3]] ? v[0] + ' points at ' + name[v[3]] : v[0] + ' = ' + v[1]);
+  const plates = (step.s || []).slice().reverse().map((f, i) => (i === 0 ? 'Top plate ' : 'then ') + f[0] + (f[2].length ? ': ' + f[2].map(val).join(', ') : ''));
+  const objs = Object.keys(H).filter((id) => show[id]).map((id) => { const o = H[id]; return name[id] + (o[2].length ? ' holding ' + o[2].map((fl) => fl[0] + (fl[3] && show[fl[3]] ? ' → ' + name[fl[3]] : ' ' + fl[1])).join(', ') : '') + ((o[4] || []).length ? ', a child of ' + o[4].map((b) => name[b]).join(' and ') : ''); });
+  const s = 'Call stack. ' + plates.join('; ') + '.' + (objs.length ? ' Objects: ' + objs.join('; ') + '.' : '');
+  return s.length > 600 ? s.slice(0, 599) + '…' : s;
 }
 
 // ---------- "Where are you starting?" ----------

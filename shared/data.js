@@ -8,9 +8,12 @@ const DS = (function () {
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock], ['Passing a Start here exercise', XP.start]];
   const LEVEL_XP = 500;
   const SHEET_SIZE = /*@@SHEET-SIZE@@*/216;
-  // Start here, Level 1, one medal per chapter and one for the bridge: { part, label, mark, lessons: [ids], exercises: [ids] }.
-  // The build fills it in from src/start (scripts/build_start.js).
-  const START_MEDALS = /*@@START-MEDALS@@*/[]; // rows in the master sheet; the build fills in the count from shared/sheet.js
+  // Start here medals: Level 1 has one per chapter and one for the bridge; Levels 2 and 3 have one per part.
+  // { level, part, label, mark, lessons: [ids], exercises: [ids] }. The build fills it in from src/start (scripts/build_start.js).
+  const START_MEDALS = /*@@START-MEDALS@@*/[];
+  // Every Start here lesson, in order: [id, level, part, n, short, ready (1 or 0)]. The one source of lesson counts on
+  // every page (the hub, the roadmap, Home, Profile): startCounts() below. Built from src/start/chapters.js.
+  const START_OUTLINE = /*@@START-OUTLINE@@*/[];
   const DAY = 86400000;
   let now = () => Date.now();
 
@@ -214,13 +217,21 @@ const DS = (function () {
       return { pattern: g.label, mark: g.mark, tier, next, fresh: !!tier && !seen[key], key, done, total, start: true };
     });
   }
+  // Lesson counts for a level (a number, or null for every level) or for a list of lesson ids (a roadmap node).
+  // done counts finished lessons and lessons the placement check marked known. Ids that are not lessons are left out.
+  function startCounts(level, ids) {
+    const S = readStart(), pick = ids ? {} : null;
+    (ids || []).forEach((id) => { pick[id] = 1; });
+    const rows = START_OUTLINE.filter((r) => (level == null || r[1] === level) && (!pick || pick[r[0]]));
+    const done = rows.filter((r) => S.done[r[0]] || S.skip[r[0]]).length;
+    return { total: rows.length, ready: rows.filter((r) => r[5]).length, done, pct: rows.length ? Math.round((done / rows.length) * 100) : 0, ids: rows.map((r) => r[0]) };
+  }
+  function startOutline() { return START_OUTLINE; }
   // Level 1 of Start here as one ring: lessons done (or marked known) out of all of them. null before the learner starts.
   function startRing() {
-    const S = readStart();
-    const ids = [].concat(...START_MEDALS.map((g) => g.lessons));
-    const done = ids.filter((id) => S.done[id] || S.skip[id]).length;
-    if (!ids.length || (!done && !Object.keys(S.ex).length && !S.last)) return null;
-    return { name: 'Start here', done, total: ids.length, pct: Math.round((done / ids.length) * 100) };
+    const S = readStart(), c = startCounts(1);
+    if (!c.total || (!c.done && !Object.keys(S.ex).length && !S.last)) return null;
+    return { name: 'Start here', done: c.done, total: c.total, pct: c.pct };
   }
   function markMedalsSeen(list) {
     const seen = Object.assign({}, json(KEY.medals, {}));
@@ -648,7 +659,7 @@ const DS = (function () {
     days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
     predict, logPredict,
-    start, startPass, startFinish, startVisit, startPlace, startMedals, startRing,
+    start, startPass, startFinish, startVisit, startPlace, startMedals, startRing, startCounts, startOutline,
     MOCK_LENGTHS, MOCK_MIX, MOCK_AREAS, MOCK_HINT_COST, MOCK_BANDS, mockPick, mockStart, mockSession, mockRecord, mockHint, mockNotes, mockExtend, mockEnd, mockAbandon, mockScore, mockSave, mockHistory,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
     leaderboard, buddies, feed,

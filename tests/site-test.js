@@ -7,7 +7,7 @@
 // Every story is measured the same way at three steps (first, middle, last), stage included.
 // Focus order: on pages whose phone layout reorders content (Sheet, Auth, Briefing), tabbing from the
 // top reaches the first five controls of the page (the bottom pill nav aside) in top-to-bottom order.
-// Player controls pass: one lesson of each player (AI & ML, AI now, system design, DSA concept, Start here,
+// Player controls pass: one lesson of each player (AI & ML, AI now, system design, DSA concept, Start here levels 1-3,
 // story, Git) at 1440x900, 1280x720 and 390x844 in the max theme. The Play button's whole box must be in the
 // first screen without scrolling and not covered (by the phone pill nav, say); clicking it must turn it into
 // Pause and move the step counter on within 3 s; clicking again must pause (label back to Play, counter still);
@@ -75,7 +75,7 @@ const REORDERED = ['Sheet', 'Auth', 'Briefing'];
 
 // Player controls pass: [name, page, localStorage that opens the lesson]
 const PLAYERS = [['AI & ML', 'AILesson', { 'dsaviz-ai-lesson': 'gradient' }], ['AI now', 'AILesson', { 'dsaviz-ai-lesson': 'attention' }],
-  ['System', 'SDLesson', {}], ['Concept', 'ConceptLesson', {}], ['Start here', 'Chapter', {}], ['Story', 'Story', {}], ['Git', 'Git', {}]];
+  ['System', 'SDLesson', {}], ['Concept', 'ConceptLesson', {}], ['Start here', 'Chapter', {}], ['Start L2', 'Chapter', { 'dsaviz-start-lesson': 'call-stack' }], ['Start L3', 'Chapter', { 'dsaviz-start-lesson': 'objects' }], ['Story', 'Story', {}], ['Git', 'Git', {}]];
 // Runs in the page: the player's step counter ("Step 3 of 12", "step 3/12", "beat 3 of 9"), the first one on the page.
 const STEP_RE = '\\b(?:step|beat)\\s+(\\d+)\\s*(?:of|\\/)\\s*\\d+';
 const readStep = (re) => {

@@ -115,6 +115,7 @@ class Component extends DCLogic {
       // your own input: run is the re-simulated scene (null = the story's own example); predict: the toggle, the open question and the last feedback
       customOpen: false, run: null, runText: '', runMsg: '', runBad: false, predict: false, ask: null, fb: null, lastAsk: -9 };
     this.runner = new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true });
+    this.approaches = new ApproachPane(this, scene, { lang: () => this.runner.s.lang });
   }
   componentDidMount() {
     listenTheme(this);
@@ -216,6 +217,7 @@ class Component extends DCLogic {
     this.stop();
     saveProblem(id);
     this.runner.setProblem(id);
+    this.approaches.setProblem(id);
     this.setState({ scene: id, step: 0, played: false, hints: 0, pick: null, rated: null, note: DS.note(id), noteSaved: false,
       run: null, runText: '', runMsg: '', runBad: false, ask: null, fb: null, lastAsk: -9 });
   }
@@ -786,11 +788,12 @@ class Component extends DCLogic {
       noteStatus: this.state.noteSaved ? (this.state.note.trim() ? 'Saved' : 'Note cleared') : 'Only you see this. It is included in the sheet backup file.',
       onNote: (e) => this.setNote(e && e.target ? e.target.value : ''),
       // right pane
-      tabs: [['solution', 'Solution'], ['code', 'Your code']].map(([k, label]) => {
+      tabs: [['solution', 'Solution'], ['approaches', 'Approaches'], ['code', 'Your code']].map(([k, label]) => {
         const on = this.state.tab === k;
         return { label, on, tabId: 'pp-tab-' + k, panel: 'pp-panel-' + k, sel: on ? 'true' : 'false', bar: on ? t.accent : 'transparent', fg: on ? t.text : t.muted, pick: () => (k === 'code' ? this.openCode() : this.setState({ tab: k })) };
       }),
-      onSolution: !onCode, onCode, codeOpened: this.state.codeOpened, codeDisplay: onCode ? 'flex' : 'none',
+      onSolution: this.state.tab === 'solution', onApproaches: this.state.tab === 'approaches', onCode,
+      fx: factsVals(t, S.id, !dsPhone()), ap: this.approaches.vals(t), noApproaches: !(typeof APPROACHES !== 'undefined' && APPROACHES[S.id]), codeOpened: this.state.codeOpened, codeDisplay: onCode ? 'flex' : 'none',
       langs: CODE_LANGS.map(([k, label]) => {
         const on = lang === k;
         return { label: label === 'JavaScript' ? 'JS' : label, on, bg: on ? t.text : 'transparent', fg: on ? t.bg : t.muted, pick: () => this.runner.setLang(k) };

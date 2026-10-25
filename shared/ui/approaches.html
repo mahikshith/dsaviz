@@ -1,0 +1,50 @@
+<!-- APPROACH PANE -->
+<sc-if value="{{ap.has}}" hint-placeholder-val="{{ true }}">
+<section aria-labelledby="ap-head" style="flex-shrink: 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<h2 id="ap-head" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Approaches</h2>
+<span style="font-size: 13px; color: {{t.muted}}">{{ap.count}}</span>
+<div style="flex-grow: 1"></div>
+<button onClick="{{ap.toggle}}" aria-expanded="{{ap.openX}}" aria-controls="{{ap.controls}}" style="height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>{{ap.toggleLabel}}</button>
+</div>
+<sc-if value="{{ap.closed}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; padding: 10px 14px; border-radius: 12px; border: 1px dashed {{t.line2}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Spoilers inside: full solutions from brute force to best, with their cost and common mistakes. Try it yourself first.</p>
+</sc-if>
+<sc-if value="{{ap.open}}" hint-placeholder-val="{{ false }}">
+<div id="ap-body" style="display: flex; flex-direction: column; gap: 12px">
+<div role="tablist" aria-label="Approaches, slow to fast" onKeyDown="{{ap.onKey}}" style="display: flex; gap: 4px; border-bottom: 1px solid {{t.line}}">
+<sc-for list="{{ap.tabs}}" as="at" hint-placeholder-count="3"><button role="tab" id="{{at.tabId}}" aria-selected="{{at.sel}}" aria-controls="ap-panel" tabindex="{{at.tabIndex}}" onClick="{{at.pick}}" style="height: 44px; padding: 0 12px; border: 0; border-bottom: 2px solid {{at.bar}}; margin-bottom: -1px; background: transparent; color: {{at.fg}}; cursor: pointer; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap"><span aria-hidden="true" style="font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}">{{at.n}}</span>{{at.label}}</button></sc-for>
+</div>
+<div role="tabpanel" id="ap-panel" aria-labelledby="{{ap.panelLabel}}" style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h3 style="margin: 0; font-size: 17px; line-height: 1.3; font-weight: 700">{{ap.name}}</h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.55; color: {{t.text2}}">{{ap.idea}}</p>
+</div>
+<div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.45">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px">
+<span><span style="font-weight: 700">Time </span><span style="font-family: {{t.mono}}; font-weight: 700; font-variant-ligatures: none">{{ap.time}}</span></span>
+<span><span style="font-weight: 700">Space </span><span style="font-family: {{t.mono}}; font-weight: 700; font-variant-ligatures: none">{{ap.space}}</span></span>
+<sc-if value="{{ap.slow}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 8px; border-radius: 999px; background: {{ap.tagBg}}; color: {{ap.tagFg}}; font-size: 12px; font-weight: 700">Too slow for big inputs</span></sc-if>
+<sc-if value="{{ap.best}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 8px; border-radius: 999px; background: {{ap.tagBg}}; color: {{ap.tagFg}}; font-size: 12px; font-weight: 700">Meets the target</span></sc-if>
+</div>
+<span style="color: {{t.text2}}">{{ap.why}}</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">{{ap.codeLang}}</span>
+<sc-if value="{{ap.hasCodeNote}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: {{t.muted}}">· {{ap.codeNote}}</span></sc-if>
+<div style="flex-grow: 1"></div>
+<button onClick="{{ap.copy}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{ap.copyLabel}}</button>
+</div>
+<pre tabindex="0" aria-label="{{ap.codeLang}} solution" style="margin: 0; padding: 12px 14px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: 13px; line-height: 1.55; font-variant-ligatures: none; white-space: pre; overflow-x: auto; tab-size: 2">{{ap.code}}</pre>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h4 style="margin: 0; font-size: 13px; font-weight: 700">Common pitfalls</h4>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.5; color: {{t.text2}}">
+<sc-for list="{{ap.pitfalls}}" as="pf" hint-placeholder-count="2"><li>{{pf.p}}</li></sc-for>
+</ul>
+</div>
+</div>
+</div>
+</sc-if>
+</section>
+</sc-if>
+<!-- /APPROACH PANE -->

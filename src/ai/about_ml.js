@@ -6,27 +6,29 @@ const AI_ABOUT_ML = {
     uses: ['Predicting house prices from size', 'Training almost every neural network, including chatbots', 'Forecasting sales from past months of data'],
     before: ['Averages', 'Straight lines (y = w x + b)'],
     words: [
-      ['weight', 'A number the model can change. Here it is the slope of the line.'],
-      ['bias', 'The second number that moves the whole line up or down.'],
+      ['weight', 'A number the model can change. Here it is the slope of the line: it tilts the line.'],
+      ['bias', 'The second number. It lifts or lowers the whole line.'],
       ['loss', 'One number that says how wrong the model is. Lower is better.'],
-      ['gradient', 'The direction that makes the loss grow fastest. We step the opposite way.'],
-      ['learning rate', 'How big each step is. Too small is slow. Too big can overshoot.']
+      ['gradient', 'The slope of the loss. It points uphill, to where the loss grows fastest. We step the opposite way.'],
+      ['learning rate', 'How big each step is. Too small is slow. Too big can jump past the best line.']
     ],
     math: {
       lines: ['\\hat{y} = w x + b', 'L = \\frac{1}{n} \\sum_{i=1}^{n} (\\hat{y}_i - y_i)^2', 'w \\leftarrow w - \\eta \\, \\frac{\\partial L}{\\partial w}'],
       symbols: [
         ['\\hat{y}', 'the guess the line makes for one point'],
-        ['x', 'the input, such as the size of a flat'],
+        ['x', 'the input, such as the size of a home'],
         ['y', 'the true answer, such as the real price'],
         ['w', 'the weight, which is the slope of the line'],
         ['b', 'the bias, which moves the line up or down'],
-        ['L', 'the loss: the average of the squared gaps'],
+        ['L', 'the loss: the average of the squared gaps. We square each gap so a gap below the line cannot cancel a gap above it'],
         ['n', 'how many points there are'],
         ['\\eta', 'the learning rate, the size of each step'],
-        ['\\frac{\\partial L}{\\partial w}', 'how fast the loss changes when w changes a little']
+        ['\\leftarrow', 'replace the number on the left with the value on the right'],
+        ['\\frac{\\partial L}{\\partial w}', 'the slope of the loss: how fast the loss changes when w changes a little']
       ],
       example: [
-        'Take one point to keep it small: x = 2 and y = 5. Start with w = 1 and b = 0.',
+        'This is a smaller example than the animation. It has one point, not eight. The steps work the same way.',
+        'Take one point: x = 2 and y = 5. Start with w = 1 and b = 0.',
         'The guess is 1 × 2 + 0 = 2. The error is 2 − 5 = −3, so the loss is 9.',
         'The slope of the loss for w is 2 × error × x. That is 2 × (−3) × 2 = −12.',
         'Pick a learning rate of 0.05. The new w is 1 − 0.05 × (−12) = 1.6.',
@@ -34,18 +36,18 @@ const AI_ABOUT_ML = {
       ]
     },
     steps: [
-      'Start with any line, for example a flat one.',
+      'Start with any line, for example a level one.',
       'Measure the gap between the line and every dot. Square each gap and average them. That is the loss.',
       'Find the gradient: how the loss changes when you nudge the slope or the bias.',
       'Move each number a small step against its gradient. The step size is the learning rate.',
       'Repeat until the loss stops falling. The line now fits the dots.'
     ],
-    use: ['You have a loss you can measure and a slope you can find.', 'The model has many numbers to tune, so no neat formula exists.'],
-    avoid: ['A tiny line fit, where a direct formula gives the exact answer at once.', 'The loss has no slope, such as counting mistakes directly.'],
+    use: ['You have a loss you can measure and a slope you can find.', 'The model has many numbers to tune, and no ready-made rule gives the answer at once.'],
+    avoid: ['A tiny line fit, where a ready-made rule gives the exact answer at once.', 'The loss has no slope, such as counting mistakes directly.'],
     mistakes: [
       'Setting the learning rate too high. The loss grows instead of shrinking. Lower the rate.',
       'Stopping after a few steps because the line looks fine. Watch the loss curve until it flattens.',
-      'Mixing inputs of very different sizes. Scale them first so the steps behave.'
+      'Mixing inputs of very different sizes, such as metres and grams. Put them on the same size range first so the steps behave.'
     ],
     cheat: ['loss = how wrong', 'gradient = uphill direction', 'step = go the other way', 'learning rate = step size', 'repeat until loss is flat'],
     next: ['logistic', 'backprop', 'regular'],
@@ -60,8 +62,9 @@ const AI_ABOUT_ML = {
       ['neighbour', 'One of the known examples that sits close to the new item.'],
       ['k', 'How many neighbours get a vote.'],
       ['distance', 'How far apart two items are. Here it is a straight line between dots.'],
-      ['label', 'The answer attached to an example, such as like or dislike.'],
-      ['majority vote', 'The label that more than half of the neighbours share.']
+      ['label', 'The answer attached to an example, such as liked or skipped.'],
+      ['majority vote', 'The label that most of the neighbours share.'],
+      ['measurement', 'One number that describes an item, such as how much action a film has.']
     ],
     math: {
       lines: ['d(a, b) = \\sqrt{(a_1 - b_1)^2 + (a_2 - b_2)^2}'],
@@ -72,10 +75,11 @@ const AI_ABOUT_ML = {
         ['\\sqrt{\\;}', 'square root: the number that gives the inside when multiplied by itself']
       ],
       example: [
-        'A new film sits at (3, 4). Four rated films sit at A (3, 5), B (4, 5), C (1, 4) and D (6, 8).',
+        'This is a smaller made-up example than the animation: four rated films, and a new film at (3, 4).',
+        'The four films sit at A (3, 5), B (4, 5), C (1, 4) and D (6, 8). Each pair is the amount of action and romance.',
         'Distances to the new film are: A 1, B 1.41 (√2), C 2, D 5.',
-        'Say A is disliked, and B, C and D are liked, with D far away. With k = 1 the nearest, A, decides: dislike.',
-        'With k = 3 the neighbours are A, B and C. That is one dislike and two likes, so the vote says like.',
+        'Say A is skipped, and B, C and D are liked, with D far away. With k = 1 the nearest, A, decides: skip.',
+        'With k = 3 the neighbours are A, B and C. That is one skip and two likes, so the vote says like.',
         'The answer changed when k changed. That is why you choose k with care.'
       ]
     },
@@ -86,23 +90,24 @@ const AI_ABOUT_ML = {
       'Count the labels among those k. The most common label wins.'
     ],
     use: ['You have a small data set and want a simple first try.', 'Items with similar measurements really do share labels.'],
-    avoid: ['Huge data sets, because every question scans all the examples.', 'Many columns, where all distances start to look alike.'],
+    avoid: ['Huge data sets, because every question scans all the examples.', 'Many measurements per item, where all distances start to look alike.'],
     mistakes: [
-      'Using k = 1. One odd example then decides everything. Try a larger, odd k.',
-      'Mixing measurements of different sizes, such as metres and grams. Scale them first.',
-      'Choosing an even k, which can tie. Use an odd k for two labels.'
+      'Using k = 1. One unusual example then decides everything. Try a larger, odd k.',
+      'Mixing measurements of different sizes, such as metres and grams. Put them on the same size range first, for example 0 to 1.',
+      'Choosing an even k, which can tie. With two labels and k = 2, one vote each is a tie. Use an odd k.'
     ],
-    cheat: ['closest k vote', 'small k = jumpy', 'big k = blurry', 'scale your columns', 'odd k avoids ties'],
+    cheat: ['closest k vote', 'small k = jumpy', 'big k = blurry', 'same size range for measurements', 'odd k avoids ties'],
     next: ['kmeans', 'crossval', 'embeddings'],
     sources: ['Cover and Hart, Nearest neighbor pattern classification, IEEE Trans. Information Theory, 1967', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 13', 'scikit-learn documentation, Nearest Neighbors user guide']
   },
   tree: {
-    what: 'A decision tree is a chain of yes-or-no questions. Each question splits the examples into two groups. The best question makes each group as pure as possible.',
-    analogy: 'It is like the game of twenty questions. Each answer rules out many options until one answer is left.',
+    what: 'A decision tree is a chain of yes-or-no questions. Each question splits the examples into two groups. The best question makes each group mostly one label.',
+    analogy: 'It is like guessing an animal by asking yes-or-no questions. Each answer rules out many options until one is left.',
     uses: ['Deciding whether a loan is likely to be repaid', 'Helping doctors sort patients by risk from simple test results', 'Choosing whether a day is good for playing outside'],
     before: ['Counting and fractions'],
     words: [
-      ['split', 'One yes-or-no question on one column, such as is it hot.'],
+      ['split', 'One yes-or-no question about one measurement, such as is it hot. It cuts the examples into two groups.'],
+      ['pure', 'A group is pure when every example in it has the same label.'],
       ['impurity', 'How mixed a group is. A group of all one label has zero impurity.'],
       ['Gini impurity', 'One way to score mixing: 1 minus the sum of squared label shares.'],
       ['leaf', 'The end of a branch. It gives the final answer.'],
@@ -116,41 +121,44 @@ const AI_ABOUT_ML = {
         ['\\sum_c', 'add up the value for every label c'],
         ['n_L, n_R', 'how many examples go left and right'],
         ['n', 'the total number of examples'],
-        ['G_L, G_R', 'the impurity of the left group and the right group']
+        ['G_L, G_R', 'the impurity of the left group and the right group'],
+        ['G_{\\text{split}}', 'the score of a split: each side counts in proportion to its size']
       ],
       example: [
-        'Ten days: 6 played, 4 did not. The shares are 0.6 and 0.4.',
-        'Gini of all ten: 1 − 0.36 − 0.16 = 0.48.',
-        'Try a cut. Left has 5 days (4 played, 1 not): 1 − 0.64 − 0.04 = 0.32.',
-        'Right has 5 days (2 played, 3 not): 1 − 0.16 − 0.36 = 0.48.',
-        'Weighted: 0.5 × 0.32 + 0.5 × 0.48 = 0.40. The cut drops the score from 0.48 to 0.40, so it helps.'
+        'This is the same data as the animation: 19 days, 9 played and 10 stayed in.',
+        'The shares are 9/19 and 10/19. Gini of all 19: 1 − 0.224 − 0.277 = 0.50.',
+        'Try the split "wind above 5". The windy side has 7 days, and all stayed in. Its Gini is 0.',
+        'The calm side has 12 days (9 played, 3 stayed in): 1 − 0.5625 − 0.0625 = 0.375.',
+        'Weighted: 7/19 × 0 + 12/19 × 0.375 = 0.24. The split drops the score from 0.50 to 0.24, so it helps.'
       ]
     },
     steps: [
-      'Look at every possible cut on every column.',
-      'Score each cut by how pure the two groups become. Keep the best one.',
+      'Look at every possible split on every measurement.',
+      'Score each split by how pure the two groups become. Keep the best one.',
       'Repeat inside each new group, asking a new question.',
       'Stop at a depth limit or when a group is too small or already pure.'
     ],
-    use: ['You want an answer you can read and explain.', 'Your columns mix numbers and categories.'],
-    avoid: ['When one deep tree memorises the data. Limit its depth or use many trees.', 'When the true pattern is a smooth curve.'],
+    use: ['You want an answer you can read and explain.', 'Your measurements mix numbers and categories.'],
+    avoid: ['When one deep tree copies the data, noise included. Limit its depth or use many trees.', 'When the true pattern is a smooth curve.'],
     mistakes: [
-      'Letting the tree grow until every leaf has one example. It memorises. Limit depth.',
+      'Letting the tree grow until every leaf has one example. It copies the data, noise included. Limit depth.',
       'Trusting one tree. A small change in data can change it a lot.',
       'Thinking the first question is the only one that matters. Later questions add detail.'
     ],
-    cheat: ['ask the best question', 'purer groups = better cut', 'repeat in each group', 'limit depth', 'leaf = final answer'],
+    cheat: ['ask the best question', 'purer groups = better split', 'repeat in each group', 'limit depth', 'leaf = final answer'],
     next: ['gboost', 'overfit', 'crossval'],
     sources: ['Breiman, Friedman, Olshen, Stone, Classification and Regression Trees, 1984', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 9.2', 'scikit-learn documentation, Decision Trees user guide (Gini and entropy)']
   },
   overfit: {
-    what: 'A model can memorise its training examples and still fail on new ones. That is overfitting. To catch it, hide some data and test on it.',
+    what: 'A model can copy its training examples, noise included, and still fail on new ones. That is overfitting. To catch it, hide some data and test on it.',
     analogy: 'A student memorises last year\'s exam answers. They score full marks on that paper and fail a new paper.',
     uses: ['Checking that a spam filter works on mail it has never seen', 'Choosing how complex a price-prediction model should be', 'Proving a medical model works on patients outside its training group'],
     before: ['gradient'],
     words: [
       ['training data', 'The examples the model learns from.'],
       ['test data', 'Examples kept hidden until the end, used to check the model.'],
+      ['error', 'How far the guesses sit from the true answers, squared and averaged. Lower is better.'],
+      ['degree', 'How bendy the curve may be. Degree 1 is a straight line. Higher degrees bend more.'],
       ['overfitting', 'Fitting the training data too closely, including its random noise.'],
       ['underfitting', 'A model so simple that it misses the real pattern.'],
       ['generalise', 'Work well on data the model has not seen.']
@@ -164,7 +172,7 @@ const AI_ABOUT_ML = {
         ['\\sum', 'add up the value for every example']
       ],
       example: [
-        'A very bendy curve fits 3 training points exactly. Each gap is 0, so train error is 0.',
+        'This is a smaller made-up example than the animation. A very bendy curve fits 3 training points exactly. Each gap is 0, so train error is 0.',
         'Now test on 2 new points. The curve guesses 2 and 5, and the truths are 3 and 3.',
         'The gaps are 1 and 2. Squared they are 1 and 4.',
         'Test error is (1 + 4) / 2 = 2.5.',
@@ -182,10 +190,10 @@ const AI_ABOUT_ML = {
     avoid: ['Testing on the same data you trained on. That score tells you nothing.', 'Peeking at the test data again and again while you tune.'],
     mistakes: [
       'Reporting training error as the result. Report error on data the model never saw.',
-      'Tuning on the test set many times. The test data then leaks into your choices. Keep a separate check set.',
+      'Tuning on the test set many times. Your choices then start to fit the test data too. Keep a third, separate set for the final check.',
       'Using a split of only a few points. The score then jumps around. See cross-validation.'
     ],
-    cheat: ['train error always falls', 'test error is the truth', 'U-shaped test curve', 'simple = misses', 'too bendy = memorises'],
+    cheat: ['train error always falls', 'test error is the truth', 'U-shaped test curve', 'simple = misses', 'too bendy = copies the noise'],
     next: ['biasvar', 'crossval', 'regular'],
     sources: ['Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 7 (model assessment)', 'Bishop, Pattern Recognition and Machine Learning, 2006, ch. 1.1 (polynomial curve fitting)', 'scikit-learn documentation, Cross-validation and Underfitting vs Overfitting examples']
   },
@@ -193,13 +201,16 @@ const AI_ABOUT_ML = {
     what: 'A neuron adds up its inputs times weights, then squashes the total. Backpropagation finds how much each weight caused the error, so every weight can be fixed together.',
     analogy: 'A cake tastes wrong. You walk back through the recipe steps and work out how much each ingredient added to the problem.',
     uses: ['Training image recognisers on photos', 'Training the language models behind chatbots', 'Training speech-to-text systems'],
-    before: ['gradient', 'Slopes (derivatives)'],
+    before: ['gradient', 'Slopes (how fast one number changes when another number changes)'],
     words: [
       ['neuron', 'A small unit that weights its inputs, adds them, and squashes the total.'],
-      ['activation', 'The squashing step. This lesson uses tanh, which maps any number into -1 to 1.'],
+      ['activation', 'The squashing step. The output neuron in the animation has no squash, so its value can go past 1.'],
+      ['tanh', 'The squash used here. It turns any number into one between -1 and 1.'],
+      ['loss', 'One number that says how wrong the output is. Lower is better.'],
+      ['gradient', 'How much the loss changes when one weight changes a little.'],
       ['forward pass', 'Pushing the inputs through the network to get an output.'],
       ['backward pass', 'Walking back from the error to find each weight\'s share of blame.'],
-      ['chain rule', 'A rule for combining slopes of steps that feed each other.']
+      ['chain rule', 'A rule for slopes of steps that feed each other: multiply the slopes. It is how blame travels back.']
     ],
     math: {
       lines: ['a = w x', 'y = \\tanh(a)', 'L = (y - t)^2', '\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial y} \\cdot \\frac{\\partial y}{\\partial a} \\cdot \\frac{\\partial a}{\\partial w}'],
@@ -213,6 +224,7 @@ const AI_ABOUT_ML = {
         ['\\frac{\\partial L}{\\partial w}', 'how much the loss changes when w changes a little']
       ],
       example: [
+        'This is a smaller example than the animation: one neuron with a tanh squash. The animation has an output neuron that does not squash.',
         'One neuron: x = 1, w = 0.5, target t = 1. Then a = 0.5 and y = tanh(0.5) ≈ 0.462.',
         'The loss is (0.462 − 1)² ≈ 0.289.',
         'Chain rule pieces: ∂L/∂y = 2 × (0.462 − 1) ≈ −1.076. ∂y/∂a = 1 − y² ≈ 0.786. ∂a/∂w = x = 1.',
@@ -240,14 +252,14 @@ const AI_ABOUT_ML = {
   },
   embeddings: {
     what: 'An embedding turns a word into a list of numbers, like an arrow. Words with similar meaning get arrows that point the same way. Cosine similarity measures that match.',
-    analogy: 'Think of words as places on a map. Cat and dog are on the same street. Cat and car are in different towns.',
+    analogy: 'Think of each word as an arrow from the centre of a map. Cat and dog point the same way. Cat and car point different ways. You compare directions, not distances.',
     uses: ['Search that finds results by meaning, not exact words', 'Recommending songs or products similar to ones you liked', 'Giving chatbots a way to look up relevant notes'],
     before: ['Vectors as lists of numbers'],
     words: [
-      ['embedding', 'A list of numbers that stands for a word or item.'],
+      ['embedding', 'A list of numbers that stands for a word or item. For example, cat = (3, 1).'],
       ['vector', 'An ordered list of numbers. You can draw it as an arrow.'],
       ['dot product', 'Multiply matching numbers of two vectors, then add the results.'],
-      ['cosine similarity', 'A score from -1 to 1 for how closely two arrows point the same way.'],
+      ['cosine similarity', 'A score from -1 to 1 for how closely two arrows point the same way. It is the cosine of the angle between them.'],
       ['length', 'How long the arrow is.']
     ],
     math: {
@@ -256,14 +268,15 @@ const AI_ABOUT_ML = {
         ['a, b', 'the two arrows (lists of numbers) we compare'],
         ['a \\cdot b', 'dot product: multiply matching numbers, then add them up'],
         ['\\lVert a \\rVert', 'the length of arrow a'],
-        ['\\cos(a, b)', 'the score: 1 same way, 0 at right angles, -1 opposite']
+        ['\\cos(a, b)', 'cosine similarity: the score for how alike arrows a and b point. 1 is the same way, 0 is a right angle, -1 is opposite']
       ],
       example: [
-        'Say cat = (3, 1), dog = (2, 1) and car = (−1, 3).',
+        'This is a smaller example than the animation, with easy numbers. Say cat = (3, 1), dog = (2, 1) and car = (−1, 3).',
         'Cat and dog: dot product = 3 × 2 + 1 × 1 = 7. Lengths are √10 and √5.',
         'Score = 7 / (√10 × √5) = 7 / 7.07 ≈ 0.99. Nearly the same direction.',
         'Cat and car: dot product = 3 × (−1) + 1 × 3 = 0.',
-        'Score = 0, so the arrows are at a right angle. The words are unrelated.'
+        'Score = 0, so the arrows are at a right angle. The words are unrelated.',
+        'In the animation, cat and truck score −0.68. The arrows point mostly opposite ways, so the words are very unlike.'
       ]
     },
     steps: [
@@ -289,10 +302,12 @@ const AI_ABOUT_ML = {
     uses: ['Predicting whether a student passes from hours studied', 'Flagging whether an email is spam', 'Estimating whether a patient has a disease from test results'],
     before: ['gradient'],
     words: [
+      ['weighted sum', 'Each input times its weight, all added up, plus the bias. Written z.'],
       ['sigmoid', 'An S-shaped curve that turns any number into a value from 0 to 1.'],
-      ['probability', 'A number from 0 to 1 for how likely something is.'],
+      ['probability', 'A number from 0 to 1 for how likely something is. 0.8 means 8 in 10.'],
       ['threshold', 'The cut-off chance, such as 0.5, above which you answer yes.'],
-      ['log loss', 'A score that punishes confident wrong answers very hard.'],
+      ['log loss', 'A penalty score. It is biggest when the model is sure about the wrong answer.'],
+      ['gradient descent', 'Nudging w and b a little in the direction that lowers the loss, again and again.'],
       ['decision boundary', 'The place where the chance equals the threshold.']
     ],
     math: {
@@ -304,10 +319,11 @@ const AI_ABOUT_ML = {
         ['z', 'the weighted sum before squashing'],
         ['p', 'the chance of yes, from 0 to 1'],
         ['e', 'a fixed number, about 2.718, used by the sigmoid'],
-        ['\\ln', 'natural log: the power you raise e to'],
-        ['L', 'log loss for one example']
+        ['\\ln', 'natural log. ln asks: e to what power gives this number? For example, ln 1 = 0, and ln of a number below 1 is negative'],
+        ['L', 'log loss for one example. A chance p is below 1, so ln p is negative. The minus sign makes the penalty positive']
       ],
       example: [
+        'This is a made-up example, not the animation: its w and b are different, so the numbers differ.',
         'Let w = 1 and b = −4. A student studied x = 5 hours.',
         'z = 1 × 5 − 4 = 1. Then p = 1 / (1 + e^−1) ≈ 0.731.',
         'A student with x = 2 hours: z = −2, so p ≈ 0.119.',
@@ -335,15 +351,18 @@ const AI_ABOUT_ML = {
   },
   confusion: {
     what: 'A confusion matrix counts four kinds of outcomes for a yes-or-no model. Precision and recall turn those counts into two clear questions about its mistakes.',
-    analogy: 'A fisherman casts a net for tuna. Precision asks how much of the catch is tuna. Recall asks how many of the tuna he caught.',
+    analogy: 'A fisherman casts a net for tuna. Precision asks: how much of what he pulled in is tuna? Recall asks: how many of all the tuna did he pull in?',
     uses: ['Judging a spam filter', 'Judging a medical test for a rare disease', 'Judging a fraud detector at a bank'],
     before: ['logistic'],
     words: [
-      ['true positive', 'The model said yes and it was right. Spam caught.'],
-      ['false positive', 'The model said yes but it was wrong. Good mail flagged.'],
+      ['positive', 'The model says yes. Here, an email flagged as spam.'],
+      ['true positive, false positive', 'True positive: the model said yes and was right (spam caught). False positive: it said yes but was wrong (good mail flagged).'],
       ['false negative', 'The model said no but it was wrong. Spam missed.'],
+      ['confusion matrix', 'A 2 × 2 grid that holds the four counts.'],
       ['precision', 'Of everything flagged, the share that was right.'],
-      ['recall', 'Of everything that was really there, the share we caught.']
+      ['recall', 'Of everything that was really there, the share we caught.'],
+      ['accuracy', 'Of all emails, the share the model marked correctly.'],
+      ['threshold', 'The cut-off score. Emails at or above it are flagged.']
     ],
     math: {
       lines: ['\\text{precision} = \\frac{TP}{TP + FP}', '\\text{recall} = \\frac{TP}{TP + FN}', '\\text{accuracy} = \\frac{TP + TN}{TP + FP + FN + TN}'],
@@ -354,11 +373,11 @@ const AI_ABOUT_ML = {
         ['TN', 'true negatives: good mail correctly left alone']
       ],
       example: [
-        'Twenty emails, 9 are spam. The filter flags 8 emails. 7 of them are spam.',
-        'So TP = 7 and FP = 1. FN = 9 − 7 = 2. TN = 20 − 7 − 1 − 2 = 10.',
-        'Precision = 7 / (7 + 1) = 7/8 = 0.875.',
+        'This matches the animation at its starting threshold. Twenty emails, 9 are spam. The filter flags 10 emails. 7 of them are spam.',
+        'So TP = 7 and FP = 3. FN = 9 − 7 = 2. TN = 20 − 7 − 3 − 2 = 8.',
+        'Precision = 7 / (7 + 3) = 7/10 = 0.70.',
         'Recall = 7 / (7 + 2) = 7/9 ≈ 0.778.',
-        'Accuracy = (7 + 10) / 20 = 0.85.'
+        'Accuracy = (7 + 8) / 20 = 0.75.'
       ]
     },
     steps: [
@@ -380,7 +399,7 @@ const AI_ABOUT_ML = {
     sources: ['Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 9.2.5 and 12', 'Manning, Raghavan, Schütze, Introduction to Information Retrieval, 2008, ch. 8.3', 'scikit-learn documentation, Model evaluation: precision, recall and F-measures']
   },
   kmeans: {
-    what: 'k-means sorts points into k groups without any labels. It puts k centres on the map. Then it moves them until each sits in the middle of its group.',
+    what: 'k-means sorts points into k groups without any labels. It puts k centres on the map. Then it moves them until each sits in the middle of its group. Each centre is a mean, which is an average, so the name.',
     analogy: 'Pick k spots for ice-cream vans. Every home walks to its nearest van. Then each van moves to the middle of its customers.',
     uses: ['Grouping shop customers by how often and how much they buy', 'Reducing the colours of a photo to a few', 'Sorting news stories into topics'],
     before: ['knn', 'Averages'],
@@ -389,7 +408,8 @@ const AI_ABOUT_ML = {
       ['centre', 'The middle point of a cluster, found by averaging its points.'],
       ['assign', 'Give each point to its nearest centre.'],
       ['unsupervised', 'Learning with no answers given. The model finds the groups itself.'],
-      ['elbow', 'The bend in the score curve that hints at a good k.']
+      ['elbow', 'The bend in the score curve that hints at a good k.'],
+      ['outlier', 'A point far away from all the others.']
     ],
     math: {
       lines: ['\\mu_j = \\frac{1}{|C_j|} \\sum_{x \\in C_j} x', 'J = \\sum_{j=1}^{k} \\sum_{x \\in C_j} \\lVert x - \\mu_j \\rVert^2'],
@@ -399,10 +419,10 @@ const AI_ABOUT_ML = {
         ['|C_j|', 'how many points are in group j'],
         ['x', 'one point'],
         ['k', 'the number of groups'],
-        ['J', 'the score: the sum of squared distances to each point\'s centre. Lower is tighter.']
+        ['J', 'the score: the sum of squared distances to each point\'s centre. A squared distance is a distance times itself, so far points count more. Lower is tighter.']
       ],
       example: [
-        'Five points on a line: 1, 2, 9, 10, 12. Start the centres at 1 and 10.',
+        'This is a smaller example than the animation: five points on a line, not a map. Points: 1, 2, 9, 10, 12. Start the centres at 1 and 10.',
         'Assign: 1 and 2 go to the first centre. 9, 10 and 12 go to the second.',
         'Update: the first centre becomes (1 + 2) / 2 = 1.5. The second becomes (9 + 10 + 12) / 3 ≈ 10.33.',
         'Assign again: nobody changes group, so we stop.',
@@ -417,27 +437,27 @@ const AI_ABOUT_ML = {
       'Score the result, and try other values of k.'
     ],
     use: ['You have no labels and want to find groups.', 'Groups are round blobs of similar size.'],
-    avoid: ['Odd shapes such as rings or long streaks.', 'Data with a few huge outliers that drag the centres.'],
+    avoid: ['Odd shapes such as rings or long streaks.', 'Data with a few outliers, points far from all the rest, that drag the centres.'],
     mistakes: [
       'Picking k with no check. Plot the score for several k and look for the elbow.',
       'Trusting one run. A bad start can give a poor result. Run it several times.',
-      'Forgetting to scale columns. A column with big numbers dominates the distance.'
+      'Forgetting to put measurements on the same size range. A measurement with big numbers dominates the distance.'
     ],
     cheat: ['assign to nearest centre', 'move centre to the average', 'repeat until stable', 'score always drops as k grows', 'look for the elbow'],
     next: ['pca', 'knn', 'embeddings'],
     sources: ['Lloyd, Least squares quantization in PCM, IEEE Trans. Information Theory, 1982 (written 1957)', 'Arthur and Vassilvitskii, k-means++: the advantages of careful seeding, 2007', 'scikit-learn documentation, Clustering user guide (k-means)']
   },
   pca: {
-    what: 'PCA squeezes many columns into a few. It finds the direction where the data spreads out most. Each point is then described by where it lands on that direction.',
-    analogy: 'A shadow of a long stick is longest when the light hits it from the side. PCA finds the angle that makes the shadow longest.',
+    what: 'PCA squeezes many columns into a few. A column is one measurement for every item, such as height. PCA finds the direction where the data spreads out most. Each point is then described by where it lands on that direction.',
+    analogy: 'Hold a long stick in the light. Its shadow is longest when the light hits it from the side. Think of the data cloud as the stick: PCA picks the angle that makes the shadow longest.',
     uses: ['Shrinking hundreds of measurements to two so you can plot them', 'Speeding up other models by removing near-duplicate columns', 'Removing noise from images'],
     before: ['Averages', 'Variance (how spread out numbers are)'],
     words: [
+      ['column', 'One measurement for every item, such as height. Also called a dimension.'],
       ['variance', 'The average squared distance of values from their average. It measures spread.'],
-      ['principal component', 'A direction in the data that keeps a lot of the spread.'],
+      ['principal component', 'A direction in the data that keeps a lot of the spread. PC1 is the best one, PC2 the next.'],
       ['projection', 'Dropping a point straight onto a line, like a shadow.'],
-      ['centre the data', 'Subtract each column\'s average so the cloud sits around zero.'],
-      ['dimension', 'One column, or one direction of measurement.']
+      ['centre the data', 'Subtract the average of each column so the cloud sits around zero.']
     ],
     math: {
       lines: ['z = u \\cdot x', '\\text{kept} = \\frac{\\operatorname{Var}(z)}{\\text{total variance}}'],
@@ -449,7 +469,7 @@ const AI_ABOUT_ML = {
         ['\\cdot', 'dot product: multiply matching numbers, then add']
       ],
       example: [
-        'Four centred points: (−3, −2), (−1, −1), (1, 1), (3, 2). Total variance is 5 + 2.5 = 7.5.',
+        'This is a smaller made-up example than the animation: four points, not twenty. Four centred points: (−3, −2), (−1, −1), (1, 1), (3, 2). Total variance is 5 + 2.5 = 7.5.',
         'Project onto the x axis, u = (1, 0). The spots are −3, −1, 1, 3. Their variance is 5.',
         'That keeps 5 / 7.5 ≈ 67 percent of the spread.',
         'Try u = (2, 1) / √5. The spots are −3.58, −1.34, 1.34, 3.58. Their variance is 7.3.',
@@ -467,7 +487,7 @@ const AI_ABOUT_ML = {
     avoid: ['When the useful signal lies in a small-spread direction.', 'When you must keep each original column\'s meaning.'],
     mistakes: [
       'Skipping the centring step. The first direction then points at the average, not the spread.',
-      'Not scaling columns. A column in big units takes over the result.',
+      'Not putting columns on the same size range. A column in big units takes over the result.',
       'Thinking more spread always means more useful. Spread is not the same as importance for your goal.'
     ],
     cheat: ['centre first', 'find the widest-spread direction', 'project points onto it', 'next one is at a right angle', 'keep the top few'],
@@ -494,6 +514,7 @@ const AI_ABOUT_ML = {
         ['\\sigma^2', 'the noise: spread in the data that cannot be removed']
       ],
       example: [
+        'This is a smaller made-up example than the animation: three fits at one spot, not twelve curves.',
         'The true value at one spot is 10. Train on 3 samples. The three guesses are 7, 9 and 11.',
         'The average guess is 9. Bias = 9 − 10 = −1, so bias² = 1.',
         'Variance = ((7−9)² + (9−9)² + (11−9)²) / 3 = 8/3 ≈ 2.67.',
@@ -526,9 +547,10 @@ const AI_ABOUT_ML = {
     before: ['tree', 'gradient'],
     words: [
       ['residual', 'What is left over: the true value minus the model\'s guess.'],
-      ['weak learner', 'A small, simple model, here a short tree.'],
+      ['gradient', 'The slope of the loss, which says which way to nudge. Residuals play this role here, so the method is gradient descent built from trees.'],
+      ['small tree (weak learner)', 'A small, simple model, here a short tree.'],
       ['boosting', 'Adding models one after another, each fixing the last one\'s errors.'],
-      ['learning rate', 'A number below 1 that shrinks each tree\'s contribution.'],
+      ['learning rate', 'A number below 1 that scales down each tree, such as 0.5 for half.'],
       ['held-out error', 'Error on data not used for training.']
     ],
     math: {
@@ -542,6 +564,7 @@ const AI_ABOUT_ML = {
         ['x_i', 'the inputs of example i']
       ],
       example: [
+        'This is a smaller made-up example than the animation: three houses, not twenty-four.',
         'Three prices: 10, 12 and 20. Start with the average guess 14 for all.',
         'Residuals: −4, −2 and 6. Squared errors: 16, 4 and 36, average 18.67.',
         'A small tree learns them: −3 for the first two homes and 6 for the third.',
@@ -559,25 +582,26 @@ const AI_ABOUT_ML = {
     use: ['You have table data with mixed columns.', 'You want strong accuracy and can tune a few settings.'],
     avoid: ['Tiny data sets, where it can overfit.', 'Raw images, sound or text, where neural networks do better.'],
     mistakes: [
-      'Adding too many trees. Training error keeps falling while held-out error rises. Stop early.',
+      'Adding too many trees. Training error keeps falling while held-out error rises. Stop adding trees at the lowest held-out error.',
       'Setting the learning rate too high. Use a small rate and more trees.',
-      'Growing deep trees. Keep each tree short so it stays a weak learner.'
+      'Growing deep trees. Keep each tree short so it stays a small tree.'
     ],
-    cheat: ['fit trees to residuals', 'add each in small steps', 'small learning rate + more trees', 'watch held-out error', 'stop early'],
+    cheat: ['fit trees to residuals', 'add each in small steps', 'small learning rate + more trees', 'watch held-out error', 'stop adding trees in time'],
     next: ['regular', 'crossval', 'biasvar'],
     sources: ['Friedman, Greedy function approximation: a gradient boosting machine, Annals of Statistics, 2001', 'Chen and Guestrin, XGBoost: a scalable tree boosting system, KDD, 2016', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 10', 'scikit-learn documentation, Gradient boosting user guide']
   },
   regular: {
     what: 'Regularization puts a price on big weights. The model must balance fitting the data against paying that price. This keeps it from fitting noise.',
-    analogy: 'Imagine a shopper with a budget. Spending on a big weight costs money, so they only buy the weights that earn their keep.',
-    uses: ['Keeping a model with many columns from overfitting', 'Picking out the few columns that matter (with L1)', 'Making linear models stable when columns overlap'],
+    analogy: 'Imagine a shopper in a shop where big weights cost more. They keep only the weights that help enough to be worth the price.',
+    uses: ['Keeping a model with many inputs from overfitting', 'Picking out the few inputs that matter (with L1)', 'Making linear models stable when inputs overlap'],
     before: ['overfit', 'gradient'],
     words: [
-      ['weight', 'A number the model learns for each input column.'],
-      ['penalty', 'An extra cost added to the loss for big weights.'],
-      ['L2 (ridge)', 'A penalty on the squares of the weights. It shrinks all weights.'],
-      ['L1 (lasso)', 'A penalty on the absolute sizes of weights. It can set some to exactly zero.'],
-      ['lambda', 'The knob for how strong the penalty is.']
+      ['weight', 'A number the model learns for each input, which is one column of data.'],
+      ['regularization', 'Adding a price for big weights, so the model cannot fit random noise.'],
+      ['penalty', 'The price: an extra cost added to the loss for big weights.'],
+      ['L2 (ridge)', 'A penalty on the squares of the weights. It shrinks all weights. Ridge is only a nickname.'],
+      ['L1 (lasso)', 'A penalty on the sizes of the weights, with the minus sign dropped. It can set some to exactly zero. Lasso is only a nickname.'],
+      ['lambda', 'The dial for how strong the penalty is.']
     ],
     math: {
       lines: ['L_2 = \\text{error} + \\lambda (w_1^2 + w_2^2)', 'L_1 = \\text{error} + \\lambda (|w_1| + |w_2|)'],
@@ -585,10 +609,13 @@ const AI_ABOUT_ML = {
         ['\\text{error}', 'how badly the model fits the data'],
         ['\\lambda', 'the penalty strength. Zero means no penalty.'],
         ['w_1, w_2', 'the two weights of the model'],
+        ['w_1^2', 'w1 times itself, so a big weight costs much more'],
         ['|w|', 'absolute value: the size of w with the sign dropped']
       ],
       example: [
+        'This is a smaller example than the animation: one weight, not two.',
         'Take one weight with best fit a = 3. Loss = (w − 3)² + penalty. Set λ = 1.',
+        'The lowest point of the L2 loss is a / (1 + λ). The lowest point of the L1 loss is a − λ/2, but never below zero.',
         'L2: (w − 3)² + w². The lowest point is w = 3 / (1 + 1) = 1.5. The weight shrinks, but stays above zero.',
         'L1: (w − 3)² + |w|. The lowest point is w = 3 − 1/2 = 2.5.',
         'Now take a weak weight with best fit a = 0.4. L2 gives 0.4 / 2 = 0.2.',
@@ -602,10 +629,10 @@ const AI_ABOUT_ML = {
       'L1 charges the sizes, so it pushes weak weights all the way to zero.',
       'Choose lambda with cross-validation.'
     ],
-    use: ['You have many columns and not much data.', 'You want to drop weak columns (L1).'],
-    avoid: ['Large lambda on a model that already underfits.', 'Unscaled columns, because the penalty treats all weights alike.'],
+    use: ['You have many inputs and not much data.', 'You want to drop weak inputs (L1).'],
+    avoid: ['Large lambda on a model that already underfits.', 'Inputs on very different size ranges, because the penalty treats all weights alike.'],
     mistakes: [
-      'Not scaling columns first. The penalty hits columns with small units too hard.',
+      'Not putting inputs on the same size range first. The penalty hits inputs with small units too hard.',
       'Penalising the bias term. Usually only the weights are penalised.',
       'Picking lambda by training error. It always says zero. Use held-out data.'
     ],
@@ -614,16 +641,17 @@ const AI_ABOUT_ML = {
     sources: ['Hoerl and Kennard, Ridge regression: biased estimation for nonorthogonal problems, Technometrics, 1970', 'Tibshirani, Regression shrinkage and selection via the lasso, JRSS B, 1996', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 3.4', 'scikit-learn documentation, Ridge and Lasso user guide']
   },
   crossval: {
-    what: 'Cross-validation gives an honest score when you have little data. You split the data into k slices. You test on each slice in turn and train on the rest.',
-    analogy: 'A class of five students swaps papers. Each student marks one paper they did not write, so everyone is judged fairly.',
+    what: 'Cross-validation gives an honest error when you have little data. You split the data into k slices. You test on each slice in turn and train on the rest. Lower error is better.',
+    analogy: 'A teacher splits quiz questions into five piles. Each round, the class studies four piles and is tested on the fifth. After five rounds, every pile has been the test once.',
     uses: ['Comparing two models on a small data set', 'Choosing settings such as the penalty strength', 'Reporting how well a model will do on new data'],
     before: ['overfit'],
     words: [
       ['fold', 'One slice of the data, held back for testing in one round.'],
       ['k', 'How many folds there are.'],
-      ['validation score', 'The score on the held-back fold.'],
+      ['error', 'How far the guesses are from the true answers. Lower is better.'],
+      ['degree', 'How bendy a curve may be. Degree 1 is a straight line.'],
       ['hyperparameter', 'A setting you choose before training, such as curve degree.'],
-      ['leakage', 'When test information sneaks into training and inflates the score.']
+      ['leakage', 'When test information sneaks into training and makes the result look better than it is.']
     ],
     math: {
       lines: ['\\text{CV score} = \\frac{1}{k} \\sum_{j=1}^{k} s_j'],
@@ -633,25 +661,25 @@ const AI_ABOUT_ML = {
         ['\\sum_{j=1}^{k}', 'add the score of every fold from 1 to k']
       ],
       example: [
-        'You have 100 points and choose k = 5. Each fold holds 20 points.',
+        'This is a made-up example with simple numbers, not the animation data. You have 100 points and choose k = 5. Each fold holds 20 points.',
         'Round 1 trains on 80 points and tests on fold 1. Repeat for every fold.',
-        'Say the five scores are 0.82, 0.79, 0.85, 0.80 and 0.84.',
+        'Say the five errors are 0.82, 0.79, 0.85, 0.80 and 0.84.',
         'Their sum is 4.10.',
-        'The cross-validation score is 4.10 / 5 = 0.82.'
+        'The cross-validation error is 4.10 / 5 = 0.82. The model or setting with the lowest average error wins.'
       ]
     },
     steps: [
       'Shuffle the data and cut it into k equal folds.',
-      'Hold out fold 1. Train on the other folds and score on fold 1.',
+      'Hold out fold 1. Train on the other folds and measure error on fold 1.',
       'Repeat so that every fold is the test fold once.',
-      'Average the k scores.',
-      'Do this for each model or setting, and pick the best average.'
+      'Average the k errors.',
+      'Do this for each model or setting, and pick the lowest average error.'
     ],
     use: ['Your data set is small.', 'You must choose between several models or settings.'],
     avoid: ['Huge data, where one simple split is enough and faster.', 'Data in time order, unless the folds respect the order.'],
     mistakes: [
-      'Scaling or picking columns on all the data before splitting. That leaks. Do it inside each round.',
-      'Using the final cross-validation score after heavy tuning as the true score. Keep a last test set.',
+      'Preparing the data on all the points before splitting, such as putting measurements on one size range. That leaks test information into training. Do it inside each round.',
+      'Using the final cross-validation error after heavy tuning as the true error. Keep a last test set.',
       'Shuffling time-ordered data. The future then leaks into the past.'
     ],
     cheat: ['k folds, k rounds', 'each fold tests once', 'average the scores', 'pick the best average', 'no peeking before the split'],
@@ -664,11 +692,11 @@ const AI_ABOUT_ML = {
     uses: ['Filtering spam email', 'Sorting news stories by topic', 'Guessing if a review is happy or unhappy'],
     before: ['confusion', 'Probability basics'],
     words: [
-      ['prior', 'How likely spam is before you read the email.'],
-      ['likelihood', 'How likely a word is, given the email is spam or normal.'],
-      ['posterior', 'The updated chance of spam after seeing the words.'],
+      ['start chance (prior)', 'How likely spam is before you read the email.'],
+      ['word chance (likelihood)', 'How likely a word is, given the email is spam or normal.'],
+      ['final chance (posterior)', 'The updated chance of spam after seeing the words.'],
       ['independent', 'One word tells you nothing about another. Not really true, but handy.'],
-      ['smoothing', 'Adding a small count to every word so none has a zero chance.']
+      ['smoothing', 'Adding a small count, called alpha, to every word so none has a zero chance.']
     ],
     math: {
       lines: ['P(\\text{spam} \\mid \\text{words}) = \\frac{P(\\text{spam}) \\prod_i P(w_i \\mid \\text{spam})}{P(\\text{spam}) \\prod_i P(w_i \\mid \\text{spam}) + P(\\text{normal}) \\prod_i P(w_i \\mid \\text{normal})}'],
@@ -679,11 +707,11 @@ const AI_ABOUT_ML = {
         ['\\mid', 'the word "given", as in chance of this given that']
       ],
       example: [
-        'Of 6 spam emails, "free" appears in 5 and "meeting" in 1. Of 6 normal emails, 1 and 4. Prior is 0.5 each.',
-        'A new email has "free" and "meeting". Spam score: 0.5 × 5/6 × 1/6 ≈ 0.0694.',
-        'Normal score: 0.5 × 1/6 × 4/6 ≈ 0.0556.',
-        'Scale to add to 100 percent: 0.0694 / (0.0694 + 0.0556) = 5/9.',
-        'The email is about 55.6 percent likely to be spam.'
+        'This is the same data as the animation. The 6 spam emails hold 14 word appearances: "free" 5 times, "meeting" 0 times, and "lunch" once. The 6 normal emails hold 12: "free" once, "lunch" 3 times, "meeting" 4 times.',
+        'Take smoothing alpha = 1 and 6 different words. The chance of "free" in spam is (5 + 1) / (14 + 6) = 0.300. "lunch" is (1 + 1) / 20 = 0.100. "meeting" is (0 + 1) / 20 = 0.050.',
+        'Spam score for "free lunch meeting": 0.5 × 0.300 × 0.100 × 0.050 = 0.00075.',
+        'In normal mail the chances are 2/18, 4/18 and 5/18. Normal score: 0.5 × 0.111 × 0.222 × 0.278 ≈ 0.00343.',
+        'Scale to add to 100 percent: 0.00075 / (0.00075 + 0.00343) ≈ 0.18. The email is about 18 percent likely to be spam.'
       ]
     },
     steps: [
@@ -697,7 +725,7 @@ const AI_ABOUT_ML = {
     avoid: ['When word combinations matter a lot, like "not good".', 'When you need well-calibrated chances. They tend to be too extreme.'],
     mistakes: [
       'Skipping smoothing. One unseen word makes the whole product zero.',
-      'Multiplying many tiny chances directly. They underflow to zero. Add logs instead.',
+      'Multiplying many tiny chances directly. The numbers get so small the computer rounds them to zero. Add logs instead.',
       'Reading the percent as exact. Treat it as a ranking score.'
     ],
     cheat: ['chance per word', 'multiply them all', 'compare spam to normal', 'smoothing avoids zeros', 'use logs in real code'],
@@ -710,11 +738,12 @@ const AI_ABOUT_ML = {
     uses: ['Telling apart types of text, such as sports and politics', 'Recognising handwritten digits', 'Classifying gene data in biology'],
     before: ['logistic', 'Distance from a point to a line'],
     words: [
-      ['margin', 'The width of the empty street between the two groups.'],
+      ['margin', 'The distance from the line to the nearest point. The empty street is twice the margin wide.'],
       ['support vector', 'A point that touches the edge of the street. Only these points matter.'],
-      ['hyperplane', 'The dividing line, or flat sheet when there are more than two columns.'],
+      ['measurement', 'One number that describes a point, such as height. Real data often has many.'],
       ['soft margin', 'A street that lets a few points cross, so overlapping data still works.'],
-      ['kernel', 'A trick that lets a straight divider act like a curved one.']
+      ['C', 'The price of letting a point cross the street. You choose it.'],
+      ['kernel', 'A way to let a straight-line method draw a curved boundary.']
     ],
     math: {
       lines: ['w \\cdot x + b = 0', '\\text{margin width} = \\frac{2}{\\lVert w \\rVert}'],
@@ -726,11 +755,11 @@ const AI_ABOUT_ML = {
         ['\\cdot', 'dot product: multiply matching numbers, then add']
       ],
       example: [
-        'Let w = (3, 4) and b = −5. The line is 3x + 4y − 5 = 0.',
+        'This is a made-up example, not the animation data. Let w = (3, 4) and b = −5. The line is 3x + 4y − 5 = 0.',
         'The length of w is √(9 + 16) = 5.',
         'A point at (2, 1) gives 3 × 2 + 4 × 1 − 5 = 5. Its distance from the line is 5 / 5 = 1.',
-        'Say the closest points have value exactly 1 or −1. Each then sits 1 / 5 = 0.2 from the line.',
-        'The street is 2 / 5 = 0.4 wide. A smaller w would make a wider street.'
+        'We scale w and b so the closest points give exactly 1 or −1. This does not move the line. Each of those points then sits 1 / 5 = 0.2 from the line.',
+        'The margin is 0.2, and the street is 2 / 5 = 0.4 wide. A smaller w would make a wider street.'
       ]
     },
     steps: [
@@ -740,14 +769,14 @@ const AI_ABOUT_ML = {
       'For overlapping data, allow a few points inside the street. This is the soft margin.',
       'For curved boundaries, use a kernel.'
     ],
-    use: ['Medium-sized data with clear gaps between groups.', 'Many columns but fewer examples.'],
+    use: ['Medium-sized data with clear gaps between groups.', 'Many measurements per point but fewer examples.'],
     avoid: ['Very large data sets, where training gets slow.', 'When you need chances, not only a yes-or-no side.'],
     mistakes: [
-      'Not scaling columns. The street then depends on units.',
+      'Not putting measurements on the same size range. The street then depends on units.',
       'Setting the soft margin too loose or too tight. Tune it with cross-validation.',
       'Thinking all points matter. Only the points on the street edge set the line.'
     ],
-    cheat: ['widest street wins', 'support vectors set the line', 'width = 2 / length of w', 'soft margin for overlap', 'kernel for curves'],
+    cheat: ['widest street wins', 'support vectors set the line', 'street width = 2 / length of w', 'soft margin for overlap', 'kernel for curves'],
     next: ['logistic', 'regular', 'crossval'],
     sources: ['Cortes and Vapnik, Support-vector networks, Machine Learning, 1995', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 12.2', 'scikit-learn documentation, Support Vector Machines user guide']
   }

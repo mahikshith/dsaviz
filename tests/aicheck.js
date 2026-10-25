@@ -111,5 +111,29 @@ M.AI_LESSONS.forEach((L, li) => {
   }));
 });
 
+// About this lesson: every lesson has one, with the parts the tab shows, and links that point at real lessons.
+const { AI_ABOUT_ML } = require(path.join(root, 'src', 'ai', 'about_ml.js'));
+const { AI_ABOUT_NOW } = require(path.join(root, 'src', 'ai', 'about_now.js'));
+const ABOUT = Object.assign({}, AI_ABOUT_ML, AI_ABOUT_NOW);
+const lessonIds = new Set(M.AI_LESSONS.map((L) => L.id));
+M.AI_LESSONS.forEach((L) => {
+  const a = ABOUT[L.id];
+  if (!a) { fail(L.id, 'no About this lesson entry in src/ai/about_ml.js or about_now.js'); return; }
+  ['what', 'analogy'].forEach((k) => { if (typeof a[k] !== 'string' || !a[k].trim()) fail(L.id + ' about', 'missing ' + k); });
+  [['uses', 3, 3], ['words', 3, 8], ['steps', 3, 5], ['use', 1, 4], ['avoid', 1, 4], ['mistakes', 1, 5], ['cheat', 2, 8], ['next', 1, 4], ['sources', 1, 12]].forEach(([k, lo, hi]) => {
+    const n = Array.isArray(a[k]) ? a[k].length : -1;
+    if (n < lo || n > hi) fail(L.id + ' about', k + ' needs ' + lo + (hi > lo ? ' to ' + hi : '') + ' items, has ' + n);
+  });
+  if (a.math) {
+    if (!Array.isArray(a.math.lines) || !a.math.lines.length) fail(L.id + ' about', 'math without lines');
+    if (!Array.isArray(a.math.symbols) || !a.math.symbols.every((x) => Array.isArray(x) && x.length === 2 && x[1])) fail(L.id + ' about', 'every math symbol needs a meaning');
+  }
+  (a.next || []).forEach((r) => { if (!lessonIds.has(r)) fail(L.id + ' about', 'next "' + r + '" is not a lesson id'); });
+  (a.before || []).forEach((r) => { if (/^[a-z]+$/.test(r) && !lessonIds.has(r)) fail(L.id + ' about', 'before "' + r + '" looks like an id but is not a lesson'); });
+});
+Object.keys(ABOUT).forEach((id) => { if (!lessonIds.has(id)) fail(id, 'About entry for a lesson that does not exist'); });
+const aboutPage = pageSrc.indexOf('// @@AI-ABOUT@@');
+if (aboutPage < 0 || pageSrc.indexOf('const AI_ABOUT = ', aboutPage) < 0) fail('AILesson', 'missing the @@AI-ABOUT@@ block: run python scripts/build_pages.py');
+
 console.log(problems ? problems + ' problem(s)' : 'all ai lessons valid');
 if (problems) process.exitCode = 1;

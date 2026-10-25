@@ -9,53 +9,53 @@
 <div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px">
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Where it is used</h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.uses}}" as="u" hint-placeholder-count="3"><li>{{u.text}}</li></sc-for></ul>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.uses}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </div>
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Know these first</h2>
-<sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{ab.A.before}}" as="b" hint-placeholder-count="2"><sc-if value="{{b.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{b.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{b.label}} →</button></sc-if><sc-if value="{{b.plain}}" hint-placeholder-val="{{ false }}"><span style="min-height: 36px; padding: 0 12px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 14px; color: {{t.text2}}">{{b.label}}</span></sc-if></sc-for></div></sc-if>
+<sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="min-height: 36px; padding: 0 12px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 14px; color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
 <sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><span style="font-size: 15px; color: {{t.text2}}">Nothing. This is a good place to start.</span></sc-if>
 </div>
 </div>
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Key words</h2>
-<dl data-m="one" style="margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 24px"><sc-for list="{{ab.A.words}}" as="w" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 15px; font-weight: 700; color: {{t.text}}">{{w.term}}</dt><dd style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text2}}">{{w.mean}}</dd></div></sc-for></dl>
+<dl data-m="one" style="margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 24px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: 15px; font-weight: 700; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
 </div>
 <sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">The math</h2>
-<div class="ab-math" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 10px; background: {{t.sunk}}; font-size: 20px; color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="ml" hint-placeholder-count="2"><div ref="{{ml.put}}"></div></sc-for></div>
+<div class="ab-math" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 10px; background: {{t.sunk}}; font-size: 20px; color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
 <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 700; color: {{t.text}}">What each symbol means</span>
-<div data-m="keep" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 6px 14px; align-items: baseline"><sc-for list="{{ab.A.math.symbols}}" as="ms" hint-placeholder-count="3"><span ref="{{ms.put}}" class="ab-math" style="font-size: 17px; color: {{t.accent}}; text-align: center"></span><span style="font-size: 15px; line-height: 1.5; color: {{t.text2}}">{{ms.mean}}</span></sc-for></div></div>
+<div data-m="keep" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 6px 14px; align-items: baseline"><sc-for list="{{ab.A.math.symbols}}" as="abms" hint-placeholder-count="3"><span ref="{{abms.put}}" class="ab-math" style="font-size: 17px; color: {{t.accent}}; text-align: center"></span><span style="font-size: 15px; line-height: 1.5; color: {{t.text2}}">{{abms.mean}}</span></sc-for></div></div>
 <sc-if value="{{ab.A.math.hasExample}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; font-weight: 700; color: {{t.text}}">Worked example</span>
-<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.55; color: {{t.text2}}"><sc-for list="{{ab.A.math.example}}" as="me" hint-placeholder-count="3"><li>{{me.text}}</li></sc-for></ol></div></sc-if>
+<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.55; color: {{t.text2}}"><sc-for list="{{ab.A.math.example}}" as="abme" hint-placeholder-count="3"><li>{{abme.text}}</li></sc-for></ol></div></sc-if>
 </div>
 </sc-if>
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">How it works</h2>
-<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.55"><sc-for list="{{ab.A.steps}}" as="s" hint-placeholder-count="4"><li>{{s.text}}</li></sc-for></ol>
+<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 1.55"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
 </div>
 <div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px">
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Use it when</h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.use}}" as="u" hint-placeholder-count="2"><li>{{u.text}}</li></sc-for></ul>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
 </div>
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Skip it when</h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.avoid}}" as="u" hint-placeholder-count="2"><li>{{u.text}}</li></sc-for></ul>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.avoid}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
 </div>
 </div>
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Common mistakes</h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.mistakes}}" as="u" hint-placeholder-count="3"><li>{{u.text}}</li></sc-for></ul>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </div>
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1.5px solid {{t.accent}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.accent}}">Cheat sheet</h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5; font-weight: 600"><sc-for list="{{ab.A.cheat}}" as="u" hint-placeholder-count="4"><li>{{u.text}}</li></sc-for></ul>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5; font-weight: 600"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
 </div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
 <button onClick="{{ab.A.watch}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700">Watch the animation →</button>
-<sc-if value="{{ab.A.hasNext}}" hint-placeholder-val="{{ true }}"><span style="margin-left: 8px; font-size: 14px; color: {{t.muted}}">Learn next:</span><sc-for list="{{ab.A.next}}" as="b" hint-placeholder-count="2"><sc-if value="{{b.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{b.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{b.label}} →</button></sc-if><sc-if value="{{b.plain}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: {{t.text2}}">{{b.label}}</span></sc-if></sc-for></sc-if>
+<sc-if value="{{ab.A.hasNext}}" hint-placeholder-val="{{ true }}"><span style="margin-left: 8px; font-size: 14px; color: {{t.muted}}">Learn next:</span><sc-for list="{{ab.A.next}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></sc-if>
 </div>
 </section>
 </sc-if>

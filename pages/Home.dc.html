@@ -5134,7 +5134,8 @@ function solveHref(id) { return 'Code.dc.html?problem=' + encodeURIComponent(sol
 // the first time a learner opens that lesson (remembered in dsaviz-about-seen), Watch it after that.
 // aboutVals(cmp, key, a, t, link): key is the lesson's id, a its about data ({ what, analogy, uses, before, words,
 // math: { lines: [mathml], symbols: [[mathml, meaning]], example }, steps, use, avoid, mistakes, cheat, next }),
-// link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name).
+// link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name); watchLabel names
+// the other tab (Watch it by default).
 const ABOUT_SEEN_KEY = 'dsaviz-about-seen';
 function aboutSeenList() { try { const v = JSON.parse(window.localStorage.getItem(ABOUT_SEEN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function markAboutSeen(key) {
@@ -5145,7 +5146,7 @@ function markAboutSeen(key) {
 }
 // Puts build-time MathML (our own about files, rendered by KaTeX in scripts/build_about.js) into an element.
 function aboutMath(html) { return (el) => { if (el && el.nodeType === 1 && el.getAttribute('data-math') !== html) { el.innerHTML = html; el.setAttribute('data-math', html); } }; }
-function aboutVals(cmp, key, a, t, link) {
+function aboutVals(cmp, key, a, t, link, watchLabel) {
   // The first look at a lesson decides its opening view; it is kept on the component so marking the lesson as
   // seen does not flip it to Watch it on the next render.
   if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: aboutSeenList().includes(key) ? 'watch' : 'about' };
@@ -5170,7 +5171,7 @@ function aboutVals(cmp, key, a, t, link) {
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
   };
-  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', 'Watch it'), tab('about', 'About this lesson')] : [], A };
+  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About this lesson')] : [], A };
 }
 // @@END-ABOUT@@
 const DIFF_ORDER = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };

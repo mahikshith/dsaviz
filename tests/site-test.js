@@ -339,8 +339,8 @@ server.listen(0, async () => {
       await page.waitForTimeout(500);
       await page.evaluate((n) => { window.__dsNav(n + '.dc.html'); }, name);
       await page.waitForTimeout(700);
-      // Lessons open on their About tab the first time; the player is under Watch it.
-      await page.evaluate(() => { const b = [...document.querySelectorAll('#app button')].find((x) => x.textContent.trim() === 'Watch it'); if (b) b.click(); });
+      // Lessons open on their About tab the first time; the player is under Watch it (Lesson in Start here).
+      await page.evaluate(() => { const b = [...document.querySelectorAll('#app button')].find((x) => /^(Watch it|Lesson)$/.test(x.textContent.trim()) && x.hasAttribute('aria-pressed')); if (b) b.click(); });
       await page.waitForTimeout(300);
       await page.evaluate(() => window.scrollTo(0, 0));
       const fails = [];

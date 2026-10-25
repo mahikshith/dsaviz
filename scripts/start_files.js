@@ -6,7 +6,8 @@ const path = require('path');
 function startFiles(withTraces) {
   const dir = path.join(__dirname, '..', 'src', 'start');
   const lessons = fs.readdirSync(dir).filter((f) => /^lessons_.*\.js$/.test(f)).sort();
-  return ['engine.js', 'chapters.js'].concat(lessons, ['exercises.js', 'needs.js'], withTraces === false ? [] : ['traces.js']);
+  const ex = fs.readdirSync(dir).filter((f) => /^exercises_.*\.js$/.test(f)).sort();
+  return ['engine.js', 'chapters.js'].concat(lessons, ['exercises.js'], ex, ['needs.js'], withTraces === false ? [] : ['traces.js']);
 }
 function startSource(withTraces) {
   const dir = path.join(__dirname, '..', 'src', 'start');

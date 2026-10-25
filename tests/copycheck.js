@@ -99,6 +99,26 @@ fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html') && !MASCOT_SKIP.in
     checkMascots(path.relative(root, full).split(path.sep).join('/'), fs.readFileSync(full, 'utf8'));
   });
 });
+// "i" explainers (CLAUDE.md, shared/ui/phone.html): every <span class="ds-tip"> in a page holds a button whose
+// aria-describedby names the role="tooltip" span beside it, and the tooltip ids are unique on the page.
+// CSS comments are skipped first, so the example in the phone CSS comment does not count.
+fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html')).forEach((f) => {
+  const src = fs.readFileSync(path.join(pagesDir, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const tipWord = (src.match(/class="ds-tip"/g) || []).length;
+  const blocks = [...src.matchAll(/<span class="ds-tip">([\s\S]*?)<\/span><\/span>/g)].map((m) => m[1]);
+  if (blocks.length !== tipWord) fail(f, 'a class="ds-tip" span that is not a button plus tooltip pair');
+  const ids = [];
+  blocks.forEach((b) => {
+    const btn = b.match(/<button[^>]*aria-describedby="([^"]+)"[^>]*>/);
+    const tip = b.match(/<span role="tooltip" id="([^"]+)"/);
+    if (!btn || !tip) { fail(f, 'ds-tip without a button with aria-describedby and a role="tooltip" span'); return; }
+    if (btn[1] !== tip[1]) fail(f, 'aria-describedby "' + btn[1] + '" does not match tooltip id "' + tip[1] + '"');
+    if (!/onClick="/.test(btn[0])) fail(f, 'ds-tip button without onClick: ' + tip[1]);
+    ids.push(tip[1]);
+  });
+  ids.filter((id, i) => ids.indexOf(id) !== i).forEach((id) => fail(f, 'duplicate tip id ' + id));
+});
+
 console.log('copy: ' + scanned + ' files scanned');
 console.log(problems ? problems + ' copy problem(s)' : 'copy clean');
 if (problems) process.exitCode = 1;

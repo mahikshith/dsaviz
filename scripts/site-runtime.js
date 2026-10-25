@@ -216,6 +216,24 @@
     const bg = getComputedStyle(r).backgroundColor;
     if (bg && bg !== 'rgba(0, 0, 0, 0)') { document.documentElement.style.background = bg; document.body.style.background = bg; }
   }
+  // "i" explainers: put a .ds-tip's tooltip just under its button, kept inside the screen (shared/ui/phone.html).
+  function placeTip(ev) {
+    const tip = ev.target && ev.target.closest ? ev.target.closest('.ds-tip') : null;
+    if (!tip) return;
+    const note = tip.querySelector('[role="tooltip"]'), btn = tip.querySelector('button');
+    if (!note || !btn) return;
+    const z = parseFloat(document.documentElement.style.zoom) || 1;
+    const r = btn.getBoundingClientRect();
+    note.style.display = 'block';
+    const w = note.offsetWidth, h = note.offsetHeight;
+    note.style.display = '';
+    const W = window.innerWidth / z, H = window.innerHeight / z;
+    let left = r.left / z - 8, top = r.bottom / z + 6;
+    if (left + w > W - 8) left = W - 8 - w;
+    if (top + h > H - 8) top = r.top / z - 6 - h;
+    note.style.left = Math.max(8, left) + 'px'; note.style.top = Math.max(8, top) + 'px';
+  }
+  document.addEventListener('mouseover', placeTip); document.addEventListener('focusin', placeTip);
   fit(); window.addEventListener('resize', fit); setInterval(paint, 400);
   try { new MutationObserver(fit).observe(document.getElementById('app'), { childList: true }); } catch (e) {}
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));

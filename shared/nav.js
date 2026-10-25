@@ -142,6 +142,8 @@ function navVals(cmp, t, themeKey, page) {
   const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
   return Object.assign(dv, {
+    // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
+    tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {

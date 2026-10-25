@@ -36,6 +36,13 @@ button{font:inherit}
    segmented controls (gap 2px or 4px); four-up grids go two-up.
    Page-specific rules go in the page's own helmet, scoped with [data-page="Name"]; the automatic
    grid rules sit in :where() so any page rule beats them. */
+/* "i" explainers (every page): <span class="ds-tip"><button onClick="…" aria-describedby="ID">i</button><span role="tooltip" id="ID">…</span></span>.
+   The sentence shows on hover and on keyboard focus (and on tap, which focuses the button); colours come from the
+   page's theme tokens on the tooltip itself. It is fixed-position, placed under the button by the runtime
+   (scripts/site-runtime.js), so scroll boxes never clip it. */
+.ds-tip{position:relative;display:inline-flex;vertical-align:middle}
+.ds-tip>[role="tooltip"]{display:none;position:fixed;z-index:60;width:max-content;max-width:min(300px,80vw);white-space:normal;text-transform:none;letter-spacing:normal}
+.ds-tip:hover>[role="tooltip"],.ds-tip:focus-within>[role="tooltip"]{display:block}
 @media (max-width: 759px){
 [data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
@@ -1810,6 +1817,8 @@ function navVals(cmp, t, themeKey, page) {
   const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
   return Object.assign(dv, {
+    // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
+    tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {

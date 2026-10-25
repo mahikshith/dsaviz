@@ -36,6 +36,13 @@ button:disabled{opacity:0.35;cursor:default}
    segmented controls (gap 2px or 4px); four-up grids go two-up.
    Page-specific rules go in the page's own helmet, scoped with [data-page="Name"]; the automatic
    grid rules sit in :where() so any page rule beats them. */
+/* "i" explainers (every page): <span class="ds-tip"><button onClick="…" aria-describedby="ID">i</button><span role="tooltip" id="ID">…</span></span>.
+   The sentence shows on hover and on keyboard focus (and on tap, which focuses the button); colours come from the
+   page's theme tokens on the tooltip itself. It is fixed-position, placed under the button by the runtime
+   (scripts/site-runtime.js), so scroll boxes never clip it. */
+.ds-tip{position:relative;display:inline-flex;vertical-align:middle}
+.ds-tip>[role="tooltip"]{display:none;position:fixed;z-index:60;width:max-content;max-width:min(300px,80vw);white-space:normal;text-transform:none;letter-spacing:normal}
+.ds-tip:hover>[role="tooltip"],.ds-tip:focus-within>[role="tooltip"]{display:block}
 @media (max-width: 759px){
 [data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
@@ -300,7 +307,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- /PROBLEM FACTS -->
 <sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-examples" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-examples" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Sample inputs with the answer the code should give. Check your code against them.</span></span></span>
 <sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
 <div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none">
 <span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">in </span>{{ex.input}}</span>
@@ -311,7 +318,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <sc-if value="{{hasHints}}">
 <section aria-labelledby="hint-h" style="display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints</h2><span style="font-size: 13px; color: {{t.muted}}">{{hintCount}}</span></div>
+<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="display: flex; align-items: center; gap: 6px; margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-hints" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-hints" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Small nudges, one at a time. Open a hint only when you are stuck.</span></span></h2><span style="font-size: 13px; color: {{t.muted}}">{{hintCount}}</span></div>
 <div aria-live="polite" style="display: flex; flex-direction: column; gap: 8px">
 <sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
 </div>
@@ -322,7 +329,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{isSql}}">
 <section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; align-items: center; gap: 8px">
-<h2 id="sql-tables" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables</h2>
+<h2 id="sql-tables" style="display: flex; align-items: center; gap: 6px; margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-tables" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-tables" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The tables your SQL query can read, with a few sample rows. Look here first.</span></span></h2>
 <button onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.rowsLabel}}</button>
 </div>
 <sc-for list="{{sq.tables}}" as="tb" hint-placeholder-count="2">
@@ -523,7 +530,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{cr.hasTests}}" hint-placeholder-val="{{ true }}">
 <div aria-label="Output" role="region" style="flex: 0 1 auto; max-height: 48%; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
 <div style="height: 38px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-pane-output" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-pane-output" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">What your code printed when you pressed Run. Compare it with the expected answer.</span></span></span>
 <sc-if value="{{cr.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{cr.badgeBg}}; color: {{cr.badgeFg}}">{{cr.badge}}</span></sc-if>
 </div>
 <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; min-height: 0">
@@ -2684,6 +2691,8 @@ function navVals(cmp, t, themeKey, page) {
   const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
   return Object.assign(dv, {
+    // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
+    tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {

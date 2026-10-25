@@ -67,6 +67,13 @@ button:disabled{opacity:0.35;cursor:default}
    segmented controls (gap 2px or 4px); four-up grids go two-up.
    Page-specific rules go in the page's own helmet, scoped with [data-page="Name"]; the automatic
    grid rules sit in :where() so any page rule beats them. */
+/* "i" explainers (every page): <span class="ds-tip"><button onClick="…" aria-describedby="ID">i</button><span role="tooltip" id="ID">…</span></span>.
+   The sentence shows on hover and on keyboard focus (and on tap, which focuses the button); colours come from the
+   page's theme tokens on the tooltip itself. It is fixed-position, placed under the button by the runtime
+   (scripts/site-runtime.js), so scroll boxes never clip it. */
+.ds-tip{position:relative;display:inline-flex;vertical-align:middle}
+.ds-tip>[role="tooltip"]{display:none;position:fixed;z-index:60;width:max-content;max-width:min(300px,80vw);white-space:normal;text-transform:none;letter-spacing:normal}
+.ds-tip:hover>[role="tooltip"],.ds-tip:focus-within>[role="tooltip"]{display:block}
 @media (max-width: 759px){
 [data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
@@ -295,7 +302,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-for list="{{leftParts}}" as="lp" hint-placeholder-count="2">
 <sc-if value="{{lp.problem}}" hint-placeholder-val="{{ true }}">
 <section aria-labelledby="pp-problem" style="display: flex; flex-direction: column; gap: 12px">
-<h2 id="pp-problem" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">The problem</h2>
+<h2 id="pp-problem" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">The problem<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-problem" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-problem" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">What the puzzle asks, with a small example. Read it before you watch the story.</span></span></h2>
 <p style="margin: 0; max-width: 640px; font-size: 16px; line-height: 1.6; color: {{t.text}}">{{task}}</p>
 <!-- PROBLEM FACTS -->
 <sc-if value="{{fx.has}}" hint-placeholder-val="{{ true }}">
@@ -329,7 +336,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{lp.watch}}" hint-placeholder-val="{{ true }}">
 <section aria-labelledby="pp-watch" tabindex="0" onKeyDown="{{onKey}}" style="display: flex; flex-direction: column; gap: 12px; border-radius: 16px; outline-offset: 4px">
 <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
-<h2 id="pp-watch" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Watch it · <span style="color: {{t.text2}}; letter-spacing: 0; text-transform: none; font-size: 14px">{{storyName}}{{runTag}}</span></h2>
+<h2 id="pp-watch" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Watch it · <span style="color: {{t.text2}}; letter-spacing: 0; text-transform: none; font-size: 14px">{{storyName}}{{runTag}}</span><span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-watch" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-watch" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The story acts out the solution step by step. Press Play, or step through it yourself.</span></span></h2>
 <span style="font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}; white-space: nowrap">{{stepLabel}}</span>
 </div>
 
@@ -474,7 +481,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <sc-if value="{{hasBoard}}" hint-placeholder-val="{{ false }}">
 <div class="pp-board" style="{{boardVars}}; position: absolute; right: 12px; top: 52px; width: 152px; max-height: 220px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); display: flex; flex-direction: column; gap: 4px; overflow: hidden">
-<span style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.sceneMuted}}; margin-bottom: 4px">{{boardTitle}}</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.sceneMuted}}; margin-bottom: 4px">{{boardTitle}}<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-board" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-board" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The picture of the solution right now. It changes at each step of the story.</span></span></span>
 <sc-if value="{{boardEmpty}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: {{t.sceneMuted}}">Empty. Nothing written yet.</span></sc-if>
 <sc-for list="{{board}}" as="bd" hint-placeholder-count="4">
 <div style="display: flex; justify-content: space-between; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px; background: {{bd.bg}}; border: 1px solid {{bd.border}}; font-family: {{t.mono}}; font-size: 13px; color: {{bd.fg}}; animation: rise 300ms cubic-bezier(.2,.8,.2,1)"><span style="font-weight: 700">{{bd.k}}</span><span>{{bd.v}}</span></div>
@@ -590,7 +597,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <sc-if value="{{hasMore}}" hint-placeholder-val="{{ true }}">
 <section aria-labelledby="pp-more" style="display: flex; flex-direction: column; gap: 12px; padding-bottom: 8px">
-<h2 id="pp-more" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">More stories like this</h2>
+<h2 id="pp-more" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">More stories like this<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-more" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-more" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Other problems that use the same idea. Open one to practise it.</span></span></h2>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-for list="{{moreStories}}" as="ms" hint-placeholder-count="3">
 <sc-if value="{{ms.animated}}" hint-placeholder-val="{{ true }}"><button onClick="{{ms.play}}" title="{{ms.title}}" style="min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="{{t.accent}}" aria-hidden="true"><path d="M7 4v16l13-8z"></path></svg>{{ms.story}}</button></sc-if>
@@ -615,7 +622,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div role="tabpanel" id="pp-panel-solution" aria-labelledby="pp-tab-solution" style="flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px">
 <sc-if value="{{hasPlan}}" hint-placeholder-val="{{ true }}">
 <section aria-labelledby="pp-plan" style="flex-shrink: 0; padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><h3 id="pp-plan" style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Plan it first</h3><span style="font-size: 13px; color: {{t.muted}}">{{planNote}}</span></div>
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><h3 id="pp-plan" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Plan it first<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-plan" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-plan" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">A plan in plain steps. Read it, then try your own before you look at the code.</span></span></h3><span style="font-size: 13px; color: {{t.muted}}">{{planNote}}</span></div>
 <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{planGoal}}</p>
 <ol aria-label="Plan steps" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{planSteps}}" as="ps" hint-placeholder-count="5"><li aria-current="{{ps.current}}" style="padding: 4px 8px; border-radius: 8px; border-left: 3px solid {{ps.border}}; background: {{ps.bg}}; display: flex; gap: 6px; font-size: 14px; line-height: 1.45; color: {{ps.fg}}; transition: background 320ms cubic-bezier(.2,.8,.2,1)"><span aria-hidden="true" style="width: 22px; flex-shrink: 0; font-family: {{t.mono}}; font-weight: 700; color: {{ps.num}}">{{ps.n}}</span><span style="min-width: 0">{{ps.text}}</span></li></sc-for>
@@ -632,7 +639,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <div style="padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}"><span>Values right now</span><span style="letter-spacing: 0; text-transform: none; font-weight: 500">{{lineNote}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}"><span style="display: flex; align-items: center; gap: 6px">Values right now<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-values" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-values" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The values the code holds at this step. They change as the story moves on.</span></span></span><span style="letter-spacing: 0; text-transform: none; font-weight: 500">{{lineNote}}</span></div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <sc-for list="{{watch}}" as="w" hint-placeholder-count="6"><span style="height: 32px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; border: 1px solid {{w.border}}; background: {{w.bg}}; display: flex; align-items: center; gap: 8px; font-family: {{t.mono}}; font-size: 13px"><span style="color: {{t.muted}}">{{w.k}}</span><span style="font-weight: 700; color: {{w.c}}">{{w.v}}</span></span></sc-for>
 </div>
@@ -793,7 +800,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{cr.hasTests}}" hint-placeholder-val="{{ true }}">
 <div aria-label="Output" role="region" style="flex: 0 1 auto; max-height: 48%; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
 <div style="height: 38px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-pane-output" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-pane-output" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">What your code printed when you pressed Run. Compare it with the expected answer.</span></span></span>
 <sc-if value="{{cr.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{cr.badgeBg}}; color: {{cr.badgeFg}}">{{cr.badge}}</span></sc-if>
 </div>
 <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; min-height: 0">
@@ -2241,6 +2248,8 @@ function navVals(cmp, t, themeKey, page) {
   const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
   return Object.assign(dv, {
+    // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
+    tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {

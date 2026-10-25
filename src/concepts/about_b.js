@@ -7,6 +7,7 @@ const CONCEPT_ABOUT_B = {
     before: ['arrays', 'trees'],
     words: [
       ['min-heap', 'A tree where every parent is smaller than or equal to its children.'],
+      ['max-heap', 'The same idea reversed: every parent is bigger than or equal to its children. Heap sort uses one.'],
       ['root', 'The top of the tree. In a min-heap it holds the smallest value.'],
       ['sift up', 'Swap a value with its parent while it is smaller than that parent.'],
       ['sift down', 'Swap a value with its smaller child while a child is smaller than it.'],
@@ -16,7 +17,7 @@ const CONCEPT_ABOUT_B = {
     math: {
       lines: ['\\text{parent}(i) = \\lfloor (i - 1) / 2 \\rfloor', '\\text{push, pop} = O(\\log n)'],
       symbols: [
-        ['i', 'the position of an item in the array, counting from 0'],
+        ['i', 'the index of an item in the array, counting from 0'],
         ['\\lfloor \\; \\rfloor', 'round down to a whole number'],
         ['n', 'how many items are in the heap'],
         ['\\log n', 'how many times you can halve n before reaching 1; for 1,000 items it is about 10'],
@@ -24,9 +25,9 @@ const CONCEPT_ABOUT_B = {
       ],
       example: [
         'Start with the heap [2, 3, 5]. Push 1. It goes at the end: [2, 3, 5, 1].',
-        'The item at position 3 has parent (3 − 1) ÷ 2 = 1, which holds 3. Since 1 is smaller, swap: [2, 1, 5, 3].',
-        'Now 1 is at position 1. Its parent is (1 − 1) ÷ 2 = 0, which holds 2. Swap again: [1, 2, 5, 3].',
-        'Two swaps for four items. The tree is two levels tall, so a push never takes more swaps than that height.'
+        'The item at index 3 has parent (3 − 1) ÷ 2 = 1, which holds 3. Since 1 is smaller, swap: [2, 1, 5, 3].',
+        'Now 1 is at index 1. Its parent is (1 − 1) ÷ 2 = 0, which holds 2. Swap again: [1, 2, 5, 3].',
+        'Two swaps for four items. The tree has three levels, so it is two steps tall. A push never takes more swaps than that height.'
       ]
     },
     steps: [
@@ -42,7 +43,7 @@ const CONCEPT_ABOUT_B = {
       'Mixing up min-heap and max-heap. Python heapq is a min-heap; negate numbers for a max-heap.',
       'Sifting down toward the larger child. Always swap with the smaller child in a min-heap.'
     ],
-    cheat: ['parent = (i − 1) // 2', 'children = 2i + 1 and 2i + 2', 'push: add at end, sift up', 'pop: last to root, sift down', 'import heapq; heapq.heappush(h, 5)'],
+    cheat: ['parent = (i − 1) // 2  (// divides and drops the leftover)', 'children = 2i + 1 and 2i + 2', 'push: add at end, sift up', 'pop: last to root, sift down', 'import heapq; heapq.heappush(h, 5)'],
     next: ['dijkstra', 'prim'],
     sources: ['Cormen, Leiserson, Rivest, Stein (CLRS), Introduction to Algorithms, 4th ed., ch. 6 (heapsort, priority queues)', 'Sedgewick and Wayne, Algorithms, 4th ed., sec. 2.4 (priority queues)', 'Python documentation, heapq module']
   },
@@ -98,7 +99,7 @@ const CONCEPT_ABOUT_B = {
     before: ['graphrep'],
     words: [
       ['directed edge', 'An arrow from one node to another. It goes one way only.'],
-      ['in-degree', 'How many arrows point into a node.'],
+      ['in-degree', 'How many arrows point into a node. The lesson says "arrows pointing in".'],
       ['dependency', 'A task that must finish before another can start.'],
       ['cycle', 'A loop of arrows that leads back to where it started.'],
       ['queue', 'A line where the first item in is the first item out.']
@@ -111,7 +112,7 @@ const CONCEPT_ABOUT_B = {
         ['O( )', 'Big-O: how the number of steps grows with the input']
       ],
       example: [
-        'Tasks: wake, dress, eat. Arrows: wake to dress, wake to eat, dress to eat. So V = 3 and E = 3.',
+        'Here is a different, smaller example. Tasks: wake, dress, eat. Arrows: wake to dress, wake to eat, dress to eat. So V = 3 and E = 3.',
         'In-degrees: wake 0, dress 1, eat 2. Only wake has 0, so take wake first.',
         'Removing wake lowers dress to 0 and eat to 1. Take dress. Then eat drops to 0, so take eat.',
         'Order: wake, dress, eat. Each task and arrow was handled once, so 3 + 3 = 6 small steps.'
@@ -148,12 +149,12 @@ const CONCEPT_ABOUT_B = {
       ['infinity', 'A stand-in for "no route found yet". Any real cost is smaller.']
     ],
     math: {
-      lines: ['d[v] \\leftarrow \\min(d[v], \\; d[u] + w(u, v))', '\\text{time} = O((V + E) \\log V)'],
+      lines: ['\\text{new cost}(v) = \\min(\\text{old cost}(v), \\; \\text{cost}(u) + \\text{edge}(u, v))', '\\text{time} = O((V + E) \\log V)'],
       symbols: [
-        ['d[v]', 'the best known cost from the start to node v'],
+        ['cost(v)', 'the best known cost from the start to node v'],
         ['u', 'the node you settled last'],
-        ['w(u, v)', 'the cost of the edge from u to v'],
-        ['\\min', 'take the smaller of the two values'],
+        ['edge(u, v)', 'the cost of the edge from u to v'],
+        ['\\min', 'take the smaller of the two values. In words: compare the old cost of v with the cost of u plus the edge cost, and keep the smaller.'],
         ['V, E', 'the number of nodes and the number of edges'],
         ['\\log V', 'the cost of one heap step; it grows very slowly as V grows']
       ],
@@ -176,7 +177,7 @@ const CONCEPT_ABOUT_B = {
     avoid: ['Any edge has a negative cost. Use Bellman-Ford.', 'All edges cost the same. A plain breadth-first search is simpler.'],
     mistakes: [
       'Using it with a negative edge. The answer can be wrong without any error.',
-      'Settling a node twice. Skip heap entries that are older than the best cost.',
+      'Settling a node twice. A node can sit in the heap more than once with different costs. Skip an entry that costs more than the best known cost.',
       'Forgetting that unreached nodes still hold infinity when you stop.'
     ],
     cheat: ['settle the cheapest node', 'relax its edges', 'cost = old or d[u] + w', 'no negative edges', 'time O((V + E) log V)'],
@@ -186,7 +187,7 @@ const CONCEPT_ABOUT_B = {
   bellman: {
     what: 'Bellman-Ford also finds the cheapest routes from one start node. It allows edges with negative cost. It checks every edge again and again, and it can tell you when a never-ending saving loop exists.',
     analogy: 'Imagine asking every neighbour "do you know a cheaper way?" over and over. After enough rounds, the news about the best route has reached everyone.',
-    uses: ['Finding routes when some steps give a refund or discount', 'Checking currency exchange for a loop that gains money', 'Routing in networks where costs can drop'],
+    uses: ['Finding routes when some steps give a refund or discount', 'Spotting a loop of trades that always gains money, which is a negative cycle', 'Routing in networks where costs can drop'],
     before: ['graphrep', 'dijkstra'],
     words: [
       ['negative edge', 'An edge with a cost below zero, like a refund.'],
@@ -204,7 +205,7 @@ const CONCEPT_ABOUT_B = {
         ['O( )', 'Big-O: the steps grow no faster than the value inside']
       ],
       example: [
-        'Edges: S to A costs 2, S to B costs 5, B to A costs −4. There are V = 3 nodes, so 2 rounds are enough.',
+        'Here is a different, smaller example. Edges: S to A costs 2, S to B costs 5, B to A costs −4. There are V = 3 nodes, so 2 rounds are enough.',
         'Start: S is 0. A and B are infinity.',
         'Round 1 (in the order listed): A becomes 2. B becomes 5. Then B to A gives 5 − 4 = 1, so A becomes 1.',
         'Round 2 changes nothing. A is 1, which beats the direct edge of 2.',
@@ -238,44 +239,44 @@ const CONCEPT_ABOUT_B = {
       ['all pairs', 'Every start node paired with every end node.'],
       ['intermediate node', 'A stop in the middle of a route.'],
       ['table', 'A grid where row a, column b holds the best known cost from a to b.'],
-      ['Big-O', 'A rough count of steps as the input grows. O(n³) means n times n times n.']
+      ['Big-O', 'A rough count of steps as the input grows. O(V³) means V times V times V.']
     ],
     math: {
-      lines: ['d[i][j] \\leftarrow \\min(d[i][j], \\; d[i][k] + d[k][j])', '\\text{time} = O(n^3), \\quad \\text{space} = O(n^2)'],
+      lines: ['\\text{new } d[i][j] = \\min(\\text{old } d[i][j], \\; d[i][k] + d[k][j])', '\\text{time} = O(V^3), \\quad \\text{space} = O(V^2)'],
       symbols: [
         ['d[i][j]', 'the best known cost from node i to node j'],
         ['k', 'the node we now allow as a stop'],
-        ['\\min', 'take the smaller of the two values'],
-        ['n', 'the number of nodes'],
-        ['n^3', 'n times n times n, from three loops inside each other']
+        ['\\min', 'take the smaller of the two values. In words: the new cost from i to j is the smaller of the old cost and (cost i to k + cost k to j).'],
+        ['V', 'the number of nodes'],
+        ['V^3', 'V times V times V, from three loops inside each other']
       ],
       example: [
-        'Nodes 1, 2, 3. Direct costs: 1 to 2 is 4, 2 to 3 is 1, 1 to 3 is 9.',
+        'Here is a different, smaller example. Nodes 1, 2, 3. Direct costs: 1 to 2 is 4, 2 to 3 is 1, 1 to 3 is 9.',
         'Allow node 2 as a stop. Check 1 to 3: d[1][2] + d[2][3] = 4 + 1 = 5.',
         '5 is below 9, so the cost from 1 to 3 becomes 5.',
-        'For n = 3 the loops make at most 3 × 3 × 3 = 27 checks. For n = 100 it is 1,000,000.'
+        'For V = 3 the loops make at most 3 × 3 × 3 = 27 checks. For V = 100 it is 1,000,000.'
       ]
     },
     steps: [
-      'Fill the table with the direct edge costs. Use infinity where no edge exists. Use 0 on the diagonal.',
+      'Fill the table with the direct edge costs. Use infinity where no edge exists. Use 0 where a node goes to itself (the diagonal, top left to bottom right).',
       'Pick each node k in turn as the allowed stop.',
       'For every pair i and j, compare the old cost with the cost through k.',
       'Keep the smaller one.',
       'When all nodes have been used as k, the table is complete.'
     ],
     use: ['You need costs between all pairs, and the graph is small.', 'The graph has negative edges but no negative cycle.'],
-    avoid: ['The graph has thousands of nodes. n³ steps is too slow.', 'You need only one start node. Dijkstra is faster.'],
+    avoid: ['The graph has thousands of nodes. V³ steps is too slow.', 'You need only one start node. Dijkstra is faster.'],
     mistakes: [
       'Putting the k loop inside the i and j loops. The k loop must be the outer one.',
-      'Adding infinity to a number and getting an overflow. Guard the sum.',
-      'Forgetting to set the diagonal to 0.'
+      'In languages with fixed-size numbers, adding two huge stand-ins for infinity can go past the largest number. Check for infinity before adding.',
+      'Forgetting to set the cost from a node to itself (the diagonal) to 0.'
     ],
-    cheat: ['for k: for i: for j', 'd[i][j] = min(d[i][j], d[i][k] + d[k][j])', 'k is the outer loop', 'time O(n³), space O(n²)', 'all pairs at once'],
+    cheat: ['for k: for i: for j', 'd[i][j] = min(d[i][j], d[i][k] + d[k][j])', 'k is the outer loop', 'time O(V³), space O(V²)', 'all pairs at once'],
     next: ['dijkstra', 'kruskal'],
     sources: ['Floyd, Algorithm 97: Shortest path, Communications of the ACM, 1962', 'Warshall, A theorem on Boolean matrices, Journal of the ACM, 1962', 'CLRS, Introduction to Algorithms, 4th ed., ch. 23.2 (Floyd-Warshall)']
   },
   kruskal: {
-    what: 'A spanning tree joins every node of a graph using no loops. Kruskal builds the cheapest one. It takes edges from cheapest to dearest and skips any edge that would close a loop.',
+    what: 'A spanning tree joins every node of a graph using no loops. Kruskal builds the cheapest one. It takes edges from cheapest to most expensive and skips any edge that would close a loop.',
     analogy: 'Imagine laying cables to connect villages. You start with the cheapest cable. You skip any cable that links two villages already joined.',
     uses: ['Laying the cheapest cable or pipe network between sites', 'Grouping similar items into clusters', 'Building a road plan that connects all towns at least cost'],
     before: ['graphrep', 'bigo'],
@@ -284,22 +285,24 @@ const CONCEPT_ABOUT_B = {
       ['minimum spanning tree', 'The spanning tree with the smallest total cost.'],
       ['cycle', 'A loop of edges that returns to its starting node.'],
       ['union-find', 'A tool that tracks groups and tells you quickly if two nodes share a group.'],
-      ['set', 'A group of nodes already joined together.']
+      ['set', 'A group of nodes already joined together.'],
+      ['dense', 'A graph with many edges compared with its nodes.'],
+      ['forest', 'Several separate trees. You get one when the graph has parts that are not joined.']
     ],
     math: {
       lines: ['\\text{edges in tree} = V - 1', '\\text{time} = O(E \\log E)'],
       symbols: [
         ['V', 'the number of nodes'],
         ['E', 'the number of edges'],
-        ['\\log E', 'how fast sorting grows; sorting E edges costs about E times this'],
+        ['E \\log E', 'sorting E edges takes about this many steps. log E is how many times you can halve E.'],
         ['O( )', 'Big-O: the steps grow no faster than the value inside']
       ],
       example: [
-        'Nodes A, B, C, D. Edges: AB 1, BC 2, AC 3, CD 4. Sorted already.',
-        'Take AB (1). A and B were apart, so join them.',
-        'Take BC (2). C was alone, so join it. Now A, B, C are one group.',
-        'AC (3) would join two nodes already in one group. Skip it: it makes a loop.',
-        'Take CD (4). Now there are V − 1 = 3 edges. Total cost 1 + 2 + 4 = 7.'
+        'Use the lesson graph: 6 nodes. Sorted edges: AD 1, CE 1, AB 2, DB 3, BE 3, EF 3, then BC 5, CF 6, DE 7.',
+        'Take AD (1), CE (1) and AB (2). Each one joins two different groups.',
+        'DB (3): D and B are already in one group, {A, B, D}. Skip it: it makes a loop.',
+        'Take BE (3), which joins {A, B, D} with {C, E}. Take EF (3), which adds F.',
+        'Now there are V − 1 = 5 edges. Total cost 1 + 1 + 2 + 3 + 3 = 10.'
       ]
     },
     steps: [
@@ -310,10 +313,10 @@ const CONCEPT_ABOUT_B = {
       'Stop once you have V − 1 edges.'
     ],
     use: ['You need the cheapest way to connect everything.', 'The graph has few edges compared with its nodes.'],
-    avoid: ['You need the cheapest route between two nodes. That is a different problem.', 'The graph is dense and a heap-based method suits better.'],
+    avoid: ['You need the cheapest route between two nodes. That is a different problem.', 'The graph is dense (E close to V × V). Prim with a plain array can then be faster.'],
     mistakes: [
       'Checking for loops by searching the graph each time. Use union-find instead.',
-      'Forgetting that a disconnected graph gives a forest, not one tree.',
+      'Forgetting that a graph with separate parts gives a forest, not one tree.',
       'Mixing this up with shortest paths. The tree total is not a route cost.'
     ],
     cheat: ['sort edges by cost', 'skip edges that close a loop', 'union-find tells you fast', 'stop at V − 1 edges', 'edges.sort(key=lambda e: e[2])'],
@@ -340,11 +343,11 @@ const CONCEPT_ABOUT_B = {
         ['O( )', 'Big-O: the steps grow no faster than the value inside']
       ],
       example: [
-        'Nodes A, B, C, D. Edges: AB 1, BC 2, AC 3, CD 4. Start at A.',
-        'Frontier from A: AB (1) and AC (3). Cheapest is AB. Add B.',
-        'Frontier now: AC (3) and BC (2). Cheapest is BC. Add C.',
-        'Frontier now: CD (4). The edge AC leads to C, which is in the tree, so it is ignored. Add D.',
-        'Total cost 1 + 2 + 4 = 7, the same as Kruskal gets.'
+        'Use the lesson graph, starting at A. Frontier: AB (2) and AD (1). Cheapest is AD. Add D.',
+        'Frontier now: AB (2), DB (3) and DE (7). Cheapest is AB. Add B.',
+        'Frontier now: BE (3), BC (5) and DE (7). DB is dropped: both ends are in the tree. Cheapest is BE. Add E.',
+        'Frontier now: CE (1), EF (3), BC (5). Add C with CE, then F with EF.',
+        'Total cost 1 + 2 + 3 + 1 + 3 = 10, the same as Kruskal gets.'
       ]
     },
     steps: [
@@ -354,8 +357,8 @@ const CONCEPT_ABOUT_B = {
       'Push the new node edges into the heap.',
       'Repeat until every node is in the tree.'
     ],
-    use: ['You need a cheapest connection and the graph has many edges.', 'You already store the graph as neighbour lists.'],
-    avoid: ['The graph has two separate parts. One run only reaches one part.', 'Edges arrive one at a time. Kruskal handles that better.'],
+    use: ['You need the cheapest way to connect everything.', 'You already store the graph as neighbour lists.'],
+    avoid: ['The graph has two separate parts. One run only reaches one part.', 'The graph is dense and stored as a matrix. A plain-array Prim, about V × V steps, can beat the heap version.'],
     mistakes: [
       'Adding an edge whose far end is already in the tree. Skip it.',
       'Confusing it with Dijkstra. Prim compares edge costs, not costs from the start.',
@@ -368,13 +371,14 @@ const CONCEPT_ABOUT_B = {
   gcd: {
     what: 'The greatest common divisor of two numbers is the biggest number that divides both with nothing left over. Euclid found a fast way to get it. You keep replacing the pair with the smaller number and a remainder.',
     analogy: 'Imagine tiling a floor with square tiles. You want the biggest square tile that fits both sides exactly, with no cutting.',
-    uses: ['Reducing a fraction like 48/18 to its simplest form', 'Finding when two repeating cycles line up again', 'Checking if two numbers share any factor, which matters in codes'],
+    uses: ['Reducing a fraction like 48/18 to its simplest form', 'Finding when two repeating cycles line up again', 'Checking if two numbers share any factor, which matters in secret codes (cryptography)'],
     before: ['bigo'],
     words: [
       ['divisor', 'A number that divides another with nothing left over.'],
       ['remainder', 'What is left after dividing. 17 divided by 5 leaves 2.'],
       ['mod', 'The remainder operator. In Python, 17 % 5 is 2.'],
       ['coprime', 'Two numbers whose only shared divisor is 1.'],
+      ['lcm', 'The least common multiple: the smallest number that both numbers divide into. It is a × b ÷ gcd.'],
       ['Big-O', 'A rough count of steps as the input grows.']
     ],
     math: {
@@ -400,7 +404,7 @@ const CONCEPT_ABOUT_B = {
       'Repeat until the remainder is 0.',
       'The last non-zero number is the answer.'
     ],
-    use: ['You need to simplify a fraction.', 'You need the lowest common multiple, which is a × b ÷ gcd.'],
+    use: ['You need to simplify a fraction.', 'You need the least common multiple (lcm): the smallest number both divide into. It is a × b ÷ gcd.'],
     avoid: ['Checking every number up to the smaller one. That is much slower.', 'Using it for more than two numbers at once. Apply it to pairs in turn.'],
     mistakes: [
       'Stopping when the remainder is 1. Only stop at 0.',
@@ -414,7 +418,7 @@ const CONCEPT_ABOUT_B = {
   sieve: {
     what: 'The sieve finds every prime number up to a limit. A prime is a number above 1 whose only divisors are 1 and itself. You cross out multiples of each prime, and the numbers left standing are prime.',
     analogy: 'Imagine a row of numbered cards. You take a prime and flip every card that is a multiple of it. The cards still face up are prime.',
-    uses: ['Making a list of primes for number puzzles', 'Finding the smallest prime factor of many numbers quickly', 'Building keys for codes that rely on large primes'],
+    uses: ['Making a list of primes for number puzzles', 'Finding the smallest prime factor of many numbers quickly', 'Counting how many primes there are below a limit'],
     before: ['arrays', 'bigo'],
     words: [
       ['prime', 'A number above 1 that only 1 and itself divide.'],
@@ -424,11 +428,10 @@ const CONCEPT_ABOUT_B = {
       ['Big-O', 'A rough count of steps as the input grows.']
     ],
     math: {
-      lines: ['\\text{start crossing at } p \\times p', '\\text{stop when } p \\times p > n', '\\text{time} \\approx O(n \\log \\log n)'],
+      lines: ['\\text{start crossing at } p \\times p', '\\text{stop when } p \\times p > n', '\\text{time: a little more than one pass over the numbers}'],
       symbols: [
         ['p', 'the prime whose multiples you are crossing out'],
-        ['n', 'the largest number you want to check'],
-        ['\\log \\log n', 'a number that grows so slowly it is below 4 for any n you can store']
+        ['n', 'the largest number you want to check']
       ],
       example: [
         'Find primes up to 30. Start with 2 to 30 all marked as prime.',
@@ -452,26 +455,25 @@ const CONCEPT_ABOUT_B = {
       'Marking 0 and 1 as prime. They are not.',
       'Making the list one item too short, so n itself is missed.'
     ],
-    cheat: ['flags = [True] * (n + 1)', 'for p up to √n', 'cross out p*p, p*p+p, ...', 'true left = prime', 'time about O(n log log n)'],
+    cheat: ['flags = [True] * (n + 1)', 'for p up to √n', 'cross out p*p, p*p+p, ...', 'true left = prime', 'time: a little more than one pass over the numbers'],
     next: ['gcd', 'modarith'],
     sources: ['Nicomachus, Introduction to Arithmetic (earliest account of the sieve of Eratosthenes)', 'Knuth, The Art of Computer Programming, vol. 2, sec. 4.5.4', 'Sedgewick and Wayne, Algorithms, 4th ed., sec. 1.1 (primality sieve exercises)']
   },
   modarith: {
-    what: 'Modular arithmetic keeps only the remainder after dividing by a fixed number. The numbers wrap around, like hours on a clock. It keeps numbers small, which stops them from growing too big.',
-    analogy: 'On a 12-hour clock, 10 o\'clock plus 5 hours is 3 o\'clock. You wrapped past 12. That wrapping is the mod.',
+    what: 'Modular arithmetic keeps only the remainder after dividing by a fixed number. The numbers start again at 0 after m, like hours on a clock. It keeps numbers small, which stops them from growing too big.',
+    analogy: 'On a 12-hour clock, 10 o\'clock plus 5 hours is 3 o\'clock. You went past 12 and started again. That restart is the mod.',
     uses: ['Keeping answers small, such as "answer mod 1,000,000,007"', 'Making a hash table pick a slot', 'Working out which day of the week a date falls on'],
     before: ['gcd'],
     words: [
-      ['remainder', 'What is left after dividing one number by another.'],
-      ['mod', 'Short for modulo. a mod m is the remainder of a divided by m.'],
-      ['modulus', 'The number m you divide by. All answers land from 0 up to m − 1.'],
-      ['overflow', 'A number getting too big to store.']
+      ['remainder', 'What is left after dividing one number by another. 17 ÷ 5 is 3 with 2 left over.'],
+      ['mod', 'Short for modulo. a mod m is the remainder of a divided by m. So "mod", "modulo" and "remainder" all point to the same idea.'],
+      ['modulus', 'The number m you divide by. All answers land from 0 up to m − 1.']
     ],
     math: {
       lines: ['(a + b) \\bmod m = ((a \\bmod m) + (b \\bmod m)) \\bmod m', '(a \\times b) \\bmod m = ((a \\bmod m) \\times (b \\bmod m)) \\bmod m'],
       symbols: [
         ['a, b', 'the two numbers you add or multiply'],
-        ['m', 'the modulus, the number you wrap around'],
+        ['m', 'the modulus: values start again at 0 after m − 1'],
         ['\\bmod', 'take the remainder after dividing']
       ],
       example: [
@@ -487,12 +489,12 @@ const CONCEPT_ABOUT_B = {
       'For subtraction, add m before taking the remainder, so the answer is not negative.',
       'For division, multiply by a modular inverse instead.'
     ],
-    use: ['The real answer is huge and a remainder is asked for.', 'You need wrap-around behaviour, such as days of the week.'],
+    use: ['The real answer is huge and a remainder is asked for.', 'You need numbers that start again from 0, such as days of the week.'],
     avoid: ['You need the exact big number. A remainder throws information away.', 'You need plain division. Use the inverse method.'],
     mistakes: [
       'Dividing with a normal slash under a mod. The rule does not hold for division.',
       'Getting a negative answer after subtraction in a language like C. Add m, then take the mod.',
-      'Taking the mod only at the end, so the middle values overflow.'
+      'Taking the mod only at the end. The middle numbers get huge and slow. In C or Java they can even overflow: pass the largest number the language stores.'
     ],
     cheat: ['a % m', '(a + b) % m = ((a % m) + (b % m)) % m', 'multiply works the same way', 'subtract: (a − b + m) % m', 'divide: use an inverse'],
     next: ['fastpow', 'modinv', 'ncr'],
@@ -501,26 +503,27 @@ const CONCEPT_ABOUT_B = {
   fastpow: {
     what: 'Fast power computes a number raised to a large power with very few multiplications. It squares the base again and again. Then it multiplies in the squares that the binary digits of the exponent ask for.',
     analogy: 'To walk 13 steps you can take a 1-step, a 4-step and an 8-step. Fewer big strides beat many small ones.',
-    uses: ['Computing huge powers under a mod, as in codes', 'Finding a modular inverse with a prime modulus', 'Raising a matrix to a large power, for example for Fibonacci numbers'],
-    before: ['modarith', 'bits'],
+    uses: ['Computing huge powers under a mod, as in secret codes (cryptography)', 'Finding a modular inverse with a prime modulus', 'Raising a matrix, a grid of numbers, to a large power. That can find a far-off Fibonacci number fast'],
+    before: ['modarith'],
     words: [
       ['exponent', 'The small raised number. In 3^13 the exponent is 13.'],
-      ['binary', 'Writing numbers with only 0s and 1s. 13 is 1101.'],
+      ['binary', 'Writing numbers with only 0s and 1s. Each place is worth twice the one on its right, so 13 is 1101: 8 + 4 + 0 + 1.'],
       ['bit', 'One binary digit, a 0 or a 1.'],
+      ['shift right', 'Halve a whole number and drop the leftover. 13 shifted right by one bit is 6.'],
       ['mod', 'The remainder after dividing by a fixed number.'],
       ['Big-O', 'A rough count of steps as the input grows.']
     ],
     math: {
-      lines: ['a^n = \\prod_{\\text{bit } i \\text{ of } n \\text{ is } 1} a^{2^i}', '\\text{multiplications} \\le 2 \\log_2 n'],
+      lines: ['a^{13} = a^8 \\cdot a^4 \\cdot a^1 \\quad (13 = 8 + 4 + 1)', '\\text{multiply the squares that match the 1 bits}', '\\text{multiplications} \\le 2 \\log_2 n'],
       symbols: [
         ['a', 'the base number'],
         ['n', 'the exponent'],
-        ['\\prod', 'multiply all of the listed terms together'],
+        ['\\cdot', 'multiply'],
         ['a^{2^i}', 'a squared i times: a, a², a⁴, a⁸ and so on'],
         ['\\log_2 n', 'how many times you halve n to reach 1; it is about the number of bits in n']
       ],
       example: [
-        'Compute 3^13 mod 7. In binary 13 is 1101, so 13 = 8 + 4 + 1.',
+        'Here is a different, smaller example. Compute 3^13 mod 7. In binary 13 is 1101, so 13 = 8 + 4 + 1.',
         'Squares mod 7: 3^1 = 3. 3^2 = 9 mod 7 = 2. 3^4 = 2 × 2 = 4. 3^8 = 4 × 4 = 16 mod 7 = 2.',
         'Pick the squares for the 1 bits: 3^1, 3^4 and 3^8. That is 3, 4 and 2.',
         'Multiply them, taking the mod each time: 3 × 4 = 12 mod 7 = 5. Then 5 × 2 = 10 mod 7 = 3.',
@@ -530,7 +533,7 @@ const CONCEPT_ABOUT_B = {
     steps: [
       'Start with the result 1 and the base a.',
       'Look at the lowest bit of the exponent. If it is 1, multiply the result by the base.',
-      'Square the base. Shift the exponent right by one bit.',
+      'Square the base. Halve the exponent and drop the leftover (a shift right by one bit).',
       'Repeat until the exponent is 0.',
       'Take the mod after every multiply.'
     ],
@@ -554,7 +557,7 @@ const CONCEPT_ABOUT_B = {
       ['inverse', 'The partner number that gives 1 when multiplied by a, mod m.'],
       ['prime', 'A number above 1 that only 1 and itself divide.'],
       ['coprime', 'Two numbers that share no divisor except 1.'],
-      ['Fermat\'s little theorem', 'For a prime p and a not divisible by p, a^(p−1) mod p equals 1.']
+      ['Fermat\'s little theorem', 'A known rule: for a prime p and a not divisible by p, a^(p−1) mod p equals 1.']
     ],
     math: {
       lines: ['a^{-1} \\equiv a^{p-2} \\pmod p', 'a \\times a^{-1} \\equiv 1 \\pmod p'],
@@ -577,16 +580,16 @@ const CONCEPT_ABOUT_B = {
       'For a prime modulus p, compute a to the power p − 2 with fast power.',
       'This value is the inverse.',
       'To divide x by a, multiply x by the inverse and take the mod.',
-      'For a non-prime modulus, use extended Euclid instead.'
+      'For a non-prime modulus, use a longer method called extended Euclid (not in this course).'
     ],
     use: ['You must divide under a mod.', 'The modulus is prime, so Fermat\'s method is quick.'],
-    avoid: ['The modulus is not prime. Use extended Euclid.', 'a is a multiple of the modulus. No inverse exists.'],
+    avoid: ['The modulus is not prime. Use the longer method called extended Euclid.', 'a is a multiple of the modulus. No inverse exists.'],
     mistakes: [
       'Using the Fermat method with a non-prime modulus. The answer is wrong.',
       'Trying to invert 0 or a multiple of the modulus.',
       'Dividing normally and then taking the mod. That is not the same.'
     ],
-    cheat: ['inv = pow(a, p − 2, p)', 'works when p is prime', 'a * inv % p == 1', 'divide: x * inv % p', 'else: extended Euclid'],
+    cheat: ['inv = pow(a, p − 2, p)', 'works when p is prime', 'a * inv % p == 1', 'divide: x * inv % p', 'else: a longer method (extended Euclid)'],
     next: ['ncr', 'fastpow'],
     sources: ['Hardy and Wright, An Introduction to the Theory of Numbers, ch. 6 (Fermat\'s little theorem)', 'CLRS, Introduction to Algorithms, 4th ed., ch. 31.4 (solving modular linear equations)', 'Python documentation, pow(base, -1, mod) and pow with three arguments']
   },
@@ -597,17 +600,17 @@ const CONCEPT_ABOUT_B = {
     before: ['arrays', 'modarith'],
     words: [
       ['combination', 'A choice of items where the order does not matter.'],
-      ['factorial', 'n! means n × (n − 1) × ... × 1. So 4! is 24.'],
+      ['factorial', 'n! means n × (n − 1) × (n − 2) and so on, down to 1. So 4! is 24.'],
       ['Pascal\'s triangle', 'A triangle of numbers where each is the sum of the two above it.'],
       ['subset', 'Any group of items taken from a bigger group.']
     ],
     math: {
-      lines: ['{}^nC_r = \\frac{n!}{r! \\, (n - r)!}', '{}^nC_r = {}^{n-1}C_{r-1} + {}^{n-1}C_r'],
+      lines: ['\\text{nCr} = \\frac{n!}{r! \\, (n - r)!}', '\\text{nCr} = \\text{(n−1)C(r−1)} + \\text{(n−1)Cr}'],
       symbols: [
         ['n', 'how many items you choose from'],
         ['r', 'how many items you choose'],
         ['n!', 'n factorial: multiply all whole numbers from 1 up to n'],
-        ['{}^nC_r', 'the number of ways to choose r from n']
+        ['nCr', 'the number of ways to choose r items from n items']
       ],
       example: [
         'Find 6C2. The formula gives 6! ÷ (2! × 4!) = 720 ÷ (2 × 24) = 15.',
@@ -623,10 +626,10 @@ const CONCEPT_ABOUT_B = {
       'Entry r in row n counts the ways to choose r from n.'
     ],
     use: ['You count groups where order does not matter.', 'You need a few small values, so a table is fast.'],
-    avoid: ['You need one huge nCr mod a prime. Use factorials with modular inverses.', 'Order matters. Count permutations instead.'],
+    avoid: ['You need one huge nCr mod a prime. Use factorials with modular inverses.', 'Order matters. Then count arrangements, called permutations: there are r! times as many.'],
     mistakes: [
       'Counting arrangements instead of groups, which gives a number too large by r!.',
-      'Computing n! directly for large n. It overflows. Use the triangle or a mod.',
+      'Computing n! directly for large n. The number gets huge, and in C or Java it can overflow. Use the triangle or a mod.',
       'Starting rows and entries from 1 when the formula counts from 0.'
     ],
     cheat: ['nCr = n! / (r! (n − r)!)', 'nCr = nC(n − r)', 'triangle: sum the two above', 'row n sums to 2ⁿ', 'import math; math.comb(6, 2)'],
@@ -640,6 +643,7 @@ const CONCEPT_ABOUT_B = {
     before: ['ncr'],
     words: [
       ['set', 'A group of items.'],
+      ['lcm', 'The least common multiple: the smallest number that two numbers both divide into. For 2 and 3 it is 6.'],
       ['union', 'All items that are in at least one of the groups.'],
       ['intersection', 'Items that are in two or more of the groups at once.'],
       ['overlap', 'Items counted twice because they sit in more than one group.']
@@ -671,9 +675,9 @@ const CONCEPT_ABOUT_B = {
     mistakes: [
       'Stopping after subtracting the pairs. The triple overlaps then count too little.',
       'Using the wrong sign. Odd-sized overlaps add and even-sized ones subtract.',
-      'Dividing to find an overlap without using the least common multiple.'
+      'Using a × b as the overlap of two multiples. You need the lcm, the smallest number both divide into. For 4 and 6 it is 12, not 24.'
     ],
-    cheat: ['add singles', 'subtract pairs', 'add triples', 'signs alternate', 'overlap of multiples = n // lcm'],
+    cheat: ['add singles', 'subtract pairs', 'add triples', 'signs alternate', 'overlap of multiples = n // lcm (n // k is n ÷ k, dropping the leftover)'],
     next: ['ncr', 'modinv'],
     sources: ['Rosen, Discrete Mathematics and Its Applications, ch. 8.5 (inclusion-exclusion)', 'Knuth, The Art of Computer Programming, vol. 1, sec. 1.3.3', 'CLRS, Introduction to Algorithms, 4th ed., appendix C (counting and probability)']
   },
@@ -683,19 +687,22 @@ const CONCEPT_ABOUT_B = {
     uses: ['Storing a set of yes-or-no flags in one number', 'Checking if a number is a power of two', 'Counting how many switches are on'],
     before: ['arrays'],
     words: [
-      ['bit', 'One binary digit, either 0 or 1.'],
+      ['bit', 'One binary digit, either 0 or 1. A number is a row of bits, each place worth twice the one on its right.'],
       ['AND (&)', 'Gives 1 only where both bits are 1.'],
       ['OR (|)', 'Gives 1 where at least one bit is 1.'],
       ['XOR (^)', 'Gives 1 where the two bits differ.'],
       ['shift (<<, >>)', 'Slide all bits left or right. Left by one doubles the number.'],
-      ['mask', 'A number with chosen bits set, used to pick or change those bits.']
+      ['mask', 'A number with chosen bits set, used to pick or change those bits.'],
+      ['NOT (~)', 'Flips every bit: each 1 becomes 0 and each 0 becomes 1.'],
+      ['bit position', 'Bits are counted from 0 at the right. Bit 4 is the place worth 16.']
     ],
     math: {
       lines: ['x \\,\\&\\, (x - 1) \\text{ clears the lowest 1 bit}', 'x \\,\\&\\, (-x) \\text{ keeps only the lowest 1 bit}'],
       symbols: [
         ['x', 'the number being tested'],
         ['\\&', 'AND, bit by bit'],
-        ['x - 1', 'x minus one, which flips the lowest 1 bit and every 0 below it']
+        ['x - 1', 'x minus one, which flips the lowest 1 bit and every 0 below it'],
+        ['-x', 'x with every bit flipped, plus 1. It shares only the lowest 1 bit with x']
       ],
       example: [
         'Take x = 44. In binary that is 101100.',
@@ -707,16 +714,16 @@ const CONCEPT_ABOUT_B = {
     steps: [
       'Write the number in binary to see its bits.',
       'Build a mask with 1 << i to point at bit i.',
-      'Use OR to set a bit. Use AND with the opposite mask to clear it. Use XOR to flip it.',
+      'Use OR to set a bit. Use AND with the NOT of the mask to clear it. Use XOR to flip it.',
       'Use AND with a mask to test a bit.',
       'Use x & (x − 1) to remove the lowest set bit.'
     ],
-    use: ['You keep many yes-or-no flags in one number.', 'You need fast power-of-two or parity checks.'],
+    use: ['You keep many yes-or-no flags in one number.', 'You need fast power-of-two checks, or to tell odd from even with x & 1.'],
     avoid: ['Clarity matters more than speed. A plain list can read better.', 'Numbers that are not whole. Bit tricks apply to whole numbers.'],
     mistakes: [
       'Mixing up & with and, or | with or. They work on bits, not on true and false.',
       'Forgetting that bit positions count from 0 on the right.',
-      'Shifting by more bits than the number holds in a fixed-size language.'
+      'Shifting by more bits than the number holds, in a language such as C or Java where numbers have a fixed size.'
     ],
     cheat: ['set: x | (1 << i)', 'clear: x & ~(1 << i)', 'flip: x ^ (1 << i)', 'test: (x >> i) & 1', 'power of two: x > 0 and x & (x − 1) == 0'],
     next: ['fastpow', 'modarith'],
@@ -732,7 +739,10 @@ const CONCEPT_ABOUT_B = {
       ['text', 'The long string you search inside.'],
       ['prefix', 'A start of a string. The prefixes of "ABC" are "A", "AB" and "ABC".'],
       ['suffix', 'An end of a string. The suffixes of "ABC" are "C", "BC" and "ABC".'],
-      ['prefix table', 'For each place in the pattern, the longest start that is also an end there.']
+      ['proper', 'A prefix or suffix is proper if it is shorter than the whole string. The proper prefixes of "ABC" are "A" and "AB". The whole string is always both a prefix and a suffix of itself, so the table never counts it.'],
+      ['prefix table', 'For each place in the pattern, look at the part up to that place. The table holds the length of the longest proper prefix of that part that is also its suffix.'],
+      ['j', 'How many letters of the pattern match so far. A mismatch sets j back to table[j − 1].'],
+      ['text pointer', 'The place in the text you are reading. It only moves forward.']
     ],
     math: {
       lines: ['\\text{time} = O(n + m)'],
@@ -742,14 +752,16 @@ const CONCEPT_ABOUT_B = {
         ['O( )', 'Big-O: the steps grow no faster than the value inside']
       ],
       example: [
-        'Pattern ABABC. Its prefix table is [0, 0, 1, 2, 0].',
+        'Pattern ABABC. Build its prefix table one place at a time, using proper prefixes only.',
+        'A gives 0. AB gives 0. ABA gives 1, because A starts and ends it. ABAB gives 2, because AB starts and ends it. ABABC gives 0.',
+        'So the table is [0, 0, 1, 2, 0]. ABAB does not give 4: the whole string is not a proper prefix.',
         'The 2 at the fourth place means the first two letters AB match the last two of ABAB.',
         'After a mismatch at the fifth letter, go back to place 2 in the pattern. Do not go to the start.',
         'The text pointer only moves forward: at most n moves. Building the table takes at most m moves.'
       ]
     },
     steps: [
-      'Build the prefix table for the pattern.',
+      'Build the prefix table for the pattern: for each spot, the longest proper prefix that is also a suffix.',
       'Compare the pattern with the text, one letter at a time.',
       'On a mismatch, move the pattern index back using the table. Do not move the text index back.',
       'If the whole pattern matches, record the spot.',
@@ -762,7 +774,7 @@ const CONCEPT_ABOUT_B = {
       'Building the prefix table off by one place.',
       'Forgetting to keep searching after the first match to find later ones.'
     ],
-    cheat: ['prefix table first', 'text pointer never goes back', 'mismatch: j = table[j − 1]', 'time O(n + m)', 'text.find("ABABC")'],
+    cheat: ['prefix table first', 'text pointer never goes back', 'j = how many pattern letters match so far', 'text letter differs: j = table[j − 1]', 'time O(n + m)', 'text.find("ABABC")'],
     next: ['zfunc', 'rollhash'],
     sources: ['Knuth, Morris, Pratt, Fast pattern matching in strings, SIAM Journal on Computing, 1977', 'CLRS, Introduction to Algorithms, 4th ed., ch. 32.4 (Knuth-Morris-Pratt)', 'Sedgewick and Wayne, Algorithms, 4th ed., sec. 5.3 (substring search)']
   },
@@ -774,15 +786,15 @@ const CONCEPT_ABOUT_B = {
     words: [
       ['prefix', 'A start of a string.'],
       ['Z-array', 'A list. Entry i is how long the string matches its own start, beginning at place i.'],
-      ['window', 'The range of the rightmost match found so far.'],
+      ['match box', 'The range of the rightmost match found so far, from place l up to, but not including, place r. We write it [l, r).'],
       ['separator', 'A symbol such as $ that does not appear in either string.']
     ],
     math: {
-      lines: ['Z[i] = \\text{longest } k \\text{ with } s[0..k) = s[i..i+k)', '\\text{time} = O(n)'],
+      lines: ['Z[i] = \\text{how many letters from place } i \\text{ match the start}', '\\text{time} = O(n)'],
       symbols: [
         ['s', 'the string'],
         ['i', 'a place in the string, counting from 0'],
-        ['k', 'the match length'],
+        ['Z[i]', 'how many letters, starting at place i, match the start of the string'],
         ['n', 'the length of the string']
       ],
       example: [
@@ -790,24 +802,25 @@ const CONCEPT_ABOUT_B = {
         'At place 1: "a" matches the start, then "b" meets "a". So Z[1] = 1.',
         'At places 2 and 3: "b" and "x" do not match "a". So Z[2] = 0 and Z[3] = 0.',
         'At place 4: "aab" matches the first three letters, then the string ends. So Z[4] = 3.',
-        'Places 5 and 6 give 1 and 0. The array is [–, 1, 0, 0, 3, 1, 0]. Place 0 is skipped.'
+        'Place 5 sits inside the match box of place 4 (places 4 to 6). It mirrors place 1, so Z[5] starts as Z[1] = 1.',
+        'Places 5 and 6 give 1 and 0. The array is [–, 1, 0, 0, 3, 1, 0]. Place 0 is skipped (shown as a dash).'
       ]
     },
     steps: [
-      'Keep a window [l, r) for the rightmost match found.',
-      'For a new place i inside the window, copy a known value as a starting guess.',
+      'Keep a match box [l, r): places l up to, but not including, r, for the rightmost match found.',
+      'For a new place i inside the box, copy a known value as a starting guess.',
       'Extend the match by comparing new letters beyond r.',
-      'Update the window if the match now reaches further right.',
+      'Update the box if the match now reaches further right.',
       'To search, build Z for pattern + "$" + text. Look for values equal to the pattern length.'
     ],
     use: ['You want a simple linear pattern search.', 'You need to know how a string matches its own start.'],
     avoid: ['You prefer the prefix table of KMP. Both reach the same speed.', 'The strings are short. Plain comparison is fine.'],
     mistakes: [
       'Forgetting the separator, so a match can run from the pattern into the text.',
-      'Re-comparing letters inside the window instead of copying.',
+      'Re-comparing letters inside the match box instead of copying.',
       'Treating Z[0] as a normal value. It is usually left out.'
     ],
-    cheat: ['Z[i] = match length at i', 'keep window [l, r)', 'copy inside, extend outside', 's = pattern + "$" + text', 'time O(n)'],
+    cheat: ['Z[i] = match length at i', 'keep match box [l, r)', 'copy inside, extend outside', 's = pattern + "$" + text', 'time O(n)'],
     next: ['rollhash', 'kmp'],
     sources: ['Gusfield, Algorithms on Strings, Trees, and Sequences, 1997, ch. 1 (Z algorithm)', 'Crochemore and Rytter, Jewels of Stringology, 2002', 'Sedgewick and Wayne, Algorithms, 4th ed., ch. 5']
   },

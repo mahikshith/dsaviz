@@ -1,5 +1,5 @@
-// ---------- Tries: Quill, who files every word letter by letter ----------
-// A trie is drawn with visual: 'tree'. A branch appears the moment Quill adds it, so the tree grows as words go in.
+// ---------- Tries: the filer, who files every word letter by letter ----------
+// A trie is drawn with visual: 'tree'. A branch appears the moment the filer adds it, so the tree grows as words go in.
 
 // The Word Cabinet — Implement Trie (Prefix Tree)
 function trieScene() {
@@ -20,8 +20,8 @@ function trieScene() {
     return Object.assign({ kind, nodes, edge, tags: Object.assign({}, tags), actorAt: at, call: op ? callText(op, w) : '—', letter: ch || '—', node: at === 'root' ? 'root' : at, calls, results: results.slice(), words: ends.size }, extra);
   };
   steps.push(snap('intro', null, '', '', {
-    dialog: [say('hoot', 'Quill files words in a cabinet shaped like a tree. Every step down is one letter.'), say('quill', 'Words that start the same share the same first branches.'), say('hoot', 'And how do you know a whole word ends somewhere?'), say('quill', 'I put a tick on the last letter.')],
-    nar: { kid: 'Quill keeps words in a tree. Each step down the tree is one letter. A tick marks the spot where a whole word ends.', builder: 'The root is empty. Each node maps a letter to a child node and has an end-of-word flag.', expert: 'A trie stores shared beginnings once. insert, search and startsWith each cost O(length of the word), no matter how many words are stored.' } }));
+    dialog: [say('narr', 'The filer files words in a cabinet shaped like a tree. Every step down is one letter.'), say('filer', 'Words that start the same share the same first branches.'), say('narr', 'And how do you know a whole word ends somewhere?'), say('filer', 'I put a tick on the last letter.')],
+    nar: { kid: 'The filer keeps words in a tree. Each step down the tree is one letter. A tick marks the spot where a whole word ends.', builder: 'The root is empty. Each node maps a letter to a child node and has an end-of-word flag.', expert: 'A trie stores shared beginnings once. insert, search and startsWith each cost O(length of the word), no matter how many words are stored.' } }));
   for (const [op, w] of ops) {
     trail = ['root']; tags = {};
     if (op === 'insert') {
@@ -30,19 +30,19 @@ function trieScene() {
         if (!made.has(p)) {
           made.add(p); trail.push(p);
           steps.push(snap('grow', op, w, ch, {
-            dialog: [say('quill', 'There is no “' + ch + '” under ' + from + ' yet.'), say('hoot', 'Then add a new branch for it.')],
-            nar: { kid: 'There is no “' + ch + '” branch under ' + from + ' yet, so Quill adds one and steps onto it.', builder: '"' + ch + '" not in node → node["' + ch + '"] = {}; node = node["' + ch + '"].', expert: 'A new node is made only for letters no earlier word shared. Inserting costs O(length), plus one node per new letter.' } }));
+            dialog: [say('filer', 'There is no “' + ch + '” under ' + from + ' yet.'), say('narr', 'Then add a new branch for it.')],
+            nar: { kid: 'There is no “' + ch + '” branch under ' + from + ' yet, so the filer adds one and steps onto it.', builder: '"' + ch + '" not in node → node["' + ch + '"] = {}; node = node["' + ch + '"].', expert: 'A new node is made only for letters no earlier word shared. Inserting costs O(length), plus one node per new letter.' } }));
         } else {
           trail.push(p);
           steps.push(snap('walk', op, w, ch, {
-            dialog: [say('quill', 'The “' + ch + '” branch is already here.'), say('hoot', 'Another word made it. Just step down.')],
-            nar: { kid: 'The “' + ch + '” branch is already there, because an earlier word starts the same way. Quill just steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"]. Nothing new is made.', expert: 'Shared beginnings are stored once. That is why a trie of many similar words stays small.' } }));
+            dialog: [say('filer', 'The “' + ch + '” branch is already here.'), say('narr', 'Another word made it. Just step down.')],
+            nar: { kid: 'The “' + ch + '” branch is already there, because an earlier word starts the same way. The filer just steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"]. Nothing new is made.', expert: 'Shared beginnings are stored once. That is why a trie of many similar words stays small.' } }));
         }
       }
       ends.add(w); calls++; results.push('null');
       steps.push(snap('mark', op, w, '', {
-        dialog: [say('quill', 'That was the last letter of “' + w + '”.'), say('hoot', 'Tick it. A whole word ends here.')],
-        nar: { kid: 'That was the last letter of “' + w + '”. Quill puts a tick here, so he knows a whole word ends at this spot.', builder: 'node["$"] = True. insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
+        dialog: [say('filer', 'That was the last letter of “' + w + '”.'), say('narr', 'Tick it. A whole word ends here.')],
+        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so he knows a whole word ends at this spot.', builder: 'node["$"] = True. insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
       continue;
     }
     let missed = false;
@@ -54,15 +54,15 @@ function trieScene() {
         const last = calls === ops.length;
         steps.push(snap('miss', op, w, ch, {
           done: last,
-          dialog: [say('quill', 'There is no “' + ch + '” branch here.'), say('hoot', 'Then no stored word starts with “' + p + '”. ' + (op === 'search' ? 'search' : 'startsWith') + ' gives False.')],
+          dialog: [say('filer', 'There is no “' + ch + '” branch here.'), say('narr', 'Then no stored word starts with “' + p + '”. ' + (op === 'search' ? 'search' : 'startsWith') + ' gives False.')],
           nar: { kid: 'There is no “' + ch + '” branch under “' + w.slice(0, i) + '”. No word starts with “' + p + '”, so the answer is False.', builder: '"' + ch + '" not in node → _walk returns None → ' + op + '("' + w + '") = False.', expert: 'A missing branch ends the walk at once. It took ' + (i + 1) + ' look' + (i ? 's' : '') + ', whatever the number of stored words.' } }));
         missed = true;
         break;
       }
       trail.push(p);
       steps.push(snap('look', op, w, ch, {
-        dialog: [say('quill', op === 'search' ? 'Looking for “' + w + '”. Letter “' + ch + '” is here.' : 'Does any word start with “' + w + '”? Letter “' + ch + '” is here.'), say('hoot', 'Step down and check the next letter.')],
-        nar: { kid: 'Quill follows the letters of “' + w + '”. The “' + ch + '” branch is there, so he steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"].', expert: 'Searching never looks sideways at other words. It only follows one branch per letter.' } }));
+        dialog: [say('filer', op === 'search' ? 'Looking for “' + w + '”. Letter “' + ch + '” is here.' : 'Does any word start with “' + w + '”? Letter “' + ch + '” is here.'), say('narr', 'Step down and check the next letter.')],
+        nar: { kid: 'The filer follows the letters of “' + w + '”. The “' + ch + '” branch is there, so he steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"].', expert: 'Searching never looks sideways at other words. It only follows one branch per letter.' } }));
     }
     if (missed) continue;
     const at = trail[trail.length - 1];
@@ -71,14 +71,14 @@ function trieScene() {
       const ok = ends.has(at);
       results.push(ok ? 'True' : 'False');
       const st = snap('word', op, w, '', {
-        dialog: [say('quill', 'I’m at the end of “' + w + '”. ' + (ok ? 'There is a tick here.' : 'There is no tick here.')), say('hoot', ok ? 'So “' + w + '” is a stored word. True.' : '“' + w + '” is only the start of a word. False.')],
+        dialog: [say('filer', 'I’m at the end of “' + w + '”. ' + (ok ? 'There is a tick here.' : 'There is no tick here.')), say('narr', ok ? 'So “' + w + '” is a stored word. True.' : '“' + w + '” is only the start of a word. False.')],
         nar: { kid: ok ? 'All the letters of “' + w + '” are there, and the last one has a tick. “' + w + '” is a stored word, so the answer is True.' : 'All the letters of “' + w + '” are there, but there is no tick on the last one. It is only the start of other words, so the answer is False.', builder: 'search("' + w + '"): the walk ends on a node; "$" in node is ' + (ok ? 'True' : 'False') + '.', expert: 'search needs the tick; startsWith does not. That one flag is the whole difference between the two calls.' } });
       st.nodes[at] = ok ? 'best' : 'hit';
       steps.push(st);
     } else {
       results.push('True');
       const st = snap('prefix', op, w, '', {
-        dialog: [say('quill', 'Every letter of “' + w + '” is in the tree.'), say('hoot', 'startsWith only needs the path. True.')],
+        dialog: [say('filer', 'Every letter of “' + w + '” is in the tree.'), say('narr', 'startsWith only needs the path. True.')],
         nar: { kid: 'Every letter of “' + w + '” is in the tree, so some stored word starts with “' + w + '”. The answer is True. No tick needed.', builder: 'startsWith("' + w + '"): _walk returns a node, not None → True.', expert: 'Words below this node, here ' + listAnd(Array.from(ends).filter((x) => x.startsWith(w)).map((x) => '“' + x + '”')) + ', all share the prefix.' } });
       st.nodes[at] = 'best';
       steps.push(st);
@@ -100,25 +100,25 @@ function trieScene() {
     go: [['type Trie struct {', ''], ['    kids [26]*Trie', '  // one slot per letter', 'intro'], ['    end  bool', '  // a whole word ends here'], ['}', ''], ['func Constructor() Trie { return Trie{} }', ''], ['func (t *Trie) Insert(word string) {', ''], ['    node := t', ''], ['    for _, ch := range word {', ''], ['        if node.kids[ch-\'a\'] == nil {', ''], ['            node.kids[ch-\'a\'] = &Trie{}', '  // a new branch', 'grow'], ['        }', ''], ['        node = node.kids[ch-\'a\']', '', 'walk'], ['    }', ''], ['    node.end = true', '', 'mark'], ['}', ''], ['func (t *Trie) walk(s string) *Trie {', ''], ['    node := t', ''], ['    for _, ch := range s {', ''], ['        if node.kids[ch-\'a\'] == nil {', ''], ['            return nil', '  // no such branch', 'miss'], ['        }', ''], ['        node = node.kids[ch-\'a\']', '', 'look'], ['    }', ''], ['    return node', ''], ['}', ''], ['func (t *Trie) Search(word string) bool {', ''], ['    node := t.walk(word)', ''], ['    return node != nil && node.end', '', 'word'], ['}', ''], ['func (t *Trie) StartsWith(prefix string) bool {', ''], ['    return t.walk(prefix) != nil', '', 'prefix'], ['}', '']]
   };
   return {
-    id: 'implement-trie-prefix-tree', pattern: 'Tries', cast: 'quill', short: 'Cabinet', visual: 'tree', items: [], tree: list, tags: true,
-    treeLabel: 'Word tree', legend: [['in', 'a letter'], ['ok', 'a word ends here'], ['cur', 'Quill is here'], ['path', 'letters followed']],
+    id: 'implement-trie-prefix-tree', pattern: 'Tries', cast: 'filer', short: 'Cabinet', visual: 'tree', items: [], tree: list, tags: true,
+    treeLabel: 'Word tree', legend: [['in', 'a letter'], ['ok', 'a word ends here'], ['cur', 'The filer is here'], ['path', 'letters followed']],
     goal: 'File words letter by letter, then look them up', status: ['Filing words…', 'All calls answered'],
     lines: tagLines(code), code,
     rules: [['Start with an empty cabinet', 'intro'], ['Inserting, letter missing → add a branch', 'grow'], ['Inserting, letter there → step down', 'walk'], ['Inserting, no letters left → tick the end', 'mark'], ['Looking up, letter there → step down', 'look'], ['Looking up, letter missing → False', 'miss'], ['search done → True only if ticked', 'word'], ['startsWith done → True', 'prefix']],
     predictFull: true,
     complexity: [['O(L)', 'each call follows one branch per letter of its word'], ['O(total letters)', 'one node per new letter ever inserted']],
-    quest: ['Quill files three words in his cabinet: cat, car and dog. Then four questions come in.', 'Is “car” a word? Is “ca” a word? Does any word start with “ca”? Does any word start with “cow”?'],
+    quest: ['The filer files three words in his cabinet: cat, car and dog. Then four questions come in.', 'Is “car” a word? Is “ca” a word? Does any word start with “ca”? Does any word start with “cow”?'],
     example: ['insert cat, car, dog; search car, search ca; startsWith ca, startsWith cow', 'answer = [True, False, True, False]'],
-    hints: ['Old Hoot: “cat and car start the same. Should their first two letters be stored twice?”', '“Make a tree where each step down is one letter. Shared beginnings share branches.”', '“insert: walk the letters, adding branches as needed, then tick the last node. search: walk, then check the tick. startsWith: just walk.”'],
+    hints: ['“cat and car start the same. Should their first two letters be stored twice?”', '“Make a tree where each step down is one letter. Shared beginnings share branches.”', '“insert: walk the letters, adding branches as needed, then tick the last node. search: walk, then check the tick. startsWith: just walk.”'],
     clues: ['many words that share beginnings', 'lookups by the letters typed so far', 'a whole word versus the start of one'],
-    kit: { right: 1, spot: 'Why a letter tree, not a list of words?', ask: 'How should Quill file the words?',
+    kit: { right: 1, spot: 'Why a letter tree, not a list of words?', ask: 'How should the filer file the words?',
       quiz: [['A list of words', 'Check every stored word against the question'], ['A tree of letters', 'One branch per letter, shared by words that start the same'], ['A set of whole words', 'Store each word once and look it up'], ['Sort the words', 'Keep them in order and halve the list']] },
-    quizFb: ['Old Hoot: “That reads every word for every question. With a million words it crawls.”', 'Old Hoot: “Yes! One branch per letter. A lookup follows only the letters you ask about.”', 'Old Hoot: “A set answers search, but not startsWith: “ca” is not stored as a word.”', 'Old Hoot: “Sorting helps with prefixes, but each look still costs log n word comparisons.”'],
+    quizFb: ['“That reads every word for every question. With a million words it crawls.”', '“Yes! One branch per letter. A lookup follows only the letters you ask about.”', '“A set answers search, but not startsWith: “ca” is not stored as a word.”', '“Sorting helps with prefixes, but each look still costs log n word comparisons.”'],
     steps
   };
 }
 
 SCENE_REGISTRY.push(trieScene);
-PATTERN_KITS['Tries'] = { right: 1, spot: 'Why a letter tree?', ask: 'How should Quill file the words?',
+PATTERN_KITS['Tries'] = { right: 1, spot: 'Why a letter tree?', ask: 'How should the filer file the words?',
   quiz: [['A list of words', 'Check every stored word against the question'], ['A tree of letters', 'One branch per letter, shared by words that start the same'], ['A set of whole words', 'Store each word once and look it up'], ['Sort the words', 'Keep them in order and halve the list']] };
-STORY_CAST.quill = { name: 'Quill', initial: 'Q', color: 'left', radius: '6px' };
+STORY_CAST.filer = { name: 'Filer', initial: 'F', color: 'left', radius: '6px' };

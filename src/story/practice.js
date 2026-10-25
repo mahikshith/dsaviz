@@ -137,7 +137,7 @@ function runFromText(id, text) {
 
 // ---- Predict the next step ----
 // The question is built from the scene's rules: each rule names a step kind, and its words after "→" are the choice.
-// The right choice is the next step's kind. predictAlias folds kinds that share one rule (Lumi or Roo skipping a space).
+// The right choice is the next step's kind. predictAlias folds kinds that share one rule (the left marker or the right marker skipping a space).
 // predictFull keeps the whole rule when the short forms would sound alike; predictCue(step) replaces the meter text as the cue.
 function predictKind(S, k) { return (S.predictAlias && S.predictAlias[k]) || k; }
 function predictQuestion(S, j) {

@@ -17,11 +17,11 @@ const WLANGS = ['Python', 'Java', 'C++', 'JavaScript', 'Go'];
 const TIMES = [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'], ['21:30', '9:30 PM']];
 const CHANNELS = [['WhatsApp', 'WhatsApp'], ['Email', 'Email'], ['Push', 'App notification']];
 const STEP_NAMES = ['About you', 'Where to start', 'Daily goal', 'Reminders', 'Your plan'];
-const HOOTS = [
-  'Hoo! I’m Old Hoot. I’m in every story, with a hint when you’re stuck, never the answer.',
-  'Be honest. I’ll never make you feel slow. Every step starts in plain words, because everyone starts somewhere.',
+const TIPS = [
+  'Welcome. Every story has a hint when you’re stuck, but never the answer.',
+  'Be honest about where you are. Nothing here will make you feel slow. Every step starts in plain words, because everyone starts somewhere.',
   'Ten minutes a day, every day, beats three hours on Sunday. Your brain keeps what it sees often.',
-  'I only nudge if you haven’t learned yet that day. One message, then I go back to my branch.',
+  'A reminder only comes if you haven’t learned yet that day. One message, then nothing more.',
   'That’s your week. Walk the first story now and your streak starts today.'
 ];
 const PLANS = {
@@ -77,7 +77,7 @@ class Component extends DCLogic {
     const reasonLine = { placements: 'Built around placement season: patterns that show up in online assessments first.', switch: 'Built for evenings after work: short stories, no marathon sessions.', maang: 'Weighted toward the patterns big-tech interviews lean on most.', fun: 'No pressure, no deadlines — just the stories in the order they make most sense.' }[st.reason] || '';
     return {
       t, themeBtns: themeButtons(this, themeKey, t),
-      hoot: HOOTS[step],
+      tip: TIPS[step],
       stepper: STEP_NAMES.map((label, i) => ({
         label, mark: i < step ? '✓' : String(i + 1),
         bg: i === step ? 'rgba(255,255,255,0.08)' : 'transparent',

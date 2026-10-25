@@ -1,4 +1,4 @@
-// ---------- Binary Search: Gus guesses the middle and halves the doubt ----------
+// ---------- Binary Search: the guesser guesses the middle and halves the doubt ----------
 
 // Cells for a search window: outside [lo, hi] is ruled out, mid is the guess.
 function bsCells(n, lo, hi, mid, state) {
@@ -11,26 +11,26 @@ function guessScene() {
   const n = nums.length;
   const steps = [];
   steps.push({ L: (n - 1) >> 1, lo: 0, hi: n - 1, mid: null, kind: 'intro',
-    dialog: [say('hoot', 'Eight cards lie in a row, smallest to biggest. One of them is 11.'), say('gus', 'I’ll look at the middle card first.'), say('gus', 'If it’s too small, 11 must be to the right. If it’s too big, 11 must be to the left.')],
-    nar: { kid: 'The cards are in order. Gus always looks at the middle card. Each guess rules out half of the cards that are left.', builder: 'lo = 0, hi = n − 1. While lo ≤ hi: mid = (lo + hi) // 2. Equal → done. Too small → lo = mid + 1. Too big → hi = mid − 1.', expert: 'Invariant: if the target exists, its index lies in [lo, hi]. Each probe at least halves the interval, so at most ⌊log₂ n⌋ + 1 probes.' } });
+    dialog: [say('narr', 'Eight cards lie in a row, smallest to biggest. One of them is 11.'), say('guesser', 'I’ll look at the middle card first.'), say('guesser', 'If it’s too small, 11 must be to the right. If it’s too big, 11 must be to the left.')],
+    nar: { kid: 'The cards are in order. The guesser always looks at the middle card. Each guess rules out half of the cards that are left.', builder: 'lo = 0, hi = n − 1. While lo ≤ hi: mid = (lo + hi) // 2. Equal → done. Too small → lo = mid + 1. Too big → hi = mid − 1.', expert: 'Invariant: if the target exists, its index lies in [lo, hi]. Each probe at least halves the interval, so at most ⌊log₂ n⌋ + 1 probes.' } });
   let lo = 0, hi = n - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1, v = nums[mid];
     if (v === target) {
       steps.push({ L: mid, lo, hi, mid, kind: 'found',
-        dialog: [say('gus', 'Card ' + mid + ' shows ' + v + '. That’s it!'), say('hoot', 'Found in ' + (steps.length) + ' guesses. Checking one by one would take ' + (mid + 1) + '.')],
-        nar: { kid: 'The middle card is ' + v + '. Gus found it at position ' + mid + '.', builder: 'nums[' + mid + '] == ' + target + ' → return ' + mid + '.', expert: steps.length + ' probes for n = ' + n + '. The bound is ⌊log₂ 8⌋ + 1 = 4.' } });
+        dialog: [say('guesser', 'Card ' + mid + ' shows ' + v + '. That’s it!'), say('narr', 'Found in ' + (steps.length) + ' guesses. Checking one by one would take ' + (mid + 1) + '.')],
+        nar: { kid: 'The middle card is ' + v + '. The guesser found it at position ' + mid + '.', builder: 'nums[' + mid + '] == ' + target + ' → return ' + mid + '.', expert: steps.length + ' probes for n = ' + n + '. The bound is ⌊log₂ 8⌋ + 1 = 4.' } });
       break;
     }
     if (v < target) {
       steps.push({ L: mid, lo, hi, mid, kind: 'up',
-        dialog: [say('gus', 'Card ' + mid + ' shows ' + v + '. That’s too small.'), say('gus', 'Every card left of it is even smaller. I drop them all.')],
-        nar: { kid: v + ' is smaller than ' + target + '. So ' + target + ' must be to the right. Gus drops this card and everything to its left.', builder: 'nums[' + mid + '] = ' + v + ' < ' + target + ' → lo = mid + 1 = ' + (mid + 1) + '.', expert: 'Sorted ⇒ nums[0..' + mid + '] ≤ ' + v + ' < target. Discard the left half in O(1).' } });
+        dialog: [say('guesser', 'Card ' + mid + ' shows ' + v + '. That’s too small.'), say('guesser', 'Every card left of it is even smaller. I drop them all.')],
+        nar: { kid: v + ' is smaller than ' + target + '. So ' + target + ' must be to the right. The guesser drops this card and everything to its left.', builder: 'nums[' + mid + '] = ' + v + ' < ' + target + ' → lo = mid + 1 = ' + (mid + 1) + '.', expert: 'Sorted ⇒ nums[0..' + mid + '] ≤ ' + v + ' < target. Discard the left half in O(1).' } });
       lo = mid + 1;
     } else {
       steps.push({ L: mid, lo, hi, mid, kind: 'down',
-        dialog: [say('gus', 'Card ' + mid + ' shows ' + v + '. That’s too big.'), say('gus', 'Every card right of it is even bigger. I drop them all.')],
-        nar: { kid: v + ' is bigger than ' + target + '. So ' + target + ' must be to the left. Gus drops this card and everything to its right.', builder: 'nums[' + mid + '] = ' + v + ' > ' + target + ' → hi = mid − 1 = ' + (mid - 1) + '.', expert: 'Sorted ⇒ nums[' + mid + '..' + (n - 1) + '] ≥ ' + v + ' > target. Discard the right half in O(1).' } });
+        dialog: [say('guesser', 'Card ' + mid + ' shows ' + v + '. That’s too big.'), say('guesser', 'Every card right of it is even bigger. I drop them all.')],
+        nar: { kid: v + ' is bigger than ' + target + '. So ' + target + ' must be to the left. The guesser drops this card and everything to its right.', builder: 'nums[' + mid + '] = ' + v + ' > ' + target + ' → hi = mid − 1 = ' + (mid - 1) + '.', expert: 'Sorted ⇒ nums[' + mid + '..' + (n - 1) + '] ≥ ' + v + ' > target. Discard the right half in O(1).' } });
       hi = mid - 1;
     }
   }
@@ -46,7 +46,7 @@ function guessScene() {
   });
   return {
     id: 'binary-search', pattern: 'Binary Search', cast: 'bs', short: 'Guessing', visual: 'letters', items: nums.map(String), pitch: 64, tile: 52, tileH: 66, gap: 12, font: 26, width: 500,
-    actorLabels: ['Gus · mid'],
+    actorLabels: ['Guesser · mid'],
     goal: 'Find the card that shows 11', status: ['Guessing…', 'Found it'],
     lines: { py: { intro: 2, found: 6, up: 8, down: 10 }, java: { intro: 2, found: 6, up: 8, down: 10 }, cpp: { intro: 2, found: 6, up: 8, down: 10 }, js: { intro: 2, found: 6, up: 8, down: 10 }, go: { intro: 2, found: 6, up: 8, down: 10 } },
     code: {
@@ -58,11 +58,11 @@ function guessScene() {
     },
     rules: [['Start with every card possible', 'intro'], ['Middle card is the one → done', 'found'], ['Too small → drop the left half', 'up'], ['Too big → drop the right half', 'down']],
     complexity: [['O(log n)', 'each guess halves the cards left'], ['O(1)', 'just lo, hi and mid']],
-    quest: ['Gus has eight number cards in a row. They go from smallest to biggest: 3, 7, 11, 15, 19, 24, 30, 36.', 'He wants the card that shows 11. Each card he looks at costs one guess. How few guesses can he use?'],
+    quest: ['The guesser has eight number cards in a row. They go from smallest to biggest: 3, 7, 11, 15, 19, 24, 30, 36.', 'He wants the card that shows 11. Each card he looks at costs one guess. How few guesses can he use?'],
     example: ['nums = [3, 7, 11, 15, 19, 24, 30, 36]   target = 11', 'answer = 2   (nums[2] = 11)'],
-    hints: ['Old Hoot: “The cards are in order. What does one card tell you about the cards next to it?”', '“If a card is too small, can any card to its left be the one?”', '“Always look at the middle card. Then drop the half that can’t hold the answer.”'],
+    hints: ['“The cards are in order. What does one card tell you about the cards next to it?”', '“If a card is too small, can any card to its left be the one?”', '“Always look at the middle card. Then drop the half that can’t hold the answer.”'],
     clues: ['the cards are sorted', 'find one exact value', 'use as few looks as you can'],
-    quizFb: ['Old Hoot: “Checking one by one works, but a million cards could take a million looks.”', 'Old Hoot: “Yes! The middle card tells you which half to drop. A million cards need only 20 guesses.”', 'Old Hoot: “A running total adds things up. Here we only need to find one card.”', 'Old Hoot: “A notebook needs you to look at every card first. The order already tells you where to go.”'],
+    quizFb: ['“Checking one by one works, but a million cards could take a million looks.”', '“Yes! The middle card tells you which half to drop. A million cards need only 20 guesses.”', '“A running total adds things up. Here we only need to find one card.”', '“A notebook needs you to look at every card first. The order already tells you where to go.”'],
     steps
   };
 }
@@ -73,15 +73,15 @@ function shelfScene() {
   const n = nums.length;
   const steps = [];
   steps.push({ L: (n - 1) >> 1, lo: 0, hi: n - 1, mid: null, kind: 'intro',
-    dialog: [say('hoot', 'These books were in order by number. Then someone moved the first three to the end.'), say('gus', 'So the shelf has two runs. Each run is still in order.'), say('hoot', 'Find book 6.'), say('gus', 'I’ll check the middle. One side of it is always in order.')],
-    nar: { kid: 'The books go up, drop once, then go up again. Gus looks at the middle book. One side of it has no drop. He checks if book 6 fits on that side.', builder: 'lo = 0, hi = n − 1. mid = (lo + hi) // 2. If nums[lo] ≤ nums[mid], the left half is sorted; otherwise the right half is. Test the target against the sorted half.', expert: 'A rotation point lies in at most one half, so one half is always sorted. Range-test the target there and discard a half per probe: O(log n).' } });
+    dialog: [say('narr', 'These books were in order by number. Then someone moved the first three to the end.'), say('guesser', 'So the shelf has two runs. Each run is still in order.'), say('narr', 'Find book 6.'), say('guesser', 'I’ll check the middle. One side of it is always in order.')],
+    nar: { kid: 'The books go up, drop once, then go up again. The guesser looks at the middle book. One side of it has no drop. He checks if book 6 fits on that side.', builder: 'lo = 0, hi = n − 1. mid = (lo + hi) // 2. If nums[lo] ≤ nums[mid], the left half is sorted; otherwise the right half is. Test the target against the sorted half.', expert: 'A rotation point lies in at most one half, so one half is always sorted. Range-test the target there and discard a half per probe: O(log n).' } });
   let lo = 0, hi = n - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1, v = nums[mid];
     if (v === target) {
       steps.push({ L: mid, lo, hi, mid, kind: 'found',
-        dialog: [say('gus', 'The middle book is ' + v + '. Found it!'), say('hoot', 'Book 6 is at position ' + mid + '.')],
-        nar: { kid: 'The middle book is ' + v + '. Gus found it at position ' + mid + '.', builder: 'nums[' + mid + '] == ' + target + ' → return ' + mid + '.', expert: steps.length + ' probes for n = ' + n + '.' } });
+        dialog: [say('guesser', 'The middle book is ' + v + '. Found it!'), say('narr', 'Book 6 is at position ' + mid + '.')],
+        nar: { kid: 'The middle book is ' + v + '. The guesser found it at position ' + mid + '.', builder: 'nums[' + mid + '] == ' + target + ' → return ' + mid + '.', expert: steps.length + ' probes for n = ' + n + '.' } });
       break;
     }
     const leftSorted = nums[lo] <= v;
@@ -98,8 +98,8 @@ function shelfScene() {
     const goLeft = kind === 'leftIn' || kind === 'rightOut';
     const range = leftSorted ? nums[lo] + ' to ' + v : v + ' to ' + nums[hi];
     steps.push({ L: mid, lo, hi, mid, kind,
-      dialog: [say('gus', 'The middle book is ' + v + '. ' + side), say('gus', fits ? '6 fits between ' + range + '. I keep that side.' : '6 does not fit between ' + range + '. I drop that side.'), say('hoot', 'So Gus searches the ' + (goLeft ? 'left' : 'right') + ' part.')],
-      nar: { kid: 'The middle book is ' + v + '. The ' + (leftSorted ? 'left' : 'right') + ' side goes ' + range + ' with no drop. ' + (fits ? 'Book 6 fits in there, so Gus keeps it.' : 'Book 6 can’t be in there, so Gus drops it.'), builder: (leftSorted ? 'nums[lo] = ' + nums[lo] + ' ≤ nums[mid] = ' + v + ': left half sorted. ' : 'nums[lo] = ' + nums[lo] + ' > nums[mid] = ' + v + ': right half sorted. ') + (fits ? 'Target is inside' : 'Target is outside') + ' → ' + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', expert: 'Sorted half [' + (leftSorted ? lo + ', ' + mid : mid + ', ' + hi) + '] spans ' + range + '. A single range test decides membership, so one half is discarded in O(1).' } });
+      dialog: [say('guesser', 'The middle book is ' + v + '. ' + side), say('guesser', fits ? '6 fits between ' + range + '. I keep that side.' : '6 does not fit between ' + range + '. I drop that side.'), say('narr', 'So the guesser searches the ' + (goLeft ? 'left' : 'right') + ' part.')],
+      nar: { kid: 'The middle book is ' + v + '. The ' + (leftSorted ? 'left' : 'right') + ' side goes ' + range + ' with no drop. ' + (fits ? 'Book 6 fits in there, so the guesser keeps it.' : 'Book 6 can’t be in there, so the guesser drops it.'), builder: (leftSorted ? 'nums[lo] = ' + nums[lo] + ' ≤ nums[mid] = ' + v + ': left half sorted. ' : 'nums[lo] = ' + nums[lo] + ' > nums[mid] = ' + v + ': right half sorted. ') + (fits ? 'Target is inside' : 'Target is outside') + ' → ' + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', expert: 'Sorted half [' + (leftSorted ? lo + ', ' + mid : mid + ', ' + hi) + '] spans ' + range + '. A single range test decides membership, so one half is discarded in O(1).' } });
     if (goLeft) hi = mid - 1; else lo = mid + 1;
   }
   const ans = steps[steps.length - 1].mid;
@@ -115,7 +115,7 @@ function shelfScene() {
   const L5 = { intro: 2, found: 5, leftIn: 7, leftOut: 8, rightIn: 10, rightOut: 11 };
   return {
     id: 'search-rotated', pattern: 'Binary Search', cast: 'bs', predictFull: true, short: 'Spun Shelf', visual: 'letters', items: nums.map(String), pitch: 64, tile: 52, tileH: 66, gap: 12, font: 26, width: 500,
-    actorLabels: ['Gus · mid'],
+    actorLabels: ['Guesser · mid'],
     goal: 'Find book 6 on the moved shelf', status: ['Searching…', 'Found it'],
     lines: { py: { intro: 2, found: 6, leftIn: 9, leftOut: 11, rightIn: 14, rightOut: 16 }, java: L5, cpp: L5, js: L5, go: { intro: 2, found: 6, leftIn: 10, leftOut: 12, rightIn: 16, rightOut: 18 } },
     code: {
@@ -127,11 +127,11 @@ function shelfScene() {
     },
     rules: [['Start with every book possible', 'intro'], ['Middle book is the one → done', 'found'], ['Left side in order and it fits → keep left', 'leftIn'], ['Left side in order, it doesn’t fit → go right', 'leftOut'], ['Right side in order and it fits → keep right', 'rightIn'], ['Right side in order, it doesn’t fit → go left', 'rightOut']],
     complexity: [['O(log n)', 'each look drops half the shelf'], ['O(1)', 'just lo, hi and mid']],
-    quest: ['Eight books sat on a shelf in order by number. Then someone took the first three and put them at the end: 12, 15, 18, 20, 25, 3, 6, 9.', 'Gus must find book 6. Looking at every book is too slow. Can he still halve the shelf each time?'],
+    quest: ['Eight books sat on a shelf in order by number. Then someone took the first three and put them at the end: 12, 15, 18, 20, 25, 3, 6, 9.', 'The guesser must find book 6. Looking at every book is too slow. Can he still halve the shelf each time?'],
     example: ['nums = [12, 15, 18, 20, 25, 3, 6, 9]   target = 6', 'answer = 6   (nums[6] = 6)'],
-    hints: ['Old Hoot: “The numbers drop only once on this shelf. Split it at the middle. Can both sides hold the drop?”', '“One side has no drop, so it is in order. You can tell at a glance if 6 fits in it.”', '“Compare the first book with the middle book to find the ordered side. If 6 fits there, keep it. If not, keep the other side.”'],
+    hints: ['“The numbers drop only once on this shelf. Split it at the middle. Can both sides hold the drop?”', '“One side has no drop, so it is in order. You can tell at a glance if 6 fits in it.”', '“Compare the first book with the middle book to find the ordered side. If 6 fits there, keep it. If not, keep the other side.”'],
     clues: ['it was in order before the move', 'find one exact book', 'faster than checking every book'],
-    quizFb: ['Old Hoot: “Checking every book works, but it ignores the order the shelf still has.”', 'Old Hoot: “Yes! One side of the middle is always in order. Check that side and drop half.”', 'Old Hoot: “A running total adds things up. Here we only need to find one book.”', 'Old Hoot: “A notebook means looking at every book first. The order lets you skip most of them.”'],
+    quizFb: ['“Checking every book works, but it ignores the order the shelf still has.”', '“Yes! One side of the middle is always in order. Check that side and drop half.”', '“A running total adds things up. Here we only need to find one book.”', '“A notebook means looking at every book first. The order lets you skip most of them.”'],
     steps
   };
 }
@@ -142,25 +142,25 @@ function stepScene() {
   const n = h.length;
   const steps = [];
   steps.push({ L: 0, lo: 0, hi: n - 1, mid: null, kind: 'intro',
-    dialog: [say('hoot', 'This staircase went up step by step. Then someone cut it and swapped the two pieces.'), say('gus', 'So it climbs, drops once, then climbs again.'), say('hoot', 'Find the lowest step.'), say('gus', 'I’ll compare the middle step with the last step.')],
-    nar: { kid: 'The steps go up, drop down once, then go up again. The lowest step is right after the drop. Gus compares the middle step with the last step to find which side the drop is on.', builder: 'lo = 0, hi = n − 1. While lo < hi: mid = (lo + hi) // 2. If h[mid] > h[hi], the minimum is right of mid: lo = mid + 1. Else hi = mid.', expert: 'h[mid] > h[hi] means the rotation point lies in (mid, hi]. Otherwise [mid, hi] is sorted and the minimum is in [lo, mid]. Loop ends when lo == hi.' } });
+    dialog: [say('narr', 'This staircase went up step by step. Then someone cut it and swapped the two pieces.'), say('guesser', 'So it climbs, drops once, then climbs again.'), say('narr', 'Find the lowest step.'), say('guesser', 'I’ll compare the middle step with the last step.')],
+    nar: { kid: 'The steps go up, drop down once, then go up again. The lowest step is right after the drop. The guesser compares the middle step with the last step to find which side the drop is on.', builder: 'lo = 0, hi = n − 1. While lo < hi: mid = (lo + hi) // 2. If h[mid] > h[hi], the minimum is right of mid: lo = mid + 1. Else hi = mid.', expert: 'h[mid] > h[hi] means the rotation point lies in (mid, hi]. Otherwise [mid, hi] is sorted and the minimum is in [lo, mid]. Loop ends when lo == hi.' } });
   let lo = 0, hi = n - 1;
   while (lo < hi) {
     const mid = (lo + hi) >> 1;
     if (h[mid] > h[hi]) {
       steps.push({ L: mid, lo, hi, mid, kind: 'goRight',
-        dialog: [say('gus', 'The middle step is ' + h[mid] + '. The last step is ' + h[hi] + '.'), say('gus', h[mid] + ' is higher than ' + h[hi] + '. So the drop is to the right.'), say('hoot', 'The middle step can’t be the lowest. Drop it and everything left of it.')],
-        nar: { kid: 'The middle step (' + h[mid] + ') is higher than the last step (' + h[hi] + '). The stairs must drop somewhere to the right. Gus looks only there.', builder: 'h[' + mid + '] = ' + h[mid] + ' > h[' + hi + '] = ' + h[hi] + ' → lo = mid + 1 = ' + (mid + 1) + '.', expert: 'h[mid] > h[hi] proves the rotation point is in (' + mid + ', ' + hi + ']. Discard [' + lo + ', ' + mid + '].' } });
+        dialog: [say('guesser', 'The middle step is ' + h[mid] + '. The last step is ' + h[hi] + '.'), say('guesser', h[mid] + ' is higher than ' + h[hi] + '. So the drop is to the right.'), say('narr', 'The middle step can’t be the lowest. Drop it and everything left of it.')],
+        nar: { kid: 'The middle step (' + h[mid] + ') is higher than the last step (' + h[hi] + '). The stairs must drop somewhere to the right. The guesser looks only there.', builder: 'h[' + mid + '] = ' + h[mid] + ' > h[' + hi + '] = ' + h[hi] + ' → lo = mid + 1 = ' + (mid + 1) + '.', expert: 'h[mid] > h[hi] proves the rotation point is in (' + mid + ', ' + hi + ']. Discard [' + lo + ', ' + mid + '].' } });
       lo = mid + 1;
     } else {
       steps.push({ L: mid, lo, hi, mid, kind: 'goLeft',
-        dialog: [say('gus', 'The middle step is ' + h[mid] + '. The last step is ' + h[hi] + '.'), say('gus', h[mid] + ' is not higher than ' + h[hi] + '. From here to the end, the stairs only go up.'), say('hoot', 'So the lowest is this step or to its left. Keep the middle step.')],
+        dialog: [say('guesser', 'The middle step is ' + h[mid] + '. The last step is ' + h[hi] + '.'), say('guesser', h[mid] + ' is not higher than ' + h[hi] + '. From here to the end, the stairs only go up.'), say('narr', 'So the lowest is this step or to its left. Keep the middle step.')],
         nar: { kid: 'The middle step (' + h[mid] + ') is not higher than the last step (' + h[hi] + '). There is no drop on the right side. The lowest step is here or to the left.', builder: 'h[' + mid + '] = ' + h[mid] + ' ≤ h[' + hi + '] = ' + h[hi] + ' → hi = mid = ' + mid + '.', expert: '[' + mid + ', ' + hi + '] is sorted, so its minimum is h[' + mid + ']. Keep mid as a candidate: hi = mid, not mid − 1.' } });
       hi = mid;
     }
   }
   steps.push({ L: lo, lo, hi, mid: lo, kind: 'found',
-    dialog: [say('gus', 'Only one step is left. It’s ' + h[lo] + '.'), say('hoot', 'The lowest step is ' + h[lo] + ', at position ' + lo + '.')],
+    dialog: [say('guesser', 'Only one step is left. It’s ' + h[lo] + '.'), say('narr', 'The lowest step is ' + h[lo] + ', at position ' + lo + '.')],
     nar: { kid: 'Only one step is left. The lowest step is ' + h[lo] + '.', builder: 'lo == hi = ' + lo + ' → return h[' + lo + '] = ' + h[lo] + '.', expert: (steps.length - 1) + ' probes for n = ' + n + '. O(log n) time, O(1) space.' } });
   const T = { intro: ['All 8 steps are still possible', 'plain'], goRight: ['Middle higher than last → drop is to the right', 'warn'], goLeft: ['Middle not higher → lowest is here or left', 'cool'], found: ['Lowest step: ' + h[lo], 'ok'] };
   steps.forEach((st) => {
@@ -174,7 +174,7 @@ function stepScene() {
   const L4 = { intro: 2, goRight: 6, goLeft: 8, found: 10 };
   return {
     id: 'find-min-rotated', pattern: 'Binary Search', cast: 'bs', short: 'Lowest Step', visual: 'planks', items: h, pitch: 64, tile: 44, width: 492, unit: 6,
-    actorLabels: ['Gus · mid'],
+    actorLabels: ['Guesser · mid'],
     goal: 'Find the lowest step on the cut staircase', status: ['Searching…', 'Lowest found'],
     lines: { py: { intro: 2, goRight: 6, goLeft: 8, found: 9 }, java: L4, cpp: L4, js: L4, go: { intro: 2, goRight: 6, goLeft: 8, found: 11 } },
     code: {
@@ -186,19 +186,19 @@ function stepScene() {
     },
     rules: [['Start with every step possible', 'intro'], ['Middle higher than last → look right of the middle', 'goRight'], ['Middle not higher → keep the middle and look left', 'goLeft'], ['One step left → that’s the lowest', 'found']],
     complexity: [['O(log n)', 'each look drops half the steps'], ['O(1)', 'just lo, hi and mid']],
-    quest: ['A staircase climbed step by step. Then someone cut it in two and swapped the pieces. Now the heights are 14, 16, 18, 20, 22, 8, 10, 12.', 'Gus must find the lowest step. He wants to look at as few steps as he can.'],
+    quest: ['A staircase climbed step by step. Then someone cut it in two and swapped the pieces. Now the heights are 14, 16, 18, 20, 22, 8, 10, 12.', 'The guesser must find the lowest step. He wants to look at as few steps as he can.'],
     example: ['nums = [14, 16, 18, 20, 22, 8, 10, 12]', 'answer = 8'],
-    hints: ['Old Hoot: “The stairs drop only once. The lowest step comes right after the drop.”', '“Compare the middle step with the last step. If the middle is higher, where must the drop be?”', '“Middle higher than last → look right of the middle. Otherwise the middle might be the lowest, so keep it and look left.”'],
+    hints: ['“The stairs drop only once. The lowest step comes right after the drop.”', '“Compare the middle step with the last step. If the middle is higher, where must the drop be?”', '“Middle higher than last → look right of the middle. Otherwise the middle might be the lowest, so keep it and look left.”'],
     clues: ['it was in order before the cut', 'find the smallest value', 'faster than checking every step'],
-    quizFb: ['Old Hoot: “Checking every step works, but it ignores the order the stairs still have.”', 'Old Hoot: “Yes! The middle and the last step tell you which side the drop is on. Drop the other half.”', 'Old Hoot: “A running total adds things up. Here we only need the smallest step.”', 'Old Hoot: “A notebook means looking at every step first. The order lets you skip most of them.”'],
+    quizFb: ['“Checking every step works, but it ignores the order the stairs still have.”', '“Yes! The middle and the last step tell you which side the drop is on. Drop the other half.”', '“A running total adds things up. Here we only need the smallest step.”', '“A notebook means looking at every step first. The order lets you skip most of them.”'],
     steps
   };
 }
 
 SCENE_REGISTRY.push(guessScene, shelfScene, stepScene);
-PATTERN_KITS['Binary Search'] = { right: 1, spot: 'Why halve, not walk?', ask: 'How should Gus search?',
+PATTERN_KITS['Binary Search'] = { right: 1, spot: 'Why halve, not walk?', ask: 'How should the guesser search?',
   quiz: [['Check every one', 'Walk the row from the start'], ['Halve the doubt', 'Look at the middle, drop the wrong half'], ['Keep a running total', 'Write the sum so far at every step'], ['A notebook of everything seen', 'Write down every value you pass']] };
-STORY_CAST.gus = { name: 'Gus', initial: 'G', color: 'right', radius: '999px' };
+STORY_CAST.guesser = { name: 'Guesser', initial: 'G', color: 'right', radius: '999px' };
 
 // ---------- Your own input (see practice.js) ----------
 // Binary search and the spun shelf share one walk; only the "which half" rule differs.
@@ -209,21 +209,21 @@ function bsRun(id, input) {
   const what = rotated ? 'book' : 'card';
   const steps = [];
   let lo = 0, hi = n - 1, ans = -1;
-  steps.push(runStep('intro', { L: (n - 1) >> 1, lo, hi, mid: null }, [say('hoot', n + ' ' + what + 's. Find the one that shows ' + T + '.'), say('gus', rotated ? 'One side of the middle is always in order. I’ll use that side.' : 'I’ll look at the middle ' + what + ' first.')],
-    rotated ? 'The shelf goes up, drops once, then goes up again. Gus checks the middle book and the side of it that is in order.' : 'The cards are in order. Gus looks at the middle card, and each look rules out half of the rest.',
+  steps.push(runStep('intro', { L: (n - 1) >> 1, lo, hi, mid: null }, [say('narr', n + ' ' + what + 's. Find the one that shows ' + T + '.'), say('guesser', rotated ? 'One side of the middle is always in order. I’ll use that side.' : 'I’ll look at the middle ' + what + ' first.')],
+    rotated ? 'The shelf goes up, drops once, then goes up again. The guesser checks the middle book and the side of it that is in order.' : 'The cards are in order. The guesser looks at the middle card, and each look rules out half of the rest.',
     'lo = 0, hi = ' + (n - 1) + '. While lo ≤ hi: mid = (lo + hi) // 2.', 'Each look halves what is left: O(log n).'));
   while (lo <= hi) {
     const mid = (lo + hi) >> 1, x = nums[mid];
     if (x === T) {
       ans = mid;
-      steps.push(runStep('found', { L: mid, lo, hi, mid, done: true }, [say('gus', 'The middle ' + what + ' shows ' + x + '. Found it!'), say('hoot', 'It is at position ' + mid + '.')],
-        'The middle ' + what + ' is ' + x + '. Gus found it at position ' + mid + '.', 'nums[' + mid + '] == ' + T + ' → return ' + mid + '.', steps.length + ' looks for ' + n + ' ' + what + 's.'));
+      steps.push(runStep('found', { L: mid, lo, hi, mid, done: true }, [say('guesser', 'The middle ' + what + ' shows ' + x + '. Found it!'), say('narr', 'It is at position ' + mid + '.')],
+        'The middle ' + what + ' is ' + x + '. The guesser found it at position ' + mid + '.', 'nums[' + mid + '] == ' + T + ' → return ' + mid + '.', steps.length + ' looks for ' + n + ' ' + what + 's.'));
       break;
     }
     if (!rotated) {
       const up = x < T;
-      steps.push(runStep(up ? 'up' : 'down', { L: mid, lo, hi, mid }, [say('gus', 'Card ' + mid + ' shows ' + x + '. Too ' + (up ? 'small' : 'big') + '.'), say('gus', 'I drop it and everything to its ' + (up ? 'left' : 'right') + '.')],
-        x + ' is ' + (up ? 'smaller' : 'bigger') + ' than ' + T + ', so ' + T + ' can only be to the ' + (up ? 'right' : 'left') + '. Gus drops the other half.',
+      steps.push(runStep(up ? 'up' : 'down', { L: mid, lo, hi, mid }, [say('guesser', 'Card ' + mid + ' shows ' + x + '. Too ' + (up ? 'small' : 'big') + '.'), say('guesser', 'I drop it and everything to its ' + (up ? 'left' : 'right') + '.')],
+        x + ' is ' + (up ? 'smaller' : 'bigger') + ' than ' + T + ', so ' + T + ' can only be to the ' + (up ? 'right' : 'left') + '. The guesser drops the other half.',
         'nums[' + mid + '] = ' + x + (up ? ' < ' : ' > ') + T + ' → ' + (up ? 'lo = ' + (mid + 1) : 'hi = ' + (mid - 1)) + '.', 'The list is sorted, so one look settles a whole half.'));
       if (up) lo = mid + 1; else hi = mid - 1;
       continue;
@@ -233,13 +233,13 @@ function bsRun(id, input) {
     const kind = leftSorted ? (fits ? 'leftIn' : 'leftOut') : (fits ? 'rightIn' : 'rightOut');
     const range = leftSorted ? nums[lo] + ' to ' + x : x + ' to ' + nums[hi];
     const goLeft = kind === 'leftIn' || kind === 'rightOut';
-    steps.push(runStep(kind, { L: mid, lo, hi, mid }, [say('gus', 'The middle book is ' + x + '. Books ' + range + ' are in order.'), say('gus', T + (fits ? ' fits in there. I keep that side.' : ' does not fit there. I drop that side.'))],
-      'The ' + (leftSorted ? 'left' : 'right') + ' side runs ' + range + ' with no drop. ' + (fits ? T + ' fits in there, so Gus keeps it.' : T + ' cannot be in there, so Gus searches the other side.'),
+    steps.push(runStep(kind, { L: mid, lo, hi, mid }, [say('guesser', 'The middle book is ' + x + '. Books ' + range + ' are in order.'), say('guesser', T + (fits ? ' fits in there. I keep that side.' : ' does not fit there. I drop that side.'))],
+      'The ' + (leftSorted ? 'left' : 'right') + ' side runs ' + range + ' with no drop. ' + (fits ? T + ' fits in there, so the guesser keeps it.' : T + ' cannot be in there, so the guesser searches the other side.'),
       (leftSorted ? 'nums[lo] ≤ nums[mid]' : 'nums[lo] > nums[mid]') + ' → ' + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', 'The side in order tells for sure if the target can be there.'));
     if (goLeft) hi = mid - 1; else lo = mid + 1;
   }
   if (ans < 0) {
-    steps.push(runStep('missing', { L: Math.min(Math.max(lo, 0), n - 1), lo, hi, mid: null, done: true }, [say('gus', 'Nothing is left to look at.'), say('hoot', T + ' is not here. The answer is −1.')],
+    steps.push(runStep('missing', { L: Math.min(Math.max(lo, 0), n - 1), lo, hi, mid: null, done: true }, [say('guesser', 'Nothing is left to look at.'), say('narr', T + ' is not here. The answer is −1.')],
       'Every ' + what + ' that could hold ' + T + ' has been ruled out. It is not there.', 'lo > hi → return -1.', (steps.length - 1) + ' looks to prove it is missing.'));
   }
   const T5 = rotated
@@ -289,21 +289,21 @@ function lowestRun(input) {
   const h = (input || SCENE_INPUT['find-min-rotated'].default).nums.slice(), n = h.length;
   const steps = [];
   let lo = 0, hi = n - 1;
-  steps.push(runStep('intro', { L: 0, lo, hi, mid: null }, [say('hoot', n + ' steps that climb, maybe drop once, then climb again. Find the lowest.'), say('gus', 'I’ll compare the middle step with the last one.')],
-    'The lowest step comes right after the drop. Gus compares the middle step with the last step to see which side the drop is on.', 'lo = 0, hi = ' + (n - 1) + '. While lo < hi: mid = (lo + hi) // 2.', 'Each look halves what is left: O(log n).'));
+  steps.push(runStep('intro', { L: 0, lo, hi, mid: null }, [say('narr', n + ' steps that climb, maybe drop once, then climb again. Find the lowest.'), say('guesser', 'I’ll compare the middle step with the last one.')],
+    'The lowest step comes right after the drop. The guesser compares the middle step with the last step to see which side the drop is on.', 'lo = 0, hi = ' + (n - 1) + '. While lo < hi: mid = (lo + hi) // 2.', 'Each look halves what is left: O(log n).'));
   while (lo < hi) {
     const mid = (lo + hi) >> 1;
     if (h[mid] > h[hi]) {
-      steps.push(runStep('goRight', { L: mid, lo, hi, mid }, [say('gus', 'Middle ' + h[mid] + ' is higher than last ' + h[hi] + '.'), say('hoot', 'So the drop is to the right.')],
-        'The middle step (' + h[mid] + ') is higher than the last (' + h[hi] + '). The drop must be to the right, so Gus looks there.', 'h[' + mid + '] = ' + h[mid] + ' > h[' + hi + '] = ' + h[hi] + ' → lo = ' + (mid + 1) + '.', 'The middle step cannot be the lowest: a lower one comes after it.'));
+      steps.push(runStep('goRight', { L: mid, lo, hi, mid }, [say('guesser', 'Middle ' + h[mid] + ' is higher than last ' + h[hi] + '.'), say('narr', 'So the drop is to the right.')],
+        'The middle step (' + h[mid] + ') is higher than the last (' + h[hi] + '). The drop must be to the right, so the guesser looks there.', 'h[' + mid + '] = ' + h[mid] + ' > h[' + hi + '] = ' + h[hi] + ' → lo = ' + (mid + 1) + '.', 'The middle step cannot be the lowest: a lower one comes after it.'));
       lo = mid + 1;
     } else {
-      steps.push(runStep('goLeft', { L: mid, lo, hi, mid }, [say('gus', 'Middle ' + h[mid] + ' is not higher than last ' + h[hi] + '.'), say('hoot', 'So the lowest is here or to the left.')],
+      steps.push(runStep('goLeft', { L: mid, lo, hi, mid }, [say('guesser', 'Middle ' + h[mid] + ' is not higher than last ' + h[hi] + '.'), say('narr', 'So the lowest is here or to the left.')],
         'The middle step (' + h[mid] + ') is not higher than the last (' + h[hi] + '). No drop on the right, so the lowest is here or to the left.', 'h[' + mid + '] = ' + h[mid] + ' ≤ h[' + hi + '] = ' + h[hi] + ' → hi = ' + mid + '.', 'Keep the middle: it might be the lowest step itself.'));
       hi = mid;
     }
   }
-  steps.push(runStep('found', { L: lo, lo, hi, mid: lo, done: true }, [say('gus', 'Only one step is left: ' + h[lo] + '.'), say('hoot', 'The lowest step is ' + h[lo] + '.')],
+  steps.push(runStep('found', { L: lo, lo, hi, mid: lo, done: true }, [say('guesser', 'Only one step is left: ' + h[lo] + '.'), say('narr', 'The lowest step is ' + h[lo] + '.')],
     'Only one step is left. The lowest step is ' + h[lo] + '.', 'lo == hi → return h[' + lo + '] = ' + h[lo] + '.', (steps.length - 1) + ' looks for ' + n + ' steps.'));
   runFinish(steps, { intro: ['All ' + n + ' steps are still possible', 'plain'], goRight: ['Middle higher than last → drop is to the right', 'warn'], goLeft: ['Middle not higher → lowest is here or left', 'cool'], found: ['Lowest step: ' + h[lo], 'ok'] }, (st) => {
     st.cells = bsCells(n, st.lo, st.hi, st.mid, st.kind);

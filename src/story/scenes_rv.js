@@ -1,4 +1,4 @@
-// ---------- In-place Reversal: Cole the conductor ----------
+// ---------- In-place Reversal: the conductor the conductor ----------
 
 // Turning the Train Around — Reverse Linked List
 function rvTrainScene() {
@@ -10,8 +10,8 @@ function rvTrainScene() {
   const steps = [];
   let prev = -1, curr = 0;
   steps.push({ L: 0, kind: 'intro', prev, curr, nxt: 1, flipped: 0, board: sheet(-1),
-    dialog: [say('hoot', 'Five carriages: 2, 7, 4, 9, 5. Each hook points to the next one. Turn the train around.'), say('cole', 'I will not move any carriage. I will just turn each hook to point backward.'), say('hoot', 'What do you hold while you work?'), say('cole', 'Three things: the carriage behind me, the one I am on, and the one ahead.')],
-    nar: { kid: 'Cole walks from the front of the train. At each carriage he unhooks it from the one ahead and hooks it to the one behind.', builder: 'prev = None, curr = head. Each turn: save nxt = curr.next, set curr.next = prev, then move prev and curr one step on.', expert: 'In-place reversal with three references. Each node’s next is rewritten once: O(n) time, O(1) extra space.' } });
+    dialog: [say('narr', 'Five carriages: 2, 7, 4, 9, 5. Each hook points to the next one. Turn the train around.'), say('conductor', 'I will not move any carriage. I will just turn each hook to point backward.'), say('narr', 'What do you hold while you work?'), say('conductor', 'Three things: the carriage behind me, the one I am on, and the one ahead.')],
+    nar: { kid: 'The conductor walks from the front of the train. At each carriage he unhooks it from the one ahead and hooks it to the one behind.', builder: 'prev = None, curr = head. Each turn: save nxt = curr.next, set curr.next = prev, then move prev and curr one step on.', expert: 'In-place reversal with three references. Each node’s next is rewritten once: O(n) time, O(1) extra space.' } });
   while (curr >= 0 && curr < n) {
     const nxt = hook[curr];
     hook[curr] = prev;
@@ -19,13 +19,13 @@ function rvTrainScene() {
     const flipped = curr + 1;
     steps.push({ L: curr, kind, prev, curr, nxt, flipped, board: sheet(curr),
       dialog: kind === 'tail'
-        ? [say('cole', 'Carriage ' + vals[curr] + '. I remember the next one, ' + name(nxt) + ', so I do not lose the train.'), say('cole', 'Nothing is behind me, so ' + vals[curr] + ' now points to None.'), say('hoot', 'The old front will be the new back.')]
-        : [say('cole', 'Carriage ' + vals[curr] + '. I remember the next one: ' + name(nxt) + '.'), say('cole', 'Now ' + vals[curr] + ' points back to ' + vals[prev] + '.'), say('hoot', flipped + ' of 5 carriages face backward.')],
-      nar: { kid: kind === 'tail' ? 'Cole unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + '. There is nothing behind it, so it becomes the end of the turned train.' : 'Cole unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + ' and hooks it back to ' + vals[prev] + '. Then he steps forward.', builder: 'nxt = ' + name(nxt) + '; ' + vals[curr] + '.next = ' + name(prev) + '; prev = ' + vals[curr] + ', curr = ' + name(nxt) + '.', expert: 'Invariant: prev heads the reversed prefix (' + flipped + ' node' + (flipped === 1 ? '' : 's') + '), curr heads the untouched suffix. Saving nxt first keeps the suffix reachable.' } });
+        ? [say('conductor', 'Carriage ' + vals[curr] + '. I remember the next one, ' + name(nxt) + ', so I do not lose the train.'), say('conductor', 'Nothing is behind me, so ' + vals[curr] + ' now points to None.'), say('narr', 'The old front will be the new back.')]
+        : [say('conductor', 'Carriage ' + vals[curr] + '. I remember the next one: ' + name(nxt) + '.'), say('conductor', 'Now ' + vals[curr] + ' points back to ' + vals[prev] + '.'), say('narr', flipped + ' of 5 carriages face backward.')],
+      nar: { kid: kind === 'tail' ? 'the conductor unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + '. There is nothing behind it, so it becomes the end of the turned train.' : 'The conductor unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + ' and hooks it back to ' + vals[prev] + '. Then he steps forward.', builder: 'nxt = ' + name(nxt) + '; ' + vals[curr] + '.next = ' + name(prev) + '; prev = ' + vals[curr] + ', curr = ' + name(nxt) + '.', expert: 'Invariant: prev heads the reversed prefix (' + flipped + ' node' + (flipped === 1 ? '' : 's') + '), curr heads the untouched suffix. Saving nxt first keeps the suffix reachable.' } });
     prev = curr; curr = nxt;
   }
   steps.push({ L: prev, kind: 'found', prev, curr: -1, nxt: -1, flipped: n, board: sheet(-1),
-    dialog: [say('cole', 'No carriage left ahead of me.'), say('hoot', 'Then the last carriage, ' + vals[prev] + ', is the new front. The train reads 5, 9, 4, 7, 2.')],
+    dialog: [say('conductor', 'No carriage left ahead of me.'), say('narr', 'Then the last carriage, ' + vals[prev] + ', is the new front. The train reads 5, 9, 4, 7, 2.')],
     nar: { kid: 'Every hook now points backward. The train reads 5, 9, 4, 7, 2.', builder: 'curr is None → return prev (' + vals[prev] + ').', expert: n + ' rewrites, no new nodes. A recursive version is also O(n) but uses O(n) call stack.' } });
   const T = { intro: ['Every hook points forward', 'plain'], tail: ['First carriage → points to None', 'cool'], flip: ['Hook turned → points back', 'warn'], found: ['Train turned around', 'ok'] };
   steps.forEach((st) => {
@@ -43,8 +43,8 @@ function rvTrainScene() {
   });
   return {
     id: 'reverse-linked-list', pattern: 'In-place Reversal', cast: 'rv', short: 'Turn Around', visual: 'letters', items: vals.map(String), items2: vals.slice().reverse().map(String), rowLabels: ['before', 'after'], pitch: 66, tile: 52, tileH: 54, gap: 14, font: 26, width: 316,
-    board: true, boardTitle: 'Cole’s hook sheet',
-    actorLabels: ['Cole · curr'],
+    board: true, boardTitle: 'The conductor’s hook sheet',
+    actorLabels: ['Conductor · curr'],
     goal: 'Turn the train around by turning every hook', status: ['Re-coupling…', 'Train turned'],
     lines: { py: { intro: 2, tail: 5, flip: 5, found: 7 }, java: { intro: 2, tail: 5, flip: 5, found: 9 }, cpp: { intro: 2, tail: 5, flip: 5, found: 9 }, js: { intro: 2, tail: 5, flip: 5, found: 9 }, go: { intro: 2, tail: 6, flip: 6, found: 9 } },
     code: {
@@ -56,16 +56,16 @@ function rvTrainScene() {
     },
     rules: [['Start at the front, nothing behind', 'intro'], ['First carriage → hook it to None', 'tail'], ['Next carriage → hook it to the one behind', 'flip'], ['Nothing ahead → the last carriage is the new front', 'found']],
     complexity: [['O(n)', 'each hook is turned once'], ['O(1)', 'three hands, no spare train']],
-    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station the other way round. There is no turntable and no spare track.', 'Cole the conductor may only change where each carriage’s hook points. Can he turn the whole train around?'],
+    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station the other way round. There is no turntable and no spare track.', 'The conductor the conductor may only change where each carriage’s hook points. Can he turn the whole train around?'],
     example: ['head = 2 → 7 → 4 → 9 → 5', 'answer = 5 → 9 → 4 → 7 → 2'],
-    hints: ['Old Hoot: “You cannot pick up the carriages. What can you change about each one?”', '“If you turn a hook to point backward, how do you still reach the rest of the train?”', '“Hold three things: the carriage behind, the one you are on, and the one ahead. Save the one ahead before you turn the hook.”'],
+    hints: ['“You cannot pick up the carriages. What can you change about each one?”', '“If you turn a hook to point backward, how do you still reach the rest of the train?”', '“Hold three things: the carriage behind, the one you are on, and the one ahead. Save the one ahead before you turn the hook.”'],
     clues: ['each carriage only knows the next', 'no spare train allowed', 'every hook must point the other way'],
-    quizFb: ['Old Hoot: “Building a second train works, but it needs a whole spare train. Cole has no spare track.”', 'Old Hoot: “A stack works too, but the stack holds every carriage. That is O(n) extra space.”', 'Old Hoot: “Yes! Walk once from the front and turn each hook as you go. Just save the next carriage first.”', 'Old Hoot: “To swap from both ends you must walk backward, and these carriages only point forward.”'],
+    quizFb: ['“Building a second train works, but it needs a whole spare train. The conductor has no spare track.”', '“A stack works too, but the stack holds every carriage. That is O(n) extra space.”', '“Yes! Walk once from the front and turn each hook as you go. Just save the next carriage first.”', '“To swap from both ends you must walk backward, and these carriages only point forward.”'],
     steps
   };
 }
 
 SCENE_REGISTRY.push(rvTrainScene);
-PATTERN_KITS['In-place Reversal'] = { right: 2, spot: 'Why turn the hooks, not the carriages?', ask: 'How should Cole turn the train around?',
+PATTERN_KITS['In-place Reversal'] = { right: 2, spot: 'Why turn the hooks, not the carriages?', ask: 'How should the conductor turn the train around?',
   quiz: [['Build a second train', 'Copy every carriage into a new train, back to front'], ['Pile carriages on a stack', 'Push them all, then take them off in reverse'], ['Turn hooks as you walk', 'Point each hook backward, one carriage at a time'], ['Swap numbers from both ends', 'One at each end, trading values']] };
-STORY_CAST.cole = { name: 'Cole', initial: 'Co', color: 'left', radius: '12px' };
+STORY_CAST.conductor = { name: 'Conductor', initial: 'C', color: 'left', radius: '12px' };

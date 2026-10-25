@@ -110,7 +110,7 @@ nodes.forEach(({ name }) => {
   c.run.forEach((id) => { if (!TEST_SPECS[id]) fail(at + 'runnable "' + id + '" has no test spec'); });
   if (c.run.length > 4) fail(at + 'at most 4 runnable problems');
   if (new Set(c.stories.concat(c.sheet.map((s) => 'sheet:' + s), c.run.map((s) => 'run:' + s))).size !== c.stories.length + c.sheet.length + c.run.length) fail(at + 'a link is listed twice');
-  const who = patternNames.includes(name) ? PATTERNS.find(([n]) => n === name)[2] : 'Old Hoot';
+  const who = patternNames.includes(name) ? PATTERNS.find(([n]) => n === name)[2] : 'the guide';
   if (c.companion !== who) fail(at + 'companion should be ' + who + ', got ' + c.companion);
 });
 

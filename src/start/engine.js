@@ -5,14 +5,15 @@
 // tests/startcheck.js loads these files and checks every chapter, exercise, trace and needs tag.
 
 // ---------- cast ----------
-// Old Hoot is the mentor everywhere. Dot is new to coding too: she asks what a beginner would ask.
-// color is a theme key (or a hex), like STORY_CAST in the story engine (src/story/tail.js registers Dot there too).
+// The Start here cast. Learners see only these roles, never invented names: the guide narrates, "You" is the
+// learner, "The computer" runs the code, and the others are plain story roles. Ids stay short for the story files.
+// color is a theme key (or a hex).
 const START_CAST = {
-  hoot: { name: 'Old Hoot', initial: 'H', color: 'muted', role: 'the mentor who has seen every bug twice' },
-  dot: { name: 'Dot', initial: 'D', color: 'accent', role: 'new to coding, so she asks the questions you are thinking' },
-  bolt: { name: 'Bolt', initial: 'B', color: 'right', role: 'a robot who does exactly what it is told, nothing more' },
-  penny: { name: 'Penny', initial: 'P', color: 'left', role: 'who keeps every count and every list tidy' },
-  pip: { name: 'Pip', initial: 'P', color: 'ok', role: 'the plate-stacker at the busy canteen, who knows which plate is on top' }
+  hoot: { name: 'Guide', initial: 'G', color: 'muted', role: 'the guide who explains each idea' },
+  dot: { name: 'You', initial: 'Y', color: 'accent', role: 'you, the learner, who asks the questions you are thinking' },
+  bolt: { name: 'The computer', initial: 'C', color: 'right', role: 'a computer that does exactly what it is told, nothing more' },
+  penny: { name: 'A friend', initial: 'F', color: 'left', role: 'a friend who keeps every count and every list tidy' },
+  pip: { name: 'The canteen worker', initial: 'W', color: 'ok', role: 'the canteen worker who knows which plate is on top' }
 };
 // The ladder: levels, each made of parts (the chapters learners see). Lessons say their level and part.
 const START_LEVELS = [
@@ -55,7 +56,7 @@ const START_NEEDS_KEYS = {
   polymorphism: 'polymorphism', composition: 'composition', dunder: 'special methods', interfaces: 'abstract classes',
   design: 'when to use a class', style: 'clean code', async: 'async code'
 };
-const START_STAGES = [['story', 'Story'], ['watch', 'Watch it run'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
+const START_STAGES = [['story', 'Story'], ['watch', 'Your variables'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
 const START_EASE_MS = 600;
 
 // A lessons_*.js file fills in a lesson written in chapters.js and marks it ready:

@@ -60,8 +60,8 @@ Object.assign(START_EXERCISES, {
   ],
   'defaults': [
     { id: 'defaults:1', kind: 'predict', title: 'The usual greeting', ask: 'What does this print?',
-      code: { py: 'def greet(name, greeting="Hello"):\n    print(greeting + ", " + name)\n\ngreet("Dot")\ngreet("Bolt", "Hi")', js: 'function greet(name, greeting = "Hello") {\n  console.log(greeting + ", " + name);\n}\n\ngreet("Dot");\ngreet("Bolt", "Hi");' },
-      choices: stSame(['Hello, Dot\nHi, Bolt', 'Hi, Dot\nHi, Bolt', 'Hello, Dot\nHello, Bolt', 'Dot, Hello\nBolt, Hi']), answer: 0,
+      code: { py: 'def greet(name, greeting="Hello"):\n    print(greeting + ", " + name)\n\ngreet("Sam")\ngreet("Ray", "Hi")', js: 'function greet(name, greeting = "Hello") {\n  console.log(greeting + ", " + name);\n}\n\ngreet("Sam");\ngreet("Ray", "Hi");' },
+      choices: stSame(['Hello, Sam\nHi, Ray', 'Hi, Sam\nHi, Ray', 'Hello, Sam\nHello, Ray', 'Sam, Hello\nRay, Hi']), answer: 0,
       why: 'The first call leaves greeting out, so the default Hello is used. The second call passes Hi.', hints: ['Which call leaves greeting out?', 'A value passed in replaces the default.'] },
     { id: 'defaults:2', kind: 'fill', title: 'No sugar by default', ask: 'Give sugar a default of 0 so tea("big") prints big 0.',
       code: { py: 'def tea(size, sugar___):\n    print(size, sugar)\n\ntea("big")', js: 'function tea(size, sugar___) {\n  console.log(size, sugar);\n}\n\ntea("big");' }, answers: { py: ['=0'], js: [' = 0'] },
@@ -131,9 +131,9 @@ Object.assign(START_EXERCISES, {
       ref: { py: 'def double(n):\n    return n * 2\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(double, 5))\n', js: 'function double(n) {\n  return n * 2;\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(double, 5));\n' },
       cases: [{ out: '20' }], hints: ['double() runs the function right there.', 'Pass double with no brackets.'] },
     { id: 'callbacks:5', kind: 'write', title: 'Shortest first', ask: 'Print the names sorted from shortest to longest, by handing the length function to the sort.',
-      starter: { py: 'names = ["Penny", "Hoot", "Pip"]\nprint(names)\n', js: 'let names = ["Penny", "Hoot", "Pip"];\nconsole.log(names);\n' },
-      ref: { py: 'names = ["Penny", "Hoot", "Pip"]\nprint(sorted(names, key=len))\n', js: 'let names = ["Penny", "Hoot", "Pip"];\nconsole.log(names.sort((a, b) => a.length - b.length));\n' },
-      cases: [{ out: { py: "['Pip', 'Hoot', 'Penny']", js: '["Pip","Hoot","Penny"]' } }], hints: [{ py: 'sorted takes a key: the function that scores each name.', js: 'sort takes a function that compares two names.' }, { py: 'sorted(names, key=len)', js: 'names.sort((a, b) => a.length - b.length)' }] }
+      starter: { py: 'names = ["Ana", "Joanna", "Leo"]\nprint(names)\n', js: 'let names = ["Ana", "Joanna", "Leo"];\nconsole.log(names);\n' },
+      ref: { py: 'names = ["Ana", "Joanna", "Leo"]\nprint(sorted(names, key=len))\n', js: 'let names = ["Ana", "Joanna", "Leo"];\nconsole.log(names.sort((a, b) => a.length - b.length));\n' },
+      cases: [{ out: { py: "['Ana', 'Leo', 'Joanna']", js: '["Ana","Leo","Joanna"]' } }], hints: [{ py: 'sorted takes a key: the function that scores each name.', js: 'sort takes a function that compares two names.' }, { py: 'sorted(names, key=len)', js: 'names.sort((a, b) => a.length - b.length)' }] }
   ],
   'closures': [
     { id: 'closures:1', kind: 'predict', title: 'Plus three', ask: 'What does this print?',
@@ -150,7 +150,7 @@ Object.assign(START_EXERCISES, {
       starter: { py: 'def make_multiplier(n):\n    pass\n\ndef use_it(n, x):\n    return make_multiplier(n)(x)\n', js: 'function make_multiplier(n) {\n}\n\nfunction use_it(n, x) {\n  return make_multiplier(n)(x);\n}\n' },
       ref: { py: 'def make_multiplier(n):\n    def times(x):\n        return x * n\n    return times\n\ndef use_it(n, x):\n    return make_multiplier(n)(x)\n', js: 'function make_multiplier(n) {\n  function times(x) {\n    return x * n;\n  }\n  return times;\n}\n\nfunction use_it(n, x) {\n  return make_multiplier(n)(x);\n}\n' },
       cases: [[[3, 4], 12], [[2, 0], 0], [[5, 5], 25], [[1, 7], 7]], hints: ['Define a small function inside make_multiplier that uses n.', 'Return that inner function, without calling it.'] },
-    { id: 'closures:5', kind: 'choose', title: 'Where does name live?', ask: 'make_greeter("Dot") has returned its greet function. Where is name = "Dot" kept now?',
+    { id: 'closures:5', kind: 'choose', title: 'Where does name live?', ask: 'make_greeter("Sam") has returned its greet function. Where is name = "Sam" kept now?',
       choices: ['In the lunchbox of the greet function it made', 'On make_greeter’s plate, still on the stack', 'In the main program', 'Nowhere: it is gone'], answer: 0,
       why: 'make_greeter’s plate is gone, but greet packed name because it uses it.', hints: ['Is make_greeter still running?', 'The inner function keeps the outer names it uses.'] }
   ],

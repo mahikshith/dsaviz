@@ -1,5 +1,5 @@
 // Level 2, lessons 1 to 5: calls, the call stack, scope, defaults and keyword arguments, any number of inputs.
-// Pip runs the canteen, where every order gets a plate: the call stack. Every word is our own.
+// The canteen worker runs the canteen, where every order gets a plate: the call stack. Every word is our own.
 
 // The pile of plates for the Level 2 stories: frames bottom first, the running one on top, with optional notes on a plate.
 function st2Plates(frames, o) {
@@ -14,10 +14,10 @@ const ST201_CODE = {
 };
 function st201Story() {
   const cast = st1Cast([['hoot', 60], ['pip', 220], ['bolt', 420], ['dot', 580]]);
-  const machine = (inside, lit) => ({ boxes: [{ id: 'machine', x: 230, y: 150, w: 180, h: 120, text: '', tag: 'snack( )', c: lit ? 'a' : 'l', sub: 'Bolt, the snack machine' }].concat(inside ? [stVar('coins', 'coins', inside, 255, 180, { w: 130 })] : []) });
+  const machine = (inside, lit) => ({ boxes: [{ id: 'machine', x: 230, y: 150, w: 180, h: 120, text: '', tag: 'snack( )', c: lit ? 'a' : 'l', sub: 'The snack machine' }].concat(inside ? [stVar('coins', 'coins', inside, 255, 180, { w: 130 })] : []) });
   const card = (cur) => st1Card('card', 30, 124, 340, ST201_CODE.py.slice(0, 4), cur);
   return [
-    stBeat('pip', 'Welcome to my canteen. Today Bolt is the snack machine: coins go in, one snack comes out.', stScene(cast, machine()), ['machine', 'cast:bolt']),
+    stBeat('pip', 'Welcome to my canteen. Today the snack machine is the computer: coins go in, one snack comes out.', stScene(cast, machine()), ['machine', 'cast:bolt']),
     stBeat('hoot', 'A function works the same way. snack(coins) takes coins in and hands one value back out.', stScene(cast, card([0, 1, 2, 3])), ['card'], [0, 1, 2, 3]),
     stBeat('dot', 'I call it with snack(3). Where does the 3 go?', stScene(cast, machine(), { tokens: [{ id: 'three', x: 120, y: 210, text: '3', w: 60, solid: true }] }), ['three', 'machine'], 4),
     stBeat('hoot', 'Into the parameter box. coins is the name inside the machine. From outside, you only hand over a value.', stScene(cast, machine('3')), ['coins'], 0),

@@ -3,7 +3,7 @@
 //          choose   a multiple-choice question, no code run   choices [...], answer, why (choices may be { py, js })
 //          order    drag the lines into the right order        lines {py: [...], js: [...]} in the right order, shuffle (the order shown)
 //          fill     type the missing piece in each blank ___   code {py, js} with ___ blanks, answers {py: [...], js: [...]}
-//          trace    fill a trace table: a variable's value     code (Python), var, answer [values in order, as Python shows them]
+//          trace    fill a step-by-step table: a variable's value     code (Python), var, answer [values in order, as Python shows them]
 //                   after each change
 //          fix      the program has one bug: fix it            starter {py, js}, ref {py, js}
 //          write    write a small program or function          starter {py, js}, ref {py, js}
@@ -17,15 +17,15 @@
 const stSame = (a) => ({ py: a, js: a });
 const START_EXERCISES = {
   'what-is-a-program': [
-    { id: 'what-is-a-program:1', kind: 'order', title: 'A sandwich for Bolt', ask: 'Bolt needs exact steps. Put them in an order that makes a sandwich.',
+    { id: 'what-is-a-program:1', kind: 'order', title: 'A sandwich for the computer', ask: 'The computer needs exact steps. Put them in an order that makes a sandwich.',
       lines: { py: ['print("Take two slices of bread")', 'print("Spread butter on one slice")', 'print("Put the slices together")'],
         js: ['console.log("Take two slices of bread");', 'console.log("Spread butter on one slice");', 'console.log("Put the slices together");'] },
       shuffle: [2, 0, 1], cases: [{ out: 'Take two slices of bread\nSpread butter on one slice\nPut the slices together' }],
       hints: ['You cannot spread butter before you have the bread.', 'The slices go together last.'] },
-    { id: 'what-is-a-program:2', kind: 'choose', title: 'The missing step', ask: 'Bolt must water a plant. Step 1: fill the can. Step 3: pour the water on the plant. What is step 2?',
+    { id: 'what-is-a-program:2', kind: 'choose', title: 'The missing step', ask: 'The computer must water a plant. Step 1: fill the can. Step 3: pour the water on the plant. What is step 2?',
       choices: ['Carry the can to the plant', 'Fill the can again', 'Put the can away', 'Buy a new plant'], answer: 0,
-      why: 'Bolt cannot pour on the plant from the tap. It needs to be told to walk over first.',
-      hints: ['Where is Bolt standing after step 1?', 'Step 3 only works if Bolt is next to the plant.'] },
+      why: 'The computer cannot pour on the plant from the tap. It needs to be told to walk over first.',
+      hints: ['Where is the computer standing after step 1?', 'Step 3 only works if the computer is next to the plant.'] },
     { id: 'what-is-a-program:3', kind: 'predict', title: 'Quotes or no quotes', ask: 'What does this program print?',
       code: { py: 'print(2 + 3)\nprint("2 + 3")', js: 'console.log(2 + 3);\nconsole.log("2 + 3");' },
       choices: { py: ['5\n2 + 3', '5\n5', '2 + 3\n2 + 3', '2 + 3\n5'], js: ['5\n2 + 3', '5\n5', '2 + 3\n2 + 3', '2 + 3\n5'] }, answer: 0,
@@ -36,7 +36,7 @@ const START_EXERCISES = {
       cases: [{ out: '25' }], hints: ['Start with print( and end with ).', 'Put 10 + 15 inside the brackets, with no quotes.'] }
   ],
   'first-run': [
-    { id: 'first-run:1', kind: 'fill', title: 'Good morning, Bolt', ask: 'Fill the blank so the program prints Good morning',
+    { id: 'first-run:1', kind: 'fill', title: 'Good morning, computer', ask: 'Fill the blank so the program prints Good morning',
       code: { py: 'print(___)', js: 'console.log(___);' }, answers: { py: ['"Good morning"'], js: ['"Good morning"'] },
       cases: [{ out: 'Good morning' }], hints: ['Text goes inside quotes.', 'Type "Good morning" with a quote at each end.'] },
     { id: 'first-run:2', kind: 'predict', title: 'Two pieces', ask: 'What does this print?',
@@ -46,18 +46,18 @@ const START_EXERCISES = {
     { id: 'first-run:3', kind: 'fix', title: 'The missing quote', ask: 'This should print Welcome but it stops with an error. Fix it.',
       starter: { py: 'print("Welcome)\n', js: 'console.log("Welcome);\n' }, ref: { py: 'print("Welcome")\n', js: 'console.log("Welcome");\n' },
       cases: [{ out: 'Welcome' }], hints: ['Count the quotes. There should be two.', 'Add a quote right after the word Welcome.'] },
-    { id: 'first-run:4', kind: 'order', title: 'Ready, set, go', ask: 'Put the lines in order so Bolt counts down to the race.',
+    { id: 'first-run:4', kind: 'order', title: 'Ready, set, go', ask: 'Put the lines in order so the computer counts down to the race.',
       lines: { py: ['print("Ready")', 'print("Set")', 'print("Go!")'], js: ['console.log("Ready");', 'console.log("Set");', 'console.log("Go!");'] },
       shuffle: [1, 2, 0], cases: [{ out: 'Ready\nSet\nGo!' }], hints: ['The race starts with Ready.', 'Go! comes last.'] },
-    { id: 'first-run:5', kind: 'write', title: 'Bolt says hello', ask: 'Write two lines. The first prints Bolt and the second prints beep boop.',
-      starter: { py: '# Two lines, two prints\n', js: '// Two lines, two prints\n' }, ref: { py: 'print("Bolt")\nprint("beep boop")\n', js: 'console.log("Bolt");\nconsole.log("beep boop");\n' },
-      cases: [{ out: 'Bolt\nbeep boop' }], hints: ['Each print shows one line.', 'Write print("Bolt") on the first line.'] }
+    { id: 'first-run:5', kind: 'write', title: 'Say hello', ask: 'Write two lines. The first prints Hi and the second prints beep boop.',
+      starter: { py: '# Two lines, two prints\n', js: '// Two lines, two prints\n' }, ref: { py: 'print("Hi")\nprint("beep boop")\n', js: 'console.log("Hi");\nconsole.log("beep boop");\n' },
+      cases: [{ out: 'Hi\nbeep boop' }], hints: ['Each print shows one line.', 'Write print("Hi") on the first line.'] }
   ],
   'calculator': [
     { id: 'calculator:1', kind: 'predict', title: 'Times goes first', ask: 'What does this print?',
       code: { py: 'print(10 - 2 * 3)', js: 'console.log(10 - 2 * 3);' }, choices: stSame(['24', '4', '10', '-4']), answer: 1,
       why: '2 * 3 is worked out first, giving 6, and 10 - 6 is 4.', hints: ['Which comes first, * or -?', 'Work out 2 * 3 before the take-away.'] },
-    { id: 'calculator:2', kind: 'predict', title: 'Sharing 17 acorns', ask: 'Penny shares 17 acorns between 5 friends. What does this print?',
+    { id: 'calculator:2', kind: 'predict', title: 'Sharing 17 acorns', ask: 'Ana shares 17 acorns between 5 friends. What does this print?',
       code: { py: 'print(17 // 5, 17 % 5)', js: 'console.log(Math.floor(17 / 5), 17 % 5);' }, choices: stSame(['3.4 0', '3 2', '2 3', '3 3']), answer: 1,
       why: 'Each friend gets 3 whole acorns (15 in all), and 2 are left over.', hints: ['How many whole fives fit in 17?', 'Three fives make 15. What is left?'] },
     { id: 'calculator:3', kind: 'fill', title: 'Make 42', ask: 'Fill in the sign so the program prints 42.',
@@ -101,9 +101,9 @@ const START_EXERCISES = {
     { id: 'variables:4', kind: 'fill', title: 'Two more apples', ask: 'apples starts at 5. Fill the blank so it ends up as 7.',
       code: { py: 'apples = 5\napples = apples ___ 2\nprint(apples)', js: 'let apples = 5;\napples = apples ___ 2;\nconsole.log(apples);' }, answers: { py: ['+'], js: ['+'] },
       cases: [{ out: '7' }], hints: ['5 and 2 should make 7.', 'Use the plus sign.'] },
-    { id: 'variables:5', kind: 'write', title: 'Name tag', ask: 'Make a variable called name holding "Dot". Then print Hi, Dot by printing "Hi," and name.',
-      starter: { py: '# Make the box, then print\n', js: '// Make the box, then print\n' }, ref: { py: 'name = "Dot"\nprint("Hi,", name)\n', js: 'let name = "Dot";\nconsole.log("Hi,", name);\n' },
-      cases: [{ out: 'Hi, Dot' }], hints: ['name = "Dot" makes the box.', 'Print two pieces with a comma between them.'] }
+    { id: 'variables:5', kind: 'write', title: 'Name tag', ask: 'Make a variable called name holding "Sam". Then print Hi, Sam by printing "Hi," and name.',
+      starter: { py: '# Make the box, then print\n', js: '// Make the box, then print\n' }, ref: { py: 'name = "Sam"\nprint("Hi,", name)\n', js: 'let name = "Sam";\nconsole.log("Hi,", name);\n' },
+      cases: [{ out: 'Hi, Sam' }], hints: ['name = "Sam" makes the box.', 'Print two pieces with a comma between them.'] }
   ],
   'types': [
     { id: 'types:1', kind: 'choose', title: 'Spot the text', ask: 'Which of these values is a string (text)?',
@@ -133,10 +133,10 @@ const START_EXERCISES = {
     { id: 'input-output:3', kind: 'write', title: 'Greet anyone', ask: 'Read a name with input, then print Hello, followed by the name and an exclamation mark. For Sam: Hello, Sam!',
       starter: { py: '# Read a name, then greet it\n', js: '// Read a name, then greet it\n' },
       ref: { py: 'name = input("Name? ")\nprint("Hello, " + name + "!")\n', js: 'let name = prompt("Name? ");\nconsole.log("Hello, " + name + "!");\n' },
-      cases: [{ stdin: ['Dot'], out: 'Hello, Dot!' }, { stdin: ['Sam'], out: 'Hello, Sam!' }], hints: ['Store the answer in a box first.', 'Join the pieces with +: "Hello, " + name + "!"'] },
+      cases: [{ stdin: ['Sam'], out: 'Hello, Sam!' }, { stdin: ['Sam'], out: 'Hello, Sam!' }], hints: ['Store the answer in a box first.', 'Join the pieces with +: "Hello, " + name + "!"'] },
     { id: 'input-output:4', kind: 'order', title: 'Welcome desk', ask: 'Order the lines so the desk says Welcome!, asks a name, then greets the visitor.',
       lines: { py: ['print("Welcome!")', 'name = input("Name? ")', 'print("Nice to meet you,", name)'], js: ['console.log("Welcome!");', 'let name = prompt("Name? ");', 'console.log("Nice to meet you,", name);'] },
-      shuffle: [2, 1, 0], cases: [{ stdin: ['Dot'], out: 'Welcome!\nNice to meet you, Dot' }], hints: ['You cannot use name before you have asked for it.', 'The greeting line comes last.'] },
+      shuffle: [2, 1, 0], cases: [{ stdin: ['Sam'], out: 'Welcome!\nNice to meet you, Sam' }], hints: ['You cannot use name before you have asked for it.', 'The greeting line comes last.'] },
     { id: 'input-output:5', kind: 'choose', title: 'What comes back', ask: 'Someone types 7 when the program asks for input. What type is the answer?',
       choices: ['A whole number', 'Text (a string)', 'A decimal', 'True or False'], answer: 1,
       why: 'Whatever the person types comes back as text. Convert it when you need a number.', hints: ['Even digits arrive one way.', 'Remember "12" + "1".'] }
@@ -244,7 +244,7 @@ const START_EXERCISES = {
     { id: 'for-range:3', kind: 'fix', title: 'Off by one', ask: 'This should count from 1 to 5, but it prints 0 to 4. Fix it.',
       starter: { py: 'for n in range(5):\n    print(n)\n', js: 'for (let n = 0; n < 5; n++) {\n  console.log(n);\n}\n' }, ref: { py: 'for n in range(1, 6):\n    print(n)\n', js: 'for (let n = 1; n < 6; n++) {\n  console.log(n);\n}\n' },
       cases: [{ out: '1\n2\n3\n4\n5' }], hints: ['Where should the count start?', { py: 'Use range(1, 6).', js: 'Start n at 1 and keep going while n < 6.' }] },
-    { id: 'for-range:4', kind: 'trace', title: 'Trace the total', ask: 'Fill the trace table: write the value of total each time it changes.',
+    { id: 'for-range:4', kind: 'trace', title: 'Trace the total', ask: 'Fill the step-by-step table: write the value of total each time it changes.',
       code: 'total = 0\nfor i in range(1, 4):\n    total = total + i', var: 'total', answer: ['0', '1', '3', '6'],
       hints: ['total starts at 0.', 'Add 1, then 2, then 3.'] },
     { id: 'for-range:5', kind: 'write', title: 'Three times table', ask: 'Print the 3 times table from 3 x 1 to 3 x 10: the numbers 3, 6, 9 up to 30, one per line.',
@@ -333,7 +333,7 @@ const START_EXERCISES = {
       starter: { py: 'word = "cat"\nword[0] = "b"\nprint(word)\n', js: 'let word = "cat";\nword[0] = "b";\nconsole.log(word);\n' }, ref: { py: 'word = "cat"\nword = "b" + word[1:]\nprint(word)\n', js: 'let word = "cat";\nword = "b" + word.slice(1);\nconsole.log(word);\n' },
       cases: [{ out: 'bat' }], hints: ['You cannot change one letter in place.', { py: 'Join "b" with word[1:].', js: 'Join "b" with word.slice(1).' }] },
     { id: 'strings:4', kind: 'fill', title: 'How long?', ask: 'Fill the blank so the program prints how many letters are in name.',
-      code: { py: 'name = "Penny"\nprint(___(name))', js: 'let name = "Penny";\nconsole.log(name.___);' }, answers: { py: ['len'], js: ['length'] },
+      code: { py: 'name = "Maria"\nprint(___(name))', js: 'let name = "Maria";\nconsole.log(name.___);' }, answers: { py: ['len'], js: ['length'] },
       cases: [{ out: '5' }], hints: ['The same thing you used for lists.', { py: 'len', js: 'length' }] },
     { id: 'strings:5', kind: 'predict', title: 'Backwards', ask: 'What does this print?',
       code: { py: 'print("stressed"[::-1])', js: 'console.log("stressed".split("").reverse().join(""));' }, choices: stSame(['stressed', 'desserts', 'dessert', 'sdessert']), answer: 1,
@@ -359,12 +359,12 @@ const START_EXERCISES = {
       code: { py: 'def hello():\n    print("hi")\n\nhello()\nhello()', js: 'function hello() {\n  console.log("hi");\n}\n\nhello();\nhello();' }, choices: stSame(['hi', 'hi\nhi', 'hello\nhello', 'nothing']), answer: 1,
       why: 'Defining a function runs nothing. Each call runs its body once, so hi is printed twice.', hints: ['How many times is hello() called?', 'The def line alone prints nothing.'] },
     { id: 'functions:2', kind: 'fill', title: 'The parameter', ask: 'Fill the blank so greet has a parameter called name.',
-      code: { py: 'def greet(___):\n    print("Hi,", name)\n\ngreet("Dot")', js: 'function greet(___) {\n  console.log("Hi,", name);\n}\n\ngreet("Dot");' }, answers: { py: ['name'], js: ['name'] },
-      cases: [{ out: 'Hi, Dot' }], hints: ['The body uses a box called name.', 'Put name inside the brackets.'] },
-    { id: 'functions:3', kind: 'write', title: 'Cheer', ask: 'Write a function cheer(name) that prints Go, NAME! Then call it for Dot and for Bolt.',
+      code: { py: 'def greet(___):\n    print("Hi,", name)\n\ngreet("Sam")', js: 'function greet(___) {\n  console.log("Hi,", name);\n}\n\ngreet("Sam");' }, answers: { py: ['name'], js: ['name'] },
+      cases: [{ out: 'Hi, Sam' }], hints: ['The body uses a box called name.', 'Put name inside the brackets.'] },
+    { id: 'functions:3', kind: 'write', title: 'Cheer', ask: 'Write a function cheer(name) that prints Go, NAME! Then call it for Sam and for Ray.',
       starter: { py: 'def cheer(name):\n    # print the cheer\n    pass\n\n# call it twice\n', js: 'function cheer(name) {\n  // print the cheer\n}\n\n// call it twice\n' },
-      ref: { py: 'def cheer(name):\n    print("Go, " + name + "!")\n\ncheer("Dot")\ncheer("Bolt")\n', js: 'function cheer(name) {\n  console.log("Go, " + name + "!");\n}\n\ncheer("Dot");\ncheer("Bolt");\n' },
-      cases: [{ out: 'Go, Dot!\nGo, Bolt!' }], hints: ['Build the text with +: "Go, " + name + "!"', 'Then call cheer("Dot") and cheer("Bolt") below the def.'] },
+      ref: { py: 'def cheer(name):\n    print("Go, " + name + "!")\n\ncheer("Sam")\ncheer("Ray")\n', js: 'function cheer(name) {\n  console.log("Go, " + name + "!");\n}\n\ncheer("Sam");\ncheer("Ray");\n' },
+      cases: [{ out: 'Go, Sam!\nGo, Ray!' }], hints: ['Build the text with +: "Go, " + name + "!"', 'Then call cheer("Sam") and cheer("Ray") below the def.'] },
     { id: 'functions:4', kind: 'fix', title: 'Too early', ask: 'This calls the function before Python has seen it. Fix the order so it prints Hoo!',
       starter: { py: 'hoot()\n\ndef hoot():\n    print("Hoo!")\n', js: 'hoot();\n\nconst hoot = function () {\n  console.log("Hoo!");\n};\n' },
       ref: { py: 'def hoot():\n    print("Hoo!")\n\nhoot()\n', js: 'const hoot = function () {\n  console.log("Hoo!");\n};\n\nhoot();\n' },
@@ -394,8 +394,8 @@ const START_EXERCISES = {
   ],
   'dicts': [
     { id: 'dicts:1', kind: 'predict', title: 'Look it up', ask: 'What does this print?',
-      code: { py: 'ages = {"Dot": 12, "Bolt": 3}\nprint(ages["Bolt"])', js: 'let ages = { "Dot": 12, "Bolt": 3 };\nconsole.log(ages["Bolt"]);' }, choices: stSame(['12', 'Bolt', '3', 'An error']), answer: 2,
-      why: 'The key "Bolt" leads straight to its value, 3.', hints: ['Find the key "Bolt".', 'What is stored next to it?'] },
+      code: { py: 'ages = {"Sam": 12, "Ray": 3}\nprint(ages["Ray"])', js: 'let ages = { "Sam": 12, "Ray": 3 };\nconsole.log(ages["Ray"]);' }, choices: stSame(['12', 'Ray', '3', 'An error']), answer: 2,
+      why: 'The key "Ray" leads straight to its value, 3.', hints: ['Find the key "Ray".', 'What is stored next to it?'] },
     { id: 'dicts:2', kind: 'fix', title: 'Count from nothing', ask: 'This should count one oak and print 1, but it stops with a KeyError. Fix it.',
       starter: { py: 'counts = {}\ncounts["oak"] = counts["oak"] + 1\nprint(counts["oak"])\n', js: 'let counts = {};\ncounts["oak"] = counts["oak"].valueOf() + 1;\nconsole.log(counts["oak"]);\n' },
       ref: { py: 'counts = {}\ncounts["oak"] = counts.get("oak", 0) + 1\nprint(counts["oak"])\n', js: 'let counts = {};\ncounts["oak"] = (counts["oak"] ?? 0) + 1;\nconsole.log(counts["oak"]);\n' },
@@ -408,8 +408,8 @@ const START_EXERCISES = {
       starter: { py: 'def first_repeat(items):\n    seen = {}\n    # your loop\n    return -1\n', js: 'function first_repeat(items) {\n  let seen = {};\n  // your loop\n  return -1;\n}\n' },
       ref: { py: 'def first_repeat(items):\n    seen = {}\n    for x in items:\n        if x in seen:\n            return x\n        seen[x] = True\n    return -1\n', js: 'function first_repeat(items) {\n  let seen = {};\n  for (const x of items) {\n    if (seen[x]) {\n      return x;\n    }\n    seen[x] = true;\n  }\n  return -1;\n}\n' },
       cases: [[[[3, 1, 4, 1, 5]], 1], [[[1, 2, 3]], -1], [[[7, 7]], 7], [[[]], -1], [[[5, 2, 2, 5]], 2]], hints: ['Remember every item you have seen in the dictionary.', 'If an item is already in seen, return it straight away.'] },
-    { id: 'dicts:5', kind: 'fill', title: 'Add a key', ask: 'Fill the blank so Bolt is stored with the age 3.',
-      code: { py: 'ages = {"Dot": 12}\nages[___] = 3\nprint(ages["Bolt"])', js: 'let ages = { "Dot": 12 };\nages[___] = 3;\nconsole.log(ages["Bolt"]);' }, answers: { py: ['"Bolt"'], js: ['"Bolt"'] },
+    { id: 'dicts:5', kind: 'fill', title: 'Add a key', ask: 'Fill the blank so Ray is stored with the age 3.',
+      code: { py: 'ages = {"Sam": 12}\nages[___] = 3\nprint(ages["Ray"])', js: 'let ages = { "Sam": 12 };\nages[___] = 3;\nconsole.log(ages["Ray"]);' }, answers: { py: ['"Ray"'], js: ['"Ray"'] },
       cases: [{ out: '3' }], hints: ['The key goes inside the square brackets.', 'Keys that are words need quotes.'] }
   ],
   'debugging': [

@@ -44,7 +44,7 @@ function st14Story() {
   return [
     stBeat('bolt', 'Task: fill the cup. Cup holds 3 scoops. Starting.', stScene(cast, cup(0)), ['cup', 'cast:bolt']),
     stBeat('hoot', 'A while loop repeats its block for as long as its question stays True.', stScene(cast, card([1, 2, 3]), cup(0)), ['card'], [1, 2, 3]),
-    stBeat('hoot', 'water < 3 is True, so Bolt pours: water goes up by 1. Then the question is asked again.', stScene(cast, card([2]), cup(1)), ['water', 'lvl'], 2),
+    stBeat('hoot', 'water < 3 is True, so the computer pours: water goes up by 1. Then the question is asked again.', stScene(cast, card([2]), cup(1)), ['water', 'lvl'], 2),
     stBeat('bolt', 'Water: 2. Still less than 3. Pouring. Water: 3.', stScene(cast, card([3]), cup(3)), ['water', 'cast:bolt'], 3),
     stBeat('hoot', 'Now water < 3 is False. The loop stops and the program goes on: Full!', stScene(cast, card([4]), cup(3)), ['card'], 4),
     stBeat('dot', 'What if I forget the line that adds 1?', stScene(cast, card([1, 3]), cup(0)), ['cast:dot'], [1, 3]),
@@ -85,7 +85,7 @@ START_LESSON('accumulator', {
   code: ST15_CODE, story: st15Story(),
   watch: { code: 'counts = [4, 7, 2]\ntotal = 0\nfor c in counts:\n    total = total + c\nprint(total)\n' },
   tryit: { py: 'total = 0\nfor n in range(1, 6):\n    total = total + n\nprint(total)\n', js: 'let total = 0;\nfor (let n = 1; n < 6; n++) {\n  total = total + n;\n}\nconsole.log(total);\n',
-    goals: ['Press Run: it adds 1 to 5.', 'Press Watch my code run and switch to the trace table.', 'Make it add 1 to 100 instead.'] },
+    goals: ['Press Run: it adds 1 to 5.', 'Press Watch my code run and switch to the Step-by-step table.', 'Make it add 1 to 100 instead.'] },
   check: { q: 'Where does total = 0 go in an accumulator loop?',
     choices: [['Inside the loop', false, 'Then it is reset every lap and you only keep the last value.'], ['Before the loop', true, 'Right. Set it up once, add inside, use it after.'], ['After the loop', false, 'Then the loop has nothing to add to, and the answer is lost.'], ['Anywhere', false, 'The place changes the answer. It belongs before the loop.']] }
 });

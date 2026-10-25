@@ -20,7 +20,7 @@ const BANNED = ['just', 'simply', 'obviously', 'clearly', 'trivially', 'earn the
 const JARGON = ['gradient', 'loss', 'token', 'embedding', 'vector', 'matrix', 'softmax', 'sigmoid', 'neuron', 'parameter', 'derivative',
   'logit', 'entropy', 'variance', 'regularization', 'overfitting', 'transformer', 'cosine', 'dimension', 'centroid', 'classifier',
   'kernel', 'epoch', 'hyperparameter', 'logarithm', 'divergence', 'backprop', 'tanh', 'residual', 'benchmark', 'quantization'];
-const ENFORCED = ['ai'];
+const ENFORCED = ['ai', 'sd'];
 
 let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };
@@ -83,11 +83,12 @@ console.log('AI & ML: ' + ai.length + ' lessons, ' + ai.reduce((s, r) => s + r.n
 // ---------- tracks measured but not enforced yet ----------
 function strings(files, re) { const out = []; files.forEach((file) => { let m; const s = read(...file); re.lastIndex = 0; while ((m = re.exec(s))) out.push(m[1] || m[2]); }); return out; }
 const startFiles = fs.readdirSync(path.join(root, 'src', 'start')).filter((f) => /^lessons_\d+\.js$/.test(f)).map((f) => ['src', 'start', f]);
-[['System design', [['src', 'sd', 'lessons.js']], /\bsay:\s*'((?:[^'\\]|\\.)*)'/g], ['DSA concepts', [['src', 'concepts', 'lessons.js']], /csStep\(\s*'((?:[^'\\]|\\.)*)'/g],
-  ['Start here', startFiles, /\bsay:\s*'((?:[^'\\]|\\.)*)'|stBeat\('\w+',\s*'((?:[^'\\]|\\.)*)'/g]].forEach(([name, files, re]) => {
+[['sd', 'System design', [['src', 'sd', 'lessons.js']], /\bsay:\s*'((?:[^'\\]|\\.)*)'/g], ['dsa', 'DSA concepts', [['src', 'concepts', 'lessons.js']], /csStep\(\s*'((?:[^'\\]|\\.)*)'/g],
+  ['start', 'Start here', startFiles, /\bsay:\s*'((?:[^'\\]|\\.)*)'|stBeat\('\w+',\s*'((?:[^'\\]|\\.)*)'/g]].forEach(([key, name, files, re]) => {
   const list = strings(files, re).filter(Boolean);
-  const r = measure(name, list.map((t) => ['', t]), [], false);
-  console.log(name + ': ' + r.n + ' sentences, average ' + r.avg.toFixed(1) + ' words, ' + Math.round(r.ratio * 100) + '% long words, ' + r.over + ' over ' + MAX_WORDS + ' words, ' + r.banned + ' talking-down words or idioms (not enforced yet)');
+  const enforce = ENFORCED.includes(key);
+  const r = measure(name, list.map((t) => ['', t]), [], enforce);
+  console.log(name + ': ' + r.n + ' sentences, average ' + r.avg.toFixed(1) + ' words, ' + Math.round(r.ratio * 100) + '% long words, ' + r.over + ' over ' + MAX_WORDS + ' words, ' + r.banned + ' talking-down words or idioms' + (enforce ? '' : ' (not enforced yet)'));
 });
 
 console.log(problems ? problems + ' problem(s)' : 'readability clean');

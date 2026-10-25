@@ -8,6 +8,12 @@ const rvTitle = (slug) => String(slug || '').replace(/^sheet:/, '').split('-').m
 const rvDate = (key) => { const [y, m, d] = key.split('-').map(Number); const x = new Date(y, m - 1, d); return RV_DAYS[x.getDay()] + ' ' + d + ' ' + RV_MONTHS[m - 1]; };
 // A card as the page shows it: names and lines come from the catalog for stories, from the stored sheet row otherwise.
 function rvCard(c) {
+  // A Start here lesson card replays the lesson; its idea is the thing to remember.
+  if (c.kind === 'start') {
+    const lid = c.id.replace(/^start:/, '');
+    return { id: c.id, kind: c.kind, P: null, pattern: 'Start here', name: c.name || rvTitle(lid), story: '', when: '', rule: c.rule, noteId: c.id,
+      href: 'Chapter.dc.html?ch=' + encodeURIComponent(lid), go: () => {}, linkLabel: 'Open the lesson again', due: c.due, late: c.late, inDays: c.inDays, reps: c.reps };
+  }
   const P = c.kind === 'story' ? PROBLEMS.find((p) => p.id === c.id) : null;
   const pattern = P ? P.pattern : c.pattern || '';
   const slug = c.id.replace(/^sheet:/, '');
@@ -83,7 +89,7 @@ class Component extends DCLogic {
     const m = this.mobile = rvMobile();
     const L = m ? { rootW: 420, rootH: 'auto', pad: '16px 16px 112px', cols: 'minmax(0, 1fr)', gap: '24px', h1: '34px', h2: '28px', count: '36px', countPad: '12px 16px', cardPad: '20px', ansPad: '16px', rateCols: 'repeat(2, minmax(0, 1fr))', statCols: 'minmax(0, 1fr)' }
       : { rootW: 1440, rootH: '1320px', pad: '32px 40px', cols: 'minmax(0, 1fr) 420px', gap: '32px', h1: '48px', h2: '40px', count: '48px', countPad: '16px 24px', cardPad: '32px', ansPad: '24px', rateCols: 'repeat(4, minmax(0, 1fr))', statCols: 'repeat(3, minmax(0, 1fr))' };
-    const blankCard = { name: '', story: '', hasStory: false, pattern: '', kind: '', meta: '', when: '', hasWhen: false, rule: '', hasRule: false, ruleTitle: '', note: '', hasNote: false, href: '', go: null, linkLabel: '' };
+    const blankCard = { prompt: '', name: '', story: '', hasStory: false, pattern: '', kind: '', meta: '', when: '', hasWhen: false, rule: '', hasRule: false, ruleTitle: '', note: '', hasNote: false, href: '', go: null, linkLabel: '' };
     return {
       t, L, ...navVals(this, t, themeKey, 'Revisit'),
       today: RV_DAYS[now.getDay()] + ' ' + now.getDate() + ' ' + RV_MONTHS[now.getMonth()],
@@ -102,10 +108,11 @@ class Component extends DCLogic {
       inSession, sessionDone: !inSession && total > 0, emptyDue: total === 0,
       noCards, someUpcoming: total === 0 && !noCards,
       card: C ? {
-        name: C.name, story: C.story, hasStory: !!C.story, pattern: C.pattern || 'Sheet problem', kind: C.kind === 'story' ? 'Story' : 'Sheet',
+        name: C.name, story: C.story, hasStory: !!C.story, pattern: C.pattern || 'Sheet problem', kind: C.kind === 'story' ? 'Story' : C.kind === 'start' ? 'Lesson' : 'Sheet',
         meta: C.late ? (C.late === 1 ? 'A day overdue' : C.late + ' days overdue') : C.reps ? 'Due today' : 'First review',
         when: C.when, hasWhen: !!C.when, rule: C.rule, hasRule: !!C.rule,
-        ruleTitle: C.kind === 'story' ? 'The key rule' : 'The key move',
+        ruleTitle: C.kind === 'story' ? 'The key rule' : C.kind === 'start' ? 'The idea' : 'The key move',
+        prompt: C.kind === 'start' ? 'What’s the big idea of this lesson?' : 'What’s the key move?',
         note, hasNote: !!note, href: C.href, go: C.go, linkLabel: C.linkLabel
       } : blankCard,
       revealed: s.revealed, hidden: !s.revealed,

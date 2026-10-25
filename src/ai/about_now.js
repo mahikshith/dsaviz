@@ -11,7 +11,9 @@ const AI_ABOUT_NOW = {
       ['query', 'A list of numbers that says what one token is looking for.'],
       ['key', 'A list of numbers that says what another token contains, so it can be matched.'],
       ['value', 'The information a token hands over when another token pays attention to it.'],
-      ['softmax', 'A step that turns any scores into weights that are positive and add up to 1.']
+      ['softmax', 'A step that turns any scores into weights that are positive and add up to 1.'],
+      ['head', 'One run of attention. Several heads run side by side, and each can look for a different link.'],
+      ['layer', 'One round of attention and other steps. A transformer stacks many layers.']
     ],
     math: {
       lines: ['\\mathrm{softmax}\\!\\left(\\frac{Q K^{T}}{\\sqrt{d}}\\right)V'],
@@ -19,13 +21,14 @@ const AI_ABOUT_NOW = {
         ['Q', 'The queries: what each token is looking for.'],
         ['K', 'The keys: what each token offers to be matched with.'],
         ['V', 'The values: the information each token passes on.'],
-        ['K^T', 'The keys turned on their side, so that each query can be multiplied with every key.'],
+        ['K^T', 'The keys turned on their side. This lines up the numbers so each query can be multiplied with every key.'],
         ['d', 'How many numbers are in each query and key.'],
         ['\\sqrt{d}', 'The square root of d. Dividing by it keeps the scores from growing too big.'],
         ['softmax', 'Turns the scores into weights that add up to 1.']
       ],
       example: [
-        'Let one token have the query [1, 1, 1, 1]. It meets three tokens. So d = 4 and the square root of d is 2.',
+        'This is a smaller made-up example than the animation: one token meets three tokens, not ten.',
+        'Let one token have the query [1, 1, 1, 1]. So d = 4 and the square root of d is 2.',
         'Multiply the query with each key and add up the products. The scores are 1, 2 and 4.',
         'Divide each score by 2. This gives 0.5, 1 and 2.',
         'Softmax turns these into weights: about 0.14, 0.23 and 0.63. They add up to 1.',
@@ -40,7 +43,7 @@ const AI_ABOUT_NOW = {
       'Several heads do this side by side, and every token does it at the same time.'
     ],
     use: ['Use it when the meaning of one piece depends on others far away.', 'Use it for text, code, images and sound, once they are cut into tokens.'],
-    avoid: ['Avoid it on very long inputs without tricks, because the work grows with the square of the length.', 'Avoid it when a small, simple model already does the job.'],
+    avoid: ['Avoid it on very long inputs without tricks. Double the length and the work grows four times.', 'Avoid it when a small, simple model already does the job.'],
     mistakes: [
       'Attention weights are not a full explanation of the answer. They show where the model looked, not why it answered.',
       'The model does not read words one by one. Attention lets it read all tokens at once.',
@@ -53,34 +56,35 @@ const AI_ABOUT_NOW = {
 
   systems: {
     what: 'Some models answer at once. Reasoning models first write out steps, then answer. Writing steps costs more time, but it often gives better answers on hard problems.',
-    analogy: 'Compare blurting out an answer with working it out on scrap paper. The scrap paper takes longer, and it catches silly mistakes.',
+    analogy: 'Compare giving the first answer that comes to mind with working it out on scrap paper. The scrap paper takes longer, and it catches silly mistakes.',
     uses: ['Math and logic problems, where each step builds on the last.', 'Writing and fixing computer code, where the model can check its own work.', 'Planning tasks with many steps, such as booking a trip around several limits.'],
-    before: ['attention'],
+    before: ['tokens'],
     words: [
-      ['System 1', 'A name from psychology for thinking that is fast and automatic.'],
-      ['System 2', 'A name from psychology for thinking that is slow and careful.'],
+      ['System 1', 'A name from psychology for thinking that is fast and automatic. The animation draws it as the fast lane.'],
+      ['System 2', 'A name from psychology for thinking that is slow and careful. The animation draws it as the slow lane.'],
       ['reasoning model', 'A model trained to write out steps before it gives its answer.'],
-      ['test-time compute', 'Extra work a model does while answering, not while it is being trained.'],
+      ['test-time compute', 'Extra computer work a model does while answering, not while it is being trained.'],
+      ['token', 'A small piece of text, often a word or part of a word. Written steps are made of tokens.'],
       ['distillation', 'Training a fast model to copy the answers of a slower one.']
     ],
     math: {
       lines: ['x + (x + 1.00) = 1.10'],
       symbols: [
-        ['x', 'The price of the ball, which we want to find.'],
-        ['x + 1.00', 'The price of the bat, which costs 1.00 more than the ball.'],
-        ['1.10', 'The total price of the bat and ball together.']
+        ['x', 'The price of the pen, which we want to find.'],
+        ['x + 1.00', 'The price of the book, which costs 1.00 more than the pen.'],
+        ['1.10', 'The total price of the pen and book together, in dollars.']
       ],
       example: [
-        'A bat and a ball cost 1.10 together. The bat costs 1.00 more than the ball.',
-        'A fast guess says the ball costs 0.10. Then the bat costs 1.10, and the total is 1.20. That is wrong.',
-        'Write it out: x + x + 1.00 = 1.10. So two x equals 0.10.',
-        'Divide by 2. The ball costs x = 0.05, and the bat costs 1.05.',
+        'This is the same puzzle as the animation. A pen and a book cost 1.10 dollars together. The book costs 1.00 more than the pen.',
+        'A fast guess says the pen costs 0.10. Then the book costs 1.10, and the total is 1.20. That is wrong.',
+        'Write it out: x + x + 1.00 = 1.10. Take away 1.00 from both sides. Then two times x equals 0.10.',
+        'Divide by 2. The pen costs x = 0.05, and the book costs 1.05.',
         'Check: 0.05 + 1.05 = 1.10. The slow, careful way gets it right.'
       ]
     },
     steps: [
       'A plain model gives its answer in one pass, like a quick reflex.',
-      'A reasoning model first writes out steps, using extra tokens as scrap paper.',
+      'A reasoning model first writes out steps, using extra tokens (small pieces of text) as scrap paper.',
       'Each step gives the model something to check and build on.',
       'More thinking helps on hard problems up to a point. Then the gains flatten.',
       'Distillation can teach a fast model to copy the careful answers.'
@@ -90,7 +94,7 @@ const AI_ABOUT_NOW = {
     mistakes: [
       'Models do not have two real brains. System 1 and System 2 are only a picture to help you think.',
       'More thinking is not always better. The gains flatten, and easy questions need little.',
-      'The name "System 3" is not an agreed term. Do not treat it as science.'
+      'Longer steps do not fix a wrong fact. If the model starts from a false fact, more steps can repeat the mistake.'
     ],
     cheat: ['System 1 is fast. System 2 is slow and careful.', 'Reasoning models write steps before answering.', 'Extra steps cost tokens and time.', 'Gains flatten as the budget grows.', 'Distillation turns slow habits into quick ones.'],
     next: ['agents', 'distill', 'evals'],
@@ -100,14 +104,15 @@ const AI_ABOUT_NOW = {
   jepa: {
     what: 'JEPA is a way to teach a model about the world from pictures or video without labels. Part of the picture is hidden. The model guesses a short summary of the hidden part, not its pixels.',
     analogy: 'If a friend covers part of a photo, you say "a tree is there". You do not try to name every leaf.',
-    uses: ['Learning useful picture features from images that nobody has labelled.', 'Learning what happens in video, such as how objects move.', 'Helping robots predict what their next move would do.'],
+    uses: ['Learning useful picture summaries from images that nobody has labelled.', 'Learning what happens in video, such as how objects move.', 'Helping robots predict what their next move would do.'],
     before: ['embeddings', 'vit'],
     words: [
       ['encoder', 'A part of the model that turns a picture piece into a list of numbers.'],
       ['embedding', 'A list of numbers that stands for the meaning of something.'],
       ['predictor', 'A part of the model that guesses one list of numbers from another.'],
-      ['self-supervised', 'Learning from the data itself, with no labels from people.'],
-      ['world model', 'A model that predicts what will happen next in the world.']
+      ['generative model', 'A model that makes new content, such as painting every pixel of a picture.'],
+      ['self-supervised', 'Learning from the data itself, with no labels from people. For example, hide a word in a sentence and learn to guess it.'],
+      ['world model', 'A model that predicts what will happen next. A robot with one can imagine a move before it makes it.']
     ],
     math: {
       lines: ['L = \\sum_i \\left(\\hat{s}_i - s_i\\right)^2'],
@@ -119,6 +124,7 @@ const AI_ABOUT_NOW = {
         ['(\\hat{s}_i - s_i)^2', 'The gap between guess and answer for one number, multiplied by itself.']
       ],
       example: [
+        'This is a made-up example with two numbers. Real lists are much longer.',
         'Say the answer key for a hidden block is s = [0.5, 0.4].',
         'The predictor guesses [0.6, 0.2].',
         'The gaps are 0.6 - 0.5 = 0.1, and 0.2 - 0.4 = -0.2.',
@@ -129,16 +135,16 @@ const AI_ABOUT_NOW = {
     steps: [
       'Cut the picture into patches and hide a block of them.',
       'A context encoder turns the visible patches into a list of numbers.',
-      'A target encoder turns the hidden block into a list of numbers. This is the answer key.',
+      'A target encoder turns the hidden block into a list of numbers. This is the answer key. It is used only in training, when the full picture is known.',
       'A predictor guesses the answer key from the visible patches.',
       'The loss compares the two lists, not pixels. Training makes the guess closer.'
     ],
-    use: ['Use it to learn picture or video features without labels.', 'Use it when exact pixel detail does not matter, only the gist.'],
+    use: ['Use it to learn picture or video summaries without labels.', 'Use it when exact pixel detail does not matter, only the main idea.'],
     avoid: ['Avoid it when you need the model to draw the missing pixels.', 'Avoid treating it as proven better than generating. The evidence so far is mostly vision and robotics.'],
     mistakes: [
       'JEPA does not make pictures. It predicts a summary, so it cannot paint the hidden part.',
       'The target is not a human label. The target encoder makes it from the picture itself.',
-      'JEPA is not the only road to smart models. It is one research idea, and the question is still open.'
+      'JEPA is not the only way to build smart models. It is one research idea, and the question is still open.'
     ],
     cheat: ['Hide a block, guess its summary.', 'Compare summaries, not pixels.', 'Context encoder, target encoder, predictor.', 'I-JEPA is for images. V-JEPA is for video.', 'No hand-made label is needed.'],
     next: ['vit', 'diffusion', 'evals'],
@@ -146,26 +152,30 @@ const AI_ABOUT_NOW = {
   },
 
   rag: {
-    what: 'RAG stands for retrieval-augmented generation. First the system looks up passages that fit your question. Then the model writes its answer using those passages.',
+    what: 'RAG stands for retrieval-augmented generation, which means look it up first, then write. The system finds passages that fit your question. Then the model writes its answer using those passages.',
     analogy: 'It is an open-book exam. You find the right pages first, then write your answer from them.',
     uses: ['Company help bots that answer from the latest policy documents.', 'Search tools that answer in a sentence and point to the source.', 'Study helpers that answer from your own notes.'],
     before: ['embeddings', 'attention'],
     words: [
       ['retrieve', 'To look up and fetch the passages that best fit the question.'],
       ['chunk', 'A small piece cut from a longer document.'],
-      ['vector index', 'A store of embeddings that can be searched for the closest ones.'],
-      ['cosine similarity', 'A score from -1 to 1 for how closely two lists of numbers point the same way.'],
-      ['hallucination', 'A confident answer from a model that is simply wrong or made up.']
+      ['embedding', 'A list of numbers that stands for the meaning of a piece of text.'],
+      ['index', 'A store of embeddings that can be searched for the closest ones. It is also called a vector index.'],
+      ['closest by meaning', 'Two lists of numbers that point almost the same way. Maths scores this with cosine similarity, from -1 to 1.'],
+      ['prompt', 'The text you send to the model, such as your question plus any pasted notes.'],
+      ['hallucination', 'A confident answer from a model that is wrong or made up.']
     ],
     math: {
       lines: ['\\cos(a, b) = \\frac{a \\cdot b}{\\lVert a \\rVert \\, \\lVert b \\rVert}'],
       symbols: [
         ['a', 'The list of numbers for the question.'],
         ['b', 'The list of numbers for one chunk.'],
+        ['\\cos(a, b)', 'Cosine similarity: the score for how close in meaning the question and the chunk are. 1 is closest.'],
         ['a \\cdot b', 'Multiply the lists number by number, then add up the products.'],
         ['\\lVert a \\rVert', 'The length of list a: the square root of the sum of its squares.']
       ],
       example: [
+        'This is a smaller example than the animation: lists of two numbers, not hundreds.',
         'Let the question be a = [3, 4]. Its length is 5, since 9 + 16 = 25.',
         'Chunk 1 is [4, 3]. The products add up to 12 + 12 = 24. Its length is also 5.',
         'The score is 24 / (5 x 5) = 0.96. These point almost the same way, so it is a close match.',
@@ -175,10 +185,10 @@ const AI_ABOUT_NOW = {
     },
     steps: [
       'Before any question, cut your documents into chunks and turn each into an embedding.',
-      'Store the embeddings in a vector index.',
+      'Store the embeddings in an index.',
       'When a question arrives, turn it into an embedding too.',
-      'Retrieve the closest chunks from the index.',
-      'Paste them into the prompt, and the model answers from them and cites them.'
+      'Retrieve the chunks closest in meaning from the index.',
+      'Paste them into the prompt. The model answers from them and names which chunk each fact came from.'
     ],
     use: ['Use it for fresh or private facts the model never saw in training.', 'Use it when you want answers that point to a source.'],
     avoid: ['Avoid it when the answer needs no outside facts, such as rewording a sentence.', 'Avoid trusting it when the documents are wrong or out of date.'],
@@ -198,8 +208,8 @@ const AI_ABOUT_NOW = {
     uses: ['Coding helpers that run tests, read files and fix bugs.', 'Research helpers that search, read pages and write a summary.', 'Office helpers that look up a calendar and book a meeting.'],
     before: ['systems', 'rag'],
     words: [
-      ['tool', 'A function the model can ask the computer to run, such as search or run tests.'],
-      ['tool call', 'A small structured message that names a tool and gives its inputs.'],
+      ['tool', 'A small program the model can ask the computer to run, such as search or run tests.'],
+      ['tool call', 'A short message in a fixed format. It names a tool and gives its inputs.'],
       ['observation', 'What a tool sends back after it runs.'],
       ['workflow', 'A fixed list of steps written in code, with no choices made by the model.'],
       ['MCP', 'The Model Context Protocol: one open standard for connecting apps to tools and data.']
@@ -213,7 +223,7 @@ const AI_ABOUT_NOW = {
         ['N + M', 'The pieces needed if every app and every tool speaks one shared standard.']
       ],
       example: [
-        'Say 3 apps want to use 3 tools.',
+        'This matches the last part of the animation. Say 3 apps want to use 3 tools.',
         'Without a standard, each pair needs its own connector: 3 x 3 = 9.',
         'With one shared standard, each app and each tool speaks it once: 3 + 3 = 6.',
         'Now take 5 apps and 4 tools. Custom links need 5 x 4 = 20. A shared standard needs 5 + 4 = 9.',
@@ -228,27 +238,29 @@ const AI_ABOUT_NOW = {
       'It stops when the goal is met, or when it hits a limit you set.'
     ],
     use: ['Use an agent when the steps cannot be known in advance.', 'Use a plain workflow first when the steps are fixed, because it is simpler and cheaper.'],
-    avoid: ['Avoid giving an agent wide permissions. Give each tool only what it needs.', 'Avoid unchecked actions that cannot be undone, such as deleting data or sending money.'],
+    avoid: ['Avoid giving an agent access to many things. Give each tool only what it needs.', 'Avoid unchecked actions that cannot be undone, such as deleting data or sending money.'],
     mistakes: [
       'An agent is not a new kind of model. It is a model used in a loop with tools.',
       'MCP is not an agent. It is only a standard way to connect tools and data.',
-      'Tool results can hide instructions meant to trick the model. Treat them as data, and keep a person in charge.'
+      'Tool results can hide instructions meant to trick the model. An example is a page that says "ignore your goal". Treat results as data, and keep a person in charge.'
     ],
-    cheat: ['Think, act, observe, repeat.', 'A tool call is a structured message.', 'Workflow: fixed steps. Agent: chooses its own.', 'MCP: one standard, many apps and tools.', 'Limit permissions and check risky actions.'],
+    cheat: ['Think, act, observe, repeat.', 'A tool call is a short message in a fixed format.', 'Workflow: fixed steps. Agent: chooses its own.', 'MCP: one standard, many apps and tools.', 'Limit access and check risky actions.'],
     next: ['rag', 'evals', 'systems'],
     sources: ['Yao, Zhao, Yu, Du et al., "ReAct", 2022. https://arxiv.org/abs/2210.03629', 'Schick, Dwivedi-Yu, Dessi et al., "Toolformer", 2023. https://arxiv.org/abs/2302.04761', 'Anthropic, "Building effective AI agents", 2024. https://www.anthropic.com/research/building-effective-agents', 'Model Context Protocol specification, version 2026-07-28. https://modelcontextprotocol.io/specification/2026-07-28', 'Jimenez, Yang, Wettig, Yao et al., "SWE-bench", 2023. https://arxiv.org/abs/2310.06770']
   },
 
   moe: {
-    what: 'A mixture of experts keeps many small expert blocks inside one model. A router picks only a few of them for each token. So the model can hold a lot of knowledge but use little work per token.',
+    what: 'A mixture of experts keeps many small expert blocks inside one model. A router picks only a few of them for each token. So the model can hold a lot of knowledge but do little work per token.',
     analogy: 'A hospital has many specialist doctors. The front desk sends you to the two you need, so not every doctor sees every patient.',
-    uses: ['Large language models that must be strong but still fast to run.', 'Models in the Mixtral family, which pick 2 of 8 experts for each token.', 'Very large research models that would be too costly if every part ran for every token.'],
+    uses: ['Large language models that must be strong but still fast to run.', 'Models like Mixtral, an open model that picks 2 of 8 experts for each token.', 'Very large research models that would be too costly if every part ran for every token.'],
     before: ['attention'],
     words: [
       ['expert', 'One of several smaller blocks of weights inside a layer.'],
       ['router', 'A small part that scores the experts and picks which ones run.'],
-      ['top-k', 'Keep only the k highest scores, such as the top 2.'],
-      ['sparse', 'Mostly unused: only a few parts run at any time.'],
+      ['top-k', 'Keep only the k highest scores. With k = 2, only the two best experts run.'],
+      ['layer', 'One stage of the model. Tokens pass through many layers, one after another.'],
+      ['weights', 'The numbers inside a model that training sets.'],
+      ['token', 'A small piece of text, often a word or part of a word.'],
       ['load balancing', 'A nudge in training that spreads tokens evenly over the experts.']
     ],
     math: {
@@ -261,15 +273,16 @@ const AI_ABOUT_NOW = {
         ['y', 'The final output for the token.']
       ],
       example: [
+        'This is a smaller example than the animation: only the top 2 experts are scored.',
         'The router scores 8 experts for one token and keeps the top 2. Their scores are 2.0 and 1.0.',
-        'Softmax over just those two: e^2 is about 7.39, and e^1 is about 2.72. The sum is about 10.11.',
+        'Softmax uses the number e, about 2.718. e^2 means e times e, about 7.39, and e^1 is about 2.72. The sum is about 10.11.',
         'The weights are 7.39 / 10.11 = 0.73 and 2.72 / 10.11 = 0.27.',
         'Suppose expert A outputs 10 and expert B outputs 20.',
         'The mix is 0.73 x 10 + 0.27 x 20, which is about 12.7. The other 6 experts did no work.'
       ]
     },
     steps: [
-      'Replace one big feed-forward block with several smaller experts.',
+      'Replace one big block of weights with several smaller experts.',
       'A router scores every expert for the current token.',
       'Only the top few experts run for that token.',
       'Their outputs are mixed, weighted by the router scores.',
@@ -282,13 +295,13 @@ const AI_ABOUT_NOW = {
       'Using few experts per token does not mean less memory. All experts must still be stored.',
       'The model does not pick one expert for the whole sentence. The router chooses again for every token.'
     ],
-    cheat: ['Many experts stored, few used per token.', 'The router scores and picks the top k.', 'Outputs are mixed by router weights.', 'Memory cost is high. Compute cost is low.', 'Load balancing stops one expert getting everything.'],
+    cheat: ['Many experts stored, few used per token.', 'The router scores and picks the top k.', 'Outputs are mixed by router weights.', 'Memory cost is high. Work per token is low.', 'Load balancing stops one expert getting everything.'],
     next: ['lora', 'distill', 'evals'],
     sources: ['Shazeer, Mirhoseini, Maziarz, Davis et al., "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer", 2017. https://arxiv.org/abs/1701.06538', 'Fedus, Zoph, Shazeer, "Switch Transformers", 2021. https://arxiv.org/abs/2101.03961', 'Jiang, Sablayrolles, Roux, Mensch et al., "Mixtral of Experts", 2024. https://arxiv.org/abs/2401.04088']
   },
 
   lora: {
-    what: 'LoRA is a cheap way to fine-tune a big model, which means teaching it a new job. You freeze the original weights and train two thin matrices beside them. Their product is a small learned correction.',
+    what: 'LoRA is a cheap way to fine-tune a big model, which means teaching it a new job. You freeze the original weights and train two thin matrices, which are grids of numbers, beside them. Multiplied together, they make a small learned correction.',
     analogy: 'Instead of rewriting a whole textbook, you stick a few notes on the pages. The book stays the same, and the notes change the lesson.',
     uses: ['Teaching a model to answer in a company writing style.', 'Adapting a model to a field such as law or medicine with little hardware.', 'Keeping many small adapter files for one base model, one per task.'],
     before: ['backprop', 'attention'],
@@ -296,8 +309,10 @@ const AI_ABOUT_NOW = {
       ['weights', 'The numbers inside a model that training adjusts.'],
       ['matrix', 'A grid of numbers arranged in rows and columns.'],
       ['fine-tuning', 'Training a model that is already trained, to do a new job.'],
+      ['frozen', 'Not changed during training.'],
       ['rank', 'How thick the two thin matrices are. Written r.'],
-      ['adapter', 'The small set of new numbers that LoRA trains.']
+      ['adapter', 'The small set of new numbers that LoRA trains.'],
+      ['QLoRA', 'LoRA on a base model stored with tiny 4-bit numbers, so it fits on a smaller graphics card.']
     ],
     math: {
       lines: ['h = W x + B A x', '\\text{trainable numbers} = 2 \\times d \\times r'],
@@ -310,7 +325,7 @@ const AI_ABOUT_NOW = {
         ['r', 'The rank: how thick the thin matrices are.']
       ],
       example: [
-        'Say W is a grid of 4096 by 4096 numbers. Full fine-tuning trains 4096 x 4096 = 16,777,216 of them.',
+        'This is the same size as the animation. Say W is a grid of 4096 by 4096 numbers. Full fine-tuning trains 4096 x 4096 = 16,777,216 of them.',
         'LoRA with rank r = 4 trains two thin matrices. Each has 4096 x 4 = 16,384 numbers.',
         'Together that is 2 x 16,384 = 32,768 trainable numbers.',
         'Divide: 16,777,216 / 32,768 = 512. That is 512 times fewer for this one matrix.',
@@ -322,7 +337,7 @@ const AI_ABOUT_NOW = {
       'Add two thin matrices next to a big weight matrix.',
       'During training, only the two thin matrices change.',
       'The layer output is the old answer plus the small correction.',
-      'Save just the small adapter. It can be swapped per task or merged into W.'
+      'Save only the small adapter. It can be swapped per task or merged into W.'
     ],
     use: ['Use it when you have little memory or few examples.', 'Use it when you want many task versions of one base model.'],
     avoid: ['Avoid it when you need to teach the model a great deal of new knowledge from scratch.', 'Avoid a rank that is too small for a hard task, since it may not learn enough.'],
@@ -331,7 +346,7 @@ const AI_ABOUT_NOW = {
       'Higher rank is not always better. It costs more and may not help.',
       'The frozen weights are not retrained. Only the adapter learns.'
     ],
-    cheat: ['Freeze W, train two thin matrices.', 'Output = old answer + small correction.', 'Rank r sets how many numbers you train.', 'Adapters are small files.', 'QLoRA also squeezes the base model to 4-bit numbers.'],
+    cheat: ['Freeze W, train two thin matrices.', 'Output = old answer + small correction.', 'Rank r sets how many numbers you train.', 'Adapters are small files.', 'QLoRA = LoRA on a base model stored in tiny 4-bit numbers.'],
     next: ['prefs', 'distill', 'moe'],
     sources: ['Hu, Shen, Wallis, Allen-Zhu et al., "LoRA: Low-Rank Adaptation of Large Language Models", 2021. https://arxiv.org/abs/2106.09685', 'Dettmers, Pagnoni, Holtzman, Zettlemoyer, "QLoRA", 2023. https://arxiv.org/abs/2305.14314']
   },
@@ -342,10 +357,11 @@ const AI_ABOUT_NOW = {
     uses: ['Every chatbot cuts your message into tokens before it reads it.', 'Prices and length limits for models are counted in tokens.', 'Translation and search tools use tokens to handle rare or new words.'],
     before: ['embeddings'],
     words: [
-      ['token', 'A piece of text that gets its own number.'],
+      ['token', 'A piece of text that gets its own number, called an id.'],
       ['vocabulary', 'The full list of tokens a model knows.'],
       ['merge', 'A rule that glues two neighbouring tokens into one new token.'],
-      ['byte-pair encoding', 'A method that builds the vocabulary by repeated merges of the most common pair.'],
+      ['byte', 'A basic unit of stored data. One plain letter takes one byte.'],
+      ['byte-pair encoding', 'A method that builds the vocabulary by repeated merges of the most common pair of neighbours. Pairs are counted in bytes or letters.'],
       ['subword', 'A token that is smaller than a word but bigger than a letter.']
     ],
     math: {
@@ -356,11 +372,11 @@ const AI_ABOUT_NOW = {
         ['m', 'The number of merges you did. Each merge adds one new token.']
       ],
       example: [
-        'Practice words: low (5 times), lower (2), newest (6), widest (3). Start from single letters.',
-        'Count neighbouring pairs, weighted by how often each word appears. "e s" appears 6 + 3 = 9 times. So does "s t".',
-        'Merge "e" and "s" into the new token "es". Then count again: "es t" appears 9 times, so merge it into "est".',
-        'The next most common pairs are "l o" and "o w", with 5 + 2 = 7 each. Merge "l" and "o" into "lo".',
-        'These words use 10 different letters: l, o, w, e, r, n, s, t, i and d. After 3 merges, V = 10 + 3 = 13.'
+        'This is the same practice text as the animation: play (5 times), played (3), playing (4), player (2), plays (3) and replay (2). Start from single letters.',
+        'The starting tokens are 11 letters: p, l, a, y, e, d, i, n, g, r and s. So V_0 = 11.',
+        'Count neighbouring pairs, weighted by how often each word appears. "p l" appears 5 + 3 + 4 + 2 + 3 + 2 = 19 times. So do "l a" and "a y".',
+        'Merge "p" and "l" into the new token "pl". Count again: "pl a" appears 19 times, so merge it into "pla".',
+        'Then "pla y" also appears 19 times, so merge it into "play". After 3 merges, V = 11 + 3 = 14.'
       ]
     },
     steps: [
@@ -368,7 +384,7 @@ const AI_ABOUT_NOW = {
       'Count every pair of neighbouring tokens.',
       'Merge the most common pair into one new token.',
       'Repeat for as many merges as you want.',
-      'To read a new word, replay the merges in order. A rare word falls back to smaller pieces.'
+      'To read a new word, apply the merges in order. A rare word falls back to smaller pieces.'
     ],
     use: ['Use subword tokens to cover rare and new words with a small vocabulary.', 'Use token counts to estimate cost and fit inside a length limit.'],
     avoid: ['Avoid one token per whole word, because new words have no id.', 'Avoid one token per letter, because the rows get very long.'],
@@ -383,16 +399,18 @@ const AI_ABOUT_NOW = {
   },
 
   distill: {
-    what: 'Distillation trains a small model to copy a big one. The student learns from the teacher full list of chances, not only the right answer. That extra detail helps it learn more from the same data.',
+    what: 'Distillation trains a small model to copy a big one. The student learns from the teacher\'s full list of chances, not only the right answer. That extra detail helps it learn more from the same data.',
     analogy: 'A teacher who says "mostly A, a little B" teaches more than one who only says "A".',
-    uses: ['Making a model small enough to run on a phone.', 'Making a fast, cheap model that keeps most of a large model skill, as DistilBERT did.', 'Teaching a fast model to copy the careful answers of a slow reasoning model.'],
+    uses: ['Making a model small enough to run on a phone.', 'Making a fast, cheap model that keeps most of a large model\'s skill, as DistilBERT did.', 'Teaching a fast model to copy the careful answers of a slow reasoning model.'],
     before: ['backprop', 'logistic'],
     words: [
       ['teacher', 'The big, accurate model that is copied.'],
       ['student', 'The small model that learns from the teacher.'],
-      ['soft target', 'The teacher full list of chances, such as cat 70%, tiger 25%, car 5%.'],
+      ['soft target', 'The full list of chances from the teacher, such as cat 70%, tiger 25%, car 5%.'],
       ['hard label', 'Only the right answer, as 100% for one class and 0% for the rest.'],
-      ['temperature', 'A setting T that makes the chances softer when it is larger.']
+      ['temperature', 'A setting T that makes the chances softer when it is larger.'],
+      ['softmax', 'A step that turns a list of scores into chances that add up to 100%.'],
+      ['KL divergence', 'A score for how far one set of chances is from another. 0 means they match.']
     ],
     math: {
       lines: ['q_i = \\frac{e^{z_i / T}}{\\sum_j e^{z_j / T}}'],
@@ -404,11 +422,11 @@ const AI_ABOUT_NOW = {
         ['q_i', 'The chance given to class i. All chances add up to 1.']
       ],
       example: [
-        'The teacher scores three classes: cat 5, tiger 3, car 0.',
-        'With T = 1, the chances are about 0.876, 0.118 and 0.006. The answer is very sharp.',
-        'With T = 4, divide the scores by 4 first: 1.25, 0.75 and 0. The chances become about 0.528, 0.320 and 0.151.',
-        'Now you can see that a cat looks more like a tiger than like a car.',
-        'The student is trained to match these soft chances, and also to get the true label right.'
+        'This is the same teacher as the animation: five classes, with scores cat 6, tiger 3.5, dog 3, car −1 and banana −2.',
+        'The score "e to the power x" means e (about 2.72) multiplied by itself x times. Softmax gives each class e to its score, divided by the total.',
+        'With T = 1, the chances are about 0.883, 0.072, 0.044, 0.001 and 0.000 for cat, tiger, dog, car and banana. The answer is very sharp.',
+        'With T = 4, divide the scores by 4 first: 1.5, 0.875, 0.75, −0.25 and −0.5. The chances become about 0.432, 0.231, 0.204, 0.075 and 0.058.',
+        'Now you can see that a cat looks more like a tiger than like a car. The student is trained to match these soft chances, and also to get the true label right.'
       ]
     },
     steps: [
@@ -419,7 +437,7 @@ const AI_ABOUT_NOW = {
       'Use the student, which is smaller and faster than the teacher.'
     ],
     use: ['Use it when the big model is too slow or costly to run.', 'Use it to move careful habits of a slow model into a fast one.'],
-    avoid: ['Avoid expecting the student to beat the teacher. It rarely does.', 'Avoid training on a model outputs if its licence forbids it. Check the terms first.'],
+    avoid: ['Avoid expecting the student to beat the teacher. It rarely does.', 'Avoid training on a model\'s outputs if its licence forbids it. Check the terms first.'],
     mistakes: [
       'Distillation is not copying weights. The student learns from the outputs of the teacher.',
       'A very high temperature is not always better. It can wash out the useful differences.',
@@ -434,9 +452,9 @@ const AI_ABOUT_NOW = {
     what: 'An eval is a test that gives a model a score. A benchmark is a fixed test shared by many models. A score is only an estimate, so it comes with a margin of error.',
     analogy: 'A school exam gives a mark, but a different set of questions could give a slightly different mark. A test with few questions is shakier.',
     uses: ['Comparing two models before you choose one for a product.', 'Checking whether a change to a model made it better or worse.', 'Watching for mistakes on your own real examples before you launch.'],
-    before: ['confusion', 'crossval'],
+    before: ['Percentages', 'Averages'],
     words: [
-      ['benchmark', 'A fixed set of questions used to compare models.'],
+      ['benchmark', 'A fixed set of questions used to compare models. MMLU and SWE-bench are two well-known ones.'],
       ['margin of error', 'How far a score could move by chance if the test were different.'],
       ['leak', 'When test questions were in the training data, so the model may remember answers.'],
       ['saturate', 'To reach such high scores that the test no longer separates models.'],
@@ -449,20 +467,20 @@ const AI_ABOUT_NOW = {
         ['n', 'How many questions are in the test.'],
         ['1 - p', 'The share answered wrong.'],
         ['\\sqrt{}', 'The square root: the number that gives the value when multiplied by itself.'],
-        ['1.96', 'A fixed number that gives a range that holds the true score about 95 times in 100.']
+        ['1.96', 'A fixed number for 95 percent certainty: the true score falls inside the range about 95 times in 100.']
       ],
       example: [
         'Model A scores 72% on 100 questions, so p = 0.72.',
         'Work out p x (1 - p) / n = 0.72 x 0.28 / 100 = 0.002016. Its square root is about 0.0449.',
         'Multiply by 1.96. The margin is about 0.088, or plus or minus 8.8 points.',
-        'Model B scores 67%. The gap of 5 points is smaller than the margin for the gap, about 12.7 points. So it is not clear that A is better.',
+        'Model B scores 67%. The gap of 5 points is smaller than the margin for the gap, about 12.7 points. That margin is bigger than each score\'s own, because both scores can wobble. So it is not clear that A is better.',
         'With 1,000 questions each, the margin for the gap falls to about 4.0 points. Now a 5-point gap is a clearer win.'
       ]
     },
     steps: [
       'Pick a fixed set of questions and a way to mark them.',
       'Mark by answer key, by running tests, or by a judge.',
-      'Report the score with its margin of error, not just one number.',
+      'Report the score with its margin of error, not only one number.',
       'Check for leaks, and keep some tests private.',
       'Add tests from your own real task, since that is the one that counts.'
     ],
@@ -479,7 +497,7 @@ const AI_ABOUT_NOW = {
   },
 
   diffusion: {
-    what: 'A diffusion model makes pictures by removing noise. During training it learns to take a noisy picture and guess the noise. To draw something new, it starts from pure noise and cleans it step by step.',
+    what: 'A diffusion model makes pictures by removing noise. During training it learns to take a noisy picture and guess the noise. If you know the noise, you can take it away. To draw something new, it starts from pure noise and cleans it step by step.',
     analogy: 'Picture a sculptor who sees a rough block of stone. With small cuts, the sculptor reveals a shape that was hidden in it.',
     uses: ['Text-to-image tools that draw a picture from a short description.', 'Photo editing, such as filling in a missing part of a picture.', 'Making video, sound and 3D shapes, which use the same noise-removal idea.'],
     before: ['backprop', 'embeddings'],
@@ -488,6 +506,7 @@ const AI_ABOUT_NOW = {
       ['forward process', 'Adding a little noise at each step, which needs no learning.'],
       ['reverse process', 'Removing noise step by step. This is the part the model learns.'],
       ['denoising step', 'One small clean-up of the noise.'],
+      ['prompt', 'The words you type to tell the model what picture you want.'],
       ['latent', 'A small, squeezed copy of an image that is cheaper to work on.']
     ],
     math: {
@@ -500,18 +519,18 @@ const AI_ABOUT_NOW = {
         ['\\sqrt{}', 'The square root of a number.']
       ],
       example: [
-        'Take one pixel with value x_0 = 2 and a random noise value of -1.',
+        'This is a smaller example than the animation: one pixel, not a ring of dots. Take one pixel with value x_0 = 2 and a random noise value of -1.',
         'Early on, say the number from the noise schedule is 0.64. Its square root is 0.8.',
         'The square root of 1 - 0.64 = 0.36 is 0.6.',
         'The noisy pixel is 0.8 x 2 + 0.6 x (-1) = 1.6 - 0.6 = 1.0.',
-        'Late in the process the number is near 0, so the pixel is almost all noise. The model learns to guess the noise to undo this.'
+        'Late in the process the number is near 0, so the pixel is almost all noise. If the model guesses the noise, it can take it away and get the pixel back.'
       ]
     },
     steps: [
       'Take real training pictures and add noise a little at a time until nothing is left but noise.',
       'Train a model to look at a noisy picture and guess the noise in it.',
       'To make something new, start from fresh random noise.',
-      'Remove a slice of the guessed noise, again and again.',
+      'Remove a small part of the guessed noise, again and again.',
       'A text prompt can steer each step, so the result matches your words.'
     ],
     use: ['Use it for high-quality image, video and audio generation.', 'Use fewer steps when you need speed, and more when you need detail.'],
@@ -533,10 +552,11 @@ const AI_ABOUT_NOW = {
     before: ['backprop', 'tokens'],
     words: [
       ['preference', 'A vote that says which of two answers a person likes better.'],
+      ['pretrained model', 'A model already trained on a large amount of text, before this tuning.'],
       ['reward model', 'A model that gives a higher score to answers people tend to prefer.'],
-      ['RLHF', 'Reinforcement learning from human feedback: tune a model to earn more reward.'],
+      ['RLHF', 'Reinforcement learning from human feedback. Reinforcement learning means learning by trying things and getting rewards. Here the model is tuned to get more reward.'],
       ['DPO', 'Direct preference optimization: tune on the votes directly, with no reward model.'],
-      ['leash', 'A limit that keeps the tuned model close to the starting model. Its strength is called beta.']
+      ['leash', 'A limit that keeps the tuned model close to the starting model. Its strength is called beta. A larger beta keeps the model closer.']
     ],
     math: {
       lines: ['L = -\\log \\sigma\\!\\left(\\beta\\left[\\log\\tfrac{\\pi(y_w)}{\\pi_{\\mathrm{ref}}(y_w)} - \\log\\tfrac{\\pi(y_l)}{\\pi_{\\mathrm{ref}}(y_l)}\\right]\\right)'],
@@ -550,7 +570,8 @@ const AI_ABOUT_NOW = {
         ['\\log', 'The natural logarithm. It turns a ratio of chances into a plain gap.']
       ],
       example: [
-        'Say beta = 0.5. For the winner, the log chance is -1.0 for the new model and -1.5 for the start model. The gap is +0.5.',
+        'This is a made-up example with simple numbers. Say beta = 0.5. A log of a chance below 1 is negative, and a less negative log means a more likely answer.',
+        'For the winner, the log chance is -1.0 for the new model and -1.5 for the start model. The gap is +0.5.',
         'For the loser, the new log chance is -3.0, and for the start model it is -2.5. The gap is -0.5.',
         'Winner gap minus loser gap is 0.5 - (-0.5) = 1.0. Times beta this is 0.5.',
         'The sigmoid of 0.5 is about 0.622. The loss is -ln(0.622), about 0.474.',
@@ -582,10 +603,12 @@ const AI_ABOUT_NOW = {
     uses: ['Sorting photos into classes, such as cat or car.', 'Reading pictures inside chat models that handle images and text.', 'Spotting and outlining objects in photos and medical scans.'],
     before: ['attention', 'tokens'],
     words: [
+      ['transformer', 'A model that reads many pieces at once and lets each piece look at the others.'],
+      ['token', 'A small piece that the model reads, such as a word or a picture patch.'],
       ['patch', 'A small square piece cut from a picture.'],
-      ['patch embedding', 'A learned layer that turns the pixels of one patch into a token.'],
+      ['patch embedding', 'A trained step that turns the pixels of one patch into a token.'],
       ['position vector', 'Numbers added to a token to say where its patch was in the picture.'],
-      ['class token', 'An extra token added in front, whose final vector names the picture.'],
+      ['class token', 'An extra token added in front, whose final numbers name the picture.'],
       ['pixel', 'One tiny dot of a picture, with a colour.']
     ],
     math: {
@@ -597,16 +620,16 @@ const AI_ABOUT_NOW = {
         ['P', 'The side length of one square patch in pixels.']
       ],
       example: [
-        'Take a picture that is 224 by 224 pixels, cut into patches that are 16 by 16 pixels.',
+        'This is a different example from the animation, which uses a 192 by 192 picture. Here the picture is 224 by 224 pixels, as in the original paper, cut into patches that are 16 by 16 pixels.',
         'That makes 224 / 16 = 14 patches across and 14 down. So N = 14 x 14 = 196 tokens.',
-        'Each patch holds 16 x 16 x 3 colours = 768 numbers. One layer turns them into a token.',
+        'Each patch holds 16 x 16 x 3 colours = 768 numbers. One trained step turns them into a token.',
         'Attention compares every pair of tokens: 196 x 196 = 38,416 pairs.',
         'With patches of 32, there are only 7 x 7 = 49 tokens and 2,401 pairs. Halving the patch size gives 4 times the tokens and 16 times the pairs.'
       ]
     },
     steps: [
       'Cut the picture into square patches, like floor tiles.',
-      'Flatten each patch into a list of numbers, and turn it into a token with one learned layer.',
+      'Flatten each patch into a list of numbers, and turn it into a token with one trained step.',
       'Add a position vector to each token, and put a class token at the front.',
       'Run the tokens through attention layers. Every patch can look at every other patch.',
       'Read the class token at the end to name the picture.'

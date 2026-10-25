@@ -1798,19 +1798,20 @@ function aboutVals(cmp, key, a, t, link) {
   const tab = (k, label) => ({ label, on: view === k ? 'true' : 'false', bg: view === k ? t.text : 'transparent', fg: view === k ? t.bg : t.muted, pick: () => set(k) });
   const refs = (list) => (list || []).map((r) => { const l = link(r) || { label: r, go: null }; return { label: l.label, go: l.go || (() => {}), link: !!l.go, plain: !l.go }; });
   const items = (list) => (list || []).map((text, i) => ({ text, n: i + 1 }));
-  const A = a ? {
-    what: a.what, analogy: a.analogy || '', hasAnalogy: !!a.analogy,
-    uses: items(a.uses), before: refs(a.before), hasBefore: !!(a.before && a.before.length), noBefore: !(a.before && a.before.length),
-    words: (a.words || []).map(([term, mean]) => ({ term, mean })),
-    math: a.math ? {
-      lines: a.math.lines.map((h) => ({ put: aboutMath(h) })),
-      symbols: a.math.symbols.map(([h, mean]) => ({ put: aboutMath(h), mean })),
-      example: items(a.math.example), hasExample: !!(a.math.example && a.math.example.length)
-    } : null, hasMath: !!a.math,
-    steps: items(a.steps), use: items(a.use), avoid: items(a.avoid), mistakes: items(a.mistakes), cheat: items(a.cheat),
-    next: refs(a.next), hasNext: !!(a.next && a.next.length),
+  const b = a || {};
+  const A = {
+    what: b.what || '', analogy: b.analogy || '', hasAnalogy: !!b.analogy,
+    uses: items(b.uses), before: refs(b.before), hasBefore: !!(b.before && b.before.length), noBefore: !(b.before && b.before.length),
+    words: (b.words || []).map(([term, mean]) => ({ term, mean })),
+    math: {
+      lines: ((b.math && b.math.lines) || []).map((h) => ({ put: aboutMath(h) })),
+      symbols: ((b.math && b.math.symbols) || []).map(([h, mean]) => ({ put: aboutMath(h), mean })),
+      example: items(b.math && b.math.example), hasExample: !!(b.math && b.math.example && b.math.example.length)
+    }, hasMath: !!b.math,
+    steps: items(b.steps), use: items(b.use), avoid: items(b.avoid), mistakes: items(b.mistakes), cheat: items(b.cheat),
+    next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
-  } : null;
+  };
   return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', 'Watch it'), tab('about', 'About this lesson')] : [], A };
 }
 // @@END-ABOUT@@

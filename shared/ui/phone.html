@@ -25,7 +25,7 @@
 [data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
 [data-fit][data-fluid]{width:100%!important}
-[data-fit][data-fluid] [style*="font-size: 10px"],[data-fit][data-fluid] [style*="font-size: 11px"]{font-size:12px!important}
+[data-fit][data-fluid] [style*="font-size: var(--fs13)"],[data-fit][data-fluid] [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
 [data-page] *{max-width:100%}
 [data-page] main,[data-page] [data-m~="pad"]{padding-left:16px!important;padding-right:16px!important}
 [data-page]:where([style*="grid-template-columns"]),[data-page] :where([style*="grid-template-columns"]:not([data-m~="keep"]):not([style*="gap: 2px"]):not([style*="gap: 4px"]):not([data-drawer] *):not([data-m~="two"]):not([style*="repeat(4,"]):not([style*="repeat(5,"]):not([style*="repeat(6,"]):not([style*="repeat(7,"]):not([style*="repeat(8,"]):not([style*="repeat(9,"])){grid-template-columns:minmax(0,1fr)!important}
@@ -59,14 +59,14 @@
 [data-page] [data-m~="scroll"]>*{flex-shrink:0}
 [data-page] svg,[data-page] img,[data-page] pre,[data-page] table{max-width:100%}
 /* Display type at phone size. */
-[data-page] h1{font-size:36px!important;line-height:1.08!important}
-[data-page] [style*="font-size: 34px"],[data-page] [style*="font-size: 36px"]{font-size:28px!important;line-height:1.15!important}
-[data-page] [style*="font-size: 4"]:not([style*="font-size: 4px"]){font-size:32px!important;line-height:1.1!important}
-[data-page] [style*="font-size: 5"]:not([style*="font-size: 5px"]){font-size:36px!important;line-height:1.08!important}
-[data-page] [style*="font-size: 7"]:not([style*="font-size: 7px"]){font-size:44px!important;line-height:1.05!important}
-[data-page] [style*="font-size: 180px"]{font-size:96px!important;line-height:1!important}
+[data-page] h1{font-size:var(--fs36)!important;line-height:1.08!important}
+[data-page] [style*="font-size: var(--fs34)"],[data-page] [style*="font-size: var(--fs36)"]{font-size:var(--fs28)!important;line-height:1.15!important}
+[data-page] [style*="font-size: 4"]:not([style*="font-size: 4px"]){font-size:var(--fs32)!important;line-height:1.1!important}
+[data-page] [style*="font-size: 5"]:not([style*="font-size: 5px"]){font-size:var(--fs36)!important;line-height:1.08!important}
+[data-page] [style*="font-size: 7"]:not([style*="font-size: 7px"]){font-size:var(--fs44)!important;line-height:1.05!important}
+[data-page] [style*="font-size: var(--fs180)"]{font-size:var(--fs96)!important;line-height:1!important}
 /* Nothing under 12px. */
-[data-page] [style*="font-size: 9px"],[data-page] [style*="font-size: 10px"],[data-page] [style*="font-size: 11px"]{font-size:12px!important}
+[data-page] [style*="font-size: var(--fs13)"],[data-page] [style*="font-size: var(--fs13)"],[data-page] [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
 /* 44px touch targets. */
 [data-page] [role="checkbox"]{position:relative}
 [data-page] [role="checkbox"]::after{content:"";position:absolute;inset:-10px}

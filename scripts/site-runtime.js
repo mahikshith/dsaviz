@@ -208,6 +208,12 @@
     if (document.documentElement.style.zoom !== String(z)) document.documentElement.style.zoom = z;
     // The pill nav and the menu read --fit to stay at real size on phones (see shared/ui/nav.html).
     if (document.documentElement.style.getPropertyValue('--fit') !== String(z)) document.documentElement.style.setProperty('--fit', String(z));
+    // Text scale (--ts, read by every var(--fsN) size in shared/ui/type.html): the reader's Text size setting,
+    // times a lift that undoes up to 15% of the fit zoom, so a 1280px laptop reads the same sizes as 1440px.
+    let pick = 1;
+    try { pick = { large: 1.15, xl: 1.3 }[window.localStorage.getItem('dsaviz-text-size')] || 1; } catch (e) {}
+    const ts = String(Math.round(pick * Math.min(1.15, Math.max(1, 1 / z)) * 1000) / 1000);
+    if (de.style.getPropertyValue('--ts') !== ts) de.style.setProperty('--ts', ts);
   }
   function paint() {
     fit();
@@ -234,7 +240,7 @@
     note.style.left = Math.max(8, left) + 'px'; note.style.top = Math.max(8, top) + 'px';
   }
   document.addEventListener('mouseover', placeTip); document.addEventListener('focusin', placeTip);
-  fit(); window.addEventListener('resize', fit); setInterval(paint, 400);
+  fit(); window.addEventListener('resize', fit); window.addEventListener('ds-text', fit); setInterval(paint, 400);
   try { new MutationObserver(fit).observe(document.getElementById('app'), { childList: true }); } catch (e) {}
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));
 })();

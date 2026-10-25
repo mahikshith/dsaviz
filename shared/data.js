@@ -448,7 +448,7 @@ const DS = (function () {
 
   // -- editor preferences: dsaviz-editor-v1 = { v: 1, fontSize, tabSize, wrap, relative, vim, brackets, autocomplete, celebrate }.
   // tabSize 0 means the language's own indent (4 spaces, 2 for JavaScript and SQL).
-  const EDITOR_DEFAULTS = { fontSize: 14, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
+  const EDITOR_DEFAULTS = { fontSize: 16, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
   const EDITOR_FONT = [12, 20];
   function editorPrefs() {
     const o = json(KEY.editor, null);

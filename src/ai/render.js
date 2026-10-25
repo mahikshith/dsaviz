@@ -188,9 +188,26 @@ function aiD(p) {
   if (p.mode === 'Q' && p.pts.length === 3) return 'M' + f(p.pts[0]) + ' Q' + f(p.pts[1]) + ' ' + f(p.pts[2]);
   return 'M' + p.pts.map(f).join(' L') + (p.mode === 'Z' ? ' Z' : '');
 }
-// Primitives -> template-ready values (every item in a list carries the same fields).
-function aiPaint(S, t, textScale) {
+// Stage text minimums, on screen: labels 14px, captions (drawn at 16 and up) 16px, both times the reader's
+// Text size. A stage svg carries data-stage="<key>"; after each frame aiStageK() measures its screen pixels per
+// stage unit and re-renders the page once when that changes, so aiPaint() can lift text that would render small.
+const AI_STAGE_K = {};
+function aiTextPick() { try { return { large: 1.15, xl: 1.3 }[window.localStorage.getItem('dsaviz-text-size')] || 1; } catch (e) { return 1; } }
+function aiStageK(key, cmp) {
+  const prev = AI_STAGE_K[key] || 0;
+  setTimeout(() => {
+    let k = 0;
+    try { const el = document.querySelector('svg[data-stage="' + key + '"]'); const m = el && el.getScreenCTM(); if (m) k = Math.hypot(m.a, m.b); } catch (e) {}
+    if (k > 0 && Math.abs(k - (AI_STAGE_K[key] || 0)) > 0.005) { AI_STAGE_K[key] = k; if (cmp && cmp.setState) cmp.setState({ stageK: k }); }
+  }, 0);
+  return prev;
+}
+// Primitives -> template-ready values (every item in a list carries the same fields). k: screen pixels per
+// stage unit (aiStageK); 0 skips the minimums.
+function aiPaint(S, t, textScale, k) {
   const ts = textScale || 1;
+  const pick = k ? aiTextPick() : 1;
+  const size = (v) => { let px = v * ts * pick; if (k) px = Math.max(px, (v >= 16 ? 16 : 14) * pick / k); return Math.round(px * 10) / 10; };
   const r1 = (v) => Math.round(aiNum(v, 0) * 10) / 10;
   return {
     halos: S.halos.map((h) => ({ x: r1(h.x), y: r1(h.y), w: r1(Math.max(0, h.w)), h: r1(Math.max(0, h.h)), rx: r1(h.rx), op: r1(aiNum(h.op, 1)) })),
@@ -198,6 +215,6 @@ function aiPaint(S, t, textScale) {
     rects: S.rects.map((r) => ({ x: r1(r.x), y: r1(r.y), w: r1(Math.max(0, r.w)), h: r1(Math.max(0, r.h)), rx: r1(r.rx), fill: r.fill, stroke: r.stroke, sw: r1(r.sw), dash: r.dash || 'none', op: Math.round(aiNum(r.op, 1) * 100) / 100 })),
     paths: S.paths.map((p) => ({ d: aiD(p), fill: p.fill, stroke: p.stroke, sw: r1(p.sw), dash: p.dash || 'none', op: Math.round(aiNum(p.op, 1) * 100) / 100 })),
     circles: S.circles.map((c) => ({ cx: r1(c.cx), cy: r1(c.cy), r: r1(Math.max(0, c.r)), fill: c.fill, stroke: c.stroke, sw: r1(c.sw), dash: c.dash || 'none', op: Math.round(aiNum(c.op, 1) * 100) / 100 })),
-    texts: S.texts.map((x) => ({ x: r1(x.x), y: r1(x.y), text: x.text, fill: x.fill, size: Math.round(x.size * ts), weight: x.weight, anchor: x.anchor, op: Math.round(aiNum(x.op, 1) * 100) / 100, font: x.mono ? t.mono : t.body }))
+    texts: S.texts.map((x) => ({ x: r1(x.x), y: r1(x.y), text: x.text, fill: x.fill, size: size(x.size), weight: x.weight, anchor: x.anchor, op: Math.round(aiNum(x.op, 1) * 100) / 100, font: x.mono ? t.mono : t.body }))
   };
 }

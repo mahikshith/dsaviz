@@ -158,7 +158,7 @@ class Component extends DCLogic {
       if (this.askBefore(this.state.step + 1, true)) return;
       this.go(this.state.step + 1);
       if (this.state.playing) this.tick();
-    }, this.pace());
+    }, paced(this.pace()));
   }
   play() {
     if (this.state.step === this.steps().length - 1) this.setState({ step: 0 });
@@ -516,7 +516,7 @@ class Component extends DCLogic {
     graph.actor = { move: 'translate(0px, 0px)', size: 0, op: 0, initial: '', color: 'transparent', font: '10px' };
     if (st.actorAt != null && byId[st.actorAt]) {
       const a = B.actor, who = STORY_CAST[S.cast] || { initial: '?', color: 'left' }, [x, y] = B.pos[st.actorAt];
-      graph.actor = { move: 'translate(' + Math.round(x - B.r - a * 0.45) + 'px, ' + Math.round(y - B.r - a * 0.45) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.round(a * 0.5) + 'px' };
+      graph.actor = { move: 'translate(' + Math.round(x - B.r - a * 0.45) + 'px, ' + Math.round(y - B.r - a * 0.45) + 'px)', size: a, op: 1, initial: who.initial, color: t[who.color] || who.color, font: Math.max(12, Math.round(a * 0.5)) + 'px' };
     }
     graph.legend = (S.legend || []).map(([state, label]) => {
       if (state === 'path' || state === 'active') return { label, fill: state === 'path' ? t.path : t.left, ring: state === 'path' ? t.path : t.left, mark: '', ringStyle: 'solid', radius: '3px', h: '6px' };
@@ -753,7 +753,7 @@ class Component extends DCLogic {
       playLabel: this.state.playing ? 'Pause' : atEnd && this.state.played ? 'Replay' : 'Play',
       // Phones show the story (and its controls) first, then the problem; desktop keeps the problem on top.
       leftParts: phoneOrder(['problem', 'watch'], ['watch', 'problem']),
-      togglePlay: () => this.togglePlay(),
+      spd: speedVals(this), togglePlay: () => this.togglePlay(),
       playBtn: btn(playPrimary),
       // after the last step, the next move is to write it
       finished: atEnd && found, showTryIt: atEnd && !onCode,

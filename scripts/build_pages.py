@@ -131,6 +131,14 @@ def phone_pads(files):
     return '\n'.join(','.join(sel) + '{' + key + '}' for key, sel in sorted(rules.items()))
 
 
+def type_tokens(files):
+    """:root rules for every var(--fsN) the pages use: N px times the reader's text scale (--ts, set by the runtime).
+    Phones read body copy one pixel smaller (17px)."""
+    sizes = sorted({int(n) for s in files for n in re.findall(r'var\(--fs(\d+)\)', s)} | {18})
+    rules = ';'.join('--fs%d:calc(%dpx * var(--ts, 1))' % (n, n) for n in sizes)
+    return (':root{' + rules + '}\n@media (max-width: 759px){:root{--fs18:calc(17px * var(--ts, 1))}}')
+
+
 START_DATA = {}
 
 
@@ -215,6 +223,8 @@ def main():
     phone_pages = [read('pages', f) for f in built if 'data-page=' in read('pages', f)]
     phone_pages += [read(*p) for p in [('src', 'code', 'code_body.html'), ('src', 'pages', 'profile_body.html'), ('src', 'pages', 'welcome_body.html')]]
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('/*@@PADS@@*/', phone_pads(phone_pages))
+    # The type scale tokens (scripts/typescale.py writes font sizes as var(--fsN)) ride at the top of the same block.
+    ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('<style>', '<style>\n' + type_tokens([read('pages', f) for f in built] + [read('shared', 'drawer.html'), read('shared', 'ui', 'nav.html')]), 1)
     tests_spec = read('shared', 'tests_spec.js')
     # Ids of every problem with a spec (the mock interview's hints cover these).
     spec_block = tests_spec[tests_spec.index('const TEST_SPECS = {'):]

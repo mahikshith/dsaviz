@@ -2,6 +2,10 @@
 // The concept lesson player (ConceptLesson page). scripts/build_pages.py copies this file in after the
 // "// ---- page ----" marker. Scenes come from src/concepts/lessons.js, drawn by src/ai/render.js.
 const CS_LESSON_KEY = 'dsaviz-concept-lesson';
+// Play: the first step comes this soon after pressing Play. The stage sits under the step card and is never
+// taller than the screen below it (page px from the top of the page to the stage, plus a bottom margin).
+const PLAY_FIRST_MS = 900;
+const PLAY_STAGE_TOP = 300;
 function csMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
 function csReduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
 function csNow() { try { return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now(); } catch (e) { return Date.now(); } }
@@ -70,16 +74,24 @@ class Component extends DCLogic {
     this.ease();
     this.setState(patch);
   }
-  stop() { clearInterval(this.timer); if (this.state.playing) this.setState({ playing: false }); }
+  stop() { clearTimeout(this.timer); this.timer = null; if (this.state.playing) this.setState({ playing: false }); }
+  // Play: the first step comes after a short beat, so pressing Play moves at once; each later step holds 3.8 s.
+  // Reaching the last step stops playing, so the button reads Play again.
   togglePlay() {
     if (this.state.playing) { this.stop(); return; }
     if (this.state.step >= this.steps().length - 1) this.go(0);
     this.setState({ playing: true });
-    clearInterval(this.timer);
-    this.timer = setInterval(() => {
-      if (this.state.step >= this.steps().length - 1) { this.stop(); return; }
-      this.go(this.state.step + 1);
-    }, 3800);
+    this.tick(PLAY_FIRST_MS);
+  }
+  tick(ms) {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      if (this.dead || !this.state.playing) return;
+      const n = this.steps().length; const k = this.state.step + 1;
+      if (k > n - 1) { this.stop(); return; }
+      this.go(k);
+      if (k >= n - 1) this.stop(); else this.tick(3800);
+    }, ms);
   }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
@@ -110,8 +122,8 @@ class Component extends DCLogic {
         navPad: mobile ? '12px 16px' : '16px 14px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
         lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
         mainPad: mobile ? '14px 16px' : '16px 20px', h1: mobile ? 24 : 30, titleWrap: mobile ? 'wrap' : 'nowrap', titleWs: mobile ? 'normal' : 'nowrap',
-        canvasGrow: mobile ? '0' : '1', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
-        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 17 : 19,
+        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'calc(100vh / var(--fit, 1) - ' + PLAY_STAGE_TOP + 'px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
+        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '12px 14px' : '14px 18px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 17 : 19,
         asidePad: mobile ? '0 16px 24px' : '16px 16px 18px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
       },
       tracks: CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id)).map((tr) => {
@@ -145,8 +157,10 @@ class Component extends DCLogic {
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
-      togglePlay: () => this.togglePlay(),
-      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson step by step',
+      togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
+      // Phones put the controls above the caption, so they stay put while captions change length.
+      nowParts: mobile ? [{ ctrl: true, say: false }, { ctrl: false, say: true }] : [{ say: true, ctrl: false }, { say: false, ctrl: true }],
+      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson',
       slider: {
         show: !!P, label: P ? P.label : '', hint: P ? P.hint : '',
         min: P ? P.min : 0, max: P ? P.max : 1, step: P ? P.step : 1, value: pv,

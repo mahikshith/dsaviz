@@ -7,6 +7,11 @@
 // Every story is measured the same way at three steps (first, middle, last), stage included.
 // Focus order: on pages whose phone layout reorders content (Sheet, Auth, Briefing), tabbing from the
 // top reaches the first five controls of the page (the bottom pill nav aside) in top-to-bottom order.
+// Player controls pass: one lesson of each player (AI & ML, AI now, system design, DSA concept, Start here,
+// story, Git) at 1440x900, 1280x720 and 390x844 in the max theme. The Play button's whole box must be in the
+// first screen without scrolling and not covered (by the phone pill nav, say); clicking it must turn it into
+// Pause and move the step counter on within 3 s; clicking again must pause (label back to Play, counter still);
+// and Space with nothing focused must start and stop it the same way.
 // Needs Playwright:  npm install --no-save playwright && npx playwright install chromium
 // Or playwright-core with an installed browser:  npm install --no-save playwright-core
 //   then DS_BROWSER=msedge npm run test:browser   (or chrome)
@@ -22,6 +27,8 @@ try { ({ chromium } = require('playwright')); } catch (e) {
   }
 }
 const CHANNEL = process.env.DS_BROWSER || '';
+// DS_PASS=controls runs only the player controls pass.
+const ONLY_CONTROLS = process.env.DS_PASS === 'controls';
 
 const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Start', 'Chapter', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Concepts', 'ConceptLesson', 'Contests'];
 // Runs in the page: sideways overflow and text under 12px inside the page root.
@@ -66,6 +73,41 @@ ${script}; return { SCENES, SCENE_ORDER };`);
 })();
 const REORDERED = ['Sheet', 'Auth', 'Briefing'];
 
+// Player controls pass: [name, page, localStorage that opens the lesson]
+const PLAYERS = [['AI & ML', 'AILesson', { 'dsaviz-ai-lesson': 'gradient' }], ['AI now', 'AILesson', { 'dsaviz-ai-lesson': 'attention' }],
+  ['System', 'SDLesson', {}], ['Concept', 'ConceptLesson', {}], ['Start here', 'Chapter', {}], ['Story', 'Story', {}], ['Git', 'Git', {}]];
+// Runs in the page: the player's step counter ("Step 3 of 12", "step 3/12", "beat 3 of 9"), the first one on the page.
+const STEP_RE = '\\b(?:step|beat)\\s+(\\d+)\\s*(?:of|\\/)\\s*\\d+';
+const readStep = (re) => {
+  const m = (document.querySelector('#app > div') || document.body).innerText.match(new RegExp(re || STEP_RE, 'i'));
+  return m ? Number(m[1]) : -1;
+};
+// Runs in the page: the first visible Play button, marked for clicking, and whether it is wholly in the first screen and on top.
+const findPlay = () => {
+  const b = [...document.querySelectorAll('#app button')].find((el) => /^(play|replay)\b/i.test((el.getAttribute('aria-label') || el.textContent || '').trim()) && el.getBoundingClientRect().width > 0);
+  if (!b) return null;
+  document.querySelectorAll('[data-test-play]').forEach((el) => el.removeAttribute('data-test-play'));
+  b.setAttribute('data-test-play', '');
+  const r = b.getBoundingClientRect();
+  const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  return { top: Math.round(r.top), bottom: Math.round(r.bottom), inView: r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth,
+    onTop: !!hit && (hit === b || b.contains(hit)), scrolled: window.scrollY > 0 };
+};
+// Polls the marked Play button's label and the step counter until ok(), or until ms run out.
+async function waitFor(page, ok, before, ms) {
+  let last = null;
+  for (let t = 0; t <= ms; t += 150) {
+    last = await page.evaluate(([b, re]) => {
+      const el = document.querySelector('[data-test-play]');
+      const m = (document.querySelector('#app > div') || document.body).innerText.match(new RegExp(re, 'i'));
+      return { label: el ? (el.getAttribute('aria-label') || el.textContent || '').trim() : '', step: m ? Number(m[1]) : -1, before: b };
+    }, [before, STEP_RE]);
+    if (ok(last)) return { ok: true, last };
+    await page.waitForTimeout(150);
+  }
+  return { ok: false, last };
+}
+
 const dist = path.join(__dirname, '..', 'dist');
 const html = fs.readFileSync(path.join(dist, 'index.html'));
 // The offline app files sit next to index.html; any other path gets the page.
@@ -87,7 +129,7 @@ server.listen(0, async () => {
   const url = 'http://localhost:' + server.address().port + '/';
   const browser = await chromium.launch(CHANNEL ? { channel: CHANNEL } : {});
   let problems = 0;
-  for (const theme of ['paper', 'ink', 'field']) {
+  for (const theme of ONLY_CONTROLS ? [] : ['paper', 'ink', 'field']) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -118,7 +160,7 @@ server.listen(0, async () => {
   const desktopProblems = problems;
 
   // ---------- mobile pass ----------
-  for (const theme of ['max', 'paper']) {
+  for (const theme of ONLY_CONTROLS ? [] : ['max', 'paper']) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -187,6 +229,58 @@ server.listen(0, async () => {
     await page.close();
   }
   console.log(problems > desktopProblems ? (problems - desktopProblems) + ' problem(s) on phones' : 'all pages fit a 390px phone in max and paper');
+  const phoneProblems = problems;
+
+  // ---------- player controls pass ----------
+  for (const [w, h] of [[1440, 900], [1280, 720], [390, 844]]) {
+    const phone = w < 760;
+    for (const [label, name, store] of PLAYERS) {
+      // a fresh page per player: nothing saved from an earlier lesson, scrolled to the top
+      const page = await browser.newPage({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone });
+      const errors = [];
+      page.on('pageerror', (e) => errors.push(e.message));
+      await page.addInitScript((st) => { try { localStorage.setItem('dsaviz-theme', 'max'); for (const k in st) localStorage.setItem(k, st[k]); } catch (e) {} }, store);
+      await page.goto(url);
+      await page.waitForTimeout(500);
+      await page.evaluate((n) => { window.__dsNav(n + '.dc.html'); }, name);
+      await page.waitForTimeout(700);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      const fails = [];
+      const box = await page.evaluate(findPlay);
+      if (!box) fails.push('no Play button');
+      else {
+        if (!box.inView) fails.push('Play at ' + box.top + '..' + box.bottom + ' of ' + h + 'px');
+        if (!box.onTop) fails.push('Play is covered');
+        if (box.scrolled) fails.push('page opened scrolled');
+      }
+      if (box) {
+        const before = await page.evaluate(readStep, STEP_RE);
+        await page.click('[data-test-play]');
+        const played = await waitFor(page, (b) => /pause/i.test(b.label) && b.step > b.before, before, 3000);
+        if (!played.ok) fails.push('Play did not start (' + played.last.label + ', step ' + before + ' to ' + played.last.step + ')');
+        await page.click('[data-test-play]');
+        const paused = await waitFor(page, (b) => /^(play|replay)\b/i.test(b.label), before, 1000);
+        if (!paused.ok) fails.push('second click did not pause (' + paused.last.label + ')');
+        const held = await page.evaluate(readStep, STEP_RE);
+        await page.waitForTimeout(1500);
+        if (await page.evaluate(readStep, STEP_RE) !== held) fails.push('steps kept moving after pause');
+        // Space with nothing focused starts and stops it too
+        const blur = () => { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); };
+        await page.evaluate(blur);
+        await page.keyboard.press('Space');
+        const spaced = await waitFor(page, (b) => /pause/i.test(b.label), before, 1000);
+        await page.evaluate(blur);
+        await page.keyboard.press('Space');
+        const unspaced = await waitFor(page, (b) => /^(play|replay)\b/i.test(b.label), before, 1000);
+        if (!spaced.ok || !unspaced.ok) fails.push('Space does not toggle play');
+      }
+      if (errors.length) fails.push('errors: ' + errors.slice(0, 2).join(' | '));
+      if (fails.length) problems++;
+      console.log((fails.length ? '✗' : '✓'), ('p-' + w + 'x' + h).padEnd(12), label.padEnd(10), fails.length ? fails.join('; ') : 'Play at ' + box.top + 'px, plays and pauses');
+      await page.close();
+    }
+  }
+  console.log(problems > phoneProblems ? (problems - phoneProblems) + ' problem(s) with player controls' : 'player controls in view and working in every player');
 
   await browser.close();
   server.close();

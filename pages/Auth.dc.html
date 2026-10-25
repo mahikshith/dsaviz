@@ -239,7 +239,7 @@ function streakDays(t) {
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1', start: 'dsaviz-start-v1' };
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1', start: 'dsaviz-start-v1', editor: 'dsaviz-editor-v1', subs: 'dsaviz-submissions-v1', streak: 'dsaviz-streak-v1' };
   const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5, mock: 20, start: 10 };
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock], ['Passing a Start here exercise', XP.start]];
   const LEVEL_XP = 500;
@@ -322,20 +322,21 @@ const DS = (function () {
   }
 
   // -- streak: consecutive active days. A streak that ran through yesterday is still alive today (atRisk).
+  // A freeze (dsaviz-streak-v1, below) bridges one missed day: the streak runs through it, but it adds no day.
   function streak() {
-    const map = days();
+    const map = days(), frozen = readStreakX().frozen;
     const today = midnight(now());
     const on = (ts) => !!map[dayKey(ts)];
+    const kept = (ts) => on(ts) || !!frozen[dayKey(ts)];
     const activeToday = on(today);
-    let current = 0;
-    let cur = activeToday ? today : addDays(today, -1);
-    while (on(cur)) { current++; cur = addDays(cur, -1); }
-    const keys = Object.keys(map).sort();
+    const current = runFrom(activeToday ? today : addDays(today, -1), on, kept);
+    const keys = Object.keys(Object.assign({}, map, frozen)).sort();
     let longest = 0, run = 0, prev = null;
     keys.forEach((k) => {
       const [y, m, d] = k.split('-').map(Number);
       const ts = new Date(y, m - 1, d).getTime();
-      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + 1 : 1;
+      const add = map[k] ? 1 : 0;
+      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + add : add;
       longest = Math.max(longest, run);
       prev = ts;
     });
@@ -344,10 +345,63 @@ const DS = (function () {
     const monday = addDays(today, -dow);
     const week = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => {
       const ts = addDays(monday, i);
-      return { d, date: dayKey(ts), on: on(ts), today: i === dow, future: ts > today };
+      return { d, date: dayKey(ts), on: on(ts), frozen: !on(ts) && !!frozen[dayKey(ts)], today: i === dow, future: ts > today };
     });
-    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week };
+    const fz = freezeState();
+    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week,
+      freeze: { available: fz.available, offer: fz.offer, usedThisWeek: fz.usedThisWeek } };
   }
+  // Active days counted back from `from` while the chain holds (a frozen day keeps it going without counting).
+  function runFrom(from, on, kept) {
+    let n = 0, cur = from;
+    while (kept(cur)) { if (on(cur)) n++; cur = addDays(cur, -1); }
+    return n;
+  }
+
+  // -- streak freeze and the daily check-in: dsaviz-streak-v1 = { v: 1, frozen: { 'YYYY-MM-DD': ts used }, seen: 'YYYY-MM-DD' }.
+  // One freeze a week (Monday to Sunday, by the day it is used), earned by a run of at least FREEZE_RUN active days.
+  // It only bridges yesterday, when yesterday was missed and the day before was active: exactly one day missed.
+  const FREEZE_RUN = 3;
+  function readStreakX() {
+    const o = json(KEY.streak, null);
+    const out = { v: 1, frozen: {}, seen: '' };
+    if (!o || o.v !== 1) return out;
+    if (o.frozen && typeof o.frozen === 'object' && !Array.isArray(o.frozen)) Object.keys(o.frozen).forEach((k) => { const ts = Number(o.frozen[k]); if (/^\d{4}-\d\d-\d\d$/.test(k) && isFinite(ts) && ts > 0) out.frozen[k] = ts; });
+    if (typeof o.seen === 'string' && /^\d{4}-\d\d-\d\d$/.test(o.seen)) out.seen = o.seen;
+    return out;
+  }
+  function writeStreakX(o) { set(KEY.streak, JSON.stringify({ v: 1, frozen: o.frozen, seen: o.seen })); }
+  function weekStart(ts) { const t = midnight(ts); return addDays(t, -((new Date(t).getDay() + 6) % 7)); }
+  function freezeState() {
+    const map = days(), frozen = readStreakX().frozen;
+    const today = midnight(now()), yest = addDays(today, -1), before = addDays(today, -2);
+    const on = (ts) => !!map[dayKey(ts)];
+    const kept = (ts) => on(ts) || !!frozen[dayKey(ts)];
+    const monday = weekStart(now());
+    const usedThisWeek = Object.keys(frozen).some((k) => frozen[k] >= monday);
+    const keeps = on(before) ? runFrom(before, on, kept) : 0;
+    const live = runFrom(on(today) ? today : yest, on, kept);
+    const offer = !usedThisWeek && !kept(yest) && keeps >= FREEZE_RUN;
+    return { offer, usedThisWeek, keeps, missed: dayKey(yest), available: !usedThisWeek && (live >= FREEZE_RUN || offer) };
+  }
+  // Use the week's freeze on yesterday. Returns the new streak, or null when no freeze can be used.
+  function useFreeze() {
+    const f = freezeState();
+    if (!f.offer) return null;
+    const o = readStreakX();
+    o.frozen[f.missed] = now();
+    writeStreakX(o);
+    return streak();
+  }
+  // The daily modal: shown on the first visit of each local day, once the learner has done anything.
+  // day is the streak day today counts as (the streak so far plus today); broken: the streak ended and no freeze can save it.
+  function daily() {
+    const st = streak(), f = freezeState();
+    const any = Object.keys(days()).length > 0;
+    return { show: any && readStreakX().seen !== dayKey(now()), day: st.activeToday ? st.current : st.current + 1, current: st.current,
+      activeToday: st.activeToday, broken: !st.activeToday && st.current === 0 && !f.offer, offer: f.offer, keeps: f.keeps };
+  }
+  function markDailySeen() { const o = readStreakX(); o.seen = dayKey(now()); writeStreakX(o); }
 
   // -- heatmap: `weeks` columns ending this week, Sunday first (GitHub layout)
   function heatmap(weeks) {
@@ -617,10 +671,84 @@ const DS = (function () {
     return changed;
   }
 
-  // -- the sheet backup file: { v: 1, done, star, notes }. Import adds ticks, stars and notes, keeps the earliest tick time and never removes anything.
+  // -- editor preferences: dsaviz-editor-v1 = { v: 1, fontSize, tabSize, wrap, relative, vim, brackets, autocomplete, celebrate }.
+  // tabSize 0 means the language's own indent (4 spaces, 2 for JavaScript and SQL).
+  const EDITOR_DEFAULTS = { fontSize: 14, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
+  const EDITOR_FONT = [12, 20];
+  function editorPrefs() {
+    const o = json(KEY.editor, null);
+    const out = Object.assign({}, EDITOR_DEFAULTS);
+    if (!o || o.v !== 1) return out;
+    const fs = Number(o.fontSize);
+    if (fs === Math.round(fs) && fs >= EDITOR_FONT[0] && fs <= EDITOR_FONT[1]) out.fontSize = fs;
+    if (o.tabSize === 0 || o.tabSize === 2 || o.tabSize === 4) out.tabSize = o.tabSize;
+    ['wrap', 'relative', 'vim', 'brackets', 'autocomplete', 'celebrate'].forEach((k) => { if (typeof o[k] === 'boolean') out[k] = o[k]; });
+    return out;
+  }
+  // Change some preferences; a value that does not fit is dropped on the next read. Returns them all.
+  function setEditorPrefs(patch) {
+    const next = Object.assign(editorPrefs(), patch && typeof patch === 'object' ? patch : {});
+    set(KEY.editor, JSON.stringify(Object.assign({ v: 1 }, next)));
+    return editorPrefs();
+  }
+  function resetEditorPrefs() { set(KEY.editor, JSON.stringify(Object.assign({ v: 1 }, EDITOR_DEFAULTS))); return editorPrefs(); }
+
+  // -- submission history: dsaviz-submissions-v1 = { v: 1, subs: { pid: [{ at, lang, passed, total, code }] } }, oldest first.
+  // Only the last SUB_MAX submissions per problem are kept, each up to SUB_CODE_MAX characters of code.
+  const SUB_MAX = 20, SUB_CODE_MAX = 20000;
+  const SUB_LANGS = ['py', 'js', 'java', 'cpp', 'go', 'sql'];
+  function cleanSub(x) {
+    if (!x || typeof x !== 'object') return null;
+    const at = Number(x.at);
+    if (!isFinite(at) || at <= 0 || SUB_LANGS.indexOf(x.lang) < 0 || typeof x.code !== 'string') return null;
+    const total = Math.max(0, Math.floor(Number(x.total) || 0));
+    const passed = Math.max(0, Math.min(total, Math.floor(Number(x.passed) || 0)));
+    return { at, lang: x.lang, passed, total, code: x.code.slice(0, SUB_CODE_MAX) };
+  }
+  function cleanSubList(list) { return (Array.isArray(list) ? list : []).map(cleanSub).filter(Boolean).sort((a, b) => a.at - b.at).slice(-SUB_MAX); }
+  function readSubs() {
+    const o = json(KEY.subs, null);
+    const out = {};
+    if (o && o.v === 1 && o.subs && typeof o.subs === 'object' && !Array.isArray(o.subs)) Object.keys(o.subs).forEach((pid) => { const l = cleanSubList(o.subs[pid]); if (l.length) out[pid] = l; });
+    return out;
+  }
+  function writeSubs(all) { set(KEY.subs, JSON.stringify({ v: 1, subs: all })); }
+  // A problem's submissions, newest first. Each gets an id (its time and language) to pick it by.
+  function submissions(pid) { return (readSubs()[pid] || []).slice().reverse().map((x) => Object.assign({ id: x.at + ':' + x.lang }, x)); }
+  // Record one Submit: { lang, passed, total, code }. The time is now.
+  function addSubmission(pid, rec) {
+    if (!pid) return null;
+    const x = cleanSub(Object.assign({}, rec, { at: now() }));
+    if (!x) return null;
+    const all = Object.assign({}, readSubs());
+    all[pid] = cleanSubList((all[pid] || []).concat([x]));
+    writeSubs(all);
+    return Object.assign({ id: x.at + ':' + x.lang }, x);
+  }
+  function clearSubmissions(pid) { const all = Object.assign({}, readSubs()); delete all[pid]; writeSubs(all); }
+  // Merge submissions from a backup: ones we lack (same time and language) are added, then each problem is capped again.
+  function mergeSubmissions(incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return 0;
+    const all = Object.assign({}, readSubs());
+    let added = 0;
+    Object.keys(incoming).forEach((pid) => {
+      const have = all[pid] || [];
+      const keys = new Set(have.map((x) => x.at + ':' + x.lang));
+      const fresh = cleanSubList(incoming[pid]).filter((x) => !keys.has(x.at + ':' + x.lang));
+      if (!fresh.length) return;
+      const next = cleanSubList(have.concat(fresh));
+      const kept = new Set(next.map((x) => x.at + ':' + x.lang));
+      added += fresh.filter((x) => kept.has(x.at + ':' + x.lang)).length;
+      all[pid] = next;
+    });
+    if (added) writeSubs(all);
+    return added;
+  }
+
+  // -- the sheet backup file: { v: 1, done, star, notes, subs }. Import adds ticks, stars, notes and submissions, keeps the earliest tick time and never removes anything.
   function exportBackup() {
     const s = readSheet();
-    return { v: 1, done: s.done, star: s.star, notes: readNotes() };
+    return { v: 1, done: s.done, star: s.star, notes: readNotes(), subs: readSubs() };
   }
   function importBackup(data) {
     if (!data || typeof data !== 'object' || data.v !== 1) return null;
@@ -635,7 +763,7 @@ const DS = (function () {
     });
     if (data.star && typeof data.star === 'object') Object.keys(data.star).forEach((k) => { if (data.star[k]) star[k] = 1; });
     set(KEY.sheet, JSON.stringify({ v: 1, done, star }));
-    return { ticks, notes: mergeNotes(data.notes) };
+    return { ticks, notes: mergeNotes(data.notes), subs: mergeSubmissions(data.subs) };
   }
 
   // -- the learner, as far as this browser knows them
@@ -871,22 +999,24 @@ const DS = (function () {
     return o;
   }
 
-  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
+  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code, submissions, streak freezes and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, KEY.subs, KEY.streak, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
     KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
-    days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    days, streak, FREEZE_RUN, useFreeze, daily, markDailySeen, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
     predict, logPredict,
     start, startPass, startFinish, startVisit, startPlace, startMedals, startRing,
     MOCK_LENGTHS, MOCK_MIX, MOCK_AREAS, MOCK_HINT_COST, MOCK_BANDS, mockPick, mockStart, mockSession, mockRecord, mockHint, mockNotes, mockExtend, mockEnd, mockAbandon, mockScore, mockSave, mockHistory,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
+    EDITOR_DEFAULTS, EDITOR_FONT, editorPrefs, setEditorPrefs, resetEditorPrefs,
+    SUB_MAX, SUB_CODE_MAX, submissions, addSubmission, clearSubmissions, mergeSubmissions,
     leaderboard, buddies, feed,
     setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
   };

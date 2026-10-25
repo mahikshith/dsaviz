@@ -446,8 +446,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{work.pane}}" hint-placeholder-val="{{ true }}">
 <div data-st-pane style="flex-grow: 1; min-height: 0">
 <!-- CODE PANE --> <!-- generated from shared/code_pane.html: editor, Run/Submit, console. Fills its parent's height; holes under cr.* come from CodeRunner.vals(t). -->
-<section aria-label="Code" style="height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+<section aria-label="Code" style="position: relative; height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
 <div data-m="wrap" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
+<sc-if value="{{cr.tabs}}" hint-placeholder-val="{{ true }}">
+<div role="tablist" aria-label="Code or submission history" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
+<button id="cp-tab-code" role="tab" aria-selected="{{cr.codeSel}}" aria-controls="cp-view" tabindex="{{cr.codeTabIdx}}" onClick="{{cr.codeTab}}" onKeyDown="{{cr.tabKey}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{cr.codeTabBg}}; color: {{cr.codeTabFg}}">Code</button>
+<button id="cp-tab-hist" role="tab" aria-selected="{{cr.histSel}}" aria-controls="cp-view" tabindex="{{cr.histTabIdx}}" onClick="{{cr.historyTab}}" onKeyDown="{{cr.tabKey}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; background: {{cr.histTabBg}}; color: {{cr.histTabFg}}">History<sc-if value="{{cr.hasHistCount}}" hint-placeholder-val="{{ true }}"><span style="min-width: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; font-size: 11px; line-height: 18px; text-align: center; background: {{t.line2}}; color: {{t.text}}">{{cr.histCount}}</span></sc-if></button>
+</div>
+</sc-if>
 <sc-if value="{{cr.showLangs}}" hint-placeholder-val="{{ true }}">
 <div role="group" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
 <sc-for list="{{cr.langs}}" as="lg" hint-placeholder-count="5"><button onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>
@@ -460,12 +466,62 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <button onClick="{{cr.copy}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.copyLabel}}</button>
 <button onClick="{{cr.reset}}" aria-label="{{cr.resetAria}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{cr.resetBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.resetLabel}}</button>
+<button data-cp-gear onClick="{{cr.pf.gear}}" aria-label="Editor settings" aria-expanded="{{cr.pf.gearOn}}" aria-haspopup="dialog" title="Editor settings" style="width: 34px; height: 34px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg></button>
 </div>
-<div ref="{{cr.ref}}" style="flex: 1 1 0; min-height: 260px; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: hidden"></div>
+<sc-if value="{{cr.pf.open}}" hint-placeholder-val="{{ false }}">
+<div data-cp-prefs role="dialog" aria-label="Editor settings" onKeyDown="{{cr.pf.onKey}}" style="position: absolute; top: 44px; right: 0; z-index: 20; width: 340px; max-width: 100%; box-sizing: border-box; max-height: calc(100% - 52px); overflow-y: auto; padding: 16px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{t.surface}}; box-shadow: 0 12px 32px {{t.shadow}}; display: flex; flex-direction: column; gap: 12px; animation: rise 0.18s ease">
+<div style="display: flex; align-items: center; gap: 8px"><h2 style="margin: 0; flex-grow: 1; font-size: 15px; font-weight: 700">Editor settings</h2><button onClick="{{cr.pf.close}}" aria-label="Close editor settings" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; line-height: 1">✕</button></div>
+<div style="display: flex; align-items: center; gap: 8px"><span id="cp-font-l" style="flex-grow: 1; font-size: 14px; font-weight: 600">Text size</span><button onClick="{{cr.pf.smaller}}" disabled="{{cr.pf.noSmaller}}" aria-label="Smaller text" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; font-weight: 700">−</button><span role="status" aria-label="{{cr.pf.fontAria}}" style="min-width: 52px; text-align: center; font-family: {{t.mono}}; font-size: 13px; font-weight: 700">{{cr.pf.font}}</span><button onClick="{{cr.pf.larger}}" disabled="{{cr.pf.noLarger}}" aria-label="Larger text" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; font-weight: 700">+</button></div>
+<div style="display: flex; align-items: center; gap: 8px"><span id="cp-tab-l" style="flex-grow: 1; font-size: 14px; font-weight: 600">Tab size</span><div role="group" aria-labelledby="cp-tab-l" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}"><sc-for list="{{cr.pf.tabs}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" aria-label="{{tb.aria}}" style="height: 32px; min-width: 44px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for></div></div>
+<div style="display: flex; flex-direction: column; gap: 2px; border-top: 1px solid {{t.line}}; padding-top: 8px">
+<sc-for list="{{cr.pf.switches}}" as="sw" hint-placeholder-count="6"><button id="{{sw.id}}" role="switch" aria-checked="{{sw.on}}" onClick="{{sw.flip}}" style="min-height: 48px; padding: 6px 4px; border: 0; border-radius: 8px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left"><span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 600">{{sw.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{sw.note}}</span></span><span aria-hidden="true" style="position: relative; width: 40px; height: 24px; flex-shrink: 0; border-radius: 12px; background: {{sw.track}}; transition: background 0.15s"><span style="position: absolute; top: 2px; left: {{sw.x}}; width: 20px; height: 20px; border-radius: 10px; background: {{sw.knob}}; box-shadow: 0 1px 3px {{t.shadow}}; transition: left 0.15s"></span></span></button></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid {{t.line}}; padding-top: 12px"><button onClick="{{cr.pf.keys}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">Keyboard shortcuts</button><button onClick="{{cr.pf.reset}}" style="height: 40px; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">Reset to defaults</button></div>
+<p style="margin: 0; font-size: 12px; line-height: 1.5; color: {{t.muted}}">Saved in this browser for every problem.</p>
+</div>
+</sc-if>
+<sc-if value="{{cr.pf.keysOpen}}" hint-placeholder-val="{{ false }}">
+<div data-cp-keys role="dialog" aria-labelledby="cp-keys-h" onKeyDown="{{cr.pf.onKey}}" style="position: absolute; top: 44px; right: 0; z-index: 20; width: 340px; max-width: 100%; box-sizing: border-box; padding: 16px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{t.surface}}; box-shadow: 0 12px 32px {{t.shadow}}; display: flex; flex-direction: column; gap: 10px; animation: rise 0.18s ease">
+<div style="display: flex; align-items: center; gap: 8px"><button onClick="{{cr.pf.backToPrefs}}" aria-label="Back to editor settings" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px">←</button><h2 id="cp-keys-h" style="margin: 0; flex-grow: 1; font-size: 15px; font-weight: 700">Keyboard shortcuts</h2><button onClick="{{cr.pf.close}}" aria-label="Close keyboard shortcuts" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; line-height: 1">✕</button></div>
+<dl style="margin: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{cr.pf.shortcuts}}" as="sk" hint-placeholder-count="6"><div style="display: flex; align-items: center; gap: 12px; min-height: 28px"><dt style="flex-grow: 1; font-size: 14px; color: {{t.text2}}">{{sk.what}}</dt><dd style="margin: 0; display: flex; align-items: center; gap: 4px; flex-shrink: 0"><sc-for list="{{sk.keys}}" as="kk" hint-placeholder-count="2"><sc-if value="{{kk.hasSep}}"><span style="font-size: 12px; color: {{t.muted}}">{{kk.sep}}</span></sc-if><kbd style="min-width: 24px; height: 26px; padding: 0 7px; box-sizing: border-box; border-radius: 6px; border: 1px solid {{t.line2}}; border-bottom-width: 2px; background: {{t.sunk}}; display: inline-flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.text}}">{{kk.k}}</kbd></sc-for></dd></div></sc-for>
+</dl>
+</div>
+</sc-if>
+<div id="cp-view" role="{{cr.viewRole}}" aria-label="{{cr.viewName}}" style="flex: 1 1 0; min-height: 260px; display: flex; flex-direction: column">
+<div ref="{{cr.ref}}" style="display: {{cr.editorShow}}; flex: 1 1 0; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: hidden"></div>
+<sc-if value="{{cr.inHistory}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1 1 0; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
+<sc-if value="{{cr.hist.listing}}" hint-placeholder-val="{{ true }}">
+<div style="height: 44px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}"><h2 style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Your submissions</h2><span style="font-size: 12px; color: {{t.muted}}">The last {{cr.hist.max}} are kept</span></div>
+<sc-if value="{{cr.hist.empty}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 16px 14px; font-size: 14px; line-height: 1.6; color: {{t.text2}}">No submissions yet. Each time you press Submit ({{cr.submitKeys}}), your code and its score are saved here, so you can look back, compare or restore.</p></sc-if>
+<sc-if value="{{cr.hist.any}}" hint-placeholder-val="{{ true }}">
+<ul aria-label="Submissions, newest first" style="margin: 0; padding: 8px; list-style: none; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; min-height: 0; flex: 1 1 0">
+<sc-for list="{{cr.hist.rows}}" as="hr" hint-placeholder-count="3"><li><button onClick="{{hr.open}}" aria-label="{{hr.aria}}" style="width: 100%; min-height: 48px; padding: 8px 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; column-gap: 10px; align-items: center; text-align: left"><span aria-hidden="true" style="font-weight: 800; color: {{hr.markFg}}">{{hr.mark}}</span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 14px; font-weight: 700">{{hr.verdict}} · {{hr.score}}</span><span style="font-size: 12px; color: {{t.muted}}">{{hr.when}} · {{hr.lang}}</span></span><span aria-hidden="true" style="font-size: 13px; color: {{t.muted}}">View ›</span></button></li></sc-for>
+</ul>
+<div style="flex-shrink: 0; padding: 10px 14px; border-top: 1px solid {{t.line}}; display: flex; justify-content: flex-end"><button onClick="{{cr.hist.clear}}" aria-label="{{cr.hist.clearAria}}" style="height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid {{cr.hist.clearBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{cr.hist.clearLabel}}</button></div>
+</sc-if>
+</sc-if>
+<sc-if value="{{cr.hist.picked}}" hint-placeholder-val="{{ false }}">
+<div data-m="wrap" style="flex-shrink: 0; padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; border-bottom: 1px solid {{t.line}}">
+<button onClick="{{cr.hist.back}}" style="height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">← All submissions</button>
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700">{{cr.hist.title}}</span><span style="font-size: 12px; color: {{t.muted}}">{{cr.hist.when}} · <span style="color: {{cr.hist.verdictFg}}; font-weight: 600">{{cr.hist.verdict}}</span></span></span>
+<div role="group" aria-label="Show" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}"><button onClick="{{cr.hist.showCode}}" aria-pressed="{{cr.hist.codeOn}}" style="height: 30px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{cr.hist.codeBg}}; color: {{cr.hist.codeFg}}">Its code</button><button onClick="{{cr.hist.showDiff}}" aria-pressed="{{cr.hist.diffOn}}" style="height: 30px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{cr.hist.diffBg}}; color: {{cr.hist.diffFg}}">Diff with mine</button></div>
+</div>
+<sc-if value="{{cr.hist.diffing}}" hint-placeholder-val="{{ false }}"><p role="status" style="margin: 0; padding: 8px 14px 0; font-size: 13px; color: {{t.text2}}">{{cr.hist.diffSummary}}</p></sc-if>
+<div role="region" aria-label="Submitted code" tabindex="0" style="flex: 1 1 0; min-height: 0; overflow: auto; margin: 8px; border-radius: 10px; background: {{t.codeBg}}; padding: 8px 0; font-family: {{t.mono}}; font-size: 13px; line-height: 1.6; font-variant-ligatures: none">
+<sc-if value="{{cr.hist.viewing}}" hint-placeholder-val="{{ true }}"><sc-for list="{{cr.hist.lines}}" as="hl" hint-placeholder-count="6"><div style="display: flex"><span aria-hidden="true" style="width: 40px; flex-shrink: 0; box-sizing: border-box; text-align: right; padding-right: 10px; color: {{t.muted}}">{{hl.n}}</span><span style="min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 10px">{{hl.code}}</span></div></sc-for></sc-if>
+<sc-if value="{{cr.hist.diffing}}" hint-placeholder-val="{{ false }}"><sc-for list="{{cr.hist.diff}}" as="dl" hint-placeholder-count="6"><div style="display: flex; background: {{dl.bg}}"><span aria-hidden="true" style="width: 28px; flex-shrink: 0; text-align: center; font-weight: 800; color: {{dl.fg}}">{{dl.mark}}</span><span style="min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 10px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap">{{dl.sr}}</span>{{dl.code}}</span></div></sc-for></sc-if>
+</div>
+<div style="flex-shrink: 0; padding: 0 10px 10px; display: flex; flex-wrap: wrap; gap: 8px"><button onClick="{{cr.hist.restore}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{cr.hist.restoreBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{cr.hist.restoreLabel}}</button></div>
+</sc-if>
+</div>
+</sc-if>
+</div>
 <sc-if value="{{cr.runnable}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex-shrink: 0">
-<button onClick="{{cr.run}}" disabled="{{cr.busy}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>{{cr.runLabel}}</button>
-<sc-if value="{{cr.showSubmit}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.submit}}" disabled="{{cr.busy}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Submit</button></sc-if>
+<button onClick="{{cr.run}}" disabled="{{cr.busy}}" title="{{cr.runTitle}}" aria-keyshortcuts="{{cr.runKeysAria}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>{{cr.runLabel}}</button>
+<sc-if value="{{cr.showSubmit}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.submit}}" disabled="{{cr.busy}}" title="{{cr.submitTitle}}" aria-keyshortcuts="{{cr.submitKeysAria}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Submit</button></sc-if>
 <sc-if value="{{cr.showCustom}}" hint-placeholder-val="{{ true }}"><input value="{{cr.custom}}" onChange="{{cr.setCustom}}" aria-label="Custom input for Run, written like the call's arguments in JSON" placeholder="{{cr.customHint}}" spellcheck="false" style="flex: 1 1 200px; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: 13px"></sc-if>
 <sc-if value="{{cr.noCustom}}" hint-placeholder-val="{{ false }}"><span style="flex-grow: 1"></span></sc-if>
 <span role="status" style="font-size: 13px; white-space: nowrap; color: {{cr.statusColor}}">{{cr.statusText}}</span>
@@ -816,7 +872,7 @@ function storeDeck(d) { writeJSON('dsaviz-deck', d); }
 // other learners) return sample data marked demo: true, and pages show a "Demo" tag next to it.
 // docs/BACKEND.md lists every function, its return shape and where a real API plugs in.
 const DS = (function () {
-  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1', start: 'dsaviz-start-v1' };
+  const KEY = { log: 'dsaviz-activity-v1', sheet: 'dsaviz-sheet-v1', deck: 'dsaviz-deck', onboard: 'dsaviz-onboard', prefs: 'dsaviz-prefs', user: 'dsaviz-user', medals: 'dsaviz-medals-seen', problem: 'dsaviz-problem', review: 'dsaviz-review-v1', notes: 'dsaviz-notes-v1', predict: 'dsaviz-predict-v1', mock: 'dsaviz-mock-v1', start: 'dsaviz-start-v1', editor: 'dsaviz-editor-v1', subs: 'dsaviz-submissions-v1', streak: 'dsaviz-streak-v1' };
   const XP = { story: 50, code: 30, lesson: 30, sheet: 10, revisit: 5, mock: 20, start: 10 };
   const XP_RULES = [['Finishing a story', XP.story], ['Passing a problem’s code tests', XP.code], ['Finishing a Git, system design or AI lesson', XP.lesson], ['Ticking a problem on the sheet', XP.sheet], ['Rating a revisit card', XP.revisit], ['Finishing a mock interview', XP.mock], ['Passing a Start here exercise', XP.start]];
   const LEVEL_XP = 500;
@@ -899,20 +955,21 @@ const DS = (function () {
   }
 
   // -- streak: consecutive active days. A streak that ran through yesterday is still alive today (atRisk).
+  // A freeze (dsaviz-streak-v1, below) bridges one missed day: the streak runs through it, but it adds no day.
   function streak() {
-    const map = days();
+    const map = days(), frozen = readStreakX().frozen;
     const today = midnight(now());
     const on = (ts) => !!map[dayKey(ts)];
+    const kept = (ts) => on(ts) || !!frozen[dayKey(ts)];
     const activeToday = on(today);
-    let current = 0;
-    let cur = activeToday ? today : addDays(today, -1);
-    while (on(cur)) { current++; cur = addDays(cur, -1); }
-    const keys = Object.keys(map).sort();
+    const current = runFrom(activeToday ? today : addDays(today, -1), on, kept);
+    const keys = Object.keys(Object.assign({}, map, frozen)).sort();
     let longest = 0, run = 0, prev = null;
     keys.forEach((k) => {
       const [y, m, d] = k.split('-').map(Number);
       const ts = new Date(y, m - 1, d).getTime();
-      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + 1 : 1;
+      const add = map[k] ? 1 : 0;
+      run = prev !== null && dayKey(addDays(prev, 1)) === k ? run + add : add;
       longest = Math.max(longest, run);
       prev = ts;
     });
@@ -921,10 +978,63 @@ const DS = (function () {
     const monday = addDays(today, -dow);
     const week = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => {
       const ts = addDays(monday, i);
-      return { d, date: dayKey(ts), on: on(ts), today: i === dow, future: ts > today };
+      return { d, date: dayKey(ts), on: on(ts), frozen: !on(ts) && !!frozen[dayKey(ts)], today: i === dow, future: ts > today };
     });
-    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week };
+    const fz = freezeState();
+    return { current, longest: Math.max(longest, current), activeToday, atRisk: current > 0 && !activeToday, week,
+      freeze: { available: fz.available, offer: fz.offer, usedThisWeek: fz.usedThisWeek } };
   }
+  // Active days counted back from `from` while the chain holds (a frozen day keeps it going without counting).
+  function runFrom(from, on, kept) {
+    let n = 0, cur = from;
+    while (kept(cur)) { if (on(cur)) n++; cur = addDays(cur, -1); }
+    return n;
+  }
+
+  // -- streak freeze and the daily check-in: dsaviz-streak-v1 = { v: 1, frozen: { 'YYYY-MM-DD': ts used }, seen: 'YYYY-MM-DD' }.
+  // One freeze a week (Monday to Sunday, by the day it is used), earned by a run of at least FREEZE_RUN active days.
+  // It only bridges yesterday, when yesterday was missed and the day before was active: exactly one day missed.
+  const FREEZE_RUN = 3;
+  function readStreakX() {
+    const o = json(KEY.streak, null);
+    const out = { v: 1, frozen: {}, seen: '' };
+    if (!o || o.v !== 1) return out;
+    if (o.frozen && typeof o.frozen === 'object' && !Array.isArray(o.frozen)) Object.keys(o.frozen).forEach((k) => { const ts = Number(o.frozen[k]); if (/^\d{4}-\d\d-\d\d$/.test(k) && isFinite(ts) && ts > 0) out.frozen[k] = ts; });
+    if (typeof o.seen === 'string' && /^\d{4}-\d\d-\d\d$/.test(o.seen)) out.seen = o.seen;
+    return out;
+  }
+  function writeStreakX(o) { set(KEY.streak, JSON.stringify({ v: 1, frozen: o.frozen, seen: o.seen })); }
+  function weekStart(ts) { const t = midnight(ts); return addDays(t, -((new Date(t).getDay() + 6) % 7)); }
+  function freezeState() {
+    const map = days(), frozen = readStreakX().frozen;
+    const today = midnight(now()), yest = addDays(today, -1), before = addDays(today, -2);
+    const on = (ts) => !!map[dayKey(ts)];
+    const kept = (ts) => on(ts) || !!frozen[dayKey(ts)];
+    const monday = weekStart(now());
+    const usedThisWeek = Object.keys(frozen).some((k) => frozen[k] >= monday);
+    const keeps = on(before) ? runFrom(before, on, kept) : 0;
+    const live = runFrom(on(today) ? today : yest, on, kept);
+    const offer = !usedThisWeek && !kept(yest) && keeps >= FREEZE_RUN;
+    return { offer, usedThisWeek, keeps, missed: dayKey(yest), available: !usedThisWeek && (live >= FREEZE_RUN || offer) };
+  }
+  // Use the week's freeze on yesterday. Returns the new streak, or null when no freeze can be used.
+  function useFreeze() {
+    const f = freezeState();
+    if (!f.offer) return null;
+    const o = readStreakX();
+    o.frozen[f.missed] = now();
+    writeStreakX(o);
+    return streak();
+  }
+  // The daily modal: shown on the first visit of each local day, once the learner has done anything.
+  // day is the streak day today counts as (the streak so far plus today); broken: the streak ended and no freeze can save it.
+  function daily() {
+    const st = streak(), f = freezeState();
+    const any = Object.keys(days()).length > 0;
+    return { show: any && readStreakX().seen !== dayKey(now()), day: st.activeToday ? st.current : st.current + 1, current: st.current,
+      activeToday: st.activeToday, broken: !st.activeToday && st.current === 0 && !f.offer, offer: f.offer, keeps: f.keeps };
+  }
+  function markDailySeen() { const o = readStreakX(); o.seen = dayKey(now()); writeStreakX(o); }
 
   // -- heatmap: `weeks` columns ending this week, Sunday first (GitHub layout)
   function heatmap(weeks) {
@@ -1194,10 +1304,84 @@ const DS = (function () {
     return changed;
   }
 
-  // -- the sheet backup file: { v: 1, done, star, notes }. Import adds ticks, stars and notes, keeps the earliest tick time and never removes anything.
+  // -- editor preferences: dsaviz-editor-v1 = { v: 1, fontSize, tabSize, wrap, relative, vim, brackets, autocomplete, celebrate }.
+  // tabSize 0 means the language's own indent (4 spaces, 2 for JavaScript and SQL).
+  const EDITOR_DEFAULTS = { fontSize: 14, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
+  const EDITOR_FONT = [12, 20];
+  function editorPrefs() {
+    const o = json(KEY.editor, null);
+    const out = Object.assign({}, EDITOR_DEFAULTS);
+    if (!o || o.v !== 1) return out;
+    const fs = Number(o.fontSize);
+    if (fs === Math.round(fs) && fs >= EDITOR_FONT[0] && fs <= EDITOR_FONT[1]) out.fontSize = fs;
+    if (o.tabSize === 0 || o.tabSize === 2 || o.tabSize === 4) out.tabSize = o.tabSize;
+    ['wrap', 'relative', 'vim', 'brackets', 'autocomplete', 'celebrate'].forEach((k) => { if (typeof o[k] === 'boolean') out[k] = o[k]; });
+    return out;
+  }
+  // Change some preferences; a value that does not fit is dropped on the next read. Returns them all.
+  function setEditorPrefs(patch) {
+    const next = Object.assign(editorPrefs(), patch && typeof patch === 'object' ? patch : {});
+    set(KEY.editor, JSON.stringify(Object.assign({ v: 1 }, next)));
+    return editorPrefs();
+  }
+  function resetEditorPrefs() { set(KEY.editor, JSON.stringify(Object.assign({ v: 1 }, EDITOR_DEFAULTS))); return editorPrefs(); }
+
+  // -- submission history: dsaviz-submissions-v1 = { v: 1, subs: { pid: [{ at, lang, passed, total, code }] } }, oldest first.
+  // Only the last SUB_MAX submissions per problem are kept, each up to SUB_CODE_MAX characters of code.
+  const SUB_MAX = 20, SUB_CODE_MAX = 20000;
+  const SUB_LANGS = ['py', 'js', 'java', 'cpp', 'go', 'sql'];
+  function cleanSub(x) {
+    if (!x || typeof x !== 'object') return null;
+    const at = Number(x.at);
+    if (!isFinite(at) || at <= 0 || SUB_LANGS.indexOf(x.lang) < 0 || typeof x.code !== 'string') return null;
+    const total = Math.max(0, Math.floor(Number(x.total) || 0));
+    const passed = Math.max(0, Math.min(total, Math.floor(Number(x.passed) || 0)));
+    return { at, lang: x.lang, passed, total, code: x.code.slice(0, SUB_CODE_MAX) };
+  }
+  function cleanSubList(list) { return (Array.isArray(list) ? list : []).map(cleanSub).filter(Boolean).sort((a, b) => a.at - b.at).slice(-SUB_MAX); }
+  function readSubs() {
+    const o = json(KEY.subs, null);
+    const out = {};
+    if (o && o.v === 1 && o.subs && typeof o.subs === 'object' && !Array.isArray(o.subs)) Object.keys(o.subs).forEach((pid) => { const l = cleanSubList(o.subs[pid]); if (l.length) out[pid] = l; });
+    return out;
+  }
+  function writeSubs(all) { set(KEY.subs, JSON.stringify({ v: 1, subs: all })); }
+  // A problem's submissions, newest first. Each gets an id (its time and language) to pick it by.
+  function submissions(pid) { return (readSubs()[pid] || []).slice().reverse().map((x) => Object.assign({ id: x.at + ':' + x.lang }, x)); }
+  // Record one Submit: { lang, passed, total, code }. The time is now.
+  function addSubmission(pid, rec) {
+    if (!pid) return null;
+    const x = cleanSub(Object.assign({}, rec, { at: now() }));
+    if (!x) return null;
+    const all = Object.assign({}, readSubs());
+    all[pid] = cleanSubList((all[pid] || []).concat([x]));
+    writeSubs(all);
+    return Object.assign({ id: x.at + ':' + x.lang }, x);
+  }
+  function clearSubmissions(pid) { const all = Object.assign({}, readSubs()); delete all[pid]; writeSubs(all); }
+  // Merge submissions from a backup: ones we lack (same time and language) are added, then each problem is capped again.
+  function mergeSubmissions(incoming) {
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return 0;
+    const all = Object.assign({}, readSubs());
+    let added = 0;
+    Object.keys(incoming).forEach((pid) => {
+      const have = all[pid] || [];
+      const keys = new Set(have.map((x) => x.at + ':' + x.lang));
+      const fresh = cleanSubList(incoming[pid]).filter((x) => !keys.has(x.at + ':' + x.lang));
+      if (!fresh.length) return;
+      const next = cleanSubList(have.concat(fresh));
+      const kept = new Set(next.map((x) => x.at + ':' + x.lang));
+      added += fresh.filter((x) => kept.has(x.at + ':' + x.lang)).length;
+      all[pid] = next;
+    });
+    if (added) writeSubs(all);
+    return added;
+  }
+
+  // -- the sheet backup file: { v: 1, done, star, notes, subs }. Import adds ticks, stars, notes and submissions, keeps the earliest tick time and never removes anything.
   function exportBackup() {
     const s = readSheet();
-    return { v: 1, done: s.done, star: s.star, notes: readNotes() };
+    return { v: 1, done: s.done, star: s.star, notes: readNotes(), subs: readSubs() };
   }
   function importBackup(data) {
     if (!data || typeof data !== 'object' || data.v !== 1) return null;
@@ -1212,7 +1396,7 @@ const DS = (function () {
     });
     if (data.star && typeof data.star === 'object') Object.keys(data.star).forEach((k) => { if (data.star[k]) star[k] = 1; });
     set(KEY.sheet, JSON.stringify({ v: 1, done, star }));
-    return { ticks, notes: mergeNotes(data.notes) };
+    return { ticks, notes: mergeNotes(data.notes), subs: mergeSubmissions(data.subs) };
   }
 
   // -- the learner, as far as this browser knows them
@@ -1448,22 +1632,24 @@ const DS = (function () {
     return o;
   }
 
-  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code and lesson progress. Notes stay.
+  // -- erase this browser's progress: activity log, sheet ticks, revisit cards, medals, saved stories, code, submissions, streak freezes and lesson progress. Notes stay.
   // Theme, profile and settings stay.
   function eraseProgress() {
     const s = store();
-    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
+    [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, KEY.subs, KEY.streak, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
   return {
     KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
-    days, streak, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
+    days, streak, FREEZE_RUN, useFreeze, daily, markDailySeen, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
     predict, logPredict,
     start, startPass, startFinish, startVisit, startPlace, startMedals, startRing,
     MOCK_LENGTHS, MOCK_MIX, MOCK_AREAS, MOCK_HINT_COST, MOCK_BANDS, mockPick, mockStart, mockSession, mockRecord, mockHint, mockNotes, mockExtend, mockEnd, mockAbandon, mockScore, mockSave, mockHistory,
     note, notes: readNotes, setNote, mergeNotes, exportBackup, importBackup,
+    EDITOR_DEFAULTS, EDITOR_FONT, editorPrefs, setEditorPrefs, resetEditorPrefs,
+    SUB_MAX, SUB_CODE_MAX, submissions, addSubmission, clearSubmissions, mergeSubmissions,
     leaderboard, buddies, feed,
     setClock: (fn) => { now = typeof fn === 'function' ? fn : () => Date.now(); }
   };
@@ -13616,6 +13802,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { jsWorker
 //   switching problem:    this.runner.setProblem(id);
 // The timer never starts on its own: cr.startClock / cr.pauseClock / cr.resetClock drive it (the mock interview keeps its own clock).
 // The last Run or Submit result is kept for this tab (sessionStorage), so coming back to a problem shows it again.
+// Editor settings (the gear) are DS.editorPrefs(). Ctrl/Cmd + ' runs, Ctrl/Cmd + Enter submits, from the editor or anywhere on the page.
+// Every Submit is saved with DS.addSubmission; the History tab lists them, shows one, diffs it with the current code or restores it.
 // Needs the @@TESTS-SPEC@@ and @@RUNNER@@ blocks, plus readJSON/writeJSON from the catalog.
 const CODE_KEY = 'dsaviz-code-v1';
 const CODE_LANG_KEY = 'dsaviz-lang';
@@ -13634,6 +13822,81 @@ function keptRun(pid, lang) { const r = loadRuns()[pid]; return r && r.lang === 
 function keepRun(pid, lang, out, status) {
   try { const all = loadRuns(); all[pid] = { lang, out, status }; window.sessionStorage.setItem(RUN_KEY, JSON.stringify(all)); } catch (e) {}
 }
+const hasDS = () => typeof DS !== 'undefined' && !!DS.editorPrefs;
+const EDITOR_FALLBACK = { fontSize: 14, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
+function paneEditorPrefs() { try { return hasDS() ? DS.editorPrefs() : Object.assign({}, EDITOR_FALLBACK); } catch (e) { return Object.assign({}, EDITOR_FALLBACK); } }
+// A line diff of two texts: [{ op: ' ' | '-' | '+', text }]. '-' lines are only in a, '+' lines only in b.
+// The common start and end are trimmed first; the middle is an LCS table, or a plain swap when it is too big.
+function lineDiff(a, b) {
+  const x = String(a).split('\n'), y = String(b).split('\n');
+  let lo = 0;
+  while (lo < x.length && lo < y.length && x[lo] === y[lo]) lo++;
+  let hx = x.length, hy = y.length;
+  while (hx > lo && hy > lo && x[hx - 1] === y[hy - 1]) { hx--; hy--; }
+  const head = x.slice(0, lo).map((text) => ({ op: ' ', text })), tail = x.slice(hx).map((text) => ({ op: ' ', text }));
+  const mx = x.slice(lo, hx), my = y.slice(lo, hy), n = mx.length, m = my.length;
+  let mid = [];
+  if (n * m > 160000) mid = mx.map((text) => ({ op: '-', text })).concat(my.map((text) => ({ op: '+', text })));
+  else {
+    const L = [];
+    for (let i = 0; i <= n; i++) L.push(new Array(m + 1).fill(0));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = mx[i] === my[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    let i = 0, j = 0;
+    while (i < n || j < m) {
+      if (i < n && j < m && mx[i] === my[j]) { mid.push({ op: ' ', text: mx[i] }); i++; j++; }
+      else if (j < m && (i === n || L[i][j + 1] >= L[i + 1][j])) { mid.push({ op: '+', text: my[j] }); j++; }
+      else { mid.push({ op: '-', text: mx[i] }); i++; }
+    }
+  }
+  return head.concat(mid, tail);
+}
+const PANE_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+// "Today, 14:05", "Yesterday, 09:12" or "23 Oct, 14:05" (the year is added when it is not this year).
+function whenSubmitted(ts, nowTs) {
+  const d = new Date(ts), n = new Date(nowTs == null ? Date.now() : nowTs);
+  const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const gap = Math.round((day(n) - day(d)) / 86400000);
+  const time = pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  if (gap === 0) return 'Today, ' + time;
+  if (gap === 1) return 'Yesterday, ' + time;
+  return d.getDate() + ' ' + PANE_MONTHS[d.getMonth()] + (d.getFullYear() !== n.getFullYear() ? ' ' + d.getFullYear() : '') + ', ' + time;
+}
+const paneMac = () => { try { return /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || ''); } catch (e) { return false; } };
+// The shortcuts sheet, with Cmd on a Mac and Ctrl elsewhere.
+function paneShortcuts() {
+  const mod = paneMac() ? '⌘' : 'Ctrl';
+  return [['Run the examples', [mod, "'"]], ['Submit every test', [mod, 'Enter']], ['Leave the editor', ['Esc', 'Tab']], ['Indent, or indent less', ['Tab', 'Shift + Tab']],
+    ['Comment a line on or off', [mod, '/']], ['Undo, redo', [mod + ' + Z', mod + ' + Shift + Z']], ['Search the site', ['/']]];
+}
+const PANE_SWITCHES = [['wrap', 'Word wrap', 'Long lines fold onto the next line'], ['relative', 'Relative line numbers', 'Count lines from the cursor'],
+  ['vim', 'Vim keys', 'Normal, insert and visual modes'], ['brackets', 'Bracket matching', 'Close and highlight brackets'],
+  ['autocomplete', 'Autocomplete', 'Suggest words as you type'], ['celebrate', 'Celebrate when accepted', 'A short burst when every test passes']];
+// A small burst of colour over the editor when every test passes. Skipped when the learner asks for reduced motion.
+function paneCelebrate(anchor, t) {
+  try {
+    if (!anchor || !anchor.getBoundingClientRect || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    if (!document.getElementById('ds-burst-css')) {
+      const css = document.createElement('style');
+      css.id = 'ds-burst-css';
+      css.textContent = '@keyframes ds-burst{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}';
+      document.head.appendChild(css);
+    }
+    const r = anchor.getBoundingClientRect();
+    const box = document.createElement('div');
+    box.setAttribute('aria-hidden', 'true');
+    box.style.cssText = 'position:fixed;left:' + (r.left + r.width / 2) + 'px;top:' + (r.top + r.height * 0.6) + 'px;width:0;height:0;pointer-events:none;z-index:60';
+    const colors = [t.accent, t.ok, t.medFg, t.right || t.accent];
+    for (let i = 0; i < 28; i++) {
+      const a = (Math.PI * 2 * i) / 28 + Math.random() * 0.3, dist = 90 + Math.random() * 120;
+      const bit = document.createElement('span');
+      bit.style.cssText = 'position:absolute;width:' + (6 + (i % 3) * 2) + 'px;height:' + (i % 2 ? 6 : 10) + 'px;border-radius:2px;background:' + colors[i % colors.length] +
+        ';--dx:' + Math.round(Math.cos(a) * dist) + 'px;--dy:' + Math.round(Math.sin(a) * dist - 40) + 'px;--r:' + Math.round(Math.random() * 540 - 270) + 'deg;animation:ds-burst 900ms cubic-bezier(.2,.7,.3,1) forwards';
+      box.appendChild(bit);
+    }
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 1000);
+  } catch (e) {}
+}
 
 class CodeRunner {
   constructor(host, pid, opts) {
@@ -13646,7 +13909,8 @@ class CodeRunner {
     this.pid = this.known(pid) ? pid : Object.keys(this.specs)[0];
     const kept = keptRun(this.pid, lang);
     this.s = { lang, code: savedCode(this.pid, lang) || this.starter(lang), out: kept ? kept.out : null, busy: false, status: kept ? kept.status : '',
-      custom: '', elapsed: 0, clockOn: false, solvedIn: null, copied: false, confirmReset: false };
+      custom: '', elapsed: 0, clockOn: false, solvedIn: null, copied: false, confirmReset: false,
+      view: 'code', prefsOpen: false, keysOpen: false, prefs: paneEditorPrefs(), sel: null, diff: false, confirmRestore: false, confirmClear: false };
     this.editor = null;
     this.el = null;
     this.ref = (el) => {
@@ -13661,7 +13925,22 @@ class CodeRunner {
   spec() { return this.specs[this.pid]; }
   known(pid) { return !!this.specs[pid] || (!!this.opts.starter && !!pid); }
   starter(lang) { const spec = this.spec(); return spec ? starterCode(spec, lang) : this.opts.starter ? this.opts.starter(this.pid, lang) : ''; }
-  mount() { this.clock = setInterval(() => { if (this.s.clockOn && this.s.solvedIn === null) this.set({ elapsed: this.s.elapsed + 1 }); }, 1000); }
+  mount() {
+    this.clock = setInterval(() => { if (this.s.clockOn && this.s.solvedIn === null) this.set({ elapsed: this.s.elapsed + 1 }); }, 1000);
+    // Ctrl/Cmd + ' runs and Ctrl/Cmd + Enter submits from anywhere on the page. The editor handles its own (and marks the event handled).
+    this.keys = (e) => {
+      if (!e || e.defaultPrevented || !(e.ctrlKey || e.metaKey) || e.altKey || !this.el) return;
+      if (e.key === "'" || e.key === 'Enter') { e.preventDefault(); this.shortcut(e.key === 'Enter' ? 'submit' : 'run'); }
+    };
+    try { window.addEventListener('keydown', this.keys); } catch (e) {}
+  }
+  // Run or Submit from a keyboard shortcut: only when this problem can run here.
+  shortcut(mode) {
+    const spec = this.spec();
+    if (!spec || !specRuns(spec, this.s.lang) || this.s.busy) return;
+    if (this.s.view !== 'code') this.set({ view: 'code' });
+    this.execute(mode === 'submit' && !this.opts.single && !spec.program ? 'submit' : 'run');
+  }
   startClock() { if (this.s.solvedIn === null) this.set({ clockOn: true }); }
   pauseClock() { this.set({ clockOn: false }); }
   resetClock() { this.set({ clockOn: false, elapsed: 0, solvedIn: null }); }
@@ -13677,7 +13956,8 @@ class CodeRunner {
     this.set({ code });
   }
   unmount() {
-    clearInterval(this.clock); clearTimeout(this.resetTimer); clearTimeout(this.copyTimer);
+    clearInterval(this.clock); clearTimeout(this.resetTimer); clearTimeout(this.copyTimer); clearTimeout(this.restoreTimer); clearTimeout(this.clearTimer);
+    try { if (this.keys) window.removeEventListener('keydown', this.keys); } catch (e) {}
     this.stopRun();
     if (this.editor) { this.editor.destroy(); this.editor = null; }
   }
@@ -13691,15 +13971,20 @@ class CodeRunner {
     const onChange = (code) => { this.s.code = code; storeCode(this.pid, this.s.lang, code); };
     try {
       if (!window.__dsEditor && typeof window.DS_EDITOR_LOAD === 'function') window.__dsEditor = window.DS_EDITOR_LOAD();
-      if (window.__dsEditor) { this.editor = window.__dsEditor.create(el, { doc: this.s.code, lang: this.s.lang, theme: t, onChange }); this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|'); return; }
+      if (window.__dsEditor) {
+        this.editor = window.__dsEditor.create(el, { doc: this.s.code, lang: this.s.lang, theme: t, onChange, prefs: this.s.prefs, onRun: () => this.shortcut('run'), onSubmit: () => this.shortcut('submit') });
+        this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|');
+        return;
+      }
     } catch (e) { console.error(e); }
     const ta = document.createElement('textarea');
     ta.value = this.s.code; ta.spellcheck = false; ta.setAttribute('aria-label', 'Code editor');
-    const paint = (x) => { ta.style.cssText = 'width:100%;height:100%;box-sizing:border-box;border:0;resize:none;outline:none;padding:12px 16px;tab-size:4;font:14px/1.65 ' + x.mono + ';background:' + x.codeBg + ';color:' + x.text; };
+    let theme = t;
+    const paint = (x) => { theme = x; const p = this.s.prefs; ta.style.cssText = 'width:100%;height:100%;box-sizing:border-box;border:0;resize:none;outline:none;padding:12px 16px;tab-size:' + (p.tabSize || 4) + ';white-space:' + (p.wrap ? 'pre-wrap' : 'pre') + ';font:' + p.fontSize + 'px/1.65 ' + x.mono + ';background:' + x.codeBg + ';color:' + x.text; };
     paint(t);
     ta.addEventListener('input', () => onChange(ta.value));
     el.appendChild(ta);
-    this.editor = { getDoc: () => ta.value, setDoc: (s) => { ta.value = s; }, setLanguage() {}, setTheme: paint, destroy: () => ta.remove() };
+    this.editor = { getDoc: () => ta.value, setDoc: (s) => { ta.value = s; }, setLanguage() {}, setTheme: paint, setPrefs: () => paint(theme), destroy: () => ta.remove() };
     this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|');
   }
   showCode() {
@@ -13713,7 +13998,7 @@ class CodeRunner {
     this.stopRun();
     this.pid = pid;
     const kept = keptRun(pid, this.s.lang);
-    this.set({ code: this.showCode(), out: kept ? kept.out : null, busy: false, status: kept ? kept.status : '', custom: '', elapsed: 0, clockOn: false, solvedIn: null });
+    this.set({ code: this.showCode(), out: kept ? kept.out : null, busy: false, status: kept ? kept.status : '', custom: '', elapsed: 0, clockOn: false, solvedIn: null, sel: null, diff: false, confirmRestore: false, confirmClear: false });
   }
   setLang(lang) {
     if (lang === this.s.lang) return;
@@ -13735,6 +14020,113 @@ class CodeRunner {
     this.stopRun();
     storeCode(this.pid, this.s.lang, null);
     this.set({ confirmReset: false, code: this.showCode(), out: null, busy: false, status: '' });
+  }
+  // ---- editor settings ----
+  setPref(patch) {
+    const prefs = hasDS() ? DS.setEditorPrefs(patch) : Object.assign({}, this.s.prefs, patch);
+    if (this.editor && this.editor.setPrefs) this.editor.setPrefs(prefs);
+    this.set({ prefs });
+  }
+  resetPrefs() {
+    const prefs = hasDS() ? DS.resetEditorPrefs() : Object.assign({}, EDITOR_FALLBACK);
+    if (this.editor && this.editor.setPrefs) this.editor.setPrefs(prefs);
+    this.set({ prefs });
+  }
+  // The settings panel and the shortcuts sheet share one spot; closing either puts focus back on the gear.
+  openPanel(which) {
+    this.set({ prefsOpen: which === 'prefs', keysOpen: which === 'keys' });
+    setTimeout(() => { try { const el = document.querySelector(which === 'keys' ? '[data-cp-keys] button' : '[data-cp-prefs] button'); if (el) el.focus(); } catch (e) {} }, 0);
+  }
+  closePanel() {
+    this.set({ prefsOpen: false, keysOpen: false });
+    setTimeout(() => { try { const el = document.querySelector('[data-cp-gear]'); if (el) el.focus(); } catch (e) {} }, 0);
+  }
+  // ---- submission history ----
+  history() { try { return hasDS() ? DS.submissions(this.pid) : []; } catch (e) { return []; } }
+  showView(view) { this.set({ view, sel: null, diff: false, confirmRestore: false, confirmClear: false, prefsOpen: false, keysOpen: false }); }
+  pick(id) { this.set({ sel: id, diff: false, confirmRestore: false }); }
+  // Restore replaces the code in the editor, so the first click only arms it for 3 seconds.
+  restore(sub) {
+    clearTimeout(this.restoreTimer);
+    if (!this.s.confirmRestore) {
+      this.set({ confirmRestore: true });
+      this.restoreTimer = setTimeout(() => this.set({ confirmRestore: false }), 3000);
+      return;
+    }
+    if (sub.lang !== this.s.lang && CODE_LANGS.some(([k]) => k === sub.lang)) this.setLang(sub.lang);
+    storeCode(this.pid, this.s.lang, sub.code);
+    if (this.editor) this.editor.setDoc(sub.code);
+    this.set({ code: sub.code, view: 'code', sel: null, diff: false, confirmRestore: false });
+  }
+  clearHistory() {
+    clearTimeout(this.clearTimer);
+    if (!this.s.confirmClear) {
+      this.set({ confirmClear: true });
+      this.clearTimer = setTimeout(() => this.set({ confirmClear: false }), 3000);
+      return;
+    }
+    if (hasDS()) DS.clearSubmissions(this.pid);
+    this.set({ confirmClear: false, sel: null, diff: false });
+  }
+  // The code to compare a submission with: what is in the editor now in that language.
+  currentCode(lang) { return lang === this.s.lang ? (this.editor ? this.editor.getDoc() : this.s.code) : savedCode(this.pid, lang) || this.starter(lang); }
+  historyVals(t) {
+    const s = this.s, list = this.history();
+    const langName = (k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1];
+    const okAll = (x) => x.total > 0 && x.passed === x.total;
+    const fail = t.diff.Hard[2];
+    const sub = s.sel ? list.find((x) => x.id === s.sel) : null;
+    const rows = list.map((x, i) => ({
+      id: x.id, n: list.length - i, when: whenSubmitted(x.at), lang: langName(x.lang), score: x.passed + ' / ' + x.total,
+      verdict: okAll(x) ? 'Accepted' : x.passed ? 'Partly passed' : 'Not passed', mark: okAll(x) ? '✓' : '✗', markFg: okAll(x) ? t.ok : fail,
+      aria: 'Submission ' + (list.length - i) + ', ' + whenSubmitted(x.at) + ', ' + langName(x.lang) + ', ' + x.passed + ' of ' + x.total + ' tests passed',
+      open: () => this.pick(x.id)
+    }));
+    let lines = [], diff = [], plus = 0, minus = 0;
+    if (sub) {
+      lines = sub.code.split('\n').map((code, i) => ({ n: i + 1, code }));
+      if (s.diff) {
+        diff = lineDiff(sub.code, this.currentCode(sub.lang)).map((d) => {
+          if (d.op === '+') plus++; else if (d.op === '-') minus++;
+          return { mark: d.op === ' ' ? '' : d.op === '+' ? '+' : '−', code: d.text, bg: d.op === '+' ? t.okBg : d.op === '-' ? t.warnBg : 'transparent', fg: d.op === '+' ? t.ok : d.op === '-' ? fail : t.muted,
+            sr: d.op === '+' ? 'Added: ' : d.op === '-' ? 'Removed: ' : '' };
+        });
+      }
+    }
+    return {
+      count: list.length, empty: !list.length, any: list.length > 0, rows, listing: !sub, picked: !!sub,
+      max: hasDS() ? DS.SUB_MAX : 20,
+      title: sub ? langName(sub.lang) + ' · ' + sub.passed + ' / ' + sub.total + ' passed' : '', when: sub ? whenSubmitted(sub.at) : '',
+      verdict: sub ? (okAll(sub) ? 'Accepted' : 'Not every test passed') : '', verdictFg: sub && okAll(sub) ? t.ok : fail,
+      back: () => this.set({ sel: null, diff: false, confirmRestore: false }),
+      showCode: () => this.set({ diff: false }), showDiff: () => this.set({ diff: true }),
+      codeOn: sub ? (!s.diff ? 'true' : 'false') : 'false', diffOn: s.diff ? 'true' : 'false',
+      codeBg: !s.diff ? t.text : 'transparent', codeFg: !s.diff ? t.bg : t.muted, diffBg: s.diff ? t.text : 'transparent', diffFg: s.diff ? t.bg : t.muted,
+      viewing: !!sub && !s.diff, diffing: !!sub && s.diff, lines, diff,
+      diffSummary: !s.diff ? '' : plus || minus ? plus + ' line' + (plus === 1 ? '' : 's') + ' added and ' + minus + ' removed in your code since this submission.' : 'Your code is the same as this submission.',
+      restore: () => sub && this.restore(sub), restoreLabel: s.confirmRestore ? 'Click again to replace your code' : 'Restore this code',
+      restoreBorder: s.confirmRestore ? t.accent : t.line2,
+      clear: () => this.clearHistory(), clearLabel: s.confirmClear ? 'Click again to clear' : 'Clear history', clearBorder: s.confirmClear ? t.accent : t.line,
+      clearAria: s.confirmClear ? 'Click again to delete every saved submission for this problem' : 'Clear the submission history for this problem'
+    };
+  }
+  prefsVals(t) {
+    const p = this.s.prefs;
+    const seg = (on) => ({ bg: on ? t.text : 'transparent', fg: on ? t.bg : t.muted, on: on ? 'true' : 'false' });
+    return {
+      open: this.s.prefsOpen, keysOpen: this.s.keysOpen, gearOn: this.s.prefsOpen || this.s.keysOpen ? 'true' : 'false',
+      gear: () => (this.s.prefsOpen || this.s.keysOpen ? this.closePanel() : this.openPanel('prefs')),
+      close: () => this.closePanel(), keys: () => this.openPanel('keys'), backToPrefs: () => this.openPanel('prefs'),
+      onKey: (e) => { if (e && e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); if (e.stopPropagation) e.stopPropagation(); this.closePanel(); } },
+      font: p.fontSize + ' px', fontAria: 'Text size ' + p.fontSize + ' pixels',
+      smaller: () => this.setPref({ fontSize: Math.max(12, p.fontSize - 1) }), larger: () => this.setPref({ fontSize: Math.min(20, p.fontSize + 1) }),
+      noSmaller: p.fontSize <= 12, noLarger: p.fontSize >= 20,
+      tabs: [[0, 'Auto'], [2, '2'], [4, '4']].map(([v, label]) => Object.assign({ label, aria: v ? v + ' spaces' : 'The language’s usual indent', pick: () => this.setPref({ tabSize: v }) }, seg(p.tabSize === v))),
+      switches: PANE_SWITCHES.map(([k, label, note]) => ({ k, label, note, on: p[k] ? 'true' : 'false', id: 'cp-sw-' + k,
+        track: p[k] ? t.accent : t.line2, knob: p[k] ? t.onAccent : t.surface, x: p[k] ? '18px' : '2px', flip: () => this.setPref({ [k]: !p[k] }) })),
+      reset: () => this.resetPrefs(),
+      shortcuts: paneShortcuts().map(([what, keys]) => ({ what, keys: keys.map((k, i) => ({ k, sep: i ? (what === 'Leave the editor' ? 'then' : what.indexOf(',') > 0 ? 'or' : '+') : '', hasSep: i > 0 })) }))
+    };
   }
   copy() {
     const code = this.editor ? this.editor.getDoc() : this.s.code;
@@ -13824,6 +14216,8 @@ class CodeRunner {
         if (solved && mode === 'submit' && typeof DS !== 'undefined') DS.passCode(this.pid);
         if (this.opts.onResult && !end.cancelled) { try { this.opts.onResult(this.pid, mode, end.fatal || end.timeout ? 0 : passed, cases.length); } catch (e) {} }
         if (!end.cancelled) keepRun(this.pid, lang, out, status);
+        if (mode === 'submit' && !end.cancelled && hasDS()) { try { DS.addSubmission(this.pid, { lang, passed: end.fatal || end.timeout ? 0 : passed, total: cases.length, code }); } catch (e) {} }
+        if ((mode === 'submit' || mode === 'all') && !end.cancelled && !end.fatal && passed === cases.length && this.s.prefs.celebrate) paneCelebrate(this.el, this.tokens || THEMES.max);
         this.set({ busy: false, status, solvedIn: solved ? this.s.elapsed : this.s.solvedIn, clockOn: solved ? false : this.s.clockOn });
       }, spec.io, lang === 'js' && spec.drive ? spec.drive.toString() : null);
   }
@@ -13897,8 +14291,23 @@ class CodeRunner {
     }
     const solved = s.solvedIn !== null;
     const clock = pad2(Math.floor(s.elapsed / 60)) + ':' + pad2(s.elapsed % 60);
+    const hv = this.opts.single ? null : this.historyVals(t);
+    const inHistory = !!hv && s.view === 'history';
+    const mod = paneMac() ? '⌘' : 'Ctrl';
     return {
       ref: this.ref,
+      // Code and History tabs (History is not offered in the single-button mode)
+      tabs: !!hv, hist: hv || {}, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
+      viewRole: hv ? 'tabpanel' : 'group', viewName: inHistory ? 'Submission history' : 'Code editor',
+      codeTab: () => this.showView('code'), historyTab: () => this.showView('history'),
+      codeSel: inHistory ? 'false' : 'true', histSel: inHistory ? 'true' : 'false',
+      codeTabBg: inHistory ? 'transparent' : t.text, codeTabFg: inHistory ? t.muted : t.bg, histTabBg: inHistory ? t.text : 'transparent', histTabFg: inHistory ? t.bg : t.muted,
+      codeTabIdx: inHistory ? '-1' : '0', histTabIdx: inHistory ? '0' : '-1',
+      tabKey: (e) => { if (e && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { if (e.preventDefault) e.preventDefault(); this.showView(inHistory ? 'code' : 'history'); setTimeout(() => { try { const el = document.getElementById(inHistory ? 'cp-tab-code' : 'cp-tab-hist'); if (el) el.focus(); } catch (x) {} }, 0); } },
+      histCount: hv && hv.count ? String(hv.count) : '', hasHistCount: !!(hv && hv.count),
+      pf: this.prefsVals(t),
+      runKeys: mod + " + '", submitKeys: mod + ' + Enter', runKeysAria: paneMac() ? "Meta+'" : "Control+'", submitKeysAria: paneMac() ? 'Meta+Enter' : 'Control+Enter',
+      runTitle: 'Run the examples (' + mod + " + ')", submitTitle: 'Submit every test (' + mod + ' + Enter)',
       showLangs: !this.opts.hideLangs, showClock: !this.opts.hideClock, hasTests, noTests: !hasTests, elapsed: s.elapsed,
       langs: CODE_LANGS.filter(([k]) => !this.opts.langs || this.opts.langs.includes(k)).map(([k, label]) => ({ label: label === 'JavaScript' ? 'JS' : label, on: lang === k, bg: lang === k ? t.text : 'transparent', fg: lang === k ? t.bg : t.muted, pick: () => this.setLang(k) })),
       clock, clockLabel: (solved ? 'Solved in ' : 'Time on this problem: ') + clock, clockFg: solved ? t.ok : t.muted,
@@ -13907,7 +14316,7 @@ class CodeRunner {
       toggleClock: () => (s.clockOn ? this.pauseClock() : this.startClock()),
       clockToggleLabel: s.clockOn ? 'Pause' : 'Resume', clockToggleAria: s.clockOn ? 'Pause the timer' : 'Resume the timer', canToggleClock: !solved,
       copy: () => this.copy(), copyLabel: s.copied ? 'Copied' : 'Copy',
-      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset', resetBorder: s.confirmReset ? t.accent : t.line,
+      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset code', resetBorder: s.confirmReset ? t.accent : t.line,
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
       runnable, notRunnable: hasTests && !runnable, busy: s.busy,
       notRunnableMsg: hasTests && spec.langs && RUNNABLE[lang] ? spec.langNote || 'This one runs in ' + spec.langs.map((k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1]).join(' and ') + ' here. Switch language to run it.' : 'Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.',
@@ -13923,7 +14332,7 @@ class CodeRunner {
       hasMsg: !!msg, msg, msgBg, msgFont: msgMono ? t.mono : t.body,
       rows,
       showHint: !out,
-      hint: !hasTests ? '' : spec.program ? (graded ? 'Check runs your program and compares what it prints. Saved in this browser.' : 'Press Run to see what your program prints. Saved in this browser.') : this.opts.single ? 'Check runs ' + (spec.examples.length + (spec.hidden || []).length) + ' tests on your function. Saved in this browser.' : runnable ? 'Run tries the ' + spec.examples.length + ' examples (plus your custom input). Submit adds ' + spec.hidden.length + ' hidden tests. Saved in this browser. In the editor, Esc then Tab moves focus on.' : 'Write it here, then copy it into your IDE to run it.'
+      hint: !hasTests ? '' : spec.program ? (graded ? 'Check runs your program and compares what it prints. Saved in this browser.' : 'Press Run to see what your program prints. Saved in this browser.') : this.opts.single ? 'Check runs ' + (spec.examples.length + (spec.hidden || []).length) + ' tests on your function. Saved in this browser.' : runnable ? 'Run tries the ' + spec.examples.length + ' examples (plus your custom input). Submit adds ' + spec.hidden.length + ' hidden tests. Saved in this browser. ' + mod + " + ' runs, " + mod + ' + Enter submits; in the editor, Esc then Tab moves focus on.' : 'Write it here, then copy it into your IDE to run it.'
     };
   }
 }

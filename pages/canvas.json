@@ -195,11 +195,11 @@
       "y": 1620
     },
     "Concepts.dc.html": {
-      "h": 920,
+      "h": 1936,
       "is_interactive": true,
       "title": "DSA concepts hub · animated lessons by track",
       "w": 1440,
-      "x": 18240,
+      "x": 19760,
       "y": 0
     },
     "ConceptLesson.dc.html": {
@@ -207,8 +207,8 @@
       "is_interactive": true,
       "title": "DSA concept lesson player · steps, slider, now try",
       "w": 1440,
-      "x": 18240,
-      "y": 1040
+      "x": 19760,
+      "y": 2056
     }
   },
   "createdOnFiles": {

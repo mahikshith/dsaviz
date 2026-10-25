@@ -1707,7 +1707,7 @@ function dailyVals(cmp, t) {
       : 'One problem, story or revisit card today keeps your ' + (day - 1) + '-day streak going.',
     action: offer ? 'Use my freeze' : 'Pick up where you left off',
     isFreeze: offer, isGo: !offer,
-    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} },
+    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 0); },
     go: () => { close(); try { if (window.__dsNav) window.__dsNav('Code.dc.html'); } catch (e) {} },
     onKey: (e) => { if (e && e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); } },
     flame: offer ? t.muted : t.flame

@@ -336,7 +336,7 @@ class CodeRunner {
       noSmaller: p.fontSize <= 12, noLarger: p.fontSize >= 20,
       tabs: [[0, 'Auto'], [2, '2'], [4, '4']].map(([v, label]) => Object.assign({ label, aria: v ? v + ' spaces' : 'The language’s usual indent', pick: () => this.setPref({ tabSize: v }) }, seg(p.tabSize === v))),
       switches: PANE_SWITCHES.map(([k, label, note]) => ({ k, label, note, on: p[k] ? 'true' : 'false', id: 'cp-sw-' + k,
-        track: p[k] ? t.accent : t.line2, knob: p[k] ? t.onAccent : t.surface, x: p[k] ? '18px' : '2px', flip: () => this.setPref({ [k]: !p[k] }) })),
+        track: p[k] ? t.accent : t.muted, knob: p[k] ? t.onAccent : t.surface, x: p[k] ? '18px' : '2px', flip: () => this.setPref({ [k]: !p[k] }) })),
       reset: () => this.resetPrefs(),
       shortcuts: paneShortcuts().map(([what, keys]) => ({ what, keys: keys.map((k, i) => ({ k, sep: i ? (what === 'Leave the editor' ? 'then' : what.indexOf(',') > 0 ? 'or' : '+') : '', hasSep: i > 0 })) }))
     };

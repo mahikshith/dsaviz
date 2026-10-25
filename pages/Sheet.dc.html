@@ -25,6 +25,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,la
 <style>
 /* Sheet on phones: the list first, progress after (rendered in that order, see sheetParts); each row is a compact card (tick, name, difficulty) with the extras behind a tap. */
 @media (max-width: 759px){
+[data-page="Sheet"] [data-sheet-lists]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 [data-page="Sheet"] [data-sheet-layout]{display:flex!important;flex-direction:column}
 [data-page="Sheet"] [data-sheet-layout]>aside{border-right:0!important;overflow:visible!important;padding:0 16px 24px!important}
 [data-page="Sheet"] [data-sheet-layout]>main{padding:16px!important;gap:12px!important}
@@ -367,7 +368,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 
 <!-- our tiered practice lists (shared/lists.js): pick one; counts, rings and groups follow it -->
-<div role="group" aria-label="Practice list" data-sheet-lists data-m="keep" style="flex-shrink: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div role="group" aria-label="Practice list" data-sheet-lists data-m="keep" style="flex-shrink: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
 <sc-for list="{{lists}}" as="pl" hint-placeholder-count="3">
 <button onClick="{{pl.pick}}" aria-pressed="{{pl.on}}" aria-label="{{pl.aria}}" style="min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pl.border}}; background: {{pl.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: left">
 <span style="width: 100%; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 8px"><span style="font-size: 15px; font-weight: 800; white-space: nowrap">{{pl.name}}</span><span style="font-family: {{t.mono}}; font-size: 13px; font-weight: 700; color: {{t.muted}}; white-space: nowrap">{{pl.count}}</span></span>
@@ -2599,7 +2600,7 @@ function dailyVals(cmp, t) {
       : 'One problem, story or revisit card today keeps your ' + (day - 1) + '-day streak going.',
     action: offer ? 'Use my freeze' : 'Pick up where you left off',
     isFreeze: offer, isGo: !offer,
-    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} },
+    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 0); },
     go: () => { close(); try { if (window.__dsNav) window.__dsNav('Code.dc.html'); } catch (e) {} },
     onKey: (e) => { if (e && e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); } },
     flame: offer ? t.muted : t.flame

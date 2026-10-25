@@ -117,9 +117,22 @@ function dailyVals(cmp, t) {
       : 'One problem, story or revisit card today keeps your ' + (day - 1) + '-day streak going.',
     action: offer ? 'Use my freeze' : 'Pick up where you left off',
     isFreeze: offer, isGo: !offer,
-    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} },
+    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 0); },
     go: () => { close(); try { if (window.__dsNav) window.__dsNav('Code.dc.html'); } catch (e) {} },
-    onKey: (e) => { if (e && e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); } },
+    // Esc closes; Tab stays inside the dialog while it is open.
+    onKey: (e) => {
+      if (!e) return;
+      if (e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); return; }
+      if (e.key !== 'Tab') return;
+      try {
+        const box = document.querySelector('[data-daily] [role="dialog"]');
+        const f = box ? [...box.querySelectorAll('button, a[href]')] : [];
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1], at = document.activeElement;
+        if (e.shiftKey && at === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus(); }
+      } catch (x) {}
+    },
     flame: offer ? t.muted : t.flame
   };
 }

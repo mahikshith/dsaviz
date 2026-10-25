@@ -1399,6 +1399,42 @@ const HINTS = {
     hints: ["Store each key's value somewhere you can find it fast.","The HashSet idea, but each bucket entry holds a key and its value.","Put returns nothing, get returns -1 for a missing key."],
     why: ["Key 4 was never put.","The second put replaces 1 with 9.","The key was removed."]
   },
+  "dynamic-array": {
+    hints: ["Keep a block of capacity slots and a separate count of how many are used.","Push writes at index size. If size equals capacity, make a block twice as big and copy every value first.","Doubling means each value is copied only a few times on average, so a push is O(1) amortized."],
+    why: ["The second push finds the block full, so the capacity doubles from 1 to 2.","Slot 0 is set to 9, read back, then popped.","A new array holds nothing yet but has room for 3."]
+  },
+  "min-heap": {
+    hints: ["A heap is a tree kept in a list: the children of index i sit at 2i + 1 and 2i + 2.","Push appends and swaps the value up while its parent is bigger. Pop takes the root, moves the last value there and swaps it down.","When sifting down, swap with the smaller child, so the smallest value always rises to the top."],
+    why: ["2 is the smallest of 5, 2 and 8; after popping it, 5 is on top.","An empty heap answers -1 to pop and top, and its size is 0.","Both 3s come out; the heap is empty again."]
+  },
+  "union-find": {
+    hints: ["Each group can be a tree: every item points at a parent, and the root names the group.","find walks parents to the root. union finds both roots and, if they differ, points one at the other.","Point items closer to the root as you walk (path compression), and hang the shorter tree under the taller one."],
+    why: ["0 and 1 are joined; 2 is still alone, so there are 3 groups.","After joining 0-1 and 1-2, 0 and 2 already share a group, so the third union is false.","One item is one group, and it is connected to itself."]
+  },
+  "insertion-sort-passes": {
+    hints: ["Everything left of i is already sorted. Where does nums[i] belong in it?","Hold nums[i], then walk left moving each bigger value one place right until you find its spot.","Use \"bigger than\", not \"at least\": equal values stay in their order, which keeps the sort stable."],
+    why: ["1 slides in front of 3, then 2 slides between them.","One value is already sorted, so there are no passes.","The second 2 stays put; then 1 slides to the front."]
+  },
+  "counting-sort": {
+    hints: ["The values are small and never negative. Could a value be used as an index?","Make a list of k + 1 counters. One pass counts each value; a second pass writes each value as many times as it was counted.","No comparisons at all, so it beats n log n when k is not much bigger than n."],
+    why: ["One 0, one 1, one 2 and two 3s.","Nothing to sort.","Three 4s stay three 4s."]
+  },
+  "partition-around-a-pivot": {
+    hints: ["After one sweep, every value smaller than the pivot should sit in front of it.","Keep a boundary b for the front zone. Each smaller value you meet is swapped to b, and b moves right.","When the sweep ends, b is the pivot’s final place in sorted order: swap it there."],
+    why: ["2 and 1 are smaller than 5, so they move to the front; 5 lands between them and the bigger values.","A single value is its own pivot.","Every value is smaller than 3, so nothing moves."]
+  },
+  "bfs-visit-order": {
+    hints: ["Breadth-first means every node one step away comes before any node two steps away. Which structure gives first in, first out?","Build sorted neighbour lists, then use a queue: take the front node, record it, and add its unseen neighbours.","Mark a node as seen when it joins the queue, not when it leaves, so it can never join twice."],
+    why: ["0 first, then its neighbours 1 and 2, then 3 (from 1) and 4 (from 2).","Node 2 has no edges, so the walk stops at once.","Every node is one step from 0; smallest first gives 1, 2, 3."]
+  },
+  "dfs-visit-order": {
+    hints: ["Depth-first means you follow one path as far as it goes before backing up.","Build sorted neighbour lists. visit(u) marks u, records it, then calls visit on each unseen neighbour in order.","Mark a node as seen before you explore its neighbours, so a cycle cannot bring you back to it."],
+    why: ["From 0 the walk goes down 1 to 3, backs up, then goes down 2 to 4.","Node 2 has no edges.","From 0 it goes 1, 2, then 3 through 2, so 3 is already seen when 0 gets to it."]
+  },
+  "zero-one-knapsack": {
+    hints: ["For every item you either take it or skip it. What do you need to know about the smaller problems?","Let best[c] be the most value within weight c. For each item, best[c] = max(best[c], best[c - weight] + value).","Loop c from capacity down to the weight, so an item added at one capacity is not added again at a bigger one."],
+    why: ["Items 0 and 1 weigh 4 together and are worth 35, more than item 2 alone.","The only item is too heavy.","Only two items fit; the best two are worth 4 + 5."]
+  },
   "design-browser-history": {
     hints: ["Visiting a new page throws away the forward pages.","A list of pages and a current index. Visiting cuts off everything after the index.","A list and a position: back and forward just move the position within bounds."],
     why: ["Back to a.com, forward to b.com.","You cannot go back past the start.","Visiting q drops p, so forward stays on q."]

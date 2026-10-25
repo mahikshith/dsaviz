@@ -92,6 +92,50 @@ function searchVals(cmp, t) {
     }
   };
 }
+// The daily check-in: on the first visit of each day (once the learner has done anything), a small modal says which
+// streak day today is, with one action. When yesterday was missed and the week's freeze can save the streak, that is the action.
+// It is marked seen as soon as it shows, so it never comes back the same day.
+function dailyVals(cmp, t) {
+  if (cmp.__daily === undefined) {
+    let d = null;
+    try { d = DS.daily(); } catch (e) {}
+    cmp.__daily = d && d.show ? d : null;
+    if (cmp.__daily) { try { DS.markDailySeen(); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 60); }
+  }
+  const d = cmp.__daily || { day: 1, keeps: 0, offer: false, broken: false, activeToday: false }, open = !!cmp.__daily && !cmp.state.dailyClosed;
+  const close = () => cmp.setState({ dailyClosed: true });
+  const saved = !!cmp.state.dailySaved;
+  const offer = d.offer && !saved;
+  const day = saved ? d.keeps + 1 : d.day;
+  return {
+    open, close,
+    title: offer ? 'You missed yesterday' : d.broken ? 'Day 1. Start again' : 'Day ' + day + '. Keep it going',
+    body: offer ? 'Your ' + d.keeps + '-day streak can still live. Use this week’s freeze to cover yesterday.'
+      : saved ? 'Freeze used. Yesterday is covered, so your streak is safe. Do one thing today to make it day ' + day + '.'
+      : d.broken ? 'Your last streak ended. One problem, story or revisit card today starts a new one.'
+      : d.activeToday ? 'You have already done something today. Your streak is ' + day + (day === 1 ? ' day.' : ' days.')
+      : 'One problem, story or revisit card today keeps your ' + (day - 1) + '-day streak going.',
+    action: offer ? 'Use my freeze' : 'Pick up where you left off',
+    isFreeze: offer, isGo: !offer,
+    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 0); },
+    go: () => { close(); try { if (window.__dsNav) window.__dsNav('Code.dc.html'); } catch (e) {} },
+    // Esc closes; Tab stays inside the dialog while it is open.
+    onKey: (e) => {
+      if (!e) return;
+      if (e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); return; }
+      if (e.key !== 'Tab') return;
+      try {
+        const box = document.querySelector('[data-daily] [role="dialog"]');
+        const f = box ? [...box.querySelectorAll('button, a[href]')] : [];
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1], at = document.activeElement;
+        if (e.shiftKey && at === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus(); }
+      } catch (x) {}
+    },
+    flame: offer ? t.muted : t.flame
+  };
+}
 function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();
@@ -113,7 +157,8 @@ function navVals(cmp, t, themeKey, page) {
       profileOn: page === 'Profile' ? 'page' : 'false',
       avatarBg: page === 'Profile' ? t.accent : t.sunk, avatarFg: page === 'Profile' ? t.onAccent : t.text,
       guest: dv.guest && page === 'Main', member: !(dv.guest && page === 'Main'),
-      srch: searchVals(cmp, t)
+      srch: searchVals(cmp, t),
+      daily: dailyVals(cmp, t)
     }
   });
 }

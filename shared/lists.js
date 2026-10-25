@@ -3,6 +3,7 @@
 //   starter  50 problems: the first step in every core pattern, mostly easy, in the order we teach them
 //   core     150 problems: every story problem plus the problems that cover each pattern's main moves;
 //            every core problem has approaches (shared/approaches.js)
+//   skills   20 "implement it yourself" problems: build each core structure and algorithm from scratch
 //   all      every problem on the master sheet, in sheet order
 // Starter is inside Core and Core is inside All; tests/approachcheck.js checks that and the ids.
 const PROBLEM_LISTS = [
@@ -58,6 +59,12 @@ const PROBLEM_LISTS = [
     'longest-common-prefix', 'implement-trie-prefix-tree', 'design-add-and-search-words-data-structure',
     'number-of-1-bits', 'single-number', 'counting-bits', 'missing-number',
     'palindrome-number', 'plus-one', 'roman-to-integer', 'powx-n'
+  ] },
+  { id: 'skills', title: 'Core skills', blurb: 'Implement it yourself: build each structure and algorithm from scratch, in the order we teach them.', ids: [
+    'dynamic-array', 'design-linked-list', 'min-stack', 'design-circular-queue', 'design-hashset', 'design-hashmap',
+    'min-heap', 'implement-trie-prefix-tree', 'union-find', 'lru-cache',
+    'insertion-sort-passes', 'counting-sort', 'sort-an-array', 'partition-around-a-pivot', 'binary-search',
+    'bfs-visit-order', 'dfs-visit-order', 'course-schedule-ii', 'network-delay-time', 'zero-one-knapsack'
   ] },
   { id: 'all', title: 'All', blurb: 'Every problem on the master sheet.', ids: null }
 ];

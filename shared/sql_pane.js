@@ -105,7 +105,7 @@ class SqlRunner {
     try {
       if (!window.__dsEditor && typeof window.DS_EDITOR_LOAD === 'function') window.__dsEditor = window.DS_EDITOR_LOAD();
       if (window.__dsEditor) {
-        this.editor = window.__dsEditor.create(el, { doc: this.s.code, lang: 'sql', theme: t, onChange, label: 'SQL editor', wrap: true, onRun: () => this.execute('run') });
+        this.editor = window.__dsEditor.create(el, { doc: this.s.code, lang: 'sql', theme: t, onChange, label: 'SQL editor', wrap: true, prefs: typeof DS !== 'undefined' && DS.editorPrefs ? DS.editorPrefs() : null, onRun: () => this.execute('run'), onSubmit: () => this.execute('submit') });
         this.editorTheme = [t.codeBg, t.text, t.accent, t.mono].join('|');
         return;
       }

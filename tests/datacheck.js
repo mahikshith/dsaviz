@@ -366,5 +366,122 @@ console.log('mock interviews');
   check(DS.mockSession() === null, 'erasing progress clears mock interviews');
 }
 
+console.log('editor preferences');
+{
+  const { DS, store } = load(false);
+  const p0 = DS.editorPrefs();
+  check(p0.fontSize === 14 && p0.tabSize === 0 && !p0.wrap && !p0.relative && !p0.vim && p0.brackets && p0.autocomplete && p0.celebrate, 'defaults: 14px, language indent, brackets, autocomplete and celebrate on');
+  DS.setEditorPrefs({ fontSize: 18, tabSize: 2, vim: true, celebrate: false });
+  const p1 = DS.editorPrefs();
+  check(p1.fontSize === 18 && p1.tabSize === 2 && p1.vim && !p1.celebrate && p1.brackets, 'changes are kept and the rest stay as they were');
+  check(JSON.parse(store['dsaviz-editor-v1']).v === 1, 'saved in dsaviz-editor-v1');
+  DS.setEditorPrefs({ fontSize: 99, tabSize: 3, wrap: 'yes', relative: 1 });
+  const p2 = DS.editorPrefs();
+  check(p2.fontSize === 14 && p2.tabSize === 0 && p2.wrap === false && p2.relative === false && p2.vim, 'values that do not fit fall back to the defaults: ' + JSON.stringify(p2));
+  store['dsaviz-editor-v1'] = '{broken';
+  check(DS.editorPrefs().fontSize === 14 && DS.editorPrefs().brackets, 'a broken record reads as the defaults');
+  DS.setEditorPrefs({ wrap: true });
+  check(DS.resetEditorPrefs().wrap === false, 'reset brings back the defaults');
+}
+
+console.log('submission history');
+{
+  const { DS, store } = load(false);
+  check(DS.submissions('two-sum').length === 0, 'no submissions to start with');
+  for (let i = 0; i < DS.SUB_MAX + 5; i++) { DS.setClock(() => 1700000000000 + i * 1000); DS.addSubmission('two-sum', { lang: i % 2 ? 'js' : 'py', passed: i % 9, total: 8, code: 'v' + i }); }
+  const list = DS.submissions('two-sum');
+  check(list.length === DS.SUB_MAX, 'only the last ' + DS.SUB_MAX + ' are kept: ' + list.length);
+  check(list[0].code === 'v' + (DS.SUB_MAX + 4) && list[list.length - 1].code === 'v5', 'newest first, oldest ones dropped');
+  check(list.every((x) => x.passed <= x.total && x.id === x.at + ':' + x.lang), 'pass counts never exceed the total, and each has an id');
+  DS.setClock(() => 1800000000000);
+  const big = DS.addSubmission('valid-anagram', { lang: 'py', passed: 3, total: 8, code: 'x'.repeat(DS.SUB_CODE_MAX + 50) });
+  check(big && big.code.length === DS.SUB_CODE_MAX, 'a long code snapshot is cut to ' + DS.SUB_CODE_MAX + ' characters');
+  check(DS.addSubmission('valid-anagram', { lang: 'rust', passed: 1, total: 1, code: '' }) === null && DS.addSubmission('', { lang: 'py', code: '' }) === null, 'an unknown language or a missing problem is refused');
+  const backup = DS.exportBackup();
+  check(backup.subs && backup.subs['two-sum'].length === DS.SUB_MAX && backup.subs['valid-anagram'].length === 1, 'the backup file holds the submission history');
+  DS.clearSubmissions('two-sum');
+  check(DS.submissions('two-sum').length === 0 && DS.submissions('valid-anagram').length === 1, 'clearing one problem leaves the others');
+  const res = DS.importBackup(backup);
+  check(res.subs === DS.SUB_MAX && DS.submissions('two-sum').length === DS.SUB_MAX, 'import brings the history back: ' + res.subs);
+  check(DS.importBackup(backup).subs === 0 && DS.submissions('valid-anagram').length === 1, 'importing the same file again adds nothing');
+  DS.setClock(() => 1900000000000);
+  DS.addSubmission('two-sum', { lang: 'py', passed: 8, total: 8, code: 'newest' });
+  DS.importBackup(backup);
+  check(DS.submissions('two-sum').length === DS.SUB_MAX && DS.submissions('two-sum')[0].code === 'newest', 'after a merge the cap still holds and the newest stays first');
+  store['dsaviz-submissions-v1'] = JSON.stringify({ v: 1, subs: { a: [{ at: 'x' }, null, { at: 5, lang: 'py', code: 'ok', passed: 9, total: 2 }] } });
+  const odd = DS.submissions('a');
+  check(odd.length === 1 && odd[0].passed === 2, 'broken rows are dropped and counts clamped');
+  DS.eraseProgress();
+  check(DS.submissions('a').length === 0, 'erasing progress clears the history');
+}
+
+console.log('streak freeze and the daily check-in');
+{
+  // Oct 2026: Mon 19, Tue 20, Wed 21, Thu 22, Fri 23, Sat 24, Sun 25, Mon 26.
+  const { DS, at } = load(false);
+  const clock = (d, h, mi) => DS.setClock(() => new Date(2026, 9, d, h, mi || 0, 0).getTime());
+  clock(19, 9);
+  check(!DS.daily().show, 'a brand-new learner sees no daily modal');
+  // Midnight: 23:59 and 00:01 are two different days.
+  clock(19, 23, 59); DS.passCode('a');
+  clock(20, 0, 1); DS.passCode('b');
+  check(DS.streak().current === 2, 'activity at 23:59 and 00:01 makes a 2-day streak');
+  const d1 = DS.daily();
+  check(d1.show && d1.day === 2 && d1.activeToday, 'the daily modal shows on the first visit and says day 2');
+  DS.markDailySeen();
+  check(!DS.daily().show, 'once seen, it stays away for the rest of the day');
+  clock(20, 23, 59);
+  check(!DS.daily().show, 'still the same day at 23:59');
+  clock(21, 0, 0);
+  const d2 = DS.daily();
+  check(d2.show && d2.day === 3 && !d2.activeToday && !d2.offer, 'just after midnight it shows again: day 3, nothing done yet');
+  DS.passCode('c');
+  check(DS.streak().current === 3 && DS.streak().freeze.available, 'a 3-day run earns the week\'s freeze');
+  // Thursday is missed. On Friday the freeze can bridge it.
+  clock(23, 10);
+  let st = DS.streak();
+  check(st.current === 0 && !st.atRisk && st.freeze.offer, 'one missed day: the streak reads 0 and a freeze is offered');
+  const d3 = DS.daily();
+  check(d3.show && d3.offer && d3.keeps === 3 && !d3.broken, 'the daily modal offers the freeze to keep 3 days');
+  st = DS.useFreeze();
+  check(st && st.current === 3 && st.atRisk && st.week[3].frozen && !st.week[3].on, 'the freeze bridges Thursday: 3 days, alive, Thursday marked frozen');
+  check(DS.useFreeze() === null && !DS.streak().freeze.available && DS.streak().freeze.usedThisWeek, 'the freeze is used up for this week');
+  DS.passCode('d');
+  check(DS.streak().current === 4 && DS.streak().longest === 4, 'Friday continues the streak: 4 days, the frozen day adds none');
+  // Saturday active, Sunday missed: same week, no second freeze.
+  clock(24, 12); DS.passCode('e');
+  clock(25, 12);
+  check(DS.streak().current === 5 && !DS.streak().freeze.offer, 'Sunday: alive through Saturday, nothing to freeze yet');
+  clock(26, 9);
+  // Monday is a new week, so the missed Sunday can be frozen again.
+  const mon = DS.streak();
+  check(mon.current === 0 && mon.freeze.offer && !mon.freeze.usedThisWeek, 'Monday: the week reset gives a new freeze for the missed Sunday');
+  check(DS.useFreeze().current === 5, 'it keeps all 5 days');
+  // Without the reset: in one week, a second missed day cannot be frozen.
+  const B = load(false);
+  const cb = (d, h) => B.DS.setClock(() => new Date(2026, 9, d, h || 12).getTime());
+  [19, 20, 21].forEach((d) => { cb(d); B.DS.passCode('x' + d); });
+  cb(23); B.DS.useFreeze(); B.DS.passCode('fri');
+  cb(25);
+  check(!B.DS.streak().freeze.offer && B.DS.streak().current === 0, 'a second missed day in the same week breaks the streak');
+  check(B.DS.daily().broken, 'and the daily modal says the streak ended');
+  // Two days missed, or a run too short: no freeze.
+  const C = load(false);
+  const cc = (d) => C.DS.setClock(() => new Date(2026, 9, d, 12).getTime());
+  [19, 20, 21].forEach((d) => { cc(d); C.DS.passCode('y' + d); });
+  cc(24);
+  check(!C.DS.streak().freeze.offer && C.DS.useFreeze() === null, 'two missed days cannot be frozen');
+  const E = load(false);
+  const ce = (d) => E.DS.setClock(() => new Date(2026, 9, d, 12).getTime());
+  [19, 20].forEach((d) => { ce(d); E.DS.passCode('z' + d); });
+  ce(22);
+  check(!E.DS.streak().freeze.offer && !E.DS.streak().freeze.available, 'a 2-day run has not earned a freeze');
+  E.store['dsaviz-streak-v1'] = '{broken';
+  check(E.DS.streak().current === 0 && E.DS.daily().broken, 'a broken freeze record reads as empty');
+  E.DS.eraseProgress();
+  check(!E.store['dsaviz-streak-v1'], 'erasing progress clears freezes');
+  void at;
+}
+
 console.log(problems ? problems + ' problem(s)' : 'data clean');
 if (problems) process.exitCode = 1;

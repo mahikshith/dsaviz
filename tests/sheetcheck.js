@@ -25,7 +25,7 @@ const ids = new Map(), titles = new Map();
 const review = [];
 // Loose kebab-case: drop apostrophes and backticks, turn any other run of punctuation or spaces into one hyphen.
 const kebab = (t) => t.toLowerCase().replace(/['`’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-if (SHEET.length < 500 || SHEET.length > 560) fail('sheet has ' + SHEET.length + ' problems, expected 500 to 560');
+if (SHEET.length < 500 || SHEET.length > 600) fail('sheet has ' + SHEET.length + ' problems, expected 500 to 600');
 if (new Set(groupNames).size !== groupNames.length) fail('duplicate group name');
 SHEET.forEach((r, i) => {
   const at = '#' + i + ' ' + (r.id || '(no id)');

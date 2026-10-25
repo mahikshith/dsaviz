@@ -52,7 +52,7 @@ const DS = (function () {
     }
     return { done, star };
   }
-  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock' | 'start'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:', 'start:' (a Start here chapter).
+  // kind: 'story' | 'code' | 'lesson' | 'revisit' | 'mock' | 'start'. Lesson ids are prefixed: 'git:', 'sd:', 'ai:', 'dsa:' (a DSA concept lesson), 'start:' (a Start here chapter).
   // 'start' is one Start here exercise passed (its id is the exercise id); it counts once per exercise. Sheet ticks need no call: they are read from dsaviz-sheet-v1.
   function logActivity(kind, id) {
     if (!XP[kind] || kind === 'sheet') return null;

@@ -10,6 +10,7 @@
 //   git      a Git lesson                                             -> Git page
 //   sd       a system design lesson                                   -> SDLesson page
 //   ai       an AI & ML lesson                                        -> AILesson page
+//   dsa      a DSA concept lesson                                     -> ConceptLesson page
 //   term     a glossary keyword                                       -> Glossary page
 //   sheet    a master sheet row                                       -> Sheet page
 const fs = require('fs');
@@ -30,13 +31,14 @@ function load() {
   const sd = new Function('window', read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '\nreturn SD_LESSONS;')(win);
   const ai = new Function(read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '\nreturn { AI_LESSONS, AI_TRACKS };')();
   const start = new Function(require('./start_files.js').startSource(false) + '\nreturn { START_CHAPTERS, START_PARTS };')();
+  const dsa = new Function(read('src', 'ai', 'render.js') + '\n' + read('src', 'concepts', 'lessons.js') + '\nreturn { CS_LESSONS, CS_TRACKS };')();
   // The glossary keeps its keywords in the Glossary page's own script.
   const gloss = read('pages', 'Glossary.dc.html');
   const a = gloss.indexOf('const KEYWORDS = [');
   const b = gloss.indexOf('\n];', a) + 3;
   if (a < 0 || b < 3) throw new Error('KEYWORDS not found in pages/Glossary.dc.html');
   const KEYWORDS = new Function(gloss.slice(a, b) + '\nreturn KEYWORDS;')();
-  return Object.assign(data, spec, { sql, git, sd, ai, KEYWORDS, start });
+  return Object.assign(data, spec, { sql, git, sd, ai, dsa, KEYWORDS, start });
 }
 
 function build() {
@@ -59,6 +61,9 @@ function build() {
   const track = {};
   D.ai.AI_TRACKS.forEach((t) => { track[t.id] = t.short; });
   D.ai.AI_LESSONS.forEach((L) => add('ai', L.id, L.title, track[L.track] + ' · ' + L.tag));
+  const ctrack = {};
+  D.dsa.CS_TRACKS.forEach((t) => { ctrack[t.id] = t.short; });
+  D.dsa.CS_LESSONS.forEach((L) => add('dsa', L.id, L.title, ctrack[L.track] + ' · ' + L.tag, L.groups.concat(['concept', 'lesson'])));
   D.KEYWORDS.forEach((k) => add('term', k.id, k.id, k.gist, [k.cat]));
   D.SHEET.forEach((r) => add('sheet', r.id, r.name, r.pattern + ' · ' + r.diff));
   // only the 16 patterns count here; stories in sheet groups (Graphs, Tries) are extra
@@ -67,7 +72,7 @@ function build() {
   const counts = {
     stories: animated.length, storyPatterns: patterns.size, patterns: D.PATTERNS.length, catalog: D.PROBLEMS.length,
     sheet: D.SHEET.length, runnable: Object.keys(D.TEST_SPECS).length, sql: Object.keys(D.sql).length,
-    git: D.git.length, sd: D.sd.length, ai: D.ai.AI_LESSONS.length, terms: D.KEYWORDS.length, start: ready.length
+    git: D.git.length, sd: D.sd.length, ai: D.ai.AI_LESSONS.length, dsa: D.dsa.CS_LESSONS.length, terms: D.KEYWORDS.length, start: ready.length
   };
   return { items, counts };
 }

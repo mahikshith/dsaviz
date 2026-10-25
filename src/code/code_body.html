@@ -23,13 +23,8 @@
 </div>
 </div>
 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
-<sc-if value="{{hasFormat}}" hint-placeholder-val="{{ false }}">
-<dl style="margin: 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 6px 12px; font-size: 14px; line-height: 1.5">
-<sc-if value="{{hasFmtInput}}"><dt style="font-weight: 700; color: {{t.muted}}">Input</dt><dd style="margin: 0; color: {{t.text2}}">{{fmtInput}}</dd></sc-if>
-<sc-if value="{{hasFmtOutput}}"><dt style="font-weight: 700; color: {{t.muted}}">Output</dt><dd style="margin: 0; color: {{t.text2}}">{{fmtOutput}}</dd></sc-if>
-<sc-if value="{{hasConstraints}}"><dt style="font-weight: 700; color: {{t.muted}}">Constraints</dt><dd style="margin: 0; color: {{t.text2}}"><ul style="margin: 0; padding-left: 18px"><sc-for list="{{constraints}}" as="cn"><li style="font-family: {{t.mono}}; font-size: 13px">{{cn.c}}</li></sc-for></ul></dd></sc-if>
-</dl>
-</sc-if>
+<!-- PROBLEM FACTS -->
+<!-- /PROBLEM FACTS -->
 <sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
@@ -41,7 +36,6 @@
 </div>
 </sc-for>
 </div>
-<sc-if value="{{hasAim}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Aim for </span>{{aim}}</p></sc-if>
 <sc-if value="{{hasHints}}">
 <section aria-labelledby="hint-h" style="display: flex; flex-direction: column; gap: 8px">
 <div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints</h2><span style="font-size: 13px; color: {{t.muted}}">{{hintCount}}</span></div>
@@ -107,6 +101,8 @@
 </sc-if>
 </section>
 </sc-if>
+<!-- APPROACH PANE -->
+<!-- /APPROACH PANE -->
 <sc-if value="{{notSql}}">
 <sc-if value="{{hasStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Still stuck? Old Hoot walks through it in the story. <a href="{{storyHref}}" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Watch {{P.story}}</a></div></sc-if>
 <sc-if value="{{noStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Still stuck? Old Hoot explains the {{P.pattern}} idea in the library. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>

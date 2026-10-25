@@ -10,6 +10,7 @@ const SEARCH_TYPES = {
   git: ['Git', 'Git.dc.html', 'dsaviz-git-lesson', 2],
   sd: ['System design', 'SDLesson.dc.html', 'dsaviz-sd-lesson', 2],
   ai: ['AI & ML', 'AILesson.dc.html', 'dsaviz-ai-lesson', 2],
+  dsa: ['DSA concepts', 'ConceptLesson.dc.html', 'dsaviz-concept-lesson', 2.2],
   term: ['Glossary', 'Glossary.dc.html', 'dsaviz-glossary-term', 1.5],
   sheet: ['Master sheet', 'Sheet.dc.html', 'dsaviz-sheet-focus', 1]
 };

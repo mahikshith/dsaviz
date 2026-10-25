@@ -4,8 +4,9 @@
 // The picker lists every master sheet problem, grouped and ordered as the sheet is. A row opens the problem
 // by its pid (shared/sheet.js). SQL problems (shared/sql_spec.js) swap the left side for the schema panel and
 // the code pane for the SQL pane (shared/sql_pane.*).
-// Left column, top to bottom: the statement, Input / Output / Constraints, the examples with a one-line why,
-// "Aim for", the hint ladder (shared/hints.js), "Plan it first" (shared/plans.js), then "Still stuck? Watch the story".
+// Left column, top to bottom: the statement, the facts block (Input, Output, Constraints, Aim for: shared/facts.js),
+// the examples with a one-line why, the hint ladder (shared/hints.js), "Plan it first" (shared/plans.js),
+// Approaches (shared/approaches.js, behind a spoiler fold), then "Still stuck? Watch the story".
 function sqlInfo(id) { const q = SQL_SPECS[id]; return { id, title: q.title, diff: q.diff, pattern: 'SQL', story: null, time: null }; }
 const knownProblem = (id) => !!(id && (TEST_SPECS[id] || SQL_SPECS[id]));
 const CODE_GROUPS = SHEET_GROUPS.map(([name]) => ({ name, items: SHEET.filter((r) => r.pattern === name && knownProblem(r.pid)).map((r) => ({ id: r.pid, title: r.name })) }))
@@ -23,13 +24,6 @@ function setQueryProblem(id) {
     window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash);
   } catch (e) {}
 }
-// The statement's format slot. Specs may carry input, output, constraints (a list) and aim (target complexity),
-// either on the spec itself or under spec.format; this page only renders them.
-function statementExtras(spec) {
-  const f = (spec && (spec.format || spec)) || {};
-  const list = (x) => (Array.isArray(x) ? x : x ? [x] : []).map(String).filter(Boolean);
-  return { input: f.input ? String(f.input) : '', output: f.output ? String(f.output) : '', constraints: list(f.constraints), aim: f.aim ? String(f.aim) : '' };
-}
 function problemSolved(pid) { try { return typeof DS !== 'undefined' && DS.problemStatus(pid) === 'done'; } catch (e) { return false; } }
 
 class Component extends DCLogic {
@@ -41,6 +35,7 @@ class Component extends DCLogic {
     this.state = Object.assign({ theme: loadTheme(), pid }, this.freshProblem(pid));
     this.runner = new CodeRunner(this, TEST_SPECS[pid] ? pid : 'two-sum-ii');
     this.sql = new SqlRunner(this, pid);
+    this.approaches = new ApproachPane(this, pid, { lang: () => this.runner.s.lang });
   }
   // Per-problem view state: the plan is open until the problem is solved; hints, the solution and the order game start closed.
   freshProblem(pid) { return { planOpen: !problemSolved(pid), solOpen: false, hintN: 0, hover: -1, ord: null, ordMsg: '', ordOk: false, dragAt: -1, inserted: false }; }
@@ -61,6 +56,7 @@ class Component extends DCLogic {
     saveProblem(pid);
     setQueryProblem(pid);
     if (SQL_SPECS[pid]) this.sql.setProblem(pid); else this.runner.setProblem(pid);
+    this.approaches.setProblem(pid);
     this.setState(Object.assign({ pid }, this.freshProblem(pid)));
   }
   // ---- "Order the steps": the plan shuffled; move steps with drag, or with the Up and Down buttons ----
@@ -153,12 +149,12 @@ class Component extends DCLogic {
     const isSql = !!SQL_SPECS[this.state.pid];
     const spec = isSql ? null : TEST_SPECS[this.state.pid];
     const P = isSql ? sqlInfo(this.state.pid) : specInfo(this.state.pid);
-    const X = statementExtras(isSql ? SQL_SPECS[this.state.pid] : spec);
     const H = isSql ? null : hintsFor(this.state.pid);
     const hintN = this.state.hintN;
     return {
       t, ...navVals(this, t, themeKey, 'Code'), themeBtns: themeButtons(this, themeKey, t),
       cr: this.runner.vals(t), sq: this.sql.vals(t),
+      fx: factsVals(t, this.state.pid), ap: this.approaches.vals(t),
       isSql, notSql: !isSql, asideOverflow: 'auto',
       P, ask: isSql ? SQL_SPECS[this.state.pid].ask : spec.ask, diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2],
       keepProblem: () => saveProblem(this.state.pid),
@@ -169,9 +165,6 @@ class Component extends DCLogic {
       storyHref: 'Story.dc.html?from=code',
       kicker: P.story ? 'Story · ' + P.story : isSql ? 'SQL · SQLite' : P.pattern,
       pickProblem: (e) => this.pickProblem(e && e.target ? e.target.value : e),
-      // the format slot (filled by the specs when they carry it)
-      hasFormat: !!(X.input || X.output || X.constraints.length), fmtInput: X.input, hasFmtInput: !!X.input, fmtOutput: X.output, hasFmtOutput: !!X.output,
-      hasConstraints: X.constraints.length > 0, constraints: X.constraints.map((c) => ({ c })), hasAim: !!X.aim, aim: X.aim,
       examples: isSql ? [] : spec.examples.map(([args, want], i) => ({ input: showArgs(spec, args), output: showValue(want), why: H && H.why[i] ? H.why[i] : '', hasWhy: !!(H && H.why[i]) })),
       // the hint ladder: nudge, approach, key trick, one at a time
       hasHints: !!H, hintsShown: H ? H.hints.slice(0, hintN).map((h, i) => ({ name: HINT_NAMES[i], text: h, n: i + 1 })) : [],

@@ -1,6 +1,10 @@
 // Start here check: every ready lesson is complete (story, watch it run, try it, 3+ exercises, one check), captions
 // are short, scenes stay on the canvas, every exercise reference really works (JavaScript always, Python when it is
 // installed), the traces are current, the needs tags and the path are consistent, and nothing names LeetCode.
+// Levels 2 and 3 ask for more: 7+ story beats, 4 or 5 exercises of 3+ kinds, and a "Watch it run" picture (plates for
+// the call stack, boxes and arrows for objects) whose every step stays on its canvas.
+// Counts: the hub, the roadmap's Start here lane and node cards, Home and Profile all count lessons with one helper
+// (DS.startCounts, built from src/start/chapters.js); the numbers must agree.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -12,7 +16,7 @@ let bad = 0;
 const fail = (id, msg) => { bad++; console.log('  ✗', id, msg); };
 
 const S = new Function(read('src', 'ai', 'render.js') + '\n' + require('../scripts/start_files.js').startSource() +
-  '\nreturn { START_CHAPTERS, START_EXERCISES, START_NEEDS, START_NEEDS_KEYS, START_TRACES, START_PROBLEMS, START_PARTS, START_LEVELS, START_PLACEMENT, START_CAST, START_ROAD, stSceneProblems, startTraceSay, startTaughtBy, startFirstProblems, startProgress, startHelp, stPlates, stRefs, stQueue, stScene };')();
+  '\nreturn { START_CHAPTERS, START_EXERCISES, START_NEEDS, START_NEEDS_KEYS, START_TRACES, START_PROBLEMS, START_PARTS, START_LEVELS, START_PLACEMENT, START_CAST, START_ROAD, stSceneProblems, startTraceSay, startTaughtBy, startFirstProblems, startProgress, startHelp, stPlates, stRefs, stQueue, stScene, stMemNeeded, stMemScenes, stMemSay, stFlatten };')();
 const R = require('../shared/runner.js');
 const win = { localStorage: { getItem: () => null, setItem() {} } };
 const T = new Function('module', 'window', read('shared', 'catalog.js') + '\n' + read('shared', 'tests_spec.js') + '\nreturn { TEST_SPECS, specInfo, judge };')({}, win);
@@ -86,7 +90,7 @@ S.START_LEVELS.forEach((L) => {
   ns.forEach((n, i) => { if (n !== i + 1) fail('level ' + L.n, 'lesson numbers should run 1, 2, 3...: got ' + ns.join(',')); });
 });
 const level1 = S.START_CHAPTERS.filter((c) => (c.level || 1) === 1);
-if (level1.length < 26) fail('level 1', 'has ' + level1.length + ' lessons, wants the 24 lessons, the bridge and counting steps');
+if (level1.length !== 27) fail('level 1', 'has ' + level1.length + ' lessons, wants the 24 lessons, the bridge and counting steps: 27');
 S.START_PLACEMENT.forEach((q, i) => {
   if (!(q.answer >= 0 && q.answer < q.choices.length)) fail('placement ' + (i + 1), 'answer out of range');
   q.marks.forEach((m) => { if (!ids.has(m)) fail('placement ' + (i + 1), 'marks unknown lesson ' + m); });
@@ -134,6 +138,26 @@ S.START_CHAPTERS.filter((c) => c.ready).forEach((c) => {
   // exercises
   const exs = S.START_EXERCISES[id] || [];
   if (exs.length < 3 || exs.length > 5) fail(id, 'wants 3 to 5 exercises, has ' + exs.length);
+  if ((c.level || 1) >= 2) {
+    if (exs.length < 4) fail(id, 'a Level ' + c.level + ' lesson wants 4 or 5 exercises, has ' + exs.length);
+    if (new Set(exs.map((e) => e.kind)).size < 3) fail(id, 'a Level ' + c.level + ' lesson wants 3 or more kinds of exercise');
+    if (!Array.isArray(c.story) || c.story.length < 7) fail(id, 'a Level ' + c.level + ' story wants 7 or more beats');
+    if (tr && !S.stMemNeeded(tr)) fail(id, 'a Level ' + c.level + ' lesson needs a Watch it run picture: calls on the stack or objects (watch.heap)');
+    if (c.level === 3 && !(c.watch && c.watch.heap)) fail(id, 'a Level 3 watch program draws its objects: set watch.heap');
+    if (c.level === 3 && !c.story.some((b) => b.scene.boxes && b.scene.boxes.length && (b.scene.arrows || []).length)) fail(id, 'a Level 3 story shows objects as boxes with arrows');
+  }
+  // The picture: every step on its own canvas, no NaN, a spoken description, the same canvas for every step.
+  if (tr && S.stMemNeeded(tr)) {
+    const pic = S.stMemScenes(tr);
+    if (pic.scenes.length !== tr.steps.length) fail(id, 'picture has a scene per step');
+    pic.scenes.forEach((sc, i) => {
+      S.stSceneProblems(sc, [], { w: pic.w, h: pic.h }).forEach((p) => fail(id, 'picture step ' + (i + 1) + ': ' + p));
+      const flat = S.stFlatten(sc, { a: '#a', b: '#b', c: '#c', ok: '#o', bad: '#x', m: '#m', t: '#t', t2: '#u', f: '#f', l: '#l', ln: '#n', bg: '#g', sunk: '#s', on: '#k' }, []);
+      if (JSON.stringify(flat).indexOf('NaN') >= 0) fail(id, 'picture step ' + (i + 1) + ' has a NaN');
+      if (!S.stMemSay(tr.steps[i])) fail(id, 'picture step ' + (i + 1) + ' has no description');
+    });
+    if (pic.w > 1100) fail(id, 'picture is wider than 1100 units: too small to read');
+  }
   exs.forEach((e) => checkExercise(c, e));
   exCount += exs.length;
 });
@@ -152,8 +176,8 @@ function checkExercise(c, e) {
       const ch = e.choices[lang];
       if (!Array.isArray(ch) || !(e.answer >= 0 && e.answer < ch.length)) { fail(id, lang + ' choices or answer missing'); return; }
       if (new Set(ch).size !== ch.length) fail(id, lang + ' choices repeat');
-      if (lang === 'js') { const r = runJs(e.code.js); const got = r.error ? 'ERROR' : r.out; if (got !== R.programOutput([ch[e.answer]])) fail(id, 'js prints ' + JSON.stringify(got) + ', the answer says ' + JSON.stringify(ch[e.answer])); }
-      else pyJobs.push({ code: e.code.py, check: (r) => { if ((r.error ? 'ERROR' : r.out) !== R.programOutput([ch[e.answer]])) fail(id, 'py prints ' + JSON.stringify(r.error || r.out) + ', the answer says ' + JSON.stringify(ch[e.answer])); } });
+      if (lang === 'js') { const r = runJs(e.code.js); const got = r.error ? 'An error' : r.out; if (got !== R.programOutput([ch[e.answer]])) fail(id, 'js prints ' + JSON.stringify(got) + ', the answer says ' + JSON.stringify(ch[e.answer])); }
+      else pyJobs.push({ code: e.code.py, check: (r) => { if ((r.error ? 'An error' : r.out) !== R.programOutput([ch[e.answer]])) fail(id, 'py prints ' + JSON.stringify(r.error || r.out) + ', the answer says ' + JSON.stringify(ch[e.answer])); } });
     });
     if (!e.why) fail(id, 'predict needs a why');
   } else if (e.kind === 'choose') {
@@ -219,7 +243,7 @@ if (py) {
   const tracer = read('src', 'start', 'tracer.py');
   const reqs = traceJobs.map((e) => ({ code: e.code, stdin: [] }));
   const ready = S.START_CHAPTERS.filter((c) => c.ready && c.watch);
-  ready.forEach((c) => reqs.push({ code: c.watch.code, stdin: c.watch.stdin || [] }));
+  ready.forEach((c) => reqs.push({ code: c.watch.code, stdin: c.watch.stdin || [], heap: !!c.watch.heap }));
   const r = spawnSync(py, ['-c', tracer.replace("if __name__ == '__main__':", 'if True:')], { input: JSON.stringify(reqs), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (r.status !== 0) fail('tracer', r.stderr.slice(0, 300));
   else {
@@ -256,12 +280,17 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   const built = JSON.parse(spawnSync('node', [path.join(root, 'scripts', 'build_start.js')], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).stdout);
   const store = {};
   const window = { localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } } };
-  const src = read('shared', 'data.js').replace('/*@@START-MEDALS@@*/[]', JSON.stringify(built.medals));
+  const src = read('shared', 'data.js').replace('/*@@START-MEDALS@@*/[]', JSON.stringify(built.medals)).replace('/*@@START-OUTLINE@@*/[]', JSON.stringify(built.outline));
   const DS = new Function('window', src + '\nreturn DS;')(window);
   DS.setClock(() => new Date(2026, 9, 21, 20, 0, 0).getTime());
   const ok = (cond, msg) => { if (!cond) fail('DS', msg); };
   const first = S.START_CHAPTERS[0], ex = S.START_EXERCISES[first.id];
-  ok(DS.startMedals().length === 5 && DS.startMedals().every((m) => !m.tier && m.next.tier === 'bronze'), 'five beginner medals, none earned yet');
+  const sets = built.medals;
+  const written = (n) => S.START_CHAPTERS.some((c) => (c.level || 1) === n && c.ready);
+  ok(sets.filter((g) => g.level === 1).length === 5 && sets.filter((g) => g.level === 2).length === (written(2) ? 4 : 0) && sets.filter((g) => g.level === 3).length === (written(3) ? 4 : 0), 'medal sets: five for Level 1, four each for Levels 2 and 3 once written');
+  ok(sets.every((g) => g.lessons.length && g.lessons.every((id) => S.START_CHAPTERS.find((c) => c.id === id && c.ready))), 'every medal is made of ready lessons');
+  [1, 2, 3].filter(written).forEach((n) => { const mine = [].concat(...sets.filter((g) => g.level === n).map((g) => g.lessons)); const all = S.START_CHAPTERS.filter((c) => (c.level || 1) === n).map((c) => c.id); ok(mine.length === all.length && all.every((id) => mine.includes(id)), 'the Level ' + n + ' medals cover every Level ' + n + ' lesson once'); });
+  ok(DS.startMedals().length === sets.length && DS.startMedals().every((m) => !m.tier && m.next.tier === 'bronze'), 'every Start here medal starts unearned');
   ok(DS.startRing() === null, 'no Start here ring before the learner starts');
   ok(DS.profile().isNew, 'a new learner is new');
   DS.startPass(ex[0].id);
@@ -275,10 +304,45 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   ok(DS.medals([], []).some((m) => m.start), 'DS.medals includes the beginner set');
   ok(DS.reviewCards().some((c) => c.kind === 'start' && c.id === 'start:' + first.id), 'a finished lesson becomes a revisit card');
   const ring = DS.startRing();
-  ok(ring && ring.done === 1 && ring.total === built.medals.reduce((n, g) => n + g.lessons.length, 0), 'the ring counts Level 1 lessons');
+  ok(ring && ring.done === 1 && ring.total === S.START_CHAPTERS.filter((c) => (c.level || 1) === 1).length, 'the ring counts every Level 1 lesson');
   DS.startPlace([S.START_CHAPTERS[1].id]);
   ok(DS.startRing().done === 2, 'placement-known lessons fill the ring');
   ok(S.startProgress(DS.start()).rows[1].known, 'placement marks a lesson known');
+
+  // ---------- one source for every Start here count ----------
+  const RM = new Function('window', read('shared', 'roadmap.js') + '\nreturn { ROADMAP_NODES, rmStartNodeCounts, rmStartLaneCounts };')(window);
+  const hub = DS.startCounts(1);
+  ok(hub.total === level1.length, 'the hub counts all ' + level1.length + ' Level 1 lessons (got ' + hub.total + ')');
+  ok(hub.done === 2, 'the hub counts finished and known lessons');
+  const ring2 = DS.startRing();
+  ok(ring2.total === hub.total && ring2.done === hub.done, 'Profile’s ring agrees with the hub');
+  const lane = (k) => RM.ROADMAP_NODES.filter((n) => n.lane === k && n.track === 'start');
+  const startLane = RM.rmStartLaneCounts('start', lane('start'), DS);
+  ok(startLane.total === hub.total && startLane.done === hub.done, 'the roadmap’s Start here lane agrees with the hub: ' + startLane.done + ' of ' + startLane.total + ' vs ' + hub.done + ' of ' + hub.total);
+  const nodeSum = lane('start').map((n) => RM.rmStartNodeCounts(n, DS)).reduce((a, c) => ({ total: a.total + c.total, done: a.done + c.done }), { total: 0, done: 0 });
+  ok(nodeSum.total === hub.total && nodeSum.done === hub.done, 'the Start here node cards add up to the lane total');
+  const seen = {};
+  lane('start').concat(lane('core')).forEach((n) => n.lessons.forEach(([lid, title]) => {
+    seen[lid] = (seen[lid] || 0) + 1;
+    const ch = S.START_CHAPTERS.find((c) => c.id === lid);
+    if (n.go && !ch) fail(n.id, 'roadmap lesson ' + lid + ' is not in src/start/chapters.js');
+    if (n.go && ch && ch.title !== title) fail(n.id, 'roadmap title for ' + lid + ' should be ' + JSON.stringify(ch.title));
+    if (n.go && ch && !ch.ready) fail(n.id, 'a live roadmap node lists ' + lid + ', which is not written yet');
+  }));
+  level1.forEach((c) => { if (seen[c.id] !== 1) fail('roadmap', 'Level 1 lesson ' + c.id + ' should sit on exactly one Start here node (found ' + (seen[c.id] || 0) + ')'); });
+  S.START_CHAPTERS.filter((c) => (c.level || 1) > 1 && c.ready).forEach((c) => {
+    const live = lane('core').filter((n) => n.go && n.lessons.some(([lid]) => lid === c.id));
+    if (live.length !== 1) fail('roadmap', 'ready lesson ' + c.id + ' should sit on exactly one live core node (found ' + live.length + ')');
+  });
+  const core = RM.rmStartLaneCounts('core', lane('core'), DS);
+  const ready23 = S.START_CHAPTERS.filter((c) => (c.level || 1) > 1 && c.ready).length;
+  ok(core.total === ready23, 'the core lane counts every written Level 2 and 3 lesson: ' + core.total + ' vs ' + ready23);
+  const firstNode = RM.ROADMAP_NODES.find((n) => n.id === 's-programs');
+  ok(RM.rmStartNodeCounts(firstNode, DS).total === firstNode.lessons.length, 'the Your first programs card counts its own lessons');
+  // The pages read these counts, not their own.
+  [['Start', ['const counts = DS.startCounts(1);', "counts.done + ' of ' + counts.total + ' Level 1 lessons done'"]], ['Home', ['const startCount = DS.startCounts(1);', "startCount.done + ' of ' + startCount.total + ' Level 1 lessons done'"]],
+    ['Patterns', ['rmStartNodeCounts(n, DS)', 'rmStartLaneCounts(l.key, l.nodes, DS)']]].forEach(([p, need]) => { const src = read('pages', p + '.dc.html'); need.forEach((x) => { if (src.indexOf(x) < 0) fail(p, 'should count Start here lessons with the shared helper: ' + x); }); });
+  if (read('src', 'pages', 'profile.js').indexOf('DS.startRing()') < 0) fail('Profile', 'should count Start here lessons with DS.startRing');
 }
 
 // ---------- error help and pages ----------

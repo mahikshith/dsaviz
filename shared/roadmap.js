@@ -66,47 +66,52 @@ const ROADMAP_NODES = [
     blurb: 'Count the laps your loop makes. When the input doubles, does the work double too?',
     lessons: [['counting-steps', 'Counting steps']], covers: [] },
 
-  // ---- Core programming, Levels 2-5: planned on the Start here track, coming soon until their lessons are in src/start/chapters.js ----
-  { id: 'k-calls', lane: 'core', label: 'Calls & returns', col: 0, row: 0, name: 'Calling a function', track: 'start', go: '',
-    blurb: 'Arguments go in, one value comes back. The difference between returning a value and printing it.',
+  // ---- Core programming, Levels 2-5 on the Start here track. A node is live once its lessons are written (go set); Levels 4 and 5 are coming soon. ----
+  // Level 2, Functions in depth (src/start/lessons_6.js and lessons_7.js): live.
+  { id: 'k-calls', lane: 'core', label: 'Calls & returns', col: 0, row: 0, name: 'Calling a function', track: 'start', go: 'calls',
+    blurb: 'Arguments go in, one value comes back to the spot that called. The names never have to match.',
     lessons: [['calls', 'Calling a function']], covers: [] },
-  { id: 'k-stack', lane: 'core', label: 'The call stack', col: 1, row: 0, name: 'The call stack', track: 'start', go: '',
+  { id: 'k-stack', lane: 'core', label: 'The call stack', col: 1, row: 0, name: 'The call stack', track: 'start', go: 'call-stack',
     blurb: 'Each call puts a plate on the pile and return takes the top one off. The idea behind recursion.',
     lessons: [['call-stack', 'The call stack is a pile of plates']], covers: ['call stack'] },
-  { id: 'k-scope', lane: 'core', label: 'Scope', col: 2, row: 0, name: 'Scope: which names can I see?', track: 'start', go: '',
-    blurb: 'A name lives in the function that made it. Why a variable made inside is not visible outside.',
+  { id: 'k-scope', lane: 'core', label: 'Scope', col: 2, row: 0, name: 'Scope: which names can I see?', track: 'start', go: 'scope',
+    blurb: 'A name lives on the plate of the function that made it. Why a variable made inside is not visible outside.',
     lessons: [['scope', 'Which names can I see?']], covers: [] },
-  { id: 'k-args', lane: 'core', label: 'Arguments', col: 3, row: 0, name: 'Arguments in depth', track: 'start', go: '',
+  { id: 'k-args', lane: 'core', label: 'Arguments', col: 3, row: 0, name: 'Arguments in depth', track: 'start', go: 'defaults',
     blurb: 'Default and keyword arguments, any number of inputs, and why a list passed in can change outside.',
     lessons: [['defaults', 'Default and keyword arguments'], ['many-args', 'Any number of inputs'], ['mutable-args', 'Two names, one list']], covers: [] },
-  { id: 'k-callbacks', lane: 'core', label: 'Callbacks', col: 4, row: 0, name: 'Functions as values', track: 'start', go: '',
+  { id: 'k-callbacks', lane: 'core', label: 'Callbacks', col: 4, row: 0, name: 'Functions as values', track: 'start', go: 'callbacks',
     blurb: 'A function is a thing you can hand to another function: sort keys, callbacks and lambdas.',
-    lessons: [['callbacks', 'Functions as values']], covers: [] },
-  { id: 'k-closures', lane: 'core', label: 'Closures', col: 5, row: 0, name: 'Closures', track: 'start', go: '',
+    lessons: [['callbacks', 'Functions are values too']], covers: [] },
+  { id: 'k-closures', lane: 'core', label: 'Closures', col: 5, row: 0, name: 'Closures', track: 'start', go: 'closures',
     blurb: 'A function carries the variables from where it was made. The root of memoization and decorators.',
-    lessons: [['closures', 'Closures']], covers: ['scope and closures'] },
+    lessons: [['closures', 'Functions that remember']], covers: ['scope and closures'] },
+  { id: 'k-recursion', lane: 'core', label: 'Recursion', col: 6, row: 0, name: 'A function that calls itself', track: 'start', go: 'recursion',
+    blurb: 'Hand a smaller copy of the job to yourself until a base case stops it. Plates pile up, answers come back.',
+    lessons: [['recursion', 'A function that calls itself']], covers: [] },
+  // Level 3, Objects and classes: in src/start/chapters.js, coming soon until its lessons are written.
   { id: 'k-objects', lane: 'core', label: 'Classes & objects', col: 0, row: 1, name: 'Classes and objects', track: 'start', go: '',
     blurb: 'A class is a blueprint and each object built from it keeps its own data. self, __init__, attributes and methods.',
-    lessons: [['objects', 'A first look at objects'], ['self', 'self: who is calling?'], ['init', 'Setting up a new object'], ['attributes', 'Attributes and methods']],
+    lessons: [['objects', 'Blueprints and objects'], ['self', 'self: which robot is it?'], ['init', 'Setting up a new object'], ['attributes', 'What it knows, what it does']],
     covers: ['classes and objects'] },
   { id: 'k-refs', lane: 'core', label: 'References', col: 1, row: 1, name: 'Names point at objects', track: 'start', go: '',
     blurb: 'b = a does not copy. Two names can point at one object, which is how linked lists and graphs are built.',
-    lessons: [['references', 'Names point at objects'], ['class-attributes', 'Shared and own data']], covers: ['references and memory'] },
+    lessons: [['references', 'Two names, one object'], ['class-attributes', 'Data the whole class shares']], covers: ['references and memory'] },
   { id: 'k-encap', lane: 'core', label: 'Encapsulation', col: 2, row: 1, name: 'Encapsulation and special methods', track: 'start', go: '',
     blurb: 'Guard how data is read and changed, and teach objects to work with print, == and len.',
-    lessons: [['encapsulation', 'Keeping data safe'], ['dunder', 'Special methods']], covers: ['encapsulation'] },
+    lessons: [['encapsulation', 'Keeping data safe'], ['dunder', 'Teaching objects print, == and len']], covers: ['encapsulation'] },
   { id: 'k-inherit', lane: 'core', label: 'Inheritance', col: 3, row: 1, name: 'Inheritance and super()', track: 'start', go: '',
     blurb: 'A child class gets what its parent has and changes only what is different.',
-    lessons: [['inheritance', 'The family tree'], ['super', 'Override and super()']], covers: [] },
+    lessons: [['inheritance', 'The family tree'], ['super', 'Override, then call super()']], covers: [] },
   { id: 'k-poly', lane: 'core', label: 'Polymorphism', col: 4, row: 1, name: 'Polymorphism', track: 'start', go: '',
     blurb: 'Send the same call to different objects and each one does its own thing.',
-    lessons: [['polymorphism', 'Same call, different behaviour']], covers: ['inheritance and polymorphism'] },
+    lessons: [['polymorphism', 'Same call, different robots']], covers: ['inheritance and polymorphism'] },
   { id: 'k-compose', lane: 'core', label: 'Composition', col: 5, row: 1, name: 'Composition over inheritance', track: 'start', go: '',
     blurb: 'Build from parts (has-a) instead of family trees (is-a), and know when a plain function is enough.',
-    lessons: [['composition', 'Composition vs inheritance'], ['no-class', 'When not to use a class']], covers: [] },
+    lessons: [['composition', 'Built from parts'], ['no-class', 'When not to use a class']], covers: [] },
   { id: 'k-interfaces', lane: 'core', label: 'Interfaces', col: 6, row: 1, name: 'Abstract classes and interfaces', track: 'start', go: '',
     blurb: 'A contract that says what must exist without saying how. The bridge into low-level design.',
-    lessons: [['interfaces', 'Abstract classes and interfaces']], covers: [] },
+    lessons: [['interfaces', 'A contract every class signs']], covers: [] },
   { id: 'k-errors', lane: 'core', label: 'Exceptions', col: 0, row: 2, name: 'Exceptions', track: 'start', go: '',
     blurb: 'An error travels up the calls until someone handles it. try, except, raise, finally and with.',
     lessons: [['exceptions', 'When things go wrong'], ['raise', 'Raising your own errors']], covers: ['errors and exceptions'] },
@@ -277,7 +282,7 @@ const ROADMAP_EDGES = [
   ['s-programs', 's-variables'], ['s-variables', 's-decisions'], ['s-decisions', 's-loops'], ['s-loops', 's-lists'], ['s-lists', 's-functions'],
   ['s-lists', 's-dicts'], ['s-functions', 's-plan'], ['s-functions', 's-debugging'], ['s-dicts', 's-debugging'], ['s-plan', 's-steps'], ['s-debugging', 's-steps'],
   // Core: one row per level
-  ['k-calls', 'k-stack'], ['k-stack', 'k-scope'], ['k-scope', 'k-args'], ['k-args', 'k-callbacks'], ['k-callbacks', 'k-closures'],
+  ['k-calls', 'k-stack'], ['k-stack', 'k-scope'], ['k-scope', 'k-args'], ['k-args', 'k-callbacks'], ['k-callbacks', 'k-closures'], ['k-closures', 'k-recursion'],
   ['k-objects', 'k-refs'], ['k-refs', 'k-encap'], ['k-encap', 'k-inherit'], ['k-inherit', 'k-poly'], ['k-poly', 'k-compose'], ['k-compose', 'k-interfaces'],
   ['k-errors', 'k-files'], ['k-files', 'k-modules'], ['k-modules', 'k-comprehensions'], ['k-comprehensions', 'k-generators'], ['k-generators', 'k-decorators'],
   ['k-decorators', 'k-testing'], ['k-testing', 'k-clean'],
@@ -294,7 +299,7 @@ const ROADMAP_EDGES = [
   ['c-graphs', 'c-topo'], ['c-graphs', 'c-shortest'], ['c-shortest', 'c-hard-graphs'],
   ['c-graphs', 'c-unionfind'], ['c-unionfind', 'c-spanning'],
   // Into the concepts
-  ['s-steps', 'c-bigo'], ['s-lists', 'c-arrays'], ['k-stack', 'c-recursion'], ['k-refs', 'c-linked'],
+  ['s-steps', 'c-bigo'], ['s-lists', 'c-arrays'], ['k-stack', 'c-recursion'], ['k-recursion', 'c-recursion'], ['k-refs', 'c-linked'],
   // Concepts into the patterns
   ['c-arrays', 'Two Pointers'], ['c-arrays', 'Prefix Sum'], ['c-arrays', 'Matrix'], ['c-hashing', 'Hash Map'], ['c-stacks', 'Stack'],
   ['c-linked', 'Linked Lists'], ['c-sorting', 'Sorting'], ['c-search', 'Binary Search'], ['c-recursion', 'Depth-First Search'],
@@ -305,3 +310,13 @@ const ROADMAP_EDGES = [
   ['Two Pointers', 'p-sheet'], ['p-sheet', 'p-mock'], ['k-threads', 'Concurrency'], ['s-lists', 'SQL'], ['Design', 'b-sd'], ['k-interfaces', 'b-sd'],
   ['p-mock', 'b-sd'], ['c-combinatorics', 'b-ai'], ['s-programs', 'b-git']
 ];
+
+// Start here counts on the map. Every number comes from DS.startCounts(), which counts the lesson list built from
+// src/start/chapters.js: a node counts its own lessons, the Start here lane counts all of Level 1, and the core lane
+// counts the lessons of its live nodes. tests/mapcheck.js checks that these add up to the hub's numbers.
+function rmStartNodeCounts(n, ds) { return ds.startCounts(null, n.lessons.map((l) => l[0])); }
+function rmStartLaneCounts(laneKey, nodes, ds) {
+  if (laneKey === 'start') return ds.startCounts(1);
+  const ids = [].concat(...nodes.filter((n) => n.track === 'start' && n.go).map((n) => n.lessons.map((l) => l[0])));
+  return ds.startCounts(null, ids);
+}

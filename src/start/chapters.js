@@ -1,5 +1,6 @@
 // The Start here ladder: levels of lessons. Level 1 (Basics) is 24 lessons in four chapters, the bridge (plan it, read a
-// problem) and Counting steps after the first problems. Levels 2 to 5 are planned: their first lessons are listed (not ready).
+// problem) and Counting steps after the first problems: 27 lessons. Level 2 (Functions in depth, 9 lessons) and Level 3
+// (Objects and classes, 14 lessons) follow docs/research/core-programming.md. Levels 4 and 5 list their first lesson (not ready).
 // (Internally a lesson is a "chapter" record: START_CHAPTERS, Chapter.dc.html. START_PARTS are the chapters shown to
 // learners.) The order and the arrows follow docs/research/beginners.md section 5. Every word here is our own.
 // A lesson: id, level (default 1), n (its number in the level), part, short (the map label), title, idea (one line), minutes, teaches (START_NEEDS_KEYS), after (hard prerequisites:
@@ -48,14 +49,56 @@ const START_CHAPTERS = [
   { id: 'read-a-problem', n: 26, part: 5, short: 'Read a problem', title: 'How to read a problem', idea: 'Find the input, the output and the examples. Plan in words, try the slow idea, then test.', minutes: 12, teaches: ['problems'], after: ['plan-it', 'debugging'], trap: 'Coding before you know what the answer looks like.' },
   // ---- After your first problems ----
   { id: 'counting-steps', n: 27, part: 6, short: 'Counting steps', title: 'Counting steps', idea: 'Count the laps your loop makes. When the input doubles, does the work double too?', minutes: 10, teaches: ['bigo'], after: ['read-a-problem'], trap: 'Counting lines of code instead of laps.' },
-  // ---- Level 2: Functions in depth (coming next) ----
-  { id: 'recursion', level: 2, n: 1, part: 7, short: 'Recursion', title: 'A function that calls itself', idea: 'Recursion hands a smaller copy of the job to itself, until a base case stops it.', minutes: 11, teaches: ['recursion'], after: ['return-print'] },
-  { id: 'call-stack', level: 2, n: 2, part: 7, short: 'The call stack', title: 'The call stack is a pile of plates', idea: 'Each call puts a plate on the pile. return takes the top plate off.', minutes: 10, teaches: ['stack'], after: ['recursion'] },
-  // ---- Level 3: Objects (coming later) ----
-  { id: 'objects', level: 3, n: 1, part: 8, short: 'Objects', title: 'A first look at objects', idea: 'A class is a blueprint. Each object built from it keeps its own data.', minutes: 10, teaches: ['objects'], after: ['dicts', 'return-print'] },
-  { id: 'references', level: 3, n: 2, part: 8, short: 'References', title: 'Names point at objects', idea: 'Two names can point at one object. Change it through one and the other sees it.', minutes: 10, teaches: ['refs'], after: ['objects'] },
+  // ---- Level 2: Functions in depth (lessons_6.js, lessons_7.js) ----
+  { id: 'calls', level: 2, n: 1, part: 7, short: 'Calls', title: 'Calling a function', idea: 'A call hands values in, the function does its work, and one value comes back to the spot that called it.',
+    minutes: 9, teaches: ['calls'], after: ['return-print'], trap: 'Thinking the values you pass must have the same names as the parameters.' },
+  { id: 'call-stack', level: 2, n: 2, part: 7, short: 'Call stack', title: 'The call stack is a pile of plates', idea: 'Each call puts a plate on the pile. return takes the top plate off, and the plate below carries on.',
+    minutes: 10, teaches: ['stack'], after: ['calls'], trap: 'Thinking a function forgets where it was when it calls another one.' },
+  { id: 'scope', level: 2, n: 3, part: 7, short: 'Scope', title: 'Which names can I see?', idea: 'A name made inside a function lives on that function’s plate. When the plate comes off, the name is gone.',
+    minutes: 10, teaches: ['scope'], after: ['call-stack'], trap: 'Expecting a variable made inside a function to exist outside it.' },
+  { id: 'defaults', level: 2, n: 4, part: 8, short: 'Defaults', title: 'Default and keyword arguments', idea: 'A parameter can have a default value. A keyword argument names the box it fills, so the order stops mattering.',
+    minutes: 9, teaches: ['defaults'], after: ['calls'], trap: 'Passing values in the wrong order when you call without names.' },
+  { id: 'many-args', level: 2, n: 5, part: 8, short: 'Any number', title: 'Any number of inputs', idea: 'A star in front of a parameter gathers any number of values into one group. The star does the work, not the name.',
+    minutes: 9, teaches: ['varargs'], after: ['defaults'], trap: 'Thinking args is a magic word. Only the star matters.' },
+  { id: 'mutable-args', level: 2, n: 6, part: 8, short: 'Shared lists', title: 'Two names, one list', idea: 'Passing a list does not copy it. The caller and the function share one list, so a change shows on both sides.',
+    minutes: 10, teaches: ['mutation'], after: ['scope'], trap: 'Thinking the function got its own copy of the list.' },
+  { id: 'callbacks', level: 2, n: 7, part: 9, short: 'Callbacks', title: 'Functions are values too', idea: 'A function is a value. Its name alone hands over the recipe; adding () cooks it and hands over the result.',
+    minutes: 10, teaches: ['callbacks'], after: ['calls'], trap: 'Writing f() when you meant to pass f itself.' },
+  { id: 'closures', level: 2, n: 8, part: 9, short: 'Closures', title: 'Functions that remember', idea: 'A function made inside another keeps the names around it, like a packed lunchbox it carries everywhere.',
+    minutes: 11, teaches: ['closures'], after: ['scope', 'callbacks'], trap: 'Expecting the inner function to forget the outer names once the outer call ends.' },
+  { id: 'recursion', level: 2, n: 9, part: 10, short: 'Recursion', title: 'A function that calls itself', idea: 'Recursion hands a smaller copy of the job to itself until a base case stops it. Plates pile up, answers come back down.',
+    minutes: 12, teaches: ['recursion'], after: ['call-stack'], trap: 'Forgetting the base case, so the calls never stop.' },
+  // ---- Level 3: Objects and classes (lessons_8.js and lessons_9.js). One world all the way through: Old Hoot’s robot workshop. ----
+  { id: 'objects', level: 3, n: 1, part: 11, short: 'Objects', title: 'Blueprints and objects', idea: 'A class is a blueprint. Each object built from it is a separate thing with its own data.',
+    minutes: 10, teaches: ['objects'], after: ['calls', 'dicts'], trap: 'Thinking the class is the object. One blueprint builds many robots.' },
+  { id: 'self', level: 3, n: 2, part: 11, short: 'self', title: 'self: which robot is it?', idea: 'self is the object a method was called on. bolt.beep() runs beep with self pointing at bolt.',
+    minutes: 10, teaches: ['self'], after: ['objects'], trap: 'Leaving self out of the def line, so the call has one value too many.' },
+  { id: 'init', level: 3, n: 3, part: 11, short: '__init__', title: 'Setting up a new object', idea: '__init__ runs once on a brand-new object to fill in its starting data. Python makes the object, then __init__ sets it up.',
+    minutes: 10, teaches: ['init'], after: ['self'], trap: 'Forgetting self. in front of a name, so the value never lands on the object.' },
+  { id: 'attributes', level: 3, n: 4, part: 11, short: 'Attributes', title: 'What it knows, what it does', idea: 'Attributes are what an object knows. Methods are what it can do, and they can change what it knows.',
+    minutes: 10, teaches: ['methods'], after: ['init'], trap: 'Making a plain variable inside a method and expecting the object to keep it.' },
+  { id: 'references', level: 3, n: 5, part: 12, short: 'References', title: 'Two names, one object', idea: 'b = a does not copy an object. Both names point at the same one, so a change through b shows through a.',
+    minutes: 11, teaches: ['refs'], after: ['attributes', 'mutable-args'], trap: 'Thinking = makes a copy of the object.' },
+  { id: 'class-attributes', level: 3, n: 6, part: 12, short: 'Shared data', title: 'Data the whole class shares', idea: 'Data on the class is shared by every object. Python looks on the object first, then on its class.',
+    minutes: 10, teaches: ['classattrs'], after: ['attributes'], trap: 'Setting a value through one object and expecting every object to see it.' },
+  { id: 'encapsulation', level: 3, n: 7, part: 12, short: 'Guarded data', title: 'Keeping data safe', idea: 'Let methods guard every change to an object’s data, so it can never end up in a broken state.',
+    minutes: 10, teaches: ['encapsulation'], after: ['attributes'], trap: 'Thinking a leading underscore locks the data. It is only a polite sign.' },
+  { id: 'inheritance', level: 3, n: 8, part: 13, short: 'Inheritance', title: 'The family tree', idea: 'A child class gets everything its parent has. It only writes what is different.',
+    minutes: 11, teaches: ['inheritance'], after: ['attributes'], trap: 'Copying a whole class to change one method, instead of building on it.' },
+  { id: 'super', level: 3, n: 9, part: 13, short: 'super()', title: 'Override, then call super()', idea: 'A child can replace a parent’s method. super() runs the parent’s version too, so the child adds instead of repeats.',
+    minutes: 10, teaches: ['super'], after: ['inheritance'], trap: 'Forgetting super().__init__(), so the parent’s setup never runs.' },
+  { id: 'polymorphism', level: 3, n: 10, part: 13, short: 'Same call', title: 'Same call, different robots', idea: 'Ask every object to do the same thing and each does its own version. The loop never needs to know which kind it has.',
+    minutes: 10, teaches: ['polymorphism'], after: ['super'], trap: 'Writing a long if and elif on the type instead of letting each class answer.' },
+  { id: 'composition', level: 3, n: 11, part: 14, short: 'Composition', title: 'Built from parts', idea: 'Is-a means inheritance. Has-a means an object keeps another object as a part. Has-a is often the better fit.',
+    minutes: 11, teaches: ['composition'], after: ['inheritance', 'polymorphism'], trap: 'Inheriting from a class just to borrow some of its code.' },
+  { id: 'dunder', level: 3, n: 12, part: 14, short: 'Dunders', title: 'Teaching objects print, == and len', idea: 'Methods with double underscores let print, == and len work on your own objects.',
+    minutes: 10, teaches: ['dunder'], after: ['attributes'], trap: 'Expecting == to compare the data when the class never said how.' },
+  { id: 'interfaces', level: 3, n: 13, part: 14, short: 'Contracts', title: 'A contract every class signs', idea: 'An abstract class lists the methods every child must write. Forget one and Python stops you before anything runs.',
+    minutes: 10, teaches: ['interfaces'], after: ['polymorphism'], trap: 'Trying to build an object straight from the abstract class.' },
+  { id: 'no-class', level: 3, n: 14, part: 14, short: 'No class?', title: 'When not to use a class', idea: 'A class earns its place when data and behaviour belong together. Otherwise a function or a dictionary is simpler.',
+    minutes: 9, teaches: ['design'], after: ['composition'], trap: 'Wrapping every little thing in a class.' },
   // ---- Level 4: Writing better code (coming later) ----
-  { id: 'clean-names', level: 4, n: 1, part: 9, short: 'Good names', title: 'Names that explain themselves', idea: 'A good name says what a value means, so the code reads like a sentence.', minutes: 8, teaches: ['style'], after: ['functions'] },
+  { id: 'clean-names', level: 4, n: 1, part: 15, short: 'Good names', title: 'Names that explain themselves', idea: 'A good name says what a value means, so the code reads like a sentence.', minutes: 8, teaches: ['style'], after: ['functions'] },
   // ---- Level 5: Waiting without blocking (coming later) ----
-  { id: 'event-loop', level: 5, n: 1, part: 10, short: 'Event loop', title: 'The event loop is a queue', idea: 'Slow jobs wait in a queue. The loop takes the next ready one, so nothing freezes.', minutes: 10, teaches: ['async'], after: ['functions'] }
+  { id: 'event-loop', level: 5, n: 1, part: 16, short: 'Event loop', title: 'The event loop is a queue', idea: 'Slow jobs wait in a queue. The loop takes the next ready one, so nothing freezes.', minutes: 10, teaches: ['async'], after: ['functions'] }
 ];

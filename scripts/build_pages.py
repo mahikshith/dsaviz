@@ -38,6 +38,7 @@ across pages and live in one place; this script copies them back into every page
   src/git/sim.js + lessons.js -> between // @@GITSIM@@ ... // @@END-GITSIM@@ (Git page)
   src/sd/engine.js + lessons.js -> between // @@SDLESSONS@@ ... // @@END-SDLESSONS@@ (SystemDesign, SDLesson)
   src/ai/render.js + lessons.js -> between // @@AILESSONS@@ ... // @@END-AILESSONS@@ (AI & ML pages)
+  src/ai/about_ml.js + about_now.js -> // @@AI-ABOUT@@ ... // @@END-AI-ABOUT@@ (AILesson; scripts/build_about.js renders the math)
   src/ai/render.js + src/concepts/lessons.js -> between // @@CONCEPTS@@ ... // @@END-CONCEPTS@@ (Concepts, ConceptLesson),
                                plus CONCEPT_ROWS (titles of the "Now try" problems) from scripts/build_concepts.js
   scripts/build_concepts.js -> between // @@CONCEPT-MAP@@ ... // @@END-CONCEPT-MAP@@ (Patterns: lesson links per map node)
@@ -79,7 +80,7 @@ def block(src, start, end, new):
 SHARED_JS = [('// @@DATA@@', '// @@END-DATA@@', 'data.js'), ('// @@DRAWER@@', '// @@END-DRAWER@@', 'drawer.js'),
              ('// @@UI@@', '// @@END-UI@@', 'ui.js'), ('// @@SEARCH@@', '// @@END-SEARCH@@', '@search'),
              ('// @@FIND@@', '// @@END-FIND@@', 'search.js'), ('// @@NAV@@', '// @@END-NAV@@', 'nav.js'),
-             ('// @@SOLVE@@', '// @@END-SOLVE@@', '@solve')]
+             ('// @@SOLVE@@', '// @@END-SOLVE@@', '@solve'), ('// @@ABOUT@@', '// @@END-ABOUT@@', 'about.js')]
 
 
 def ensure_blocks(s):
@@ -200,7 +201,7 @@ def main():
     drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
     ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html'),
-                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html')]}
+                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html'), ('ABOUT TAB', 'about.html')]}
     # The problem page blocks: facts, approaches and their pane, placed after the code pane on the Code and Story pages.
     approach_js = [('// @@FACTS@@', '// @@END-FACTS@@', read('shared', 'facts.js')),
                    ('// @@APPROACHES@@', '// @@END-APPROACHES@@', read('shared', 'approaches.js')),
@@ -237,6 +238,7 @@ def main():
                + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
     sd_lessons = ('// @@SDLESSONS@@ — generated from src/sd/engine.js and src/sd/lessons.js; edit those, then build.\n'
                   + read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '// @@END-SDLESSONS@@')
+    ai_about = subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_about.js')], cwd=ROOT, check=True, capture_output=True).stdout.decode('utf-8')
     ai_lessons = ('// @@AILESSONS@@ — generated from src/ai/render.js and src/ai/lessons.js; edit those, then build.\n'
                   + read('src', 'ai', 'render.js') + '\n' + read('src', 'ai', 'lessons.js') + '// @@END-AILESSONS@@')
     concept_data = json.loads(subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_concepts.js')], cwd=ROOT, check=True,
@@ -298,6 +300,8 @@ def main():
         s = block(s, '// @@GITSIM@@', '// @@END-GITSIM@@', git_sim)
         s = block(s, '// @@SDLESSONS@@', '// @@END-SDLESSONS@@', sd_lessons)
         s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)
+        if '// @@AI-ABOUT@@' in s:
+            s = block(s, '// @@AI-ABOUT@@', '// @@END-AI-ABOUT@@', ai_about)
         s = block(s, '// @@CONCEPTS@@', '// @@END-CONCEPTS@@', concepts)
         s = block(s, '// @@CONCEPT-MAP@@', '// @@END-CONCEPT-MAP@@', concept_map)
         s = block(s, '// @@CONTESTS@@', '// @@END-CONTESTS@@', contests)

@@ -57,6 +57,7 @@ The build inlines these into the single-file site.
 | --- | --- | --- | --- |
 | [sql.js](https://github.com/sql-js/sql.js) | 1.14.2 | MIT | `tests/sqlcheck.js`: runs every SQL reference query on every dataset in Node, with the same SQLite build the page loads |
 | [esbuild](https://github.com/evanw/esbuild) | 0.24.2 | MIT | Bundling the CodeMirror editor at build time. Its platform binary (`@esbuild/*`, 0.24.2, MIT) is installed alongside it. |
+| [KaTeX](https://github.com/KaTeX/KaTeX) | 0.16.22 | MIT | Turns the About tab equations (LaTeX in src/ai/about_*.js) into MathML at build time (scripts/build_about.js). Only that MathML ships; browsers draw it natively, so no KaTeX code, CSS or fonts are in the bundle. |
 | [loose-envify](https://github.com/zertosh/loose-envify) | 1.4.0 | MIT | Installed as a dependency of React. The site uses React's prebuilt UMD files, so this is not used. |
 | [js-tokens](https://github.com/lydell/js-tokens) | 4.0.0 | MIT | Dependency of loose-envify |
 | [Playwright](https://github.com/microsoft/playwright) | not pinned | Apache-2.0 | Optional browser test (`npm run test:browser`), installed with `--no-save` |

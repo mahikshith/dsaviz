@@ -414,7 +414,8 @@ function stMemLayout(step) {
   // plates, main program first
   const plates = (step.s || []).map((f, fi) => {
     const vars = f[2];
-    return { key: fi, name: f[0], vars, h: 26 + Math.max(1, vars.length) * M.row };
+    const ret = fi === step.s.length - 1 && step.e === 'return';
+    return { key: fi, name: f[0], vars, ret, h: 26 + Math.max(1, vars.length) * M.row + (ret ? 40 : 0) };
   });
   const stackH = plates.reduce((n, p) => n + p.h + 18, 0);
   const heapH = Math.max(y, colY[0], colY[1]);
@@ -475,8 +476,9 @@ function stMemScenes(trace) {
       });
       if (top && step.e === 'return') {
         const txt = 'returns ' + clip(step.r, 12);
-        S.tokens.push({ id: 'ret', x: M.plateX + M.plateW - 8 - stTokW(txt, 14) / 2, y: y - 2, text: txt, size: 14, solid: true });
-        if (step.rr && L.boxes[step.rr]) { const to = target(step.rr, M.plateX + M.plateW, y); if (to) S.arrows.push({ id: 'ra', from: [M.plateX + M.plateW, y - 2], to, c: 'a', thin: true }); }
+        const ry = y + p.h - 26;
+        S.tokens.push({ id: 'ret', x: M.plateX + M.plateW - 14 - stTokW(txt, 14) / 2, y: ry, text: txt, size: 14, solid: true });
+        if (step.rr && L.boxes[step.rr]) { const to = target(step.rr, M.plateX + M.plateW, ry); if (to) S.arrows.push({ id: 'ra', from: [M.plateX + M.plateW + 2, ry], to, c: 'a', thin: true }); }
       }
     });
     // objects and classes

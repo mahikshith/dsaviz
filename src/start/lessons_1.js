@@ -13,14 +13,14 @@ function st1Story() {
   const card = (cur) => ({ cards: [{ id: 'card', x: 120, y: 120, w: 400, lines: ST1_CODE.py, cur: cur || [] }] });
   const screen = (lines) => ({ screens: [{ id: 'screen', x: 120, y: 238, w: 400, h: 116, lines }] });
   return [
-    stBeat('hoot', 'Meet the computer, our robot. The computer does exactly what it is told. Nothing more, nothing less.', stScene(cast(), toaster()), ['cast:bolt']),
+    stBeat('hoot', 'This is the computer. It does exactly what it is told, and nothing else.', stScene(cast(), toaster()), ['cast:bolt']),
     stBeat('dot', 'Computer, make toast, please!', stScene(cast(), toaster(), { tokens: [{ id: 'loaf', x: 320, y: 150, text: 'the whole loaf' }] }), ['loaf', 'cast:dot']),
-    stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. A computer is just as literal.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
+    stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. A computer takes every word exactly as it is written.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
     stBeat('dot', 'So I need to say every step, exactly, in the right order?', stScene(cast(['hoot', 'dot']), steps()), ['step0', 'step1', 'step2']),
     stBeat('hoot', 'Yes. A list of exact steps is a program. The computer runs them from the top down.', stScene(cast(['hoot', 'dot']), steps(0), { arrows: [{ id: 'down', from: [150, 150], to: [150, 280], c: 'a' }] }), ['step0', 'down']),
     stBeat('hoot', 'We write the steps in a language the computer reads. Ours is Python. Each line is one step.', stScene(cast(['hoot', 'dot']), card()), ['card']),
     stBeat('dot', 'The last line has no quotes. It says print(2 + 3).', stScene(cast(['hoot', 'dot']), card([2])), ['card'], 2),
-    stBeat('hoot', 'With no quotes, the computer works it out. print(2 + 3) shows 5. You just used Python as a calculator.', stScene(cast(['hoot', 'dot']), card([2]), screen(['5'])), ['screen'], 2),
+    stBeat('hoot', 'With no quotes, the computer calculates the answer. print(2 + 3) shows 5. You used Python as a calculator.', stScene(cast(['hoot', 'dot']), card([2]), screen(['5'])), ['screen'], 2),
     stBeat('dot', 'All three lines run in order. Now I want to run one myself!', stScene(cast(['hoot', 'dot']), card([0, 1, 2]), screen(['Take one slice', 'Put it in the toaster', '5'])), ['cast:dot', 'screen'], [0, 1, 2])
   ];
 }
@@ -162,7 +162,7 @@ function st5Story() {
     stBeat('hoot', 'Give the number a box with a name tag. acorns = 12 puts 12 in a box called acorns.', stScene(cast, card([0]), box('12')), ['box'], 0),
     stBeat('dot', 'So = does not mean "is equal" here. It means: put this value in that box.', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
     stBeat('hoot', 'print(acorns) looks in the box and shows 12. No quotes, so acorns is a name, not text.', stScene(cast, card([1]), box('12'), screen(['12'])), ['box', 'screen'], 1),
-    stBeat('penny', 'I just found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
+    stBeat('penny', 'I found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
     stBeat('hoot', 'acorns = acorns + 5 works out the right side first: 12 + 5 is 17. Then 17 goes in the box.', stScene(cast, card([2]), box('17'), screen(['12'])), ['box', 'card'], 2),
     stBeat('hoot', 'The old 12 is gone. A box holds one value at a time.', stScene(cast, card([3]), box('17'), screen(['12', '17'])), ['box', 'screen'], 3),
     stBeat('dot', 'And a name needs a value before I use it. Otherwise Python says NameError.', stScene(cast, card([0, 1, 2, 3]), box('17'), screen(['12', '17'])), ['cast:dot'])
@@ -210,6 +210,6 @@ START_LESSON('types', {
   check: { q: 'What type is "True", written with quotes?',
     choices: [['True or False (a bool)', false, 'The quotes make it text, even though the word inside is True.'],
       ['Text (a string)', true, 'Right. Anything in quotes is text.'],
-      ['A whole number', false, 'There is no number here, just the word True in quotes.'],
+      ['A whole number', false, 'There is no number here. It is only the word True in quotes.'],
       ['It is an error', false, 'Text can hold any words, including True.']] }
 });

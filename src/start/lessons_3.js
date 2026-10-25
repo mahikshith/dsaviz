@@ -14,7 +14,7 @@ function st13Story() {
   return [
     stBeat('penny', 'I want to hide one acorn in each of 5 trees. Do I write print five times?', stScene(cast, { tokens: [1, 2, 3, 4, 5].map((n, i) => ({ id: 'tr' + n, x: 140 + i * 90, y: 210, text: 'tree ' + n, w: 80 })) }), ['cast:penny']),
     stBeat('hoot', 'No. A for loop repeats a block for you, once per lap.', stScene(cast, card([0, 1])), ['card'], [0, 1]),
-    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops just before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
+    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
     stBeat('hoot', 'On each lap, tree holds the next number, and the indented line runs once.', stScene(cast, card([1]), box('1'), screen(['Acorn in tree 1'])), ['tree', 'screen'], 1),
     stBeat('penny', 'Lap two: tree is 2. Lap three: tree is 3. The box changes every lap.', stScene(cast, card([1]), box('3'), screen(['Acorn in tree 1', 'Acorn in tree 2', 'Acorn in tree 3'])), ['tree'], 1),
     stBeat('hoot', 'After the last lap the loop ends, and the line after it runs once.', stScene(cast, card([2]), box('5'), screen(['Acorn in tree 4', 'Acorn in tree 5', 'All hidden!'])), ['screen'], 2),
@@ -111,7 +111,7 @@ function st16Story() {
     stBeat('hoot', 'bag[0] is the first pocket: "map". bag[-1] counts from the back: "snack".', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] }), card(3)), ['p0', 'p3'], [2, 3]),
     stBeat('dot', 'len(bag) is 4, so the last pocket must be bag[4]?', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"']), card(4)), ['cast:dot', 'ix3'], 4),
     stBeat('hoot', 'No: four pockets are numbered 0 to 3. bag[4] does not exist, so Python says IndexError.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [3] }), { tokens: [{ id: 'bad', x: 320, y: 300, text: 'bag[4] → IndexError', c: 'bad' }] }), ['bad', 'ix3']),
-    stBeat('dot', 'First pocket 0, last pocket len - 1, or just -1. Got it!', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] })), ['cast:dot'])
+    stBeat('dot', 'First pocket 0. Last pocket len - 1, or -1 for short. Got it!', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] })), ['cast:dot'])
   ];
 }
 START_LESSON('lists', {
@@ -165,7 +165,7 @@ function st18Story() {
   const card = (i) => st1Card('card', 60, 266, 520, [ST18_CODE.py[i]], [0]);
   return [
     stBeat('dot', 'I wrote a secret note: hello. Can Python read it letter by letter?', stScene(cast, beads('hello')), ['cast:dot']),
-    stBeat('hoot', 'Yes. A string is a row of letters, numbered from 0 just like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
+    stBeat('hoot', 'Yes. A string is a row of letters. They are numbered from 0, like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
     stBeat('hoot', 'len(note) counts the letters: 5. note[0] is h and note[-1] is o.', stScene(cast, beads('hello', [0, 4]), card(2)), ['b0', 'b4'], [1, 2]),
     stBeat('bolt', 'A slice: note[1:4]. Taking letters 1, 2 and 3. Stopping before 4. Result: ell.', stScene(cast, beads('hello', [1, 2, 3]), card(3)), ['b1', 'b2', 'b3'], 3),
     stBeat('bolt', 'Reversing: note[::-1] reads from the back. Result: olleh.', stScene(cast, beads('olleh'), card(4)), ['b0', 'b1', 'b2', 'b3', 'b4'], 4),
@@ -209,5 +209,5 @@ START_LESSON('nested-loops', {
   tryit: { py: 'for row in range(3):\n    line = ""\n    for col in range(4):\n        line = line + "*"\n    print(line)\n', js: 'for (let row = 0; row < 3; row++) {\n  let line = "";\n  for (let col = 0; col < 4; col++) {\n    line = line + "*";\n  }\n  console.log(line);\n}\n',
     goals: ['Press Run.', 'Make the floor 5 rows by 2 tiles.', 'Make row number r get r + 1 stars, to draw a triangle.'] },
   check: { q: 'An outer loop runs 3 laps and the inner loop runs 4 laps each time. How many times does the inner body run in all?',
-    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is just one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
+    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is only one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
 });

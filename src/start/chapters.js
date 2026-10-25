@@ -16,7 +16,7 @@
 
 const START_CHAPTERS = [
   // ---- Chapter 1: Talking to the computer ----
-  { id: 'what-is-a-program', n: 1, part: 1, short: 'A program', title: 'What is a program?', idea: 'A program is a list of exact steps. The computer does just what is written, from the top.', minutes: 7,
+  { id: 'what-is-a-program', n: 1, part: 1, short: 'A program', title: 'What is a program?', idea: 'A program is a list of exact steps. The computer does exactly what is written, from the top.', minutes: 7,
     teaches: ['program'], after: [], trap: 'Expecting the computer to guess what you meant.' },
   { id: 'first-run', n: 2, part: 1, short: 'First run', title: 'Your first run', idea: 'print shows text on the screen. Quotes mark where the text starts and ends.', minutes: 7, teaches: ['print'], after: ['what-is-a-program'], trap: 'Leaving out a quote.' },
   { id: 'calculator', n: 3, part: 1, short: 'Calculator', title: 'Calculator mode', idea: 'Python works out sums: + - * / plus // for whole parts and % for what is left over.', minutes: 8, teaches: ['math'], after: ['first-run'], trap: 'Forgetting that * and / go before + and -.' },
@@ -27,7 +27,7 @@ const START_CHAPTERS = [
   { id: 'input-output', n: 7, part: 2, short: 'Input', title: 'Asking and answering', idea: 'input() asks a question. The answer always comes back as text, so convert it first.', minutes: 9, teaches: ['io'], after: ['types'], trap: '"5" + "3" giving 53 instead of 8.' },
   { id: 'compare', n: 8, part: 2, short: 'Compare', title: 'True or false questions', idea: 'A comparison asks a yes or no question. = stores a value, == asks if two are equal.', minutes: 8, teaches: ['logic'], after: ['types'], trap: 'Writing = when you mean ==.' },
   { id: 'if-else', n: 9, part: 2, short: 'if / else', title: 'Choosing a path', idea: 'if runs its block only when the question is True. elif and else cover the rest.', minutes: 10, teaches: ['if'], after: ['compare'], trap: 'Wrong indentation, so a line falls outside its block.' },
-  { id: 'and-or-not', n: 10, part: 2, short: 'and / or / not', title: 'and, or, not', idea: 'and needs both sides True, or needs just one, and not flips the answer.', minutes: 8, teaches: ['boolops'], after: ['if-else'], trap: 'Writing x == 1 or 2 instead of x == 1 or x == 2.' },
+  { id: 'and-or-not', n: 10, part: 2, short: 'and / or / not', title: 'and, or, not', idea: 'and needs both sides True, or needs only one, and not flips the answer.', minutes: 8, teaches: ['boolops'], after: ['if-else'], trap: 'Writing x == 1 or 2 instead of x == 1 or x == 2.' },
   { id: 'edge-cases', n: 11, part: 2, short: 'Edge cases', title: 'What could go wrong?', idea: 'Test the odd cases first: zero, negatives and the exact boundary.', minutes: 8, teaches: ['edges'], after: ['and-or-not'], trap: 'Using < where the rule says "or more".' },
   { id: 'path-project', n: 12, part: 2, short: 'Project: path', title: 'Project: choose your path', idea: 'Put input and if together into a tiny adventure with three endings.', minutes: 12, teaches: [], after: ['edge-cases', 'input-output'], project: true },
   // ---- Chapter 3: Repeating and collecting ----
@@ -90,7 +90,7 @@ const START_CHAPTERS = [
   { id: 'polymorphism', level: 3, n: 10, part: 13, short: 'Same call', title: 'Same call, different robots', idea: 'Ask every object to do the same thing and each does its own version. The loop never needs to know which kind it has.',
     minutes: 10, teaches: ['polymorphism'], after: ['super'], trap: 'Writing a long if and elif on the type instead of letting each class answer.' },
   { id: 'composition', level: 3, n: 11, part: 14, short: 'Composition', title: 'Built from parts', idea: 'Is-a means inheritance. Has-a means an object keeps another object as a part. Has-a is often the better fit.',
-    minutes: 11, teaches: ['composition'], after: ['inheritance', 'polymorphism'], trap: 'Inheriting from a class just to borrow some of its code.' },
+    minutes: 11, teaches: ['composition'], after: ['inheritance', 'polymorphism'], trap: 'Inheriting from a class only to borrow some of its code.' },
   { id: 'dunder', level: 3, n: 12, part: 14, short: 'Dunders', title: 'Teaching objects print, == and len', idea: 'Methods with double underscores let print, == and len work on your own objects.',
     minutes: 10, teaches: ['dunder'], after: ['attributes'], trap: 'Expecting == to compare the data when the class never said how.' },
   { id: 'interfaces', level: 3, n: 13, part: 14, short: 'Contracts', title: 'A contract every class signs', idea: 'An abstract class lists the methods every child must write. Forget one and Python stops you before anything runs.',

@@ -160,5 +160,5 @@ START_LESSON('many-args', {
     js: 'function total(...acorns) {\n  let s = 0;\n  for (const a of acorns) {\n    s = s + a;\n  }\n  return s;\n}\n\nconsole.log(total(3, 4, 5));\nconsole.log(total(10));\nlet bag = [1, 2, 3, 4];\nconsole.log(total(...bag));\n',
     goals: ['Press Run.', 'What does total() with nothing inside return? Predict, then run.', 'Write biggest(*nums) that returns the largest value it is given.'] },
   check: { q: 'def total(*acorns). Inside the function, what is acorns after total(3, 4, 5)?',
-    choices: [['One group holding 3, 4 and 5', true, 'Right. The star gathers every value into one tuple: (3, 4, 5).'], ['Just 3, the first value', false, 'The star gathers all of them, not only the first.'], ['An error: total takes one value', false, 'With the star it takes any number.'], ['The text "3, 4, 5"', false, 'It is a group of numbers, not text.']] }
+    choices: [['One group holding 3, 4 and 5', true, 'Right. The star gathers every value into one tuple: (3, 4, 5).'], ['Only 3, the first value', false, 'The star gathers all of them, not only the first.'], ['An error: total takes one value', false, 'With the star it takes any number.'], ['The text "3, 4, 5"', false, 'It is a group of numbers, not text.']] }
 });

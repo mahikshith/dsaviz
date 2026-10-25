@@ -35,7 +35,7 @@ function st301Story() {
     stBeat('hoot', 'Welcome to my workshop. Every robot here is built from one blueprint, pinned to the wall.', stScene(cast, plan(230, 170)), ['cls']),
     stBeat('dot', 'So the blueprint is a robot?', stScene(cast, plan(230, 170)), ['cls', 'cast:dot']),
     stBeat('hoot', 'No. class Robot: is only the plan. It says what robots are like, but you cannot charge a drawing.', stScene(cast, plan(20, 150), st1Card('card', 250, 150, 360, ST301_CODE.py.slice(0, 2), [0, 1])), ['cls', 'card'], [0, 1]),
-    stBeat('hoot', 'Robot() builds a real robot from the plan: an object. bolt is a name with an arrow to it.', stScene(cast, plan(20, 150), l3Bot('b1', 410, 128, []), l3Tag('bolt', 300, 160, [406, 160], true)), ['b1', 'nm:bolt', 'ar:bolt'], 2),
+    stBeat('hoot', 'Robot() builds a real robot from the plan. That robot is an object. bolt is a name that points to it.', stScene(cast, plan(20, 150), l3Bot('b1', 410, 128, []), l3Tag('bolt', 300, 160, [406, 160], true)), ['b1', 'nm:bolt', 'ar:bolt'], 2),
     stBeat('dot', 'Robot() again builds a second, separate robot. nova points at that one.', stScene(cast, plan(20, 150), l3Bot('b1', 410, 128, []), l3Tag('bolt', 300, 160, [406, 160]), l3Bot('b2', 410, 250, []), l3Tag('nova', 300, 282, [406, 282], true)), ['b2', 'nm:nova'], 3),
     stBeat('hoot', 'Each object keeps its own data. bolt.name = "Ray" writes on Ray’s box, and only there.', two('"Ray"', null, 'b'), ['b1'], 4),
     stBeat('bolt', 'I am a robot. The other box is a second robot. Same blueprint, two different robots.', two('"Ray"', '"Kim"', 'n'), ['b1', 'b2'], [5, 6]),
@@ -94,12 +94,12 @@ function st303Story() {
     { tokens: [{ id: 'selfT', x: 90, y: 200, text: 'self', w: 90 }], arrows: [{ id: 'selfA', from: [139, 200], to: [376, 200], c: 'a' }] }, vars ? { boxes: [stVar('nameV', 'name', '"Ray"', 40, 228, { w: 160, h: 50, size: 18 })] } : null);
   const bot = (fields, lit) => l3Bot('b1', 380, 160, fields, { lit });
   return [
-    stBeat('dot', 'Every new robot needs a name and a full battery. Setting them by hand after each Robot() is a chore.', stScene(cast, bot([])), ['b1', 'cast:dot']),
+    stBeat('dot', 'Every new robot needs a name and a full battery. Setting them yourself after each Robot() is tiring work.', stScene(cast, bot([])), ['b1', 'cast:dot']),
     stBeat('hoot', 'Write __init__. Python calls it once, right after it builds a brand-new, empty object.', stScene(cast, st1Card('card', 40, 140, 560, ST303_CODE.py.slice(0, 4), [1, 2, 3])), ['card'], [1, 2, 3]),
     stBeat('hoot', 'Robot("Ray") first builds an empty box. Then __init__ runs with self pointing at it and name holding "Ray".', stScene(cast, plate(true), bot([])), ['selfA', 'nameV', 'b1'], 4),
     stBeat('bolt', 'self.name = name writes the name onto my box.', stScene(cast, plate(true), bot([['name', '"Ray"']], ['name'])), ['b1'], 2),
     stBeat('bolt', 'self.battery = 100 adds a full battery. Now I am set up.', stScene(cast, plate(true), bot([['name', '"Ray"'], ['battery', '100']], ['battery'])), ['b1'], 3),
-    stBeat('dot', 'So __init__ does not build the robot. It sets up the one Python just built?', stScene(cast, bot([['name', '"Ray"'], ['battery', '100']]), l3Tag('bolt', 250, 190, [376, 190], true)), ['nm:bolt', 'cast:dot'], 4),
+    stBeat('dot', 'So __init__ does not build the robot. It sets up the robot Python already built?', stScene(cast, bot([['name', '"Ray"'], ['battery', '100']]), l3Tag('bolt', 250, 190, [376, 190], true)), ['nm:bolt', 'cast:dot'], 4),
     stBeat('hoot', 'Exactly. And forget self. and name = name only writes on __init__’s plate, which is gone a moment later.', stScene(cast, plate(true), bot([]), { tokens: [{ id: 'oops', x: 145, y: 320, text: 'name = name', c: 'bad' }] }), ['oops', 'b1']),
     stBeat('dot', 'Python builds the object, __init__ fills it in. Every new robot starts ready!', stScene(cast, bot([['name', '"Ray"'], ['battery', '100']]), l3Tag('bolt', 250, 190, [376, 190])), ['cast:dot'], 5)
   ];
@@ -111,7 +111,7 @@ START_LESSON('init', {
     js: 'class Robot {\n  constructor(name) {\n    this.name = name;\n    this.battery = 100;\n  }\n}\n\nlet bolt = new Robot("Ray");\nlet nova = new Robot("Kim");\nconsole.log(bolt.name, bolt.battery);\nconsole.log(nova.name, nova.battery);\n',
     goals: ['Press Run.', 'Add a second parameter, size, and store it on the robot.', 'Change self.name = name to name = name. What does print(bolt.name) say now?'] },
   check: { q: 'What does __init__ do?',
-    choices: [['Fills in the starting data of an object Python has just built', true, 'Right. Python builds the empty object, then calls __init__ with self pointing at it.'], ['Builds the object out of nothing', false, 'Python has already built it by the time __init__ runs.'], ['Runs every time you use the object', false, 'It runs once, when the object is built.'], ['Deletes the old object', false, 'It only sets up the new one.']] }
+    choices: [['Fills in the starting data of an object Python has already built', true, 'Right. Python builds the empty object, then calls __init__ with self pointing at it.'], ['Builds the object out of nothing', false, 'Python has already built it by the time __init__ runs.'], ['Runs every time you use the object', false, 'It runs once, when the object is built.'], ['Deletes the old object', false, 'It only sets up the new one.']] }
 });
 
 // ---------- L3.4 What it knows, what it does ----------

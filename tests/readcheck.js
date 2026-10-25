@@ -20,7 +20,7 @@ const BANNED = ['just', 'simply', 'obviously', 'clearly', 'trivially', 'earn the
 const JARGON = ['gradient', 'loss', 'token', 'embedding', 'vector', 'matrix', 'softmax', 'sigmoid', 'neuron', 'parameter', 'derivative',
   'logit', 'entropy', 'variance', 'regularization', 'overfitting', 'transformer', 'cosine', 'dimension', 'centroid', 'classifier',
   'kernel', 'epoch', 'hyperparameter', 'logarithm', 'divergence', 'backprop', 'tanh', 'residual', 'benchmark', 'quantization'];
-const ENFORCED = ['ai', 'sd', 'dsa'];
+const ENFORCED = ['ai', 'sd', 'dsa', 'start'];
 
 let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };

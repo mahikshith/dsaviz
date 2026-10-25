@@ -29,7 +29,7 @@ const START_EXERCISES = {
     { id: 'what-is-a-program:3', kind: 'predict', title: 'Quotes or no quotes', ask: 'What does this program print?',
       code: { py: 'print(2 + 3)\nprint("2 + 3")', js: 'console.log(2 + 3);\nconsole.log("2 + 3");' },
       choices: { py: ['5\n2 + 3', '5\n5', '2 + 3\n2 + 3', '2 + 3\n5'], js: ['5\n2 + 3', '5\n5', '2 + 3\n2 + 3', '2 + 3\n5'] }, answer: 0,
-      why: 'Without quotes the computer does the sum. With quotes it is just text, shown exactly as written.',
+      why: 'Without quotes the computer does the sum. With quotes it is only text, shown exactly as written.',
       hints: ['Look at which line has quotes.', 'Quotes mean "show this text as it is".'] },
     { id: 'what-is-a-program:4', kind: 'write', title: 'Let the computer add', ask: 'Write one line that prints the sum of 10 and 15. Let the computer do the adding.',
       starter: { py: '# Write your line below\n', js: '// Write your line below\n' }, ref: { py: 'print(10 + 15)\n', js: 'console.log(10 + 15);\n' },
@@ -56,7 +56,7 @@ const START_EXERCISES = {
   'calculator': [
     { id: 'calculator:1', kind: 'predict', title: 'Times goes first', ask: 'What does this print?',
       code: { py: 'print(10 - 2 * 3)', js: 'console.log(10 - 2 * 3);' }, choices: stSame(['24', '4', '10', '-4']), answer: 1,
-      why: '2 * 3 is worked out first, giving 6, and 10 - 6 is 4.', hints: ['Which comes first, * or -?', 'Work out 2 * 3 before the take-away.'] },
+      why: '2 * 3 is worked out first, giving 6, and 10 - 6 is 4.', hints: ['Which comes first, * or -?', 'Find 2 * 3 before the take-away.'] },
     { id: 'calculator:2', kind: 'predict', title: 'Sharing 17 acorns', ask: 'Ana shares 17 acorns between 5 friends. What does this print?',
       code: { py: 'print(17 // 5, 17 % 5)', js: 'console.log(Math.floor(17 / 5), 17 % 5);' }, choices: stSame(['3.4 0', '3 2', '2 3', '3 3']), answer: 1,
       why: 'Each friend gets 3 whole acorns (15 in all), and 2 are left over.', hints: ['How many whole fives fit in 17?', 'Three fives make 15. What is left?'] },
@@ -193,7 +193,7 @@ const START_EXERCISES = {
       cases: [{ out: 'ride' }], hints: ['Both rules must hold.', { py: 'The word is and.', js: 'Use &&.' }] },
     { id: 'and-or-not:4', kind: 'choose', title: 'Which is True?', ask: 'Which of these is True?',
       choices: [{ py: 'True and False', js: 'true && false' }, { py: 'False or False', js: 'false || false' }, { py: 'not True', js: '!true' }, { py: 'not False', js: '!false' }], answer: 3,
-      why: 'not flips False into True.', hints: ['Work out each one.', 'not turns an answer around.'] },
+      why: 'not flips False into True.', hints: ['Find the answer to each one.', 'not turns an answer around.'] },
     { id: 'and-or-not:5', kind: 'write', title: 'In range', ask: 'Read a whole number. Print in range if it is from 1 to 10 (both included), otherwise print out of range.',
       starter: { py: 'n = int(input("Number? "))\n', js: 'let n = Number(prompt("Number? "));\n' },
       ref: { py: 'n = int(input("Number? "))\nif n >= 1 and n <= 10:\n    print("in range")\nelse:\n    print("out of range")\n', js: 'let n = Number(prompt("Number? "));\nif (n >= 1 && n <= 10) {\n  console.log("in range");\n} else {\n  console.log("out of range");\n}\n' },
@@ -217,7 +217,7 @@ const START_EXERCISES = {
       cases: [{ stdin: ['0'], out: 'invalid' }, { stdin: ['-1'], out: 'invalid' }, { stdin: ['1'], out: '5' }, { stdin: ['2'], out: '5' }, { stdin: ['3'], out: '10' }],
       hints: ['Check the invalid case first.', '"Up to 2" includes 2, so use <= 2.'] },
     { id: 'edge-cases:5', kind: 'choose', title: 'The best tests', ask: 'Rule: you pass with a score of 50 or more. Which set of tests is best?',
-      choices: ['10, 20, 30', '49, 50, 51', '100', '60, 70, 80'], answer: 1, why: '49, 50 and 51 sit right around the edge, where mistakes happen.', hints: ['Where does the result change?', 'Pick numbers just below, at and above 50.'] }
+      choices: ['10, 20, 30', '49, 50, 51', '100', '60, 70, 80'], answer: 1, why: '49, 50 and 51 sit right around the edge, where mistakes happen.', hints: ['Where does the result change?', 'Pick numbers right below, at and above 50.'] }
   ],
   'path-project': [
     { id: 'path-project:1', kind: 'fill', title: 'The first fork', ask: 'Fill the blank so typing left leads to the river.',

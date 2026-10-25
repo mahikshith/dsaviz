@@ -5,7 +5,7 @@ Object.assign(START_EXERCISES, {
     { id: 'calls:1', kind: 'predict', title: 'Tip on tip', ask: 'What does this print?',
       code: { py: 'def add_tip(bill):\n    return bill + 2\n\ntotal = add_tip(10)\nprint(total)\nprint(add_tip(total))', js: 'function add_tip(bill) {\n  return bill + 2;\n}\n\nlet total = add_tip(10);\nconsole.log(total);\nconsole.log(add_tip(total));' },
       choices: stSame(['12\n14', '12\n12', '10\n12', '14\n14']), answer: 0,
-      why: 'add_tip(10) gives 12, kept in total. Then add_tip(total) hands 12 in and 14 comes back.', hints: ['Work out add_tip(10) first.', 'The second call gets the value in total, which is 12.'] },
+      why: 'add_tip(10) gives 12, kept in total. Then add_tip(total) hands 12 in and 14 comes back.', hints: ['Find add_tip(10) first.', 'The second call gets the value in total, which is 12.'] },
     { id: 'calls:2', kind: 'fill', title: 'Hand back half', ask: 'Fill the blank so half(9) hands back 4 and the program prints it.',
       code: { py: 'def half(n):\n    ___ n // 2\n\nprint(half(9))', js: 'function half(n) {\n  ___ Math.floor(n / 2);\n}\n\nconsole.log(half(9));' }, answers: { py: ['return'], js: ['return'] },
       cases: [{ out: '4' }], hints: ['The value must travel back to the call.', 'One word sends a value back: return.'] },
@@ -119,7 +119,7 @@ Object.assign(START_EXERCISES, {
   'callbacks': [
     { id: 'callbacks:1', kind: 'predict', title: 'Apply, apply', ask: 'What does this print?',
       code: { py: 'def apply(f, x):\n    return f(x)\n\ndef inc(n):\n    return n + 1\n\nprint(apply(inc, apply(inc, 1)))', js: 'function apply(f, x) {\n  return f(x);\n}\n\nfunction inc(n) {\n  return n + 1;\n}\n\nconsole.log(apply(inc, apply(inc, 1)));' },
-      choices: stSame(['3', '2', '1', 'An error']), answer: 0, why: 'The inner apply gives inc(1) = 2. The outer one gives inc(2) = 3.', hints: ['Work out the inner apply first.', 'Each apply runs inc once.'] },
+      choices: stSame(['3', '2', '1', 'An error']), answer: 0, why: 'The inner apply gives inc(1) = 2. The outer one gives inc(2) = 3.', hints: ['Find the inner apply first.', 'Each apply runs inc once.'] },
     { id: 'callbacks:2', kind: 'choose', title: 'Hand over the recipe', ask: 'twice(f, x) runs f two times on x. Which call shouts "hi" twice?',
       choices: ['twice(shout, "hi")', 'twice(shout(), "hi")', 'twice("shout", "hi")', 'twice(shout("hi"))'], answer: 0, why: 'twice needs the function itself. shout() would run it straight away, with no word to shout.',
       hints: ['twice wants a recipe, not a dish.', 'No brackets after shout.'] },

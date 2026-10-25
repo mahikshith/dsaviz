@@ -104,7 +104,7 @@ function st23Story() {
     stBeat('hoot', 'Where did they split? Look inside: a print in the loop shows each lap.', stScene(cast, card([3])), ['card'], 3),
     stBeat('dot', 'It prints i: 1, 2, 3, 4. It never reaches 5! range(1, 5) stops before 5.', stScene(cast, card([1]), { tokens: [{ id: 'lap', x: 320, y: 300, text: 'i: 4  total: 10' }] }), ['lap'], 1),
     stBeat('hoot', 'Change one thing, then run it again: range(1, 6). One change at a time, so you know what fixed it.', stScene(cast, card([1])), ['card'], 1),
-    stBeat('hoot', 'If it is still unclear, shrink the example: try range(1, 2) and check one lap by hand.', stScene(cast, qs(2)), ['q2']),
+    stBeat('hoot', 'If it is still unclear, shrink the example: try range(1, 2) and check one lap yourself on paper.', stScene(cast, qs(2)), ['q2']),
     stBeat('dot', 'Expect, observe, find the split, change one thing. Then take the debug print out.', stScene(cast, qs(null)), ['cast:dot'])
   ];
 }

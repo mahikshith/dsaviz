@@ -77,8 +77,8 @@ function st310Story() {
     stBeat('hoot', 'Morning! I shout one word to the whole team: work!', stScene(cast, team()), ['mop', 'dash']),
     stBeat('dot', 'And each robot does something different?', stScene(cast, team(null, [['mop', 'sweeps the floor'], ['dash', 'delivers a parcel']])), ['say0', 'say1']),
     stBeat('hoot', 'Yes. Cleaner’s work sweeps, Courier’s work delivers. Same call, and each class answers in its own way.', stScene(cast, st1Card('card', 30, 140, 580, ST310_CODE.py.slice(0, 4), [1, 3])), ['card'], [1, 3]),
-    stBeat('penny', 'The loop only says bot.work(). bot points at Eli first, and the loop never asks what kind of robot it is.', stScene(cast, team('mop', [['mop', 'sweeps the floor']]), { tokens: [{ id: 'bot', x: 320, y: 320, text: 'bot', w: 80 }], arrows: [{ id: 'botA', from: [282, 312], to: [150, 236], c: 'a' }] }), ['mop', 'botA'], [5, 6]),
-    stBeat('penny', 'Without this I would write if it is a Cleaner, elif it is a Courier... for every new kind!', stScene(cast, { tokens: [{ id: 'bad1', x: 320, y: 180, text: 'if type(bot) == Cleaner: ...', c: 'bad' }, { id: 'bad2', x: 320, y: 240, text: 'elif type(bot) == Courier: ...', c: 'bad' }] }), ['bad1', 'bad2']),
+    stBeat('penny', 'The loop only says bot.work(). bot points at Eli first. The loop never asks what kind of robot it is.', stScene(cast, team('mop', [['mop', 'sweeps the floor']]), { tokens: [{ id: 'bot', x: 320, y: 320, text: 'bot', w: 80 }], arrows: [{ id: 'botA', from: [282, 312], to: [150, 236], c: 'a' }] }), ['mop', 'botA'], [5, 6]),
+    stBeat('penny', 'Without this I would write one check for every new kind of robot. That is a lot of work!', stScene(cast, { tokens: [{ id: 'bad1', x: 320, y: 180, text: 'if type(bot) == Cleaner: ...', c: 'bad' }, { id: 'bad2', x: 320, y: 240, text: 'elif type(bot) == Courier: ...', c: 'bad' }] }), ['bad1', 'bad2']),
     stBeat('hoot', 'Next lap, bot points at Tom and the same line runs Courier’s work. A new kind of robot needs no change to the loop.', stScene(cast, team('dash', [['dash', 'delivers a parcel']]), { tokens: [{ id: 'bot', x: 320, y: 320, text: 'bot', w: 80 }], arrows: [{ id: 'botA', from: [320, 300], to: [320, 236], c: 'a' }] }), ['dash', 'botA']),
     stBeat('hoot', 'Python does not even need a family tree. Any object with a work method fits the loop. That is duck typing.', stScene(cast, team('kettle', [['kettle', 'boils water']])), ['kettle']),
     stBeat('dot', 'One call, many answers. Each object knows its own job!', stScene(cast, team(null, [['mop', 'sweeps the floor'], ['dash', 'delivers a parcel']])), ['cast:dot'])
@@ -153,7 +153,7 @@ START_LESSON('dunder', {
     js: 'class Robot {\n  constructor(name) {\n    this.name = name;\n  }\n  toString() {\n    return "Robot " + this.name;\n  }\n  equals(other) {\n    return this.name === other.name;\n  }\n}\n\nclass Team {\n  constructor(bots) {\n    this.bots = bots;\n  }\n  get length() {\n    return this.bots.length;\n  }\n}\n\nlet team = new Team([new Robot("Ray"), new Robot("Kim")]);\nconsole.log(team.length);\nconsole.log(String(new Robot("Ray")));\nconsole.log(new Robot("Ray").equals(new Robot("Ray")));\n', differs: true,
     goals: ['Press Run.', 'Delete __eq__ and run again. What does == say now?', 'Make __str__ show the battery too, like Robot Ray (100%).'] },
   check: { q: 'You wrote __str__ in Robot. When does it run?',
-    choices: [['When print (or str) needs the robot as text', true, 'Right. Python calls it for you. You never call __str__ by hand.'], ['Only when you call robot.__str__() yourself', false, 'You can, but the point is that print calls it for you.'], ['When the robot is built', false, 'That is __init__.'], ['Never: it is just a comment', false, 'It is a real method that Python calls.']] }
+    choices: [['When print (or str) needs the robot as text', true, 'Right. Python calls it for you. You never need to call __str__ yourself.'], ['Only when you call robot.__str__() yourself', false, 'You can, but the point is that print calls it for you.'], ['When the robot is built', false, 'That is __init__.'], ['Never: it is just a comment', false, 'It is a real method that Python calls.']] }
 });
 
 // ---------- L3.13 A contract every class signs ----------
@@ -196,11 +196,11 @@ function st314Story() {
   const tools = (lit) => ({ boxes: [['fn', 'function', 'one action'], ['dict', 'dictionary', 'plain data'], ['cls', 'class', 'data + actions']].map(([id, tag, t], i) => ({ id: 'tool:' + id, x: 30 + i * 205, y: 180, w: 180, h: 70, text: t, size: 16, mono: false, tag, solid: lit === id })) });
   return [
     stBeat('dot', 'I love classes now! I made class Adder with one method, add, and nothing else.', stScene(cast, st1Card('card', 60, 140, 520, ST314_CODE.py.slice(0, 4), [0, 1, 2])), ['card', 'cast:dot'], [0, 1, 2, 3]),
-    stBeat('hoot', 'A class with no data and one method is a function in a costume. def add(a, b) does the same job.', stScene(cast, st1Card('card', 60, 140, 520, ST314_CODE.py.slice(4, 7), [0, 1])), ['card'], [4, 5, 6]),
-    stBeat('penny', 'And my robot spec: just a name and a size, with no actions. Does that need a class?', stScene(cast, { tokens: [{ id: 'spec', x: 320, y: 210, text: 'name: Ray, size: 3', mono: false }] }), ['spec', 'cast:penny']),
+    stBeat('hoot', 'A class with no data and one method is a function in disguise. It does the same job as def add(a, b).', stScene(cast, st1Card('card', 60, 140, 520, ST314_CODE.py.slice(4, 7), [0, 1])), ['card'], [4, 5, 6]),
+    stBeat('penny', 'And my robot spec is only a name and a size, with no actions. Does that need a class?', stScene(cast, { tokens: [{ id: 'spec', x: 320, y: 210, text: 'name: Ray, size: 3', mono: false }] }), ['spec', 'cast:penny']),
     stBeat('hoot', 'Plain data with no actions fits a dictionary: {"name": "Ray", "size": 3}.', stScene(cast, stObj('dict', 'dict', 300, 160, [['"name"', '"Ray"'], ['"size"', '3']], { w: 260 }), l3Tag('spec', 160, 210, [296, 210], true)), ['dict', 'ar:spec'], [7, 8]),
     stBeat('dot', 'So when is a class worth it?', stScene(cast, tools()), ['cast:dot']),
-    stBeat('hoot', 'When data and the actions on it belong together, like a Robot with a battery and a charge method.', stScene(cast, tools('cls')), ['tool:cls']),
+    stBeat('hoot', 'Use a class when data and its actions belong together. A Robot with a battery and a charge method is an example.', stScene(cast, tools('cls')), ['tool:cls']),
     stBeat('hoot', 'Beware the do-everything class: a Workshop that builds, sells, cleans and pays. Split it into small parts.', stScene(cast, { boxes: [{ id: 'god', x: 150, y: 150, w: 340, h: 110, text: 'build, sell, clean, pay, log...', size: 16, mono: false, tag: 'class Workshop', c: 'bad', tc: 'c' }] }), ['god']),
     stBeat('dot', 'Function for one action, dictionary for plain data, class when they live together.', stScene(cast, tools()), ['cast:dot'])
   ];

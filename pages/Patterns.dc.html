@@ -22,18 +22,22 @@ button{font:inherit}
 [data-map-node]:hover{opacity:1}
 [data-map-node]:focus-visible,[data-map] a:focus-visible,[data-map] button:focus-visible,[data-fold] a:focus-visible,[data-fold] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 [data-map-edge]{transition:stroke .2s,stroke-width .2s,opacity .2s}
-[data-map-panel]{animation:rise .25s cubic-bezier(.33,1,.68,1) both}
-@media (prefers-reduced-motion: reduce){[data-map-node],[data-map-edge]{transition:none}[data-map-panel]{animation:none}}
+@keyframes rmin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes rmup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+[data-rm-drawer]{animation:rmin .22s cubic-bezier(.33,1,.68,1) both}
+[data-rm-jump],[data-rm-next]{transition:border-color .15s}
+[data-rm-jump]:hover,[data-rm-next]:hover{opacity:1;border-color:currentColor!important}
+[data-rm-drawer] a:focus-visible,[data-rm-drawer] button:focus-visible,[data-rm-jump]:focus-visible,[data-rm-next]:focus-visible,[data-map] li button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+@media (prefers-reduced-motion: reduce){[data-map-node],[data-map-edge],[data-rm-jump],[data-rm-next]{transition:none}[data-rm-drawer]{animation:none}}
 </style>
 <style>
-/* Library on phones: the pattern map and the stage map scroll sideways; each problem row is a compact card. */
+/* Library on phones: the roadmap is one vertical path and its drawer a bottom sheet; the stage map scrolls sideways; each problem row is a compact card. */
 @media (max-width: 759px){
 [data-page="Patterns"] [data-stagemap]{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;margin:0 -16px;padding:0 16px}
 [data-page="Patterns"] [data-stagemap] *{max-width:none}
-[data-page="Patterns"] [data-map]>section{overflow-x:auto;scrollbar-width:thin}
-[data-page="Patterns"] [data-map]>section *{max-width:none}
-[data-page="Patterns"] [data-map]>section>div{margin:0!important}
-[data-page="Patterns"] [data-map] a{min-height:44px}
+[data-page="Patterns"] [data-rm-overview]{grid-template-columns:minmax(0,1fr)!important}
+[data-page="Patterns"] [data-rm-overview]>nav{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+[data-rm-drawer]{top:auto!important;bottom:0;left:0;width:100%!important;height:86vh!important;border-left:0!important;border-top:1px solid;border-radius:20px 20px 0 0;padding:16px 16px 32px!important;animation-name:rmup!important;zoom:calc(1 / var(--fit, 1))}
 [data-page="Patterns"] [data-prow]{grid-template-columns:24px auto minmax(0,1fr) auto!important;gap:4px 12px!important;padding:12px 16px!important}
 [data-page="Patterns"] [data-prow]>:nth-child(1){grid-column:1;grid-row:1;align-self:start;margin-top:10px}
 [data-page="Patterns"] [data-prow]>:nth-child(2){grid-column:2/5;grid-row:1}
@@ -97,7 +101,7 @@ button{font:inherit}
 [data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
 [data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 16px 22px;"],[data-page] [style*="padding: 16px 24px 24px;"],[data-page] [style*="padding: 20px 22px;"],[data-page] [style*="padding: 20px 22px 28px;"],[data-page] [style*="padding: 20px 24px;"],[data-page] [style*="padding: 22px;"],[data-page] [style*="padding: 22px 22px 24px;"],[data-page] [style*="padding: 24px;"],[data-page] [style*="padding: 24px 26px;"],[data-page] [style*="padding: 24px 32px;"],[data-page] [style*="padding: 26px;"],[data-page] [style*="padding: 26px 28px;"],[data-page] [style*="padding: 28px;"],[data-page] [style*="padding: 28px 32px;"],[data-page] [style*="padding: 32px;"]{padding:16px!important}
+[data-page] [style*="padding: 16px 22px;"],[data-page] [style*="padding: 16px 24px 24px;"],[data-page] [style*="padding: 20px 22px;"],[data-page] [style*="padding: 20px 22px 28px;"],[data-page] [style*="padding: 20px 24px;"],[data-page] [style*="padding: 20px 24px 32px;"],[data-page] [style*="padding: 22px;"],[data-page] [style*="padding: 22px 22px 24px;"],[data-page] [style*="padding: 24px;"],[data-page] [style*="padding: 24px 26px;"],[data-page] [style*="padding: 24px 32px;"],[data-page] [style*="padding: 26px;"],[data-page] [style*="padding: 26px 28px;"],[data-page] [style*="padding: 28px;"],[data-page] [style*="padding: 28px 32px;"],[data-page] [style*="padding: 32px;"]{padding:16px!important}
 [data-page] [data-m~="col"]{flex-direction:column!important;align-items:stretch!important}
 [data-page] [data-m~="wrap"]{flex-wrap:wrap!important}
 [data-page] [data-m~="hide"]{display:none!important}
@@ -304,89 +308,181 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 </div>
 
-<!-- ============ VIEW: MAP ============ -->
+<!-- ============ VIEW: MAP (the roadmap: shared/roadmap.js) ============ -->
 <sc-if value="{{isMap}}" hint-placeholder-val="{{ true }}">
-<div data-map style="display: grid; grid-template-columns: minmax(0, 1fr) 392px; gap: 24px; align-items: start">
-<section aria-label="Pattern map" style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 8px">
-<div style="position: relative; width: {{map.w}}px; height: {{map.h}}px; margin: 0 auto">
-<svg width="{{map.w}}" height="{{map.h}}" viewBox="0 0 {{map.w}} {{map.h}}" aria-hidden="true" style="position: absolute; left: 0; top: 0">
-<sc-for list="{{map.edges}}" as="me" hint-placeholder-count="30">
-<path data-map-edge d="{{me.d}}" fill="none" stroke="{{me.color}}" stroke-width="{{me.width}}" stroke-linecap="round" stroke-linejoin="round" opacity="{{me.op}}"></path>
+<div data-map onKeyDown="{{rm.key}}" style="display: flex; flex-direction: column; gap: 16px">
+<!-- mini overview: next for you, then every lane with one dot per topic -->
+<section data-rm-overview aria-label="Roadmap overview" style="display: grid; grid-template-columns: 296px minmax(0, 1fr); gap: 12px; align-items: stretch">
+<button data-rm-next onClick="{{rm.next.pick}}" style="padding: 16px 18px; border-radius: 16px; border: 1.5px solid {{t.accent}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">Next for you</span>
+<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 600; line-height: 1.15">{{rm.next.name}}</span>
+<span style="font-size: 13px; color: {{t.muted}}">{{rm.next.lane}} · {{rm.next.line}}</span>
+</button>
+<nav aria-label="Jump to a part of the roadmap" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{rm.lanes}}" as="ol" hint-placeholder-count="6">
+<button data-rm-jump onClick="{{ol.jump}}" style="padding: 12px; border-radius: 14px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="display: flex; gap: 8px; align-items: center"><span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 999px; background: {{t.sunk}}; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">{{ol.n}}</span><span style="font-size: 14px; font-weight: 700; line-height: 1.2">{{ol.title}}</span></span>
+<span aria-hidden="true" style="display: flex; flex-wrap: wrap; gap: 3px"><sc-for list="{{ol.dots}}" as="od" hint-placeholder-count="10"><span style="width: 6px; height: 6px; border-radius: 999px; box-sizing: border-box; border: 1.5px solid {{od.border}}; background: {{od.bg}}"></span></sc-for></span>
+<span style="font-size: 12px; color: {{t.muted}}">{{ol.count}}</span>
+</button>
+</sc-for>
+</nav>
+</section>
+
+<!-- the canvas (desktop): lanes top to bottom, topics left to right -->
+<sc-if value="{{rm.desk}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Learning roadmap" style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 8px">
+<div data-rm-scroll style="display: flex; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin">
+<div style="position: relative; flex-shrink: 0; width: {{rm.w}}px; height: {{rm.h}}px; margin: 0 auto">
+<sc-for list="{{rm.lanes}}" as="ln" hint-placeholder-count="6">
+<div id="{{ln.anchor}}" style="position: absolute; left: 0; top: {{ln.top}}px; width: {{rm.w}}px; height: {{ln.h}}px; border-top: 1px solid {{ln.border}}; scroll-margin-top: 16px"></div>
+</sc-for>
+<svg width="{{rm.w}}" height="{{rm.h}}" viewBox="0 0 {{rm.w}} {{rm.h}}" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+<sc-for list="{{rm.road}}" as="rr" hint-placeholder-count="5"><path d="{{rr.d}}" stroke="{{t.line2}}" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round" fill="none"></path></sc-for>
+<sc-for list="{{rm.edges}}" as="me" hint-placeholder-count="30">
+<path data-map-edge d="{{me.d}}" fill="none" stroke="{{me.color}}" stroke-width="{{me.width}}" stroke-dasharray="{{me.dash}}" stroke-linecap="round" stroke-linejoin="round"></path>
 </sc-for>
 </svg>
-<sc-for list="{{map.nodes}}" as="mn" hint-placeholder-count="30">
-<button data-map-node onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: 116px; height: 50px; box-sizing: border-box; padding: 0; border-radius: 12px; border: 1.5px solid {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px">
+<sc-for list="{{rm.lanes}}" as="lg" hint-placeholder-count="6">
+<div style="position: absolute; left: 8px; top: {{lg.labelTop}}px; width: {{rm.gutterW}}px; display: flex; gap: 10px">
+<span aria-hidden="true" style="width: 26px; height: 26px; flex-shrink: 0; border-radius: 999px; background: {{t.sunk}}; border: 1px solid {{t.line2}}; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">{{lg.n}}</span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 20px; font-weight: 600; line-height: 1.1">{{lg.title}}</h2>
+<p style="margin: 0; font-size: 12px; line-height: 1.4; color: {{t.muted}}">{{lg.line}}</p>
+<sc-if value="{{lg.live}}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 700; color: {{t.text2}}">{{lg.count}}</span></sc-if>
+<sc-if value="{{lg.soon}}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; padding: 2px 8px; border-radius: 999px; border: 1px dashed {{t.muted}}; font-size: 12px; font-weight: 700; color: {{t.text2}}">{{lg.count}}</span></sc-if>
+</div>
+</div>
+</sc-for>
+<sc-for list="{{rm.nodes}}" as="mn" hint-placeholder-count="30">
+<button data-map-node data-rm-node="{{mn.id}}" onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: 116px; height: 50px; box-sizing: border-box; padding: 0; border-radius: 12px; border: 1.5px solid {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px">
 <span style="position: relative; width: 34px; height: 34px; flex-shrink: 0">
 <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true" style="display: block">
 <circle cx="17" cy="17" r="16.75" fill="{{mn.labelBg}}" stroke="none"></circle>
-<circle cx="17" cy="17" r="{{mn.innerR}}" fill="none" stroke="{{mn.track}}" stroke-width="3.5"></circle>
-<circle data-ring cx="17" cy="17" r="{{mn.innerR}}" fill="none" stroke="{{t.right}}" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="{{mn.sheetLen}}" stroke-dashoffset="{{mn.sheetOff}}" opacity="{{mn.sheetOp}}" transform="rotate(-90 17 17)" style="--len: {{mn.sheetLen}}"></circle>
+<circle cx="17" cy="17" r="{{mn.innerR}}" fill="none" stroke="{{mn.trackStroke}}" stroke-width="{{mn.trackW}}" stroke-dasharray="{{mn.trackDash}}"></circle>
+<circle data-ring cx="17" cy="17" r="{{mn.innerR}}" fill="none" stroke="{{mn.ringFg}}" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="{{mn.sheetLen}}" stroke-dashoffset="{{mn.sheetOff}}" opacity="{{mn.sheetOp}}" transform="rotate(-90 17 17)" style="--len: {{mn.sheetLen}}"></circle>
 <sc-if value="{{mn.hasStories}}" hint-placeholder-val="{{ true }}">
-<circle cx="17" cy="17" r="15" fill="none" stroke="{{mn.track}}" stroke-width="3.5"></circle>
+<circle cx="17" cy="17" r="15" fill="none" stroke="{{mn.trackStroke}}" stroke-width="3.5"></circle>
 <circle data-ring cx="17" cy="17" r="15" fill="none" stroke="{{t.accent}}" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="94.25" stroke-dashoffset="{{mn.storyOff}}" opacity="{{mn.storyOp}}" transform="rotate(-90 17 17)" style="--len: 94.25"></circle>
 </sc-if>
 </svg>
 <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 10px; font-weight: 700; color: {{mn.markFg}}">{{mn.mark}}</span>
 <sc-if value="{{mn.next}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 5px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 10px; font-weight: 800; line-height: 15px; letter-spacing: 0.04em">NEXT</span></sc-if>
+<sc-if value="{{mn.soonTag}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 4px; border-radius: 999px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.muted}}; font-size: 10px; font-weight: 700; line-height: 13px; letter-spacing: 0.04em">SOON</span></sc-if>
 </span>
 <span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: 12px; font-weight: 600; line-height: 14px; white-space: nowrap; color: {{mn.labelFg}}">{{mn.label}}</span>
 </button>
 </sc-for>
 </div>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 8px 8px 0; border-top: 1px solid {{t.line}}; font-size: 12px; color: {{t.muted}}">
-<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 3px solid {{t.accent}}; box-sizing: border-box"></span>Outer ring: stories finished</span>
+<div aria-hidden="true" style="flex-shrink: 0; width: {{rm.reserve}}px"></div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 10px 12px 0; border-top: 1px solid {{t.line}}; font-size: 12px; color: {{t.muted}}">
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 3px solid {{t.accent}}; box-sizing: border-box"></span>Outer ring: stories or lessons finished</span>
 <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 3px solid {{t.right}}; box-sizing: border-box"></span>Inner ring: sheet ticks</span>
-<span>Arrows point from what to learn first to what it unlocks.</span>
-<span style="flex-grow: 1"></span>
-<span>Side tracks:</span>
-<sc-for list="{{map.side}}" as="ms" hint-placeholder-count="2"><a href="Sheet.dc.html" onClick="{{ms.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; display: inline-flex; align-items: center; color: {{t.text}}; font-weight: 600">{{ms.name}} · {{ms.count}}</a></sc-for>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 1.5px dashed {{t.muted}}; box-sizing: border-box"></span>Dashed: coming soon</span>
+<span>Arrows point from what to learn first to what it unlocks. Pick a topic to see where it leads.</span>
 </div>
 </section>
+</sc-if>
 
-<aside data-map-panel aria-live="polite" aria-label="{{card.name}}" style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line2}}; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{card.eyebrow}}</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: 30px; font-weight: 600; letter-spacing: -0.01em">{{card.name}}</h2>
-<span style="font-size: 13px; color: {{t.muted}}">{{card.progress}}</span>
+<!-- phones: the same roadmap as one vertical path, lane by lane -->
+<sc-if value="{{rm.phone}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 24px">
+<sc-for list="{{rm.lanes}}" as="pl" hint-placeholder-count="6">
+<section id="{{pl.anchor}}" aria-label="{{pl.title}}" style="display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 16px">
+<div style="display: flex; gap: 10px; align-items: flex-start">
+<span aria-hidden="true" style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 999px; background: {{t.sunk}}; border: 1px solid {{t.line2}}; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">{{pl.n}}</span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: 22px; font-weight: 600; line-height: 1.15">{{pl.title}}</h2>
+<span style="font-size: 13px; color: {{t.muted}}">{{pl.line}} {{pl.count}}.</span>
 </div>
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Use it when</span>
-<p style="margin: 0; font-family: {{t.display}}; font-size: 18px; line-height: 1.45">{{card.when}}</p>
 </div>
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Clues in the problem text</span>
-<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.45"><sc-for list="{{card.clues}}" as="cc" hint-placeholder-count="3"><li>{{cc}}</li></sc-for></ul>
-</div>
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Template</span>
-<pre style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; font-family: {{t.mono}}; font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; color: {{t.text}}">{{card.template}}</pre>
-</div>
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Common mistakes</span>
-<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.45"><sc-for list="{{card.mistakes}}" as="cm" hint-placeholder-count="2"><li>{{cm}}</li></sc-for></ul>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}; margin-right: 2px">{{card.beforeLabel}}</span>
-<sc-for list="{{card.before}}" as="cb" hint-placeholder-count="2"><button onClick="{{cb.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.accent}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 12px; font-weight: 600">{{cb.label}}</button></sc-for>
-</div>
-<sc-if value="{{card.hasAfter}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}; margin-right: 2px">Then try</span>
-<sc-for list="{{card.after}}" as="ca" hint-placeholder-count="2"><button onClick="{{ca.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 12px; font-weight: 600">{{ca.label}}</button></sc-for>
+<sc-if value="{{pl.folded}}" hint-placeholder-val="{{ false }}"><button onClick="{{pl.unfold}}" style="margin-left: 38px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px dashed {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600; align-self: flex-start">{{pl.moreLabel}}</button></sc-if>
+<sc-if value="{{pl.open}}" hint-placeholder-val="{{ true }}">
+<ol style="list-style: none; margin: 0 0 0 13px; padding: 0 0 0 14px; border-left: 2px dotted {{t.line2}}; display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{pl.items}}" as="pi" hint-placeholder-count="8"><li>
+<button onClick="{{pi.pick}}" aria-label="{{pi.aria}}" style="width: 100%; min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pi.border}}; background: {{pi.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 30px; height: 30px; flex-shrink: 0; box-sizing: border-box; border-radius: 999px; border: 2px {{pi.ringStyle}} {{pi.ring}}; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{pi.markFg}}; display: flex; align-items: center; justify-content: center">{{pi.mark}}</span>
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700; color: {{pi.nameFg}}">{{pi.name}}</span><span style="font-size: 12px; color: {{t.muted}}">{{pi.sub}}</span></span>
+<sc-if value="{{pi.next}}" hint-placeholder-val="{{ false }}"><span style="flex-shrink: 0; padding: 2px 8px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: 12px; font-weight: 800">Next</span></sc-if>
+</button>
+</li></sc-for>
+</ol>
+</sc-if>
+</section>
+</sc-for>
 </div>
 </sc-if>
-<div style="display: flex; flex-direction: column; gap: 2px; border-top: 1px solid {{t.line}}; padding-top: 8px">
-<sc-for list="{{card.links}}" as="cl" hint-placeholder-count="6">
-<a href="{{cl.href}}" onClick="{{cl.go}}" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}; font-size: 14px">
-<span style="width: 52px; flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{cl.kindFg}}">{{cl.kind}}</span>
+</div>
+
+<!-- the drawer for the picked topic -->
+<sc-if value="{{rm.card.open}}" hint-placeholder-val="{{ false }}">
+<aside data-rm-drawer role="dialog" aria-modal="false" aria-labelledby="rm-drawer-title" onKeyDown="{{rm.key}}" style="position: fixed; top: 0; right: 0; z-index: 60; width: {{rm.drawerW}}px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-left: 1px solid {{t.line2}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{rm.card.eyebrow}}</span>
+<h2 id="rm-drawer-title" data-rm-title tabindex="-1" style="margin: 0; font-family: {{t.display}}; font-size: 28px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; outline: none">{{rm.card.name}}</h2>
+<span style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="padding: 2px 10px; border-radius: 999px; border: 1.5px solid {{rm.card.statusBorder}}; font-size: 12px; font-weight: 700; color: {{rm.card.statusFg}}">{{rm.card.status}}</span><sc-if value="{{rm.card.hasProgress}}" hint-placeholder-val="{{ true }}"><span style="font-size: 13px; color: {{t.muted}}">{{rm.card.progress}}</span></sc-if></span>
+</div>
+<button onClick="{{rm.card.close}}" aria-label="Close" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">{{rm.card.descLabel}}</span>
+<p style="margin: 0; font-family: {{t.display}}; font-size: 18px; line-height: 1.45">{{rm.card.desc}}</p>
+</div>
+<sc-if value="{{rm.card.soon}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 10px 12px; border-radius: 12px; border: 1px dashed {{t.line2}}; font-size: 13px; line-height: 1.5; color: {{t.text2}}">{{rm.card.soonLine}}</p></sc-if>
+<sc-if value="{{rm.card.hasLessons}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}; padding-bottom: 4px">{{rm.card.lessonsLabel}}</span>
+<sc-for list="{{rm.card.lessons}}" as="cs" hint-placeholder-count="3">
+<sc-if value="{{cs.live}}" hint-placeholder-val="{{ false }}"><a href="{{cs.href}}" onClick="{{cs.go}}" style="min-height: 44px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}; font-size: 14px; font-weight: 600"><span style="flex-grow: 1">{{cs.title}}</span><span aria-hidden="true" style="color: {{t.muted}}">{{cs.mark}}</span></a></sc-if>
+<sc-if value="{{cs.soon}}" hint-placeholder-val="{{ true }}"><span style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}; font-size: 14px; color: {{t.text2}}">{{cs.title}}</span></sc-if>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{rm.card.hasLinks}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{rm.card.links}}" as="cl" hint-placeholder-count="6">
+<a href="{{cl.href}}" onClick="{{cl.go}}" style="min-height: 44px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}; font-size: 14px">
+<span style="width: 52px; flex-shrink: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{cl.kindFg}}">{{cl.kind}}</span>
 <span style="flex-grow: 1; font-weight: 600; min-width: 0">{{cl.label}}</span>
 <span aria-hidden="true" style="color: {{t.muted}}">{{cl.mark}}</span>
 </a>
 </sc-for>
 </div>
-<sc-if value="{{card.inLibrary}}" hint-placeholder-val="{{ true }}"><button onClick="{{card.openLibrary}}" style="height: 44px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 700">See its problems in the library</button></sc-if>
-</aside>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}; margin-right: 2px">{{rm.card.beforeLabel}}</span>
+<sc-for list="{{rm.card.before}}" as="cb" hint-placeholder-count="2"><button onClick="{{cb.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.accent}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 12px; font-weight: 600">{{cb.label}}</button></sc-for>
 </div>
+<sc-if value="{{rm.card.hasAfter}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}; margin-right: 2px">Then try</span>
+<sc-for list="{{rm.card.after}}" as="ca" hint-placeholder-count="2"><button onClick="{{ca.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 12px; font-weight: 600">{{ca.label}}</button></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{rm.card.isPattern}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{rm.card.toggleFold}}" aria-expanded="{{rm.card.fold}}" style="min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: space-between">{{rm.card.foldLabel}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" style="transform: {{rm.card.foldChev}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{rm.card.fold}}" hint-placeholder-val="{{ false }}">
+<div data-fold style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Clues in the problem text</span>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.45"><sc-for list="{{rm.card.clues}}" as="cc" hint-placeholder-count="3"><li>{{cc}}</li></sc-for></ul>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Template</span>
+<pre style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; font-family: {{t.mono}}; font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; color: {{t.text}}">{{rm.card.template}}</pre>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">Common mistakes</span>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.45"><sc-for list="{{rm.card.mistakes}}" as="cm" hint-placeholder-count="2"><li>{{cm}}</li></sc-for></ul>
+</div>
+</div>
+</sc-if>
+</sc-if>
+<sc-if value="{{rm.card.inLibrary}}" hint-placeholder-val="{{ true }}"><button onClick="{{rm.card.openLibrary}}" style="min-height: 44px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 14px; font-weight: 700">See its problems in the library</button></sc-if>
+</aside>
+</sc-if>
 </sc-if>
 
 <!-- ============ VIEW: LEARNING PATH ============ -->
@@ -2081,6 +2177,313 @@ const PATTERN_INTROS = {
     stories: [], sheet: ['range-sum-query-mutable', 'count-of-smaller-numbers-after-self', 'reverse-pairs'], run: []
   }
 };
+// ROADMAP: the whole learning map on the Library's Map tab, as one connected graph in lanes, top to bottom:
+// Start here (Level 1), Core programming (Levels 2-5), DSA concepts, the patterns (PATTERN_MAP above), practice (the sheet),
+// and the branches (system design, AI & ML, Git). tests/mapcheck.js checks every node, edge and target.
+//
+// A node is { id, lane, label (map label, at most 18 characters), col, row, name, blurb, covers, ... } plus ONE way to open it:
+//   track + go      a lesson track (ROADMAP_TRACKS below; a lesson opens by URL `param` or by the saved `key`). go = the id of the lesson the node opens. An EMPTY go means "Coming soon":
+//                   the node shows the track name and its planned lessons. To make a node live, put its first lesson id in go
+//                   (and check the ids in lessons match the track's lesson file).
+//   group           a pattern or sheet group (PATTERN_MAP nodes and the SQL / Concurrency groups): stories and sheet ticks.
+//   page            a page of ours (Sheet, Interview, SystemDesign, AIML, Git), with its progress source in `progress`.
+// lessons: [[lesson id, title]] in the order they are taught. covers: the checklist topics the node teaches (see mapcheck).
+// Patterns-lane nodes come from PATTERN_MAP; their extra edges and topics are in ROADMAP_PATTERN_COVERS and the edges below.
+// Edges [a, b] mean "learn a before b". Inside a lane they run left to right; between lanes they run down the page.
+// Every word here is our own.
+
+const ROADMAP_TRACKS = {
+  start: { name: 'Start here', page: 'Chapter.dc.html', param: 'ch', prefix: 'start:', src: 'src/start' },
+  // The concepts player opens the lesson saved under `key` (it has no URL parameter); finished lessons log as 'dsa:<id>'.
+  concepts: { name: 'DSA Concepts', page: 'ConceptLesson.dc.html', key: 'dsaviz-concept-lesson', prefix: 'dsa:', src: 'src/concepts' }
+};
+
+const ROADMAP_LANES = [
+  // [key, title, one line, columns]
+  ['start', 'Start here', 'Level 1: your first programs, from zero.', 8],
+  ['core', 'Core programming', 'Levels 2 to 5, one row each: functions, objects, better code, async.', 8],
+  ['concepts', 'DSA concepts', 'How each structure and algorithm works inside.', 8],
+  ['patterns', 'Patterns', 'The plots that problems share. Stories and practice.', 6],
+  ['practice', 'Practice', 'The full sheet, side tracks and mock interviews.', 8],
+  ['branches', 'Branches', 'Where to go once the core is solid.', 8]
+];
+
+const ROADMAP_NODES = [
+  // ---- Start here, Level 1 (src/start/chapters.js): live. Lessons still being written open the Chapter page's "being written" note. ----
+  { id: 's-programs', lane: 'start', label: 'First programs', col: 0, row: 0, name: 'Your first programs', track: 'start', go: 'what-is-a-program',
+    blurb: 'What a program is, printing text, using Python as a calculator and reading your first error message.',
+    lessons: [['what-is-a-program', 'What is a program?'], ['first-run', 'Your first run'], ['calculator', 'Calculator mode'], ['first-error', 'Reading your first error']],
+    covers: ['operators'] },
+  { id: 's-variables', lane: 'start', label: 'Variables & types', col: 1, row: 0, name: 'Variables and types', track: 'start', go: 'variables',
+    blurb: 'Values live in labelled boxes, and every value has a kind: whole numbers, decimals, text and true or false.',
+    lessons: [['variables', 'Variables are labelled boxes'], ['types', 'Kinds of values']], covers: ['variables and types'] },
+  { id: 's-decisions', lane: 'start', label: 'Decisions', col: 2, row: 0, name: 'Asking and deciding', track: 'start', go: 'input-output',
+    blurb: 'Ask the user a question, compare values and pick a path with if, elif and else.',
+    lessons: [['input-output', 'Asking and answering'], ['compare', 'True or false questions'], ['if-else', 'Choosing a path'], ['and-or-not', 'and, or, not'], ['edge-cases', 'What could go wrong?'], ['path-project', 'Project: choose your path']],
+    covers: ['input and output', 'conditionals'] },
+  { id: 's-loops', lane: 'start', label: 'Loops', col: 3, row: 0, name: 'Repeating with loops', track: 'start', go: 'for-range',
+    blurb: 'Repeat a block with for and while, keep a running total and nest one loop inside another.',
+    lessons: [['for-range', 'Counting laps with for'], ['while', 'Repeat while it is true'], ['accumulator', 'Keeping a running total'], ['nested-loops', 'Loops inside loops']],
+    covers: ['loops'] },
+  { id: 's-lists', lane: 'start', label: 'Lists & strings', col: 4, row: 0, name: 'Lists and strings', track: 'start', go: 'lists',
+    blurb: 'Keep many values in order, visit each one, and treat text as a row of letters you can slice.',
+    lessons: [['lists', 'Lists are backpacks'], ['list-loops', 'Visiting every item'], ['strings', 'Text is a row of letters']],
+    covers: ['lists', 'strings'] },
+  { id: 's-functions', lane: 'start', label: 'Functions', col: 5, row: 0, name: 'Functions', track: 'start', go: 'functions',
+    blurb: 'Name a recipe once and call it many times. return hands a value back; print only shows it.',
+    lessons: [['functions', 'Functions are recipes'], ['return-print', 'return versus print']], covers: ['functions'] },
+  { id: 's-dicts', lane: 'start', label: 'Dictionaries', col: 5, row: 1, name: 'Dictionaries', track: 'start', go: 'dicts',
+    blurb: 'Find a value by its key, like a coat by its ticket. The everyday tool for counting things.',
+    lessons: [['dicts', 'Dictionaries are coat checks']], covers: ['dictionaries and sets'] },
+  { id: 's-debugging', lane: 'start', label: 'Debugging', col: 6, row: 1, name: 'Debugging and your first game', track: 'start', go: 'debugging',
+    blurb: 'Three questions find most bugs: what did I expect, what happened, and where did they split?',
+    lessons: [['debugging', 'Your debugging toolkit'], ['guess-project', 'Project: guess the number']], covers: ['testing and debugging'] },
+  { id: 's-plan', lane: 'start', label: 'Plan & read', col: 6, row: 0, name: 'Plan it, then read a problem', track: 'start', go: 'plan-it',
+    blurb: 'Write the steps in plain words before any code, then learn to find the input, output and examples in a problem.',
+    lessons: [['plan-it', 'Plan it before you code it'], ['read-a-problem', 'How to read a problem']], covers: [] },
+  { id: 's-steps', lane: 'start', label: 'Counting steps', col: 7, row: 0, name: 'Counting steps', track: 'start', go: 'counting-steps',
+    blurb: 'Count the laps your loop makes. When the input doubles, does the work double too?',
+    lessons: [['counting-steps', 'Counting steps']], covers: [] },
+
+  // ---- Core programming, Levels 2-5: planned on the Start here track, coming soon until their lessons are in src/start/chapters.js ----
+  { id: 'k-calls', lane: 'core', label: 'Calls & returns', col: 0, row: 0, name: 'Calling a function', track: 'start', go: '',
+    blurb: 'Arguments go in, one value comes back. The difference between returning a value and printing it.',
+    lessons: [['calls', 'Calling a function']], covers: [] },
+  { id: 'k-stack', lane: 'core', label: 'The call stack', col: 1, row: 0, name: 'The call stack', track: 'start', go: '',
+    blurb: 'Each call puts a plate on the pile and return takes the top one off. The idea behind recursion.',
+    lessons: [['call-stack', 'The call stack is a pile of plates']], covers: ['call stack'] },
+  { id: 'k-scope', lane: 'core', label: 'Scope', col: 2, row: 0, name: 'Scope: which names can I see?', track: 'start', go: '',
+    blurb: 'A name lives in the function that made it. Why a variable made inside is not visible outside.',
+    lessons: [['scope', 'Which names can I see?']], covers: [] },
+  { id: 'k-args', lane: 'core', label: 'Arguments', col: 3, row: 0, name: 'Arguments in depth', track: 'start', go: '',
+    blurb: 'Default and keyword arguments, any number of inputs, and why a list passed in can change outside.',
+    lessons: [['defaults', 'Default and keyword arguments'], ['many-args', 'Any number of inputs'], ['mutable-args', 'Two names, one list']], covers: [] },
+  { id: 'k-callbacks', lane: 'core', label: 'Callbacks', col: 4, row: 0, name: 'Functions as values', track: 'start', go: '',
+    blurb: 'A function is a thing you can hand to another function: sort keys, callbacks and lambdas.',
+    lessons: [['callbacks', 'Functions as values']], covers: [] },
+  { id: 'k-closures', lane: 'core', label: 'Closures', col: 5, row: 0, name: 'Closures', track: 'start', go: '',
+    blurb: 'A function carries the variables from where it was made. The root of memoization and decorators.',
+    lessons: [['closures', 'Closures']], covers: ['scope and closures'] },
+  { id: 'k-objects', lane: 'core', label: 'Classes & objects', col: 0, row: 1, name: 'Classes and objects', track: 'start', go: '',
+    blurb: 'A class is a blueprint and each object built from it keeps its own data. self, __init__, attributes and methods.',
+    lessons: [['objects', 'A first look at objects'], ['self', 'self: who is calling?'], ['init', 'Setting up a new object'], ['attributes', 'Attributes and methods']],
+    covers: ['classes and objects'] },
+  { id: 'k-refs', lane: 'core', label: 'References', col: 1, row: 1, name: 'Names point at objects', track: 'start', go: '',
+    blurb: 'b = a does not copy. Two names can point at one object, which is how linked lists and graphs are built.',
+    lessons: [['references', 'Names point at objects'], ['class-attributes', 'Shared and own data']], covers: ['references and memory'] },
+  { id: 'k-encap', lane: 'core', label: 'Encapsulation', col: 2, row: 1, name: 'Encapsulation and special methods', track: 'start', go: '',
+    blurb: 'Guard how data is read and changed, and teach objects to work with print, == and len.',
+    lessons: [['encapsulation', 'Keeping data safe'], ['dunder', 'Special methods']], covers: ['encapsulation'] },
+  { id: 'k-inherit', lane: 'core', label: 'Inheritance', col: 3, row: 1, name: 'Inheritance and super()', track: 'start', go: '',
+    blurb: 'A child class gets what its parent has and changes only what is different.',
+    lessons: [['inheritance', 'The family tree'], ['super', 'Override and super()']], covers: [] },
+  { id: 'k-poly', lane: 'core', label: 'Polymorphism', col: 4, row: 1, name: 'Polymorphism', track: 'start', go: '',
+    blurb: 'Send the same call to different objects and each one does its own thing.',
+    lessons: [['polymorphism', 'Same call, different behaviour']], covers: ['inheritance and polymorphism'] },
+  { id: 'k-compose', lane: 'core', label: 'Composition', col: 5, row: 1, name: 'Composition over inheritance', track: 'start', go: '',
+    blurb: 'Build from parts (has-a) instead of family trees (is-a), and know when a plain function is enough.',
+    lessons: [['composition', 'Composition vs inheritance'], ['no-class', 'When not to use a class']], covers: [] },
+  { id: 'k-interfaces', lane: 'core', label: 'Interfaces', col: 6, row: 1, name: 'Abstract classes and interfaces', track: 'start', go: '',
+    blurb: 'A contract that says what must exist without saying how. The bridge into low-level design.',
+    lessons: [['interfaces', 'Abstract classes and interfaces']], covers: [] },
+  { id: 'k-errors', lane: 'core', label: 'Exceptions', col: 0, row: 2, name: 'Exceptions', track: 'start', go: '',
+    blurb: 'An error travels up the calls until someone handles it. try, except, raise, finally and with.',
+    lessons: [['exceptions', 'When things go wrong'], ['raise', 'Raising your own errors']], covers: ['errors and exceptions'] },
+  { id: 'k-files', lane: 'core', label: 'Files & JSON', col: 1, row: 2, name: 'Files and JSON', track: 'start', go: '',
+    blurb: 'Read and write data that outlives the program, as plain text or JSON.',
+    lessons: [['files', 'Files']], covers: ['files and JSON'] },
+  { id: 'k-modules', lane: 'core', label: 'Modules', col: 2, row: 2, name: 'Modules and imports', track: 'start', go: '',
+    blurb: 'Split code into files, import what you need, and know the standard tools worth having.',
+    lessons: [['modules', 'Modules and imports'], ['side-by-side', 'Python and JavaScript side by side']], covers: ['modules'] },
+  { id: 'k-comprehensions', lane: 'core', label: 'Comprehensions', col: 3, row: 2, name: 'Comprehensions', track: 'start', go: '',
+    blurb: 'Build a list, set or dict in one readable line, and know when a plain loop reads better.',
+    lessons: [['comprehensions', 'Comprehensions']], covers: ['comprehensions'] },
+  { id: 'k-generators', lane: 'core', label: 'Iterators & yield', col: 4, row: 2, name: 'Iterators and generators', track: 'start', go: '',
+    blurb: 'Anything you can loop over hands out items one at a time. yield pauses a function and resumes it later.',
+    lessons: [['iterators', 'Iterators'], ['generators', 'Generators']], covers: ['iterators and generators'] },
+  { id: 'k-decorators', lane: 'core', label: 'Decorators', col: 5, row: 2, name: 'Decorators', track: 'start', go: '',
+    blurb: 'Wrap a function to add behaviour, like timing or caching, without touching its body.',
+    lessons: [['decorators', 'Decorators']], covers: ['decorators'] },
+  { id: 'k-testing', lane: 'core', label: 'Testing', col: 6, row: 2, name: 'Testing', track: 'start', go: '',
+    blurb: 'Write down what a function should do as checks that run themselves, edge cases first.',
+    lessons: [['tests', 'Checks that run themselves'], ['edge-tests', 'Edge cases and test-first']], covers: [] },
+  { id: 'k-clean', lane: 'core', label: 'Clean code', col: 7, row: 2, name: 'Clean code and type hints', track: 'start', go: '',
+    blurb: 'Names that explain themselves, small functions with one job, and type hints that say what goes in and out.',
+    lessons: [['clean-names', 'Names that explain themselves'], ['type-hints', 'Type hints'], ['no-surprises', 'No surprises']], covers: ['type hints'] },
+  { id: 'k-blocking', lane: 'core', label: 'Blocking & waiting', col: 0, row: 3, name: 'Why waiting matters', track: 'start', go: '',
+    blurb: 'Some jobs are mostly waiting for a network, a disk or a timer. Blocking means doing nothing meanwhile.',
+    lessons: [['blocking', 'Why waiting matters']], covers: [] },
+  { id: 'k-eventloop', lane: 'core', label: 'Event loop', col: 1, row: 3, name: 'The event loop', track: 'start', go: '',
+    blurb: 'One worker keeps a queue of tickets and always takes the next one that is ready.',
+    lessons: [['event-loop', 'The event loop is a queue']], covers: ['async and event loop'] },
+  { id: 'k-promises', lane: 'core', label: 'Promises', col: 2, row: 3, name: 'Callbacks to promises', track: 'start', go: '',
+    blurb: '"Call me when you are done" became an object you can pass around and chain.',
+    lessons: [['promises', 'Callbacks to promises']], covers: [] },
+  { id: 'k-await', lane: 'core', label: 'async / await', col: 3, row: 3, name: 'async and await', track: 'start', go: '',
+    blurb: 'Write waiting code that reads from top to bottom, in JavaScript and in Python.',
+    lessons: [['async-await', 'async and await']], covers: [] },
+  { id: 'k-tasks', lane: 'core', label: 'Tasks & timeouts', col: 4, row: 3, name: 'Tasks, errors and timeouts', track: 'start', go: '',
+    blurb: 'Start several waits at once, collect the results, and handle the one that fails or takes too long.',
+    lessons: [['gather', 'Doing several waits at once'], ['timeouts', 'Errors and timeouts']], covers: [] },
+  { id: 'k-threads', lane: 'core', label: 'Threads vs async', col: 5, row: 3, name: 'Threads, async and processes', track: 'start', go: '',
+    blurb: 'Taking turns is not the same as running at once. Pick the right tool and spot a race on a shared counter.',
+    lessons: [['threads', 'Threads vs async vs processes']], covers: ['threads and concurrency'] },
+
+  // ---- DSA concepts (the dsa-concepts track) ----
+  { id: 'c-bigo', lane: 'concepts', label: 'Big-O', col: 0, row: 0, name: 'Big-O and complexity', track: 'concepts', go: '',
+    blurb: 'Count steps, not seconds. Time and space, best and worst case, and reading limits to pick an approach.',
+    lessons: [['bigo', 'Big-O by counting steps']], covers: ['big-o', 'amortized analysis'] },
+  { id: 'c-arrays', lane: 'concepts', label: 'Arrays & memory', col: 1, row: 0, name: 'Arrays and memory', track: 'concepts', go: '',
+    blurb: 'Why reading by index is instant and inserting in the middle is slow, how a growing array doubles, and 2D grids.',
+    lessons: [['arrays', 'Arrays in memory']], covers: ['arrays', 'dynamic arrays'] },
+  { id: 'c-strings', lane: 'concepts', label: 'Strings', col: 2, row: 0, name: 'Strings inside', track: 'concepts', go: '',
+    blurb: 'Text as an array of characters: why strings do not change in place, slicing cost and letter codes.',
+    lessons: [['strings', 'Strings as arrays']], covers: [] },
+  { id: 'c-hashing', lane: 'concepts', label: 'Hashing', col: 3, row: 0, name: 'How hashing works', track: 'concepts', go: '',
+    blurb: 'A hash function picks a bucket. Collisions, chaining, open addressing and when the table grows.',
+    lessons: [['hashing', 'Hashing and chaining'], ['openaddr', 'Open addressing']], covers: ['hashing', 'collisions'] },
+  { id: 'c-matching', lane: 'concepts', label: 'String matching', col: 4, row: 0, name: 'String matching', track: 'concepts', go: '',
+    blurb: 'Find a word in a text without starting over: rolling hashes, KMP and the Z array.',
+    lessons: [['matching', 'Finding a word in a text']], covers: ['string matching'] },
+  { id: 'c-bits', lane: 'concepts', label: 'Bits', col: 1, row: 1, name: 'Bits and binary', track: 'concepts', go: '',
+    blurb: 'Numbers in binary, AND, OR, XOR and shifts, masks, and how negative numbers are stored.',
+    lessons: [['bits', 'Ones and zeros']], covers: ['bits'] },
+  { id: 'c-math', lane: 'concepts', label: 'Number theory', col: 2, row: 1, name: 'Math and number theory', track: 'concepts', go: '',
+    blurb: 'Divisibility, gcd, primes and the sieve, remainders that wrap around, and fast power.',
+    lessons: [['gcd-primes', 'gcd and primes'], ['modular', 'Remainders and fast power']], covers: ['number theory', 'modular arithmetic'] },
+  { id: 'c-combinatorics', lane: 'concepts', label: 'Counting & combos', col: 3, row: 1, name: 'Counting and combinatorics', track: 'concepts', go: '',
+    blurb: 'Sum and product rules, choosing versus arranging, Pascal\'s triangle and counting by leaving things out.',
+    lessons: [['counting', 'Counting without listing']], covers: ['combinatorics'] },
+  { id: 'c-geometry', lane: 'concepts', label: 'Geometry', col: 4, row: 1, name: 'Geometry basics', track: 'concepts', go: '',
+    blurb: 'Points and distance, which way three points turn, overlapping rectangles and the convex hull.',
+    lessons: [['geometry', 'Points, turns and hulls']], covers: ['geometry'] },
+  { id: 'c-recursion', lane: 'concepts', label: 'Recursion', col: 1, row: 2, name: 'Recursion', track: 'concepts', go: '',
+    blurb: 'A function that hands a smaller copy of the job to itself until a base case stops it. Drawn as a tree of calls.',
+    lessons: [['recursion', 'Recursion from zero']], covers: ['recursion'] },
+  { id: 'c-sorting', lane: 'concepts', label: 'Sorting', col: 3, row: 2, name: 'Sorting, one by one', track: 'concepts', go: '',
+    blurb: 'Bubble, selection and insertion sort, then merge and quick sort, heap sort, and counting and radix sort.',
+    lessons: [['bubble', 'Bubble sort'], ['selection', 'Selection sort'], ['insertion', 'Insertion sort'], ['merge', 'Merge sort'], ['quick', 'Quick sort'], ['heapsort', 'Heap sort'], ['countradix', 'Counting and radix sort']],
+    covers: ['bubble sort', 'selection sort', 'insertion sort', 'merge sort', 'quick sort', 'heap sort', 'counting and radix sort'] },
+  { id: 'c-divide', lane: 'concepts', label: 'Divide & conquer', col: 2, row: 2, name: 'Divide and conquer', track: 'concepts', go: '',
+    blurb: 'Split the job in halves, solve each, then combine. Why merge sort and fast power are fast.',
+    lessons: [['divide', 'Split, solve, combine']], covers: ['divide and conquer'] },
+  { id: 'c-dp', lane: 'concepts', label: 'DP from scratch', col: 2, row: 3, name: 'Dynamic programming from scratch', track: 'concepts', go: '',
+    blurb: 'When the same smaller question repeats: memoize the recursion, then fill a table bottom up.',
+    lessons: [['memo', 'Memoization'], ['tables', 'Tables, bottom up']], covers: [] },
+  { id: 'c-greedy', lane: 'concepts', label: 'Greedy classics', col: 4, row: 3, name: 'Classic greedy algorithms', track: 'concepts', go: '',
+    blurb: 'Activity selection, fractional knapsack and Huffman codes, and how to tell if greedy is safe.',
+    lessons: [['greedy', 'Is the best step safe?']], covers: [] },
+  { id: 'c-linked', lane: 'concepts', label: 'Linked lists', col: 1, row: 4, name: 'Linked lists inside', track: 'concepts', go: '',
+    blurb: 'Nodes that point to the next one. Insert and delete at the head, middle and tail, then doubly and circular lists.',
+    lessons: [['linked', 'Linked lists']], covers: ['linked lists', 'doubly and circular lists'] },
+  { id: 'c-stacks', lane: 'concepts', label: 'Stacks & queues', col: 2, row: 4, name: 'Stacks and queues', track: 'concepts', go: '',
+    blurb: 'Last in first out and first in first out, built on arrays and on lists, plus deques and circular queues.',
+    lessons: [['stackqueue', 'Stacks and queues']], covers: ['stacks', 'queues and deques'] },
+  { id: 'c-search', lane: 'concepts', label: 'Searching', col: 4, row: 2, name: 'Linear and binary search', track: 'concepts', go: '',
+    blurb: 'Look at everything, or halve a sorted range each step. Then search for the answer itself.',
+    lessons: [['searching', 'Linear and binary search']], covers: ['linear search'] },
+  { id: 'c-random', lane: 'concepts', label: 'Randomized', col: 5, row: 2, name: 'Randomized algorithms', track: 'concepts', go: '',
+    blurb: 'Quickselect, shuffling fairly, reservoir sampling and why a coin flip can make an algorithm safe.',
+    lessons: [['randomized', 'Using a coin flip']], covers: ['quickselect', 'randomized algorithms'] },
+  { id: 'c-trees', lane: 'concepts', label: 'Trees', col: 2, row: 5, name: 'Trees and traversals', track: 'concepts', go: '',
+    blurb: 'Root, leaf, height and depth, then the pre-, in- and post-order walks and level order.',
+    lessons: [['tree-words', 'Tree words'], ['traversals', 'Four ways to walk a tree']], covers: ['tree traversals'] },
+  { id: 'c-bst', lane: 'concepts', label: 'BST', col: 3, row: 5, name: 'Binary search trees', track: 'concepts', go: '',
+    blurb: 'Smaller to the left, bigger to the right. Search, insert and delete, and why shape decides speed.',
+    lessons: [['bst', 'Binary search trees']], covers: ['bst'] },
+  { id: 'c-balanced', lane: 'concepts', label: 'Balanced trees', col: 4, row: 5, name: 'Balanced trees', track: 'concepts', go: '',
+    blurb: 'Rotations keep a tree short. A first look at AVL, red-black and B-trees.',
+    lessons: [['balanced', 'Keeping trees short']], covers: ['balanced trees'] },
+  { id: 'c-ranges', lane: 'concepts', label: 'Range queries', col: 4, row: 6, name: 'Range query trees', track: 'concepts', go: '',
+    blurb: 'Segment trees and Fenwick trees answer range sums after updates without a full rescan.',
+    lessons: [['segment-tree', 'Segment trees'], ['fenwick', 'Fenwick trees']], covers: [] },
+  { id: 'c-heaps', lane: 'concepts', label: 'Heaps', col: 3, row: 6, name: 'Heaps and priority queues', track: 'concepts', go: '',
+    blurb: 'A tree kept in an array where the smallest is always on top. Sift up, sift down and heapify.',
+    lessons: [['heaps', 'Heaps']], covers: [] },
+  { id: 'c-tries', lane: 'concepts', label: 'Tries', col: 3, row: 7, name: 'Tries', track: 'concepts', go: '',
+    blurb: 'A tree of letters where words share their beginnings, for fast prefix search.',
+    lessons: [['tries', 'Tries']], covers: [] },
+  { id: 'c-graphs', lane: 'concepts', label: 'Graphs', col: 3, row: 8, name: 'Graphs and how to store them', track: 'concepts', go: '',
+    blurb: 'Vertices and edges, directed or not, weighted or not, kept as an adjacency list or a matrix.',
+    lessons: [['graph-words', 'Graph words'], ['adjacency', 'Lists or a matrix']], covers: [] },
+  { id: 'c-topo', lane: 'concepts', label: 'Topological sort', col: 4, row: 8, name: 'Topological sort', track: 'concepts', go: '',
+    blurb: 'Put tasks in an order that respects every prerequisite, by peeling free tasks or by DFS finish order.',
+    lessons: [['topo', 'Topological sort']], covers: ['topological sort'] },
+  { id: 'c-shortest', lane: 'concepts', label: 'Shortest paths', col: 4, row: 7, name: 'Shortest paths', track: 'concepts', go: '',
+    blurb: 'BFS when every edge costs the same, Dijkstra for weights, Bellman-Ford for negatives and Floyd-Warshall for all pairs.',
+    lessons: [['dijkstra', 'Dijkstra'], ['bellman-ford', 'Bellman-Ford'], ['floyd', 'Floyd-Warshall']], covers: ['dijkstra', 'bellman-ford', 'floyd-warshall'] },
+  { id: 'c-hard-graphs', lane: 'concepts', label: 'Flows & SCCs', col: 5, row: 7, name: 'Harder graph ideas', track: 'concepts', go: '',
+    blurb: 'Strongly connected parts, bridges and cut points, and a first look at network flow and matching.',
+    lessons: [['scc', 'Strongly connected parts'], ['flow', 'Network flow']], covers: ['scc and bridges', 'network flow'] },
+  { id: 'c-unionfind', lane: 'concepts', label: 'Union-find', col: 4, row: 9, name: 'Union-find', track: 'concepts', go: '',
+    blurb: 'Keep groups that merge over time, with path compression and union by size.',
+    lessons: [['union-find', 'Union-find']], covers: ['union-find'] },
+  { id: 'c-spanning', lane: 'concepts', label: 'Spanning trees', col: 5, row: 9, name: 'Minimum spanning trees', track: 'concepts', go: '',
+    blurb: 'Connect every point for the least total cost: Kruskal with union-find and Prim with a heap.',
+    lessons: [['kruskal', 'Kruskal'], ['prim', 'Prim']], covers: ['minimum spanning tree'] },
+
+  // ---- Practice ----
+  { id: 'p-sheet', lane: 'practice', label: 'The sheet', col: 0, row: 0, name: 'The sheet', page: 'Sheet.dc.html', progress: 'sheet',
+    blurb: 'Every problem we have, grouped by pattern, easiest first. Tick them off as you solve them on our pages.', covers: [] },
+  { id: 'p-mock', lane: 'practice', label: 'Mock interview', col: 1, row: 0, name: 'Mock interview', page: 'Interview.dc.html', progress: 'mock',
+    blurb: 'A timed set of problems with a self-score, to practise under interview conditions.', covers: [] },
+  { id: 'SQL', lane: 'practice', label: 'SQL', col: 2, row: 0, name: 'SQL', group: 'SQL', covers: ['sql'] },
+  { id: 'Concurrency', lane: 'practice', label: 'Concurrency', col: 3, row: 0, name: 'Concurrency', group: 'Concurrency', covers: [] },
+
+  // ---- Branches ----
+  { id: 'b-sd', lane: 'branches', label: 'System design', col: 0, row: 0, name: 'System design', page: 'SystemDesign.dc.html', progress: 'sd',
+    blurb: 'Low-level design with classes, then caches, queues, databases and scaling, one visual lesson at a time.', covers: ['system design'] },
+  { id: 'b-ai', lane: 'branches', label: 'AI & ML', col: 1, row: 0, name: 'AI & ML', page: 'AIML.dc.html', progress: 'ai',
+    blurb: 'Statistics and probability, the machine-learning workflow and classic models, then how modern AI works.', covers: ['machine learning', 'statistics and probability'] },
+  { id: 'b-git', lane: 'branches', label: 'Git', col: 2, row: 0, name: 'Git', page: 'Git.dc.html', progress: 'git',
+    blurb: 'Save, branch and merge your work, with a simulator you can try every command in.', covers: ['git'] }
+];
+
+// Checklist topics each pattern node teaches (the patterns themselves come from PATTERN_MAP).
+const ROADMAP_PATTERN_COVERS = {
+  'Two Pointers': ['two pointers'], 'Sliding Window': ['sliding window'], 'Prefix Sum': ['prefix sums'], 'Matrix': ['matrix'],
+  'Binary Search': ['binary search'], 'Hash Map': [], 'Intervals': ['intervals'], 'Greedy': ['greedy'], 'Stack': [], 'Heap': ['heaps'],
+  'Linked Lists': [], 'Fast & Slow Pointers': ['fast and slow pointers'], 'In-place Reversal': [], 'Depth-First Search': ['dfs'],
+  'Breadth-First Search': ['bfs'], 'Backtracking': ['backtracking'], 'Dynamic Programming': ['dynamic programming'],
+  'Monotonic Stack & Queue': ['monotonic stack'], 'Trees': ['trees'], 'Graphs': ['graphs'], 'Tries': ['tries'], 'Sorting': [],
+  'Design': ['design with data structures'], 'String Algorithms': [], 'DP on Grids & Strings': ['grid dp'], 'Knapsack & LIS': ['knapsack', 'lis'],
+  'Interval & Bitmask DP': ['interval dp', 'bitmask dp'], 'Bit Manipulation': [], 'Math & Geometry': [], 'Segment Tree & BIT': ['segment tree', 'fenwick tree']
+};
+
+// Edges between ROADMAP_NODES and to the patterns. Pattern-to-pattern edges stay in PATTERN_MAP.edges.
+const ROADMAP_EDGES = [
+  // Start here
+  ['s-programs', 's-variables'], ['s-variables', 's-decisions'], ['s-decisions', 's-loops'], ['s-loops', 's-lists'], ['s-lists', 's-functions'],
+  ['s-lists', 's-dicts'], ['s-functions', 's-plan'], ['s-functions', 's-debugging'], ['s-dicts', 's-debugging'], ['s-plan', 's-steps'], ['s-debugging', 's-steps'],
+  // Core: one row per level
+  ['k-calls', 'k-stack'], ['k-stack', 'k-scope'], ['k-scope', 'k-args'], ['k-args', 'k-callbacks'], ['k-callbacks', 'k-closures'],
+  ['k-objects', 'k-refs'], ['k-refs', 'k-encap'], ['k-encap', 'k-inherit'], ['k-inherit', 'k-poly'], ['k-poly', 'k-compose'], ['k-compose', 'k-interfaces'],
+  ['k-errors', 'k-files'], ['k-files', 'k-modules'], ['k-modules', 'k-comprehensions'], ['k-comprehensions', 'k-generators'], ['k-generators', 'k-decorators'],
+  ['k-decorators', 'k-testing'], ['k-testing', 'k-clean'],
+  ['k-blocking', 'k-eventloop'], ['k-eventloop', 'k-promises'], ['k-promises', 'k-await'], ['k-await', 'k-tasks'], ['k-tasks', 'k-threads'],
+  // Start here into the core levels
+  ['s-functions', 'k-calls'], ['s-dicts', 'k-objects'], ['s-debugging', 'k-errors'], ['s-functions', 'k-blocking'],
+  // DSA concepts
+  ['c-bigo', 'c-arrays'], ['c-arrays', 'c-strings'], ['c-strings', 'c-hashing'], ['c-hashing', 'c-matching'],
+  ['c-bigo', 'c-bits'], ['c-bits', 'c-math'], ['c-math', 'c-combinatorics'], ['c-combinatorics', 'c-geometry'],
+  ['c-bigo', 'c-recursion'], ['c-recursion', 'c-divide'], ['c-divide', 'c-sorting'], ['c-recursion', 'c-dp'], ['c-sorting', 'c-greedy'],
+  ['c-bigo', 'c-linked'], ['c-linked', 'c-stacks'], ['c-sorting', 'c-search'], ['c-search', 'c-random'],
+  ['c-recursion', 'c-trees'], ['c-trees', 'c-bst'], ['c-bst', 'c-balanced'], ['c-bst', 'c-ranges'],
+  ['c-trees', 'c-heaps'], ['c-trees', 'c-tries'], ['c-trees', 'c-graphs'],
+  ['c-graphs', 'c-topo'], ['c-graphs', 'c-shortest'], ['c-shortest', 'c-hard-graphs'],
+  ['c-graphs', 'c-unionfind'], ['c-unionfind', 'c-spanning'],
+  // Into the concepts
+  ['s-steps', 'c-bigo'], ['s-lists', 'c-arrays'], ['k-stack', 'c-recursion'], ['k-refs', 'c-linked'],
+  // Concepts into the patterns
+  ['c-arrays', 'Two Pointers'], ['c-arrays', 'Prefix Sum'], ['c-arrays', 'Matrix'], ['c-hashing', 'Hash Map'], ['c-stacks', 'Stack'],
+  ['c-linked', 'Linked Lists'], ['c-sorting', 'Sorting'], ['c-search', 'Binary Search'], ['c-recursion', 'Depth-First Search'],
+  ['c-recursion', 'Backtracking'], ['c-trees', 'Trees'], ['c-heaps', 'Heap'], ['c-graphs', 'Breadth-First Search'], ['c-graphs', 'Graphs'],
+  ['c-tries', 'Tries'], ['c-dp', 'Dynamic Programming'], ['c-bits', 'Bit Manipulation'], ['c-math', 'Math & Geometry'],
+  ['c-matching', 'String Algorithms'], ['c-ranges', 'Segment Tree & BIT'], ['c-greedy', 'Greedy'], ['c-unionfind', 'Graphs'],
+  // Patterns into practice, practice and the core into the branches
+  ['Two Pointers', 'p-sheet'], ['p-sheet', 'p-mock'], ['k-threads', 'Concurrency'], ['s-lists', 'SQL'], ['Design', 'b-sd'], ['k-interfaces', 'b-sd'],
+  ['p-mock', 'b-sd'], ['c-combinatorics', 'b-ai'], ['s-programs', 'b-git']
+];
 // SHEET_INDEX: generated by scripts/build_pages.py from shared/sheet.js.
 const SHEET_INDEX = {"Two Pointers":[["reverse-string","Reverse String"],["reverse-vowels-of-a-string","Reverse Vowels of a String"],["valid-palindrome","Valid Palindrome"],["move-zeroes","Move Zeroes"],["remove-duplicates-from-sorted-array","Remove Duplicates from Sorted Array"],["remove-element","Remove Element"],["sort-array-by-parity","Sort Array By Parity"],["squares-of-a-sorted-array","Squares of a Sorted Array"],["merge-strings-alternately","Merge Strings Alternately"],["merge-sorted-array","Merge Sorted Array"],["merge-two-sorted-lists","Merge Two Sorted Lists"],["is-subsequence","Is Subsequence"],["valid-palindrome-ii","Valid Palindrome II"],["backspace-string-compare","Backspace String Compare"],["remove-duplicates-from-sorted-array-ii","Remove Duplicates from Sorted Array II"],["two-sum-ii-input-array-is-sorted","Two Sum II - Input Array Is Sorted"],["boats-to-save-people","Boats to Save People"],["remove-nth-node-from-end-of-list","Remove Nth Node From End of List"],["sort-colors","Sort Colors"],["container-with-most-water","Container With Most Water"],["3sum","3Sum"],["3sum-closest","3Sum Closest"],["longest-palindromic-substring","Longest Palindromic Substring"],["next-permutation","Next Permutation"],["trapping-rain-water","Trapping Rain Water"]],"Sliding Window":[["maximum-average-subarray-i","Maximum Average Subarray I"],["best-time-to-buy-and-sell-stock","Best Time to Buy and Sell Stock"],["contains-duplicate-ii","Contains Duplicate II"],["minimum-difference-between-highest-and-lowest-of-k-scores","Minimum Difference Between Highest and Lowest of K Scores"],["maximum-number-of-vowels-in-a-substring-of-given-length","Maximum Number of Vowels in a Substring of Given Length"],["maximum-points-you-can-obtain-from-cards","Maximum Points You Can Obtain from Cards"],["minimum-size-subarray-sum","Minimum Size Subarray Sum"],["subarray-product-less-than-k","Subarray Product Less Than K"],["longest-substring-without-repeating-characters","Longest Substring Without Repeating Characters"],["max-consecutive-ones-iii","Max Consecutive Ones III"],["longest-subarray-of-1s-after-deleting-one-element","Longest Subarray of 1's After Deleting One Element"],["longest-repeating-character-replacement","Longest Repeating Character Replacement"],["permutation-in-string","Permutation in String"],["find-all-anagrams-in-a-string","Find All Anagrams in a String"],["fruit-into-baskets","Fruit Into Baskets"],["binary-subarrays-with-sum","Binary Subarrays With Sum"],["count-number-of-nice-subarrays","Count Number of Nice Subarrays"],["number-of-substrings-containing-all-three-characters","Number of Substrings Containing All Three Characters"],["minimum-window-substring","Minimum Window Substring"],["sliding-window-maximum","Sliding Window Maximum"],["subarrays-with-k-different-integers","Subarrays with K Different Integers"],["substring-with-concatenation-of-all-words","Substring with Concatenation of All Words"]],"Hash Map":[["contains-duplicate","Contains Duplicate"],["valid-anagram","Valid Anagram"],["find-the-difference-of-two-arrays","Find the Difference of Two Arrays"],["two-sum","Two Sum"],["ransom-note","Ransom Note"],["first-unique-character-in-a-string","First Unique Character in a String"],["isomorphic-strings","Isomorphic Strings"],["maximum-number-of-balloons","Maximum Number of Balloons"],["intersection-of-two-arrays","Intersection of Two Arrays"],["number-of-good-pairs","Number of Good Pairs"],["unique-number-of-occurrences","Unique Number of Occurrences"],["word-pattern","Word Pattern"],["majority-element","Majority Element"],["group-anagrams","Group Anagrams"],["determine-if-two-strings-are-close","Determine if Two Strings Are Close"],["equal-row-and-column-pairs","Equal Row and Column Pairs"],["longest-consecutive-sequence","Longest Consecutive Sequence"],["4sum-ii","4Sum II"],["valid-sudoku","Valid Sudoku"],["insert-delete-getrandom-o1","Insert Delete GetRandom O(1)"],["lru-cache","LRU Cache"],["first-missing-positive","First Missing Positive"]],"Prefix Sum":[["running-sum-of-1d-array","Running Sum of 1d Array"],["find-the-highest-altitude","Find the Highest Altitude"],["find-pivot-index","Find Pivot Index"],["find-the-middle-index-in-array","Find the Middle Index in Array"],["range-sum-query-immutable","Range Sum Query - Immutable"],["number-of-ways-to-split-array","Number of Ways to Split Array"],["product-of-array-except-self","Product of Array Except Self"],["xor-queries-of-a-subarray","XOR Queries of a Subarray"],["range-sum-query-2d-immutable","Range Sum Query 2D - Immutable"],["corporate-flight-bookings","Corporate Flight Bookings"],["subarray-sum-equals-k","Subarray Sum Equals K"],["subarray-sums-divisible-by-k","Subarray Sums Divisible by K"],["contiguous-array","Contiguous Array"],["continuous-subarray-sum","Continuous Subarray Sum"],["make-sum-divisible-by-p","Make Sum Divisible by P"],["matrix-block-sum","Matrix Block Sum"],["number-of-submatrices-that-sum-to-target","Number of Submatrices That Sum to Target"]],"Binary Search":[["binary-search","Binary Search"],["guess-number-higher-or-lower","Guess Number Higher or Lower"],["search-insert-position","Search Insert Position"],["first-bad-version","First Bad Version"],["sqrtx","Sqrt(x)"],["find-smallest-letter-greater-than-target","Find Smallest Letter Greater Than Target"],["find-first-and-last-position-of-element-in-sorted-array","Find First and Last Position of Element in Sorted Array"],["search-a-2d-matrix","Search a 2D Matrix"],["peak-index-in-a-mountain-array","Peak Index in a Mountain Array"],["find-peak-element","Find Peak Element"],["single-element-in-a-sorted-array","Single Element in a Sorted Array"],["find-minimum-in-rotated-sorted-array","Find Minimum in Rotated Sorted Array"],["search-in-rotated-sorted-array","Search in Rotated Sorted Array"],["find-k-closest-elements","Find K Closest Elements"],["koko-eating-bananas","Koko Eating Bananas"],["capacity-to-ship-packages-within-d-days","Capacity To Ship Packages Within D Days"],["minimum-number-of-days-to-make-m-bouquets","Minimum Number of Days to Make m Bouquets"],["time-based-key-value-store","Time Based Key-Value Store"],["find-minimum-in-rotated-sorted-array-ii","Find Minimum in Rotated Sorted Array II"],["find-in-mountain-array","Find in Mountain Array"],["split-array-largest-sum","Split Array Largest Sum"],["median-of-two-sorted-arrays","Median of Two Sorted Arrays"]],"Matrix":[["transpose-matrix","Transpose Matrix"],["reshape-the-matrix","Reshape the Matrix"],["matrix-diagonal-sum","Matrix Diagonal Sum"],["pascals-triangle","Pascal's Triangle"],["count-negative-numbers-in-a-sorted-matrix","Count Negative Numbers in a Sorted Matrix"],["determine-whether-matrix-can-be-obtained-by-rotation","Determine Whether Matrix Can Be Obtained By Rotation"],["rotate-image","Rotate Image"],["spiral-matrix","Spiral Matrix"],["spiral-matrix-ii","Spiral Matrix II"],["diagonal-traverse","Diagonal Traverse"],["sort-the-matrix-diagonally","Sort the Matrix Diagonally"],["set-matrix-zeroes","Set Matrix Zeroes"],["search-a-2d-matrix-ii","Search a 2D Matrix II"],["game-of-life","Game of Life"]],"Intervals":[["summary-ranges","Summary Ranges"],["meeting-rooms","Meeting Rooms"],["merge-intervals","Merge Intervals"],["insert-interval","Insert Interval"],["remove-covered-intervals","Remove Covered Intervals"],["interval-list-intersections","Interval List Intersections"],["non-overlapping-intervals","Non-overlapping Intervals"],["minimum-number-of-arrows-to-burst-balloons","Minimum Number of Arrows to Burst Balloons"],["meeting-rooms-ii","Meeting Rooms II"],["car-pooling","Car Pooling"],["my-calendar-i","My Calendar I"],["my-calendar-ii","My Calendar II"],["maximum-number-of-events-that-can-be-attended","Maximum Number of Events That Can Be Attended"],["my-calendar-iii","My Calendar III"],["minimum-interval-to-include-each-query","Minimum Interval to Include Each Query"]],"Greedy":[["assign-cookies","Assign Cookies"],["lemonade-change","Lemonade Change"],["can-place-flowers","Can Place Flowers"],["split-a-string-in-balanced-strings","Split a String in Balanced Strings"],["maximum-units-on-a-truck","Maximum Units on a Truck"],["longest-palindrome","Longest Palindrome"],["maximize-sum-of-array-after-k-negations","Maximize Sum Of Array After K Negations"],["best-time-to-buy-and-sell-stock-ii","Best Time to Buy and Sell Stock II"],["minimum-add-to-make-parentheses-valid","Minimum Add to Make Parentheses Valid"],["increasing-triplet-subsequence","Increasing Triplet Subsequence"],["jump-game","Jump Game"],["jump-game-ii","Jump Game II"],["gas-station","Gas Station"],["merge-triplets-to-form-target-triplet","Merge Triplets to Form Target Triplet"],["hand-of-straights","Hand of Straights"],["partition-labels","Partition Labels"],["valid-parenthesis-string","Valid Parenthesis String"],["dota2-senate","Dota2 Senate"],["task-scheduler","Task Scheduler"],["minimum-number-of-taps-to-open-to-water-a-garden","Minimum Number of Taps to Open to Water a Garden"],["candy","Candy"]],"Stack":[["valid-parentheses","Valid Parentheses"],["baseball-game","Baseball Game"],["remove-all-adjacent-duplicates-in-string","Remove All Adjacent Duplicates In String"],["make-the-string-great","Make The String Great"],["next-greater-element-i","Next Greater Element I"],["implement-queue-using-stacks","Implement Queue using Stacks"],["removing-stars-from-a-string","Removing Stars From a String"],["min-stack","Min Stack"],["evaluate-reverse-polish-notation","Evaluate Reverse Polish Notation"],["simplify-path","Simplify Path"],["minimum-remove-to-make-valid-parentheses","Minimum Remove to Make Valid Parentheses"],["basic-calculator-ii","Basic Calculator II"],["decode-string","Decode String"],["daily-temperatures","Daily Temperatures"],["online-stock-span","Online Stock Span"],["asteroid-collision","Asteroid Collision"],["car-fleet","Car Fleet"],["largest-rectangle-in-histogram","Largest Rectangle in Histogram"],["longest-valid-parentheses","Longest Valid Parentheses"],["basic-calculator","Basic Calculator"]],"Heap":[["last-stone-weight","Last Stone Weight"],["kth-largest-element-in-a-stream","Kth Largest Element in a Stream"],["the-k-weakest-rows-in-a-matrix","The K Weakest Rows in a Matrix"],["take-gifts-from-the-richest-pile","Take Gifts From the Richest Pile"],["kth-largest-element-in-an-array","Kth Largest Element in an Array"],["top-k-frequent-elements","Top K Frequent Elements"],["top-k-frequent-words","Top K Frequent Words"],["k-closest-points-to-origin","K Closest Points to Origin"],["sort-characters-by-frequency","Sort Characters By Frequency"],["reorganize-string","Reorganize String"],["furthest-building-you-can-reach","Furthest Building You Can Reach"],["single-threaded-cpu","Single-Threaded CPU"],["maximum-subsequence-score","Maximum Subsequence Score"],["merge-k-sorted-lists","Merge k Sorted Lists"],["find-median-from-data-stream","Find Median from Data Stream"],["minimum-cost-to-hire-k-workers","Minimum Cost to Hire K Workers"],["ipo","IPO"],["minimum-number-of-refueling-stops","Minimum Number of Refueling Stops"],["sliding-window-median","Sliding Window Median"]],"In-place Reversal":[["reverse-linked-list","Reverse Linked List"],["palindrome-linked-list","Palindrome Linked List"],["maximum-twin-sum-of-a-linked-list","Maximum Twin Sum of a Linked List"],["swapping-nodes-in-a-linked-list","Swapping Nodes in a Linked List"],["swap-nodes-in-pairs","Swap Nodes in Pairs"],["reverse-linked-list-ii","Reverse Linked List II"],["add-two-numbers-ii","Add Two Numbers II"],["rotate-list","Rotate List"],["reorder-list","Reorder List"],["reverse-nodes-in-k-group","Reverse Nodes in k-Group"]],"Fast & Slow Pointers":[["middle-of-the-linked-list","Middle of the Linked List"],["linked-list-cycle","Linked List Cycle"],["happy-number","Happy Number"],["intersection-of-two-linked-lists","Intersection of Two Linked Lists"],["delete-the-middle-node-of-a-linked-list","Delete the Middle Node of a Linked List"],["linked-list-cycle-ii","Linked List Cycle II"],["convert-sorted-list-to-binary-search-tree","Convert Sorted List to Binary Search Tree"],["find-the-duplicate-number","Find the Duplicate Number"],["circular-array-loop","Circular Array Loop"]],"Depth-First Search":[["invert-binary-tree","Invert Binary Tree"],["maximum-depth-of-binary-tree","Maximum Depth of Binary Tree"],["same-tree","Same Tree"],["flood-fill","Flood Fill"],["island-perimeter","Island Perimeter"],["find-if-path-exists-in-graph","Find if Path Exists in Graph"],["validate-binary-search-tree","Validate Binary Search Tree"],["keys-and-rooms","Keys and Rooms"],["number-of-islands","Number of Islands"],["max-area-of-island","Max Area of Island"],["clone-graph","Clone Graph"],["number-of-closed-islands","Number of Closed Islands"],["number-of-enclaves","Number of Enclaves"],["surrounded-regions","Surrounded Regions"],["count-sub-islands","Count Sub Islands"],["pacific-atlantic-water-flow","Pacific Atlantic Water Flow"],["number-of-provinces","Number of Provinces"],["find-eventual-safe-states","Find Eventual Safe States"],["evaluate-division","Evaluate Division"],["longest-increasing-path-in-a-matrix","Longest Increasing Path in a Matrix"]],"Breadth-First Search":[["minimum-depth-of-binary-tree","Minimum Depth of Binary Tree"],["average-of-levels-in-binary-tree","Average of Levels in Binary Tree"],["binary-tree-level-order-traversal","Binary Tree Level Order Traversal"],["binary-tree-right-side-view","Binary Tree Right Side View"],["maximum-level-sum-of-a-binary-tree","Maximum Level Sum of a Binary Tree"],["binary-tree-zigzag-level-order-traversal","Binary Tree Zigzag Level Order Traversal"],["populating-next-right-pointers-in-each-node","Populating Next Right Pointers in Each Node"],["all-nodes-distance-k-in-binary-tree","All Nodes Distance K in Binary Tree"],["shortest-path-in-binary-matrix","Shortest Path in Binary Matrix"],["nearest-exit-from-entrance-in-maze","Nearest Exit from Entrance in Maze"],["rotting-oranges","Rotting Oranges"],["01-matrix","01 Matrix"],["shortest-bridge","Shortest Bridge"],["course-schedule","Course Schedule"],["course-schedule-ii","Course Schedule II"],["open-the-lock","Open the Lock"],["snakes-and-ladders","Snakes and Ladders"],["word-ladder","Word Ladder"],["shortest-path-in-a-grid-with-obstacles-elimination","Shortest Path in a Grid with Obstacles Elimination"],["bus-routes","Bus Routes"]],"Backtracking":[["binary-watch","Binary Watch"],["letter-combinations-of-a-phone-number","Letter Combinations of a Phone Number"],["subsets","Subsets"],["subsets-ii","Subsets II"],["combinations","Combinations"],["combination-sum-iii","Combination Sum III"],["permutations","Permutations"],["permutations-ii","Permutations II"],["combination-sum","Combination Sum"],["combination-sum-ii","Combination Sum II"],["generate-parentheses","Generate Parentheses"],["word-search","Word Search"],["restore-ip-addresses","Restore IP Addresses"],["palindrome-partitioning","Palindrome Partitioning"],["maximum-length-of-a-concatenated-string-with-unique-characters","Maximum Length of a Concatenated String with Unique Characters"],["matchsticks-to-square","Matchsticks to Square"],["partition-to-k-equal-sum-subsets","Partition to K Equal Sum Subsets"],["n-queens","N-Queens"],["n-queens-ii","N-Queens II"],["sudoku-solver","Sudoku Solver"],["permutation-sequence","Permutation Sequence"],["unique-paths-iii","Unique Paths III"],["remove-invalid-parentheses","Remove Invalid Parentheses"]],"Dynamic Programming":[["fibonacci-number","Fibonacci Number"],["n-th-tribonacci-number","N-th Tribonacci Number"],["climbing-stairs","Climbing Stairs"],["min-cost-climbing-stairs","Min Cost Climbing Stairs"],["house-robber","House Robber"],["house-robber-ii","House Robber II"],["delete-and-earn","Delete and Earn"],["solving-questions-with-brainpower","Solving Questions With Brainpower"],["maximum-subarray","Maximum Subarray"],["maximum-product-subarray","Maximum Product Subarray"],["best-time-to-buy-and-sell-stock-with-cooldown","Best Time to Buy and Sell Stock with Cooldown"],["best-time-to-buy-and-sell-stock-with-transaction-fee","Best Time to Buy and Sell Stock with Transaction Fee"],["unique-paths","Unique Paths"],["minimum-path-sum","Minimum Path Sum"],["coin-change","Coin Change"],["perfect-squares","Perfect Squares"],["coin-change-ii","Coin Change II"],["combination-sum-iv","Combination Sum IV"],["partition-equal-subset-sum","Partition Equal Subset Sum"],["word-break","Word Break"],["minimum-cost-for-tickets","Minimum Cost For Tickets"],["decode-ways","Decode Ways"],["longest-increasing-subsequence","Longest Increasing Subsequence"],["longest-common-subsequence","Longest Common Subsequence"],["edit-distance","Edit Distance"],["best-time-to-buy-and-sell-stock-iii","Best Time to Buy and Sell Stock III"],["best-time-to-buy-and-sell-stock-iv","Best Time to Buy and Sell Stock IV"],["maximum-profit-in-job-scheduling","Maximum Profit in Job Scheduling"],["burst-balloons","Burst Balloons"],["regular-expression-matching","Regular Expression Matching"]],"Linked Lists":[["remove-duplicates-from-sorted-list","Remove Duplicates from Sorted List"],["convert-binary-number-in-a-linked-list-to-integer","Convert Binary Number in a Linked List to Integer"],["remove-linked-list-elements","Remove Linked List Elements"],["design-linked-list","Design Linked List"],["add-two-numbers","Add Two Numbers"],["odd-even-linked-list","Odd Even Linked List"],["partition-list","Partition List"],["remove-duplicates-from-sorted-list-ii","Remove Duplicates from Sorted List II"],["copy-list-with-random-pointer","Copy List with Random Pointer"],["sort-list","Sort List"]],"Monotonic Stack & Queue":[["final-prices-with-a-special-discount-in-a-shop","Final Prices With a Special Discount in a Shop"],["next-greater-element-ii","Next Greater Element II"],["remove-k-digits","Remove K Digits"],["remove-duplicate-letters","Remove Duplicate Letters"],["132-pattern","132 Pattern"],["sum-of-subarray-minimums","Sum of Subarray Minimums"],["longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit","Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit"],["maximal-rectangle","Maximal Rectangle"],["shortest-subarray-with-sum-at-least-k","Shortest Subarray with Sum at Least K"],["number-of-visible-people-in-a-queue","Number of Visible People in a Queue"]],"Trees":[["binary-tree-inorder-traversal","Binary Tree Inorder Traversal"],["binary-tree-preorder-traversal","Binary Tree Preorder Traversal"],["binary-tree-postorder-traversal","Binary Tree Postorder Traversal"],["merge-two-binary-trees","Merge Two Binary Trees"],["univalued-binary-tree","Univalued Binary Tree"],["symmetric-tree","Symmetric Tree"],["diameter-of-binary-tree","Diameter of Binary Tree"],["balanced-binary-tree","Balanced Binary Tree"],["path-sum","Path Sum"],["subtree-of-another-tree","Subtree of Another Tree"],["leaf-similar-trees","Leaf-Similar Trees"],["sum-of-left-leaves","Sum of Left Leaves"],["binary-tree-paths","Binary Tree Paths"],["search-in-a-binary-search-tree","Search in a Binary Search Tree"],["range-sum-of-bst","Range Sum of BST"],["minimum-absolute-difference-in-bst","Minimum Absolute Difference in BST"],["convert-sorted-array-to-binary-search-tree","Convert Sorted Array to Binary Search Tree"],["path-sum-ii","Path Sum II"],["sum-root-to-leaf-numbers","Sum Root to Leaf Numbers"],["count-good-nodes-in-binary-tree","Count Good Nodes in Binary Tree"],["path-sum-iii","Path Sum III"],["lowest-common-ancestor-of-a-binary-search-tree","Lowest Common Ancestor of a Binary Search Tree"],["insert-into-a-binary-search-tree","Insert into a Binary Search Tree"],["delete-node-in-a-bst","Delete Node in a BST"],["kth-smallest-element-in-a-bst","Kth Smallest Element in a BST"],["binary-search-tree-iterator","Binary Search Tree Iterator"],["flatten-binary-tree-to-linked-list","Flatten Binary Tree to Linked List"],["lowest-common-ancestor-of-a-binary-tree","Lowest Common Ancestor of a Binary Tree"],["construct-binary-tree-from-preorder-and-inorder-traversal","Construct Binary Tree from Preorder and Inorder Traversal"],["construct-binary-tree-from-inorder-and-postorder-traversal","Construct Binary Tree from Inorder and Postorder Traversal"],["construct-binary-search-tree-from-preorder-traversal","Construct Binary Search Tree from Preorder Traversal"],["longest-zigzag-path-in-a-binary-tree","Longest ZigZag Path in a Binary Tree"],["house-robber-iii","House Robber III"],["delete-nodes-and-return-forest","Delete Nodes And Return Forest"],["unique-binary-search-trees","Unique Binary Search Trees"],["binary-tree-maximum-path-sum","Binary Tree Maximum Path Sum"],["serialize-and-deserialize-binary-tree","Serialize and Deserialize Binary Tree"],["binary-tree-cameras","Binary Tree Cameras"],["vertical-order-traversal-of-a-binary-tree","Vertical Order Traversal of a Binary Tree"]],"Graphs":[["find-the-town-judge","Find the Town Judge"],["find-center-of-star-graph","Find Center of Star Graph"],["is-graph-bipartite","Is Graph Bipartite?"],["possible-bipartition","Possible Bipartition"],["redundant-connection","Redundant Connection"],["number-of-operations-to-make-network-connected","Number of Operations to Make Network Connected"],["satisfiability-of-equality-equations","Satisfiability of Equality Equations"],["accounts-merge","Accounts Merge"],["most-stones-removed-with-same-row-or-column","Most Stones Removed with Same Row or Column"],["minimum-height-trees","Minimum Height Trees"],["find-all-possible-recipes-from-given-supplies","Find All Possible Recipes from Given Supplies"],["course-schedule-iv","Course Schedule IV"],["network-delay-time","Network Delay Time"],["path-with-maximum-probability","Path with Maximum Probability"],["path-with-minimum-effort","Path With Minimum Effort"],["number-of-ways-to-arrive-at-destination","Number of Ways to Arrive at Destination"],["min-cost-to-connect-all-points","Min Cost to Connect All Points"],["cheapest-flights-within-k-stops","Cheapest Flights Within K Stops"],["build-a-matrix-with-conditions","Build a Matrix With Conditions"],["reconstruct-itinerary","Reconstruct Itinerary"],["swim-in-rising-water","Swim in Rising Water"],["critical-connections-in-a-network","Critical Connections in a Network"],["find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree","Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree"],["minimum-cost-to-make-at-least-one-valid-path-in-a-grid","Minimum Cost to Make at Least One Valid Path in a Grid"]],"Tries":[["longest-common-prefix","Longest Common Prefix"],["implement-trie-prefix-tree","Implement Trie (Prefix Tree)"],["design-add-and-search-words-data-structure","Design Add and Search Words Data Structure"],["replace-words","Replace Words"],["map-sum-pairs","Map Sum Pairs"],["search-suggestions-system","Search Suggestions System"],["find-the-length-of-the-longest-common-prefix","Find the Length of the Longest Common Prefix"],["maximum-xor-of-two-numbers-in-an-array","Maximum XOR of Two Numbers in an Array"],["word-search-ii","Word Search II"],["sum-of-prefix-scores-of-strings","Sum of Prefix Scores of Strings"],["prefix-and-suffix-search","Prefix and Suffix Search"]],"Sorting":[["height-checker","Height Checker"],["relative-ranks","Relative Ranks"],["relative-sort-array","Relative Sort Array"],["sort-array-by-increasing-frequency","Sort Array by Increasing Frequency"],["sort-integers-by-the-number-of-1-bits","Sort Integers by The Number of 1 Bits"],["sort-an-array","Sort an Array"],["insertion-sort-list","Insertion Sort List"],["custom-sort-string","Custom Sort String"],["h-index","H-Index"],["largest-number","Largest Number"]],"Design":[["design-parking-system","Design Parking System"],["number-of-recent-calls","Number of Recent Calls"],["design-hashset","Design HashSet"],["design-hashmap","Design HashMap"],["design-circular-queue","Design Circular Queue"],["design-circular-deque","Design Circular Deque"],["design-browser-history","Design Browser History"],["snapshot-array","Snapshot Array"],["design-underground-system","Design Underground System"],["design-twitter","Design Twitter"],["lfu-cache","LFU Cache"],["all-oone-data-structure","All O`one Data Structure"],["maximum-frequency-stack","Maximum Frequency Stack"]],"String Algorithms":[["defanging-an-ip-address","Defanging an IP Address"],["length-of-last-word","Length of Last Word"],["find-the-index-of-the-first-occurrence-in-a-string","Find the Index of the First Occurrence in a String"],["rotate-string","Rotate String"],["repeated-substring-pattern","Repeated Substring Pattern"],["string-matching-in-an-array","String Matching in an Array"],["reverse-words-in-a-string","Reverse Words in a String"],["string-compression","String Compression"],["string-to-integer-atoi","String to Integer (atoi)"],["zigzag-conversion","Zigzag Conversion"],["longest-happy-prefix","Longest Happy Prefix"],["shortest-palindrome","Shortest Palindrome"],["longest-duplicate-substring","Longest Duplicate Substring"],["text-justification","Text Justification"]],"DP on Grids & Strings":[["pascals-triangle-ii","Pascal's Triangle II"],["unique-paths-ii","Unique Paths II"],["triangle","Triangle"],["maximal-square","Maximal Square"],["palindromic-substrings","Palindromic Substrings"],["longest-palindromic-subsequence","Longest Palindromic Subsequence"],["delete-operation-for-two-strings","Delete Operation for Two Strings"],["interleaving-string","Interleaving String"],["distinct-subsequences","Distinct Subsequences"],["minimum-insertion-steps-to-make-a-string-palindrome","Minimum Insertion Steps to Make a String Palindrome"],["wildcard-matching","Wildcard Matching"],["dungeon-game","Dungeon Game"]],"Knapsack & LIS":[["target-sum","Target Sum"],["last-stone-weight-ii","Last Stone Weight II"],["ones-and-zeroes","Ones and Zeroes"],["maximum-length-of-pair-chain","Maximum Length of Pair Chain"],["number-of-longest-increasing-subsequence","Number of Longest Increasing Subsequence"],["largest-divisible-subset","Largest Divisible Subset"],["longest-string-chain","Longest String Chain"],["profitable-schemes","Profitable Schemes"],["russian-doll-envelopes","Russian Doll Envelopes"]],"Interval & Bitmask DP":[["minimum-score-triangulation-of-polygon","Minimum Score Triangulation of Polygon"],["beautiful-arrangement","Beautiful Arrangement"],["minimum-number-of-work-sessions-to-finish-the-tasks","Minimum Number of Work Sessions to Finish the Tasks"],["palindrome-partitioning-ii","Palindrome Partitioning II"],["minimum-cost-to-cut-a-stick","Minimum Cost to Cut a Stick"],["strange-printer","Strange Printer"],["shortest-path-visiting-all-nodes","Shortest Path Visiting All Nodes"]],"Bit Manipulation":[["number-of-1-bits","Number of 1 Bits"],["power-of-two","Power of Two"],["single-number","Single Number"],["counting-bits","Counting Bits"],["missing-number","Missing Number"],["hamming-distance","Hamming Distance"],["find-the-difference","Find the Difference"],["binary-number-with-alternating-bits","Binary Number with Alternating Bits"],["reverse-bits","Reverse Bits"],["minimum-flips-to-make-a-or-b-equal-to-c","Minimum Flips to Make a OR b Equal to c"],["find-the-original-array-of-prefix-xor","Find The Original Array of Prefix Xor"],["sum-of-two-integers","Sum of Two Integers"],["single-number-ii","Single Number II"],["single-number-iii","Single Number III"],["bitwise-and-of-numbers-range","Bitwise AND of Numbers Range"],["gray-code","Gray Code"]],"Math & Geometry":[["fizz-buzz","Fizz Buzz"],["subtract-the-product-and-sum-of-digits-of-an-integer","Subtract the Product and Sum of Digits of an Integer"],["palindrome-number","Palindrome Number"],["add-digits","Add Digits"],["plus-one","Plus One"],["roman-to-integer","Roman to Integer"],["excel-sheet-column-number","Excel Sheet Column Number"],["excel-sheet-column-title","Excel Sheet Column Title"],["ugly-number","Ugly Number"],["greatest-common-divisor-of-strings","Greatest Common Divisor of Strings"],["check-if-it-is-a-straight-line","Check If It Is a Straight Line"],["rectangle-overlap","Rectangle Overlap"],["integer-to-roman","Integer to Roman"],["reverse-integer","Reverse Integer"],["factorial-trailing-zeroes","Factorial Trailing Zeroes"],["powx-n","Pow(x, n)"],["multiply-strings","Multiply Strings"],["ugly-number-ii","Ugly Number II"],["count-primes","Count Primes"],["find-the-winner-of-the-circular-game","Find the Winner of the Circular Game"],["rectangle-area","Rectangle Area"],["valid-square","Valid Square"],["max-points-on-a-line","Max Points on a Line"],["number-of-digit-one","Number of Digit One"],["erect-the-fence","Erect the Fence"]],"Segment Tree & BIT":[["range-sum-query-mutable","Range Sum Query - Mutable"],["count-of-smaller-numbers-after-self","Count of Smaller Numbers After Self"],["reverse-pairs","Reverse Pairs"],["create-sorted-array-through-instructions","Create Sorted Array through Instructions"],["the-skyline-problem","The Skyline Problem"],["range-module","Range Module"]],"SQL":[["recyclable-and-low-fat-products","Recyclable and Low Fat Products"],["find-customer-referee","Find Customer Referee"],["big-countries","Big Countries"],["article-views-i","Article Views I"],["invalid-tweets","Invalid Tweets"],["combine-two-tables","Combine Two Tables"],["replace-employee-id-with-the-unique-identifier","Replace Employee ID With The Unique Identifier"],["customer-who-visited-but-did-not-make-any-transactions","Customer Who Visited but Did Not Make Any Transactions"],["employees-earning-more-than-their-managers","Employees Earning More Than Their Managers"],["customers-who-never-order","Customers Who Never Order"],["duplicate-emails","Duplicate Emails"],["rising-temperature","Rising Temperature"],["delete-duplicate-emails","Delete Duplicate Emails"],["average-selling-price","Average Selling Price"],["queries-quality-and-percentage","Queries Quality and Percentage"],["patients-with-a-condition","Patients With a Condition"],["second-highest-salary","Second Highest Salary"],["nth-highest-salary","Nth Highest Salary"],["rank-scores","Rank Scores"],["consecutive-numbers","Consecutive Numbers"],["department-highest-salary","Department Highest Salary"],["managers-with-at-least-5-direct-reports","Managers with at Least 5 Direct Reports"],["confirmation-rate","Confirmation Rate"],["monthly-transactions-i","Monthly Transactions I"],["game-play-analysis-iv","Game Play Analysis IV"],["exchange-seats","Exchange Seats"],["department-top-three-salaries","Department Top Three Salaries"],["trips-and-users","Trips and Users"],["human-traffic-of-stadium","Human Traffic of Stadium"]],"Concurrency":[["print-in-order","Print in Order"],["traffic-light-controlled-intersection","Traffic Light Controlled Intersection"],["print-foobar-alternately","Print FooBar Alternately"],["print-zero-even-odd","Print Zero Even Odd"],["building-h2o","Building H2O"],["fizz-buzz-multithreaded","Fizz Buzz Multithreaded"],["the-dining-philosophers","The Dining Philosophers"],["design-bounded-blocking-queue","Design Bounded Blocking Queue"],["web-crawler-multithreaded","Web Crawler Multithreaded"]]};
 // @@END-INTROS@@
@@ -2105,13 +2508,8 @@ function topCompanies(rows, n) {
   return Object.keys(count).sort((a, b) => count[b] - count[a] || a.localeCompare(b)).slice(0, n);
 }
 
-// ---- pattern map: geometry, progress and the "use it when" card ----
-const MAP_GEO = { w: 900, padX: 66, padY: 22, rowH: 56 };
-MAP_GEO.colW = (MAP_GEO.w - 2 * MAP_GEO.padX) / (PATTERN_MAP.cols - 1);
-MAP_GEO.h = MAP_GEO.padY * 2 + (PATTERN_MAP.rows - 1) * MAP_GEO.rowH + 16;
-const MAP_NODES = PATTERN_MAP.nodes.map(([name, label, col, row]) => ({ name, label, col, row,
-  x: MAP_GEO.padX + col * MAP_GEO.colW, y: MAP_GEO.padY + row * MAP_GEO.rowH }))
-  .sort((a, b) => a.col - b.col || a.row - b.row);
+// ---- pattern nodes: order, prerequisites and progress (the patterns lane of the roadmap) ----
+const MAP_NODES = PATTERN_MAP.nodes.map(([name, label, col, row]) => ({ name, label, col, row })).sort((a, b) => a.col - b.col || a.row - b.row);
 const MAP_BY = {}; MAP_NODES.forEach((n) => { MAP_BY[n.name] = n; });
 const MAP_PRE = {}, MAP_POST = {};
 MAP_NODES.forEach((n) => { MAP_PRE[n.name] = []; MAP_POST[n.name] = []; });
@@ -2119,27 +2517,105 @@ PATTERN_MAP.edges.forEach(([a, b]) => { MAP_PRE[b].push(a); MAP_POST[a].push(b);
 const PATTERN_NAMES = PATTERNS.map(([n]) => n);
 const RING_R = 15, RING_IN = 9.5;
 const ringLen = (r) => 2 * Math.PI * r;
-const shortLabel = (name) => (MAP_BY[name] ? MAP_BY[name].label : name);
-const markOf = (name) => name.split(/[\s&-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+const markOf = (name) => name.split(/[\s&/-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+
+// ---- the roadmap (shared/roadmap.js): every lane, node and edge, laid out on one canvas ----
+const RM_GEO = { w: 1296, gutter: 200, padX: 64, padY: 26, rowH: 60 };
+const RM_NODES = ROADMAP_NODES.concat(PATTERN_MAP.nodes.map(([name, label, col, row]) => ({ id: name, lane: 'patterns', label, col, row, name, group: name })));
+const RM_EDGES = PATTERN_MAP.edges.concat(ROADMAP_EDGES);
+const RM_BY = {}; RM_NODES.forEach((n) => { RM_BY[n.id] = n; });
+const RM_PRE = {}, RM_POST = {};
+RM_NODES.forEach((n) => { RM_PRE[n.id] = []; RM_POST[n.id] = []; });
+RM_EDGES.forEach(([a, b]) => { RM_PRE[b].push(a); RM_POST[a].push(b); });
+const RM_LANES = (() => {
+  let y = 0;
+  return ROADMAP_LANES.map(([key, title, line, cols], i) => {
+    const nodes = RM_NODES.filter((n) => n.lane === key).sort((a, b) => a.col - b.col || a.row - b.row);
+    const last = Math.max.apply(null, nodes.map((n) => n.row));
+    const h = Math.max(RM_GEO.padY * 2 + last * RM_GEO.rowH + 48, 132);
+    const colW = (RM_GEO.w - RM_GEO.gutter - 2 * RM_GEO.padX) / (cols - 1);
+    nodes.forEach((n) => { n.x = Math.round(RM_GEO.gutter + RM_GEO.padX + n.col * colW); n.y = Math.round(y + RM_GEO.padY + 17 + n.row * RM_GEO.rowH); });
+    const lane = { key, title, line, n: i + 1, top: y, h, nodes };
+    y += h;
+    return lane;
+  });
+})();
+const RM_H = RM_LANES.reduce((s, l) => s + l.h, 0);
+const RM_LANE_OF = {}; RM_LANES.forEach((l) => { RM_LANE_OF[l.key] = l; });
+// The order "Next for you" walks: Start here, then the concepts, then the patterns in library order.
+const RM_NEXT_ORDER = RM_LANES.filter((l) => l.key === 'start' || l.key === 'concepts').reduce((a, l) => a.concat(l.nodes.map((n) => n.id)), [])
+  .concat(PATTERN_NAMES, MAP_NODES.map((n) => n.name).filter((n) => !PATTERN_NAMES.includes(n)));
+// A lesson opens by URL parameter (Start here) or by the id saved under the track's key (DSA Concepts).
+const lessonHref = (n, id) => { const tr = ROADMAP_TRACKS[n.track]; return tr.param ? tr.page + '?' + tr.param + '=' + encodeURIComponent(id) : tr.page; };
+const lessonGo = (n, id) => () => { const tr = ROADMAP_TRACKS[n.track]; if (tr.key) { try { window.localStorage.setItem(tr.key, id); } catch (e) {} } };
+
 function mapProgress() {
   const st = DS.stories().at || {};
   const ticks = DS.sheet().done || {};
   const out = {};
-  MAP_NODES.forEach((n) => {
-    const stories = PROBLEMS.filter((p) => p.pattern === n.name);
-    const sheet = SHEET_INDEX[n.name] || [];
+  RM_NODES.filter((n) => n.group).forEach((n) => {
+    const stories = PROBLEMS.filter((p) => p.pattern === n.group);
+    const sheet = SHEET_INDEX[n.group] || [];
     const sDone = stories.filter((p) => p.id in st).length;
     const tDone = sheet.filter(([id]) => id in ticks).length;
-    out[n.name] = { sDone, sTotal: stories.length, tDone, tTotal: sheet.length,
+    out[n.group] = { sDone, sTotal: stories.length, tDone, tTotal: sheet.length,
       started: sDone + tDone > 0,
       covered: stories.length ? sDone === stories.length : tDone >= Math.min(3, sheet.length) };
   });
   return out;
 }
-// The next pattern: first in library order (then sheet groups in map order) that is not covered and whose prerequisites are all started.
-function mapNext(prog) {
-  const order = PATTERN_NAMES.concat(MAP_NODES.map((n) => n.name).filter((n) => !PATTERN_NAMES.includes(n)));
-  return order.find((n) => MAP_BY[n] && !prog[n].covered && MAP_PRE[n].every((p) => prog[p].started)) || order[0];
+// Status of one node: st is 'soon' (coming soon), 'todo', 'now' (in progress) or 'done'; frac fills its ring.
+function rmStatus(n, prog, lessons) {
+  if (n.track) {
+    const tr = ROADMAP_TRACKS[n.track], total = n.lessons.length;
+    if (!n.go) return { st: 'soon', frac: 0, line: 'Coming soon in ' + tr.name + ' · ' + total + (total === 1 ? ' lesson' : ' lessons') + ' planned' };
+    const done = n.lessons.filter(([id]) => lessons.includes(tr.prefix + id)).length;
+    return { st: done >= total ? 'done' : done ? 'now' : 'todo', frac: done / total, line: done + ' of ' + total + (total === 1 ? ' lesson' : ' lessons') + ' done' };
+  }
+  if (n.group) {
+    const pr = prog[n.group];
+    const all = pr.sTotal + pr.tTotal;
+    return { st: pr.covered ? 'done' : pr.started ? 'now' : 'todo', frac: all ? (pr.sDone + pr.tDone) / all : 0, line: progressLine(pr), pr };
+  }
+  let done = 0, total = 1, unit = 'lessons';
+  if (n.progress === 'sheet') { const s = DS.sheet(); done = s.ticked; total = s.total; unit = 'problems ticked'; }
+  else if (n.progress === 'mock') { done = Math.min(3, DS.mockHistory().count); total = 3; unit = 'mock interviews finished'; }
+  else { done = lessons.filter((id) => id.indexOf(n.progress + ':') === 0).length; total = Math.max(1, (SITE_INDEX.counts || {})[n.progress] || 1); unit = 'lessons done'; }
+  done = Math.min(done, total);
+  return { st: done >= total ? 'done' : done ? 'now' : 'todo', frac: done / total, line: done + ' of ' + total + ' ' + unit };
+}
+const RM_STATUS_WORD = { soon: 'Coming soon', todo: 'Not started', now: 'In progress', done: 'Done' };
+// Next for you: the first live node, in roadmap order, that is not done and whose live prerequisites are all started.
+function rmNext(stat) {
+  const ok = (id) => stat[id].st !== 'soon' && stat[id].st !== 'done' &&
+    RM_PRE[id].every((p) => stat[p].st === 'soon' || stat[p].st === 'now' || stat[p].st === 'done' || RM_BY[p].lane !== RM_BY[id].lane);
+  return RM_NEXT_ORDER.find(ok) || RM_NEXT_ORDER.find((id) => stat[id].st !== 'soon' && stat[id].st !== 'done') || PATTERN_NAMES[0];
+}
+function rmFocus(sel) { setTimeout(() => { try { const el = document.querySelector(sel); if (el) el.focus(); } catch (e) {} }, 60); }
+// Bring a node into view (on phones its lane, unfolded first by the caller).
+function rmShow(id, lane) {
+  setTimeout(() => { try { const el = lane ? document.getElementById('rm-lane-' + lane) : document.querySelector('[data-rm-node="' + id + '"]');
+    if (el) el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: lane ? 'start' : 'center' }); } catch (e) {} }, 80);
+}
+// Desktop: with the drawer open, slide the canvas sideways and the page up or down until the picked node sits fully
+// in view to the left of the drawer. The canvas reserves the drawer's width as a spacer, so every node can get there.
+const RM_DRAWER_W = 440;
+function rmReveal(id) {
+  setTimeout(() => {
+    try {
+      const el = document.querySelector('[data-rm-node="' + id + '"]'), box = document.querySelector('[data-rm-scroll]'), dr = document.querySelector('[data-rm-drawer]');
+      if (!el || !box) return;
+      const behavior = reducedMotion() ? 'auto' : 'smooth';
+      const r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+      const k = b.width / box.offsetWidth || 1; // screen pixels per layout pixel (the page is zoomed to fit)
+      const left = b.left + 16 * k, right = (dr ? dr.getBoundingClientRect().left : b.right) - 16 * k;
+      if (r.left < left || r.right > right) box.scrollBy({ left: (r.left + r.width / 2 - (left + right) / 2) / k, behavior });
+      if (r.top < 16 * k || r.bottom > window.innerHeight - 16 * k) window.scrollBy({ top: (r.top + r.height / 2 - window.innerHeight / 2) / k, behavior });
+    } catch (e) {}
+  }, 90);
+}
+function rmJump(key) {
+  try { const el = document.getElementById('rm-lane-' + key); if (el) el.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }); } catch (e) {}
 }
 function progressLine(pr) {
   const parts = [];
@@ -2184,6 +2660,137 @@ class Component extends DCLogic {
     if (i >= 0) { this.setState({ view: 'pattern', open: { [f]: true } }); searchReveal('[data-pattern="' + i + '"]'); }
   }
   componentWillUnmount() { unlistenTheme(this); }
+  // The Map tab: one roadmap from Start here to the branches, and the drawer for the picked node.
+  roadmapVals(t) {
+    const prog = mapProgress();
+    const lessons = DS.lessons().ids;
+    const stat = {}; RM_NODES.forEach((n) => { stat[n.id] = rmStatus(n, prog, lessons); });
+    const nextId = rmNext(stat);
+    const selId = RM_BY[this.state.node] ? this.state.node : null;
+    const phone = dsPhone();
+    const pick = (id) => () => { this.setState({ node: id, fold: false }); rmFocus('[data-rm-title]'); if (!phone) rmReveal(id); };
+    const close = () => { const id = selId; this.setState({ node: null }); if (id) rmFocus('[data-rm-node="' + id + '"]'); };
+    const tone = (s) => s.st === 'done' ? t.ok : s.st === 'now' ? t.accent : s.st === 'soon' ? t.faint : t.line2;
+    const aria = (n) => {
+      const s = stat[n.id], pre = RM_PRE[n.id];
+      return n.name + '. ' + RM_STATUS_WORD[s.st] + (n.id === nextId ? ', next for you' : '') + '. ' + s.line + '. ' +
+        (pre.length ? 'Learn first: ' + pre.map((p) => RM_BY[p].label).join(', ') + '.' : 'A starting point.');
+    };
+    const laneCount = (l) => {
+      const live = l.nodes.filter((n) => stat[n.id].st !== 'soon');
+      if (!live.length) return 'Coming soon · ' + l.nodes.length + ' topics';
+      return live.filter((n) => stat[n.id].st === 'done').length + ' of ' + live.length + ' done' + (live.length < l.nodes.length ? ' · ' + (l.nodes.length - live.length) + ' coming soon' : '');
+    };
+    const lanes = RM_LANES.map((l, i) => ({
+      key: l.key, n: l.n, title: l.title, line: l.line, count: laneCount(l), anchor: 'rm-lane-' + l.key,
+      soon: l.nodes.every((n) => stat[n.id].st === 'soon'), live: l.nodes.some((n) => stat[n.id].st !== 'soon'),
+      top: l.top, h: l.h, labelTop: l.top + 16, border: i ? t.line : 'transparent',
+      // On phones a lane that is all coming soon starts folded, so the path stays short; jumping to it unfolds it.
+      open: !phone || !!(this.state.lanes || {})[l.key] || l.nodes.some((n) => stat[n.id].st !== 'soon'),
+      folded: phone && !(this.state.lanes || {})[l.key] && l.nodes.every((n) => stat[n.id].st === 'soon'),
+      unfold: () => this.setState({ lanes: Object.assign({}, this.state.lanes, { [l.key]: true }) }),
+      moreLabel: 'Show the ' + l.nodes.length + ' planned topics',
+      jump: () => { if (phone) this.setState({ lanes: Object.assign({}, this.state.lanes, { [l.key]: true }) }); setTimeout(() => rmJump(l.key), 30); },
+      dots: l.nodes.map((n) => ({ bg: stat[n.id].st === 'todo' ? 'transparent' : tone(stat[n.id]), border: tone(stat[n.id]) })),
+      // Phones read a lane top to bottom in learning order: column by column, except the core lane, which is one level per row.
+      items: phone ? l.nodes.slice().sort((a, b) => l.key === 'core' ? a.row - b.row || a.col - b.col : a.col - b.col || a.row - b.row).map((n) => {
+        const s = stat[n.id], next = n.id === nextId;
+        return { name: n.name, sub: s.st === 'soon' ? 'Coming soon' : RM_STATUS_WORD[s.st] + ' · ' + s.line, next, aria: aria(n), pick: pick(n.id),
+          mark: s.st === 'done' ? '✓' : markOf(n.label), markFg: s.st === 'done' ? t.ok : s.st === 'soon' ? t.muted : t.text,
+          ring: tone(s), ringStyle: s.st === 'soon' ? 'dashed' : 'solid', border: next ? t.accent : t.line, bg: next ? t.sunk : t.surface,
+          nameFg: s.st === 'soon' ? t.text2 : t.text };
+      }) : []
+    }));
+    // Edges: every edge inside a lane; edges between lanes only for the picked node, so the canvas stays calm.
+    const edges = [];
+    if (!phone) RM_EDGES.forEach(([a, b]) => {
+      const A = RM_BY[a], B = RM_BY[b];
+      const into = b === selId, out = a === selId;
+      let d;
+      if (A.lane === B.lane) {
+        const x1 = A.x + 20, x2 = B.x - 20, dx = (x2 - x1) / 2;
+        // Same row with a node in between: dip under it.
+        const dip = A.row === B.row && RM_LANE_OF[A.lane].nodes.some((m) => m.row === A.row && m.col > A.col && m.col < B.col) ? 50 : 0;
+        d = 'M' + x1 + ' ' + A.y + ' C' + (x1 + dx) + ' ' + (A.y + dip) + ' ' + (x2 - dx) + ' ' + (B.y + dip) + ' ' + x2 + ' ' + B.y +
+          ' M' + (x2 - 6) + ' ' + (B.y - 4) + ' L' + x2 + ' ' + B.y + ' L' + (x2 - 6) + ' ' + (B.y + 4);
+      } else if (into || out) {
+        // Between lanes: out under the node, along the row gap to the channel left of the first column, down it,
+        // then along the gap above the target's row and into its top. The gaps hold no nodes or labels.
+        const y1 = A.y + 37, y2 = B.y - 23, ch = RM_GEO.gutter - 18, end = B.y - 18;
+        d = 'M' + A.x + ' ' + (A.y + 31) + ' V' + y1 + ' H' + ch + ' V' + y2 + ' H' + B.x + ' V' + end +
+          ' M' + (B.x - 4) + ' ' + (end - 6) + ' L' + B.x + ' ' + end + ' L' + (B.x + 4) + ' ' + (end - 6);
+      } else return;
+      edges.push({ d, color: into ? t.accent : out ? t.text2 : t.faint, width: into || out ? 2.5 : 1.5, dash: A.lane === B.lane ? 'none' : '5 5', hot: into || out });
+    });
+    edges.sort((a, b) => (a.hot ? 1 : 0) - (b.hot ? 1 : 0));
+    // The road down the gutter, joining each lane's number to the next.
+    const road = RM_LANES.slice(0, -1).map((l, i) => ({ d: 'M20 ' + (l.top + 46) + ' L20 ' + (RM_LANES[i + 1].top + 14) }));
+    // Nodes render lane by lane, column by column, so Tab walks the roadmap in reading order.
+    const nodes = phone ? [] : RM_LANES.reduce((a, l) => a.concat(l.nodes), []).map((n) => {
+      const s = stat[n.id], pr = s.pr, sel = n.id === selId;
+      const near = !!selId && (RM_PRE[selId].includes(n.id) || RM_POST[selId].includes(n.id));
+      const two = !!(pr && pr.sTotal);
+      const innerR = two ? RING_IN : RING_R;
+      const inPct = pr ? (pr.tTotal ? pr.tDone / pr.tTotal : 0) : s.frac;
+      const sPct = two ? pr.sDone / pr.sTotal : 0;
+      const soon = s.st === 'soon', next = n.id === nextId;
+      return {
+        id: n.id, label: n.label, sel, next, soon, aria: aria(n), pick: pick(n.id),
+        // A lane that is all coming soon says so once in its header; a SOON tag marks soon topics in a lane that is partly live.
+        soonTag: soon && RM_LANE_OF[n.lane].nodes.some((m) => stat[m.id].st !== 'soon'),
+        left: n.x - 58, top: n.y - 17,
+        bg: sel ? t.sunk : 'transparent', border: sel ? t.text : 'transparent',
+        labelFg: sel || near ? t.text : soon ? t.muted : t.text2, labelBg: sel ? t.sunk : t.surface,
+        trackDash: soon ? '3 3' : 'none', trackW: soon ? 1.5 : 3.5, trackStroke: soon ? t.faint : sel ? t.line2 : t.sunk,
+        hasStories: two, innerR, ringFg: pr ? t.right : t.accent,
+        storyOff: (ringLen(RING_R) * (1 - sPct)).toFixed(2), storyOp: sPct > 0 ? 1 : 0,
+        sheetLen: ringLen(innerR).toFixed(2), sheetOff: (ringLen(innerR) * (1 - inPct)).toFixed(2), sheetOp: inPct > 0 ? 1 : 0,
+        mark: s.st === 'done' ? '✓' : markOf(n.label), markFg: s.st === 'done' ? t.ok : sel ? t.text : t.muted
+      };
+    });
+    const nx = RM_BY[nextId];
+    const next = { name: nx.name, lane: RM_LANE_OF[nx.lane].title, line: stat[nextId].line,
+      pick: () => { pick(nextId)(); if (phone) rmShow(nextId, nx.lane); } };
+
+    // The drawer for the picked node.
+    let card = { open: false };
+    if (selId) {
+      const n = RM_BY[selId], s = stat[selId], lane = RM_LANE_OF[n.lane];
+      const intro = n.group ? PATTERN_INTROS[n.group] : null;
+      const chip = (id) => ({ label: RM_BY[id].label + (RM_BY[id].lane !== n.lane ? ' · ' + RM_LANE_OF[RM_BY[id].lane].title : ''), pick: pick(id) });
+      let links = [];
+      if (intro) links = introLinks(t, n.group);
+      else if (n.group) {
+        links = (SHEET_INDEX[n.group] || []).slice(0, 4).map(([id, label]) => ({ kind: 'Solve', kindFg: t.right, label, mark: '›', href: solveHref(id), go: () => {} }))
+          .concat([{ kind: 'Sheet', kindFg: t.text2, label: 'All ' + (SHEET_INDEX[n.group] || []).length + ' in the sheet', mark: '›', href: 'Sheet.dc.html', go: () => focusSheet(n.group) }]);
+      } else if (n.page) links = [{ kind: 'Open', kindFg: t.accent, label: n.name, mark: '›', href: n.page, go: () => {} }];
+      const tr = n.track ? ROADMAP_TRACKS[n.track] : null;
+      card = {
+        open: true, name: n.name,
+        eyebrow: lane.title + (selId === nextId ? ' · Next for you' : ''),
+        status: RM_STATUS_WORD[s.st], statusFg: s.st === 'done' ? t.ok : s.st === 'now' ? t.accent : t.muted, statusBorder: tone(s),
+        progress: s.st === 'soon' ? '' : s.line, hasProgress: s.st !== 'soon',
+        descLabel: n.group ? 'Use it when' : 'What you learn', desc: n.group ? whenLine(n.group) : n.blurb,
+        soon: s.st === 'soon', soonLine: tr ? 'This part of the ' + tr.name + ' track is being written. Here is what it will teach.' : '',
+        hasLessons: !!n.lessons, lessonsLabel: s.st === 'soon' ? 'Planned lessons' : 'Lessons',
+        lessons: (n.lessons || []).map(([id, title]) => ({ title, live: s.st !== 'soon', soon: s.st === 'soon', href: s.st !== 'soon' ? lessonHref(n, id) : '', go: lessonGo(n, id),
+          mark: tr && lessons.includes(tr.prefix + id) ? '✓' : '›' })),
+        hasLinks: links.length > 0, links,
+        beforeLabel: RM_PRE[selId].length ? 'Learn first' : 'A starting point',
+        before: RM_PRE[selId].map(chip), after: RM_POST[selId].map(chip), hasAfter: RM_POST[selId].length > 0,
+        isPattern: !!intro, fold: !!this.state.fold, foldLabel: this.state.fold ? 'Hide clues and template' : 'Clues, template and common mistakes',
+        foldChev: this.state.fold ? 'rotate(180deg)' : 'rotate(0deg)', toggleFold: () => this.setState({ fold: !this.state.fold }),
+        clues: intro ? intro.clues : [], template: intro ? intro.template.join('\n') : '', mistakes: intro ? intro.mistakes : [],
+        inLibrary: PATTERN_NAMES.includes(selId),
+        openLibrary: () => this.setState({ view: 'pattern', node: null, open: Object.assign({}, this.state.open, { [selId]: true }), intro: Object.assign({}, this.state.intro, { [selId]: true }) }),
+        close
+      };
+    }
+    return {
+      desk: !phone, phone, w: RM_GEO.w, reserve: selId && !phone ? RM_DRAWER_W + 16 : 0, drawerW: RM_DRAWER_W, h: RM_H, gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
+      key: (e) => { if (e.key === 'Escape' && selId) { e.preventDefault(); close(); } }
+    };
+  }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
@@ -2273,7 +2880,7 @@ class Component extends DCLogic {
             open: on, more: on ? 'Less' : 'Clues and template', chev: on ? 'rotate(180deg)' : 'rotate(0deg)',
             links: on ? introLinks(t, name) : [],
             toggle: () => this.setState({ intro: Object.assign({}, this.state.intro, { [name]: !on }) }),
-            onMap: () => this.setState({ view: 'map', node: name })
+            onMap: () => { this.setState({ view: 'map', node: name, fold: false }); rmFocus('[data-rm-title]'); }
           };
         })()
       };
@@ -2293,62 +2900,8 @@ class Component extends DCLogic {
       : tab[0] + '’s interviewers reach for ' + lead + ' most often in our library. Here are the stories to rehearse, easiest first.';
 
 
-    // pattern map
-    const prog = mapProgress();
-    const nextName = mapNext(prog);
-    const selName = MAP_BY[this.state.node] ? this.state.node : nextName;
-    const pickNode = (name) => () => this.setState({ node: name });
-    const mapNodes = MAP_NODES.map((n) => {
-      const pr = prog[n.name];
-      const sel = n.name === selName;
-      const near = MAP_PRE[selName].includes(n.name) || MAP_POST[selName].includes(n.name);
-      const sPct = pr.sTotal ? pr.sDone / pr.sTotal : 0;
-      const tPct = pr.tTotal ? pr.tDone / pr.tTotal : 0;
-      const innerR = pr.sTotal ? RING_IN : RING_R;
-      const full = (!pr.sTotal || pr.sDone === pr.sTotal) && pr.tTotal > 0 && pr.tDone === pr.tTotal;
-      const pre = MAP_PRE[n.name];
-      return {
-        label: n.label, sel, next: n.name === nextName,
-        left: Math.round(n.x - 58), top: Math.round(n.y - 18),
-        bg: sel ? t.sunk : 'transparent', border: sel ? t.text : 'transparent',
-        labelFg: sel || near ? t.text : t.text2, labelBg: sel ? t.sunk : t.surface, track: sel ? t.line2 : t.sunk,
-        hasStories: pr.sTotal > 0, innerR,
-        storyOff: (ringLen(RING_R) * (1 - sPct)).toFixed(2), storyOp: sPct > 0 ? 1 : 0,
-        sheetLen: ringLen(innerR).toFixed(2), sheetOff: (ringLen(innerR) * (1 - tPct)).toFixed(2), sheetOp: tPct > 0 ? 1 : 0,
-        mark: full ? '✓' : markOf(n.name), markFg: full ? t.ok : sel ? t.text : t.muted,
-        aria: n.name + (n.name === nextName ? ', suggested next' : '') + '. ' + progressLine(pr) + '. ' + (pre.length ? 'Learn first: ' + pre.join(', ') + '.' : 'A starting point.'),
-        pick: pickNode(n.name)
-      };
-    });
-    const mapEdges = PATTERN_MAP.edges.map(([a, b]) => {
-      const A = MAP_BY[a], B = MAP_BY[b];
-      const x1 = A.x + 20, x2 = B.x - 20, dx = (x2 - x1) / 2;
-      const into = b === selName, out = a === selName;
-      return {
-        d: 'M' + x1 + ' ' + A.y + ' C' + (x1 + dx) + ' ' + A.y + ' ' + (x2 - dx) + ' ' + B.y + ' ' + x2 + ' ' + B.y + ' M' + (x2 - 6) + ' ' + (B.y - 4) + ' L' + x2 + ' ' + B.y + ' L' + (x2 - 6) + ' ' + (B.y + 4),
-        color: into ? t.accent : out ? t.text2 : t.faint, width: into || out ? 2.5 : 1.5, op: 1, into, out
-      };
-    }).sort((a, b) => (a.into || a.out ? 1 : 0) - (b.into || b.out ? 1 : 0));
-    const intro = PATTERN_INTROS[selName];
-    const isPatternNode = PATTERN_NAMES.includes(selName);
-    const pat = PATTERNS.find(([n]) => n === selName);
-    const card = {
-      name: selName,
-      eyebrow: (selName === nextName ? 'Suggested next · ' : '') + (isPatternNode ? 'Pattern' : 'Sheet group') + ' with ' + intro.companion,
-      progress: progressLine(prog[selName]),
-      when: whenLine(selName), clues: intro.clues, template: intro.template.join('\n'), mistakes: intro.mistakes,
-      beforeLabel: MAP_PRE[selName].length ? 'Learn first' : 'A starting point',
-      before: MAP_PRE[selName].map((n) => ({ label: shortLabel(n), pick: pickNode(n) })),
-      after: MAP_POST[selName].map((n) => ({ label: shortLabel(n), pick: pickNode(n) })),
-      hasAfter: MAP_POST[selName].length > 0,
-      links: introLinks(t, selName),
-      inLibrary: isPatternNode,
-      openLibrary: () => this.setState({ view: 'pattern', open: Object.assign({}, this.state.open, { [selName]: true }), intro: Object.assign({}, this.state.intro, { [selName]: true }) })
-    };
-    const map = {
-      w: MAP_GEO.w, h: MAP_GEO.h, nodes: mapNodes, edges: mapEdges,
-      side: PATTERN_MAP.side.map((g) => ({ name: g, count: (SHEET_INDEX[g] || []).length, go: () => focusSheet(g) }))
-    };
+    // the roadmap
+    const rm = this.state.view === 'map' ? this.roadmapVals(t) : { card: { open: false } };
     return {
       t, ...navVals(this, t, themeKey, 'Patterns'),
       resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; return { story: p.title, label: resumeVerb(p), href: solveHref(p.id), go: () => saveProblem(p.id) }; })(),
@@ -2365,7 +2918,7 @@ class Component extends DCLogic {
         pick: () => this.setState({ view: k })
       })),
       viewLine: this.state.view === 'map' ? '' : VIEW_LINES[this.state.view],
-      map, card, isMap: this.state.view === 'map', showSearch: this.state.view !== 'map', showFilters: this.state.view !== 'map',
+      rm, isMap: this.state.view === 'map', showSearch: this.state.view !== 'map', showFilters: this.state.view !== 'map',
       isPath: this.state.view === 'path', isPattern: this.state.view === 'pattern', isCompany: this.state.view === 'company',
       showSort: this.state.view !== 'company' && this.state.view !== 'map',
       sorts: SORTS.map(([k, label]) => ({

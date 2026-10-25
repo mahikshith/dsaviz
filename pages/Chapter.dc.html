@@ -472,7 +472,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div data-cp-prefs role="dialog" aria-label="Editor settings" onKeyDown="{{cr.pf.onKey}}" style="position: absolute; top: 44px; right: 0; z-index: 20; width: 340px; max-width: 100%; box-sizing: border-box; max-height: calc(100% - 52px); overflow-y: auto; padding: 16px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{t.surface}}; box-shadow: 0 12px 32px {{t.shadow}}; display: flex; flex-direction: column; gap: 12px; animation: rise 0.18s ease">
 <div style="display: flex; align-items: center; gap: 8px"><h2 style="margin: 0; flex-grow: 1; font-size: 15px; font-weight: 700">Editor settings</h2><button onClick="{{cr.pf.close}}" aria-label="Close editor settings" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; line-height: 1">✕</button></div>
 <div style="display: flex; align-items: center; gap: 8px"><span id="cp-font-l" style="flex-grow: 1; font-size: 14px; font-weight: 600">Text size</span><button onClick="{{cr.pf.smaller}}" disabled="{{cr.pf.noSmaller}}" aria-label="Smaller text" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; font-weight: 700">−</button><span role="status" aria-label="{{cr.pf.fontAria}}" style="min-width: 52px; text-align: center; font-family: {{t.mono}}; font-size: 13px; font-weight: 700">{{cr.pf.font}}</span><button onClick="{{cr.pf.larger}}" disabled="{{cr.pf.noLarger}}" aria-label="Larger text" style="width: 36px; height: 36px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 16px; font-weight: 700">+</button></div>
-<div style="display: flex; align-items: center; gap: 8px"><span id="cp-tab-l" style="flex-grow: 1; font-size: 14px; font-weight: 600">Tab size</span><div role="group" aria-labelledby="cp-tab-l" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}"><sc-for list="{{cr.pf.tabs}}" as="tb" hint-placeholder-count="3"><button onClick="{{tb.pick}}" aria-pressed="{{tb.on}}" aria-label="{{tb.aria}}" style="height: 32px; min-width: 44px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for></div></div>
+<div style="display: flex; align-items: center; gap: 8px"><span id="cp-tab-l" style="flex-grow: 1; font-size: 14px; font-weight: 600">Tab size</span><div role="group" aria-labelledby="cp-tab-l" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}"><sc-for list="{{cr.pf.tabs}}" as="tsz" hint-placeholder-count="3"><button onClick="{{tsz.pick}}" aria-pressed="{{tsz.on}}" aria-label="{{tsz.aria}}" style="height: 32px; min-width: 44px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; background: {{tsz.bg}}; color: {{tsz.fg}}">{{tsz.label}}</button></sc-for></div></div>
 <div style="display: flex; flex-direction: column; gap: 2px; border-top: 1px solid {{t.line}}; padding-top: 8px">
 <sc-for list="{{cr.pf.switches}}" as="sw" hint-placeholder-count="6"><button id="{{sw.id}}" role="switch" aria-checked="{{sw.on}}" onClick="{{sw.flip}}" style="min-height: 48px; padding: 6px 4px; border: 0; border-radius: 8px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left"><span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 600">{{sw.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{sw.note}}</span></span><span aria-hidden="true" style="position: relative; width: 40px; height: 24px; flex-shrink: 0; border-radius: 12px; background: {{sw.track}}; transition: background 0.15s"><span style="position: absolute; top: 2px; left: {{sw.x}}; width: 20px; height: 20px; border-radius: 10px; background: {{sw.knob}}; box-shadow: 0 1px 3px {{t.shadow}}; transition: left 0.15s"></span></span></button></sc-for>
 </div>
@@ -14021,7 +14021,7 @@ class CodeRunner {
     storeCode(this.pid, this.s.lang, null);
     this.set({ confirmReset: false, code: this.showCode(), out: null, busy: false, status: '' });
   }
-  // ---- editor settings ----
+  // -- editor settings --
   setPref(patch) {
     const prefs = hasDS() ? DS.setEditorPrefs(patch) : Object.assign({}, this.s.prefs, patch);
     if (this.editor && this.editor.setPrefs) this.editor.setPrefs(prefs);
@@ -14041,7 +14041,7 @@ class CodeRunner {
     this.set({ prefsOpen: false, keysOpen: false });
     setTimeout(() => { try { const el = document.querySelector('[data-cp-gear]'); if (el) el.focus(); } catch (e) {} }, 0);
   }
-  // ---- submission history ----
+  // -- submission history --
   history() { try { return hasDS() ? DS.submissions(this.pid) : []; } catch (e) { return []; } }
   showView(view) { this.set({ view, sel: null, diff: false, confirmRestore: false, confirmClear: false, prefsOpen: false, keysOpen: false }); }
   pick(id) { this.set({ sel: id, diff: false, confirmRestore: false }); }
@@ -14291,13 +14291,13 @@ class CodeRunner {
     }
     const solved = s.solvedIn !== null;
     const clock = pad2(Math.floor(s.elapsed / 60)) + ':' + pad2(s.elapsed % 60);
-    const hv = this.opts.single ? null : this.historyVals(t);
+    const hv = this.opts.single ? null : this.historyVals(t), hvAll = hv || this.historyVals(t);
     const inHistory = !!hv && s.view === 'history';
     const mod = paneMac() ? '⌘' : 'Ctrl';
     return {
       ref: this.ref,
       // Code and History tabs (History is not offered in the single-button mode)
-      tabs: !!hv, hist: hv || {}, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
+      tabs: !!hv, hist: hvAll, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
       viewRole: hv ? 'tabpanel' : 'group', viewName: inHistory ? 'Submission history' : 'Code editor',
       codeTab: () => this.showView('code'), historyTab: () => this.showView('history'),
       codeSel: inHistory ? 'false' : 'true', histSel: inHistory ? 'true' : 'false',

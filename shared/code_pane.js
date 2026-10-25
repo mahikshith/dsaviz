@@ -234,7 +234,7 @@ class CodeRunner {
     storeCode(this.pid, this.s.lang, null);
     this.set({ confirmReset: false, code: this.showCode(), out: null, busy: false, status: '' });
   }
-  // ---- editor settings ----
+  // -- editor settings --
   setPref(patch) {
     const prefs = hasDS() ? DS.setEditorPrefs(patch) : Object.assign({}, this.s.prefs, patch);
     if (this.editor && this.editor.setPrefs) this.editor.setPrefs(prefs);
@@ -254,7 +254,7 @@ class CodeRunner {
     this.set({ prefsOpen: false, keysOpen: false });
     setTimeout(() => { try { const el = document.querySelector('[data-cp-gear]'); if (el) el.focus(); } catch (e) {} }, 0);
   }
-  // ---- submission history ----
+  // -- submission history --
   history() { try { return hasDS() ? DS.submissions(this.pid) : []; } catch (e) { return []; } }
   showView(view) { this.set({ view, sel: null, diff: false, confirmRestore: false, confirmClear: false, prefsOpen: false, keysOpen: false }); }
   pick(id) { this.set({ sel: id, diff: false, confirmRestore: false }); }
@@ -504,13 +504,13 @@ class CodeRunner {
     }
     const solved = s.solvedIn !== null;
     const clock = pad2(Math.floor(s.elapsed / 60)) + ':' + pad2(s.elapsed % 60);
-    const hv = this.opts.single ? null : this.historyVals(t);
+    const hv = this.opts.single ? null : this.historyVals(t), hvAll = hv || this.historyVals(t);
     const inHistory = !!hv && s.view === 'history';
     const mod = paneMac() ? '⌘' : 'Ctrl';
     return {
       ref: this.ref,
       // Code and History tabs (History is not offered in the single-button mode)
-      tabs: !!hv, hist: hv || {}, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
+      tabs: !!hv, hist: hvAll, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
       viewRole: hv ? 'tabpanel' : 'group', viewName: inHistory ? 'Submission history' : 'Code editor',
       codeTab: () => this.showView('code'), historyTab: () => this.showView('history'),
       codeSel: inHistory ? 'false' : 'true', histSel: inHistory ? 'true' : 'false',

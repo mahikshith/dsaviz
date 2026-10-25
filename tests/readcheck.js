@@ -8,7 +8,7 @@
 //     second-language reader can miss
 //   - a jargon word in the idea or a step caption that the lesson's About tab does not explain (its key words)
 //     and that is not explained in the same sentence ("X is", "X means", "called X")
-// Tracks not rewritten yet (system design, DSA concepts, Start here, stories) are measured and reported, not
+// Tracks not rewritten yet (system design, Start here, stories) are measured and reported, not
 // failed: add a track to ENFORCED once its text has been rewritten in plain English.
 const fs = require('fs');
 const path = require('path');
@@ -20,7 +20,7 @@ const BANNED = ['just', 'simply', 'obviously', 'clearly', 'trivially', 'earn the
 const JARGON = ['gradient', 'loss', 'token', 'embedding', 'vector', 'matrix', 'softmax', 'sigmoid', 'neuron', 'parameter', 'derivative',
   'logit', 'entropy', 'variance', 'regularization', 'overfitting', 'transformer', 'cosine', 'dimension', 'centroid', 'classifier',
   'kernel', 'epoch', 'hyperparameter', 'logarithm', 'divergence', 'backprop', 'tanh', 'residual', 'benchmark', 'quantization'];
-const ENFORCED = ['ai'];
+const ENFORCED = ['ai', 'dsa'];
 
 let problems = 0;
 const fail = (where, msg) => { problems++; console.log('  ✗', where, msg); };
@@ -84,11 +84,28 @@ console.log('AI & ML: ' + ai.length + ' lessons, ' + ai.reduce((s, r) => s + r.n
 function strings(files, re) { const out = []; files.forEach((file) => { let m; const s = read(...file); re.lastIndex = 0; while ((m = re.exec(s))) out.push(m[1] || m[2]); }); return out; }
 const startFiles = fs.readdirSync(path.join(root, 'src', 'start')).filter((f) => /^lessons_\d+\.js$/.test(f)).map((f) => ['src', 'start', f]);
 [['System design', [['src', 'sd', 'lessons.js']], /\bsay:\s*'((?:[^'\\]|\\.)*)'/g], ['DSA concepts', [['src', 'concepts', 'lessons.js']], /csStep\(\s*'((?:[^'\\]|\\.)*)'/g],
-  ['Start here', startFiles, /\bsay:\s*'((?:[^'\\]|\\.)*)'|stBeat\('\w+',\s*'((?:[^'\\]|\\.)*)'/g]].forEach(([name, files, re]) => {
+  ['Start here', startFiles, /\bsay:\s*'((?:[^'\\]|\\.)*)'|stBeat\('\w+',\s*'((?:[^'\\]|\\.)*)'/g]].filter(([name]) => name !== 'DSA concepts').forEach(([name, files, re]) => {
   const list = strings(files, re).filter(Boolean);
   const r = measure(name, list.map((t) => ['', t]), [], false);
   console.log(name + ': ' + r.n + ' sentences, average ' + r.avg.toFixed(1) + ' words, ' + Math.round(r.ratio * 100) + '% long words, ' + r.over + ' over ' + MAX_WORDS + ' words, ' + r.banned + ' talking-down words or idioms (not enforced yet)');
 });
+
+// ---------- DSA concepts (enforced) ----------
+// Reads the real captions the player shows (at every slider position), plus each lesson's idea line and tag.
+const CS = new Function(read('src', 'concepts', 'lessons.js') + '\nreturn { CS_LESSONS, csSteps };')();
+{
+  let n = 0, total = 0, over = 0, banned = 0;
+  CS.CS_LESSONS.forEach((L, li) => {
+    const P = L.param;
+    const vals = P ? Array.from({ length: Math.floor((P.max - P.min) / P.step) + 1 }, (_, k) => P.min + k * P.step) : [undefined];
+    const seen = new Set();
+    const parts = [['idea', L.idea], ['tag', L.tag]];
+    vals.forEach((v) => CS.csSteps(li, v).forEach((s, i) => { if (!seen.has(s.say)) { seen.add(s.say); parts.push(['step ' + (i + 1) + (v === undefined ? '' : ' @' + v), s.say]); } }));
+    const r = measure('dsa:' + L.id, parts, L.title.split(/\W+/), ENFORCED.includes('dsa'));
+    n += r.n; total += r.avg * r.n; over += r.over; banned += r.banned;
+  });
+  console.log('DSA concepts: ' + n + ' sentences, average ' + (total / n).toFixed(1) + ' words, ' + over + ' over ' + MAX_WORDS + ' words, ' + banned + ' talking-down words or idioms');
+}
 
 console.log(problems ? problems + ' problem(s)' : 'readability clean');
 if (problems) process.exitCode = 1;

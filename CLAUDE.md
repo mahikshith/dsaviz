@@ -6,7 +6,7 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 
 - Never hand-edit the generated blocks inside `pages/*.dc.html`: `@@THEMES@@`, `@@CATALOG@@`, `@@DRAWER@@`, `@@TESTS-SPEC@@`, `@@MOCK-HINTS@@` (sheet hints for the mock interview), `@@SOLVE@@` (sheet row id to problem page id, every page), `@@SHEET@@` (Sheet and Code pages), `@@RUNNER@@`, `@@CODE-PANE@@`, `@@SQL-SPEC@@`, `@@SQL-PANE@@`, `@@PLANS@@` (shared/plans.js, Code and Story), `@@HINTS@@` (shared/hints.js, Code), `<!-- SQL PANE -->`, `@@GITSIM@@` (from `src/git/`), `@@SDLESSONS@@` (from `src/sd/`), `<!-- MENU DRAWER -->`, `<!-- CODE PANE -->`, the Story engine, and the bodies and scripts of Revisit, Profile, Welcome and Code. Edit `shared/` or `src/` and run `npm run build`.
 - Other page markup and page-specific scripts are edited directly in `pages/*.dc.html`.
-- After any change: `npm run build && npm test`. The tests must print "all clear", "data clean", "mock interview clean", "all scenes clean" and "all specs pass", "all sql specs pass", "sheet clean", "all git steps consistent", "all system design lessons consistent", "all ai lessons valid", "search clean", "copy clean", "contests clean", "pwa clean", "links clean", "registry clean", "start here clean", "plans clean" and "approaches clean".
+- After any change: `npm run build && npm test`. The tests must print "all clear", "data clean", "mock interview clean", "all scenes clean" and "all specs pass", "all sql specs pass", "sheet clean", "all git steps consistent", "all system design lessons consistent", "all ai lessons valid", "search clean", "copy clean", "contests clean", "pwa clean", "links clean", "registry clean", "start here clean", "plans clean", "approaches clean" and "readability clean".
 - `dist/index.html` is generated and committed so the site opens without a build. Rebuild it before committing.
 
 ## Conventions
@@ -23,6 +23,8 @@ DSA learning site: problems told as stories with step-by-step animations. Static
 - Learner data comes only from `DS` (`shared/data.js`, see docs/BACKEND.md). No hard-coded streaks, XP or names; sample data for server features is flagged `demo: true` and shown with a Demo tag.
 - Every page except Auth and Welcome starts with the shared pill nav: put `<!-- PILL NAV --><!-- /PILL NAV -->` in the markup and `...navVals(this, t, themeKey, 'Page')` in `renderVals`. Spacing uses 4/8/12/16/24/32.
 - Copy style: plain, direct sentences. No placeholder brackets.
+- Readability (owner's rule): every learner-facing line is plain English for a complete beginner (about a 12-year-old reader): sentences of 18 words or fewer, everyday words, each technical term explained the first time it is used, no "just"/"simply" and no idioms. tests/readcheck.js enforces it for the tracks in its ENFORCED list (AI & ML now) and reports the others; add a track once its text is rewritten. Lesson PRs also get a beginner review (a reviewer reads the lesson as a total beginner) and its notes are fixed before merging.
+- Type scale: write font sizes as tokens (`font-size: var(--fs18)`); scripts/typescale.py converts literal px. Reading text renders at 15px or more, chips 13px, stage labels 14px and captions 16px; the readability pass in tests/site-test.js fails otherwise, and on any pane 40% or more empty.
 
 ## Skills
 

@@ -27,7 +27,7 @@
 <!-- /PROBLEM FACTS -->
 <sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-examples" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-examples" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Sample inputs with the answer the code should give. Check your code against them.</span></span></span>
 <sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
 <div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none">
 <span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">in </span>{{ex.input}}</span>
@@ -38,7 +38,7 @@
 </div>
 <sc-if value="{{hasHints}}">
 <section aria-labelledby="hint-h" style="display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints</h2><span style="font-size: 13px; color: {{t.muted}}">{{hintCount}}</span></div>
+<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="display: flex; align-items: center; gap: 6px; margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-hints" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-hints" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Small nudges, one at a time. Open a hint only when you are stuck.</span></span></h2><span style="font-size: 13px; color: {{t.muted}}">{{hintCount}}</span></div>
 <div aria-live="polite" style="display: flex; flex-direction: column; gap: 8px">
 <sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
 </div>
@@ -49,7 +49,7 @@
 <sc-if value="{{isSql}}">
 <section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; align-items: center; gap: 8px">
-<h2 id="sql-tables" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables</h2>
+<h2 id="sql-tables" style="display: flex; align-items: center; gap: 6px; margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-tables" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-tables" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The tables your SQL query can read, with a few sample rows. Look here first.</span></span></h2>
 <button onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.rowsLabel}}</button>
 </div>
 <sc-for list="{{sq.tables}}" as="tb" hint-placeholder-count="2">

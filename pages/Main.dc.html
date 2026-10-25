@@ -45,7 +45,7 @@ button{font:inherit}
    segmented controls (gap 2px or 4px); four-up grids go two-up.
    Page-specific rules go in the page's own helmet, scoped with [data-page="Name"]; the automatic
    grid rules sit in :where() so any page rule beats them. */
-/* "i" explainers (every page): <span class="ds-tip"><button aria-describedby="ID">i</button><span role="tooltip" id="ID">…</span></span>.
+/* "i" explainers (every page): <span class="ds-tip"><button onClick="…" aria-describedby="ID">i</button><span role="tooltip" id="ID">…</span></span>.
    The sentence shows on hover and on keyboard focus (and on tap, which focuses the button); colours come from the
    page's theme tokens on the tooltip itself. It is fixed-position, placed under the button by the runtime
    (scripts/site-runtime.js), so scroll boxes never clip it. */

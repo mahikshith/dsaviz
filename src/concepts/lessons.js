@@ -120,17 +120,18 @@ function csBigO(n) {
   };
   const upto = (k, extra) => csScene.apply(null, rows.map((r, i) => row(r, i, i <= k)).concat([{ labels: [csLabel('nlab', 920, 24, 'n = ' + n, { anchor: 'end', c: 'a', size: 18, weight: 700, mono: true })] }, extra]));
   const s = [];
-  s.push(csStep('We count steps, not seconds, so a faster computer does not change the answer. Here n is how many items we have.', ['nlab'], upto(-1)));
+  s.push(csStep('We count steps, not seconds, so a faster computer changes nothing. Here n is how many items we have. Each row is one kind of task.', ['nlab'], upto(-1)));
   s.push(csStep('Reading one item by its position is one step, whatever n is. This is O(1): the work never grows.', ['o1b'], upto(0)));
-  s.push(csStep('Cutting the list in half each step needs ' + lg + ' steps for n = ' + n + '. That is O(log n): the number of halvings.', ['ologb'], upto(1)));
+  s.push(csStep('Binary search opens the middle of a sorted list and throws away half. Halving ' + n + ' items takes ' + lg + ' steps.', ['ologb'], upto(1)));
+  s.push(csStep('That count is the logarithm, written log n: how many times you can halve n. So this is O(log n).', ['ologb'], upto(1)));
   s.push(csStep('One pass over all items takes ' + n + ' steps, and doubling n doubles the work. That is O(n).', ['onb'], upto(2)));
-  s.push(csStep('Good sorting takes about n times log n steps: ' + csBig(n * lg) + ' here. That is O(n log n), a bit more than one pass.', ['onlogb'], upto(3)));
+  s.push(csStep('A good sort, such as merge sort, takes n × log n steps: ' + n + ' × ' + lg + ' = ' + csBig(n * lg) + '. That is O(n log n), ' + lg + ' passes.', ['onlogb'], upto(3)));
   s.push(csStep('Checking every pair takes n × n = ' + csBig(n * n) + ' steps. That is O(n²): double n and the work grows four times.', ['on2b'], upto(4)));
-  s.push(csStep('Trying every group of items takes 2 × 2 × … (n times) = ' + csBig(Math.pow(2, n)) + ' steps. Each extra item doubles the work.', ['o2nb'], upto(5)));
-  s.push(csStep('Each tick to the right means ten times more steps, so the bars are squashed. Drag n to see the gaps grow.', [], upto(5)));
-  s.push(csStep('Big-O keeps only the fastest-growing part. 3n² + 5n + 2 becomes O(n²), since for big n the n × n part is much bigger.', ['on2b'], upto(5)));
-  s.push(csStep('Big-O usually means the worst case. Looking through a list takes 1 step if the item is first, but n steps if it is absent.', ['onb'], upto(5)));
-  s.push(csStep('Memory is counted the same way. A copy of the list needs O(n) extra space, but two counters need only O(1).', [], upto(5)));
+  s.push(csStep('Each item is in a group or out of it: 2 choices per item. So 2 × 2 and so on, n times, makes ' + csBig(Math.pow(2, n)) + ' groups.', ['o2nb'], upto(5)));
+  s.push(csStep('The bars are squashed on purpose. Each equal step in bar length means ten times more steps. Drag n to see the gaps grow.', [], upto(5)));
+  s.push(csStep('Big-O keeps only the fastest-growing part and drops any number in front. 3n² + 5n + 2 becomes O(n²).', ['on2b'], upto(5)));
+  s.push(csStep('We often count the worst case, the most steps. Big-O then limits how fast that grows. A list search needs n steps if the item is absent.', ['onb'], upto(5)));
+  s.push(csStep('Memory is counted the same way. Space means the memory a program uses. A copy of the list needs O(n) extra space; two counters need O(1).', [], upto(5)));
   s.out = rows.map((r) => r[3]);
   return s;
 }
@@ -148,7 +149,7 @@ function csArrays(pos) {
   };
   const keys = [0, 1, 2, 3, 4];
   const s = [];
-  s.push(csStep('An array is a block of memory split into equal slots. Each slot has an address, and here they go up by 4.', ['ad0', 'ad1', 'ad2'], row(vals, keys)));
+  s.push(csStep('An array is a block of memory split into equal slots. Each slot uses 4 bytes of memory, so addresses go up by 4.', ['ad0', 'ad1', 'ad2'], row(vals, keys)));
   s.push(csStep('Index 3 is at 1000 + 3 × 4 = 1012: one sum, no search. So reading any index takes one step, written O(1).', ['c3'],
     row(vals, keys, (i) => (i === 3 ? 'a' : null), { labels: [csLabel('math', 480, 120, 'a[3] is at 1000 + 3 × 4 = 1012', { anchor: 'middle', c: 'a', size: 20, weight: 700, mono: true })] })));
   const moved = n - pos;
@@ -166,7 +167,7 @@ function csArrays(pos) {
   };
   s.push(csStep(moved ? 'Each of the ' + moved + ' items slides one slot right. We start at the end so nothing is lost.' : 'Inserting at the end is easy, because a free slot is already there.', [], shScene(false)));
   s.push(csStep('Then 5 goes into the gap. ' + (moved ? 'We moved ' + moved + (moved === 1 ? ' item' : ' items') + ' to add one.' : 'Nothing moved.'), ['new'], shScene(true)));
-  s.push(csStep('At the front, all n items move. So inserting or deleting in the middle can take O(n): work that grows with the list.', [], shScene(true)));
+  s.push(csStep('Insert at index 0 and all n items move. So inserting or deleting in the middle can take O(n): work that grows with the list.', [], shScene(true)));
   const after = shifted.map((v) => (v === null ? ins : v));
   const afterKeys = shKeys.map((k) => (k === 'gap' ? 'new' : k));
   const del = Math.min(2, after.length - 1);
@@ -175,12 +176,12 @@ function csArrays(pos) {
   s.push(csStep('Adding at the end moves nothing when there is spare room. That is why append, adding to the end, is fast.', ['free6', 'free7'], row(delArr, delKeys)));
   const big = [];
   for (let i = 0; i < 12; i++) big.push({ id: 'g' + i, x: 60 + i * 70, y: 400, w: 64, h: 44, rx: 8, c: i < 8 ? 'b' : 'l', dash: i >= 8, label: i < delArr.length ? String(delArr[i]) : '', mono: true, size: 16 });
-  s.push(csStep('When the block is full, we make a block twice as big and copy everything over. This is rare, so append stays fast on average.', ['g0'],
-    row(delArr, delKeys, null, { boxes: big, labels: [csLabel('gl', 60, 386, 'new block, twice as big', { c: 'b', size: 13 })] })));
+  s.push(csStep('When the block is full, we copy everything into a bigger one. Copying is rare, so most appends cost one step.', ['g0'],
+    row(delArr, delKeys, null, { boxes: big, labels: [csLabel('gl', 60, 386, 'new, bigger block', { c: 'b', size: 13 })] })));
   const grid = []; const gl = [];
   for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) grid.push({ id: 'm' + r + c, x: 300 + c * 64, y: 70 + r * 52, w: 60, h: 46, rx: 6, label: r + ',' + c, mono: true, size: 13, fill: r === 1 && c === 2 ? 'a' : null });
   for (let i = 0; i < 12; i++) gl.push({ id: 'fl' + i, x: 96 + i * 64, y: 330, w: 60, h: 46, rx: 6, label: Math.floor(i / 4) + ',' + (i % 4), mono: true, size: 13, fill: i === 6 ? 'a' : null });
-  s.push(csStep('A grid is stored row after row in one block. Row 1, column 2 sits at 1 × 4 + 2 = 6, where 4 is the row width.', ['m12', 'fl6'],
+  s.push(csStep('A grid is stored row after row in one block. Row 1, column 2 is at 1 × 4 + 2 = 6: row × width + column, with width 4.', ['m12', 'fl6'],
     { boxes: grid.concat(gl), labels: [csLabel('gt', 300, 50, '3 × 4 grid', { size: 13 }), csLabel('ft', 96, 316, 'the same grid in memory', { size: 13 })] }));
   s.out = { moved, after };
   return s;
@@ -193,8 +194,8 @@ function csStrings() {
   const base = (fill, extra) => csScene(csCells(L.map((c) => "'" + c + "'"), Object.assign({}, o, { fill, keys: L.map((c, i) => i) })), extra);
   const codes = { labels: L.map((c, i) => csLabel('cd' + i, csCellX(5, i, o), 260, String(c.charCodeAt(0)), { anchor: 'middle', c: 'b', size: 16, weight: 700, mono: true })) };
   const s = [];
-  s.push(csStep("A string is an array: a row of slots holding characters. Index 0 and index 4 both hold 'r', and reading one takes one step.", ['c0', 'c4'], base((i) => (i === 0 || i === 4 ? 'a' : null))));
-  s.push(csStep("Each character is stored as a number. In the ASCII table, 'r' is 114 and 'v' is 118, so letters compare as numbers.", ['cd0', 'cd2'], base(null, codes)));
+  s.push(csStep("A string is an array of characters. This one is river: r, i, v, e, r. Index 0 and index 4 both hold 'r'.", ['c0', 'c4'], base((i) => (i === 0 || i === 4 ? 'a' : null))));
+  s.push(csStep("Each character is stored as a number. In the ASCII table, a list of numbers for characters, 'r' is 114 and 'v' is 118.", ['cd0', 'cd2'], base(null, codes)));
   s.push(csStep('To compare two strings, check letter by letter until one differs. "river" and "rival" differ at index 3, after 4 checks.', ['c3'],
     base((i) => (i < 3 ? 'ok' : i === 3 ? 'c' : null), { tokens: 'rival'.split('').map((c, i) => ({ id: 'w' + i, x: csCellX(5, i, o), y: 320, text: "'" + c + "'", c: i < 3 ? 'ok' : i === 3 ? 'c' : 'l' })) })));
   s.push(csStep("In Python, Java and JavaScript a string cannot change in place, so s[0] = 'R' fails. This is called immutable.", ['c0'],
@@ -229,7 +230,7 @@ function csRecursion(n) {
   for (let d = 1; d <= n; d++) {
     const v = n - d + 1;
     const say = d === 1 ? 'Calling fact(' + n + ') puts a plate on the call stack. The stack is the pile of calls waiting for an answer.'
-      : v === 1 ? 'fact(1) is the base case. It answers 1 at once, without calling anything.'
+      : v === 1 ? 'fact(2) calls fact(1). That is the base case: it answers 1 at once, without calling anything.'
         : 'fact(' + (v + 1) + ') calls fact(' + v + '). A new plate goes on top, and the plates below wait.';
     s.push(csStep(say, ['p' + v], csScene(code, { boxes: stackOf(d, res) })));
   }
@@ -257,10 +258,10 @@ function csBubble() {
   const sc = (hi, marks) => csScene(csLegend(CS_SORT_KEY), csBars(arr, (it, i) => hi[i] || (done[it.k] ? 'ok' : 'm'), { marks }));
   s.push(csStep('Bubble sort swaps neighbours that are out of order as it walks the list. One walk is called a pass.', [], sc({})));
   for (let p = 0; p < n - 1; p++) {
-    let swapped = false;
+    let swapped = false; let swaps = 0;
     for (let j = 0; j < n - 1 - p; j++) {
       const a = arr[j]; const b = arr[j + 1]; const sw = a.v > b.v;
-      if (sw) { arr = arr.slice(); arr[j] = b; arr[j + 1] = a; swapped = true; }
+      if (sw) { arr = arr.slice(); arr[j] = b; arr[j + 1] = a; swapped = true; swaps++; }
       if (p === 0) {
         const say = sw ? a.v + ' is bigger than ' + b.v + ', so they swap. The bigger one keeps moving right.' : a.v + ' is smaller than ' + b.v + ': already in order, so no swap.';
         s.push(csStep(say, ['b' + a.k, 'b' + b.k], sc({ [j]: sw ? 'c' : 'b', [j + 1]: sw ? 'c' : 'b' }, [['j', j, 'j'], ['j1', j + 1, 'j+1']])));
@@ -269,14 +270,14 @@ function csBubble() {
     const last = arr[n - 1 - p]; done[last.k] = 1;
     if (!swapped) {
       arr.forEach((it) => { done[it.k] = 1; });
-      s.push(csStep('Pass ' + (p + 1) + ' made no swaps, so the list is sorted. We can stop early.', [], sc({})));
+      s.push(csStep('Pass ' + (p + 1) + ' checks the first ' + (n - p) + ' numbers and makes no swaps. So the list is sorted, and we can stop early.', [], sc({})));
       break;
     }
-    s.push(csStep(p === 0 ? 'After one pass the biggest number, ' + last.v + ', has moved to the end. It is in its final place.' : 'Pass ' + (p + 1) + ': ' + last.v + ' moves up and settles in place.', ['b' + last.k], sc({})));
+    s.push(csStep(p === 0 ? 'After one pass the biggest number, ' + last.v + ', has moved to the end. It is in its final place.' : 'Pass ' + (p + 1) + ' checks the first ' + (n - p) + ' numbers and swaps ' + swaps + (swaps === 1 ? ' time' : ' times') + '. ' + last.v + ' settles in place.', ['b' + last.k], sc({})));
     if (p === n - 2) arr.forEach((it) => { done[it.k] = 1; });
   }
   arr.forEach((it) => { done[it.k] = 1; });
-  s.push(csStep('Sorted. With about n × n checks, written O(n²), bubble sort is slow on big lists.', [], sc({})));
+  s.push(csStep('Sorted. About n × n checks, written O(n²), make it slow on big lists. It is stable: equal numbers keep their order.', [], sc({})));
   s.out = arr.map((it) => it.v);
   return s;
 }
@@ -294,10 +295,10 @@ function csSelection() {
     }
     if (m !== i) { arr = arr.slice(); arr[i] = mv; arr[m] = front; }
     done[mv.k] = 1;
-    const say = i === 0 ? 'Swap ' + mv.v + ' with the ' + front.v + ' at the front. Slot 0 is now final and never looked at again.'
-      : m === i ? 'Pass ' + (i + 1) + ': the smallest left is ' + mv.v + ', and it is already in slot ' + i + '. No swap needed.'
-        : 'Pass ' + (i + 1) + ': the smallest left is ' + mv.v + '. It swaps into slot ' + i + '.';
-    s.push(csStep(say, ['b' + mv.k], sc({ [i]: 'c' }, [['min', i, 'slot ' + i]])));
+    const say = i === 0 ? 'Swap ' + mv.v + ' with the ' + front.v + ' at the front. Index 0 is now final and never looked at again.'
+      : m === i ? 'Pass ' + (i + 1) + ': the smallest left is ' + mv.v + ', and it is already at index ' + i + '. No swap needed.'
+        : 'Pass ' + (i + 1) + ': the smallest left is ' + mv.v + '. It swaps into index ' + i + '.';
+    s.push(csStep(say, ['b' + mv.k], sc({ [i]: 'c' }, [['min', i, 'index ' + i]])));
   }
   arr.forEach((it) => { done[it.k] = 1; });
   s.push(csStep('The last number must already be in place. Sorted.', [], sc({})));
@@ -322,7 +323,7 @@ function csInsertion() {
     s.push(csStep(say, ['b' + key.k], sc({ [pos]: 'c' }, [['k', pos, 'key']])));
   }
   s.push(csStep('Sorted. Nearly sorted lists need few slides, but a reversed list needs about n × n of them, written O(n²).', [], sc({})));
-  s.push(csStep('It needs no extra list and is fast on short lists. Real sort code uses it for short runs.', [], sc({})));
+  s.push(csStep('It needs no extra list and is fast on short lists. Real sort code uses it for short pieces of a list.', [], sc({})));
   s.out = arr.map((it) => it.v);
   return s;
 }
@@ -354,7 +355,7 @@ function csMergeSort() {
   while (A.length && B.length) took.push((A[0].v <= B[0].v ? A : B).shift().v);
   s.push(csStep('Last merge: ' + took.slice(0, 4).join(', then ') + ', and so on. One walk over both halves puts all eight in order.', [], { boxes: lay(g4, 150, (it) => (took.indexOf(it.v) >= 0 && took.indexOf(it.v) < 4 ? 'ok' : 'b')) }));
   s.push(csStep('Sorted: ' + final.map((x) => x.v).join(' ') + '.', [], { boxes: lay([final], 60, () => 'ok') }));
-  s.push(csStep('The list halves 3 times, and each level touches all n items. So the work is O(n log n): a bit more than the list size.', [], { boxes: lay([final], 60, () => 'ok') }));
+  s.push(csStep('The list halves 3 times, and each level touches all 8 items. So the work is about n × log n: 8 × 3 = 24 steps.', [], { boxes: lay([final], 60, () => 'ok') }));
   s.push(csStep('Merging needs a spare list, so it uses extra space as big as the list. It is stable: equal items keep their order.', [], { boxes: lay([final], 60, () => 'ok') }));
   s.out = final.map((x) => x.v);
   return s;
@@ -363,7 +364,7 @@ function csMergeSort() {
 function csQuick() {
   const s = []; let arr = csItems([5, 2, 8, 1, 9, 3, 7, 4]); const n = arr.length; const done = {};
   const sc = (hi, marks) => csScene(csLegend([['c', 'pivot'], ['b', 'smaller than pivot'], ['ok', 'in final place']]), csBars(arr, (it, i) => hi[i] || (done[it.k] ? 'ok' : 'm'), { marks, w: 64, gap: 16 }));
-  s.push(csStep('Quick sort picks one number as the pivot. Smaller numbers go to its left, bigger ones to its right.', [], sc({})));
+  s.push(csStep('Quick sort picks one number as the pivot. Smaller numbers go to its left, bigger ones to its right. This split is the partition.', [], sc({})));
   const parts = [];
   const part = (lo, hi) => {
     const pv = arr[hi]; let i = lo; const smaller = [];
@@ -394,11 +395,11 @@ function csQuick() {
   parts.slice(1).forEach((r) => {
     arr = r.after; Object.keys(r.doneBefore).forEach((k) => { done[k] = 1; }); done[r.pv.k] = 1;
     const seg = r.mid.slice(r.lo, r.hi + 1).map((x) => x.v);
-    s.push(csStep('Now the part [' + seg.join(' ') + ']: pivot ' + r.pv.v + ' lands at index ' + r.at + '. A part with one number is already done.', ['b' + r.pv.k], sc({ [r.at]: 'c' }, [['p', r.at, 'pivot']])));
+    s.push(csStep('Now the part [' + seg.join(' ') + ']: pivot ' + r.pv.v + ' lands at index ' + r.at + '.', ['b' + r.pv.k], sc({ [r.at]: 'c' }, [['p', r.at, 'pivot']])));
   });
   arr = finalArr; Object.assign(done, finalDone); arr.forEach((it) => { done[it.k] = 1; });
-  s.push(csStep('Sorted, with no spare list needed.', [], sc({})));
-  s.push(csStep('Good pivots split the list evenly: about n × log n steps. Always picking the biggest gives n × n, so real code picks pivots at random.', [], sc({})));
+  s.push(csStep('Sorted. A part with one number is already done, so the calls stop there. No spare list is needed.', [], sc({})));
+  s.push(csStep('Good pivots split the list evenly: about n × log n steps. Always picking the biggest gives n × n, so code often picks at random.', [], sc({})));
   s.out = arr.map((it) => it.v);
   return s;
 }
@@ -415,18 +416,20 @@ function csHeapSort() {
   const sc = (fill) => csScene(tree(fill), row(fill));
   const sift = (i, lim) => { for (;;) { const l = 2 * i + 1; const r = l + 1; let m = i; if (l < lim && a[l].v > a[m].v) m = l; if (r < lim && a[r].v > a[m].v) m = r; if (m === i) return; a = a.slice(); const t = a[i]; a[i] = a[m]; a[m] = t; i = m; } };
   const s = [];
-  s.push(csStep('Heap sort first builds a max-heap. This is a tree where each parent is at least as big as its children.', [], sc()));
-  s.push(csStep('No tree is really built. The children of position i are at positions 2i + 1 and 2i + 2, so the array acts as a tree.', ['n' + a[0].k, 'n' + a[1].k, 'n' + a[2].k], sc({ 0: 'a', 1: 'b', 2: 'b' })));
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) sift(i, n);
-  s.push(csStep('Work from the bottom up, sifting each parent down: swap it with a bigger child. Now the biggest, ' + a[0].v + ', is the root, the top.', ['n' + a[0].k], sc({ 0: 'a' })));
+  s.push(csStep('Heap sort first builds a max-heap. Picture a tree. Each parent is at least as big as the two children below it.', [], sc()));
+  s.push(csStep('No tree is really built. The children of the item at index i are at indexes 2i + 1 and 2i + 2, so the array acts as a tree.', ['n' + a[0].k, 'n' + a[1].k, 'n' + a[2].k], sc({ 0: 'a', 1: 'b', 2: 'b' })));
+  const lastParent = Math.floor(n / 2) - 1; const lp = a[lastParent]; sift(lastParent, n);
+  s.push(csStep('Work from the bottom up. The last parent is ' + lp.v + '. Its bigger child is ' + a[lastParent].v + ', so they swap. This is sifting down.', ['n' + lp.k], sc({ [a.indexOf(lp)]: 'a', [lastParent]: 'b' })));
+  const mid = a[1]; const top0 = a[0]; for (let i = lastParent - 1; i >= 0; i--) sift(i, n);
+  s.push(csStep(mid.v + ' already beats its children, so it stays. Then ' + top0.v + ' sinks past ' + a[0].v + ' and ' + a[1].v + '. The biggest, ' + a[0].v + ', is the root.', ['n' + a[0].k], sc({ 0: 'a', [a.indexOf(top0)]: 'b' })));
   for (let end = n - 1; end > 0; end--) {
     const top = a[0]; a = a.slice(); a[0] = a[end]; a[end] = top; size = end; sift(0, size);
     const say = end === n - 1 ? 'Swap the root ' + top.v + ' with the last item and lock it in at the end. Then sift the new root down to fix the heap.'
-      : 'Move ' + top.v + ' from the top to slot ' + end + ', then sift down. The heap shrinks by one' + (end === 1 ? ' and only one item is left.' : '.');
+      : 'Move ' + top.v + ' from the top to index ' + end + ', then sift down. The heap shrinks by one' + (end === 1 ? ' and only one item is left.' : '.');
     s.push(csStep(say, ['a' + top.k, 'n' + a[0].k], sc({ 0: 'a' })));
   }
   size = 0;
-  s.push(csStep('Sorted. Each of the n removals sifts down at most the tree height, about log n, so the total is O(n log n).', [], sc()));
+  s.push(csStep('Sorted. Each removal sifts down about log n levels at most. So the total is n × log n steps: O(n log n).', [], sc()));
   s.out = a.map((it) => it.v);
   return s;
 }
@@ -444,17 +447,17 @@ function csCountRadix() {
   const order = A.map((v, i) => [v, i]).sort((x, y) => x[0] - y[0] || x[1] - y[1]);
   const outPos = []; order.forEach(([v, i], j) => { outPos[i] = [210 + j * 76, 470, 'ok']; });
   s.push(csStep('Read the boxes left to right, writing each value as many times as it was counted: ' + order.map((x) => x[0]).join(' ') + '.', [], csScene({ tokens: tok(outPos) }, bins(counts))));
-  s.push(csStep('One pass counts and one writes, so the work grows with n plus the range of values. A range up to a billion wastes space.', [], csScene({ tokens: tok(outPos) }, bins(counts))));
+  s.push(csStep('Work grows with the list length plus the range, the span from smallest to biggest value. A range of a billion needs a billion boxes.', [], csScene({ tokens: tok(outPos) }, bins(counts))));
   const R = [329, 457, 657, 839, 436, 720, 355];
   const rTok = (arr, d) => ({ tokens: arr.map((v, j) => ({ id: 'r' + v, x: 130 + j * 116, y: 260, text: String(v), w: 84, sub: d ? 'digit ' + String(v)[3 - d] : '', fill: d === 3 ? 'ok' : null })) });
-  s.push(csStep('Radix sort handles bigger numbers one digit at a time, from the last digit to the first. Each round is a counting sort.', [], rTok(R, 0)));
+  s.push(csStep('Radix sort handles bigger numbers one digit at a time, last digit first. Each round is a counting sort on that digit.', [], rTok(R, 0)));
+  s.push(csStep('Each round must be stable: numbers tied on the digit keep their old order. Then later rounds keep the work of earlier ones.', [], rTok(R, 0)));
   let cur = R.slice(); const names = ['', 'ones', 'tens', 'hundreds'];
   for (let d = 1; d <= 3; d++) {
     const p = Math.pow(10, d - 1); cur = cur.slice().sort((x, y) => Math.floor(x / p) % 10 - Math.floor(y / p) % 10);
-    s.push(csStep('Sort by the ' + names[d] + ' digit only: ' + cur.join(' ') + '.' + (d === 3 ? ' Now the whole list is in order.' : ''), [], rTok(cur, d)));
+    s.push(csStep((d === 1 ? 'The list is ' + R.join(' ') + '. ' : '') + 'Sort by the ' + names[d] + ' digit only: ' + cur.join(' ') + '.' + (d === 3 ? ' Now the whole list is in order.' : ''), [], rTok(cur, d)));
   }
-  s.push(csStep('A stable sort keeps tied items in their old order. So each round keeps the work of earlier rounds, and the last round finishes.', [], rTok(cur, 3)));
-  s.push(csStep('With d digits there are d rounds, so the work is about d × n. Not one comparison is made.', [], rTok(cur, 3)));
+  s.push(csStep('With d digits there are d rounds. Each costs about n steps plus 10 boxes, so the total is about d × n.', [], rTok(cur, 3)));
   s.out = { counting: order.map((x) => x[0]), radix: cur };
   return s;
 }
@@ -475,7 +478,7 @@ function csHashing(m) {
   };
   const first = keys[0];
   s.push(csStep('A hash map keeps keys in a row of buckets, like numbered boxes. A hash function turns each key into a bucket number.', [], csScene(table(m, bw), placed(0, m, bw))));
-  s.push(csStep('The hash here is the remainder of key ÷ ' + m + ', written key mod ' + m + '. ' + first + ' mod ' + m + ' = ' + (first % m) + ', so ' + first + ' goes in bucket ' + (first % m) + '.', ['k' + first, 'bk' + (first % m)], csScene(table(m, bw), placed(1, m, bw, first))));
+  s.push(csStep('Here the hash is the key itself, and key mod ' + m + ' picks the bucket. ' + first + ' ÷ ' + m + ' is ' + Math.floor(first / m) + ' with ' + (first % m) + ' left over, so ' + first + ' mod ' + m + ' = ' + (first % m) + '.', ['k' + first, 'bk' + (first % m)], csScene(table(m, bw), placed(1, m, bw, first))));
   let col = -1; const seen = {}; keys.forEach((k, i) => { const b = k % m; if (col < 0 && seen[b] !== undefined) col = i; seen[b] = 1; });
   if (col > 0) {
     const k = keys[col];
@@ -483,14 +486,14 @@ function csHashing(m) {
   } else s.push(csStep('With ' + m + ' buckets these keys do not collide. With more keys, two would have to share a bucket.', [], csScene(table(m, bw), placed(keys.length, m, bw))));
   s.push(csStep('Chaining keeps a short list in every bucket. A key that collides joins the list in its bucket.', [], csScene(table(m, bw), placed(Math.max(col + 1, 2), m, bw))));
   const all = placed(keys.length, m, bw); let worst = 0; let wb = 0; Object.keys(all.depth).forEach((b) => { if (all.depth[b] > worst) { worst = all.depth[b]; wb = Number(b); } });
-  s.push(csStep('All ' + keys.length + ' keys are in. The busiest bucket, ' + wb + ', holds ' + worst + (worst === 1 ? ' key.' : ' keys.'), ['bk' + wb], csScene(table(m, bw, { [wb]: 'c' }), all)));
+  s.push(csStep((keys.slice(Math.max(col + 1, 2)).length ? 'Now add ' + csList(keys.slice(Math.max(col + 1, 2))) + ', so all ' : 'All ') + keys.length + ' keys are in. The busiest bucket, ' + wb + ', holds ' + worst + (worst === 1 ? ' key.' : ' keys.'), ['bk' + wb], csScene(table(m, bw, { [wb]: 'c' }), all)));
   const look = 29;
   s.push(csStep('To find ' + look + ', hash it to bucket ' + (look % m) + ' and check only that short list. On average that takes O(1), a few steps.', ['k' + look], csScene(table(m, bw, { [look % m]: 'a' }), placed(keys.length, m, bw, look))));
   s.push(csStep('If every key landed in one bucket, a lookup would check all n keys: O(n). A good hash function spreads keys out evenly.', [], csScene(table(m, bw), all)));
   const lf = keys.length / m;
-  s.push(csStep('The load factor is keys divided by buckets: ' + keys.length + ' ÷ ' + m + ' ≈ ' + lf.toFixed(2) + '. Higher means longer lists.', [], csScene(table(m, bw), all, { labels: [csLabel('lf', 920, 116, 'load ' + lf.toFixed(2), { anchor: 'end', c: 'a', size: 15, weight: 700, mono: true })] })));
+  s.push(csStep('The load factor is keys divided by buckets: ' + keys.length + ' ÷ ' + m + ' is about ' + lf.toFixed(2) + '. Higher means longer lists.', [], csScene(table(m, bw), all, { labels: [csLabel('lf', 920, 116, 'load ' + lf.toFixed(2), { anchor: 'end', c: 'a', size: 15, weight: 700, mono: true })] })));
   const m2 = m * 2; const bw2 = Math.min(64, Math.floor((900 - (m2 - 1) * 8) / m2));
-  s.push(csStep('So the table grows to ' + m2 + ' buckets and every key is hashed again. This is rare, so the average cost stays O(1).', [], csScene(table(m2, bw2), placed(keys.length, m2, bw2))));
+  s.push(csStep('Tables grow when the load passes a limit, often about 0.75. Here we double to ' + m2 + ' buckets and hash every key again.', [], csScene(table(m2, bw2), placed(keys.length, m2, bw2))));
   s.out = { buckets: keys.map((k) => k % m), worst };
   return s;
 }
@@ -508,15 +511,15 @@ function csOpenAddr() {
   };
   const path = (k) => ({ arrows: probes[k].slice(0, -1).map((b, i) => ({ id: 'pr' + i, from: { x: x(b), y: 236 }, to: { x: x(probes[k][i + 1]), y: 236 }, c: 'c', w: 2.5 })) });
   const s = [];
-  s.push(csStep('Open addressing keeps every key inside the table, with no lists. A key goes to slot key mod 11, the remainder after dividing by 11.', [], sc(0)));
+  s.push(csStep('Open addressing keeps every key inside the table, with no lists. A key goes to slot key mod 11: what is left over after dividing by 11.', [], sc(0)));
   const say = (k) => { const p = probes[k]; return p.length === 1 ? k + ' mod 11 = ' + p[0] + '. Slot ' + p[0] + ' is free, so it goes straight in.' : k + ' mod 11 = ' + p[0] + ', but that slot is taken. Linear probing tries the next slots one by one and lands in ' + where[k] + '.'; };
   for (let i = 0; i < 5; i++) s.push(csStep(say(keys[i]), ['k' + keys[i]], sc(i + 1, keys[i], path(keys[i]))));
   s.push(csStep('9 goes straight into slot 9. Then 27 mod 11 = 5, but slot 5 is taken, so 27 probes on to slot ' + where[27] + '.', ['k27'], sc(7, 27, path(27))));
   s.push(csStep('Keys bunch into runs called clusters, which make later probes longer. Slots ' + where[12] + ' to ' + where[34] + ' and 5 to ' + where[27] + ' are clusters.', [], sc(7)));
   s.push(csStep('To find 34, start at slot 1 and move on until you meet 34 or an empty slot. An empty slot means 34 is missing.', ['k34'], sc(7, 34, path(34))));
   s.push(csStep('If we empty slot 2 when deleting 23, the search for 34 would stop there. So leave a tombstone mark that searches skip.', ['s2'], sc(7, null, null, where[23])));
-  s.push(csStep('The table needs spare room, so keep it under about 70% full. Past that, probes get long, so the table grows and hashes again.', [], sc(7, null, null, where[23])));
-  s.push(csStep('Other orders spread keys better. Quadratic probing jumps 1, 4, 9 slots ahead; double hashing uses a second hash function.', [], sc(7)));
+  s.push(csStep('The table can never be over 100% full. Keep it under about 70% full, or probes get long and the table must grow.', [], sc(7, null, null, where[23])));
+  s.push(csStep('Quadratic probing tries slots 1, 4, 9 steps ahead, which breaks up clusters. Double hashing steps ahead by a second hash of the key.', [], sc(7)));
   s.out = slot;
   return s;
 }
@@ -538,16 +541,16 @@ function csLinked() {
   };
   const base = lay([4, 9, 2, 7], ['A', 'B', 'C', 'D']);
   const s = [];
-  s.push(csStep('A linked list is a chain of nodes. Each node holds a value and a pointer that tells where the next node is.', [], chain(base)));
+  s.push(csStep('A linked list is a chain of nodes, here 4, 9, 2, 7. Each node holds a value and a pointer that tells where the next node is.', [], chain(base)));
   s.push(csStep('Nodes can sit anywhere in memory, and only the pointers keep the order. The last node points to null, which means nothing.', ['nul'], chain(base)));
-  s.push(csStep('To reach the third node, start at head, the first node, and follow two pointers. Reaching position i takes i steps.', ['C'],
+  s.push(csStep('To reach the third node, start at head, the pointer to the first node, and follow two pointers. Reaching position i takes i steps.', ['C'],
     chain(base.map((b, i) => (i < 3 ? Object.assign({}, b, { fill: i === 2 ? 'a' : 'b' }) : b)))));
   const withHead = [node('N', 5, 70, y)].concat(lay([4, 9, 2, 7], ['A', 'B', 'C', 'D'], 220));
   s.push(csStep('Insert 5 at the front: point the new node at the old head, then move head to it. Only two changes are needed.', ['N'], chain(withHead.map((b) => (b.id === 'N' ? Object.assign({}, b, { fill: 'c' }) : b)))));
   const mid = [node('N', 5, 40), node('A', 4, 180), node('B', 9, 320), node('M', 6, 460), node('C', 2, 600), node('D', 7, 740)];
   s.push(csStep('To insert 6 after 9, point 6 at what 9 pointed to, then point 9 at 6. That is O(1): a fixed number of steps.', ['M'], chain(mid.map((b) => (b.id === 'M' ? Object.assign({}, b, { fill: 'c' }) : b)))));
   const skip = [node('N', 5, 70), node('A', 4, 220), node('B', 9, 370), node('M', 6, 520), node('D', 7, 670)];
-  s.push(csStep('Delete the 2 by making 6 point past it. Nothing points at 2 now, so its memory is freed.', ['M', 'D'],
+  s.push(csStep('The list is now 5, 4, 9, 6, 2, 7. Delete the 2 by making 6 point past it. Nothing points at 2, so its memory can be reused.', ['M', 'D'],
     chain(skip, { boxes: [Object.assign(node('C', 2, 595, 360), { op: 0.35, dash: true })] })));
   const tail = { tokens: [{ id: 'tail', x: 670 + nw / 2, y: 120, text: 'tail', w: 70, fill: 'b' }], arrows: [{ id: 'ta', from: { x: 670 + nw / 2, y: 138 }, to: { x: 670 + nw / 2, y: y }, c: 'b', w: 2.5 }] };
   s.push(csStep('Keep a tail pointer too, a link to the last node, and adding at the end is also O(1).', ['tail'], chain(skip, tail)));
@@ -583,8 +586,9 @@ function csStackQueue() {
   s.push(csStep('A queue keeps two positions: tail, where items join, and head, where they leave. Enqueue (add) 3, 8 and 5.', ['qt'], csScene(stack([3, 8]), queue([3, 8, 5, null, null, null], 0, 3, 2))));
   s.push(csStep('Dequeue (remove) takes from head and moves head right, so 3 leaves. Shifting everyone left instead would be slow.', ['qh'], csScene(stack([3, 8]), queue([null, 8, 5, null, null, null], 1, 3, 1))));
   const QF = [9, 8, 5, 1, 4, 6];
-  s.push(csStep('Enqueue 1, 4, 6 and 9. When tail passes the end it wraps to index 0, where 3 was: a circular queue.', ['q0'], csScene(stack([3, 8]), queue(QF, 1, 1, 0))));
-  s.push(csStep('Wrapping uses mod, the remainder: tail = (tail + 1) mod 6. Head equals tail now, so keep a count to tell full from empty.', ['qt', 'qh'], csScene(stack([3, 8]), queue(QF, 1, 1))));
+  s.push(csStep('Enqueue 1, 4, 6 and 9. When tail passes the end it goes back to index 0, where 3 was: a circular queue.', ['q0'], csScene(stack([3, 8]), queue(QF, 1, 1, 0))));
+  s.push(csStep('Going back uses mod, the leftover after dividing: tail = (tail + 1) mod 6. So (5 + 1) mod 6 = 0.', ['qt'], csScene(stack([3, 8]), queue(QF, 1, 1))));
+  s.push(csStep('Head equals tail now. That happens when the queue is full or empty, so keep a count to tell them apart.', ['qt', 'qh'], csScene(stack([3, 8]), queue(QF, 1, 1))));
   s.push(csStep('Both also work on a linked list. A stack uses only the head; a queue adds at the tail and removes at the head.', [], csScene(stack([3, 8]), queue(QF, 1, 1))));
   s.push(csStep('Use a stack for matching brackets or undo. Use a queue for taking turns or for working level by level.', [], csScene(stack([3, 8]), queue(QF, 1, 1))));
   return s;
@@ -602,15 +606,17 @@ function csDeque() {
   const s = [];
   s.push(csStep('A deque, said "deck", is a queue open at both ends. Adding or removing at the front or back takes one step.', [], sc(E, 0, 0)));
   s.push(csStep('It uses a circular array: a row whose end joins its start. Push 3, then 5, at the back.', ['d0', 'd1'], sc([3, 5, null, null, null, null, null, null], 0, 1, 1)));
-  s.push(csStep('Push 8 at the front. Slot 0 is taken, so front steps back and wraps round to slot 7.', ['d7', 'fr'], sc([3, 5, null, null, null, null, null, 8], 7, 1, 7)));
-  s.push(csStep('Reading from front to back now gives 8, 3, 5. The wrap uses mod, the remainder after dividing by the size.', ['fr'], sc([3, 5, null, null, null, null, null, 8], 7, 1)));
+  s.push(csStep('Push 8 at the front. Index 0 is taken, so front steps back to the other end, index 7.', ['d7', 'fr'], sc([3, 5, null, null, null, null, null, 8], 7, 1, 7)));
+  s.push(csStep('Reading from front to back now gives 8, 3, 5. The step back used mod: (0 − 1 + 8) mod 8 = 7, the leftover after dividing by 8.', ['fr'], sc([3, 5, null, null, null, null, null, 8], 7, 1)));
   s.push(csStep('Pop means remove. Popping at the back takes out 5; popping at the front takes out 8.', ['d0'], sc([3, null, null, null, null, null, null, null], 0, 0, 0)));
   const win = [1, 3, 2, 5, 4];
-  s.push(csStep('A deque helps with a sliding window, a small range that moves along a list. Keep only values that can still be the biggest.', [],
+  s.push(csStep('A deque can track a sliding window: a small range, here 3 numbers, moving along a list. Keep only values that can still be the biggest.', [],
     { tokens: win.map((v, i) => ({ id: 'w' + i, x: 260 + i * 110, y: 200, text: String(v), w: 60, fill: i === 3 || i === 4 ? 'b' : null })), labels: [csLabel('wl', 480, 290, 'window of 3: deque keeps 5, 4', { anchor: 'middle', c: 'b', size: 16, weight: 700 })] }));
+  s.push(csStep('When 5 enters the window, 3 and 2 can never be the biggest while 5 stays, so they are dropped. 4 stays: 5 leaves first.', ['w3'],
+    { tokens: win.map((v, i) => ({ id: 'w' + i, x: 260 + i * 110, y: 200, text: String(v), w: 60, fill: i === 3 ? 'a' : i === 4 ? 'b' : null })), labels: [csLabel('wl', 480, 290, 'window of 3: deque keeps 5, 4', { anchor: 'middle', c: 'b', size: 16, weight: 700 })] }));
   s.push(csStep('The front of the deque is always the window’s biggest value, so reading the maximum takes one step.', ['w3'],
     { tokens: win.map((v, i) => ({ id: 'w' + i, x: 260 + i * 110, y: 200, text: String(v), w: 60, fill: i === 3 ? 'a' : i === 4 ? 'b' : null })), labels: [csLabel('wl', 480, 290, 'max of [2 5 4] is 5', { anchor: 'middle', c: 'a', size: 16, weight: 700 })] }));
-  s.push(csStep('A deque can act as a stack or a queue. Python has collections.deque, Java has ArrayDeque, C++ has std::deque.', [], sc([3, null, null, null, null, null, null, null], 0, 0)));
+  s.push(csStep('A deque can act as a stack or a queue. Python has one ready to use: collections.deque.', [], sc([3, null, null, null, null, null, null, null], 0, 0)));
   return s;
 }
 
@@ -654,7 +660,7 @@ function csTrees() {
   s.push(csStep('Nodes with no children are leaves: 1, 4, 7 and 14. A node plus everything below it is a subtree.', ['v1', 'v4', 'v7', 'v14'], sc({ fill: { 1: 'ok', 4: 'ok', 7: 'ok', 14: 'ok' } })));
   s.push(csStep('Depth is the number of edges down from the root, so 6 is at depth 2. The height is the depth of the deepest leaf: 3 here.', ['v6', 'v4'], sc({ sub: { 8: 'd0', 3: 'd1', 10: 'd1', 1: 'd2', 6: 'd2', 14: 'd2', 4: 'd3', 7: 'd3' } })));
   const walks = [['pre', 'Pre-order visits a node, then its left subtree, then its right. Copying a tree uses this order.'],
-    ['in', 'In-order visits the left subtree, then the node, then the right. On a search tree like this one, values come out sorted.'],
+    ['in', 'In-order visits the left subtree, then the node, then the right. Smaller values sit on the left here, so the list comes out sorted.'],
     ['post', 'Post-order visits both subtrees before the node. Deleting a tree or adding up sizes uses this order.']];
   const out = {};
   walks.forEach(([k, say]) => {
@@ -662,8 +668,8 @@ function csTrees() {
     s.push(csStep(say, [], sc({ sub }, line('ln', k + '-order: ' + ord.join(' ')))));
   });
   const lvl = csBstLevel(t); out.level = lvl; const sub = {}; lvl.forEach((v, i) => { sub[v] = i + 1; });
-  s.push(csStep('Level order reads the tree row by row, using a queue: a waiting line, first in, first out. This is breadth-first search.', [], sc({ sub }, line('ln', 'level order: ' + lvl.join(' ')))));
-  s.push(csStep('The first three are depth-first: they go deep before wide, using recursion or a stack. Level order goes wide first.', [], sc({}, line('ln', 'depth first: stack · breadth first: queue', 'b'))));
+  s.push(csStep('Level order reads the tree row by row, using a queue: a waiting line, first in, first out.', [], sc({ sub }, line('ln', 'level order: ' + lvl.join(' ')))));
+  s.push(csStep('The first three are depth-first: they go deep before wide. Level order goes wide first, and is called breadth-first.', [], sc({}, line('ln', 'depth first: stack · breadth first: queue', 'b'))));
   s.push(csStep('Every walk visits each node once, so the time is O(n), where n is the number of nodes.', [], sc({})));
   s.out = out;
   return s;
@@ -676,7 +682,8 @@ function csBst() {
   s.push(csStep('In a binary search tree, smaller values sit left of a node and bigger ones sit right. This holds at every node.', ['v8'], sc({ fill: { 8: 'a' } })));
   const p7 = csBstPath(t, 7);
   s.push(csStep('To find 7: left at 8 (smaller), right at 3 (bigger), right at 6 (bigger). Found in ' + p7.length + ' looks.', p7.map((v) => 'v' + v), sc({ fill: pathFill(p7, 7) })));
-  s.push(csStep('Each look goes down one level, so search time is the tree height. An even tree is about log n tall: n halved again and again.', [], sc({})));
+  s.push(csStep('Each look goes down one level. So a search takes at most height + 1 looks: 4 here, because the height is 3.', [], sc({})));
+  s.push(csStep('In a balanced tree, both sides are about equally tall. Its height is about log n: n halved again and again.', [], sc({})));
   t = csBstInsert(t, 5); const p5 = csBstPath(t, 5);
   s.push(csStep('Insert 5 by searching for it: 8, 3, 6, 4. Node 4 has no right child, so 5 goes there and nothing else moves.', ['v5'], sc({ fill: pathFill(p5, 5) })));
   const del = (n, v) => {
@@ -686,14 +693,14 @@ function csBst() {
     if (!n.l) return n.r; if (!n.r) return n.l;
     let m = n.r; while (m.l) m = m.l; n.v = m.v; n.r = del(n.r, m.v); return n;
   };
-  s.push(csStep('Delete a leaf, a node with no children, like 1: cut it off. Its parent forgets it.', ['v1'], sc({ fill: { 1: 'bad' } })));
-  t = del(t, 1);
-  s.push(csStep('Delete 10, which has one child: its child 14 moves up into its place. The order rule still holds.', ['v10'], sc({ fill: { 10: 'bad', 14: 'b' } })));
-  t = del(t, 10);
-  s.push(csStep('Now 10 is gone and 14 connects directly to 8.', ['v14'], sc({ fill: { 14: 'b' } })));
   s.push(csStep('Delete 3, which has two children. Replace it with its successor, the smallest value on its right side: 4.', ['v3', 'v4'], sc({ fill: { 3: 'bad', 4: 'a' } })));
   t = del(t, 3);
-  s.push(csStep('4 now sits where 3 was, and 5 moves up into 4’s old place. Reading the tree left to right is still sorted: ' + csBstOrder(t, 'in').join(' ') + '.', ['v4', 'v5'], sc({ fill: { 4: 'a', 5: 'b' } })));
+  s.push(csStep('4 now sits where 3 was, and 5 moves up into 4’s old place. Reading left to right is still sorted: ' + csBstOrder(t, 'in').join(' ') + '.', ['v4', 'v5'], sc({ fill: { 4: 'a', 5: 'b' } })));
+  s.push(csStep('Delete a leaf, a node with no children, like 1: cut it off. Its parent drops the link to it.', ['v1'], sc({ fill: { 1: 'bad' } })));
+  t = del(t, 1);
+  s.push(csStep('Delete 10, which has one child: its child 14 moves up into its place and joins 8 directly.', ['v10'], sc({ fill: { 10: 'bad', 14: 'b' } })));
+  t = del(t, 10);
+  s.push(csStep('The order rule still holds after every delete. Reading the tree left to right gives ' + csBstOrder(t, 'in').join(' ') + '.', ['v14'], sc({ fill: { 14: 'b' } })));
   s.push(csStep('If values arrive already sorted, the tree becomes one long line and search takes n steps. Balanced trees reshape themselves to avoid this.', [], sc({})));
   s.out = csBstOrder(t, 'in');
   return s;
@@ -709,9 +716,9 @@ function csHeap() {
     return csScene({ nodes, edges }, row, ghost);
   };
   s.push(csStep('A min-heap is a tree where each parent is smaller than or equal to its children. So the smallest value is at the root, the top.', ['h2'], sc({ 2: 'a' })));
-  s.push(csStep('It is stored in an array, a plain row of values. The parent of position i is at (i − 1) ÷ 2, rounded down.', [], sc()));
+  s.push(csStep('It is stored in an array, a plain row of values: 2 5 3 9 6 8. The parent of index i is at (i − 1) ÷ 2, rounded down.', [], sc()));
   a = a.concat([1]);
-  s.push(csStep('Push 1, which means add it, in the next free spot at the end. Now the heap rule may be broken.', ['h1'], sc({ 1: 'c' })));
+  s.push(csStep('Push 1, which means add it, at the end: the array is now 2 5 3 9 6 8 1. The heap rule may be broken.', ['h1'], sc({ 1: 'c' })));
   const up = () => { let i = a.length - 1; const swaps = []; while (i > 0) { const p = Math.floor((i - 1) / 2); if (a[p] <= a[i]) break; swaps.push(a[p]); const t = a[p]; a = a.slice(); a[p] = a[i]; a[i] = t; i = p; } return swaps; };
   const sw = up();
   s.push(csStep('Sift up: swap 1 with its parent while 1 is smaller. It swaps past ' + csList(sw) + ' and reaches the root.', ['h1'], sc({ 1: 'c' })));
@@ -762,13 +769,14 @@ function csGraphRep() {
   };
   const s = [];
   s.push(csStep('A graph is nodes (also called vertices) joined by edges, which are lines. Here are 5 nodes and 5 edges.', [], g()));
-  s.push(csStep('Edges can be two-way, like friendships, or one-way, like follows. They can also carry a weight, such as a distance.', [], g({ edgeC: { 13: 'a' } })));
+  s.push(csStep('Edges can be two-way, like friendships, or one-way, like a one-way street. They can also carry a weight, such as a distance.', [], g({ edgeC: { 13: 'a' } })));
   s.push(csStep('Neighbours of a node are the nodes one edge away. Node 1 has three: 0, 2 and 3. That count is its degree.', ['g1'], g({ fill: { 1: 'a', 0: 'b', 2: 'b', 3: 'b' } })));
   s.push(csStep('An adjacency matrix is a grid with one row and column per node. A 1 in row i, column j means an edge joins i and j.', [], csScene(g(), matrix())));
-  s.push(csStep('To check if 1 is joined to 3, look at one cell: one step. But the grid has a cell for every pair, even with few edges.', ['m13', 'm31'], csScene(g({ edgeC: { 13: 'a' } }), matrix((i, j) => (i === 1 && j === 3) || (i === 3 && j === 1)))));
+  s.push(csStep('To check if 1 is joined to 3, look at one cell: one step. But the matrix has a cell for every pair, even with few edges.', ['m13', 'm31'], csScene(g({ edgeC: { 13: 'a' } }), matrix((i, j) => (i === 1 && j === 3) || (i === 3 && j === 1)))));
   s.push(csStep('An adjacency list keeps, for each node, only a list of its neighbours. Space grows with the nodes plus the edges.', [], csScene(g(), list())));
-  s.push(csStep('Listing a node’s neighbours costs only its degree. That is what searches through a graph need, so most problems use lists.', ['l10', 'l12', 'l13'], csScene(g({ fill: { 1: 'a' } }), list())));
-  s.push(csStep('Use the grid for small, edge-heavy graphs and lists for big ones with few edges. A grid of cells is a graph too.', [], csScene(g(), list())));
+  s.push(csStep('Listing a node’s neighbours costs only its degree. Walking through a graph needs exactly that, so most problems use lists.', ['l10', 'l12', 'l13'], csScene(g({ fill: { 1: 'a' } }), list())));
+  s.push(csStep('Use the matrix for small graphs with many edges, and lists for big ones with few edges.', [], csScene(g(), list())));
+  s.push(csStep('A maze is a graph too. Each open cell is a node, and each open path is an edge.', [], csScene(g(), list())));
   return s;
 }
 
@@ -783,13 +791,13 @@ function csTopo() {
   const s = [];
   s.push(csStep('A topological order lists tasks so each task comes after the ones it needs. An arrow from plan to shop means plan comes first.', [], sc(null, {})));
   const deg = Object.assign({}, indeg);
-  s.push(csStep('Kahn’s method counts the arrows pointing into each task. A task with zero is ready now, and only plan is.', ['tplan'], sc(deg, { plan: 'a' })));
+  s.push(csStep('Kahn’s method counts the arrows pointing into each task (its in-degree). Tasks with zero wait in a queue, a line. Only plan is ready.', ['tplan'], sc(deg, { plan: 'a' })));
   const q = Object.keys(N).filter((k) => deg[k] === 0); const order = []; const fill = {};
   while (q.length) {
     const u = q.shift(); order.push(u); fill[u] = 'ok'; const freed = [];
     E.forEach(([a, b]) => { if (a === u) { deg[b]--; if (deg[b] === 0) { q.push(b); freed.push(b); } } });
     q.forEach((k) => { fill[k] = 'a'; });
-    const say = 'Take ' + u + ' and write it down. ' + (freed.length ? 'Its arrows go, so ' + csList(freed) + (freed.length === 1 ? ' drops to zero and is ready.' : ' drop to zero and are ready.') : q.length ? 'Nothing new becomes ready.' : 'Nothing is left.');
+    const say = 'Take ' + u + ' and write it down. ' + (freed.length ? 'Remove the arrows that leave it. Now ' + csList(freed) + (freed.length === 1 ? ' has no arrows pointing in, so it is ready.' : ' have no arrows pointing in, so they are ready.') : q.length ? 'Nothing new becomes ready.' : 'Nothing is left.');
     s.push(csStep(say, ['t' + u], sc(Object.assign({}, deg), Object.assign({}, fill), { labels: [csLabel('ord', 480, 520, 'order: ' + order.join(' → '), { anchor: 'middle', c: 'a', size: 16, weight: 700, mono: true })] })));
   }
   s.push(csStep('If tasks remain but none has zero arrows in, some tasks wait on each other in a loop. Then no valid order exists.', [], sc(null, fill)));
@@ -806,16 +814,17 @@ function csDijkstra() {
   const fillOf = (cur) => { const f = {}; nodes.forEach((k) => { if (done[k]) f[k] = 'ok'; }); if (cur) f[cur] = 'a'; return f; };
   const s = [];
   s.push(csStep('Dijkstra finds the cheapest route from one start node to every other node. Every edge cost must be zero or more.', [], csGraph()));
-  s.push(csStep('Start: A costs 0 and every other node is ∞, meaning not reached yet. Settling a node makes its cost final.', ['gA'], csGraph({ sub: sub(), fill: { A: 'a' } })));
+  s.push(csStep('Start: A costs 0 and the rest are ∞, not reached yet. A min-heap, which hands back the smallest item fast, picks the next node.', ['gA'], csGraph({ sub: sub(), fill: { A: 'a' } })));
+  s.push(csStep('Settling a node makes its cost final. Then we relax its edges: if the route through that node is cheaper, we switch to it.', ['gA'], csGraph({ sub: sub(), fill: { A: 'a' } })));
   for (let r = 0; r < nodes.length; r++) {
     let u = null; nodes.forEach((k) => { if (!done[k] && (u === null || dist[k] < dist[u])) u = k; });
     done[u] = 1; const upd = [];
     g[u].forEach(([v, w]) => { if (!done[v] && dist[u] + w < dist[v]) { dist[v] = dist[u] + w; prev[v] = u; upd.push(v + ' drops to ' + dist[v]); } });
-    const say = 'Settle ' + u + ' at ' + dist[u] + ', the cheapest node not yet settled. ' + (upd.length ? 'Through it, ' + csList(upd) + '.' : 'No neighbour gets cheaper through it.');
+    const say = 'Settle ' + u + ' at ' + dist[u] + ', the cheapest node not yet settled. ' + (upd.length ? 'Relaxing its edges: ' + csList(upd) + '.' : 'Relaxing its edges changes nothing.');
     s.push(csStep(say, ['g' + u], csGraph({ sub: sub(), fill: fillOf(u), edgeC: treeC() })));
   }
   s.push(csStep('The green edges show the cheapest routes. Each node remembers the edge it came by, so you can trace any route back.', [], csGraph({ sub: sub(), fill: fillOf(), edgeC: treeC() })));
-  s.push(csStep('A heap is a structure that gives the smallest item quickly. It keeps the lowest cost easy to find.', [], csGraph({ sub: sub(), fill: fillOf(), edgeC: treeC() })));
+  s.push(csStep('The heap makes each pick quick, because the smallest cost is always easy to find. That keeps Dijkstra fast on big graphs.', [], csGraph({ sub: sub(), fill: fillOf(), edgeC: treeC() })));
   s.out = Object.assign({}, dist);
   return s;
 }
@@ -830,8 +839,9 @@ function csBellman() {
   });
   const s = [];
   s.push(csStep('Bellman-Ford finds cheapest routes even when an edge has a negative cost, below 0, like −4 from B to A.', ['aBA'], sc({ BA: 'c' })));
-  s.push(csStep('Dijkstra would settle A at 2 too early, but S → B → A costs 5 − 4 = 1. Negative edges break its rule.', ['gA'], sc({ SB: 'a', BA: 'a' }, { A: 'c' })));
+  s.push(csStep('Dijkstra locks A at 2 and never looks again, but S → B → A costs 5 − 4 = 1. Negative edges break its rule.', ['gA'], sc({ SB: 'a', BA: 'a' }, { A: 'c' })));
   s.push(csStep('Instead, relax every edge again and again. Relax means: if a route through this edge is cheaper, switch to it.', [], sc()));
+  s.push(csStep('We check the edges in a fixed order: C→D, A→C, B→A, S→B, S→A. An edge that starts at ∞ changes nothing.', [], sc()));
   const n = Object.keys(N).length; let rounds = 0;
   for (let r = 1; r <= n - 1; r++) {
     const before = JSON.stringify(dist); const ch = [];
@@ -840,7 +850,7 @@ function csBellman() {
     if (JSON.stringify(dist) === before) { s.push(csStep('Round ' + r + ' changes nothing, so every cost is final. We can stop early.', [], sc())); break; }
     s.push(csStep('Round ' + r + ' over all five edges: ' + csList(ch) + '.', [], sc(null, (() => { const f = {}; ch.forEach((c) => { f[c[0]] = 'a'; }); return f; })())));
   }
-  s.push(csStep('A cheapest route uses at most 4 edges here, so 4 rounds always do the job. Each round checks all the edges.', [], sc()));
+  s.push(csStep('A route that visits each of the 5 nodes once uses at most 4 edges. So 4 rounds always do the job.', [], sc()));
   s.push(csStep('Run one more round as a test. If any cost still drops, a loop has a negative total, so no cheapest route exists.', [], sc()));
   s.out = Object.assign({}, dist); s.rounds = rounds;
   return s;
@@ -864,14 +874,15 @@ function csFloyd() {
   const s = [];
   s.push(csStep('Floyd-Warshall finds the cheapest route between every pair of nodes at once, using a table of costs.', [], csScene(graph(), mat())));
   s.push(csStep('Start with direct edges only. Each cell is the cost from its row to its column, and ∞ means no route yet.', [], csScene(graph(), mat())));
+  s.push(csStep('Now each node takes a turn as a stop on the way. For every cell, ask: is going through that stop cheaper?', [], csScene(graph(), mat())));
   for (let k = 0; k < n; k++) {
-    const ch = {}; const list = [];
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) if (d[i][k] + d[k][j] < d[i][j]) { d[i][j] = d[i][k] + d[k][j]; ch[i + ',' + j] = 1; list.push((i + 1) + '→' + (j + 1)); }
-    const say = 'Allow stops at node ' + (k + 1) + '. Every cell asks: is going via ' + (k + 1) + ' cheaper? ' + (list.length ? csList(list.slice(0, 4)) + (list.length > 4 ? ' and more' : '') + ' improve.' : 'Nothing improves.');
+    const ch = {}; const list = []; let det = '';
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) if (d[i][k] + d[k][j] < d[i][j]) { if (!det) det = (i + 1) + '→' + (k + 1) + ' costs ' + d[i][k] + ' and ' + (k + 1) + '→' + (j + 1) + ' costs ' + d[k][j] + ', so ' + (i + 1) + '→' + (j + 1) + ' becomes ' + (d[i][k] + d[k][j]) + '.'; d[i][j] = d[i][k] + d[k][j]; ch[i + ',' + j] = 1; list.push((i + 1) + '→' + (j + 1)); }
+    const say = 'Via node ' + (k + 1) + ': ' + (list.length ? det + (list.length > 1 ? ' Also improved: ' + csList(list.slice(1, 4)) + (list.length > 4 ? ' and more' : '') + '.' : '') : 'nothing improves.');
     s.push(csStep(say, ['g' + (k + 1)].concat(Object.keys(ch).map((c) => 'f' + c.replace(',', ''))), csScene(graph(k + 1), mat(ch, k))));
   }
   s.push(csStep('Once every node has been a stop, the table holds all the cheapest costs. 1 to 4 costs ' + d[0][3] + ', by 1 → 2 → 3 → 4.', ['f03'], csScene(graph(), mat({ '0,3': 1 }))));
-  s.push(csStep('It uses three loops, one inside another, over n nodes, so the work is about n × n × n. That suits a few hundred nodes.', [], csScene(graph(), mat())));
+  s.push(csStep('It uses three loops, one inside another, over V nodes: V × V × V checks. For 300 nodes that is 27 million checks.', [], csScene(graph(), mat())));
   s.out = d.map((r) => r.slice());
   return s;
 }
@@ -886,15 +897,16 @@ function csKruskal() {
   const s = [];
   s.push(csStep('A minimum spanning tree joins all the nodes with the cheapest edges and no loop. Kruskal builds it edge by edge.', [], csScene(csGraph(), { tokens: toks() })));
   s.push(csStep('Sort the edges from cheapest to most expensive, shown along the bottom. Every node starts in a set of its own.', [], sc()));
+  s.push(csStep('Union-find tracks these sets. find(x) gives the set x is in; union merges two sets. The labels under the nodes show each set.', [], sc()));
   let taken = 0;
   for (const [a, b, w] of sorted) {
     if (taken === Object.keys(CS_GN).length - 1) break;
     const ra = find(a); const rb = find(b);
-    if (ra !== rb) { parent[ra] = rb; state[a + b] = 'in'; total += w; taken++; s.push(csStep('Edge ' + a + b + ', cost ' + w + ': ' + a + ' and ' + b + ' are in different sets, so take it and merge the two sets.', ['e' + a + b, 'k' + a + b], sc())); }
-    else { state[a + b] = 'out'; s.push(csStep('Edge ' + a + b + ', cost ' + w + ': ' + a + ' and ' + b + ' are already in one set. Taking it would make a loop, so skip it.', ['e' + a + b, 'k' + a + b], sc())); }
+    if (ra !== rb) { parent[ra] = rb; state[a + b] = 'in'; total += w; taken++; s.push(csStep('Edge ' + a + b + ', cost ' + w + ': find says ' + a + ' and ' + b + ' are in different sets. Take it and union them.', ['e' + a + b, 'k' + a + b], sc())); }
+    else { state[a + b] = 'out'; s.push(csStep('Skip edge ' + a + b + ', cost ' + w + ': find says ' + a + ' and ' + b + ' are already in one set. It would make a loop.', ['e' + a + b, 'k' + a + b], sc())); }
   }
   s.push(csStep('Five edges join six nodes, so the tree is done. Total cost: ' + total + '.', [], sc()));
-  s.push(csStep('Union-find answers "same set?" in nearly one step. Sorting the edges takes most of the time.', [], sc()));
+  s.push(csStep('Union-find answers "same set?" in nearly one step. Sorting the edges takes most of the time, about E × log E steps.', [], sc()));
   s.out = total;
   return s;
 }
@@ -906,14 +918,14 @@ function csPrim() {
   const frontier = () => { const out = []; Object.keys(inT).forEach((u) => g[u].forEach(([v]) => { if (!inT[v]) out.push(key(u, v)); })); return out; };
   const s = [];
   s.push(csStep('Prim also builds a minimum spanning tree (the cheapest edges that join all nodes). It grows one tree outward from A.', ['gA'], sc()));
-  s.push(csStep('The blue edges leave the tree. Always take the cheapest one.', [], sc(frontier())));
+  s.push(csStep('The edges that leave the tree are the frontier, drawn in blue. Always take the cheapest one.', [], sc(frontier())));
   while (Object.keys(inT).length < Object.keys(CS_GN).length) {
     let best = null; Object.keys(inT).forEach((u) => g[u].forEach(([v, w]) => { if (!inT[v] && (!best || w < best[2])) best = [u, v, w]; }));
     const [u, v, w] = best; inT[v] = 1; ec[key(u, v)] = 'ok'; total += w;
     s.push(csStep('The cheapest edge leaving the tree is ' + u + v + ', cost ' + w + '. Add it, and ' + v + ' joins the tree.', ['g' + v], sc(frontier())));
   }
   s.push(csStep('All six nodes are in, for a total cost of ' + total + '. Kruskal gets the same total.', [], sc()));
-  s.push(csStep('A heap, a structure that gives the cheapest item fast, makes Prim quick. It suits graphs with many edges; Kruskal suits few.', [], sc()));
+  s.push(csStep('A heap, which hands back the cheapest item fast, makes Prim take about E × log V steps. Kruskal takes about the same.', [], sc()));
   s.out = total;
   return s;
 }
@@ -935,14 +947,14 @@ function csGcd(b0) {
   };
   const s = [];
   s.push(csStep('The greatest common divisor of two numbers is the biggest number that divides both evenly. Euclid found a fast way.', [], { labels: [csLabel('gq', 480, 260, 'gcd(' + a0 + ', ' + b0 + ') = ?', { anchor: 'middle', c: 'a', size: 34, weight: 700, mono: true })] }));
-  s.push(csStep('a mod b is the leftover when a is divided by b. Any common divisor of a and b also divides it, so gcd(a, b) = gcd(b, a mod b).', [], { labels: [csLabel('gr', 480, 260, 'gcd(a, b) = gcd(b, a mod b)', { anchor: 'middle', c: 'a', size: 30, weight: 700, mono: true })] }));
+  s.push(csStep('a mod b is the leftover of a ÷ b. The pairs (a, b) and (b, leftover) have the same common divisors, so gcd(a, b) = gcd(b, a mod b).', [], { labels: [csLabel('gr', 480, 260, 'gcd(a, b) = gcd(b, a mod b)', { anchor: 'middle', c: 'a', size: 30, weight: 700, mono: true })] }));
   rows.forEach(([x, y, q, r], i) => {
     const say = 'Fit ' + y + ' into ' + x + ': it goes ' + q + (q === 1 ? ' time' : ' times') + ' with ' + r + ' left over. ' + (r ? 'Now find gcd(' + y + ', ' + r + ').' : 'Nothing left, so ' + y + ' divides both.');
     s.push(csStep(say, [r ? 'rm' + i : 'q' + i + '_0'], sc(i + 1)));
   });
   s.push(csStep('The answer is the last non-zero remainder: gcd(' + a0 + ', ' + b0 + ') = ' + g + '. Every bar above is built from blocks of ' + g + '.', [], sc(rows.length, true)));
   s.push(csStep('If the gcd is 1, the two numbers share no factor except 1. They are called coprime.', [], sc(rows.length, true)));
-  s.push(csStep('Numbers at least halve every two steps, so Euclid is quick. The lcm, the smallest number both divide into, is a × b ÷ gcd = ' + (a0 * b0 / g) + '.', [], sc(rows.length, true)));
+  s.push(csStep('The numbers get less than half as big every two steps, so Euclid is quick. The lcm, the smallest number both divide into, is ' + (a0 * b0 / g) + '.', [], sc(rows.length, true)));
   s.out = g;
   return s;
 }
@@ -951,7 +963,7 @@ function csSieve() {
   const N = 50; const cols = 7; const crossed = {}; const by = {};
   const sc = (hiP) => ({ boxes: Array.from({ length: N - 1 }, (_, i) => { const v = i + 2; const r = Math.floor(i / cols); const c = i % cols; return { id: 's' + v, x: 240 + c * 70, y: 30 + r * 66, w: 62, h: 56, rx: 8, label: String(v), mono: true, size: 16, op: crossed[v] ? 0.25 : 1, fill: hiP === v ? 'a' : by[v] === hiP && hiP ? 'c' : !crossed[v] && hiP === 0 ? 'ok' : null, c: 'l' }; }) });
   const s = [];
-  s.push(csStep('A prime has exactly two divisors, numbers that divide it evenly: 1 and itself. The sieve crosses out the rest.', [], sc()));
+  s.push(csStep('Look at the numbers from 2 to 50. A prime is divided evenly only by 1 and itself. The sieve crosses out the rest.', [], sc()));
   [2, 3, 5, 7].forEach((p) => {
     const hit = []; for (let m = p * p; m <= N; m += p) if (!crossed[m]) { crossed[m] = 1; by[m] = p; hit.push(m); }
     const say = p === 2 ? '2 is prime. Cross out its multiples (2 times a whole number) from 2 × 2 = 4: ' + hit.length + ' numbers go.'
@@ -959,7 +971,7 @@ function csSieve() {
     s.push(csStep(say, ['s' + p], sc(p)));
   });
   s.push(csStep('Why start at the prime times itself? Smaller multiples like 2 × 7 were already crossed out by a smaller prime.', ['s49'], sc(7)));
-  s.push(csStep('We can stop at 7, because 8 × 8 = 64 is past 50. Every number left is prime.', [], sc(0)));
+  s.push(csStep('The next prime is 11, and 11 × 11 = 121 is past 50. So we stop at 7, and every number left is prime.', [], sc(0)));
   const primes = []; for (let v = 2; v <= N; v++) if (!crossed[v]) primes.push(v);
   s.push(csStep('That leaves ' + primes.length + ' primes up to 50. The work is only a little more than one pass over the numbers.', [], sc(0)));
   s.out = primes;
@@ -972,13 +984,13 @@ function csModArith() {
     labels: [csLabel('mm', cx, cy + 6, 'mod 7', { anchor: 'middle', c: 'm', size: 18, mono: true })] }, extra);
   const eq = (lines) => ({ labels: lines.map((l, i) => csLabel('q' + i, 540, 170 + i * 50, l, { c: i === lines.length - 1 ? 'a' : 't', size: 20, weight: 700, mono: true })) });
   const s = [];
-  s.push(csStep('a mod m is the remainder when a is divided by m. It is always from 0 to m − 1, like a clock with m hours.', [], clock()));
-  s.push(csStep('For 17 mod 7, walk 17 steps round a 7-hour clock. You stop at 3, because 17 = 2 × 7 + 3.', ['c3'], clock(3, eq(['17 = 2 × 7 + 3', '17 mod 7 = 3']))));
-  s.push(csStep('You can take the mod before adding: (a + b) mod m = ((a mod m) + (b mod m)) mod m. The answer is the same.', ['c1'], clock(1, eq(['(17 + 12) mod 7', '= (3 + 5) mod 7', '= 1']))));
-  s.push(csStep('The same works for multiplying: (a × b) mod m = ((a mod m) × (b mod m)) mod m. Numbers stay small the whole way.', ['c1'], clock(1, eq(['(17 × 12) mod 7', '= (3 × 5) mod 7', '= 15 mod 7 = 1']))));
+  s.push(csStep('a mod m, said "a modulo m", is the remainder of a ÷ m. It is always from 0 to m − 1, like a clock with m hours.', [], clock()));
+  s.push(csStep('For 17 mod 7, walk 17 steps around a 7-hour clock. You stop at 3, because 17 = 2 × 7 + 3.', ['c3'], clock(3, eq(['17 = 2 × 7 + 3', '17 mod 7 = 3']))));
+  s.push(csStep('Only the leftover matters, so shrink first. 17 mod 7 = 3 and 12 mod 7 = 5, so (17 + 12) mod 7 = (3 + 5) mod 7 = 1.', ['c1'], clock(1, eq(['(17 + 12) mod 7', '= (3 + 5) mod 7', '= 1']))));
+  s.push(csStep('Multiplying works the same way: (17 × 12) mod 7 = (3 × 5) mod 7 = 15 mod 7 = 1. Numbers stay small the whole way.', ['c1'], clock(1, eq(['(17 × 12) mod 7', '= (3 × 5) mod 7', '= 15 mod 7 = 1']))));
   s.push(csStep('That is why problems say "answer mod 1,000,000,007". Take the mod after every step and numbers never get too big.', [], clock(null, eq(['ans = (ans × x) % MOD', 'MOD = 1,000,000,007']))));
   s.push(csStep('Subtraction can go negative: (3 − 5) mod 7 should be 5. Add m before taking the mod: (3 − 5 + 7) mod 7 = 5.', ['c5'], clock(5, eq(['(3 − 5) mod 7', '= (3 − 5 + 7) mod 7', '= 5']))));
-  s.push(csStep('Division does not work this way. To divide under a mod, you multiply by an inverse, which has its own lesson.', [], clock(null, eq(['(a ÷ b) mod m ≠', '(a mod m) ÷ (b mod m)']))));
+  s.push(csStep('Division does not work this way. To divide under a mod, you multiply by an inverse, taught in a later lesson.', [], clock(null, eq(['(a ÷ b) mod m ≠', '(a mod m) ÷ (b mod m)']))));
   return s;
 }
 
@@ -991,7 +1003,9 @@ function csFastPow(e) {
   const s = [];
   s.push(csStep('Find 3^' + e + ' mod 1000: 3 multiplied by itself ' + e + ' times, then the remainder after dividing by 1000.', [], { labels: [csLabel('t', 480, 260, '3^' + e + ' mod 1000', { anchor: 'middle', c: 'a', size: 34, weight: 700, mono: true })] }));
   s.push(csStep('Square again and again: 3, 3², 3⁴, 3⁸ and so on. Each square is one multiplication, with the mod taken each time.', [], toks(sq.length, false)));
-  s.push(csStep(e + ' in binary (counting in twos) is ' + e.toString(2) + '. Each digit is a bit, and 3^' + e + ' multiplies the squares whose bit is 1.', [], toks(sq.length, true)));
+  const parts = []; bits.forEach((bt, i) => { if (bt === '1') parts.unshift(Math.pow(2, i)); });
+  s.push(csStep('Binary uses only 0 and 1. Each digit is a bit, worth twice the one on its right: ' + e + ' is ' + e.toString(2) + ', which is ' + parts.join(' + ') + '.', [], toks(sq.length, true)));
+  s.push(csStep('So 3^' + e + ' = ' + parts.map((x) => '3^' + x).join(' × ') + '. We multiply the squares whose bit is 1.', [], toks(sq.length, true)));
   bits.forEach((bt, i) => {
     if (bt !== '1') return;
     res = res * sq[i] % M; used.push(Math.pow(2, i));
@@ -1009,13 +1023,13 @@ function csModInv(a) {
     { labels: [csLabel('tl', 72, 210, a + ' × x mod 11', { size: 14 })] });
   let r = 1; for (let i = 0; i < p - 2; i++) r = r * a % p;
   const s = [];
-  s.push(csStep('Under mod 11 (the remainder after dividing by 11), dividing by ' + a + ' means multiplying by x with ' + a + ' × x mod 11 = 1. That x is the inverse.', [], tab()));
+  s.push(csStep('Under mod 11, dividing by ' + a + ' means multiplying by a number x. Pick x so that ' + a + ' × x leaves remainder 1. That x is the inverse.', [], tab()));
   s.push(csStep('Here is ' + a + ' × x mod 11 for every x from 1 to 10. Each answer appears once, so exactly one x gives 1.', [], tab()));
   s.push(csStep('It is x = ' + inv + ': ' + a + ' × ' + inv + ' = ' + (a * inv) + ', and ' + (a * inv) + ' mod 11 = 1. So dividing by ' + a + ' is the same as multiplying by ' + inv + '.', ['x' + (inv - 1)], tab(true)));
-  s.push(csStep('Trying every x is slow. Fermat’s little theorem: for a prime p (only 1 and p divide it), a^(p−1) mod p = 1.', [], tab(true)));
-  s.push(csStep('So the inverse is a^(p−2) mod p: here ' + a + '^9 mod 11 = ' + r + '. The fast power method computes it quickly.', [], tab(true)));
-  s.push(csStep('Example: (8 ÷ ' + a + ') mod 11 becomes 8 × ' + inv + ' mod 11 = ' + (8 * inv % 11) + '. This trick is used to count choices under a mod.', [], tab(true)));
-  s.push(csStep('An inverse exists only when a and m share no factor. If the modulus is not prime, a method called extended Euclid finds it.', [], tab()));
+  s.push(csStep('Trying every x is slow. A known rule: for a prime p (only 1 and p divide it), a^(p−1) mod p = 1.', [], tab(true)));
+  s.push(csStep('Now a^(p−1) = a × a^(p−2), so a × a^(p−2) mod p = 1. The inverse is a^(p−2): here ' + a + '^9 mod 11 = ' + r + '.', [], tab(true)));
+  s.push(csStep('Example: (8 ÷ ' + a + ') mod 11 becomes 8 × ' + inv + ' mod 11 = ' + (8 * inv % 11) + '. The next lesson uses it to count choices under a mod.', [], tab(true)));
+  s.push(csStep('An inverse exists only when a and the modulus share no factor. A longer method (not in this course) handles a modulus that is not prime.', [], tab()));
   s.out = { inv, fermat: r };
   return s;
 }
@@ -1026,11 +1040,12 @@ function csNcr(k) {
   const s = [];
   s.push(csStep('nCr counts ways to choose r things out of n when order does not matter. Choosing 2 of A, B, C gives AB, AC, BC: 3 ways.', [], { tokens: ['AB', 'AC', 'BC'].map((x, i) => ({ id: 'c' + x, x: 380 + i * 100, y: 200, text: x, fill: 'b' })) }));
   s.push(csStep('If order mattered there would be 6, because AB and BA would count as different. Each pair can be ordered 2 ways.', [], { tokens: ['AB', 'BA', 'AC', 'CA', 'BC', 'CB'].map((x, i) => ({ id: 'q' + x, x: 230 + i * 100, y: 200, text: x, fill: i % 2 ? 'c' : 'b' })) }));
-  s.push(csStep('The formula is nCr = n! ÷ (r! × (n − r)!), where 4! means 4 × 3 × 2 × 1. Factorials grow huge, so code uses another way.', [], { labels: [csLabel('f', 480, 260, 'nCr = n! ÷ (r! (n − r)!)', { anchor: 'middle', c: 'a', size: 30, weight: 700, mono: true })] }));
+  s.push(csStep('A factorial such as 4! means 4 × 3 × 2 × 1 = 24. The formula is nCr = n! ÷ (r! × (n − r)!).', [], { labels: [csLabel('f', 480, 260, 'nCr = n! ÷ (r! (n − r)!)', { anchor: 'middle', c: 'a', size: 30, weight: 700, mono: true })] }));
+  s.push(csStep('Factorials grow huge: 20! already has 19 digits. So code often uses Pascal’s triangle, which only adds.', [], { labels: [csLabel('f', 480, 260, '20! = 2432902008176640000', { anchor: 'middle', c: 'a', size: 28, weight: 700, mono: true })] }));
   s.push(csStep('Pascal’s triangle: every row starts and ends with 1. Every other number is the sum of the two above it.', [], tri(3)));
-  s.push(csStep('To choose r from n, you either take the last item or skip it. Taking it leaves r − 1 to choose; skipping leaves r.', ['p4_2'], tri(5, { '3,1': 'b', '3,2': 'b', '4,2': 'a' })));
+  s.push(csStep('Choose r of n items: take the last one or skip it. Taking it leaves r − 1 to pick from the other n − 1 items; skipping leaves r.', ['p4_2'], tri(5, { '3,1': 'b', '3,2': 'b', '4,2': 'a' })));
   const hi = { [n + ',' + k]: 'a' }; if (k > 0 && k < n) { hi[(n - 1) + ',' + (k - 1)] = 'b'; hi[(n - 1) + ',' + k] = 'b'; }
-  s.push(csStep('Row n holds every nC0 … nCn. Row ' + n + ' gives 6C' + k + ' = ' + T[n][k] + (k > 0 && k < n ? ', from ' + T[n - 1][k - 1] + ' + ' + T[n - 1][k] + ' above it.' : '.'), ['p' + n + '_' + k], tri(n + 1, hi)));
+  s.push(csStep('Row n holds nC0 up to nCn. Row ' + n + ' gives 6C' + k + ' = ' + T[n][k] + (k > 0 && k < n ? ', from ' + T[n - 1][k - 1] + ' + ' + T[n - 1][k] + ' above it.' : '.'), ['p' + n + '_' + k], tri(n + 1, hi)));
   s.push(csStep('Row 6 adds up to 64, which is 2 multiplied by itself 6 times. That is the number of groups you can pick from 6 things.', [], tri(n + 1)));
   s.push(csStep('Building the triangle takes about n × n additions. For one big nCr under a mod, use factorials and inverses instead.', [], tri(n + 1)));
   s.out = T[n][k];
@@ -1044,13 +1059,14 @@ function csInclExcl() {
   const A = cnt((i) => i % 2 === 0); const B = cnt((i) => i % 3 === 0); const AB = cnt((i) => i % 6 === 0); const AorB = cnt((i) => i % 2 === 0 || i % 3 === 0);
   const C = cnt((i) => i % 5 === 0); const ABC = cnt((i) => i % 2 === 0 || i % 3 === 0 || i % 5 === 0);
   const s = [];
-  s.push(csStep('How many numbers from 1 to 30 are multiples of 2 (like 4) or of 3 (like 9)? We can count without listing them.', [], two()));
+  s.push(csStep('How many numbers from 1 to 30 are multiples of 2 or of 3? Each circle is one group. Where circles overlap, a number is in both.', [], two()));
   s.push(csStep('Multiples of 2: 30 ÷ 2 = ' + A + '. Multiples of 3: 30 ÷ 3 = ' + B + '. But ' + A + ' + ' + B + ' = ' + (A + B) + ' is too many.', [], two({ labels: [csLabel('na', 330, 270, String(A), { anchor: 'middle', c: 't', size: 28, weight: 700, mono: true }), csLabel('nb', 630, 270, String(B), { anchor: 'middle', c: 't', size: 28, weight: 700, mono: true })] })));
   s.push(csStep('Numbers like 6 and 12 sit in both circles, so they were counted twice. They are the multiples of 6: there are ' + AB + '.', [], two({ labels: [csLabel('nab', 480, 270, String(AB), { anchor: 'middle', c: 'a', size: 28, weight: 700, mono: true })] })));
   s.push(csStep('Add the two counts and subtract the overlap once: ' + A + ' + ' + B + ' − ' + AB + ' = ' + AorB + '. This is inclusion-exclusion.', [], two({ labels: [csLabel('tot', 480, 500, A + ' + ' + B + ' − ' + AB + ' = ' + AorB, { anchor: 'middle', c: 'a', size: 22, weight: 700, mono: true })] })));
   s.push(csStep('Add multiples of 5 as a third group. Add the three counts, subtract the overlaps of two, then add back the overlap of all three.', [], two({ C: true })));
+  s.push(csStep('Counts: 30 ÷ 2 = 15, 30 ÷ 3 = 10, 30 ÷ 5 = 6. Pair overlaps (multiples of 6, 10, 15): 5, 3, 2. All three (multiples of 30): 1.', [], two({ C: true })));
   s.push(csStep('15 + 10 + 6 − 5 − 3 − 2 + 1 = ' + ABC + '. Numbers in all three groups were removed too often, so they are added back once.', [], two({ C: true, labels: [csLabel('tot', 480, 50, '15 + 10 + 6 − 5 − 3 − 2 + 1 = ' + ABC, { anchor: 'middle', c: 'a', size: 20, weight: 700, mono: true })] })));
-  s.push(csStep('The rule: add overlaps of an odd number of groups, subtract the rest. So 30 − ' + ABC + ' = ' + (n - ABC) + ' numbers are multiples of none of them.', [], two({ C: true })));
+  s.push(csStep('Signs alternate: add one group, subtract two, add three. The opposite count is now easy: 30 − ' + ABC + ' = ' + (n - ABC) + ' numbers are in none of the groups.', [], two({ C: true })));
   s.out = { two: AorB, three: ABC };
   return s;
 }
@@ -1068,12 +1084,13 @@ function csBits(x) {
   s.push(csStep('OR gives a 1 where either has a 1. XOR gives a 1 only where they differ, so x ^ x = 0 and x ^ 0 = x.', [], csScene(places, row('x', x, 70, 'x'), row('y', Y, 170, 'y'), row('r', x ^ Y, 290, 'x ^ y'))));
   s.push(csStep('Shifting left by 1 doubles a number, and shifting right halves it. 1 << i makes a mask with only bit i on.', [], csScene(places, row('x', x, 70, 'x'), row('r', (x << 1) & 255, 290, 'x << 1'))));
   const i = 4; const m = 1 << i;
-  s.push(csStep('Set bit ' + i + ' (turn it on) with x | (1 << ' + i + '). The value is now ' + (x | m) + '.', [], csScene(places, row('x', x, 70, 'x'), row('m', m, 170, 'mask'), row('r', x | m, 290, 'set', { [i]: 'a' }))));
-  s.push(csStep('Clear bit ' + i + ' with x & ~(1 << ' + i + '), and flip it with x ^ (1 << ' + i + '). Test it with (x >> ' + i + ') & 1.', [], csScene(places, row('x', x, 70, 'x'), row('m', m, 170, 'mask'), row('r', x ^ m, 290, 'flip', { [i]: 'c' }))));
-  s.push(csStep(x ? 'x & −x keeps only the lowest bit that is on: here ' + low + '. Some data structures use this trick.' : 'x is 0, so no bit is on, and x & −x is 0. Drag the slider to try another number.', [], csScene(places, row('x', x, 70, 'x'), row('r', low, 290, 'x & −x', { [Math.log2(low || 1)]: 'a' }))));
+  s.push(csStep('Bit ' + i + ' is the place worth ' + m + ', counting from 0 at the right. Set it (turn it on) with x | (1 << ' + i + '). Now x is ' + (x | m) + '.', [], csScene(places, row('x', x, 70, 'x'), row('m', m, 170, 'mask'), row('r', x | m, 290, 'set', { [i]: 'a' }))));
+  s.push(csStep('Clear bit ' + i + ' with x & ~(1 << ' + i + '). The ~ (NOT) flips every bit of the mask, so the mask is all 1s except at bit ' + i + '.', [], csScene(places, row('x', x, 70, 'x'), row('m', (~m) & 255, 170, '~mask'), row('r', x & ~m, 290, 'clear', { [i]: 'c' }))));
+  s.push(csStep('Flip bit ' + i + ' with x ^ (1 << ' + i + '). Test it with (x >> ' + i + ') & 1, which is 1 when the bit is on.', [], csScene(places, row('x', x, 70, 'x'), row('m', m, 170, 'mask'), row('r', x ^ m, 290, 'flip', { [i]: 'c' }))));
+  s.push(csStep(x ? 'In binary, −x means flip every bit of x, then add 1. So x & −x keeps only the lowest 1 bit: here ' + low + '.' : 'x is 0, so no bit is on, and x & −x is 0. Drag the slider to try another number.', [], csScene(places, row('x', x, 70, 'x'), row('r', low, 290, 'x & −x', { [Math.log2(low || 1)]: 'a' }))));
   s.push(csStep('x & (x − 1) turns off the lowest bit that is on. Repeat until x is 0 and count the rounds: ' + x + ' has ' + pc + (pc === 1 ? ' bit on.' : ' bits on.'), [], csScene(places, row('x', x, 70, 'x'), row('r', x & (x - 1), 290, 'x & (x−1)'))));
-  s.push(csStep('So x is a power of two (1, 2, 4, 8…) exactly when x > 0 and x & (x − 1) = 0. ' + x + (x > 0 && (x & (x - 1)) === 0 ? ' is one.' : ' is not.'), [], csScene(places, row('x', x, 70, 'x'), row('r', x & (x - 1), 290, 'x & (x−1)'))));
-  s.push(csStep('Counting the 1 bits of every number from 0 to n is quick: bits(i) = bits(i >> 1) + (i & 1).', [], csScene(places, row('x', x, 70, 'x'), row('r', x >> 1, 290, 'x >> 1'))));
+  s.push(csStep('A power of two (1, 2, 4, 8) has one bit on, so x & (x − 1) is 0 (and x is above 0). ' + x + (x > 0 && (x & (x - 1)) === 0 ? ' is one.' : ' is not.'), [], csScene(places, row('x', x, 70, 'x'), row('r', x & (x - 1), 290, 'x & (x−1)'))));
+  s.push(csStep('To count the 1 bits of every number up to n, use bits(i) = bits(i >> 1) + (i & 1). For ' + x + ': bits(' + (x >> 1) + ') is ' + (pc - (x & 1)) + ', plus the last bit ' + (x & 1) + ', is ' + pc + '.', [], csScene(places, row('x', x, 70, 'x'), row('r', x >> 1, 290, 'x >> 1'))));
   s.out = { pc, low, and: x & Y, xor: x ^ Y };
   return s;
 }
@@ -1085,10 +1102,12 @@ function csKmp() {
   const pat = (off, hi) => ({ boxes: P.split('').map((c, i) => ({ id: 'p' + i, x: 84 + (off + i) * (cw + 6), y: 230, w: cw, h: 56, rx: 8, label: c, mono: true, size: 18, c: 'b', fill: hi && hi[i] ? hi[i] : null })) });
   const piRow = { boxes: pi.map((v, i) => ({ id: 'pi' + i, x: 300 + i * 74, y: 410, w: 64, h: 48, rx: 8, label: String(v), mono: true, size: 18, c: 'a' })), labels: P.split('').map((c, i) => csLabel('pc' + i, 332 + i * 74, 396, c, { anchor: 'middle', size: 14, mono: true })).concat([csLabel('pt', 280, 440, 'prefix lengths', { anchor: 'end', size: 14 })]) };
   const s = [];
-  s.push(csStep('Find the pattern "' + P + '" in the text. The slow way slides it one place after each mismatch and compares again.', [], csScene(text(), pat(0))));
+  s.push(csStep('Find the pattern "' + P + '" in the text "' + T + '". The slow way restarts after each mismatch.', [], csScene(text(), pat(0))));
   s.push(csStep('KMP never moves backwards in the text. After a mismatch it already knows how much of the pattern still lines up.', [], csScene(text(), pat(0))));
-  s.push(csStep('The prefix function gives each spot a number. It is the length of the longest part that is both a start and an end.', [], csScene(text(), pat(0), piRow)));
-  s.push(csStep('At "ABAB" the answer is 2, because "AB" starts it and ends it. So after a miss following "ABAB", "AB" still matches.', ['pi3'], csScene(text(), pat(0, { 0: 'b', 1: 'b', 2: 'a', 3: 'a' }), piRow)));
+  s.push(csStep('The prefix table gives each spot a number. It is the longest start that is also an end, but not the whole part.', [], csScene(text(), pat(0), piRow)));
+  s.push(csStep('Build it one spot at a time. A: no start is shorter than itself, so 0. AB: the start A is not the end B, so 0.', ['pi0', 'pi1'], csScene(text(), pat(0, { 0: 'b', 1: 'a' }), piRow)));
+  s.push(csStep('ABA: A starts it and A ends it, so 1. ABAB: AB starts it and AB ends it, so 2. ABABC: nothing matches, so 0.', ['pi2', 'pi3', 'pi4'], csScene(text(), pat(0, { 0: 'b', 1: 'b', 2: 'a', 3: 'a' }), piRow)));
+  s.push(csStep('So after a miss following "ABAB", the last two letters "AB" still match the start of the pattern.', ['pi3'], csScene(text(), pat(0, { 0: 'b', 1: 'b', 2: 'a', 3: 'a' }), piRow)));
   // the search
   let j = 0; let found = -1; const events = [];
   for (let i = 0; i < T.length; i++) {
@@ -1099,9 +1118,12 @@ function csKmp() {
   const e0 = events[0];
   const hiT = {}; for (let k = 0; k < e0.i; k++) hiT[k] = 'ok'; hiT[e0.i] = 'bad';
   s.push(csStep('Compare along: A B A B match, then D meets C. That is a mismatch at pattern spot ' + e0.j + '.', ['t' + e0.i], csScene(text(hiT), pat(0, { 4: 'bad' }), piRow)));
-  s.push(csStep('The prefix function says 2 letters still match. So slide the pattern to line up its "AB" with the last "AB" in the text.', ['pi3'], csScene(text(hiT), pat(e0.i - e0.to, { 0: 'b', 1: 'b' }), piRow)));
+  s.push(csStep('The prefix table says 2 letters still match. So slide the pattern to line up its "AB" with the last "AB" in the text.', ['pi3'], csScene(text(hiT), pat(e0.i - e0.to, { 0: 'b', 1: 'b' }), piRow)));
   s.push(csStep('D still does not match, so the pattern starts fresh after the D. We never moved backwards in the text.', [], csScene(text({ [e0.i]: 'bad' }), pat(e0.i + 1), piRow)));
   const hiF = {}; for (let k = found; k < found + P.length; k++) hiF[k] = 'ok';
+  const e2 = events.find((ev) => ev.i > e0.i);
+  const hiT2 = {}; for (let k = e2.i - 4; k < e2.i; k++) hiT2[k] = 'ok'; hiT2[e2.i] = 'bad';
+  s.push(csStep('Later ABAB matches again, but then A meets C. The table says 2 letters still match, so keep that AB and carry on.', ['t' + e2.i], csScene(text(hiT2), pat(e2.i - e2.to, { 0: 'b', 1: 'b' }), piRow)));
   s.push(csStep('Keep going the same way. The pattern is found at index ' + found + '.', [], csScene(text(hiF), pat(found, { 0: 'ok', 1: 'ok', 2: 'ok', 3: 'ok', 4: 'ok' }), piRow)));
   s.push(csStep('The work is about n + m steps, even for the worst text. Here n is the text length and m is the pattern length.', [], csScene(text(hiF), pat(found), piRow)));
   s.out = { pi, found };
@@ -1117,10 +1139,12 @@ function csZ() {
   s.push(csStep('The Z-array says, for every position i, how many letters starting at i match the start of the string.', [], cells()));
   s.push(csStep('At i = 4, "aab" matches the first three letters "aab" and then the string ends. So Z[4] = 3.', ['z4'], cells({ 0: 'b', 1: 'b', 2: 'b', 4: 'a', 5: 'a', 6: 'a' }, (i) => i === 4)));
   s.push(csStep('At i = 1, "a" matches but then "b" meets "a", so Z[1] = 1. At i = 2, "b" misses "a", so Z[2] = 0.', ['z1', 'z2'], cells({ 0: 'b', 1: 'a' }, (i) => i <= 2 && i > 0)));
-  s.push(csStep('To go faster, remember the window of the match that reaches furthest right. Inside it, reuse an answer already worked out.', [], cells({ 4: 'b', 5: 'b', 6: 'b' }, (i) => i <= 4)));
-  s.push(csStep('Then compare only new letters past the window’s end. The end only moves right, so the work grows with the string length.', [], cells(null, () => true)));
-  s.push(csStep('Z = [–, ' + z.slice(1).join(', ') + '].', [], cells(null, () => true)));
-  s.push(csStep('To find a pattern, build Z for the pattern, then "$", then the text. A spot whose Z equals the pattern length is a match.', [], cells(null, () => true)));
+  s.push(csStep('To go faster, remember the match box: the match that reaches furthest right. Inside it, reuse an answer already worked out.', [], cells({ 4: 'b', 5: 'b', 6: 'b' }, (i) => i <= 4)));
+  s.push(csStep('Z[5] sits inside the box from i = 4, which covers places 4 to 6. Place 5 mirrors place 1, so copy Z[1] = 1.', ['z1', 'z5'], cells({ 4: 'b', 5: 'a', 6: 'b', 1: 'a' }, (i) => i === 1 || i === 4 || i === 5)));
+  s.push(csStep('Then compare only new letters past the box’s end. The end only moves right, so the work grows with the string length.', [], cells(null, () => true)));
+  s.push(csStep('The Z-array is [–, ' + z.slice(1).join(', ') + ']. The dash is place 0: it would match itself, so it is left out.', [], cells(null, () => true)));
+  s.push(csStep('To search, write the pattern, then "$", then the text. The $ is a separator that no match can run across.', [], cells(null, () => true)));
+  s.push(csStep('Build Z for that whole string. A spot in the text whose Z equals the pattern length is a match.', [], cells(null, () => true)));
   s.out = z;
   return s;
 }
@@ -1135,11 +1159,11 @@ function csRollHash() {
   const sc = (w, hi) => csScene(csCells(T.split(''), { y: 120, w: 68, gap: 8, p: 't', x: 62, fill: (i) => (i >= w && i < w + m ? hi || 'b' : null) }),
     { labels: [csLabel('hw', 480, 290, 'window "' + T.substr(w, m) + '" hash = ' + hs[w], { anchor: 'middle', c: 't', size: 20, weight: 700, mono: true }), csLabel('hp', 480, 340, 'pattern "' + P + '" hash = ' + hp, { anchor: 'middle', c: 'a', size: 20, weight: 700, mono: true })] });
   const s = [];
-  s.push(csStep('Rabin-Karp turns the pattern and each same-length window of the text into a number called a hash. Then it compares numbers.', [], sc(0)));
-  s.push(csStep('Letters become digits (a = 1, b = 2…) of a base 31 number, and we keep its remainder after dividing by 101. "' + P + '" hashes to ' + hp + '.', ['hp'], sc(0)));
-  s.push(csStep('The first window "' + T.substr(0, m) + '" hashes to ' + hs[0] + '. Different number, so it cannot be a match. No letters compared.', ['hw'], sc(0)));
-  s.push(csStep('To slide one step, remove the left letter’s share, multiply by 31 and add the new letter. Each slide is fast.', [], sc(1)));
-  s.push(csStep('Window 2, "' + T.substr(2, m) + '", hashes to ' + hs[2] + '. Still no match, so we keep rolling.', [], sc(2)));
+  s.push(csStep('Rabin-Karp turns the pattern and each same-length window of "' + T + '" into a number called a hash. Then it compares numbers.', [], sc(0)));
+  s.push(csStep('The pattern is "' + P + '". Treat letters as digits (a = 1, b = 2), each place worth 31 times the next. Remainder after ÷ 101: ' + hp + '.', ['hp'], sc(0)));
+  s.push(csStep('The first window, "' + T.substr(0, m) + '", starts at index 0 and hashes to ' + hs[0] + '. That differs from ' + hp + ', so it is no match.', ['hw'], sc(0)));
+  s.push(csStep('Slide to "' + T.substr(1, m) + '": remove the left letter’s share (' + code(T[0]) + ' × ' + pow + ', where ' + pow + ' = 31 × 31 mod 101), multiply by 31, add ' + code(T[m]) + '. Result: ' + hs[1] + '.', [], sc(1)));
+  s.push(csStep('The window at index 2, "' + T.substr(2, m) + '", hashes to ' + hs[2] + '. Still no match, so we keep rolling.', [], sc(2)));
   s.push(csStep('At index ' + found + ' the window "' + P + '" hashes to ' + hp + ' too. Equal hashes, so we check the letters. It is a real match.', [], sc(found, 'ok')));
   s.push(csStep('Different strings can share a hash by chance. That is why a hash match is always checked letter by letter.', [], sc(found, 'ok')));
   s.push(csStep('On average the work is about n + m steps, for text length n and pattern length m. Hashing windows also finds repeated pieces of text.', [], sc(found, 'ok')));
@@ -1173,7 +1197,7 @@ const CS_LESSONS = [
     idea: 'Grow a sorted part on the left. Slide each new item left past bigger ones until it fits.',
     groups: ['Sorting', 'Linked Lists'], tryIt: ['insertion-sort-list', 'sort-an-array'] },
   { id: 'merge', track: 'sort', title: 'Merge sort', tag: 'split, then merge', minutes: 4, make: csMergeSort, sorts: true,
-    idea: 'Split the list in half until single items remain, then merge sorted pieces back up. The work grows a bit faster than the list.',
+    idea: 'Split the list in half until single items remain, then merge sorted pieces back up. The work is about n × log n.',
     groups: ['Sorting', 'Linked Lists'], tryIt: ['sort-an-array', 'sort-list', 'merge-sorted-array'] },
   { id: 'quick', track: 'sort', title: 'Quick sort', tag: 'split around a pivot', minutes: 4, make: csQuick, sorts: true,
     idea: 'Pick one item as the pivot. Move smaller items left and bigger ones right, then sort each side the same way.',
@@ -1207,7 +1231,7 @@ const CS_LESSONS = [
     idea: 'At every node, smaller values sit on the left and bigger ones on the right. So each check rules out a whole side.',
     groups: ['Trees', 'Binary Search'], tryIt: ['search-in-a-binary-search-tree', 'insert-into-a-binary-search-tree', 'delete-node-in-a-bst'] },
   { id: 'heap', track: 'tree', title: 'Heaps and priority queues', tag: 'sift up, sift down', minutes: 4, make: csHeap,
-    idea: 'A heap keeps the smallest value at the top. Adding or removing moves items up or down the tree, a few levels at most.',
+    idea: 'A min-heap keeps the smallest value at the top (a max-heap, the biggest). Adding or removing moves items up or down a few levels.',
     groups: ['Heap'], tryIt: ['kth-largest-element-in-a-stream', 'last-stone-weight', 'find-median-from-data-stream'] },
   { id: 'graphrep', track: 'graph', title: 'Storing a graph', tag: 'grid or neighbour lists', minutes: 3, make: csGraphRep,
     idea: 'A graph is nodes joined by edges. Store it as a grid for quick checks, or as neighbour lists to save space.',
@@ -1238,7 +1262,7 @@ const CS_LESSONS = [
     idea: 'A prime is divisible only by 1 and itself. Cross out multiples of each prime, and the numbers left are prime.',
     groups: ['Math & Geometry'], tryIt: ['count-primes', 'ugly-number'] },
   { id: 'modarith', track: 'math', title: 'Modular arithmetic', tag: 'clock arithmetic', minutes: 3, make: csModArith,
-    idea: 'A remainder wraps around like a clock. Taking it after each add, subtract or multiply keeps numbers small.',
+    idea: 'A remainder starts again at 0, like a clock. Taking it after each add, subtract or multiply keeps numbers small.',
     groups: ['Math & Geometry'], tryIt: ['add-digits', 'excel-sheet-column-title', 'find-the-winner-of-the-circular-game'] },
   { id: 'fastpow', track: 'math', title: 'Fast power', tag: 'square and multiply', minutes: 3, make: csFastPow,
     idea: 'To find a big power fast, square the number again and again. Then multiply a few of the squares together.',
@@ -1259,7 +1283,7 @@ const CS_LESSONS = [
     idea: 'Bits are the 1s and 0s a number is stored in. AND, OR, XOR and shifts change many bits at once.',
     param: { label: 'x', min: 0, max: 255, step: 1, value: 44, digits: 0, hint: 'Every row is worked out again for your x.' },
     groups: ['Bit Manipulation'], tryIt: ['number-of-1-bits', 'counting-bits', 'single-number'] },
-  { id: 'kmp', track: 'bits', title: 'KMP string search', tag: 'the prefix function', minutes: 4, make: csKmp,
+  { id: 'kmp', track: 'bits', title: 'KMP string search', tag: 'the prefix table', minutes: 4, make: csKmp,
     idea: 'To find a word in a text, keep a table. After a mismatch it says how much still matches.',
     groups: ['String Algorithms'], tryIt: ['find-the-index-of-the-first-occurrence-in-a-string', 'longest-happy-prefix', 'shortest-palindrome'] },
   { id: 'zfunc', track: 'bits', title: 'The Z-array', tag: 'how far each spot matches the start', minutes: 3, make: csZ,

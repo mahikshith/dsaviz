@@ -12,21 +12,21 @@ function st7Story() {
   const screen = (lines) => st1Screen(40, 270, 360, lines, 88);
   return [
     stBeat('hoot', 'Welcome to the treehouse club. The door asks every visitor a question.', stScene(cast, card()), ['card']),
-    stBeat('hoot', 'input shows a question and waits. Whatever the person types comes back as a value.', stScene(cast, card([0]), { tokens: [{ id: 'typed', x: 510, y: 160, text: 'Sam', solid: true }] }), ['typed'], 0),
-    stBeat('dot', 'So name = input(...) puts my answer in a box called name!', stScene(cast, card([0]), boxes('"Sam"', null)), ['bname'], 0),
-    stBeat('hoot', 'Then print greets you by name.', stScene(cast, card([1]), boxes('"Sam"', null), screen(['Your name? Sam', 'Hi, Sam'])), ['screen'], 1),
-    stBeat('dot', 'Next it asks my age. I type 12, so next year I will be 13.', stScene(cast, card([2]), boxes('"Sam"', null), screen(['Your name? Sam', 'Hi, Sam'])), ['card'], 2),
-    stBeat('hoot', 'Careful: input always gives back text. "12" + 1 is an error, and "12" + "1" is "121".', stScene(cast, card([2]), boxes('"Sam"', '"12"', 'str'), screen(['Your name? Sam', 'Hi, Sam'])), ['bage']),
-    stBeat('hoot', 'So wrap it in int(...). int(input("Age? ")) turns the answer into a number first.', stScene(cast, card([2]), boxes('"Sam"', '12', 'int'), screen(['Your name? Sam', 'Hi, Sam'])), ['bage', 'card'], 2),
-    stBeat('dot', 'Then age + 1 is 13. Ask, convert, then use!', stScene(cast, card([3]), boxes('"Sam"', '12', 'int'), screen(['Age? 12', '13'])), ['screen'], 3)
+    stBeat('hoot', 'input shows the question in quotes and waits. Whatever the person types comes back as a value.', stScene(cast, card([0]), { tokens: [{ id: 'typed', x: 510, y: 160, text: 'Maria', solid: true }] }), ['typed'], 0),
+    stBeat('dot', 'So name = input("Your name? ") puts my answer in the box called name!', stScene(cast, card([0]), boxes('"Maria"', null)), ['bname'], 0),
+    stBeat('hoot', 'Then print greets you by name.', stScene(cast, card([1]), boxes('"Maria"', null), screen(['Your name? Maria', 'Hi, Maria'])), ['screen'], 1),
+    stBeat('dot', 'Next it asks my age. I type 12, so next year I will be 13.', stScene(cast, card([2]), boxes('"Maria"', null), screen(['Your name? Maria', 'Hi, Maria'])), ['card'], 2),
+    stBeat('hoot', 'Careful: input always gives back text. "12" + 1 is an error, and "12" + "1" is "121".', stScene(cast, card([2]), boxes('"Maria"', '"12"', 'str'), screen(['Your name? Maria', 'Hi, Maria'])), ['bage']),
+    stBeat('hoot', 'input runs first and gives text. Then int( ) turns that text into a number.', stScene(cast, card([2]), boxes('"Maria"', '12', 'int'), screen(['Your name? Maria', 'Hi, Maria'])), ['bage', 'card'], 2),
+    stBeat('dot', 'Then age + 1 is 13. Ask, convert, then use!', stScene(cast, card([3]), boxes('"Maria"', '12', 'int'), screen(['Age? 12', '13'])), ['screen'], 3)
   ];
 }
 START_LESSON('input-output', {
   code: ST7_CODE, story: st7Story(),
-  watch: { code: 'name = input("Your name? ")\nprint("Hi,", name)\nage = int(input("Age? "))\nprint(age + 1)\n', stdin: ['Sam', '12'] },
+  watch: { code: 'name = input("Your name? ")\nprint("Hi,", name)\nage = int(input("Age? "))\nprint(age + 1)\n', stdin: ['Maria', '12'] },
   tryit: { py: 'name = input("Your name? ")\nprint("Hi,", name)\nage = int(input("Age? "))\nprint("Next year you will be", age + 1)\n',
     js: 'let name = prompt("Your name? ");\nconsole.log("Hi,", name);\nlet age = Number(prompt("Age? "));\nconsole.log("Next year you will be", age + 1);\n',
-    stdin: ['Sam', '12'],
+    stdin: ['Maria', '12'],
     goals: ['Press Run. The answers come from the Input box, one per line.', 'Change the answers in the Input box and run it again.', 'Add a question that asks for a favourite food and prints it back.'] },
   check: { q: { py: 'What does int(input()) do with the answer?', js: 'What does Number(prompt()) do with the answer?' },
     choices: [['Turns the typed text into a number', true, 'Right. The answer arrives as text, and the conversion makes it a number you can do sums with.'],
@@ -47,7 +47,7 @@ function st8Story() {
   return [
     stBeat('bolt', 'Club rule: you must be 10 or older. Visitor age: 12. Checking.', stScene(cast, { boxes: [stVar('age', 'age', '12', 260, 180)] }), ['age', 'cast:bolt']),
     stBeat('hoot', 'A comparison asks a yes or no question. The answer is always True or False.', stScene(cast, q('age >= 10', 'True', 'q1', 200)), ['q1', 'q1a']),
-    stBeat('hoot', '< is less than and > is more than. <= and >= also count the edge itself.', stScene(cast, { tokens: [['o1', '<'], ['o2', '>'], ['o3', '<='], ['o4', '>=']].map(([id, t], i) => ({ id, x: 170 + i * 100, y: 200, text: t, size: 22 })) }), ['o3', 'o4']),
+    stBeat('hoot', '< is less than and > is more than. <= means less than or equal to. >= means more than or equal to.', stScene(cast, { tokens: [['o1', '<'], ['o2', '>'], ['o3', '<='], ['o4', '>=']].map(([id, t], i) => ({ id, x: 170 + i * 100, y: 200, text: t, size: 22 })) }), ['o3', 'o4']),
     stBeat('dot', 'How do I ask "is the age exactly 13?"', stScene(cast, q('age == 13', '?', 'q2', 200)), ['q2', 'cast:dot']),
     stBeat('hoot', 'Use two equals signs. One = puts a value in a box. Two == asks if two values are equal.', stScene(cast, { tokens: [{ id: 'set', x: 190, y: 190, text: 'age = 13', sub: 'puts 13 in age' }, { id: 'ask', x: 450, y: 190, text: 'age == 13', sub: 'asks a question', solid: true }] }), ['set', 'ask']),
     stBeat('hoot', '!= asks "are they different?" age != 13 is True, because 12 is not 13.', stScene(cast, q('age == 13', 'False', 'q2', 180), q('age != 13', 'True', 'q3', 260)), ['q3', 'q3a']),
@@ -78,12 +78,12 @@ function st9Story() {
     [['d1', 'Sunglasses'], ['d2', 'Coat'], ['d3', 'Umbrella']].map(([id, t], i) => ({ id, x: 390, y: 208 + i * 50, w: 220, h: 44, text: t, size: 18, mono: false, solid: lit === i, c: lit === i ? 'a' : 'l', dash: lit !== null && lit !== i }))) });
   return [
     stBeat('dot', 'The weather door picks what I wear. How does it decide?', stScene(cast, door(null, 25)), ['d1', 'd2', 'd3']),
-    stBeat('hoot', 'With if. if asks a question. When the answer is True, the lines inside it run.', stScene(cast, card([1, 2]), door(null, 25)), ['card'], [1, 2]),
+    stBeat('hoot', 'With if. if asks a question. When the answer is True, the lines under it run. The if line ends with a colon.', stScene(cast, card([1, 2]), door(null, 25)), ['card'], [1, 2]),
     stBeat('hoot', 'Inside means indented: four spaces in. That is how Python knows which lines belong to the if.', stScene(cast, card([2]), door(null, 25)), ['card'], 2),
     stBeat('hoot', 'Today temp is 25. Is 25 > 20? True. So it shows Sunglasses and skips the rest.', stScene(cast, card([1, 2]), door(0, 25)), ['d1', 'temp'], [1, 2]),
     stBeat('dot', 'What if it is 15 degrees?', stScene(cast, card([1]), door(null, 15)), ['temp', 'cast:dot'], 1),
-    stBeat('hoot', 'Then the first question is False, so elif asks the next one: is 15 > 10? True. Coat.', stScene(cast, card([3, 4]), door(1, 15)), ['d2', 'card'], [3, 4]),
-    stBeat('hoot', 'If every question is False, else runs. Exactly one path runs, never two.', stScene(cast, card([5, 6]), door(2, 5)), ['d3', 'temp'], [5, 6]),
+    stBeat('hoot', 'Then the first question is False, so elif ("else if") asks the next one: is 15 > 10? True. Coat.', stScene(cast, card([3, 4]), door(1, 15)), ['d2', 'card'], [3, 4]),
+    stBeat('hoot', 'If every question is False, else runs. The elif and else lines end with a colon too. Only one path runs.', stScene(cast, card([5, 6]), door(2, 5)), ['d3', 'temp'], [5, 6]),
     stBeat('dot', 'Ask from the top, the first True wins, and else catches the rest!', stScene(cast, card([1, 3, 5]), door(0, 25)), ['cast:dot'], [1, 3, 5])
   ];
 }
@@ -115,10 +115,10 @@ function st10Story() {
     stBeat('hoot', 'The treehouse has two rules: wear the badge, and say the password.', stScene(cast, { boxes: [stVar('badge', 'badge', 'True', 150, 170), stVar('pw', 'password', '"owl"', 340, 170, { w: 150 })] }), ['badge', 'pw']),
     stBeat('dot', 'Both rules? So I need the badge and the password?', stScene(cast, { boxes: [stVar('badge', 'badge', 'True', 150, 170), stVar('pw', 'password', '"owl"', 340, 170, { w: 150 })] }), ['cast:dot']),
     stBeat('hoot', 'Yes. and is True only when both sides are True.', stScene(cast, table('and', [[T, T, T], [T, F, F], [F, T, F], [F, F, F]])), ['r0']),
-    stBeat('hoot', 'or is True when at least one side is True. It is kinder, but looser.', stScene(cast, table('or', [[T, T, T], [T, F, T], [F, T, T], [F, F, F]])), ['r1', 'r2']),
+    stBeat('hoot', 'or is True when at least one side is True. It lets more people in.', stScene(cast, table('or', [[T, T, T], [T, F, T], [F, T, T], [F, F, F]])), ['r1', 'r2']),
     stBeat('hoot', 'not flips the answer: not True is False, and not False is True.', stScene(cast, { tokens: [{ id: 'n1', x: 220, y: 190, text: 'not True' }, { id: 'n1r', x: 460, y: 190, text: 'False', c: 'c' }, { id: 'n2', x: 220, y: 260, text: 'not False' }, { id: 'n2r', x: 460, y: 260, text: 'True', solid: true }] }), ['n1', 'n2']),
     stBeat('dot', 'Can I write x == 1 or 2 to mean "x is 1 or 2"?', stScene(cast, { tokens: [{ id: 'bad', x: 320, y: 210, text: 'x == 1 or 2' }] }), ['bad', 'cast:dot']),
-    stBeat('hoot', 'That is always True, because 2 alone counts as True. Write x == 1 or x == 2.', stScene(cast, { tokens: [{ id: 'bad', x: 320, y: 180, text: 'x == 1 or 2', c: 'bad' }, { id: 'good', x: 320, y: 260, text: 'x == 1 or x == 2', solid: true }] }), ['good']),
+    stBeat('hoot', 'Python treats any number except 0 as True. So 2 alone is True, and the line is always True. Write x == 1 or x == 2.', stScene(cast, { tokens: [{ id: 'bad', x: 320, y: 180, text: 'x == 1 or 2', c: 'bad' }, { id: 'good', x: 320, y: 260, text: 'x == 1 or x == 2', solid: true }] }), ['good']),
     stBeat('dot', 'A full question on each side. Got it!', stScene(cast, { tokens: [{ id: 'good', x: 320, y: 220, text: 'x == 1 or x == 2', solid: true }] }), ['cast:dot', 'good'])
   ];
 }
@@ -149,7 +149,7 @@ function st11Story() {
     stBeat('dot', 'My lemonade stand gives a discount for 10 cups or more. The computer takes the orders.', stScene(cast, order(3, '?')), ['cups', 'cast:dot']),
     stBeat('bolt', 'Order: 3 cups. Coming up.', stScene(cast, order(3, 'Coming up')), ['say', 'cast:bolt']),
     stBeat('bolt', 'Order: -3 cups. Coming up. Minus three cups of lemonade, please wait.', stScene(cast, order(-3, 'Coming up', true)), ['cups', 'say']),
-    stBeat('hoot', 'Programs break at the odd cases. Before you trust one, try zero, a negative and the exact edge.', stScene(cast, tests([['0', false], ['-3', false], ['10', false]])), ['t0', 't1', 't2']),
+    stBeat('hoot', 'Programs break at the odd cases. Try zero, a negative and the exact edge: the number where the rule changes.', stScene(cast, tests([['0', false], ['-3', false], ['10', false]])), ['t0', 't1', 't2']),
     stBeat('hoot', 'Ask about the strange cases first: if cups <= 0, say so and do nothing else.', stScene(cast, card([1, 2])), ['card'], [1, 2]),
     stBeat('dot', 'At first I wrote cups > 10, so an order of exactly 10 missed the discount!', stScene(cast, { tokens: [{ id: 'bad', x: 200, y: 210, text: 'cups > 10', c: 'bad' }, { id: 'good', x: 440, y: 210, text: 'cups >= 10', solid: true }] }), ['bad', 'cast:dot']),
     stBeat('hoot', 'The rule says 10 or more, so the edge counts: use >=. "At least" means the same.', stScene(cast, card([3, 4])), ['card'], [3, 4]),
@@ -181,18 +181,18 @@ function st12Story() {
     arrows: [{ id: 'a1', from: [290, 160], to: [190, 196], c: 'm', label: 'left', lx: -24 }, { id: 'a2', from: [350, 160], to: [450, 196], c: 'm', label: 'right', lx: 24 }, { id: 'a3', from: [140, 244], to: [90, 290], c: 'm', label: 'swim', lx: -26 }, { id: 'a4', from: [190, 244], to: [240, 290], c: 'm', label: 'wait', lx: 24 }] });
   return [
     stBeat('dot', 'I want to make a tiny cave game. You pick a path and get one of three endings.', stScene(cast, tree([])), ['cast:dot']),
-    stBeat('hoot', 'Draw it first. Each question is a fork, and each answer is a branch.', stScene(cast, tree(['start'])), ['start', 'a1', 'a2']),
+    stBeat('hoot', 'Draw it first. Each question splits the story into paths.', stScene(cast, tree(['start'])), ['start', 'a1', 'a2']),
     stBeat('hoot', 'One fork is one input and one if. Left goes to the river, anything else to the dragon.', stScene(cast, tree(['start', 'left', 'right'])), ['left', 'right']),
-    stBeat('dot', 'At the river I ask again: swim or wait? That is an if inside an if.', stScene(cast, tree(['left'])), ['swim', 'wait', 'a3', 'a4']),
-    stBeat('hoot', 'Exactly. Build it one fork at a time, and run it after each one.', stScene(cast, tree(['start', 'left', 'swim'])), ['swim']),
+    stBeat('dot', 'At the river I want to ask again: swim or wait? Can I put an if inside an if?', stScene(cast, tree(['left'])), ['swim', 'wait', 'a3', 'a4']),
+    stBeat('hoot', 'Yes. Put a second if inside the first one, and indent it one more step. Run it after each fork.', stScene(cast, tree(['start', 'left', 'swim'])), ['swim']),
     stBeat('dot', 'Three endings, three test runs: left then swim, left then wait, and right.', stScene(cast, tree(['swim', 'wait', 'right'])), ['swim', 'wait', 'right'])
   ];
 }
 START_LESSON('path-project', {
   code: ST12_CODE, story: st12Story(),
-  watch: { code: 'door = input("Left or right? ")\nif door == "left":\n    print("A dark river.")\n    choice = input("Swim or wait? ")\n    if choice == "swim":\n        print("You find treasure!")\n    else:\n        print("The tide comes in. Try again.")\nelse:\n    print("A sleepy dragon. You tiptoe home.")\n', stdin: ['left', 'swim'] },
-  tryit: { py: 'door = input("Left or right? ")\nif door == "left":\n    print("A dark river.")\n    choice = input("Swim or wait? ")\n    if choice == "swim":\n        print("You find treasure!")\n    else:\n        print("The tide comes in. Try again.")\nelse:\n    print("A sleepy dragon. You tiptoe home.")\n',
-    js: 'let door = prompt("Left or right? ");\nif (door === "left") {\n  console.log("A dark river.");\n  let choice = prompt("Swim or wait? ");\n  if (choice === "swim") {\n    console.log("You find treasure!");\n  } else {\n    console.log("The tide comes in. Try again.");\n  }\n} else {\n  console.log("A sleepy dragon. You tiptoe home.");\n}\n',
+  watch: { code: 'door = input("Left or right? ")\nif door == "left":\n    print("A dark river.")\n    choice = input("Swim or wait? ")\n    if choice == "swim":\n        print("You find treasure!")\n    else:\n        print("The tide comes in. Try again.")\nelse:\n    print("A sleepy dragon. You go home.")\n', stdin: ['left', 'swim'] },
+  tryit: { py: 'door = input("Left or right? ")\nif door == "left":\n    print("A dark river.")\n    choice = input("Swim or wait? ")\n    if choice == "swim":\n        print("You find treasure!")\n    else:\n        print("The tide comes in. Try again.")\nelse:\n    print("A sleepy dragon. You go home.")\n',
+    js: 'let door = prompt("Left or right? ");\nif (door === "left") {\n  console.log("A dark river.");\n  let choice = prompt("Swim or wait? ");\n  if (choice === "swim") {\n    console.log("You find treasure!");\n  } else {\n    console.log("The tide comes in. Try again.");\n  }\n} else {\n  console.log("A sleepy dragon. You go home.");\n}\n',
     stdin: ['left', 'swim'], goals: ['Press Run. Then change the Input box to left and wait.', 'Try right. Which ending do you get?', 'Add a fourth ending: at the dragon, ask "sneak or run?"'] },
   check: { q: 'How many test runs does a game with three endings need, at least?',
     choices: [['One, if it works once', false, 'One run only checks one path. The other endings might be broken.'],

@@ -13,14 +13,14 @@ function st1Story() {
   const card = (cur) => ({ cards: [{ id: 'card', x: 120, y: 120, w: 400, lines: ST1_CODE.py, cur: cur || [] }] });
   const screen = (lines) => ({ screens: [{ id: 'screen', x: 120, y: 238, w: 400, h: 116, lines }] });
   return [
-    stBeat('hoot', 'Meet the computer, our robot. The computer does exactly what it is told. Nothing more, nothing less.', stScene(cast(), toaster()), ['cast:bolt']),
+    stBeat('hoot', 'Meet the computer, our robot. The computer does exactly what it is told, and only that.', stScene(cast(), toaster()), ['cast:bolt']),
     stBeat('dot', 'Computer, make toast, please!', stScene(cast(), toaster(), { tokens: [{ id: 'loaf', x: 320, y: 150, text: 'the whole loaf' }] }), ['loaf', 'cast:dot']),
-    stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. A computer is just as literal.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
+    stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. It does only what you say. It does not guess.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
     stBeat('dot', 'So I need to say every step, exactly, in the right order?', stScene(cast(['hoot', 'dot']), steps()), ['step0', 'step1', 'step2']),
     stBeat('hoot', 'Yes. A list of exact steps is a program. The computer runs them from the top down.', stScene(cast(['hoot', 'dot']), steps(0), { arrows: [{ id: 'down', from: [150, 150], to: [150, 280], c: 'a' }] }), ['step0', 'down']),
-    stBeat('hoot', 'We write the steps in a language the computer reads. Ours is Python. Each line is one step.', stScene(cast(['hoot', 'dot']), card()), ['card']),
-    stBeat('dot', 'The last line has no quotes. It says print(2 + 3).', stScene(cast(['hoot', 'dot']), card([2])), ['card'], 2),
-    stBeat('hoot', 'With no quotes, the computer works it out. print(2 + 3) shows 5. You just used Python as a calculator.', stScene(cast(['hoot', 'dot']), card([2]), screen(['5'])), ['screen'], 2),
+    stBeat('hoot', 'We write the steps in a language the computer reads: Python. Each line is one step. print shows something on the screen.', stScene(cast(['hoot', 'dot']), card()), ['card']),
+    stBeat('dot', 'Why does the last line have no quotes around 2 + 3?', stScene(cast(['hoot', 'dot']), card([2])), ['card'], 2),
+    stBeat('hoot', 'Text in quotes is shown as it is. With no quotes, the computer works it out: print(2 + 3) shows 5.', stScene(cast(['hoot', 'dot']), card([2]), screen(['5'])), ['screen'], 2),
     stBeat('dot', 'All three lines run in order. Now I want to run one myself!', stScene(cast(['hoot', 'dot']), card([0, 1, 2]), screen(['Take one slice', 'Put it in the toaster', '5'])), ['cast:dot', 'screen'], [0, 1, 2])
   ];
 }
@@ -45,8 +45,8 @@ const st1Screen = (x, y, w, lines, h) => ({ screens: [{ id: 'screen', x, y, w, h
 
 // ---------- L2. Your first run ----------
 const ST2_CODE = {
-  py: ['print("The shop is open!")', 'print("Hello,", "Sam")', 'print("2 + 2")'],
-  js: ['console.log("The shop is open!");', 'console.log("Hello,", "Sam");', 'console.log("2 + 2");']
+  py: ['print("The shop is open!")', 'print("Hello,", "Maria")', 'print("2 + 2")'],
+  js: ['console.log("The shop is open!");', 'console.log("Hello,", "Maria");', 'console.log("2 + 2");']
 };
 function st2Story() {
   const cast = st1Cast([['hoot', 60], ['bolt', 320], ['dot', 580]]);
@@ -54,27 +54,27 @@ function st2Story() {
   const screen = (lines) => st1Screen(120, 238, 400, lines, 116);
   return [
     stBeat('dot', 'The computer has to tell everyone the shop is open. How do I make it speak?', stScene(cast, card(), screen([])), ['cast:bolt', 'cast:dot']),
-    stBeat('hoot', 'With print. Whatever you put inside the brackets shows up on the screen.', stScene(cast, card([0]), screen([])), ['card'], 0),
+    stBeat('hoot', 'With print. print is a function: a named tool that does one job. It shows what is inside the round brackets ( ).', stScene(cast, card([0]), screen([])), ['card'], 0),
     stBeat('hoot', 'The quotes mark where the text starts and ends. Text in quotes is called a string.', stScene(cast, { tokens: [{ id: 'text', x: 320, y: 190, text: '"The shop is open!"', solid: true }] },
       { labels: [{ id: 'l1', x: 196, y: 262, text: 'starts here', c: 'm', size: 16 }, { id: 'l2', x: 444, y: 262, text: 'ends here', c: 'm', size: 16 }] },
       { arrows: [{ id: 'a1', from: [196, 244], to: [206, 212], c: 'a' }, { id: 'a2', from: [444, 244], to: [434, 212], c: 'a' }] }), ['text', 'a1', 'a2', 'l1', 'l2']),
     stBeat('bolt', 'The shop is open!', stScene(cast, card([0]), screen(['The shop is open!'])), ['screen', 'cast:bolt'], 0),
     stBeat('dot', 'Can one print show two things at once?', stScene(cast, card([1]), screen(['The shop is open!'])), ['card'], 1),
-    stBeat('hoot', 'Yes. Put a comma between them, and print adds one space in between.', stScene(cast, card([1]), screen(['The shop is open!', 'Hello, Sam'])), ['screen'], 1),
-    stBeat('dot', 'And "2 + 2" in quotes stays as text. It shows 2 + 2, not 4!', stScene(cast, card([2]), screen(['The shop is open!', 'Hello, Sam', '2 + 2'])), ['screen'], 2),
-    stBeat('hoot', 'Each print starts a new line. Now make Ray announce something of your own.', stScene(cast, card([0, 1, 2]), screen(['The shop is open!', 'Hello, Sam', '2 + 2'])), ['cast:dot'], [0, 1, 2])
+    stBeat('hoot', 'Yes. Put a comma between them, and print adds one space in between.', stScene(cast, card([1]), screen(['The shop is open!', 'Hello, Maria'])), ['screen'], 1),
+    stBeat('dot', 'And "2 + 2" in quotes stays as text. It shows 2 + 2, not 4!', stScene(cast, card([2]), screen(['The shop is open!', 'Hello, Maria', '2 + 2'])), ['screen'], 2),
+    stBeat('hoot', 'Each print starts a new line. Now print an announcement of your own.', stScene(cast, card([0, 1, 2]), screen(['The shop is open!', 'Hello, Maria', '2 + 2'])), ['cast:dot'], [0, 1, 2])
   ];
 }
 START_LESSON('first-run', {
   code: ST2_CODE, story: st2Story(),
-  watch: { code: 'print("The shop is open!")\nprint("Hello,", "Sam")\nprint("2 + 2")\n' },
+  watch: { code: 'print("The shop is open!")\nprint("Hello,", "Maria")\nprint("2 + 2")\n' },
   tryit: { py: 'print("The shop is open!")\nprint("Today we sell", "apples")\n', js: 'console.log("The shop is open!");\nconsole.log("Today we sell", "apples");\n',
     goals: ['Press Run and read both lines.', 'Change apples to something you like, then run it again.', 'Add a third line that prints your name.'] },
-  check: { q: { py: 'What does print("Hi", "Sam") show?', js: 'What does console.log("Hi", "Sam") show?' },
-    choices: [['HiDot', false, 'The comma adds a space between the two pieces.'],
-      ['Hi Sam', true, 'Right. Two pieces, one space between them, no quotes on the screen.'],
-      ['"Hi", "Sam"', false, 'The quotes only mark the text in the code. They are not shown.'],
-      ['Hi, Sam', false, 'The comma separates the pieces in the code. It is not printed.']] }
+  check: { q: { py: 'What does print("Hi", "Maria") show?', js: 'What does console.log("Hi", "Maria") show?' },
+    choices: [['HiMaria', false, 'The comma adds a space between the two pieces.'],
+      ['Hi Maria', true, 'Right. Two pieces, one space between them, no quotes on the screen.'],
+      ['"Hi", "Maria"', false, 'The quotes only mark the text in the code. They are not shown.'],
+      ['Hi, Maria', false, 'The comma separates the pieces in the code. It is not printed.']] }
 });
 
 // ---------- L3. Calculator mode ----------
@@ -106,7 +106,7 @@ START_LESSON('calculator', {
   tryit: { py: 'print(12 + 30)\nprint(7 // 2)\nprint(7 % 2)\nprint(2 + 3 * 4)\nprint((2 + 3) * 4)\n', js: 'console.log(12 + 30);\nconsole.log(Math.floor(7 / 2));\nconsole.log(7 % 2);\nconsole.log(2 + 3 * 4);\nconsole.log((2 + 3) * 4);\n',
     goals: ['Press Run and match each line to its answer.', 'Share 20 acorns between 6 friends: change the 7 and the 2.', 'Add a line that works out how many seconds are in an hour.'] },
   check: { q: 'What does 9 % 4 give?',
-    choices: [['2', false, '9 % 4 is not a half. % gives what is left over after taking out whole fours.'],
+    choices: [['2', false, '% does not halve. It gives what is left after taking out whole fours.'],
       ['2.25', false, 'That is 9 / 4. % gives the leftover instead.'],
       ['1', true, 'Right. Two fours make 8, and 1 is left over.'],
       ['0', false, '9 does not split evenly into fours, so something is left over.']] }
@@ -119,26 +119,27 @@ const ST4_CODE = {
 };
 function st4Story() {
   const cast = st1Cast([['hoot', 60], ['dot', 580]]);
-  const err = (lines, cur) => ({ cards: [{ id: 'err', x: 120, y: 112, w: 400, lines, cur: cur || [] }] });
-  const code = (cur) => st1Card('code', 120, 240, 400, ST4_CODE.py, cur);
-  const E1 = ['Traceback (most recent call last):', '  line 1', 'SyntaxError: text never ends'];
-  const E2 = ['Traceback (most recent call last):', '  line 2', "NameError: name 'prnt'..."];
-  const E3 = ['Traceback (most recent call last):', '  line 3', 'TypeError: str + int'];
+  const err = (lines, cur) => ({ cards: [{ id: 'err', x: 90, y: 100, w: 460, lines, cur: cur || [] }] });
+  const code = (cur) => st1Card('code', 90, 250, 460, ST4_CODE.py, cur);
+  const E1 = ['File "main.py", line 1', '  print("Hello)', 'SyntaxError: unterminated string literal'];
+  const E2 = ['Traceback (most recent call last):', '  File "main.py", line 2, in <module>', '    prnt("Hi")', "NameError: name 'prnt' is not defined"];
+  const E3 = ['Traceback (most recent call last):', '  File "main.py", line 3, in <module>', '    print("Age: " + 7)', 'TypeError: can only concatenate str', '(not "int") to str'];
   return [
     stBeat('dot', 'I pressed Run and got a scary message. Did I break something?', stScene(cast, err(E1)), ['err', 'cast:dot']),
     stBeat('hoot', 'Nothing is broken. An error is the computer telling you where it got stuck. It is help.', stScene(cast, err(E1)), ['err']),
-    stBeat('hoot', 'Read it from the bottom up. The last line names the kind of mistake.', stScene(cast, err(E1, [2])), ['err']),
-    stBeat('hoot', 'It also names the line. Go to that line and look closely.', stScene(cast, err(E1, [1]), code([0])), ['err', 'code'], 0),
-    stBeat('dot', 'SyntaxError means the line is not written right. A closing quote is missing!', stScene(cast, err(E1, [2]), code([0])), ['code'], 0),
-    stBeat('hoot', 'NameError means Python does not know a name. prnt is a typo for print.', stScene(cast, err(E2, [2]), code([1])), ['err', 'code'], 1),
-    stBeat('hoot', 'TypeError means a value of the wrong kind was used, like adding text to a number.', stScene(cast, err(E3, [2]), code([2])), ['err', 'code'], 2),
-    stBeat('dot', 'Kind, then line, then look closely. I can read these now!', stScene(cast, err(E3, [1, 2]), code([2])), ['cast:dot'], 2)
+    stBeat('hoot', 'Read the last line first. It names the kind of mistake and says what is wrong.', stScene(cast, err(E1, [2])), ['err']),
+    stBeat('hoot', 'A line above it gives the line number. This site also adds "(line 1)" at the end of the message.', stScene(cast, err(E1, [0]), code([0])), ['err', 'code'], 0),
+    stBeat('dot', 'What does SyntaxError mean?', stScene(cast, err(E1, [2]), code([0])), ['code', 'cast:dot'], 0),
+    stBeat('hoot', 'The line is not written right. "Unterminated string literal" means the text has no closing quote.', stScene(cast, err(E1, [2]), code([0])), ['err', 'code'], 0),
+    stBeat('hoot', 'A longer message like this is called a traceback. NameError means Python does not know a name. prnt is a typo for print.', stScene(cast, err(E2, [0, 3]), code([1])), ['err', 'code'], 1),
+    stBeat('hoot', 'TypeError means a value of the wrong kind was used, like adding text to a number.', stScene(cast, err(E3, [3, 4]), code([2])), ['err', 'code'], 2),
+    stBeat('dot', 'Kind, then line, then look closely. I can read these now!', stScene(cast, err(E3, [1, 3, 4]), code([2])), ['cast:dot'], 2)
   ];
 }
 START_LESSON('first-error', {
   code: ST4_CODE, story: st4Story(),
   watch: { code: 'print("Ready")\nprint("Steady")\nprnt("Go")\nprint("This line never runs")\n', error: true },
-  tryit: { py: 'print("Hello")\nprnt("Sam")\n', js: 'console.log("Hello");\nconsol.log("Sam");\n', errors: true,
+  tryit: { py: 'print("Hello")\nprnt("Maria")\n', js: 'console.log("Hello");\nconsol.log("Maria");\n', errors: true,
     goals: ['Press Run and read the message from the bottom up.', 'Fix the typo on line 2 and run it again.', 'Now remove a quote on purpose and read the new message.'] },
   check: { q: 'Where should you start reading an error message?',
     choices: [['At the top, where it says Traceback', false, 'The top is the start of the report. The useful part is at the end.'],
@@ -159,8 +160,9 @@ function st5Story() {
   const screen = (lines) => st1Screen(380, 250, 220, lines, 100);
   return [
     stBeat('penny', 'I count my acorns, then forget the number before I need it again.', stScene(cast, { tokens: [{ id: 'twelve', x: 320, y: 200, text: '12', solid: true }] }), ['twelve', 'cast:penny']),
-    stBeat('hoot', 'Give the number a box with a name tag. acorns = 12 puts 12 in a box called acorns.', stScene(cast, card([0]), box('12')), ['box'], 0),
-    stBeat('dot', 'So = does not mean "is equal" here. It means: put this value in that box.', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
+    stBeat('hoot', 'Give the number a box with a name tag. That box is called a variable. acorns = 12 puts 12 in the variable acorns.', stScene(cast, card([0]), box('12')), ['box'], 0),
+    stBeat('dot', 'Does = mean "is equal" here, like in maths?', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
+    stBeat('hoot', 'No. In Python, = means: put this value in that box.', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
     stBeat('hoot', 'print(acorns) looks in the box and shows 12. No quotes, so acorns is a name, not text.', stScene(cast, card([1]), box('12'), screen(['12'])), ['box', 'screen'], 1),
     stBeat('penny', 'I just found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
     stBeat('hoot', 'acorns = acorns + 5 works out the right side first: 12 + 5 is 17. Then 17 goes in the box.', stScene(cast, card([2]), box('17'), screen(['12'])), ['box', 'card'], 2),
@@ -191,10 +193,11 @@ function st6Story() {
   const sum = (a, b, r, bad) => ({ tokens: [{ id: 'sa', x: 150, y: 200, text: a }, { id: 'sb', x: 300, y: 200, text: b }, { id: 'sr', x: 490, y: 200, text: r, solid: !bad, c: bad ? 'bad' : 'l' }],
     labels: [{ id: 'plus', x: 225, y: 207, text: '+', size: 22, weight: 700 }, { id: 'eq', x: 385, y: 207, text: '→', size: 22, weight: 700 }] });
   return [
-    stBeat('bolt', 'The price tag says "5". Three more items arrive. "5" plus "3" makes... "53".', stScene(cast, sum('"5"', '"3"', '"53"')), ['sr', 'cast:bolt']),
-    stBeat('hoot', 'Ray joined two pieces of text. In quotes, "5" is text, not a number.', stScene(cast, sum('"5"', '"3"', '"53"')), ['sa', 'sb']),
+    stBeat('bolt', 'Two prices are text: "5" and "3". Adding them gives "53".', stScene(cast, sum('"5"', '"3"', '"53"')), ['sr', 'cast:bolt']),
+    stBeat('hoot', 'The computer joined two pieces of text. In quotes, "5" is text, not a number.', stScene(cast, sum('"5"', '"3"', '"53"')), ['sa', 'sb']),
     stBeat('hoot', 'Every value has a type. 5 is a whole number, an int. 2.5 is a decimal, a float.', stScene(cast, kinds(['k1', 'k2'])), ['k1', 'k2']),
     stBeat('hoot', 'Text in quotes is a str, short for string. True and False have a type of their own: bool.', stScene(cast, kinds(['k3', 'k4'])), ['k3', 'k4']),
+    stBeat('hoot', "type(5) runs first and finds the type. print then shows it: <class 'int'>. The type is int.", stScene(cast, st1Card('card', 120, 120, 400, ST6_CODE.py, [0]), st1Screen(120, 258, 400, ["<class 'int'>"], 88)), ['card', 'screen'], 0),
     stBeat('dot', 'So what is "5" + 3? Text plus a number?', stScene(cast, sum('"5"', '3', '?')), ['sa', 'sb', 'cast:dot']),
     stBeat('hoot', 'Python stops with a TypeError. It will not guess whether you meant 8 or "53".', stScene(cast, sum('"5"', '3', 'TypeError', true)), ['sr']),
     stBeat('hoot', 'Convert first. int("5") gives the number 5, and str(5) gives the text "5".', stScene(cast, { tokens: [{ id: 'c1', x: 170, y: 180, text: 'int("5")' }, { id: 'c1r', x: 450, y: 180, text: '5', solid: true }, { id: 'c2', x: 170, y: 270, text: 'str(5)' }, { id: 'c2r', x: 450, y: 270, text: '"5"', solid: true }] },

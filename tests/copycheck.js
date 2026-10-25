@@ -69,6 +69,36 @@ fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html')).forEach((f) => {
     if (/['">]Replay\b|Play story|Read story/.test(line)) fail(f + ':' + (i + 1), 'a Replay / Play story label; use "Continue: <problem title>" or "Start: ..."');
   });
 });
+// No named mascots (CLAUDE.md): the cast is gone outside the Start here track, which has its own check (tests/startcheck.js).
+// Case-sensitive whole words, so ordinary words such as "dot product" or "bolt" in lower case do not match.
+const MASCOT = /\b(Old Hoot|Hoot|Lumi|Roo|Bolt|Pip)\b/;
+const MASCOT_SKIP = ['Start.dc.html', 'Chapter.dc.html'];
+function checkMascots(where, text) {
+  // the Start here data generated into Home (@@START-LITE@@) belongs to the Start track's check
+  text = text.replace(/\/\/ @@START-LITE@@[\s\S]*?\/\/ @@END-START-LITE@@/g, '');
+  text.split('\n').forEach((line, i) => {
+    const m = line.match(MASCOT);
+    if (m) fail(where + ':' + (i + 1), 'a named mascot "' + m[0] + '" in learner text; use a plain role: ' + line.trim().slice(0, 100));
+  });
+}
+function walk(dir, exts) {
+  const out = [];
+  if (!fs.existsSync(dir)) return out;
+  fs.readdirSync(dir, { withFileTypes: true }).forEach((e) => {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) out.push(...walk(full, exts));
+    else if (exts.some((x) => e.name.endsWith(x))) out.push(full);
+  });
+  return out;
+}
+fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html') && !MASCOT_SKIP.includes(f)).forEach((f) => {
+  checkMascots(f, fs.readFileSync(path.join(pagesDir, f), 'utf8'));
+});
+['shared', 'src/story', 'src/code', 'src/pages'].forEach((dir) => {
+  walk(path.join(root, dir), ['.js', '.html']).forEach((full) => {
+    checkMascots(path.relative(root, full).split(path.sep).join('/'), fs.readFileSync(full, 'utf8'));
+  });
+});
 console.log('copy: ' + scanned + ' files scanned');
 console.log(problems ? problems + ' copy problem(s)' : 'copy clean');
 if (problems) process.exitCode = 1;

@@ -39,7 +39,7 @@ function ringGraph(ids, labels) {
 const MOVE = 'transform 420ms cubic-bezier(.45,.05,.2,1)';   // on-screen moves: actors, the window frame, the line marker
 const SETTLE = 'transform 320ms cubic-bezier(.2,.8,.2,1), opacity 320ms cubic-bezier(.2,.8,.2,1)'; // tiles lift, dim and land
 const CODE_LINE = 24;
-// The story's key rule for Revisit: Old Hoot's answer to the right quiz pick, without the speaker and the "Yes!".
+// The story's key rule for Revisit: the guide's answer to the right quiz pick, without the speaker and the "Yes!".
 function storyKeyRule(id) {
   const S = SCENES[id];
   if (!S || !S.quizFb) return '';
@@ -543,7 +543,7 @@ class Component extends DCLogic {
     if (boxed) {
       actors = [];
     } else if (S.cast === 'tp') {
-      actors = [actorAt(st.L, { label: 'Lumi · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Roo · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
+      actors = [actorAt(st.L, { label: 'Left marker · L', color: t.left, rx: 25 }), actorAt(st.R, { label: 'Right marker · R', color: t.right, rx: 14, mouth: found ? mouthSmile : mouthFlat })];
     } else if (S.cast === 'sw') {
       const lx = st.L === st.R ? (S.phone ? -12 : -18) : 0;
       actors = [
@@ -669,13 +669,8 @@ class Component extends DCLogic {
       actorRowH = twoLines ? 92 : 46;
     }
 
-    const who = {
-      lumi: { name: 'Lumi', initial: 'L', color: t.left, radius: '999px' },
-      roo: { name: 'Roo', initial: 'R', color: t.right, radius: '9px' },
-      wren: { name: 'Wren', initial: 'W', color: t.left, radius: '999px' },
-      cleo: { name: 'Cleo', initial: 'C', color: t.left, radius: '10px' },
-      hoot: { name: 'Old Hoot', initial: 'H', color: t.muted, radius: '6px' }
-    };
+    // The guide's lines have no speaker: a clear badge keeps their text lined up with the speakers' lines.
+    const who = { narr: { name: '', initial: '', color: 'transparent', radius: '0' } };
     Object.keys(STORY_CAST).forEach((k) => { const c = STORY_CAST[k]; who[k] = Object.assign({}, c, { color: t[c.color] || c.color }); });
     const toneBg = { plain: t.sunk, warn: t.warnBg, cool: t.coolBg, ok: t.okBg };
     const toneBar = { plain: t.muted, warn: t.left, cool: t.right, ok: t.ok };
@@ -724,7 +719,7 @@ class Component extends DCLogic {
       meter: { text: st.meter.text, scale: 'scaleX(' + (pct / 100).toFixed(3) + ')', markAt: Math.max(0, Math.min(100, st.meter.mark)) + '%', markLabel: st.meter.markLabel, markShift: st.meter.mark > 85 ? 'translateX(-100%)' : st.meter.mark < 15 ? 'none' : 'translateX(-50%)' },
       meterColor: toneBar[st.tone], verdict: st.verdict, verdictBg: toneBg[st.tone],
       caption: st.nar.kid,
-      dialog: st.dialog.map(([k, text]) => Object.assign({ text }, who[k])),
+      dialog: st.dialog.map(([k, text]) => { const w = who[k] || who.narr; return Object.assign({}, w, { text, label: w.name ? w.name + ': ' : '' }); }),
       stepLabel: 'Step ' + (si + 1) + ' of ' + steps.length,
       lastStep: steps.length - 1, stepNow: si,
       scrub: (e) => { const v = Number(e && e.target ? e.target.value : 0); this.stop(); this.go(isNaN(v) ? 0 : v); },

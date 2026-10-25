@@ -105,7 +105,7 @@ const SQL_SPECS = {
       { rows: { Staff: [[1, 'Iris'], [2, 'Jun'], [3, 'Kofi']], Badges: [[1, 501], [3, 733]] }, want: [[501, 'Iris'], [null, 'Jun'], [733, 'Kofi']] },
       { rows: { Staff: [[4, 'Lea'], [5, 'Mo']], Badges: [] }, want: [[null, 'Lea'], [null, 'Mo']] },
       { rows: { Staff: [[6, 'Nia']], Badges: [[6, 12], [7, 13]] }, want: [[12, 'Nia']] },
-      { rows: { Staff: [[1, 'Oz'], [2, 'Pip'], [3, 'Rae'], [4, 'Sam']], Badges: [[2, 90], [4, 91]] }, want: [[null, 'Oz'], [90, 'Pip'], [null, 'Rae'], [91, 'Sam']] }
+      { rows: { Staff: [[1, 'Oz'], [2, 'Pax'], [3, 'Rae'], [4, 'Sam']], Badges: [[2, 90], [4, 91]] }, want: [[null, 'Oz'], [90, 'Pax'], [null, 'Rae'], [91, 'Sam']] }
     ],
     ref: 'SELECT b.badge_no, s.name FROM Staff s LEFT JOIN Badges b ON b.staff_id = s.staff_id',
     trap: 'SELECT b.badge_no, s.name FROM Staff s JOIN Badges b ON b.staff_id = s.staff_id'
@@ -232,7 +232,7 @@ const SQL_SPECS = {
       { rows: { Pets: [[1, 'Biscuit', 'VAX2 ALG1'], [2, 'Pepper', 'VAX1'], [3, 'Mochi', 'ALG4'], [4, 'Olive', '']] }, want: [[1, 'Biscuit', 'VAX2 ALG1'], [3, 'Mochi', 'ALG4']] },
       { rows: { Pets: [[5, 'Rex', 'MALG3'], [6, 'Tofu', 'VAX1 MALG2']] }, want: [] },
       { rows: { Pets: [[7, 'Juno', 'ALG1 ALG2'], [8, 'Kiwi', 'FLEA1 VAX3 ALG9'], [9, 'Nori', 'XALG1 VAX2']] }, want: [[7, 'Juno', 'ALG1 ALG2'], [8, 'Kiwi', 'FLEA1 VAX3 ALG9']] },
-      { rows: { Pets: [[10, 'Pip', 'VAX1 FLEA2'], [11, 'Zuzu', 'MALG1 ALG2']] }, want: [[11, 'Zuzu', 'MALG1 ALG2']] }
+      { rows: { Pets: [[10, 'Pax', 'VAX1 FLEA2'], [11, 'Zuzu', 'MALG1 ALG2']] }, want: [[11, 'Zuzu', 'MALG1 ALG2']] }
     ],
     ref: "SELECT pet_id, name, tags FROM Pets WHERE tags LIKE 'ALG%' OR tags LIKE '% ALG%'",
     trap: "SELECT pet_id, name, tags FROM Pets WHERE tags LIKE '%ALG%'"

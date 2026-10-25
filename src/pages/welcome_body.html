@@ -3,10 +3,9 @@
 <aside data-m="g16" style="background: {{t.band}}; color: {{t.bandText}}; padding: 36px 40px; display: flex; flex-direction: column; gap: 32px">
 <a href="Main.dc.html" style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
 <div style="display: flex; gap: 16px; align-items: flex-start">
-<svg width="64" height="64" viewBox="0 0 40 40" aria-hidden="true" style="flex-shrink: 0"><ellipse cx="20" cy="23" rx="15" ry="15" fill="{{t.owl}}"></ellipse><path d="M8 12 L12 4 L16 11 M24 11 L28 4 L32 12" fill="{{t.owl}}"></path><circle cx="14" cy="20" r="6" fill="{{t.bandText}}"></circle><circle cx="26" cy="20" r="6" fill="{{t.bandText}}"></circle><circle cx="14" cy="20" r="2.6" fill="{{t.band}}"></circle><circle cx="26" cy="20" r="2.6" fill="{{t.band}}"></circle><path d="M18 26 L20 30 L22 26 Z" fill="{{t.bandAccent}}"></path></svg>
+
 <div style="padding: 16px 18px; border-radius: 4px 18px 18px 18px; background: rgba(255,255,255,0.07); display: flex; flex-direction: column; gap: 6px; animation: rise 0.35s ease">
-<span style="font-size: 12px; font-weight: 700; color: {{t.bandAccent}}">Old Hoot</span>
-<span style="font-family: {{t.display}}; font-size: 19px; line-height: 1.5">{{hoot}}</span>
+<span style="font-family: {{t.display}}; font-size: 19px; line-height: 1.5">{{tip}}</span>
 </div>
 </div>
 <ol aria-label="Setup steps" data-m="hide" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px">
@@ -36,7 +35,7 @@
 <sc-if value="{{s0}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">First things first.</h1>
-<label style="display: flex; flex-direction: column; gap: 8px; font-size: 15px; font-weight: 700">What should Old Hoot call you?
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 15px; font-weight: 700">What should we call you?
 <input type="text" value="{{name}}" onChange="{{setName}}" maxlength="24" style="width: 360px; height: 52px; padding: 0 16px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: 18px; font-weight: 600"></label>
 <span style="font-size: 15px; font-weight: 700">What brings you here?</span>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{reasons}}" as="rs" hint-placeholder-count="4"><button onClick="{{rs.pick}}" aria-pressed="{{rs.on}}" style="min-height: 88px; padding: 16px 18px; border-radius: 18px; border: 2px solid {{rs.border}}; background: {{rs.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; gap: 14px; align-items: center; transition: border-color 0.2s, background 0.2s"><span style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; background: {{t.sunk}}; display: flex; align-items: center; justify-content: center; font-size: 22px">{{rs.icon}}</span><span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 17px; font-weight: 700">{{rs.label}}</span><span style="font-size: 14px; line-height: 1.4; color: {{t.muted}}">{{rs.sub}}</span></span></button></sc-for></div>
@@ -63,7 +62,7 @@
 
 <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">When should Old Hoot nudge you?</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">When should we nudge you?</h1>
 <p style="margin: 0; font-size: 17px; color: {{t.text2}}">One short reminder a day, only if you haven't learned yet. We save your choice now, and reminders start when accounts launch.</p>
 <span style="font-size: 15px; font-weight: 700">Time</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{times}}" as="tm" hint-placeholder-count="4"><button onClick="{{tm.pick}}" aria-pressed="{{tm.on}}" style="height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid {{tm.border}}; background: {{tm.bg}}; color: {{tm.fg}}; cursor: pointer; font-size: 15px; font-weight: 700">{{tm.label}}</button></sc-for></div>

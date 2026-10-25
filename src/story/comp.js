@@ -123,10 +123,17 @@ class Component extends DCLogic {
     // On a phone the stage is laid out for the screen width, so a resize (or turning the phone) lays it out again.
     this.onResize = () => { if (dsPhone() && window.innerWidth !== this.vw) { this.vw = window.innerWidth; this.setState({}); } };
     if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('resize', this.onResize);
+    // Space and the arrow keys drive the player when nothing else has focus (the story section handles its own keys).
+    this.onPageKey = (e) => {
+      const tgt = e && e.target;
+      if (!tgt || (tgt !== document.body && tgt !== document.documentElement) || this.state.drawer) return;
+      if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') this.key(e);
+    };
+    if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('keydown', this.onPageKey);
   }
   componentWillUnmount() {
     clearTimeout(this.timer); this.runner.unmount(); unlistenTheme(this);
-    if (typeof window !== 'undefined' && window.removeEventListener) window.removeEventListener('resize', this.onResize);
+    if (typeof window !== 'undefined' && window.removeEventListener) { window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onPageKey); }
   }
   // The scene on stage: a custom run when the learner applied their own input, else the story.
   scene() { return this.state.run || SCENES[this.state.scene]; }
@@ -749,6 +756,8 @@ class Component extends DCLogic {
       customActive: !!this.state.run, resetCustom: () => this.resetRun(spec ? spec.example : ''),
       runTag: this.state.run ? ' · your input' : '',
       playLabel: this.state.playing ? 'Pause' : atEnd && this.state.played ? 'Replay' : 'Play',
+      // Phones show the story (and its controls) first, then the problem; desktop keeps the problem on top.
+      leftParts: phoneOrder(['problem', 'watch'], ['watch', 'problem']),
       togglePlay: () => this.togglePlay(),
       playBtn: btn(playPrimary),
       // after the last step, the next move is to write it

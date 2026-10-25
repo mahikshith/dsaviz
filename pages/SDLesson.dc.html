@@ -291,7 +291,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="display: flex; align-items: center; gap: 8px; justify-content: {{L.ctrlJustify}}">
 <button onClick="{{restart}}" aria-label="Back to the first step" title="Restart" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
 <button onClick="{{prev}}" disabled="{{atFirst}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
-<button onClick="{{togglePlay}}" aria-label="{{playLabel}}" style="height: 44px; min-width: 104px; padding: 0 18px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700">{{playText}}</button>
+<button onClick="{{togglePlay}}" aria-label="{{playLabel}}" style="height: 44px; min-width: 112px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 700"><sc-if value="{{isPlaying}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{isPaused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{playText}}</button>
 <button onClick="{{next}}" disabled="{{atLast}}" aria-label="Next step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
 </div>
 <div style="display: flex; align-items: center; gap: 10px">
@@ -3436,19 +3436,22 @@ class Component extends DCLogic {
     } catch (e) {}
   }
   stop() { clearInterval(this.timer); if (this.state.playing) this.setState({ playing: false }); }
+  // Play: the first step comes after a short beat (0.9 s), later steps hold for sdStepMs. Reaching the last step stops.
   togglePlay() {
     if (this.state.playing) { this.stop(); return; }
     if (this.state.step >= sdLessonFrames(this.state.lesson).length - 1) this.go(0);
     this.setState({ playing: true });
     clearInterval(this.timer);
-    this.held = 0;
+    this.held = Math.max(0, sdStepMs(sdLessonFrames(this.state.lesson)[Math.min(this.state.step, sdLessonFrames(this.state.lesson).length - 1)]) - 900);
     this.timer = setInterval(() => {
       const frames = sdLessonFrames(this.state.lesson);
       this.held += 200;
       if (this.held < sdStepMs(frames[this.state.step])) return;
       if (this.state.step >= frames.length - 1) { this.stop(); return; }
       this.held = 0;
-      this.go(this.state.step + 1);
+      const k = this.state.step + 1;
+      this.go(k);
+      if (k >= frames.length - 1) this.stop();
     }, 200);
   }
   renderVals() {
@@ -3529,8 +3532,8 @@ class Component extends DCLogic {
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
-      togglePlay: () => this.togglePlay(),
-      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson step by step',
+      togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
+      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson',
       canvas,
       strip: {
         label: L.track === 'hld' ? 'Back-of-the-envelope numbers' : 'Diagram counts',

@@ -266,7 +266,36 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{nextLesson.show}}" hint-placeholder-val="{{ false }}"><button onClick="{{nextLesson.go}}" aria-label="{{nextLesson.label}}" style="flex-shrink: 0; height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 13px; font-weight: 700">Next lesson →</button></sc-if>
 </div>
 
-<section aria-label="Animation" ref="{{canvasRef}}" class="cs-scroll" style="position: relative; box-sizing: border-box; flex-grow: {{L.canvasGrow}}; min-height: 0; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow-x: {{L.canvasScroll}}; overflow-y: hidden; display: flex; align-items: center; justify-content: {{L.canvasJustify}}">
+<section aria-label="Current step" style="box-sizing: border-box; flex-shrink: 0; padding: {{L.nowPad}}; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 12px 24px; align-items: center">
+<sc-for list="{{nowParts}}" as="np" hint-placeholder-count="2">
+<sc-if value="{{np.say}}" hint-placeholder-val="{{ true }}">
+<div aria-live="polite" aria-atomic="true" style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.accent}}">STEP {{stepNo}} OF {{stepCount}}</span>
+<p class="cs-say" key="{{sayKey}}" style="margin: 0; min-height: 54px; font-size: {{L.saySize}}px; line-height: 1.4; color: {{t.text}}">{{say}}</p>
+<sc-if value="{{tryIt.atEnd}}" hint-placeholder-val="{{ false }}">
+<div class="cs-say" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-size: 13px; font-weight: 700; color: {{t.accent}}">Now try</span>
+<sc-for list="{{tryIt.items}}" as="ti" hint-placeholder-count="3"><a href="{{ti.href}}" onClick="{{ti.go}}" style="min-height: 40px; padding: 0 14px; box-sizing: border-box; border-radius: 999px; border: 1px solid {{t.accent}}; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: {{t.text}}">{{ti.title}} <span aria-hidden="true" style="color: {{t.accent}}">→</span></a></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{np.ctrl}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch">
+<div style="display: flex; align-items: center; gap: 8px; justify-content: {{L.ctrlJustify}}">
+<button onClick="{{restart}}" aria-label="Back to the first step" title="Restart" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
+<button onClick="{{prev}}" disabled="{{atFirst}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{togglePlay}}" aria-label="{{playLabel}}" style="height: 44px; min-width: 112px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 700"><sc-if value="{{isPlaying}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{isPaused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{playText}}</button>
+<button onClick="{{next}}" disabled="{{atLast}}" aria-label="Next step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div role="group" aria-label="Progress: jump to a step" style="display: flex; gap: 3px">
+<sc-for list="{{dots}}" as="dt" hint-placeholder-count="12"><button onClick="{{dt.go}}" aria-label="{{dt.label}}" aria-current="{{dt.cur}}" style="flex: 1 1 0; min-width: 0; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center"><span style="display: block; width: 100%; height: 6px; border-radius: 999px; background: {{dt.bg}}; transition: background 0.3s"></span></button></sc-for>
+</div>
+</div>
+</sc-if>
+</sc-for>
+</section>
+
+<section aria-label="Animation" ref="{{canvasRef}}" class="cs-scroll" style="position: relative; box-sizing: border-box; flex: {{L.canvasFlex}}; min-height: 0; aspect-ratio: {{L.canvasRatio}}; max-height: {{L.canvasMax}}; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow-x: {{L.canvasScroll}}; overflow-y: hidden; display: flex; align-items: center; justify-content: {{L.canvasJustify}}">
 <svg viewBox="0 -40 960 620" preserveAspectRatio="xMidYMid meet" style="display: block; flex-shrink: 0; width: {{L.svgW}}; height: {{L.svgH}}" role="img" aria-label="{{canvasLabel}}">
 <sc-for list="{{S.halos}}" as="h" hint-placeholder-count="1"><rect class="cs-halo" x="{{h.x}}" y="{{h.y}}" width="{{h.w}}" height="{{h.h}}" rx="{{h.rx}}" fill="none" stroke="{{t.text}}" stroke-width="2" stroke-dasharray="5 5" opacity="{{h.op}}"></rect></sc-for>
 <sc-for list="{{S.rects}}" as="r" hint-placeholder-count="4"><rect x="{{r.x}}" y="{{r.y}}" width="{{r.w}}" height="{{r.h}}" rx="{{r.rx}}" fill="{{r.fill}}" stroke="{{r.stroke}}" stroke-width="{{r.sw}}" stroke-dasharray="{{r.dash}}" opacity="{{r.op}}"></rect></sc-for>
@@ -277,29 +306,6 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </svg>
 </section>
 <sc-if value="{{L.mob}}" hint-placeholder-val="{{ false }}"><span style="margin-top: -4px; font-size: 12px; color: {{t.muted}}">Swipe the picture sideways to see all of it.</span></sc-if>
-
-<section aria-label="Current step" style="box-sizing: border-box; flex-shrink: 0; padding: 14px 18px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 12px 24px; align-items: center">
-<div aria-live="polite" aria-atomic="true" style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
-<span style="font-family: {{t.mono}}; font-size: 12px; font-weight: 700; color: {{t.accent}}">STEP {{stepNo}} OF {{stepCount}}</span>
-<p class="cs-say" key="{{sayKey}}" style="margin: 0; min-height: 54px; font-size: {{L.saySize}}px; line-height: 1.4; color: {{t.text}}">{{say}}</p>
-<sc-if value="{{tryIt.atEnd}}" hint-placeholder-val="{{ false }}">
-<div class="cs-say" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-size: 13px; font-weight: 700; color: {{t.accent}}">Now try</span>
-<sc-for list="{{tryIt.items}}" as="ti" hint-placeholder-count="3"><a href="{{ti.href}}" onClick="{{ti.go}}" style="min-height: 40px; padding: 0 14px; box-sizing: border-box; border-radius: 999px; border: 1px solid {{t.accent}}; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: {{t.text}}">{{ti.title}} <span aria-hidden="true" style="color: {{t.accent}}">→</span></a></sc-for>
-</div>
-</sc-if>
-</div>
-<div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch">
-<div style="display: flex; align-items: center; gap: 8px; justify-content: {{L.ctrlJustify}}">
-<button onClick="{{restart}}" aria-label="Back to the first step" title="Restart" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
-<button onClick="{{prev}}" disabled="{{atFirst}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
-<button onClick="{{togglePlay}}" aria-label="{{playLabel}}" style="height: 44px; min-width: 104px; padding: 0 18px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 700">{{playText}}</button>
-<button onClick="{{next}}" disabled="{{atLast}}" aria-label="Next step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
-</div>
-<div role="group" aria-label="Progress: jump to a step" style="display: flex; gap: 3px">
-<sc-for list="{{dots}}" as="dt" hint-placeholder-count="12"><button onClick="{{dt.go}}" aria-label="{{dt.label}}" aria-current="{{dt.cur}}" style="flex: 1 1 0; min-width: 0; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center"><span style="display: block; width: 100%; height: 6px; border-radius: 999px; background: {{dt.bg}}; transition: background 0.3s"></span></button></sc-for>
-</div>
-</div>
-</section>
 </main>
 
 <!-- side panel: idea, slider, sources -->
@@ -2937,6 +2943,10 @@ const CONCEPT_ROWS = {"binary-search":["Binary Search","Easy","Binary Search"],"
 // The concept lesson player (ConceptLesson page). scripts/build_pages.py copies this file in after the
 // "// ---- page ----" marker. Scenes come from src/concepts/lessons.js, drawn by src/ai/render.js.
 const CS_LESSON_KEY = 'dsaviz-concept-lesson';
+// Play: the first step comes this soon after pressing Play. The stage sits under the step card and is never
+// taller than the screen below it (page px from the top of the page to the stage, plus a bottom margin).
+const PLAY_FIRST_MS = 900;
+const PLAY_STAGE_TOP = 300;
 function csMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
 function csReduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
 function csNow() { try { return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now(); } catch (e) { return Date.now(); } }
@@ -3005,16 +3015,24 @@ class Component extends DCLogic {
     this.ease();
     this.setState(patch);
   }
-  stop() { clearInterval(this.timer); if (this.state.playing) this.setState({ playing: false }); }
+  stop() { clearTimeout(this.timer); this.timer = null; if (this.state.playing) this.setState({ playing: false }); }
+  // Play: the first step comes after a short beat, so pressing Play moves at once; each later step holds 3.8 s.
+  // Reaching the last step stops playing, so the button reads Play again.
   togglePlay() {
     if (this.state.playing) { this.stop(); return; }
     if (this.state.step >= this.steps().length - 1) this.go(0);
     this.setState({ playing: true });
-    clearInterval(this.timer);
-    this.timer = setInterval(() => {
-      if (this.state.step >= this.steps().length - 1) { this.stop(); return; }
-      this.go(this.state.step + 1);
-    }, 3800);
+    this.tick(PLAY_FIRST_MS);
+  }
+  tick(ms) {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      if (this.dead || !this.state.playing) return;
+      const n = this.steps().length; const k = this.state.step + 1;
+      if (k > n - 1) { this.stop(); return; }
+      this.go(k);
+      if (k >= n - 1) this.stop(); else this.tick(3800);
+    }, ms);
   }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
@@ -3045,8 +3063,8 @@ class Component extends DCLogic {
         navPad: mobile ? '12px 16px' : '16px 14px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
         lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
         mainPad: mobile ? '14px 16px' : '16px 20px', h1: mobile ? 24 : 30, titleWrap: mobile ? 'wrap' : 'nowrap', titleWs: mobile ? 'normal' : 'nowrap',
-        canvasGrow: mobile ? '0' : '1', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
-        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 17 : 19,
+        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'calc(100vh / var(--fit, 1) - ' + PLAY_STAGE_TOP + 'px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
+        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '12px 14px' : '14px 18px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 17 : 19,
         asidePad: mobile ? '0 16px 24px' : '16px 16px 18px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
       },
       tracks: CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id)).map((tr) => {
@@ -3080,8 +3098,10 @@ class Component extends DCLogic {
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
-      togglePlay: () => this.togglePlay(),
-      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson step by step',
+      togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
+      // Phones put the controls above the caption, so they stay put while captions change length.
+      nowParts: mobile ? [{ ctrl: true, say: false }, { ctrl: false, say: true }] : [{ say: true, ctrl: false }, { say: false, ctrl: true }],
+      playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson',
       slider: {
         show: !!P, label: P ? P.label : '', hint: P ? P.hint : '',
         min: P ? P.min : 0, max: P ? P.max : 1, step: P ? P.step : 1, value: pv,

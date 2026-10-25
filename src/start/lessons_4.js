@@ -38,7 +38,7 @@ function st21Story() {
   const cast = st1Cast([['hoot', 60], ['bolt', 320], ['dot', 580]]);
   const card = (cur) => st1Card('card', 30, 124, 330, ST21_CODE.py, cur);
   return [
-    stBeat('dot', 'I asked Bolt for the area of a 3 by 4 rug, and it shouted 12. But I needed the number back!', stScene(cast, { tokens: [{ id: 'shout', x: 320, y: 200, text: 'print: 12 !', c: 'c' }] }), ['shout', 'cast:dot']),
+    stBeat('dot', 'I asked the computer for the area of a 3 by 4 rug, and it shouted 12. But I needed the number back!', stScene(cast, { tokens: [{ id: 'shout', x: 320, y: 200, text: 'print: 12 !', c: 'c' }] }), ['shout', 'cast:dot']),
     stBeat('hoot', 'print only shouts a value at the screen. The program around it never gets to keep it.', stScene(cast, { tokens: [{ id: 'shout', x: 220, y: 190, text: 'print(w * h)' }, { id: 'screen', x: 460, y: 190, text: 'screen', c: 'm' }] }, { arrows: [{ id: 'a', from: [300, 190], to: [410, 190], c: 'm' }] }), ['shout', 'a']),
     stBeat('hoot', 'return hands the value back, like a parcel, to the line that called the function.', stScene(cast, card([1]), { boxes: [stVar('parcel', 'returns', '12', 420, 150, { w: 160, tc: 'c' })] }), ['parcel'], 1),
     stBeat('bolt', 'size = area(3, 4). Parcel received: 12. Stored in size.', stScene(cast, card([2]), { boxes: [stVar('size', 'size', '12', 420, 150, { w: 160 })] }), ['size', 'cast:bolt'], 2),

@@ -24,13 +24,13 @@ function st206Story() {
   const cast = st1Cast([['hoot', 60], ['penny', 220], ['bolt', 420], ['dot', 580]]);
   const list = (items, o) => Object.assign({ id: 'list', x: 340, y: 180, w: 260, h: 64, text: '[' + items.map((s) => '"' + s + '"').join(', ') + ']', tag: 'list', size: 18 }, o || {});
   return [
-    stBeat('penny', 'I hand my list to Bolt so it can add an acorn. I thought Bolt would fill a copy of it.', stScene(cast, st2Arrows([['mine', 130, 212, 'list']], [list(['nut'])])), ['cast:penny', 'list']),
+    stBeat('penny', 'I hand my list to the computer so it can add an acorn. I thought the computer would fill a copy of it.', stScene(cast, st2Arrows([['mine', 130, 212, 'list']], [list(['nut'])])), ['cast:penny', 'list']),
     stBeat('hoot', 'mine is not the list itself. It is a name with an arrow pointing at the list.', stScene(cast, st2Arrows([['mine', 130, 212, 'list']], [list(['nut'])], { lit: ['mine'] })), ['nm:mine', 'ar:mine'], 2),
     stBeat('hoot', 'add_acorn(mine) hands over the same arrow. Inside, bag points at that very same list.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 250, 'list']], [list(['nut'])], { lit: ['bag'] })), ['nm:bag', 'ar:bag', 'list'], 3),
     stBeat('bolt', 'bag.append("acorn"). Done. One acorn added to the list bag points at.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 250, 'list']], [list(['nut', 'acorn'], { solid: true })])), ['list'], 1),
-    stBeat('dot', 'So Penny’s list changed too! There was only ever one list, with two arrows on it.', stScene(cast, st2Arrows([['mine', 130, 212, 'list']], [list(['nut', 'acorn'])], { lit: ['mine'] }), st1Screen(340, 270, 260, ["['nut', 'acorn']"], 80)), ['screen', 'cast:dot'], 4),
-    stBeat('hoot', 'But bag = [] inside only moves bag’s own arrow to a new list. Penny’s list stays as it was.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 290, 'empty']], [list(['nut'], { y: 150 }), { id: 'empty', x: 340, y: 260, w: 260, text: '[]', tag: 'new list' }], { lit: ['bag'] })), ['ar:bag', 'empty']),
-    stBeat('penny', 'To keep mine safe, I can pass a copy: add_acorn(mine.copy()). Then Bolt fills the copy.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 290, 'copy']], [list(['nut'], { y: 150 }), list(['nut', 'acorn'], { id: 'copy', y: 260, tag: 'the copy', solid: true })])), ['copy', 'list']),
+    stBeat('dot', 'So the friend’s list changed too! There was only ever one list, with two arrows on it.', stScene(cast, st2Arrows([['mine', 130, 212, 'list']], [list(['nut', 'acorn'])], { lit: ['mine'] }), st1Screen(340, 270, 260, ["['nut', 'acorn']"], 80)), ['screen', 'cast:dot'], 4),
+    stBeat('hoot', 'But bag = [] inside only moves bag’s own arrow to a new list. Ana’s list stays as it was.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 290, 'empty']], [list(['nut'], { y: 150 }), { id: 'empty', x: 340, y: 260, w: 260, text: '[]', tag: 'new list' }], { lit: ['bag'] })), ['ar:bag', 'empty']),
+    stBeat('penny', 'To keep mine safe, I can pass a copy: add_acorn(mine.copy()). Then Ray fills the copy.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 290, 'copy']], [list(['nut'], { y: 150 }), list(['nut', 'acorn'], { id: 'copy', y: 260, tag: 'the copy', solid: true })])), ['copy', 'list']),
     stBeat('hoot', 'One more trap: never write bag=[] as a default. That one list is made once and shared by every call.', stScene(cast, { tokens: [{ id: 'trap', x: 320, y: 200, text: 'def add_acorn(bag=[]):', c: 'bad', w: 320 }, { id: 'fix', x: 320, y: 280, text: 'def add_acorn(bag=None):', w: 320 }] }), ['trap']),
     stBeat('dot', 'Two names, one list. Change it through either name, and both see it.', stScene(cast, st2Arrows([['mine', 130, 180, 'list'], ['bag', 130, 250, 'list']], [list(['nut', 'acorn'])])), ['cast:dot'])
   ];
@@ -54,13 +54,13 @@ function st207Story() {
   const cast = st1Cast([['hoot', 60], ['bolt', 320], ['dot', 580]]);
   const recipe = (o) => Object.assign({ id: 'recipe', x: 360, y: 160, w: 240, h: 70, text: 'word.upper() + "!"', size: 16, tag: 'function shout' }, o || {});
   return [
-    stBeat('hoot', 'Here is a recipe card for shouting. I hand Bolt the card, not a dish I already cooked.', stScene(cast, { boxes: [recipe()] }), ['recipe']),
+    stBeat('hoot', 'Here is a recipe card for shouting. I hand the computer the card, not a dish I already cooked.', stScene(cast, { boxes: [recipe()] }), ['recipe']),
     stBeat('dot', 'What is the difference? shout and shout("hi") look nearly the same.', stScene(cast, { tokens: [{ id: 'card', x: 200, y: 200, text: 'shout' }, { id: 'dish', x: 440, y: 200, text: 'shout("hi")' }] }), ['card', 'dish']),
     stBeat('hoot', 'shout alone is the recipe: a value you can pass around. shout("hi") cooks it and gives "HI!".', stScene(cast, { tokens: [{ id: 'card', x: 200, y: 200, text: 'shout', sub: 'the recipe' }, { id: 'dish', x: 440, y: 200, text: '"HI!"', solid: true, sub: 'the dish' }] }), ['card', 'dish'], [0, 1]),
     stBeat('hoot', 'twice(f, x) takes a recipe as f and uses it two times on x.', stScene(cast, st1Card('card', 60, 130, 520, ST207_CODE.py.slice(2, 4), [0, 1])), ['card'], [2, 3]),
     stBeat('bolt', 'twice(shout, "hi"): f points at the shout card. f("hi") gives "HI!", then f("HI!") gives "HI!!".', stScene(cast, st2Arrows([['shout', 120, 175, 'recipe'], ['f', 120, 255, 'recipe']], [recipe()], { lit: ['f'] }), { tokens: [{ id: 'out', x: 480, y: 290, text: '"HI!!"', solid: true }] }), ['ar:f', 'out'], 4),
     stBeat('dot', 'And twice(shout(), "hi")? That cooks shout with no word at all, before twice even starts!', stScene(cast, { tokens: [{ id: 'bad', x: 320, y: 210, text: 'twice(shout(), "hi") → TypeError', c: 'bad' }] }), ['bad']),
-    stBeat('hoot', 'Python’s sorted uses this too. sorted(names, key=len) is handed the len recipe to rank by.', stScene(cast, { tokens: [{ id: 'sort', x: 320, y: 180, text: 'sorted(["Pip", "Dot", "Penny"], key=len)' }, { id: 'res', x: 320, y: 260, text: '["Pip", "Dot", "Penny"]', solid: true }] }), ['sort', 'res']),
+    stBeat('hoot', 'Python’s sorted uses this too. sorted(names, key=len) is handed the len recipe to rank by.', stScene(cast, { tokens: [{ id: 'sort', x: 320, y: 180, text: 'sorted(["Leo", "Sam", "Ana"], key=len)' }, { id: 'res', x: 320, y: 260, text: '["Leo", "Sam", "Ana"]', solid: true }] }), ['sort', 'res']),
     stBeat('hoot', 'A lambda is a tiny recipe with no name: lambda w: w + "?" is a card you can write inline.', stScene(cast, { tokens: [{ id: 'lam', x: 320, y: 210, text: 'twice(lambda w: w + "?", "hi") → "hi??"' }] }), ['lam']),
     stBeat('dot', 'Without () I hand over the recipe. With () I hand over what it makes!', stScene(cast, { boxes: [recipe()] }), ['cast:dot'])
   ];
@@ -68,8 +68,8 @@ function st207Story() {
 START_LESSON('callbacks', {
   code: ST207_CODE, story: st207Story(),
   watch: { code: 'def shout(word):\n    return word.upper() + "!"\n\ndef twice(f, x):\n    return f(f(x))\n\nyell = shout\nprint(twice(yell, "hi"))\n', heap: true },
-  tryit: { py: 'def shout(word):\n    return word.upper() + "!"\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(shout, "hi"))\nprint(twice(lambda w: w + "?", "hi"))\nprint(sorted(["Penny", "Pip", "Hoot"], key=len))\n',
-    js: 'function shout(word) {\n  return word.toUpperCase() + "!";\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(shout, "hi"));\nconsole.log(twice((w) => w + "?", "hi"));\nconsole.log(["Penny", "Pip", "Hoot"].sort((a, b) => a.length - b.length));\n', differs: true,
+  tryit: { py: 'def shout(word):\n    return word.upper() + "!"\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(shout, "hi"))\nprint(twice(lambda w: w + "?", "hi"))\nprint(sorted(["Ana", "Leo", "Jay"], key=len))\n',
+    js: 'function shout(word) {\n  return word.toUpperCase() + "!";\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(shout, "hi"));\nconsole.log(twice((w) => w + "?", "hi"));\nconsole.log(["Ana", "Leo", "Jay"].sort((a, b) => a.length - b.length));\n', differs: true,
     goals: ['Press Run.', 'Write whisper(word) that returns word.lower() + "..." and pass it to twice.', 'Change twice(shout, "hi") to twice(shout(), "hi") and read the error.'] },
   check: { q: 'What is the difference between shout and shout("hi")?',
     choices: [['shout is the function itself; shout("hi") runs it and gives its answer', true, 'Right. Pass shout to hand over the recipe. Add () only when you want it to run now.'], ['There is no difference', false, 'One is the recipe, the other is what the recipe makes.'], ['shout("hi") is the function; shout is an error', false, 'shout on its own is fine: it is the function as a value.'], ['shout runs the function twice', false, 'Without () it does not run at all.']] }
@@ -77,31 +77,31 @@ START_LESSON('callbacks', {
 
 // ---------- L2.8 Functions that remember ----------
 const ST208_CODE = {
-  py: ['def make_greeter(name):', '    def greet():', '        return "Hi, " + name', '    return greet', 'hi_dot = make_greeter("Dot")', 'print(hi_dot())'],
-  js: ['function makeGreeter(name) {', '  function greet() {', '    return "Hi, " + name; }', '  return greet; }', 'let hiDot = makeGreeter("Dot");', 'console.log(hiDot());']
+  py: ['def make_greeter(name):', '    def greet():', '        return "Hi, " + name', '    return greet', 'hi_dot = make_greeter("Sam")', 'print(hi_dot())'],
+  js: ['function makeGreeter(name) {', '  function greet() {', '    return "Hi, " + name; }', '  return greet; }', 'let hiDot = makeGreeter("Sam");', 'console.log(hiDot());']
 };
 function st208Story() {
   const cast = st1Cast([['hoot', 60], ['pip', 320], ['dot', 580]]);
   const box = (name, o) => Object.assign({ id: 'box:' + name, x: 360, y: 150, w: 240, h: 80, text: 'remembers name = "' + name + '"', size: 15, tag: 'function greet' }, o || {});
   return [
     stBeat('hoot', 'A lunchbox is packed in the kitchen and opened somewhere else, hours later. Functions can carry one too.', stScene(cast, { boxes: [{ id: 'lunch', x: 240, y: 170, w: 160, h: 90, text: 'lunch', size: 20, tag: 'packed' }] }), ['lunch']),
-    stBeat('dot', 'make_greeter("Dot") puts a plate on the stack with name = "Dot". Then it makes greet inside.', stScene(cast, st2Plates(['main program', 'make_greeter()'], { x: 40, w: 230 }), { boxes: [stVar('name', 'name', '"Dot"', 60, 120, { w: 190 })] }, st1Card('card', 300, 124, 320, ST208_CODE.py.slice(0, 4), [0, 1, 2])), ['name', 'card'], [0, 1, 2]),
-    stBeat('hoot', 'greet uses name, so it packs name in its lunchbox. Then make_greeter returns greet itself.', stScene(cast, st2Plates(['main program', 'make_greeter()'], { x: 40, w: 230 }), { boxes: [box('Dot', { solid: true })] }), ['box:Dot'], 3),
-    stBeat('pip', 'make_greeter’s plate comes off the pile. Is name gone now?', stScene(cast, st2Plates(['main program'], { x: 40, w: 230 }), { boxes: [box('Dot')] }), ['plate0', 'box:Dot'], 4),
-    stBeat('hoot', 'Not for greet. Its lunchbox still holds name = "Dot". hi_dot points at that greet.', stScene(cast, st2Arrows([['hi_dot', 140, 190, 'box:Dot']], [box('Dot')], { lit: ['hi_dot'] })), ['ar:hi_dot', 'box:Dot'], 4),
-    stBeat('dot', 'So hi_dot() opens the lunchbox and gives "Hi, Dot", long after make_greeter finished!', stScene(cast, st2Arrows([['hi_dot', 140, 190, 'box:Dot']], [box('Dot')]), st1Screen(360, 260, 240, ['Hi, Dot'], 80)), ['screen'], 5),
-    stBeat('hoot', 'Each call packs its own box. make_greeter("Pip") makes a second greet that remembers "Pip".', stScene(cast, st2Arrows([['hi_dot', 140, 170, 'box:Dot'], ['hi_pip', 140, 280, 'box:Pip']], [box('Dot', { y: 130 }), box('Pip', { y: 240, solid: true })])), ['box:Pip']),
+    stBeat('dot', 'make_greeter("Sam") puts a plate on the stack with name = "Sam". Then it makes greet inside.', stScene(cast, st2Plates(['main program', 'make_greeter()'], { x: 40, w: 230 }), { boxes: [stVar('name', 'name', '"Sam"', 60, 120, { w: 190 })] }, st1Card('card', 300, 124, 320, ST208_CODE.py.slice(0, 4), [0, 1, 2])), ['name', 'card'], [0, 1, 2]),
+    stBeat('hoot', 'greet uses name, so it packs name in its lunchbox. Then make_greeter returns greet itself.', stScene(cast, st2Plates(['main program', 'make_greeter()'], { x: 40, w: 230 }), { boxes: [box('Sam', { solid: true })] }), ['box:Sam'], 3),
+    stBeat('pip', 'make_greeter’s plate comes off the pile. Is name gone now?', stScene(cast, st2Plates(['main program'], { x: 40, w: 230 }), { boxes: [box('Sam')] }), ['plate0', 'box:Sam'], 4),
+    stBeat('hoot', 'Not for greet. Its lunchbox still holds name = "Sam". hi_dot points at that greet.', stScene(cast, st2Arrows([['hi_dot', 140, 190, 'box:Sam']], [box('Sam')], { lit: ['hi_dot'] })), ['ar:hi_dot', 'box:Sam'], 4),
+    stBeat('dot', 'So hi_dot() opens the lunchbox and gives "Hi, Sam", long after make_greeter finished!', stScene(cast, st2Arrows([['hi_dot', 140, 190, 'box:Sam']], [box('Sam')]), st1Screen(360, 260, 240, ['Hi, Sam'], 80)), ['screen'], 5),
+    stBeat('hoot', 'Each call packs its own box. make_greeter("Leo") makes a second greet that remembers "Leo".', stScene(cast, st2Arrows([['hi_dot', 140, 170, 'box:Sam'], ['hi_pip', 140, 280, 'box:Leo']], [box('Sam', { y: 130 }), box('Leo', { y: 240, solid: true })])), ['box:Leo']),
     stBeat('pip', 'In Python, to change a packed number, say nonlocal count first. Otherwise Python makes a new box.', stScene(cast, { tokens: [{ id: 'nl', x: 320, y: 200, text: 'nonlocal count', solid: true }, { id: 'up', x: 320, y: 270, text: 'count = count + 1' }] }), ['nl']),
-    stBeat('dot', 'A function made inside another keeps the names around it. That is a closure!', stScene(cast, { boxes: [box('Dot')] }), ['cast:dot'])
+    stBeat('dot', 'A function made inside another keeps the names around it. That is a closure!', stScene(cast, { boxes: [box('Sam')] }), ['cast:dot'])
   ];
 }
 START_LESSON('closures', {
   code: ST208_CODE, story: st208Story(),
-  watch: { code: 'def make_greeter(name):\n    def greet():\n        return "Hi, " + name\n    return greet\n\nhi_dot = make_greeter("Dot")\nhi_pip = make_greeter("Pip")\nprint(hi_dot())\nprint(hi_pip())\n', heap: true },
+  watch: { code: 'def make_greeter(name):\n    def greet():\n        return "Hi, " + name\n    return greet\n\nhi_dot = make_greeter("Sam")\nhi_pip = make_greeter("Leo")\nprint(hi_dot())\nprint(hi_pip())\n', heap: true },
   tryit: { py: 'def make_counter():\n    count = 0\n    def tick():\n        nonlocal count\n        count = count + 1\n        return count\n    return tick\n\nc = make_counter()\nc()\nc()\nprint(c())\nother = make_counter()\nprint(other())\n',
     js: 'function makeCounter() {\n  let count = 0;\n  function tick() {\n    count = count + 1;\n    return count;\n  }\n  return tick;\n}\n\nlet c = makeCounter();\nc();\nc();\nconsole.log(c());\nlet other = makeCounter();\nconsole.log(other());\n',
     goals: ['Press Run. Why does other start again at 1?', 'Take out the nonlocal line and read the error.', 'Write make_adder(n) that returns a function adding n to its input.'] },
-  check: { q: 'make_greeter("Dot") has returned. Later, hi_dot() still says "Hi, Dot". Why?',
+  check: { q: 'make_greeter("Sam") has returned. Later, hi_dot() still says "Hi, Sam". Why?',
     choices: [['greet packed the name it used, so it still has it', true, 'Right. A closure keeps the outer names it needs, even after the outer plate is gone.'], ['name is a global variable', false, 'name was only on make_greeter’s plate.'], ['Python runs make_greeter again', false, 'make_greeter ran once. greet carries its own copy of the names it used.'], ['It is luck and may fail later', false, 'Closures are reliable: the packed names stay as long as the function does.']] }
 });
 
@@ -115,7 +115,7 @@ function st209Story() {
   const pile = (frames, extra, none) => stScene(cast, st2Plates(frames, { x: 400, w: 220, none, h: 36, gap: 6 }), extra);
   const card = (cur) => st1Card('card', 20, 124, 350, ST209_CODE.py.slice(0, 6), cur);
   return [
-    stBeat('dot', 'Bolt’s rocket needs a countdown from 3. Can a function count down by calling itself?', pile(['main program'], card([])), ['cast:dot']),
+    stBeat('dot', 'The computer’s rocket needs a countdown from 3. Can a function count down by calling itself?', pile(['main program'], card([])), ['cast:dot']),
     stBeat('hoot', 'Yes. count_down(n) says n, then hands the smaller job, count_down(n - 1), to a new copy of itself.', stScene(pile(['main program', 'count_down(3)']), card([4, 5])), ['plate1', 'card'], [4, 5]),
     stBeat('pip', 'Each call gets its own plate with its own n. Three, then two, then one: the pile grows.', pile(['main program', 'count_down(3)', 'count_down(2)', 'count_down(1)']), ['plate3'], 5),
     stBeat('dot', 'When does it stop? It could call itself forever!', pile(['main program', 'count_down(3)', 'count_down(2)', 'count_down(1)', 'count_down(0)']), ['plate4', 'cast:dot']),

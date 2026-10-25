@@ -12,21 +12,21 @@ function st7Story() {
   const screen = (lines) => st1Screen(40, 270, 360, lines, 88);
   return [
     stBeat('hoot', 'Welcome to the treehouse club. The door asks every visitor a question.', stScene(cast, card()), ['card']),
-    stBeat('hoot', 'input shows a question and waits. Whatever the person types comes back as a value.', stScene(cast, card([0]), { tokens: [{ id: 'typed', x: 510, y: 160, text: 'Dot', solid: true }] }), ['typed'], 0),
-    stBeat('dot', 'So name = input(...) puts my answer in a box called name!', stScene(cast, card([0]), boxes('"Dot"', null)), ['bname'], 0),
-    stBeat('hoot', 'Then print greets you by name.', stScene(cast, card([1]), boxes('"Dot"', null), screen(['Your name? Dot', 'Hi, Dot'])), ['screen'], 1),
-    stBeat('dot', 'Next it asks my age. I type 12, so next year I will be 13.', stScene(cast, card([2]), boxes('"Dot"', null), screen(['Your name? Dot', 'Hi, Dot'])), ['card'], 2),
-    stBeat('hoot', 'Careful: input always gives back text. "12" + 1 is an error, and "12" + "1" is "121".', stScene(cast, card([2]), boxes('"Dot"', '"12"', 'str'), screen(['Your name? Dot', 'Hi, Dot'])), ['bage']),
-    stBeat('hoot', 'So wrap it in int(...). int(input("Age? ")) turns the answer into a number first.', stScene(cast, card([2]), boxes('"Dot"', '12', 'int'), screen(['Your name? Dot', 'Hi, Dot'])), ['bage', 'card'], 2),
-    stBeat('dot', 'Then age + 1 is 13. Ask, convert, then use!', stScene(cast, card([3]), boxes('"Dot"', '12', 'int'), screen(['Age? 12', '13'])), ['screen'], 3)
+    stBeat('hoot', 'input shows a question and waits. Whatever the person types comes back as a value.', stScene(cast, card([0]), { tokens: [{ id: 'typed', x: 510, y: 160, text: 'Sam', solid: true }] }), ['typed'], 0),
+    stBeat('dot', 'So name = input(...) puts my answer in a box called name!', stScene(cast, card([0]), boxes('"Sam"', null)), ['bname'], 0),
+    stBeat('hoot', 'Then print greets you by name.', stScene(cast, card([1]), boxes('"Sam"', null), screen(['Your name? Sam', 'Hi, Sam'])), ['screen'], 1),
+    stBeat('dot', 'Next it asks my age. I type 12, so next year I will be 13.', stScene(cast, card([2]), boxes('"Sam"', null), screen(['Your name? Sam', 'Hi, Sam'])), ['card'], 2),
+    stBeat('hoot', 'Careful: input always gives back text. "12" + 1 is an error, and "12" + "1" is "121".', stScene(cast, card([2]), boxes('"Sam"', '"12"', 'str'), screen(['Your name? Sam', 'Hi, Sam'])), ['bage']),
+    stBeat('hoot', 'So wrap it in int(...). int(input("Age? ")) turns the answer into a number first.', stScene(cast, card([2]), boxes('"Sam"', '12', 'int'), screen(['Your name? Sam', 'Hi, Sam'])), ['bage', 'card'], 2),
+    stBeat('dot', 'Then age + 1 is 13. Ask, convert, then use!', stScene(cast, card([3]), boxes('"Sam"', '12', 'int'), screen(['Age? 12', '13'])), ['screen'], 3)
   ];
 }
 START_LESSON('input-output', {
   code: ST7_CODE, story: st7Story(),
-  watch: { code: 'name = input("Your name? ")\nprint("Hi,", name)\nage = int(input("Age? "))\nprint(age + 1)\n', stdin: ['Dot', '12'] },
+  watch: { code: 'name = input("Your name? ")\nprint("Hi,", name)\nage = int(input("Age? "))\nprint(age + 1)\n', stdin: ['Sam', '12'] },
   tryit: { py: 'name = input("Your name? ")\nprint("Hi,", name)\nage = int(input("Age? "))\nprint("Next year you will be", age + 1)\n',
     js: 'let name = prompt("Your name? ");\nconsole.log("Hi,", name);\nlet age = Number(prompt("Age? "));\nconsole.log("Next year you will be", age + 1);\n',
-    stdin: ['Dot', '12'],
+    stdin: ['Sam', '12'],
     goals: ['Press Run. The answers come from the Input box, one per line.', 'Change the answers in the Input box and run it again.', 'Add a question that asks for a favourite food and prints it back.'] },
   check: { q: { py: 'What does int(input()) do with the answer?', js: 'What does Number(prompt()) do with the answer?' },
     choices: [['Turns the typed text into a number', true, 'Right. The answer arrives as text, and the conversion makes it a number you can do sums with.'],
@@ -146,7 +146,7 @@ function st11Story() {
   const card = (cur) => st1Card('card', 40, 124, 560, ST11_CODE.py.slice(1, 5), (cur || []).map((i) => i - 1));
   const tests = (ids) => ({ tokens: ids.map(([t, ok], i) => ({ id: 't' + i, x: 120 + i * 100, y: 220, text: t, w: 80, solid: ok })) });
   return [
-    stBeat('dot', 'My lemonade stand gives a discount for 10 cups or more. Bolt takes the orders.', stScene(cast, order(3, '?')), ['cups', 'cast:dot']),
+    stBeat('dot', 'My lemonade stand gives a discount for 10 cups or more. The computer takes the orders.', stScene(cast, order(3, '?')), ['cups', 'cast:dot']),
     stBeat('bolt', 'Order: 3 cups. Coming up.', stScene(cast, order(3, 'Coming up')), ['say', 'cast:bolt']),
     stBeat('bolt', 'Order: -3 cups. Coming up. Minus three cups of lemonade, please wait.', stScene(cast, order(-3, 'Coming up', true)), ['cups', 'say']),
     stBeat('hoot', 'Programs break at the odd cases. Before you trust one, try zero, a negative and the exact edge.', stScene(cast, tests([['0', false], ['-3', false], ['10', false]])), ['t0', 't1', 't2']),

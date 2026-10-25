@@ -357,6 +357,22 @@ require('../scripts/start_files.js').startFiles().concat(['tracer.py']).forEach(
   if (/leet\s*code/i.test(own)) fail(n, 'page mentions LeetCode');
 });
 
+// ---------- no mascot names in learner text ----------
+// The cast is roles, not characters: the guide narrates, "You" is the learner, "The computer" runs the code.
+// The old invented names must not show anywhere in the track's learner text (its lessons, exercises, cast and pages' track code).
+const CAST_ROLES = ['Guide', 'You', 'The computer', 'A friend', 'The canteen worker'];
+Object.keys(S.START_CAST).forEach((k) => { if (CAST_ROLES.indexOf(S.START_CAST[k].name) < 0) fail('cast ' + k, 'name ' + S.START_CAST[k].name + ' is not a plain role'); });
+const OLD_NAMES = /(Old Hoot|Hoot|Bolt|Dot|Pip|Penny|Nova|Zip|Mop|Dash)/;
+const learnerText = JSON.stringify([S.START_CHAPTERS, S.START_EXERCISES, S.START_PLACEMENT, S.START_PARTS, S.START_LEVELS, S.START_CAST, S.START_ROAD]);
+const badName = learnerText.match(OLD_NAMES);
+if (badName) fail('cast', 'a mascot name shows in Start here learner text: ' + badName[0]);
+const startFileList = require('../scripts/start_files.js').startFiles();
+startFileList.forEach((f) => { const m = read('src', 'start', f).match(OLD_NAMES); if (m) fail(f, 'mentions the old name ' + m[0]); });
+const hubSrc = read('pages', 'Start.dc.html');
+if (/are your guides|Old Hoot|Hoot, Dot|the guides/.test(hubSrc)) fail('Start', 'the hub still has the guides row');
+const chapterSrc = read('pages', 'Chapter.dc.html');
+['trace table', 'Trace table', 'No variables yet.', 'Old Hoot'].forEach((t) => { if (chapterSrc.indexOf(t) >= 0) fail('Chapter', 'still shows: ' + t); });
+
 console.log('✓ ' + ready + ' ready lessons of ' + S.START_CHAPTERS.length + ', ' + exCount + ' exercises, ' + Object.keys(S.START_NEEDS).length + ' tagged problems' + (py ? ', Python checked' : ''));
 console.log(bad ? bad + ' problem(s)' : 'start here clean');
 if (bad) process.exitCode = 1;

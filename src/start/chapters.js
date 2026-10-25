@@ -68,7 +68,7 @@ const START_CHAPTERS = [
     minutes: 11, teaches: ['closures'], after: ['scope', 'callbacks'], trap: 'Expecting the inner function to forget the outer names once the outer call ends.' },
   { id: 'recursion', level: 2, n: 9, part: 10, short: 'Recursion', title: 'A function that calls itself', idea: 'Recursion hands a smaller copy of the job to itself until a base case stops it. Plates pile up, answers come back down.',
     minutes: 12, teaches: ['recursion'], after: ['call-stack'], trap: 'Forgetting the base case, so the calls never stop.' },
-  // ---- Level 3: Objects and classes (lessons_8.js and lessons_9.js). One world all the way through: Old Hoot’s robot workshop. ----
+  // ---- Level 3: Objects and classes (lessons_8.js and lessons_9.js). One world all the way through: the robot workshop. ----
   { id: 'objects', level: 3, n: 1, part: 11, short: 'Objects', title: 'Blueprints and objects', idea: 'A class is a blueprint. Each object built from it is a separate thing with its own data.',
     minutes: 10, teaches: ['objects'], after: ['calls', 'dicts'], trap: 'Thinking the class is the object. One blueprint builds many robots.' },
   { id: 'self', level: 3, n: 2, part: 11, short: 'self', title: 'self: which robot is it?', idea: 'self is the object a method was called on. bolt.beep() runs beep with self pointing at bolt.',

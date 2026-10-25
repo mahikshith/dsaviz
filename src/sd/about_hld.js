@@ -6,6 +6,8 @@ const SD_ABOUT_HLD = {
     uses: ['Photo and video apps that grow from a few friends to millions of people', 'Online shops that must stay open during a big sale', 'Ticket sites that get a huge rush the minute tickets go on sale'],
     before: ['What a server is', 'What a database is'],
     words: [
+      ['CPU', 'The part of a computer that does the work. A busy CPU means the machine has no effort to spare.'],
+      ['millisecond (ms)', 'One thousandth of a second.'],
       ['server', 'A computer that waits for requests from users and sends back answers.'],
       ['request', 'One message from a user, such as "show me this page".'],
       ['load balancer', 'A helper in front of the servers that hands each request to one of them.'],
@@ -26,15 +28,15 @@ const SD_ABOUT_HLD = {
       example: [
         'Say 100,000 users each make 2,000 requests a day.',
         'That is 100,000 × 2,000 = 200,000,000 requests a day.',
-        'Divide by 86,400 seconds. You get about 2,315 requests every second.',
-        'One server handles 1,000 a second. 2,315 ÷ 1,000 = 2.3, which rounds up to 3.',
+        'Divide by 86,400 seconds. You get about 2,300 requests every second.',
+        'One server handles 1,000 a second. 2,300 ÷ 1,000 = 2.3, which rounds up to 3.',
         'Add one spare and you need 4 servers.'
       ]
     },
     steps: [
       'Start with one server and one database. This is simple and enough for a small app.',
       'Count your requests per second and compare it with what one server can handle.',
-      'Scale up first if it is cheap: buy a bigger machine. Nothing else changes.',
+      'Scale up first while it is simple: buy a bigger machine. Nothing else changes.',
       'When one machine is not enough, scale out. Run many copies of the same server code.',
       'Put a load balancer in front and keep shared data in the database, not in server memory.'
     ],
@@ -58,9 +60,9 @@ const SD_ABOUT_HLD = {
       ['round robin', 'Send requests to servers in turn: 1, 2, 3, then 1 again.'],
       ['least connections', 'Send the next request to the server with the fewest requests open right now.'],
       ['health check', 'A small test message sent often to see if a server still answers.'],
-      ['layer 4', 'Balancing that only looks at addresses and ports, not at what the request says.'],
-      ['layer 7', 'Balancing that reads the request itself, such as the page path, before choosing a server.'],
-      ['sticky', 'Sending the same user to the same server every time.']
+      ['layer 4', 'The lower, simpler level of network talk. It looks only at where a message comes from and goes to.'],
+      ['layer 7', 'The top level, the app itself. It reads the request, such as the page path (the part of the web address after the site name), before choosing a server.'],
+      ['sticky', 'Sending the same user to the same server every time. It helps only when that server remembers the user.']
     ],
     math: null,
     steps: [
@@ -134,9 +136,9 @@ const SD_ABOUT_HLD = {
   },
   dcache: {
     what: 'One cache machine can run out of memory or speed. A distributed cache spreads keys over many cache machines. Every app server must agree which machine owns which key.',
-    analogy: 'A library gets too big for one room. You split the books over four rooms by the first letter of the title.',
+    analogy: 'A library gets too big for one room. You split the books over four rooms: each book gets a number made from its title, and the number picks the room.',
     uses: ['Social networks that keep millions of profiles in memory', 'Shops that cache product and price data for fast pages', 'Games that keep player sessions in fast shared memory'],
-    before: ['cache', 'hashing'],
+    before: ['cache'],
     words: [
       ['node', 'One machine in the group of cache machines.'],
       ['key', 'The name used to find one stored item, such as user:42.'],
@@ -201,7 +203,7 @@ const SD_ABOUT_HLD = {
       example: [
         'A logo is 200 KB. It is loaded 1,000,000 times a day.',
         'Without a CDN, the origin sends 1,000,000 × 200 KB = 200 GB a day.',
-        'With 50 edges, each edge asks the origin once. That is 50 × 200 KB = 10 MB a day.',
+        'With 50 edges and copies that last a day, each edge asks the origin once. That is 50 × 200 KB = 10 MB a day.',
         'The origin sends 20,000 times less data.'
       ]
     },
@@ -264,7 +266,7 @@ const SD_ABOUT_HLD = {
     avoid: ['Write-heavy apps. Replicas do not make writes faster.', 'Reads that must always see the very latest write, unless you route them to the primary.'],
     mistakes: [
       'Reading from a replica right after a write and showing old data.',
-      'Thinking replicas fix slow writes. Only sharding spreads writes.',
+      'Thinking replicas fix slow writes. Only splitting the data over several databases (sharding, the next lesson) spreads writes.',
       'Using async copying and not accepting that a crash may lose the last writes.'
     ],
     cheat: ['one primary takes writes', 'replicas serve reads', 'lag = short delay', 'read own writes from primary', 'failover = promote a replica'],
@@ -273,10 +275,12 @@ const SD_ABOUT_HLD = {
   },
   sharding: {
     what: 'Sharding splits one big table over several machines. Each machine, called a shard, holds only some of the rows. A rule on a chosen field says which shard owns each row.',
-    analogy: 'A huge phone book is split into three books. Names starting with A to H go in book one, and so on.',
+    analogy: 'A huge phone book is split into three books. Each person gets a number, and the remainder after dividing by 3 picks the book.',
     uses: ['Social networks that store billions of user rows', 'Messaging apps that store chat history for millions of chats', 'Online games that store progress for millions of players'],
-    before: ['replicas', 'indexes'],
+    before: ['replicas'],
     words: [
+      ['hot shard', 'A shard that gets far more traffic than the others.'],
+      ['resharding', 'Moving data when you add or remove shards.'],
       ['shard', 'One machine that holds part of the data.'],
       ['shard key', 'The field used to decide which shard owns a row, such as the user id.'],
       ['hot shard', 'A shard that gets much more traffic than the others.'],
@@ -321,8 +325,8 @@ const SD_ABOUT_HLD = {
   },
   hashing: {
     what: 'Consistent hashing places both servers and keys on a circle. A key belongs to the first server clockwise from it. Adding or removing a server then moves only a small share of keys.',
-    analogy: 'People stand around a round table, and each takes the plates on the table in front of them. A new person only takes plates from a neighbour.',
-    uses: ['Cache clusters that must grow without everyone missing at once', 'Databases such as Dynamo-style stores that spread data over many machines', 'Content delivery systems that pick which server holds which file'],
+    analogy: 'People sit round a table. Each person takes the plates in front of them. A new person takes plates only from the next person.',
+    uses: ['Cache clusters that must grow without everyone missing at once', 'Some large databases that spread data over many machines', 'Content delivery systems that pick which server holds which file'],
     before: ['sharding', 'dcache'],
     words: [
       ['hash', 'A function that turns a key into a random-looking number. The same key always gives the same number.'],
@@ -343,8 +347,8 @@ const SD_ABOUT_HLD = {
         'Four cache nodes use hash mod 4. You add a fifth and switch to mod 5.',
         'A key stays only if its hash gives the same remainder in both. In every 20 numbers, 4 do.',
         'So 4 ÷ 20 = 20% stay and 80% move. All of those reads miss at once.',
-        'On a ring, the new node takes keys from its neighbour only. About 1 ÷ 5 = 20% move.',
-        'With 100 virtual nodes each, 4 servers give 4 × 100 = 400 points, so arcs even out.'
+        'On a ring, the new node takes keys from one neighbour only. With five evenly spaced nodes, about 1 ÷ 5 = 20% move. The gap size sets the exact share.',
+        'With 100 virtual nodes each, 5 servers give 5 × 100 = 500 points, so arcs even out.'
       ]
     },
     steps: [
@@ -368,9 +372,11 @@ const SD_ABOUT_HLD = {
   cap: {
     what: 'CAP is a rule about data kept in several places. When the network between them breaks, each copy must choose. It can refuse to answer, or it can answer with possibly old data.',
     analogy: 'Two shops share one price list by phone. The phone line drops. Each shop must either stop selling or sell with its old list.',
-    uses: ['Banks, which choose to refuse rather than show a wrong balance', 'Social apps, which choose to keep showing likes and feeds even if slightly old', 'Shops, which keep stock counts exact but let product reviews arrive later'],
+    uses: ['Banks, which often choose to refuse big payments rather than show a wrong balance', 'Social apps, which choose to keep showing likes and feeds even if slightly old', 'Shops, which keep stock counts exact but let product reviews arrive later'],
     before: ['replicas', 'sharding'],
     words: [
+      ['CAP', 'Consistency, Availability, Partition tolerance: three things that cannot all hold when a network breaks.'],
+      ['partition tolerance', 'The system keeps working when the link between its parts is cut.'],
       ['partition', 'A network failure that cuts the machines into groups that cannot talk to each other.'],
       ['consistency', 'Every read sees the latest write.'],
       ['availability', 'Every request gets an answer, even if the data is old.'],
@@ -387,7 +393,7 @@ const SD_ABOUT_HLD = {
       'When the link returns, the copies exchange missed changes and agree again.'
     ],
     use: ['You must decide per feature what to do during a network failure.', 'You explain why a system sometimes shows old data.'],
-    avoid: ['Treating CAP as a menu of three free picks. Partitions happen, so the real choice is only consistency or availability during one.', 'Using one choice for the whole app. Balances and likes need different rules.'],
+    avoid: ['Treating CAP as three free picks. You cannot have all three: when the link breaks, refuse or answer with old data.', 'Using one choice for the whole app. Balances and likes need different rules.'],
     mistakes: [
       'Saying "pick any two of three". Networks do fail, so partition tolerance is not optional.',
       'Choosing availability for money and showing a balance that is already spent.',
@@ -403,12 +409,14 @@ const SD_ABOUT_HLD = {
     uses: ['Banks and shops, which use SQL for orders and payments', 'Product catalogues and profiles, which fit documents', 'View counters and sessions, which suit a key-value store'],
     before: ['What a database is', 'replicas'],
     words: [
+      ['SQL', 'The language most table databases use to ask questions. A table is a grid; a row is one record in it.'],
+      ['NoSQL', 'A name for stores that use shapes other than tables, such as documents and key-value pairs.'],
       ['table', 'Rows and columns of data with a fixed set of columns.'],
       ['join', 'Linking rows from two tables, such as an order and its customer.'],
       ['transaction', 'A group of changes that all happen or none happen.'],
       ['schema', 'The agreed shape of the data.'],
-      ['document store', 'A database that saves each item as one nested record.'],
-      ['key-value store', 'A database that only gets and sets a value by its key.']
+      ['document store', 'A database that saves each item as one record that holds smaller parts inside it.'],
+      ['key-value store', 'A database that only gets and sets a value by its key, which is the name of one item.']
     ],
     math: null,
     steps: [
@@ -435,6 +443,7 @@ const SD_ABOUT_HLD = {
     uses: ['Login pages that find a user by email', 'Shops that filter products by category and price', 'Messaging apps that load the latest messages of one chat'],
     before: ['sqlnosql'],
     words: [
+      ['column', 'One field of a table, such as email, kept for every row.'],
       ['index', 'A sorted copy of one or more columns with pointers back to the rows.'],
       ['full scan', 'Reading every row to find the matches.'],
       ['B-tree', 'A wide, shallow tree. Each step down picks one of many branches.'],
@@ -461,7 +470,7 @@ const SD_ABOUT_HLD = {
     },
     steps: [
       'Find the query that runs often or is slow.',
-      'Create an index on the columns in its WHERE part.',
+      'Create an index on the columns it searches on (its WHERE part, which says which rows you want).',
       'The database walks the tree to the matching entry and jumps to the row.',
       'For several columns, put them in the order the query uses them.',
       'Check the plan with EXPLAIN and remove indexes nobody uses.'
@@ -502,7 +511,7 @@ const SD_ABOUT_HLD = {
       example: [
         '172,800 uploads a day is 172,800 ÷ 86,400 = 2 uploads a second.',
         'Each upload takes 120 seconds to process.',
-        'Workers needed: W = 2 × 120 = 240.',
+        'Workers needed: W = 2 × 120 = 240. In the picture, each Worker box stands for 120 of them.',
         'Each upload is 50 MB. That is 2 × 50 MB = 100 MB a second.',
         'Over a day that is 100 MB × 86,400, about 8.6 TB of new video.'
       ]
@@ -527,7 +536,7 @@ const SD_ABOUT_HLD = {
   },
   idempotency: {
     what: 'An action is idempotent when doing it twice has the same result as doing it once. Networks lose replies, so clients retry. An idempotency key makes a retry safe, so a payment is not charged twice.',
-    analogy: 'Pressing the lift button twice does not call two lifts. The second press changes nothing.',
+    analogy: 'Pressing an elevator button twice does not call two elevators. The second press changes nothing.',
     uses: ['Payment apps that must never charge a customer twice', 'Order systems that must not create the same order twice', 'Email and text services that must not send the same message twice'],
     before: ['queue'],
     words: [
@@ -564,7 +573,7 @@ const SD_ABOUT_HLD = {
       'The client waits longer between retries, with a little random extra.'
     ],
     use: ['An action changes money or data and the network may lose replies.', 'Clients, queues or other systems may send the same request twice.'],
-    avoid: ['Reads such as GET, which are already safe to repeat.', 'Making a new key for each retry. That defeats the whole idea.'],
+    avoid: ['Actions such as GET, PUT and DELETE, which are already safe to repeat.', 'Making a new key for each retry. That defeats the whole idea.'],
     mistakes: [
       'Checking for the key and saving it as two separate steps. Two copies at once can both pass.',
       'Making a fresh key on every retry.',
@@ -586,7 +595,7 @@ const SD_ABOUT_HLD = {
       ['burst', 'Many requests that arrive in a short moment.'],
       ['429', 'The status code for "Too Many Requests".'],
       ['fixed window', 'Counting requests inside set time slots, such as each minute.'],
-      ['Retry-After', 'A reply header that tells the client how many seconds to wait.']
+      ['Retry-After', 'A note added to a reply that tells the client how many seconds to wait.']
     ],
     math: {
       lines: ['t_{\\text{now}} = \\min\\bigl(C,\\; t_{\\text{old}} + r \\times \\Delta\\bigr)', '\\text{allow if } t_{\\text{now}} \\ge 1'],
@@ -633,7 +642,7 @@ const SD_ABOUT_HLD = {
       ['metric', 'A number measured over time, such as requests per second.'],
       ['log', 'A line of text about one event.'],
       ['trace', 'The timed path of one request through all the services it touched.'],
-      ['percentile', 'p99 is the time that 99 of every 100 requests beat.'],
+      ['percentile', 'p99 is a time. 99 of every 100 requests are as fast or faster.'],
       ['alert', 'A message sent to a person when a goal is at risk.'],
       ['SLO', 'A goal for service quality, such as 99% of checkouts under 300 ms.']
     ],
@@ -665,21 +674,21 @@ const SD_ABOUT_HLD = {
     mistakes: [
       'Looking only at the average. The slowest requests hide inside it.',
       'Logs with no request id, so you cannot join the lines of one request.',
-      'Alerting on causes, such as CPU, instead of what users feel, such as slow pages.'
+      'Alerting on causes, such as how busy the processor (CPU) is, instead of what users feel, such as slow pages.'
     ],
     cheat: ['metrics = numbers over time', 'logs = event stories', 'traces = one request\'s path', 'use p99, not average', 'alert on user pain'],
     next: ['ratelimit', 'indexes', 'queue'],
     sources: ['Google, Site Reliability Engineering, 2016, ch. 4 (Service Level Objectives) and ch. 6 (Monitoring Distributed Systems)', 'OpenTelemetry documentation: Observability primer (traces, metrics, logs)', 'Sigelman et al., Dapper, a large-scale distributed systems tracing infrastructure, Google, 2010']
   },
   shortener: {
-    what: 'A URL shortener turns a long web link into a short code. When someone opens the short link, the service looks up the code. Then it sends them to the long link.',
+    what: 'A URL (web address) shortener turns a long web link into a short code. When someone opens the short link, the service looks up the code. Then it sends them to the long link.',
     analogy: 'A coat check gives you a small ticket number. You hand the ticket back and get your big coat.',
     uses: ['Social posts and texts that have tight space limits', 'Printed posters and QR codes that need short links', 'Marketing tools that count how often each link is clicked'],
     before: ['cache', 'lb', 'replicas'],
     words: [
       ['redirect', 'An answer that tells the browser to go to another address.'],
-      ['base 62', 'Writing a number with 62 symbols: a to z, A to Z and 0 to 9.'],
-      ['napkin math', 'Quick rough numbers to size a design.'],
+      ['base 62', 'Writing a number with 62 symbols, as base 10 uses 0 to 9: a=0, b=1 up to z=25, A=26 up to Z=51, then 0=52 up to 9=61.'],
+      ['rough math', 'Quick, rough numbers to size a design.'],
       ['unique id', 'A number given to only one link.'],
       ['single point of failure', 'One part whose failure stops the whole service.']
     ],
@@ -696,7 +705,7 @@ const SD_ABOUT_HLD = {
         'Clicks are ten times more, so about 400 a second.',
         'Over five years that is 6 billion links. At 500 bytes each, it is about 3 TB.',
         'A 7-character code gives 62^7, which is about 3.5 trillion codes. That is plenty.',
-        'Take id 125 in base 62. It equals 2 × 62 + 1, so the digits are 2 and 1: "c" and "b". The code is "cb".'
+        'Take id 125 in base 62. It equals 2 × 62 + 1, so the digits are 2 and 1. With a=0, b=1 and c=2, those are "c" and "b". The code is "cb".'
       ]
     },
     steps: [
@@ -707,7 +716,7 @@ const SD_ABOUT_HLD = {
       'Add a cache, several API servers behind a load balancer, and a replica of the database.'
     ],
     use: ['Reads far outnumber writes and links never change.', 'You want a small, clear first system design to practise on.'],
-    avoid: ['Guessable sequential codes if links must stay private.', 'Running one database with no copy.'],
+    avoid: ['Guessable counting codes if links must stay private. Scramble them first.', 'Running one database with no copy.'],
     mistakes: [
       'Making codes from random text and not checking for a clash.',
       'Skipping the cache, so every click hits the database.',
@@ -726,6 +735,7 @@ const SD_ABOUT_HLD = {
       ['WebSocket', 'A connection that stays open so both sides can send at any time.'],
       ['polling', 'Asking the server again and again if there is news.'],
       ['push', 'The server sends news without being asked.'],
+      ['sequence number', 'The number of a message inside its chat: 1, 2, 3. It keeps the order the same on every phone.'],
       ['presence', 'Whether a user is online right now.'],
       ['sequence number', 'A counter on each message that fixes the order.'],
       ['fan-out', 'Sending one message to many receivers.']
@@ -749,7 +759,7 @@ const SD_ABOUT_HLD = {
       'Each phone opens a WebSocket to a chat server through a load balancer.',
       'A sender\'s message reaches the server, gets a sequence number and is saved.',
       'The server pushes it down the open connection of each receiver who is online.',
-      'For an offline user, the message waits in storage and a push service sends a notice.',
+      'For an offline user, the message waits in storage and a notice service sends an alert.',
       'When the user reconnects, the app asks for everything after the last number it saw.'
     ],
     use: ['People need messages within a fraction of a second.', 'Many users keep a connection open at the same time.'],
@@ -765,13 +775,13 @@ const SD_ABOUT_HLD = {
   },
   feed: {
     what: 'A news feed shows each reader recent posts from the people they follow. You can build the list when the reader opens the app. Or you can build it earlier, when a post is made. Most big apps mix both.',
-    analogy: 'A paper boy can deliver the whole paper to each house in the morning. Or each reader can walk to the shop and pick up the news.',
+    analogy: 'A delivery person can bring the whole paper to each house in the morning. Or each reader can walk to the shop and pick up the news.',
     uses: ['Social networks with a home timeline', 'Photo-sharing apps with a feed of followed accounts', 'Professional networks that show updates from your contacts'],
     before: ['cache', 'queue', 'sharding'],
     words: [
       ['feed', 'The ordered list of posts a reader sees.'],
-      ['fan-out on write', 'When a post is made, add it to every follower\'s feed list at once.'],
-      ['fan-out on read', 'When a reader opens the app, collect posts from everyone they follow.'],
+      ['build on write (fan-out)', 'When a post is made, add it to every follower\'s feed list at once.'],
+      ['build on read', 'When a reader opens the app, collect posts from everyone they follow.'],
       ['follower', 'A person who has chosen to see another person\'s posts.'],
       ['hybrid', 'Using one method for most accounts and another for very big ones.']
     ],
@@ -799,13 +809,13 @@ const SD_ABOUT_HLD = {
       'Keep only the newest ids in memory, split by user id over many machines.'
     ],
     use: ['Reads vastly outnumber writes.', 'Readers expect a fast, fresh list.'],
-    avoid: ['Fan-out on write for huge accounts. One post would cause millions of updates.', 'Building feeds for people who have not logged in for weeks.'],
+    avoid: ['Build on write for huge accounts. One post would cause millions of updates.', 'Building feeds for people who have not logged in for weeks.'],
     mistakes: [
-      'Using only fan-out on read. Each open would join many sources and be slow.',
-      'Using only fan-out on write and letting a star post flood the workers.',
+      'Using only build on read. Each open would join many sources and be slow.',
+      'Using only build on write and letting a very famous account flood the workers.',
       'Keeping the whole history in memory instead of only the newest ids.'
     ],
-    cheat: ['reads >> writes', 'push work to write time', 'star accounts use pull', 'hybrid = both', 'keep newest 500 ids'],
+    cheat: ['many more reads than writes', 'do the work at write time', 'famous accounts: build on read', 'hybrid = both', 'keep newest 500 ids'],
     next: ['chat', 'notify', 'dcache'],
     sources: ['Twitter engineering talk and blog posts on timeline fan-out (Raffi Krikorian, Timelines at Scale, QCon 2012)', 'Kleppmann, Designing Data-Intensive Applications, 2017, ch. 1 (Twitter case study)', 'Redis documentation: lists and sorted sets']
   },
@@ -817,7 +827,7 @@ const SD_ABOUT_HLD = {
     words: [
       ['location update', 'A message from a driver\'s phone saying where the car is now.'],
       ['grid cell', 'One square of the map, with a name that nearby places share.'],
-      ['geohash', 'A short code that names a map square. Close places share the start of the code.'],
+      ['grid cell', 'One square of the map. Close cells have names that start the same way.'],
       ['matcher', 'The part that offers a trip to a driver.'],
       ['lock', 'A mark that says this driver is taken for now.']
     ],
@@ -830,7 +840,7 @@ const SD_ABOUT_HLD = {
       ],
       example: [
         'One million drivers each send a location every 4 seconds.',
-        'Updates: 1,000,000 ÷ 4 = 250,000 every second. This is the real load.',
+        'Updates: 1,000,000 ÷ 4 = 250,000 every second. This is most of the work.',
         'Keep only the latest spot, about 100 bytes per driver.',
         'Memory: 1,000,000 × 100 B = 100 MB, which fits easily in one machine.'
       ]
@@ -876,7 +886,7 @@ const SD_ABOUT_HLD = {
         '500,000 uploads a day is 500,000 ÷ 86,400, about 6 a second.',
         'Each upload is 300 MB.',
         'New data per day: 500,000 × 300 MB = 150,000,000 MB, which is 150 TB.',
-        'Plays are about a billion a day. Sending bytes costs far more than receiving them.'
+        'Plays are about a billion a day. A billion plays is a billion downloads, so sending costs far more than receiving.'
       ]
     },
     steps: [
@@ -943,11 +953,13 @@ const SD_ABOUT_HLD = {
     sources: ['Stripe documentation: Idempotent requests and PaymentIntents lifecycle', 'Square Engineering: Books, an immutable double-entry accounting database service', 'Modern Treasury: Accounting for Developers (ledger concepts)']
   },
   typeahead: {
-    what: 'Search suggestions show the most popular searches that start with the letters typed so far. A trie stores phrases letter by letter. Each spot keeps its own top 5, so answers come fast.',
+    what: 'Search suggestions show the most popular searches that start with the letters typed so far. A trie (say “try”) is a tree of letters. It stores phrases letter by letter. Each spot keeps its own top 5, so answers come fast.',
     analogy: 'Think of a dictionary tab on each letter. Each tab has a sticky note listing the five most popular words under it.',
     uses: ['Search engines suggesting queries as you type', 'Shopping apps suggesting product names', 'Map apps suggesting place names'],
     before: ['cache', 'queue'],
     words: [
+      ['prefix', 'The first letters of a phrase, such as “ca” in “cat”.'],
+      ['debounce', 'Asking only after the person stops typing for a moment.'],
       ['trie', 'A tree where each step down adds one letter, so a path spells a phrase.'],
       ['prefix', 'The first letters of a phrase, such as "ca" in "cat".'],
       ['top-k', 'The k best items, such as the 5 most popular.'],
@@ -1027,9 +1039,12 @@ const SD_ABOUT_HLD = {
     uses: ['Search engines that collect pages to index', 'Price-comparison sites that read many shop pages', 'Research projects that archive public web pages'],
     before: ['queue', 'hashing', 'cache'],
     words: [
+      ['URL', 'A web address.'],
+      ['fetcher', 'A program that downloads pages.'],
+      ['DNS', 'The address system that finds a site’s number address.'],
       ['frontier', 'The list of links waiting to be downloaded.'],
       ['politeness', 'Waiting between visits so one website is not overloaded.'],
-      ['robots.txt', 'A file where a website says which paths crawlers may visit.'],
+      ['robots.txt', 'A file where a website says which parts of the site crawlers may visit.'],
       ['Bloom filter', 'A small structure that says "seen before" with rare false alarms.'],
       ['fetcher', 'A worker that downloads pages.']
     ],
@@ -1135,9 +1150,9 @@ const SD_ABOUT_HLD = {
       ],
       example: [
         '50 million users save 2 files a day. That is 100 million uploads.',
-        '100,000,000 ÷ 86,400 is about 1,200 uploads a second.',
+        '100,000,000 ÷ 86,400 is about 1,160 uploads a second.',
         'Files average 1 MB, so new data is 100,000,000 × 1 MB = 100 TB a day.',
-        'A 40 MB file edited in one place sends one 4 MB chunk, not 40 MB.'
+        'A 40 MB file edited in place, with the same length, sends one 4 MB chunk, not 40 MB. Adding text early shifts later chunks, so real systems cut chunks more cleverly.'
       ]
     },
     steps: [
@@ -1182,14 +1197,14 @@ const SD_ABOUT_HLD = {
         'That takes about 23 halvings, so updates and rank lookups need about 23 steps.',
         'Sorting 10 million rows each time would need millions of steps.',
         'At 100 bytes per player, memory is 10,000,000 × 100 B = 1 GB.',
-        '100 million score updates a day is about 1,200 per second, which one set handles easily.'
+        '100 million score updates a day is about 1,160 per second, which one set handles easily.'
       ]
     },
     steps: [
       'Keep each player and score in a sorted set in memory.',
       'When a game ends, add points with one call. The set moves the player to the right place.',
       'The top 10 is the first ten members read from the high end.',
-      'A rank is found by counting the members above the player as the set is walked.',
+      'The set keeps counts inside, so it finds a rank in about 23 steps.',
       'Also save each update in the database, so the set can be rebuilt after a crash.'
     ],
     use: ['Scores change often and rank must be live.', 'The data fits in memory.'],

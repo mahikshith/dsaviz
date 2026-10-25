@@ -15,7 +15,9 @@ The build inlines these into the single-file site.
 | [@codemirror/view](https://github.com/codemirror/view) | 6.34.1 | MIT | Marijn Haverbeke and others | Code editor |
 | [@codemirror/commands](https://github.com/codemirror/commands) | 6.7.1 | MIT | Marijn Haverbeke and others | Code editor keymaps and history |
 | [@codemirror/language](https://github.com/codemirror/language) | 6.10.3 | MIT | Marijn Haverbeke and others | Code editor syntax support |
-| [@codemirror/autocomplete](https://github.com/codemirror/autocomplete) | 6.18.1 | MIT | Marijn Haverbeke and others | Bracket closing |
+| [@codemirror/autocomplete](https://github.com/codemirror/autocomplete) | 6.18.1 | MIT | Marijn Haverbeke and others | Bracket closing and autocomplete (editor settings) |
+| [@codemirror/search](https://github.com/codemirror/search) | 6.5.6 | MIT | Marijn Haverbeke and others | Search support used by the Vim keys (`/` and `n`) |
+| [@replit/codemirror-vim](https://github.com/replit/codemirror-vim) | 6.2.1 | MIT | Marijn Haverbeke and others (CodeMirror 5 Vim mode), Replit | Vim keybindings, off unless turned on in the editor settings |
 | [@codemirror/lang-python](https://github.com/codemirror/lang-python) | 6.1.6 | MIT | Marijn Haverbeke and others | Python highlighting |
 | [@codemirror/lang-javascript](https://github.com/codemirror/lang-javascript) | 6.2.2 | MIT | Marijn Haverbeke and others | JavaScript highlighting |
 | [@codemirror/lang-java](https://github.com/codemirror/lang-java) | 6.0.1 | MIT | Marijn Haverbeke and others | Java highlighting |

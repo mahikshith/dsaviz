@@ -429,6 +429,8 @@ const SHEET_DATA = {
     ["vertical-order-traversal-of-a-binary-tree", "Vertical Order Traversal of a Binary Tree", "Hard", "Record column, row and value for every node, sort them, then group by column.", null]
   ],
   "Graphs": [
+    ["bfs-visit-order", "Breadth-First Visit Order", "Easy", "Use a queue. Mark a node when it joins the queue, and add neighbours smallest first.", null],
+    ["dfs-visit-order", "Depth-First Visit Order", "Easy", "Visit a node, then go as deep as you can through its smallest unvisited neighbour before trying the next.", null],
     ["find-the-town-judge", "Find the Town Judge", "Easy", "Count trust given and trust received. The judge receives n-1 and gives none.", null],
     ["find-center-of-star-graph", "Find Center of Star Graph", "Easy", "The centre is in every edge, so it is whichever node the first two edges share.", null],
     ["is-graph-bipartite", "Is Graph Bipartite?", "Medium", "Colour each part with two colours as you explore. A neighbour with your colour means no.", null],
@@ -473,7 +475,10 @@ const SHEET_DATA = {
     ["relative-sort-array", "Relative Sort Array", "Easy", "Count the values, write them out in the given order, then the leftovers in rising order.", null],
     ["sort-array-by-increasing-frequency", "Sort Array by Increasing Frequency", "Easy", "Sort by count rising, and by value falling when counts tie.", null],
     ["sort-integers-by-the-number-of-1-bits", "Sort Integers by The Number of 1 Bits", "Easy", "Sort with a key of bit count first and value second.", null],
+    ["insertion-sort-passes", "Insertion Sort, Pass by Pass", "Easy", "Take each value from the left and slide it back past bigger ones. Copy the list after every pass.", null],
+    ["counting-sort", "Counting Sort", "Easy", "Count how many times each value from 0 to k appears, then write each value out that many times.", null],
     ["sort-an-array", "Sort an Array", "Medium", "Write merge sort or heap sort yourself. Both are n log n in every case.", null],
+    ["partition-around-a-pivot", "Partition Around a Pivot", "Medium", "The last value is the pivot. Sweep once, swapping each smaller value into a growing front zone.", null],
     ["insertion-sort-list", "Insertion Sort List", "Medium", "Take each node off the list and walk a dummy-headed sorted list to find its spot.", null],
     ["custom-sort-string", "Custom Sort String", "Medium", "Count the letters, write them in the order string's order, then add the rest.", null],
     ["h-index", "H-Index", "Medium", "Sort citations falling. The answer is the last position where the count is at least the position.", null],
@@ -484,7 +489,10 @@ const SHEET_DATA = {
     ["number-of-recent-calls", "Number of Recent Calls", "Easy", "Keep a queue of times. Drop times older than the window before counting.", null],
     ["design-hashset", "Design HashSet", "Easy", "An array of buckets. Hash a key to its bucket and keep a small list there.", null],
     ["design-hashmap", "Design HashMap", "Easy", "The HashSet idea, but each bucket entry holds a key and its value.", null],
+    ["dynamic-array", "Build a Dynamic Array", "Easy", "Keep a fixed block and a size. When the block is full, copy everything into one twice as big.", null],
     ["design-circular-queue", "Design Circular Queue", "Medium", "A fixed array with a head index and a count. Positions wrap around with modulo.", null],
+    ["min-heap", "Build a Min-Heap", "Medium", "Store the tree in a list. Push sifts the new value up; pop moves the last value to the top and sifts down.", null],
+    ["union-find", "Build Union-Find", "Medium", "Give each item a parent. find follows parents to the root; union points one root at the other.", null],
     ["design-circular-deque", "Design Circular Deque", "Medium", "The circular queue with moves at both ends. Step the head back to add at the front.", null],
     ["design-browser-history", "Design Browser History", "Medium", "A list of pages and a current index. Visiting cuts off everything after the index.", null],
     ["snapshot-array", "Snapshot Array", "Medium", "Each index keeps a list of snap id and value pairs. Binary search the latest at or before a snap.", null],
@@ -525,6 +533,7 @@ const SHEET_DATA = {
     ["dungeon-game", "Dungeon Game", "Hard", "Fill from the princess backwards: the health you need here given the cheaper next step.", null]
   ],
   "Knapsack & LIS": [
+    ["zero-one-knapsack", "0/1 Knapsack", "Medium", "One row of best values per capacity. For each item, walk capacities from high to low so it is used once.", null],
     ["target-sum", "Target Sum", "Medium", "The plus group must total (sum + target) / 2. Count subsets that reach it.", null],
     ["last-stone-weight-ii", "Last Stone Weight II", "Medium", "Split the stones into two piles as equal as possible. Track reachable sums up to half.", null],
     ["ones-and-zeroes", "Ones and Zeroes", "Medium", "A knapsack with two budgets. Loop both downward for each string.", null],

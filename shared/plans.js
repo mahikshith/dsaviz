@@ -3579,6 +3579,105 @@ const PLANS = {
       ["remove deletes the key.",4,4]
     ]
   },
+  "dynamic-array": {
+    goal: "array calls → what each call returns",
+    steps: [
+      ["Keep a fixed block, its capacity and how many slots are used.",1,1],
+      ["get and set read and write one slot directly.",2,3],
+      ["On push, if the block is full, make one twice as big.",4,5],
+      ["Copy every value across, then use the new block.",5,5],
+      ["Write the value at the end and grow the size.",6,6],
+      ["Pop shrinks the size and returns the old last value.",8,8],
+      ["Size and capacity are just the two counters.",9,10]
+    ]
+  },
+  "min-heap": {
+    goal: "heap calls → what each call returns",
+    steps: [
+      ["Keep the values in one list, read as a tree.",1,1],
+      ["Push: add the value at the end of the list.",3,4],
+      ["While its parent is bigger, swap it up.",5,5],
+      ["Pop: empty heap gives -1; otherwise keep the root to return.",9,10],
+      ["Move the last value to the root.",11,12],
+      ["Swap it down with its smaller child until both children are bigger.",14,20],
+      ["top reads the root; size is the list length.",25,26]
+    ]
+  },
+  "union-find": {
+    goal: "union-find calls → what each call returns",
+    steps: [
+      ["Every item starts as its own parent; the group count is n.",1,1],
+      ["find: follow parents up to the root, shortcutting the path.",2,2],
+      ["union: find both roots; the same root means nothing to do.",4,5],
+      ["Hang the shorter tree under the taller one.",6,8],
+      ["One fewer group; return true.",9,10],
+      ["connected compares the two roots; components returns the count.",12,13]
+    ]
+  },
+  "insertion-sort-passes": {
+    goal: "numbers → the list after each insertion pass",
+    steps: [
+      ["Work on a copy of the list and start an empty record.",1,1],
+      ["For each index from 1 to the end, hold its value.",2,3],
+      ["Walk left, moving every bigger value one place right.",4,5],
+      ["Drop the held value into the gap.",6,6],
+      ["Record a copy of the list after this pass.",7,7],
+      ["Return the record.",9,9]
+    ]
+  },
+  "counting-sort": {
+    goal: "numbers from 0 to k → them sorted, by counting",
+    steps: [
+      ["Make k + 1 counters, all zero.",1,1],
+      ["For each value, add one to its counter.",2,2],
+      ["Start an empty answer.",3,3],
+      ["For each value from 0 to k, write it as many times as it was counted.",4,4],
+      ["Return the answer.",5,5]
+    ]
+  },
+  "partition-around-a-pivot": {
+    goal: "numbers → them split around the last value",
+    steps: [
+      ["Copy the list; the pivot is the last value.",1,1],
+      ["Start the front zone boundary at 0.",2,2],
+      ["Walk every value before the pivot.",3,3],
+      ["If it is smaller than the pivot, swap it to the boundary and move the boundary.",4,4],
+      ["Swap the pivot into the boundary slot.",6,6],
+      ["Return the list.",7,7]
+    ]
+  },
+  "bfs-visit-order": {
+    goal: "a graph and a start → the nodes in breadth-first order",
+    steps: [
+      ["Build each node’s neighbour list from the edges.",1,2],
+      ["Sort each list so smaller neighbours come first.",3,3],
+      ["Put start in the queue and mark it seen.",4,5],
+      ["Take the next node from the front and record it.",6,8],
+      ["Add each unseen neighbour to the back, marking it seen.",9,9],
+      ["Return the recorded order.",11,11]
+    ]
+  },
+  "dfs-visit-order": {
+    goal: "a graph and a start → the nodes in depth-first order",
+    steps: [
+      ["Build each node’s neighbour list from the edges.",1,2],
+      ["Sort each list so smaller neighbours come first.",3,3],
+      ["visit(u): mark u as seen and record it.",5,7],
+      ["Then visit each unseen neighbour, smallest first.",8,8],
+      ["Start the walk at start.",10,10],
+      ["Return the recorded order.",11,11]
+    ]
+  },
+  "zero-one-knapsack": {
+    goal: "item weights, values and a capacity → the best total value",
+    steps: [
+      ["Keep the best value for every capacity from 0 up, all 0 at first.",1,1],
+      ["Take the items one at a time.",2,2],
+      ["Walk capacities from the top down to this item’s weight.",3,3],
+      ["Best is the larger of skipping it or taking it plus the best for what is left.",4,4],
+      ["Return the best value at the full capacity.",7,7]
+    ]
+  },
   "design-browser-history": {
     goal: "browser calls → the page after each move",
     steps: [

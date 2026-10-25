@@ -6742,6 +6742,243 @@ const TEST_SPECS = {
       remove(key) { delete this.m['k' + key]; }
     }
   },
+  'dynamic-array': {
+    fn: 'DynamicArray', params: ['ops', 'args'], cmp: 'exact', io: { design: true, ctor: true }, meta: ["Build a Dynamic Array", "Easy", "Design"],
+    ask: "Build a growable array on top of a fixed-size block. DynamicArray(capacity) starts empty with room for capacity values (at least 1). get(i) and set(i, value) read and write slot i, which is always inside the size. pushback(value) adds at the end; when the block is full, first double the capacity. popback() removes and returns the last value (the array is never empty then). getSize() and getCapacity() report the two numbers. The first op creates the array; the tests compare what each call returned (null for nothing).",
+    sig: { py: 'class DynamicArray:', js: 'class DynamicArray {', java: 'class DynamicArray {', cpp: 'class DynamicArray {', go: 'type DynamicArray struct {' },
+    starter: {
+      py: "class DynamicArray:\n    def __init__(self, capacity: int):\n        pass\n\n    def get(self, i: int) -> int:\n        pass\n\n    def set(self, i: int, value: int) -> None:\n        pass\n\n    def pushback(self, value: int) -> None:\n        pass\n\n    def popback(self) -> int:\n        pass\n\n    def getSize(self) -> int:\n        pass\n\n    def getCapacity(self) -> int:\n        pass\n",
+      js: "class DynamicArray {\n  constructor(capacity) {\n  }\n  get(i) {\n  }\n  set(i, value) {\n  }\n  pushback(value) {\n  }\n  popback() {\n  }\n  getSize() {\n  }\n  getCapacity() {\n  }\n}\n",
+      java: "class DynamicArray {\n    public DynamicArray(int capacity) {\n    }\n    public int get(int i) {\n        return 0;\n    }\n    public void set(int i, int value) {\n    }\n    public void pushback(int value) {\n    }\n    public int popback() {\n        return 0;\n    }\n    public int getSize() {\n        return 0;\n    }\n    public int getCapacity() {\n        return 0;\n    }\n}\n",
+      cpp: "#include <bits/stdc++.h>\nusing namespace std;\n\nclass DynamicArray {\npublic:\n    DynamicArray(int capacity) {\n    }\n    int get(int i) {\n        return 0;\n    }\n    void set(int i, int value) {\n    }\n    void pushback(int value) {\n    }\n    int popback() {\n        return 0;\n    }\n    int getSize() {\n        return 0;\n    }\n    int getCapacity() {\n        return 0;\n    }\n};\n",
+      go: "package main\n\ntype DynamicArray struct {\n}\n\nfunc Constructor(capacity int) DynamicArray {\n    return DynamicArray{}\n}\n\nfunc (this *DynamicArray) Get(i int) int {\n    return 0\n}\n\nfunc (this *DynamicArray) Set(i int, value int) {\n}\n\nfunc (this *DynamicArray) Pushback(value int) {\n}\n\nfunc (this *DynamicArray) Popback() int {\n    return 0\n}\n\nfunc (this *DynamicArray) GetSize() int {\n    return 0\n}\n\nfunc (this *DynamicArray) GetCapacity() int {\n    return 0\n}\n"
+    },
+    examples: [[[["DynamicArray", "pushback", "pushback", "getCapacity", "getSize"], [[1], [5], [6], [], []]], [null, null, null, 2, 2]], [[["DynamicArray", "pushback", "set", "get", "popback", "getSize"], [[2], [4], [0, 9], [0], [], []]], [null, null, null, 9, 9, 0]], [[["DynamicArray", "getSize", "getCapacity"], [[3], [], []]], [null, 0, 3]]],
+    hidden: [[[["DynamicArray", "pushback", "pushback", "pushback", "getCapacity", "pushback", "pushback", "getCapacity", "get"], [[1], [1], [2], [3], [], [4], [5], [], [4]]], [null, null, null, null, 4, null, null, 8, 5]], [[["DynamicArray", "pushback", "popback", "pushback", "get", "getSize", "getCapacity"], [[1], [7], [], [8], [0], [], []]], [null, null, 7, null, 8, 1, 1]], [[["DynamicArray", "pushback", "pushback", "pushback", "popback", "popback", "getSize", "getCapacity"], [[2], [1], [2], [3], [], [], [], []]], [null, null, null, null, 3, 2, 1, 4]], [[["DynamicArray", "pushback", "pushback", "set", "set", "get", "get"], [[5], [-1], [-2], [1, 10], [0, 20], [0], [1]]], [null, null, null, null, null, 20, 10]], [[["DynamicArray", "pushback", "pushback", "pushback", "pushback", "pushback", "getCapacity", "getSize"], [[3], [0], [0], [0], [0], [0], [], []]], [null, null, null, null, null, null, 6, 5]]],
+    ref: class {
+      constructor(capacity) { this.cap = capacity; this.size = 0; this.block = new Array(capacity).fill(0); }
+      get(i) { return this.block[i]; }
+      set(i, value) { this.block[i] = value; }
+      pushback(value) {
+        if (this.size === this.cap) { const bigger = new Array(this.cap * 2).fill(0); for (let k = 0; k < this.size; k++) bigger[k] = this.block[k]; this.block = bigger; this.cap *= 2; }
+        this.block[this.size++] = value;
+      }
+      popback() { this.size--; return this.block[this.size]; }
+      getSize() { return this.size; }
+      getCapacity() { return this.cap; }
+    }
+  },
+  'min-heap': {
+    fn: 'MinHeap', params: ['ops', 'args'], cmp: 'exact', io: { design: true, ctor: true }, meta: ["Build a Min-Heap", "Medium", "Design"],
+    ask: "Build a min-heap of integers yourself, with no built-in priority queue. push(value) adds a value. pop() removes and returns the smallest value, or -1 when the heap is empty. top() returns the smallest value without removing it, or -1 when empty. size() returns how many values it holds. The first op creates the heap; the tests compare what each call returned (null for nothing).",
+    sig: { py: 'class MinHeap:', js: 'class MinHeap {', java: 'class MinHeap {', cpp: 'class MinHeap {', go: 'type MinHeap struct {' },
+    starter: {
+      py: "class MinHeap:\n    def __init__(self):\n        pass\n\n    def push(self, value: int) -> None:\n        pass\n\n    def pop(self) -> int:\n        pass\n\n    def top(self) -> int:\n        pass\n\n    def size(self) -> int:\n        pass\n",
+      js: "class MinHeap {\n  constructor() {\n  }\n  push(value) {\n  }\n  pop() {\n  }\n  top() {\n  }\n  size() {\n  }\n}\n",
+      java: "class MinHeap {\n    public MinHeap() {\n    }\n    public void push(int value) {\n    }\n    public int pop() {\n        return 0;\n    }\n    public int top() {\n        return 0;\n    }\n    public int size() {\n        return 0;\n    }\n}\n",
+      cpp: "#include <bits/stdc++.h>\nusing namespace std;\n\nclass MinHeap {\npublic:\n    MinHeap() {\n    }\n    void push(int value) {\n    }\n    int pop() {\n        return 0;\n    }\n    int top() {\n        return 0;\n    }\n    int size() {\n        return 0;\n    }\n};\n",
+      go: "package main\n\ntype MinHeap struct {\n}\n\nfunc Constructor() MinHeap {\n    return MinHeap{}\n}\n\nfunc (this *MinHeap) Push(value int) {\n}\n\nfunc (this *MinHeap) Pop() int {\n    return 0\n}\n\nfunc (this *MinHeap) Top() int {\n    return 0\n}\n\nfunc (this *MinHeap) Size() int {\n    return 0\n}\n"
+    },
+    examples: [[[["MinHeap", "push", "push", "push", "pop", "top"], [[], [5], [2], [8], [], []]], [null, null, null, null, 2, 5]], [[["MinHeap", "pop", "top", "size"], [[], [], [], []]], [null, -1, -1, 0]], [[["MinHeap", "push", "push", "pop", "pop", "size"], [[], [3], [3], [], [], []]], [null, null, null, 3, 3, 0]]],
+    hidden: [[[["MinHeap", "push", "push", "push", "push", "push", "pop", "pop", "pop", "pop", "pop", "pop"], [[], [9], [4], [7], [1], [8], [], [], [], [], [], []]], [null, null, null, null, null, null, 1, 4, 7, 8, 9, -1]], [[["MinHeap", "push", "push", "top", "push", "top", "size"], [[], [-5], [10], [], [-20], [], []]], [null, null, null, -5, null, -20, 3]], [[["MinHeap", "push", "pop", "push", "push", "pop", "top"], [[], [6], [], [2], [1], [], []]], [null, null, 6, null, null, 1, 2]], [[["MinHeap", "push", "push", "push", "push", "pop", "push", "pop", "pop"], [[], [5], [5], [1], [5], [], [0], [], []]], [null, null, null, null, null, 1, null, 0, 5]], [[["MinHeap", "push", "push", "push", "push", "push", "push", "push", "pop", "pop", "pop", "size"], [[], [10], [9], [8], [7], [6], [5], [4], [], [], [], []]], [null, null, null, null, null, null, null, null, 4, 5, 6, 4]]],
+    ref: class {
+      constructor() { this.a = []; }
+      push(value) {
+        const a = this.a; a.push(value);
+        let i = a.length - 1;
+        while (i > 0 && a[(i - 1) >> 1] > a[i]) { const p = (i - 1) >> 1; [a[p], a[i]] = [a[i], a[p]]; i = p; }
+      }
+      pop() {
+        const a = this.a;
+        if (!a.length) return -1;
+        const top = a[0], last = a.pop();
+        if (a.length) {
+          a[0] = last;
+          let i = 0;
+          while (true) {
+            const l = 2 * i + 1, r = l + 1;
+            let m = i;
+            if (l < a.length && a[l] < a[m]) m = l;
+            if (r < a.length && a[r] < a[m]) m = r;
+            if (m === i) break;
+            [a[m], a[i]] = [a[i], a[m]]; i = m;
+          }
+        }
+        return top;
+      }
+      top() { return this.a.length ? this.a[0] : -1; }
+      size() { return this.a.length; }
+    }
+  },
+  'union-find': {
+    fn: 'UnionFind', params: ['ops', 'args'], cmp: 'exact', io: { design: true, ctor: true }, meta: ["Build Union-Find", "Medium", "Design"],
+    ask: "Build a disjoint-set structure over the items 0 to n - 1, each starting in its own group. union(a, b) joins the groups of a and b and returns true, or returns false if they were already in one group. connected(a, b) returns whether a and b share a group. components() returns how many groups there are. The first op creates it; the tests compare what each call returned (null for nothing).",
+    sig: { py: 'class UnionFind:', js: 'class UnionFind {', java: 'class UnionFind {', cpp: 'class UnionFind {', go: 'type UnionFind struct {' },
+    starter: {
+      py: "class UnionFind:\n    def __init__(self, n: int):\n        pass\n\n    def union(self, a: int, b: int) -> bool:\n        pass\n\n    def connected(self, a: int, b: int) -> bool:\n        pass\n\n    def components(self) -> int:\n        pass\n",
+      js: "class UnionFind {\n  constructor(n) {\n  }\n  union(a, b) {\n  }\n  connected(a, b) {\n  }\n  components() {\n  }\n}\n",
+      java: "class UnionFind {\n    public UnionFind(int n) {\n    }\n    public boolean union(int a, int b) {\n        return false;\n    }\n    public boolean connected(int a, int b) {\n        return false;\n    }\n    public int components() {\n        return 0;\n    }\n}\n",
+      cpp: "#include <bits/stdc++.h>\nusing namespace std;\n\nclass UnionFind {\npublic:\n    UnionFind(int n) {\n    }\n    bool union(int a, int b) {\n        return false;\n    }\n    bool connected(int a, int b) {\n        return false;\n    }\n    int components() {\n        return 0;\n    }\n};\n",
+      go: "package main\n\ntype UnionFind struct {\n}\n\nfunc Constructor(n int) UnionFind {\n    return UnionFind{}\n}\n\nfunc (this *UnionFind) Union(a int, b int) bool {\n    return false\n}\n\nfunc (this *UnionFind) Connected(a int, b int) bool {\n    return false\n}\n\nfunc (this *UnionFind) Components() int {\n    return 0\n}\n"
+    },
+    examples: [[[["UnionFind", "union", "connected", "connected", "components"], [[4], [0, 1], [0, 1], [1, 2], []]], [null, true, true, false, 3]], [[["UnionFind", "union", "union", "union"], [[3], [0, 1], [1, 2], [0, 2]]], [null, true, true, false]], [[["UnionFind", "components", "connected"], [[1], [], [0, 0]]], [null, 1, true]]],
+    hidden: [[[["UnionFind", "union", "union", "union", "connected", "components"], [[6], [0, 1], [2, 3], [1, 3], [0, 2], []]], [null, true, true, true, true, 3]], [[["UnionFind", "union", "union", "connected", "connected"], [[5], [4, 3], [3, 2], [2, 4], [0, 4]]], [null, true, true, true, false]], [[["UnionFind", "union", "union", "union", "union", "components", "union"], [[5], [0, 1], [1, 2], [2, 3], [3, 4], [], [4, 0]]], [null, true, true, true, true, 1, false]], [[["UnionFind", "components", "union", "components", "union", "components"], [[2], [], [1, 0], [], [0, 1], []]], [null, 2, true, 1, false, 1]], [[["UnionFind", "union", "union", "union", "connected", "connected", "components"], [[8], [0, 7], [1, 6], [7, 6], [0, 1], [2, 5], []]], [null, true, true, true, true, false, 5]]],
+    ref: class {
+      constructor(n) { this.parent = Array.from({ length: n }, (_, i) => i); this.rank = new Array(n).fill(0); this.count = n; }
+      find(x) { while (this.parent[x] !== x) { this.parent[x] = this.parent[this.parent[x]]; x = this.parent[x]; } return x; }
+      union(a, b) {
+        let ra = this.find(a), rb = this.find(b);
+        if (ra === rb) return false;
+        if (this.rank[ra] < this.rank[rb]) [ra, rb] = [rb, ra];
+        this.parent[rb] = ra;
+        if (this.rank[ra] === this.rank[rb]) this.rank[ra]++;
+        this.count--;
+        return true;
+      }
+      connected(a, b) { return this.find(a) === this.find(b); }
+      components() { return this.count; }
+    }
+  },
+  'insertion-sort-passes': {
+    fn: 'insertionSortPasses', params: ['nums'], cmp: 'exact', meta: ["Insertion Sort, Pass by Pass", "Easy", "Sorting"],
+    ask: "Sort nums with insertion sort and show your work. For each index i from 1 to the end, take nums[i], move every bigger value before it one place right, and drop it into the gap. After each i, record a copy of the whole list. Return the list of copies (empty when nums has fewer than 2 values).",
+    sig: {
+      py: "def insertionSortPasses(nums: List[int]) -> List[List[int]]:",
+      js: "function insertionSortPasses(nums) {",
+      java: "public List<List<Integer>> insertionSortPasses(int[] nums) {",
+      cpp: "vector<vector<int>> insertionSortPasses(vector<int>& nums) {",
+      go: "func insertionSortPasses(nums []int) [][]int {"
+    },
+    examples: [[[[3, 1, 2]], [[1, 3, 2], [1, 2, 3]]], [[[5]], []], [[[2, 2, 1]], [[2, 2, 1], [1, 2, 2]]]],
+    hidden: [[[[]], []], [[[1, 2, 3]], [[1, 2, 3], [1, 2, 3]]], [[[4, 3, 2, 1]], [[3, 4, 2, 1], [2, 3, 4, 1], [1, 2, 3, 4]]], [[[-1, 5, -3, 0]], [[-1, 5, -3, 0], [-3, -1, 5, 0], [-3, -1, 0, 5]]], [[[7, 7]], [[7, 7]]], [[[10, -10, 0, 5, 5]], [[-10, 10, 0, 5, 5], [-10, 0, 10, 5, 5], [-10, 0, 5, 10, 5], [-10, 0, 5, 5, 10]]]],
+    ref: function (nums) {
+      const a = nums.slice(), out = [];
+      for (let i = 1; i < a.length; i++) {
+        const x = a[i];
+        let j = i - 1;
+        while (j >= 0 && a[j] > x) { a[j + 1] = a[j]; j--; }
+        a[j + 1] = x;
+        out.push(a.slice());
+      }
+      return out;
+    }
+  },
+  'counting-sort': {
+    fn: 'countingSort', params: ['nums', 'k'], cmp: 'exact', meta: ["Counting Sort", "Easy", "Sorting"],
+    ask: "Every value in nums is between 0 and k. Return nums sorted from small to large without comparing values: count how many times each value appears, then write the values out in order.",
+    sig: {
+      py: "def countingSort(nums: List[int], k: int) -> List[int]:",
+      js: "function countingSort(nums, k) {",
+      java: "public int[] countingSort(int[] nums, int k) {",
+      cpp: "vector<int> countingSort(vector<int>& nums, int k) {",
+      go: "func countingSort(nums []int, k int) []int {"
+    },
+    examples: [[[[3, 0, 2, 3, 1], 3], [0, 1, 2, 3, 3]], [[[], 5], []], [[[4, 4, 4], 4], [4, 4, 4]]],
+    hidden: [[[[0], 0], [0]], [[[5, 1, 4, 2, 3, 0], 5], [0, 1, 2, 3, 4, 5]], [[[9, 0, 9, 0], 9], [0, 0, 9, 9]], [[[1, 1, 0, 1, 0], 1], [0, 0, 1, 1, 1]], [[[2, 7, 2, 7, 5], 10], [2, 2, 5, 7, 7]]],
+    ref: function (nums, k) {
+      const count = new Array(k + 1).fill(0);
+      for (const x of nums) count[x]++;
+      const out = [];
+      for (let v = 0; v <= k; v++) for (let c = 0; c < count[v]; c++) out.push(v);
+      return out;
+    }
+  },
+  'partition-around-a-pivot': {
+    fn: 'partition', params: ['nums'], cmp: 'exact', meta: ["Partition Around a Pivot", "Medium", "Sorting"],
+    ask: "This is the step at the heart of quick sort. The pivot is the last value of nums (nums is never empty). Keep a boundary b = 0. Walk j from the first value to the one before the pivot; whenever nums[j] is smaller than the pivot, swap nums[j] with nums[b] and move b right. Finally swap the pivot into nums[b]. Return the list afterwards: smaller values, then the pivot, then the rest.",
+    sig: {
+      py: "def partition(nums: List[int]) -> List[int]:",
+      js: "function partition(nums) {",
+      java: "public int[] partition(int[] nums) {",
+      cpp: "vector<int> partition(vector<int>& nums) {",
+      go: "func partition(nums []int) []int {"
+    },
+    examples: [[[[7, 2, 9, 1, 5]], [2, 1, 5, 7, 9]], [[[4]], [4]], [[[1, 2, 3]], [1, 2, 3]]],
+    hidden: [[[[3, 2, 1]], [1, 2, 3]], [[[5, 5, 5, 5]], [5, 5, 5, 5]], [[[8, -1, 6, 0, 3, 2]], [-1, 0, 2, 8, 3, 6]], [[[2, 1]], [1, 2]], [[[1, 2]], [1, 2]], [[[9, 4, 7, 4, 10, 4]], [4, 4, 7, 4, 10, 9]]],
+    ref: function (nums) {
+      const a = nums.slice(), hi = a.length - 1, pivot = a[hi];
+      let b = 0;
+      for (let j = 0; j < hi; j++) {
+        if (a[j] < pivot) { [a[b], a[j]] = [a[j], a[b]]; b++; }
+      }
+      [a[b], a[hi]] = [a[hi], a[b]];
+      return a;
+    }
+  },
+  'bfs-visit-order': {
+    fn: 'bfsOrder', params: ['n', 'edges', 'start'], cmp: 'exact', meta: ["Breadth-First Visit Order", "Easy", "Graphs"],
+    ask: "Nodes are numbered 0 to n - 1 and edges are two-way. Explore breadth-first from start: visit start, then all its neighbours, then theirs, always taking a node’s neighbours from smallest to largest and never visiting a node twice. Return the nodes in the order you visit them.",
+    sig: {
+      py: "def bfsOrder(n: int, edges: List[List[int]], start: int) -> List[int]:",
+      js: "function bfsOrder(n, edges, start) {",
+      java: "public List<Integer> bfsOrder(int n, int[][] edges, int start) {",
+      cpp: "vector<int> bfsOrder(int n, vector<vector<int>>& edges, int start) {",
+      go: "func bfsOrder(n int, edges [][]int, start int) []int {"
+    },
+    examples: [[[5, [[0, 1], [0, 2], [1, 3], [2, 4]], 0], [0, 1, 2, 3, 4]], [[3, [[0, 1]], 2], [2]], [[4, [[3, 0], [2, 0], [1, 0]], 0], [0, 1, 2, 3]]],
+    hidden: [[[1, [], 0], [0]], [[6, [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]], 3], [3, 2, 4, 1, 5, 0]], [[5, [[0, 1], [1, 2], [2, 0], [2, 3], [3, 4]], 4], [4, 3, 2, 0, 1]], [[7, [[0, 6], [0, 3], [3, 5], [6, 5], [1, 2]], 0], [0, 3, 6, 5]], [[4, [[0, 1], [0, 1], [1, 2]], 2], [2, 1, 0]]],
+    ref: function (n, edges, start) {
+      const adj = Array.from({ length: n }, () => []);
+      for (const [a, b] of edges) { adj[a].push(b); adj[b].push(a); }
+      adj.forEach((l) => l.sort((x, y) => x - y));
+      const seen = new Array(n).fill(false), queue = [start], out = [];
+      seen[start] = true;
+      for (let h = 0; h < queue.length; h++) {
+        const u = queue[h];
+        out.push(u);
+        for (const v of adj[u]) if (!seen[v]) { seen[v] = true; queue.push(v); }
+      }
+      return out;
+    }
+  },
+  'dfs-visit-order': {
+    fn: 'dfsOrder', params: ['n', 'edges', 'start'], cmp: 'exact', meta: ["Depth-First Visit Order", "Easy", "Graphs"],
+    ask: "Nodes are numbered 0 to n - 1 and edges are two-way. Explore depth-first from start: visit a node, then fully explore its smallest unvisited neighbour, then its next one, and so on, never visiting a node twice. Return the nodes in the order you first visit them.",
+    sig: {
+      py: "def dfsOrder(n: int, edges: List[List[int]], start: int) -> List[int]:",
+      js: "function dfsOrder(n, edges, start) {",
+      java: "public List<Integer> dfsOrder(int n, int[][] edges, int start) {",
+      cpp: "vector<int> dfsOrder(int n, vector<vector<int>>& edges, int start) {",
+      go: "func dfsOrder(n int, edges [][]int, start int) []int {"
+    },
+    examples: [[[5, [[0, 1], [0, 2], [1, 3], [2, 4]], 0], [0, 1, 3, 2, 4]], [[3, [[0, 1]], 2], [2]], [[4, [[0, 1], [1, 2], [0, 3], [2, 3]], 0], [0, 1, 2, 3]]],
+    hidden: [[[1, [], 0], [0]], [[6, [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]], 3], [3, 2, 1, 0, 4, 5]], [[5, [[0, 1], [1, 2], [2, 0], [2, 3], [3, 4]], 4], [4, 3, 2, 0, 1]], [[7, [[0, 6], [0, 3], [3, 5], [6, 5], [1, 2]], 0], [0, 3, 5, 6]], [[4, [[0, 3], [0, 2], [0, 1]], 0], [0, 1, 2, 3]]],
+    ref: function (n, edges, start) {
+      const adj = Array.from({ length: n }, () => []);
+      for (const [a, b] of edges) { adj[a].push(b); adj[b].push(a); }
+      adj.forEach((l) => l.sort((x, y) => x - y));
+      const seen = new Array(n).fill(false), out = [];
+      const visit = (u) => {
+        seen[u] = true;
+        out.push(u);
+        for (const v of adj[u]) if (!seen[v]) visit(v);
+      };
+      visit(start);
+      return out;
+    }
+  },
+  'zero-one-knapsack': {
+    fn: 'knapsack', params: ['weights', 'values', 'capacity'], cmp: 'exact', meta: ["0/1 Knapsack", "Medium", "Knapsack & LIS"],
+    ask: "Item i weighs weights[i] and is worth values[i]. Each item can be taken once or not at all. Return the largest total value whose total weight is at most capacity.",
+    sig: {
+      py: "def knapsack(weights: List[int], values: List[int], capacity: int) -> int:",
+      js: "function knapsack(weights, values, capacity) {",
+      java: "public int knapsack(int[] weights, int[] values, int capacity) {",
+      cpp: "int knapsack(vector<int>& weights, vector<int>& values, int capacity) {",
+      go: "func knapsack(weights []int, values []int, capacity int) int {"
+    },
+    examples: [[[[1, 3, 4], [15, 20, 30], 4], 35], [[[5], [10], 4], 0], [[[2, 2, 2], [3, 4, 5], 4], 9]],
+    hidden: [[[[], [], 10], 0], [[[1, 2, 3], [6, 10, 12], 5], 22], [[[4, 5, 1], [1, 2, 3], 4], 3], [[[10, 20, 30], [60, 100, 120], 50], 220], [[[1, 1, 1, 1], [1, 2, 3, 4], 2], 7], [[[3, 4, 5], [30, 50, 60], 0], 0]],
+    ref: function (weights, values, capacity) {
+      const best = new Array(capacity + 1).fill(0);
+      for (let i = 0; i < weights.length; i++) {
+        for (let c = capacity; c >= weights[i]; c--) {
+          best[c] = Math.max(best[c], best[c - weights[i]] + values[i]);
+        }
+      }
+      return best[capacity];
+    }
+  },
   'design-browser-history': {
     fn: 'BrowserHistory', params: ['ops', 'args'], cmp: 'exact', io: { design: true, ctor: true }, meta: ['Design Browser History', 'Medium', 'Design'],
     ask: 'A browser tab starts on homepage. visit(url) opens url and clears the forward history. back(steps) and forward(steps) move up to steps pages (stopping at the ends) and return the page you land on. The first op creates the tab; the tests compare what each call returned (null for nothing).',

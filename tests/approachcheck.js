@@ -6,7 +6,7 @@
 //    each with a name, an idea, time and space with a reason, JavaScript and 1 to 3 pitfalls. The best approach
 //    meets the target. Every approach's JavaScript passes the problem's tests through the real runner harness
 //    (one marked slow runs the visible examples only). Python, when given and when Python 3 is installed, too.
-//  - The practice lists (shared/lists.js) use real registry ids with no repeats, Starter 50 inside Core 150
+//  - The practice lists (shared/lists.js) use real registry ids with no repeats, Core skills 20 inside All, Starter 50 inside Core 150
 //    inside All; every Core problem has approaches; the registry records each problem's lists.
 //  - None of it names an outside problem site.
 const path = require('path');
@@ -56,7 +56,7 @@ if (OUTSIDE.test(JSON.stringify([PROBLEM_FACTS, SQL_FACTS]))) fail('facts', 'nam
   const { SHEET, PROBLEM_LISTS, listIds, listName } = new Function('window', read('shared', 'catalog.js') + '\n' + read('shared', 'sheet.js') + '\n' + read('shared', 'lists.js') + '\nreturn { SHEET, PROBLEM_LISTS, listIds, listName };')(win);
   const reg = JSON.parse(read('data', 'problem-registry.json')).entries;
   const regIds = new Set(reg.map((e) => e.id));
-  const want = { starter: 50, core: 150, all: reg.length };
+  const want = { starter: 50, core: 150, skills: 20, all: reg.length };
   const sets = {};
   for (const l of PROBLEM_LISTS) {
     const ids = listIds(l);
@@ -71,6 +71,7 @@ if (OUTSIDE.test(JSON.stringify([PROBLEM_FACTS, SQL_FACTS]))) fail('facts', 'nam
   else {
     [...sets.starter].filter((id) => !sets.core.has(id)).forEach((id) => fail('list starter', id + ' is not in Core'));
     [...sets.core].filter((id) => !sets.all.has(id)).forEach((id) => fail('list core', id + ' is not in All'));
+    [...sets.skills].filter((id) => !sets.all.has(id)).forEach((id) => fail('list skills', id + ' is not in All'));
     if (sets.all.size !== regIds.size) fail('list all', 'should hold every registry problem');
     [...sets.core].filter((id) => !APPROACHES[id]).forEach((id) => fail('list core', id + ' has no approaches'));
   }

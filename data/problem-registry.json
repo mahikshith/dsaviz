@@ -1178,6 +1178,7 @@
    "words": 32,
    "lists": [
     "core",
+    "skills",
     "all"
    ]
   },
@@ -1497,6 +1498,7 @@
    "lists": [
     "starter",
     "core",
+    "skills",
     "all"
    ]
   },
@@ -2813,6 +2815,7 @@
    "lists": [
     "starter",
     "core",
+    "skills",
     "all"
    ]
   },
@@ -4255,6 +4258,7 @@
    "words": 19,
    "lists": [
     "core",
+    "skills",
     "all"
    ]
   },
@@ -5300,6 +5304,7 @@
    "sig": "class {get(1), addAtHead(1), addAtTail(1), addAtIndex(2), deleteAtIndex(1)}",
    "words": 39,
    "lists": [
+    "skills",
     "all"
    ]
   },
@@ -6193,6 +6198,44 @@
    ]
   },
   {
+   "id": "bfs-visit-order",
+   "row": "bfs-visit-order",
+   "title": "Breadth-First Visit Order",
+   "norm": "breadth first visit order",
+   "aliases": [
+    "bfs visit order"
+   ],
+   "pattern": "Graphs",
+   "diff": "Easy",
+   "story": null,
+   "kind": "code",
+   "sig": "(int, List[List[int]], int) -> List[int]",
+   "words": 26,
+   "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
+   "id": "dfs-visit-order",
+   "row": "dfs-visit-order",
+   "title": "Depth-First Visit Order",
+   "norm": "depth first visit order",
+   "aliases": [
+    "dfs visit order"
+   ],
+   "pattern": "Graphs",
+   "diff": "Easy",
+   "story": null,
+   "kind": "code",
+   "sig": "(int, List[List[int]], int) -> List[int]",
+   "words": 26,
+   "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
    "id": "find-the-town-judge",
    "row": "find-the-town-judge",
    "title": "Find the Town Judge",
@@ -6405,6 +6448,7 @@
    "words": 20,
    "lists": [
     "core",
+    "skills",
     "all"
    ]
   },
@@ -6619,6 +6663,7 @@
    "words": 26,
    "lists": [
     "core",
+    "skills",
     "all"
    ]
   },
@@ -6848,6 +6893,42 @@
    ]
   },
   {
+   "id": "insertion-sort-passes",
+   "row": "insertion-sort-passes",
+   "title": "Insertion Sort, Pass by Pass",
+   "norm": "insertion sort pass pass",
+   "aliases": [
+    "insertion sort passes"
+   ],
+   "pattern": "Sorting",
+   "diff": "Easy",
+   "story": null,
+   "kind": "code",
+   "sig": "(List[int]) -> List[List[int]]",
+   "words": 33,
+   "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
+   "id": "counting-sort",
+   "row": "counting-sort",
+   "title": "Counting Sort",
+   "norm": "counting sort",
+   "aliases": [],
+   "pattern": "Sorting",
+   "diff": "Easy",
+   "story": null,
+   "kind": "code",
+   "sig": "(List[int], int) -> List[int]",
+   "words": 21,
+   "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
    "id": "sort-an-array",
    "row": "sort-an-array",
    "title": "Sort an Array",
@@ -6860,6 +6941,24 @@
    "sig": "(List[int]) -> List[int]",
    "words": 11,
    "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
+   "id": "partition-around-a-pivot",
+   "row": "partition-around-a-pivot",
+   "title": "Partition Around a Pivot",
+   "norm": "partition around pivot",
+   "aliases": [],
+   "pattern": "Sorting",
+   "diff": "Medium",
+   "story": null,
+   "kind": "code",
+   "sig": "(List[int]) -> List[int]",
+   "words": 30,
+   "lists": [
+    "skills",
     "all"
    ]
   },
@@ -6972,6 +7071,7 @@
    "sig": "class {add(1), remove(1), contains(1)}",
    "words": 19,
    "lists": [
+    "skills",
     "all"
    ]
   },
@@ -6988,6 +7088,26 @@
    "sig": "class {put(2), get(1), remove(1)}",
    "words": 30,
    "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
+   "id": "dynamic-array",
+   "row": "dynamic-array",
+   "title": "Build a Dynamic Array",
+   "norm": "build dynamic array",
+   "aliases": [
+    "dynamic array"
+   ],
+   "pattern": "Design",
+   "diff": "Easy",
+   "story": null,
+   "kind": "code",
+   "sig": "class {get(1), set(2), pushback(1), popback(0), getSize(0), getCapacity(0)}",
+   "words": 51,
+   "lists": [
+    "skills",
     "all"
    ]
   },
@@ -7004,6 +7124,45 @@
    "sig": "class {enQueue(1), deQueue(0), Front(0), Rear(0), isEmpty(0), isFull(0)}",
    "words": 35,
    "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
+   "id": "min-heap",
+   "row": "min-heap",
+   "title": "Build a Min-Heap",
+   "norm": "build min heap",
+   "aliases": [
+    "min heap"
+   ],
+   "pattern": "Design",
+   "diff": "Medium",
+   "story": null,
+   "kind": "code",
+   "sig": "class {push(1), pop(0), top(0), size(0)}",
+   "words": 37,
+   "lists": [
+    "skills",
+    "all"
+   ]
+  },
+  {
+   "id": "union-find",
+   "row": "union-find",
+   "title": "Build Union-Find",
+   "norm": "build union find",
+   "aliases": [
+    "union find"
+   ],
+   "pattern": "Design",
+   "diff": "Medium",
+   "story": null,
+   "kind": "code",
+   "sig": "class {union(2), connected(2), components(0)}",
+   "words": 38,
+   "lists": [
+    "skills",
     "all"
    ]
   },
@@ -7548,6 +7707,25 @@
    "sig": "(List[List[int]]) -> int",
    "words": 34,
    "lists": [
+    "all"
+   ]
+  },
+  {
+   "id": "zero-one-knapsack",
+   "row": "zero-one-knapsack",
+   "title": "0/1 Knapsack",
+   "norm": "0 1 knapsack",
+   "aliases": [
+    "zero one knapsack"
+   ],
+   "pattern": "Knapsack & LIS",
+   "diff": "Medium",
+   "story": null,
+   "kind": "code",
+   "sig": "(List[int], List[int], int) -> int",
+   "words": 20,
+   "lists": [
+    "skills",
     "all"
    ]
   },

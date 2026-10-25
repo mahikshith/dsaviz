@@ -157,6 +157,7 @@ class Component extends DCLogic {
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
+      ab: aboutVals(this, 'concept:' + lesson.id, typeof CONCEPT_ABOUT !== 'undefined' ? CONCEPT_ABOUT[lesson.id] : null, t, (ref) => { const i = CS_LESSONS.findIndex((x) => x.id === ref); return i < 0 ? null : { label: CS_LESSONS[i].title, go: () => { this.stop(); this.go(0, i, null); } }; }),
       togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
       // Phones put the controls above the caption, so they stay put while captions change length.
       nowParts: mobile ? [{ ctrl: true, say: false }, { ctrl: false, say: true }] : [{ say: true, ctrl: false }, { say: false, ctrl: true }],

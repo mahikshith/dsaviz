@@ -19,7 +19,7 @@ import { tags } from '@lezer/highlight';
 
 const MODES = { py: python, js: javascript, java, cpp, go, sql: () => sql({ dialect: SQLite }) };
 const UNITS = { py: 4, js: 2, java: 4, cpp: 4, go: 4, sql: 2 };
-const DEFAULTS = { fontSize: 14, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true };
+const DEFAULTS = { fontSize: 16, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true };
 
 // t: theme tokens from THEMES (codeBg, line, text, muted, accent, right, medFg, ok, hl, mono)
 function themeFor(t) {
@@ -87,7 +87,7 @@ function create(parent, opts) {
   let prefs = clean(Object.assign({}, opts.prefs, opts.wrap ? { wrap: true } : {}));
   const tabOf = () => prefs.tabSize || UNITS[code] || 4;
   const unitExt = () => [indentUnit.of(' '.repeat(tabOf())), EditorState.tabSize.of(tabOf())];
-  const sizeExt = () => EditorView.theme({ '&': { fontSize: prefs.fontSize + 'px' } });
+  const sizeExt = () => EditorView.theme({ '&': { fontSize: 'calc(' + prefs.fontSize + 'px * var(--ts, 1))' } });
   const bracketExt = () => (prefs.brackets ? [bracketMatching(), closeBrackets(), keymap.of(closeBracketsKeymap)] : []);
   const completeExt = () => (prefs.autocomplete ? [autocompletion({ activateOnTyping: true }), EditorState.languageData.of(() => [{ autocomplete: completeAnyWord }]), keymap.of(completionKeymap)] : []);
   // Run (Ctrl/Cmd + ') and Submit (Ctrl/Cmd + Enter) win over the default keymap, which would add a blank line.

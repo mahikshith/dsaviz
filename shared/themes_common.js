@@ -26,6 +26,32 @@ function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); r
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
+// Text size (the menu's Text size buttons): a multiplier on the site type scale. The runtime turns it into --ts
+// on <html> (scripts/site-runtime.js), which every var(--fsN) font size reads (shared/ui/type.html).
+const TEXT_KEY = 'dsaviz-text-size';
+const TEXT_SIZES = [['normal', 'Normal', 1], ['large', 'Large', 1.15], ['xl', 'Extra large', 1.3]];
+function loadTextSize() { try { const k = window.localStorage.getItem(TEXT_KEY); return TEXT_SIZES.some((x) => x[0] === k) ? k : 'normal'; } catch (e) { return 'normal'; } }
+function saveTextSize(k) { try { window.localStorage.setItem(TEXT_KEY, k); } catch (e) {} try { window.dispatchEvent(new Event('ds-text')); } catch (e) {} }
+function textButtons(cmp, t) {
+  const cur = loadTextSize();
+  return TEXT_SIZES.map(([k, label]) => ({
+    label, on: cur === k,
+    bg: cur === k ? t.text : 'transparent', fg: cur === k ? t.bg : t.muted,
+    pick: () => { saveTextSize(k); cmp.setState({ textSize: k }); }
+  }));
+}
+// Playback speed for every animation player (0.5x to 2x), remembered in this browser. paced(ms) is how long a
+// step holds at the reader's speed; speedVals(cmp) feeds the Speed button next to Play, which steps through SPEEDS.
+const SPEED_KEY = 'dsaviz-speed';
+const SPEEDS = [0.5, 1, 1.5, 2];
+function loadSpeed() { try { const v = Number(window.localStorage.getItem(SPEED_KEY)); return SPEEDS.includes(v) ? v : 1; } catch (e) { return 1; } }
+function saveSpeed(v) { try { window.localStorage.setItem(SPEED_KEY, String(v)); } catch (e) {} }
+function paced(ms) { return Math.round(ms / loadSpeed()); }
+function speedVals(cmp) {
+  const v = loadSpeed();
+  const next = SPEEDS[(SPEEDS.indexOf(v) + 1) % SPEEDS.length];
+  return { label: v + '×', aria: 'Playback speed ' + v + ' times. Press for ' + next + ' times.', next: () => { saveSpeed(next); cmp.setState({ speed: next }); } };
+}
 function themeButtons(cmp, themeKey, t) {
   return [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
     label, on: themeKey === k,

@@ -7,21 +7,21 @@
 <!-- IDENTITY -->
 <section style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px">
 <div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 24px; align-items: center">
-<span style="width: 96px; height: 96px; border-radius: 48px; background: {{me.avatarBg}}; color: {{me.avatarFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: 36px; font-weight: 700"><sc-if value="{{me.hasName}}" hint-placeholder-val="{{ true }}">{{me.initials}}</sc-if><sc-if value="{{me.noName}}" hint-placeholder-val="{{ false }}"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{me.icon}}"></path></svg></sc-if></span>
+<span style="width: 96px; height: 96px; border-radius: 48px; background: {{me.avatarBg}}; color: {{me.avatarFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: var(--fs36); font-weight: 700"><sc-if value="{{me.hasName}}" hint-placeholder-val="{{ true }}">{{me.initials}}</sc-if><sc-if value="{{me.noName}}" hint-placeholder-val="{{ false }}"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{me.icon}}"></path></svg></sc-if></span>
 <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 40px; line-height: 44px; font-weight: 700">{{me.title}}</h1>
-<span style="font-size: 15px; color: {{t.text2}}">{{me.line}}</span>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); line-height: 44px; font-weight: 700">{{me.title}}</h1>
+<span style="font-size: var(--fs18); color: {{t.text2}}">{{me.line}}</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
-<sc-for list="{{chips}}" as="c" hint-placeholder-count="3"><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600">{{c}}</span></sc-for>
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="3"><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: var(--fs16); font-weight: 600">{{c}}</span></sc-for>
 </div>
 <div style="display: flex; gap: 12px; align-items: center; margin-top: 4px">
-<a href="Welcome.dc.html" style="height: 44px; padding: 0 20px; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: 15px; font-weight: 700">{{me.cta}}</a>
-<button id="pf-share-btn" onClick="{{shareProfile}}" aria-expanded="{{shareOpen}}" aria-controls="pf-share" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>Share my progress</button>
+<a href="Welcome.dc.html" style="height: 44px; padding: 0 20px; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{me.cta}}</a>
+<button id="pf-share-btn" onClick="{{shareProfile}}" aria-expanded="{{shareOpen}}" aria-controls="pf-share" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path></svg>Share my progress</button>
 </div>
 </div>
 </div>
 <div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; justify-content: center">
-<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 700">Patterns</h2><a href="Patterns.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: 13px; font-weight: 600">Library ›</a></div>
+<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Patterns</h2><a href="Patterns.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: var(--fs16); font-weight: 600">Library ›</a></div>
 <!-- RINGS -->
 <!-- /RINGS -->
 </div>
@@ -31,14 +31,14 @@
 <section id="pf-share" tabindex="-1" aria-label="Share my progress" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.accent}}; display: grid; grid-template-columns: 600px minmax(0, 1fr); gap: 24px; align-items: center; outline: none; animation: rise 0.3s cubic-bezier(.2,.8,.2,1)">
 <img src="{{shareUrl}}" alt="{{shareAlt}}" width="600" height="315" style="display: block; width: 600px; height: 315px; border-radius: 12px; border: 1px solid {{t.line}}">
 <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start">
-<h2 style="margin: 0; font-size: 20px; font-weight: 700">Your progress card</h2>
-<span style="font-size: 14px; line-height: 1.5; color: {{t.text2}}">A 1200 by 630 image, made in this browser. It shows your streak, stories, sheet count and top patterns, and your name only if you typed one.</span>
+<h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Your progress card</h2>
+<span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">A 1200 by 630 image, made in this browser. It shows your streak, stories, sheet count and top patterns, and your name only if you typed one.</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
-<button onClick="{{downloadShare}}" style="height: 44px; padding: 0 20px; border-radius: 22px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: 15px; font-weight: 800">Download PNG</button>
-<sc-if value="{{canCopy}}" hint-placeholder-val="{{ true }}"><button onClick="{{copyShare}}" style="height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Copy image</button></sc-if>
-<button onClick="{{closeShare}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">Close</button>
+<button onClick="{{downloadShare}}" style="height: 44px; padding: 0 20px; border-radius: 22px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 800">Download PNG</button>
+<sc-if value="{{canCopy}}" hint-placeholder-val="{{ true }}"><button onClick="{{copyShare}}" style="height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">Copy image</button></sc-if>
+<button onClick="{{closeShare}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline">Close</button>
 </div>
-<span role="status" style="font-size: 13px; color: {{t.muted}}">{{shareMsg}}</span>
+<span role="status" style="font-size: var(--fs16); color: {{t.muted}}">{{shareMsg}}</span>
 </div>
 </section>
 </sc-if>
@@ -48,12 +48,12 @@
 
 <!-- HEATMAP -->
 <section data-m="p16" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">{{heatTitle}}</span><span style="font-size: 14px; color: {{t.muted}}">Pick a day to see what you did</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: var(--fs22); font-weight: 700">{{heatTitle}}</span><span style="font-size: var(--fs17); color: {{t.muted}}">Pick a day to see what you did</span></div>
 <div data-m="{{heatRowM}}" style="display: flex; gap: 10px">
 <sc-if value="{{heatDesk}}" hint-placeholder-val="{{ true }}">
-<div style="display: grid; grid-template-rows: repeat(7, 16px); gap: 4px; padding-top: 22px; font-size: 11px; color: {{t.muted}}"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
+<div style="display: grid; grid-template-rows: repeat(7, 16px); gap: 4px; padding-top: 22px; font-size: var(--fs13); color: {{t.muted}}"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
 <div style="display: flex; flex-direction: column; gap: 6px">
-<div data-m="keep" style="display: grid; grid-template-columns: repeat(26, 16px); gap: 4px; height: 16px; font-size: 11px; color: {{t.muted}}"><sc-for list="{{months}}" as="mo" hint-placeholder-count="26"><span style="white-space: nowrap">{{mo}}</span></sc-for></div>
+<div data-m="keep" style="display: grid; grid-template-columns: repeat(26, 16px); gap: 4px; height: 16px; font-size: var(--fs13); color: {{t.muted}}"><sc-for list="{{months}}" as="mo" hint-placeholder-count="26"><span style="white-space: nowrap">{{mo}}</span></sc-for></div>
 <div style="display: grid; grid-template-rows: repeat(7, 16px); grid-auto-flow: column; grid-auto-columns: 16px; gap: 4px">
 <sc-for list="{{cells}}" as="cl" hint-placeholder-count="182"><button data-m="keep" onClick="{{cl.pick}}" title="{{cl.tip}}" aria-label="{{cl.tip}}" style="width: 16px; height: 16px; padding: 0; border-radius: 4px; border: {{cl.border}}; background: {{cl.bg}}; cursor: pointer"></button></sc-for>
 </div>
@@ -63,20 +63,20 @@
 <div role="group" aria-label="Activity calendar" style="display: flex; flex-direction: column; gap: 8px">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
 <button onClick="{{prevMonth}}" disabled="{{prevMonthOff}}" aria-label="Previous month" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
-<span aria-live="polite" style="font-size: 16px; font-weight: 700">{{monthTitle}}</span>
+<span aria-live="polite" style="font-size: var(--fs18); font-weight: 700">{{monthTitle}}</span>
 <button onClick="{{nextMonth}}" disabled="{{nextMonthOff}}" aria-label="Next month" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
 </div>
-<div data-m="keep" aria-hidden="true" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; font-size: 12px; font-weight: 700; text-align: center; color: {{t.muted}}"><sc-for list="{{weekdays}}" as="wd" hint-placeholder-count="7"><span>{{wd}}</span></sc-for></div>
+<div data-m="keep" aria-hidden="true" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; font-size: var(--fs15); font-weight: 700; text-align: center; color: {{t.muted}}"><sc-for list="{{weekdays}}" as="wd" hint-placeholder-count="7"><span>{{wd}}</span></sc-for></div>
 <div data-m="keep" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px">
-<sc-for list="{{monthDays}}" as="hday" hint-placeholder-count="35"><sc-if value="{{hday.blank}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true"></span></sc-if><sc-if value="{{hday.real}}" hint-placeholder-val="{{ true }}"><button data-m="keep" onClick="{{hday.pick}}" disabled="{{hday.off}}" aria-pressed="{{hday.on}}" aria-label="{{hday.tip}}" style="height: 44px; min-width: 0; padding: 0; box-sizing: border-box; border-radius: 8px; border: {{hday.border}}; background: {{hday.bg}}; color: {{hday.fg}}; cursor: pointer; font-size: 14px; font-weight: {{hday.weight}}; font-variant-numeric: tabular-nums">{{hday.n}}</button></sc-if></sc-for>
+<sc-for list="{{monthDays}}" as="hday" hint-placeholder-count="35"><sc-if value="{{hday.blank}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true"></span></sc-if><sc-if value="{{hday.real}}" hint-placeholder-val="{{ true }}"><button data-m="keep" onClick="{{hday.pick}}" disabled="{{hday.off}}" aria-pressed="{{hday.on}}" aria-label="{{hday.tip}}" style="height: 44px; min-width: 0; padding: 0; box-sizing: border-box; border-radius: 8px; border: {{hday.border}}; background: {{hday.bg}}; color: {{hday.fg}}; cursor: pointer; font-size: var(--fs17); font-weight: {{hday.weight}}; font-variant-numeric: tabular-nums">{{hday.n}}</button></sc-if></sc-for>
 </div>
 </div>
 </sc-if>
 <div style="flex-grow: 1; margin-left: {{heatCardGap}}; padding: 18px 20px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 8px; align-self: stretch">
-<span style="font-size: 13px; font-weight: 700; color: {{t.muted}}">{{day.date}}</span>
-<span style="font-family: {{t.display}}; font-size: 24px; font-weight: 600">{{day.head}}</span>
-<span style="font-size: 15px; line-height: 1.5; color: {{t.text2}}">{{day.line}}</span>
-<div style="display: flex; gap: 6px; align-items: center; margin-top: auto; font-size: 12px; color: {{t.muted}}">Less<sc-for list="{{legend}}" as="lg" hint-placeholder-count="5"><span style="width: 14px; height: 14px; border-radius: 4px; background: {{lg}}"></span></sc-for>More</div>
+<span style="font-size: var(--fs16); font-weight: 700; color: {{t.muted}}">{{day.date}}</span>
+<span style="font-family: {{t.display}}; font-size: var(--fs26); font-weight: 600">{{day.head}}</span>
+<span style="font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}">{{day.line}}</span>
+<div style="display: flex; gap: 6px; align-items: center; margin-top: auto; font-size: var(--fs15); color: {{t.muted}}">Less<sc-for list="{{legend}}" as="lg" hint-placeholder-count="5"><span style="width: 14px; height: 14px; border-radius: 4px; background: {{lg}}"></span></sc-for>More</div>
 </div>
 </div>
 </section>
@@ -85,54 +85,54 @@
 <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
 <!-- CERTIFICATES -->
 <section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Pattern certificates</span><span style="font-size: 14px; color: {{t.muted}}">Walk a pattern’s core stories. The exam opens when accounts launch.</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: var(--fs22); font-weight: 700">Pattern certificates</span><span style="font-size: var(--fs17); color: {{t.muted}}">Walk a pattern’s core stories. The exam opens when accounts launch.</span></div>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
 <sc-for list="{{certs}}" as="ce" hint-placeholder-count="6">
 <button onClick="{{ce.pick}}" aria-pressed="{{ce.on}}" style="padding: 16px; border-radius: 16px; border: 2px solid {{ce.border}}; background: {{ce.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 8px; opacity: {{ce.op}}">
-<span style="display: flex; justify-content: space-between; align-items: center"><span style="width: 34px; height: 34px; border-radius: 10px; background: {{ce.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: 13px; font-weight: 800">{{ce.mark}}</span><span style="font-size: 12px; font-weight: 700; color: {{ce.stateColor}}">{{ce.state}}</span></span>
-<span style="font-size: 16px; font-weight: 700">{{ce.name}}</span>
+<span style="display: flex; justify-content: space-between; align-items: center"><span style="width: 34px; height: 34px; border-radius: 10px; background: {{ce.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 800">{{ce.mark}}</span><span style="font-size: var(--fs15); font-weight: 700; color: {{ce.stateColor}}">{{ce.state}}</span></span>
+<span style="font-size: var(--fs18); font-weight: 700">{{ce.name}}</span>
 <span style="height: 6px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 6px; border-radius: 999px; width: {{ce.pct}}; background: {{ce.color}}"></span></span>
-<span style="font-size: 12px; color: {{t.muted}}">{{ce.note}}</span>
+<span style="font-size: var(--fs15); color: {{t.muted}}">{{ce.note}}</span>
 </button>
 </sc-for>
 </div>
 <div style="display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 20px; padding: 22px; border-radius: 18px; background: {{cert.bg}}; border: 1px solid {{t.line}}; animation: rise 0.3s ease">
 <div style="padding: 24px 26px; border-radius: 14px; background: {{t.surface}}; border: 6px double {{cert.color}}; display: flex; flex-direction: column; gap: 10px; align-items: flex-start">
-<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{cert.color}}">DSAMaxxing · pattern certificate</span>
-<span style="font-family: {{t.display}}; font-size: 30px; font-weight: 600; line-height: 1.15">{{cert.title}}</span>
-<span style="font-size: 15px; line-height: 1.55; color: {{t.text2}}">{{cert.line}}</span>
-<span style="font-family: {{t.mono}}; font-size: 12px; color: {{t.muted}}">{{cert.meta}}</span>
+<span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{cert.color}}">DSAMaxxing · pattern certificate</span>
+<span style="font-family: {{t.display}}; font-size: var(--fs30); font-weight: 600; line-height: 1.15">{{cert.title}}</span>
+<span style="font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{cert.line}}</span>
+<span style="font-family: {{t.mono}}; font-size: var(--fs15); color: {{t.muted}}">{{cert.meta}}</span>
 </div>
 <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center">
 <sc-if value="{{cert.earned}}" hint-placeholder-val="{{ true }}">
-<a href="{{cert.linkedin}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Add to LinkedIn</a>
-<a href="{{cert.whatsapp}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Share on WhatsApp</a>
+<a href="{{cert.linkedin}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700">Add to LinkedIn</a>
+<a href="{{cert.whatsapp}}" target="_blank" rel="noopener" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700">Share on WhatsApp</a>
 </sc-if>
 <sc-if value="{{cert.locked}}" hint-placeholder-val="{{ false }}">
-<a href="{{cert.nextHref}}" onClick="{{cert.go}}" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; text-align: center; padding: 0 12px">{{cert.cta}}</a>
+<a href="{{cert.nextHref}}" onClick="{{cert.go}}" style="height: 46px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700; text-align: center; padding: 0 12px">{{cert.cta}}</a>
 </sc-if>
-<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">{{cert.help}}</span>
+<span style="font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">{{cert.help}}</span>
 </div>
 </div>
 </section>
 
 <!-- REMINDERS & GOALS -->
 <section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 18px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 20px; font-weight: 700">Reminders &amp; daily goal</span><span style="font-size: 13px; font-weight: 700; color: {{t.ok}}">{{savedNote}}</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: var(--fs22); font-weight: 700">Reminders &amp; daily goal</span><span style="font-size: var(--fs16); font-weight: 700; color: {{t.ok}}">{{savedNote}}</span></div>
 <sc-for list="{{prefGroups}}" as="pg" hint-placeholder-count="5">
 <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center">
-<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">{{pg.title}}</span><span style="font-size: 12px; color: {{t.muted}}">{{pg.sub}}</span></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: var(--fs18); font-weight: 700">{{pg.title}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{pg.sub}}</span></span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap">
-<sc-for list="{{pg.opts}}" as="po" hint-placeholder-count="4"><button onClick="{{po.pick}}" aria-pressed="{{po.on}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{po.border}}; background: {{po.bg}}; color: {{po.fg}}; cursor: pointer; font-size: 14px; font-weight: 600">{{po.label}}</button></sc-for>
+<sc-for list="{{pg.opts}}" as="po" hint-placeholder-count="4"><button onClick="{{po.pick}}" aria-pressed="{{po.on}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{po.border}}; background: {{po.bg}}; color: {{po.fg}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{po.label}}</button></sc-for>
 </div>
 </div>
 </sc-for>
 <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center; padding-top: 18px; border-top: 1px solid {{t.line}}">
-<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Plan</span><span style="font-size: 12px; color: {{t.muted}}">Accounts are coming</span></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: var(--fs18); font-weight: 700">Plan</span><span style="font-size: var(--fs15); color: {{t.muted}}">Accounts are coming</span></span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
-<a href="Auth.dc.html" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: 14px; font-weight: 700">See plans</a>
-<sc-if value="{{notDeleting}}" hint-placeholder-val="{{ true }}"><button onClick="{{askDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">{{deleteLabel}}</button></sc-if>
-<sc-if value="{{deleting}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; color: {{t.text2}}">Erase your progress and streak from this browser for good?</span><button onClick="{{confirmDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.left}}; background: transparent; color: {{t.left}}; cursor: pointer; font-size: 14px; font-weight: 700">Yes, erase</button><button onClick="{{cancelDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 700">Keep my progress</button></sc-if>
+<a href="Auth.dc.html" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: var(--fs17); font-weight: 700">See plans</a>
+<sc-if value="{{notDeleting}}" hint-placeholder-val="{{ true }}"><button onClick="{{askDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline">{{deleteLabel}}</button></sc-if>
+<sc-if value="{{deleting}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); color: {{t.text2}}">Erase your progress and streak from this browser for good?</span><button onClick="{{confirmDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.left}}; background: transparent; color: {{t.left}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">Yes, erase</button><button onClick="{{cancelDelete}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">Keep my progress</button></sc-if>
 </div>
 </div>
 </section>
@@ -141,26 +141,26 @@
 <div style="display: flex; flex-direction: column; gap: 24px">
 <!-- MEDALS SHELF -->
 <section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 700">Medals</h2><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: 13px; color: {{t.muted}}">{{shelf.caption}}</span></div>
-<span style="font-size: 14px; line-height: 20px; color: {{t.muted}}">Bronze for a pattern’s first story, silver at half, gold when every story is done and rated in Revisit. Start here medals: one per Level 1 chapter, gold when every lesson and exercise is done.</span>
+<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Medals</h2><span style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">{{shelf.caption}}</span></div>
+<span style="font-size: var(--fs17); line-height: 20px; color: {{t.muted}}">Bronze for a pattern’s first story, silver at half, gold when every story is done and rated in Revisit. Start here medals: one per Level 1 chapter, gold when every lesson and exercise is done.</span>
 <!-- MEDALS -->
 <!-- /MEDALS -->
-<span style="font-size: 14px; color: {{t.text2}}">Next: {{shelf.nextLine}}</span>
+<span style="font-size: var(--fs17); color: {{t.text2}}">Next: {{shelf.nextLine}}</span>
 </section>
 
 <!-- BUDDIES -->
 <section style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: center; gap: 12px"><span style="font-size: 20px; font-weight: 700">Study buddies</span><span title="Sample data until accounts launch" style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span></div>
-<span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">A buddy streak grows only on days you <i>both</i> learn. Nudge a friend who hasn't started yet.</span>
+<div style="display: flex; align-items: center; gap: 12px"><span style="font-size: var(--fs22); font-weight: 700">Study buddies</span><span title="Sample data until accounts launch" style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: var(--fs13); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span></div>
+<span style="font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">A buddy streak grows only on days you <i>both</i> learn. Nudge a friend who hasn't started yet.</span>
 <sc-for list="{{buddies}}" as="b" hint-placeholder-count="3">
 <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid {{t.line}}">
-<span style="width: 42px; height: 42px; border-radius: 999px; background: {{b.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800">{{b.initials}}</span>
-<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">{{b.name}}</span><span style="font-size: 13px; color: {{t.muted}}">{{b.where}}</span></span>
-<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px"><span style="font-family: {{t.mono}}; font-size: 14px; font-weight: 800; color: {{t.flame}}">🔥 {{b.streak}}</span>
-<button onClick="{{b.nudge}}" disabled="{{b.done}}" style="height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{b.btnFg}}; cursor: pointer; font-size: 12px; font-weight: 700">{{b.btn}}</button></span>
+<span style="width: 42px; height: 42px; border-radius: 999px; background: {{b.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 800">{{b.initials}}</span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: var(--fs18); font-weight: 700">{{b.name}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{b.where}}</span></span>
+<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px"><span style="font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 800; color: {{t.flame}}">🔥 {{b.streak}}</span>
+<button onClick="{{b.nudge}}" disabled="{{b.done}}" style="height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{b.btnFg}}; cursor: pointer; font-size: var(--fs15); font-weight: 700">{{b.btn}}</button></span>
 </div>
 </sc-for>
-<a href="{{inviteWa}}" target="_blank" rel="noopener" style="height: 44px; border-radius: 22px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Invite a friend on WhatsApp</a>
+<a href="{{inviteWa}}" target="_blank" rel="noopener" style="height: 44px; border-radius: 22px; border: 1px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700">Invite a friend on WhatsApp</a>
 </section>
 </div>
 </div>

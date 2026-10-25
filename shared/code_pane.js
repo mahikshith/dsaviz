@@ -36,7 +36,7 @@ function keepRun(pid, lang, out, status) {
   try { const all = loadRuns(); all[pid] = { lang, out, status }; window.sessionStorage.setItem(RUN_KEY, JSON.stringify(all)); } catch (e) {}
 }
 const hasDS = () => typeof DS !== 'undefined' && !!DS.editorPrefs;
-const EDITOR_FALLBACK = { fontSize: 14, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
+const EDITOR_FALLBACK = { fontSize: 16, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true, celebrate: true };
 function paneEditorPrefs() { try { return hasDS() ? DS.editorPrefs() : Object.assign({}, EDITOR_FALLBACK); } catch (e) { return Object.assign({}, EDITOR_FALLBACK); } }
 // A line diff of two texts: [{ op: ' ' | '-' | '+', text }]. '-' lines are only in a, '+' lines only in b.
 // The common start and end are trimmed first; the middle is an LCS table, or a plain swap when it is too big.
@@ -193,7 +193,7 @@ class CodeRunner {
     const ta = document.createElement('textarea');
     ta.value = this.s.code; ta.spellcheck = false; ta.setAttribute('aria-label', 'Code editor');
     let theme = t;
-    const paint = (x) => { theme = x; const p = this.s.prefs; ta.style.cssText = 'width:100%;height:100%;box-sizing:border-box;border:0;resize:none;outline:none;padding:12px 16px;tab-size:' + (p.tabSize || 4) + ';white-space:' + (p.wrap ? 'pre-wrap' : 'pre') + ';font:' + p.fontSize + 'px/1.65 ' + x.mono + ';background:' + x.codeBg + ';color:' + x.text; };
+    const paint = (x) => { theme = x; const p = this.s.prefs; ta.style.cssText = 'width:100%;height:100%;box-sizing:border-box;border:0;resize:none;outline:none;padding:12px 16px;tab-size:' + (p.tabSize || 4) + ';white-space:' + (p.wrap ? 'pre-wrap' : 'pre') + ';font:calc(' + p.fontSize + 'px * var(--ts, 1))/1.65 ' + x.mono + ';background:' + x.codeBg + ';color:' + x.text; };
     paint(t);
     ta.addEventListener('input', () => onChange(ta.value));
     el.appendChild(ta);

@@ -2,11 +2,11 @@
 
 <!-- PILL NAV -->
 <!-- /PILL NAV -->
-<div role="region" aria-label="Page tools" data-m="wrap auto pad" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 18px; margin-top: 8px; border-bottom: 1px solid {{t.line}}"><nav aria-label="Breadcrumb" style="display: flex; gap: 8px; align-items: center; font-size: 14px; color: {{t.muted}}; white-space: nowrap"><a href="Patterns.dc.html">Library</a><span aria-hidden="true">/</span><sc-if value="{{hasStory}}"><a href="Story.dc.html" onClick="{{keepProblem}}">{{P.pattern}}</a></sc-if><sc-if value="{{noStory}}"><span>{{P.pattern}}</span></sc-if><span aria-hidden="true">/</span><span aria-current="page" style="color: {{t.text}}; font-weight: 600">Code</span></nav>
+<div role="region" aria-label="Page tools" data-m="wrap auto pad" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 18px; margin-top: 8px; border-bottom: 1px solid {{t.line}}"><nav aria-label="Breadcrumb" style="display: flex; gap: 8px; align-items: center; font-size: var(--fs17); color: {{t.muted}}; white-space: nowrap"><a href="Patterns.dc.html">Library</a><span aria-hidden="true">/</span><sc-if value="{{hasStory}}"><a href="Story.dc.html" onClick="{{keepProblem}}">{{P.pattern}}</a></sc-if><sc-if value="{{noStory}}"><span>{{P.pattern}}</span></sc-if><span aria-hidden="true">/</span><span aria-current="page" style="color: {{t.text}}; font-weight: 600">Code</span></nav>
 <div style="flex-grow: 1"></div>
-<span id="code-count" style="font-size: 13px; font-weight: 600; color: {{t.muted}}; white-space: nowrap">{{testCount}}</span>
-<label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: {{t.muted}}; white-space: nowrap">Problem
-<select aria-label="Problem" aria-describedby="code-count" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 340px; padding: 0 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: 14px; font-weight: 600; cursor: pointer"><sc-for list="{{groups}}" as="gg" hint-placeholder-count="4"><optgroup label="{{gg.label}}"><sc-for list="{{gg.items}}" as="pp" hint-placeholder-count="3"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></optgroup></sc-for></select>
+<span id="code-count" style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}; white-space: nowrap">{{testCount}}</span>
+<label style="display: flex; align-items: center; gap: 8px; font-size: var(--fs15); font-weight: 600; color: {{t.muted}}; white-space: nowrap">Problem
+<select aria-label="Problem" aria-describedby="code-count" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 340px; padding: 0 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: var(--fs17); font-weight: 600; cursor: pointer"><sc-for list="{{groups}}" as="gg" hint-placeholder-count="4"><optgroup label="{{gg.label}}"><sc-for list="{{gg.items}}" as="pp" hint-placeholder-count="3"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></optgroup></sc-for></select>
 </label>
 </div>
 
@@ -14,85 +14,85 @@
 
 <aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow: {{asideOverflow}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{kicker}}</span>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: 26px; line-height: 1.15; font-weight: 600">{{P.title}}</h1>
+<span style="font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{kicker}}</span>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); line-height: 1.15; font-weight: 600">{{P.title}}</h1>
 <div style="display: flex; flex-wrap: wrap; gap: 6px">
-<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
-<sc-if value="{{hasTime}}"><span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span></sc-if>
-<span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{t.sunk}}">{{P.pattern}}</span>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
+<sc-if value="{{hasTime}}"><span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span></sc-if>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 600; background: {{t.sunk}}">{{P.pattern}}</span>
 </div>
 </div>
-<p style="margin: 0; font-size: 16px; line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
 <!-- PROBLEM FACTS -->
 <!-- /PROBLEM FACTS -->
 <sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
+<span style="font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples</span>
 <sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
-<div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none">
+<div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; font-variant-ligatures: none">
 <span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">in </span>{{ex.input}}</span>
 <span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">out </span>{{ex.output}}</span>
-<sc-if value="{{ex.hasWhy}}"><span style="font-family: {{t.body}}; font-size: 14px; line-height: 1.45; color: {{t.text2}}"><span style="color: {{t.muted}}">why </span>{{ex.why}}</span></sc-if>
+<sc-if value="{{ex.hasWhy}}"><span style="font-family: {{t.body}}; font-size: var(--fs17); line-height: 1.45; color: {{t.text2}}"><span style="color: {{t.muted}}">why </span>{{ex.why}}</span></sc-if>
 </div>
 </sc-for>
 </div>
 <sc-if value="{{hasHints}}">
 <section aria-labelledby="hint-h" style="display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints</h2><span style="font-size: 13px; color: {{t.muted}}">{{hintCount}}</span></div>
+<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="margin: 0; flex-grow: 1; font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints</h2><span style="font-size: var(--fs16); color: {{t.muted}}">{{hintCount}}</span></div>
 <div aria-live="polite" style="display: flex; flex-direction: column; gap: 8px">
-<sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
+<sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; border: 1px solid {{t.line}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
 </div>
-<sc-if value="{{moreHints}}"><button onClick="{{nextHint}}" style="align-self: flex-start; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{nextHintLabel}}</button></sc-if>
+<sc-if value="{{moreHints}}"><button onClick="{{nextHint}}" style="align-self: flex-start; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{nextHintLabel}}</button></sc-if>
 </section>
 </sc-if>
 </sc-if>
 <sc-if value="{{isSql}}">
 <section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; align-items: center; gap: 8px">
-<h2 id="sql-tables" style="margin: 0; flex-grow: 1; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables</h2>
-<button onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">{{sq.rowsLabel}}</button>
+<h2 id="sql-tables" style="margin: 0; flex-grow: 1; font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables</h2>
+<button onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{sq.rowsLabel}}</button>
 </div>
 <sc-for list="{{sq.tables}}" as="tb" hint-placeholder-count="2">
 <div style="flex-shrink: 0; border-radius: 12px; border: 1px solid {{t.line}}; overflow: hidden">
-<div style="padding: 8px 12px; background: {{t.sunk}}; font-family: {{t.mono}}; font-size: 14px; font-weight: 700">{{tb.name}}</div>
-<sc-if value="{{sq.rowsClosed}}"><div style="padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: 13px; line-height: 1.5; font-variant-ligatures: none"><sc-for list="{{tb.cols}}" as="cl" hint-placeholder-count="3"><div style="display: flex; gap: 8px"><span>{{cl.n}}</span><span style="color: {{t.muted}}">{{cl.ty}}</span></div></sc-for></div></sc-if>
-<sc-if value="{{sq.rowsOpen}}"><div style="overflow-x: auto"><div role="table" aria-label="{{tb.name}} sample rows" style="display: table; border-collapse: collapse; min-width: 100%; font-family: {{t.mono}}; font-size: 13px; line-height: 1.4; font-variant-ligatures: none"><div role="row" style="display: table-row"><sc-for list="{{tb.grid.cols}}" as="hc"><div role="columnheader" style="display: table-cell; text-align: left; padding: 6px 10px; color: {{t.muted}}; font-weight: 700; white-space: nowrap">{{hc.c}}</div></sc-for></div><sc-for list="{{tb.grid.rows}}" as="gr"><div role="row" style="display: table-row; border-top: 1px solid {{t.line}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="display: table-cell; padding: 6px 10px; white-space: nowrap; color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{tb.grid.empty}}"><div style="padding: 8px 10px; font-size: 13px; color: {{t.muted}}">No rows.</div></sc-if></div></sc-if>
+<div style="padding: 8px 12px; background: {{t.sunk}}; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700">{{tb.name}}</div>
+<sc-if value="{{sq.rowsClosed}}"><div style="padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; font-variant-ligatures: none"><sc-for list="{{tb.cols}}" as="cl" hint-placeholder-count="3"><div style="display: flex; gap: 8px"><span>{{cl.n}}</span><span style="color: {{t.muted}}">{{cl.ty}}</span></div></sc-for></div></sc-if>
+<sc-if value="{{sq.rowsOpen}}"><div style="overflow-x: auto"><div role="table" aria-label="{{tb.name}} sample rows" style="display: table; border-collapse: collapse; min-width: 100%; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.4; font-variant-ligatures: none"><div role="row" style="display: table-row"><sc-for list="{{tb.grid.cols}}" as="hc"><div role="columnheader" style="display: table-cell; text-align: left; padding: 6px 10px; color: {{t.muted}}; font-weight: 700; white-space: nowrap">{{hc.c}}</div></sc-for></div><sc-for list="{{tb.grid.rows}}" as="gr"><div role="row" style="display: table-row; border-top: 1px solid {{t.line}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="display: table-cell; padding: 6px 10px; white-space: nowrap; color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{tb.grid.empty}}"><div style="padding: 8px 10px; font-size: var(--fs16); color: {{t.muted}}">No rows.</div></sc-if></div></sc-if>
 </div>
 </sc-for>
-<p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}">{{sq.tablesNote}}</p>
+<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{sq.tablesNote}}</p>
 </section>
 </sc-if>
 <sc-if value="{{plan.has}}">
 <section aria-labelledby="plan-h" style="flex-shrink: 0; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column">
-<h2 id="plan-h" style="margin: 0; font-size: 15px"><button onClick="{{plan.toggle}}" aria-expanded="{{plan.openX}}" style="width: 100%; min-height: 48px; padding: 0 14px; border: 0; border-radius: 12px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; font-size: 15px; font-weight: 700; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M4 12h16M4 18h12"></path></svg><span style="flex-grow: 1">Plan it first</span><span style="font-size: 13px; font-weight: 500; color: {{t.muted}}">{{plan.count}}</span></button></h2>
+<h2 id="plan-h" style="margin: 0; font-size: var(--fs18)"><button onClick="{{plan.toggle}}" aria-expanded="{{plan.openX}}" style="width: 100%; min-height: 48px; padding: 0 14px; border: 0; border-radius: 12px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; font-size: var(--fs18); font-weight: 700; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M4 12h16M4 18h12"></path></svg><span style="flex-grow: 1">Plan it first</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{plan.count}}</span></button></h2>
 <sc-if value="{{plan.open}}">
 <div style="padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px">
-<p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{plan.goal}}</p>
+<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{plan.goal}}</p>
 <sc-if value="{{plan.listing}}">
 <ol aria-label="Plan steps" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{plan.steps}}" as="ps" hint-placeholder-count="5"><li tabindex="0" onMouseEnter="{{ps.enter}}" onMouseLeave="{{ps.leave}}" onFocus="{{ps.enter}}" onBlur="{{ps.leave}}" style="padding: 6px 8px; border-radius: 8px; border-left: 3px solid {{ps.border}}; background: {{ps.bg}}; display: flex; gap: 6px; font-size: 14px; line-height: 1.45; color: {{t.text}}"><span aria-hidden="true" style="width: 22px; flex-shrink: 0; font-family: {{t.mono}}; font-weight: 700; color: {{t.muted}}">{{ps.n}}</span><span style="min-width: 0">{{ps.text}}</span></li></sc-for>
+<sc-for list="{{plan.steps}}" as="ps" hint-placeholder-count="5"><li tabindex="0" onMouseEnter="{{ps.enter}}" onMouseLeave="{{ps.leave}}" onFocus="{{ps.enter}}" onBlur="{{ps.leave}}" style="padding: 6px 8px; border-radius: 8px; border-left: 3px solid {{ps.border}}; background: {{ps.bg}}; display: flex; gap: 6px; font-size: var(--fs17); line-height: 1.45; color: {{t.text}}"><span aria-hidden="true" style="width: 22px; flex-shrink: 0; font-family: {{t.mono}}; font-weight: 700; color: {{t.muted}}">{{ps.n}}</span><span style="min-width: 0">{{ps.text}}</span></li></sc-for>
 </ol>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
-<button onClick="{{plan.insert}}" aria-label="{{plan.insertAria}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">{{plan.insertLabel}}</button>
-<sc-if value="{{plan.offerOrder}}"><button onClick="{{plan.startOrder}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">Order the steps</button></sc-if>
+<button onClick="{{plan.insert}}" aria-label="{{plan.insertAria}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{plan.insertLabel}}</button>
+<sc-if value="{{plan.offerOrder}}"><button onClick="{{plan.startOrder}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Order the steps</button></sc-if>
 </div>
 </sc-if>
 <sc-if value="{{plan.ordering}}">
-<p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Put the steps in order. Drag a step, or use its up and down buttons, then check.</p>
+<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Put the steps in order. Drag a step, or use its up and down buttons, then check.</p>
 <ol aria-label="Steps to put in order" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
-<sc-for list="{{plan.ord}}" as="os" hint-placeholder-count="5"><li draggable="true" onDragStart="{{os.drag}}" onDragOver="{{os.over}}" onDrop="{{os.drop}}" onDragEnd="{{os.end}}" style="padding: 4px 4px 4px 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; opacity: {{os.op}}; display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 1.4; cursor: grab"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><circle cx="3" cy="3" r="1.5"></circle><circle cx="9" cy="3" r="1.5"></circle><circle cx="3" cy="8" r="1.5"></circle><circle cx="9" cy="8" r="1.5"></circle><circle cx="3" cy="13" r="1.5"></circle><circle cx="9" cy="13" r="1.5"></circle></svg><span style="flex-grow: 1">{{os.text}}</span><span aria-hidden="true" style="width: 14px; font-weight: 800; color: {{t.ok}}">{{os.mark}}</span><button id="{{os.upId}}" onClick="{{os.up}}" disabled="{{os.noUp}}" aria-label="{{os.upAria}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 15px">↑</button><button id="{{os.downId}}" onClick="{{os.down}}" disabled="{{os.noDown}}" aria-label="{{os.downAria}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 15px">↓</button></li></sc-for>
+<sc-for list="{{plan.ord}}" as="os" hint-placeholder-count="5"><li draggable="true" onDragStart="{{os.drag}}" onDragOver="{{os.over}}" onDrop="{{os.drop}}" onDragEnd="{{os.end}}" style="padding: 4px 4px 4px 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; opacity: {{os.op}}; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); line-height: 1.4; cursor: grab"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><circle cx="3" cy="3" r="1.5"></circle><circle cx="9" cy="3" r="1.5"></circle><circle cx="3" cy="8" r="1.5"></circle><circle cx="9" cy="8" r="1.5"></circle><circle cx="3" cy="13" r="1.5"></circle><circle cx="9" cy="13" r="1.5"></circle></svg><span style="flex-grow: 1">{{os.text}}</span><span aria-hidden="true" style="width: 14px; font-weight: 800; color: {{t.ok}}">{{os.mark}}</span><button id="{{os.upId}}" onClick="{{os.up}}" disabled="{{os.noUp}}" aria-label="{{os.upAria}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs18)">↑</button><button id="{{os.downId}}" onClick="{{os.down}}" disabled="{{os.noDown}}" aria-label="{{os.downAria}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs18)">↓</button></li></sc-for>
 </ol>
-<div role="status" aria-live="polite"><sc-if value="{{plan.hasOrdMsg}}"><div style="padding: 10px 12px; border-radius: 10px; background: {{plan.ordBg}}; font-size: 14px; line-height: 1.5">{{plan.ordMsg}}</div></sc-if></div>
+<div role="status" aria-live="polite"><sc-if value="{{plan.hasOrdMsg}}"><div style="padding: 10px 12px; border-radius: 10px; background: {{plan.ordBg}}; font-size: var(--fs17); line-height: 1.5">{{plan.ordMsg}}</div></sc-if></div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
-<button onClick="{{plan.check}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 14px; font-weight: 600">Check order</button>
-<button onClick="{{plan.stopOrder}}" style="height: 40px; padding: 0 10px; border-radius: 10px; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: underline">{{plan.stopLabel}}</button>
+<button onClick="{{plan.check}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Check order</button>
+<button onClick="{{plan.stopOrder}}" style="height: 40px; padding: 0 10px; border-radius: 10px; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline">{{plan.stopLabel}}</button>
 </div>
 </sc-if>
 <div style="border-top: 1px solid {{t.line}}; padding-top: 6px; display: flex; flex-direction: column; gap: 8px">
-<button onClick="{{plan.toggleSol}}" aria-expanded="{{plan.solX}}" style="align-self: flex-start; height: 40px; padding: 0 4px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>{{plan.solLabel}}</button>
+<button onClick="{{plan.toggleSol}}" aria-expanded="{{plan.solX}}" style="align-self: flex-start; height: 40px; padding: 0 4px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: var(--fs17); font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>{{plan.solLabel}}</button>
 <sc-if value="{{plan.solOpen}}">
-<span style="font-size: 13px; line-height: 1.4; color: {{t.muted}}">{{plan.solKind}}. {{plan.solHint}}</span>
-<div role="region" aria-label="{{plan.solKind}}" tabindex="0" style="max-height: 320px; overflow: auto; border-radius: 10px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; padding: 8px 0; font-family: {{t.mono}}; font-size: 12px; line-height: 1.6; font-variant-ligatures: none">
+<span style="font-size: var(--fs16); line-height: 1.4; color: {{t.muted}}">{{plan.solKind}}. {{plan.solHint}}</span>
+<div role="region" aria-label="{{plan.solKind}}" tabindex="0" style="max-height: 320px; overflow: auto; border-radius: 10px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; padding: 8px 0; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 1.6; font-variant-ligatures: none">
 <sc-for list="{{plan.ref}}" as="rl" hint-placeholder-count="5"><div style="display: flex; border-left: 3px solid {{rl.bar}}; background: {{rl.bg}}"><span aria-hidden="true" style="width: 30px; flex-shrink: 0; box-sizing: border-box; text-align: right; padding-right: 8px; color: {{rl.num}}">{{rl.n}}</span><span style="min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 10px">{{rl.code}}</span></div></sc-for>
 </div>
 </sc-if>
@@ -104,8 +104,8 @@
 <!-- APPROACH PANE -->
 <!-- /APPROACH PANE -->
 <sc-if value="{{notSql}}">
-<sc-if value="{{hasStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Still stuck? Old Hoot walks through it in the story. <a href="{{storyHref}}" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Watch {{P.story}}</a></div></sc-if>
-<sc-if value="{{noStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: 14px; line-height: 1.5; color: {{t.text2}}">Still stuck? Old Hoot explains the {{P.pattern}} idea in the library. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>
+<sc-if value="{{hasStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Still stuck? Old Hoot walks through it in the story. <a href="{{storyHref}}" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Watch {{P.story}}</a></div></sc-if>
+<sc-if value="{{noStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Still stuck? Old Hoot explains the {{P.pattern}} idea in the library. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>
 </sc-if>
 </aside>
 

@@ -3,42 +3,48 @@
 <div data-drawer style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
 <aside aria-label="Menu" onKeyDown="{{drawerKey}}" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
 <div style="display: flex; justify-content: space-between; align-items: center">
-<span style="font-family: {{t.display}}; font-size: 22px; font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
+<span style="font-family: {{t.display}}; font-size: var(--fs24); font-weight: 700">DSA<span style="color: {{t.accent}}">Maxxing</span></span>
 <button onClick="{{closeDrawer}}" aria-label="Close menu" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
 <sc-if value="{{user}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; gap: 10px; align-items: center">
 <svg width="26" height="26" viewBox="0 0 24 24" fill="{{t.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
-<div style="display: flex; flex-direction: column"><span style="font-size: 18px; font-weight: 700">{{drawerStreak}}</span><span style="font-size: 13px; color: {{t.muted}}">{{drawerStreakLine}}</span></div>
+<div style="display: flex; flex-direction: column"><span style="font-size: var(--fs20); font-weight: 700">{{drawerStreak}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{drawerStreakLine}}</span></div>
 </div>
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
-<sc-for list="{{drawerWeek}}" as="dwk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{dwk.border}}; background: {{dwk.bg}}; color: {{dwk.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">{{dwk.d}}</span></sc-for>
+<sc-for list="{{drawerWeek}}" as="dwk" hint-placeholder-count="7"><span style="height: 30px; border-radius: 8px; border: 1.5px solid {{dwk.border}}; background: {{dwk.bg}}; color: {{dwk.fg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs15); font-weight: 700">{{dwk.d}}</span></sc-for>
 </div>
 
-<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Go to my home</a>
+<a href="Home.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700">Go to my home</a>
 </div>
 </sc-if>
 <sc-if value="{{guest}}" hint-placeholder-val="{{ true }}">
 <div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: 16px; font-weight: 700">Your progress is saved here</span>
-<span style="font-size: 13px; line-height: 1.5; color: {{t.muted}}">Streaks, XP and sheet ticks are kept in this browser. Make a free profile to add your name and goals.</span>
-<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700">Make a free profile</a>
-<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: 13px; font-weight: 600">Preview as a signed-in learner</button>
+<span style="font-size: var(--fs18); font-weight: 700">Your progress is saved here</span>
+<span style="font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">Streaks, XP and sheet ticks are kept in this browser. Make a free profile to add your name and goals.</span>
+<a href="Auth.dc.html" style="height: 44px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700">Make a free profile</a>
+<button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">Preview as a signed-in learner</button>
 </div>
 </sc-if>
 <nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
-<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: 15px; font-weight: 600">{{mi.label}}</span><span style="font-size: 12px; color: {{t.muted}}">{{mi.sub}}</span></a>
+<a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Theme</span>
+<span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Theme</span>
 <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
-<sc-for list="{{themeBtns}}" as="dtb" hint-placeholder-count="3"><button onClick="{{dtb.pick}}" aria-pressed="{{dtb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 700; background: {{dtb.bg}}; color: {{dtb.fg}}">{{dtb.label}}</button></sc-for>
+<sc-for list="{{themeBtns}}" as="dtb" hint-placeholder-count="3"><button onClick="{{dtb.pick}}" aria-pressed="{{dtb.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: var(--fs15); font-weight: 700; background: {{dtb.bg}}; color: {{dtb.fg}}">{{dtb.label}}</button></sc-for>
 </div>
 </div>
-<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: 14px; font-weight: 600">Sign out</button></sc-if>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Text size</span>
+<div role="group" aria-label="Text size" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
+<sc-for list="{{textBtns}}" as="dts" hint-placeholder-count="3"><button onClick="{{dts.pick}}" aria-pressed="{{dts.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: var(--fs15); font-weight: 700; background: {{dts.bg}}; color: {{dts.fg}}">{{dts.label}}</button></sc-for>
+</div>
+</div>
+<sc-if value="{{user}}" hint-placeholder-val="{{ false }}"><button onClick="{{signOut}}" style="height: 44px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Sign out</button></sc-if>
 </aside>
 <button onClick="{{closeDrawer}}" aria-label="Close menu" style="flex-grow: 1; height: 100vh; border: 0; background: rgba(10,10,10,0.4); cursor: pointer"></button>
 </div>

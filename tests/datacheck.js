@@ -370,16 +370,16 @@ console.log('editor preferences');
 {
   const { DS, store } = load(false);
   const p0 = DS.editorPrefs();
-  check(p0.fontSize === 14 && p0.tabSize === 0 && !p0.wrap && !p0.relative && !p0.vim && p0.brackets && p0.autocomplete && p0.celebrate, 'defaults: 14px, language indent, brackets, autocomplete and celebrate on');
+  check(p0.fontSize === 16 && p0.tabSize === 0 && !p0.wrap && !p0.relative && !p0.vim && p0.brackets && p0.autocomplete && p0.celebrate, 'defaults: 16px, language indent, brackets, autocomplete and celebrate on');
   DS.setEditorPrefs({ fontSize: 18, tabSize: 2, vim: true, celebrate: false });
   const p1 = DS.editorPrefs();
   check(p1.fontSize === 18 && p1.tabSize === 2 && p1.vim && !p1.celebrate && p1.brackets, 'changes are kept and the rest stay as they were');
   check(JSON.parse(store['dsaviz-editor-v1']).v === 1, 'saved in dsaviz-editor-v1');
   DS.setEditorPrefs({ fontSize: 99, tabSize: 3, wrap: 'yes', relative: 1 });
   const p2 = DS.editorPrefs();
-  check(p2.fontSize === 14 && p2.tabSize === 0 && p2.wrap === false && p2.relative === false && p2.vim, 'values that do not fit fall back to the defaults: ' + JSON.stringify(p2));
+  check(p2.fontSize === 16 && p2.tabSize === 0 && p2.wrap === false && p2.relative === false && p2.vim, 'values that do not fit fall back to the defaults: ' + JSON.stringify(p2));
   store['dsaviz-editor-v1'] = '{broken';
-  check(DS.editorPrefs().fontSize === 14 && DS.editorPrefs().brackets, 'a broken record reads as the defaults');
+  check(DS.editorPrefs().fontSize === 16 && DS.editorPrefs().brackets, 'a broken record reads as the defaults');
   DS.setEditorPrefs({ wrap: true });
   check(DS.resetEditorPrefs().wrap === false, 'reset brings back the defaults');
 }

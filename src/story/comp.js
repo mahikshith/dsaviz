@@ -158,7 +158,7 @@ class Component extends DCLogic {
       if (this.askBefore(this.state.step + 1, true)) return;
       this.go(this.state.step + 1);
       if (this.state.playing) this.tick();
-    }, this.pace());
+    }, paced(this.pace()));
   }
   play() {
     if (this.state.step === this.steps().length - 1) this.setState({ step: 0 });
@@ -758,7 +758,7 @@ class Component extends DCLogic {
       playLabel: this.state.playing ? 'Pause' : atEnd && this.state.played ? 'Replay' : 'Play',
       // Phones show the story (and its controls) first, then the problem; desktop keeps the problem on top.
       leftParts: phoneOrder(['problem', 'watch'], ['watch', 'problem']),
-      togglePlay: () => this.togglePlay(),
+      spd: speedVals(this), togglePlay: () => this.togglePlay(),
       playBtn: btn(playPrimary),
       // after the last step, the next move is to write it
       finished: atEnd && found, showTryIt: atEnd && !onCode,

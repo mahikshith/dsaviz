@@ -91,7 +91,7 @@ class Component extends DCLogic {
       if (k > n - 1) { this.stop(); return; }
       this.go(k);
       if (k >= n - 1) this.stop(); else this.tick(3800);
-    }, ms);
+    }, paced(ms));
   }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
@@ -107,7 +107,7 @@ class Component extends DCLogic {
     let shown = target;
     if (this.from) shown = aiTween(this.from, target, aiEaseInOut((csNow() - this.t0) / AI_EASE_MS));
     this.cur = shown;
-    const S = aiPaint(shown, t);
+    const S = aiPaint(shown, t, 1, aiStageK('concept', this));
     const P = lesson.param;
     const pv = P ? (this.state.param === null || this.state.param === undefined ? P.value : this.state.param) : 0;
     const inTab = CS_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === this.state.tab);
@@ -157,7 +157,7 @@ class Component extends DCLogic {
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
-      togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
+      spd: speedVals(this), togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
       // Phones put the controls above the caption, so they stay put while captions change length.
       nowParts: mobile ? [{ ctrl: true, say: false }, { ctrl: false, say: true }] : [{ say: true, ctrl: false }, { say: false, ctrl: true }],
       playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the lesson' : 'Play the lesson',

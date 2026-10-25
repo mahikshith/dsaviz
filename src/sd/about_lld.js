@@ -5,13 +5,13 @@ const SD_ABOUT_LLD = {
     what: 'SOLID is a set of five habits for writing classes. A class is a blueprint that bundles data with the actions that use it. The habits keep code easy to change and easy to test.',
     analogy: 'Think of a kitchen. One cook chops, one cooks, one plates. You can swap the plating cook without touching the others.',
     uses: ['Payment code that can add a new card type without rewriting checkout', 'Web frameworks that let you plug in your own database', 'Test suites that swap a real email sender for a fake one'],
-    before: ['Classes and objects', 'Functions'],
+    before: ['What a class is', 'What a function is'],
     words: [
       ['class', 'A blueprint for making objects. It lists the data and the actions they have.'],
       ['object', 'One thing made from a class, such as one particular invoice.'],
       ['method', 'An action that belongs to a class, like print() on a printer.'],
       ['interface', 'A list of method names a class promises to offer. It says what, not how.'],
-      ['inheritance', 'A class reuses another class and adds to it, like class Car(Vehicle).'],
+      ['new', 'Makes one object from a class, as in new HtmlPrinter().'],
       ['dependency', 'Something a class needs in order to work, such as a database.']
     ],
     math: null,
@@ -26,7 +26,7 @@ const SD_ABOUT_LLD = {
     avoid: ['A tiny script that you will throw away soon.', 'Splitting every class into many pieces before any change is needed.'],
     mistakes: [
       'Making one interface for everything. Small interfaces are easier to fill and to fake.',
-      'Writing a subclass that throws "not supported". It breaks the promise of the interface.',
+      'Writing a class that extends another and answers "not supported". It breaks the promise of the interface.',
       'Creating helpers inside a class with new. The class then cannot accept a fake in tests.',
       'Treating the five letters as strict laws. They are guides, so weigh the cost of each split.'
     ],
@@ -36,13 +36,13 @@ const SD_ABOUT_LLD = {
   },
   strategy: {
     what: 'The Strategy pattern puts each way of doing one job into its own class. All of them share one interface. A holder object picks one and calls it, and you can swap it while the program runs.',
-    analogy: 'Think of a map app. You pick walking, cycling or driving. The app is the same, but the way it plans the route changes.',
-    uses: ['Sorting with a custom rule, such as sorted(items, key=...) in Python', 'Java Comparator objects that tell a sort how to order things', 'Shipping cost rules that change by courier'],
+    analogy: 'Think of how you get to school: you can walk, take a bus or ride a bike. You are the same, but the way you travel changes.',
+    uses: ['Sorting a list by a rule you choose, such as by price', 'Tools that tell a sort how to order things', 'Shipping cost rules that change by courier'],
     before: ['solid'],
     words: [
       ['strategy', 'One way of doing a job, written as its own class.'],
       ['interface', 'The shared list of methods every strategy offers.'],
-      ['context', 'The object that holds a strategy and calls it. In the lesson, the Navigator.'],
+      ['holder', 'The object that keeps a strategy and calls it (also called the context). In the lesson, the Navigator.'],
       ['runtime', 'The time when the program is running, as opposed to when you write it.'],
       ['if-else chain', 'A long run of checks that picks what to do. Strategy replaces it.']
     ],
@@ -58,7 +58,7 @@ const SD_ABOUT_LLD = {
     avoid: ['There are only two simple branches that never change.', 'The ways differ in tiny details. A plain parameter is simpler.'],
     mistakes: [
       'Putting the choice back inside the holder with an if-else. Then nothing is gained.',
-      'Making strategies that share hidden state. Each one should work alone.',
+      'Making strategies that keep secret data they share. Each one should work alone.',
       'Adding the pattern for one branch only. Wait until a second way appears.'
     ],
     cheat: ['one job, many ways', 'interface RouteStrategy', 'holder.setStrategy(s)', 'new way = new class', 'no if-else in the holder'],
@@ -76,7 +76,8 @@ const SD_ABOUT_LLD = {
       ['entity', 'A class that stands for a real thing, like Spot or Ticket.'],
       ['owner', 'The class that holds and manages others. The lot owns its spots.'],
       ['lock', 'A tool that lets only one task use something at a time.'],
-      ['rule class', 'A class that holds one rule, like how much to charge.']
+      ['rule class', 'A class that holds one rule, like how much to charge.'],
+      ['method', 'An action a class can do, like findSpot() on the lot.']
     ],
     math: null,
     steps: [
@@ -86,7 +87,7 @@ const SD_ABOUT_LLD = {
       'Put the part that may change, the fee, behind an interface so you can swap it.',
       'Walk one car through entry and exit. Then try odd cases: full lot, two cars at once.'
     ],
-    use: ['You are given a vague problem and must turn it into classes.', 'You want a checklist for design questions in interviews.'],
+    use: ['You are given a vague problem and must turn it into classes.', 'You want a checklist for design questions in job interviews.'],
     avoid: ['Modelling every noun. Skip words that hold no data or action.', 'Adding features nobody asked for, such as valet service.'],
     mistakes: [
       'Starting to code before listing requirements. You may build the wrong thing.',
@@ -94,22 +95,21 @@ const SD_ABOUT_LLD = {
       'Forgetting the full lot. Always ask what happens when nothing is free.',
       'Letting two gates take one spot. Lock the spot while you check and claim it.'
     ],
-    cheat: ['nouns become classes', 'verbs become methods', 'the owner holds the parts', 'put changing rules behind an interface', 'walk one request end to end'],
+    cheat: ['nouns become classes', 'actions become methods (what a class can do)', 'the owner holds the parts', 'put changing rules behind an interface', 'walk one request end to end'],
     next: ['elevator', 'movies', 'vending'],
     sources: [GOF + ', introduction on designing with objects', 'Craig Larman, Applying UML and Patterns, 3rd ed., 2004, ch. on domain models', 'Python documentation, threading.Lock']
   },
   observer: {
-    what: 'The Observer pattern lets one object tell many others when it changes. The object keeps a list of listeners. When something happens, it calls each listener. It does not need to know what they do.',
+    what: 'The Observer pattern, a named recipe for a common coding problem, lets one object tell many others when it changes. The object keeps a list of listeners. When something happens, it calls each listener. It does not need to know what they do.',
     analogy: 'Think of a school bell. It rings once. Every class decides on its own what to do next.',
-    uses: ['Button clicks in web pages, with addEventListener in the browser', 'Phone apps that refresh several screens when data changes', 'Message feeds where many readers follow one topic'],
+    uses: ['Web pages that react when you click a button', 'Phone apps that refresh several screens when data changes', 'Message feeds where many readers follow one topic'],
     before: ['solid'],
     words: [
       ['subject', 'The object that changes and announces it. In the lesson, the StockTicker.'],
       ['listener', 'An object that wants to hear about changes. Also called an observer.'],
       ['subscribe', 'Join the list so you get told about changes.'],
       ['unsubscribe', 'Leave the list so you stop getting told.'],
-      ['notify', 'Walk the list and call each listener.'],
-      ['callback', 'A method that gets called later, when something happens.']
+      ['notify', 'Walk the list and call each listener.']
     ],
     math: null,
     steps: [
@@ -134,13 +134,11 @@ const SD_ABOUT_LLD = {
   factory: {
     what: 'A factory is one place in the code that builds objects for you. You ask it for a kind by name, and it returns the right object. The caller never names the exact class it gets.',
     analogy: 'Think of ordering a drink at a counter. You say "tea", and the staff pick the cup and the recipe.',
-    uses: ['Java Calendar.getInstance, which returns a calendar suited to your region', 'Database tools that build the right connection from a settings word', 'Game engines that create enemies from a level file'],
+    uses: ['Date tools that return a calendar suited to your region', 'Tools that pick the right kind of connection from a setting', 'Game engines that create enemies from a level file'],
     before: ['solid', 'strategy'],
     words: [
       ['factory', 'A class or function whose job is to create objects.'],
       ['product', 'The kind of object the factory makes, like a Notifier.'],
-      ['concrete class', 'A real class you can make objects from, like SmsNotifier.'],
-      ['constructor', 'The method that creates a new object, often written new Name().'],
       ['coupling', 'How tightly one piece of code depends on another.']
     ],
     math: null,
@@ -166,7 +164,7 @@ const SD_ABOUT_LLD = {
   singleton: {
     what: 'A Singleton is a class that allows only one object. A static method hands out that one object to everyone. It fits a few things, but it has costs you must know.',
     analogy: 'Think of the school principal\'s office. There is one, and everyone knows where it is. If it gets messy, everyone feels it.',
-    uses: ['Java Runtime.getRuntime, which gives the one runtime of the program', 'App settings read once from a file at start-up', 'A shared logger that all parts write to'],
+    uses: ['The one built-in object a program uses to ask about itself', 'App settings read once from a file at start-up', 'A shared logger that all parts write to'],
     before: ['factory'],
     words: [
       ['singleton', 'A class with exactly one object.'],
@@ -199,8 +197,8 @@ const SD_ABOUT_LLD = {
   lru: {
     what: 'An LRU cache keeps a fixed number of items in fast memory. When it is full, it drops the item you used least recently. It uses a hash map plus a linked list so every step is quick.',
     analogy: 'Think of a small desk. You keep the papers you used today on top. When the desk is full, the oldest pile goes back to the shelf.',
-    uses: ['Web browsers keeping recent pages and images', 'Databases keeping recently read rows in memory', 'Python functools.lru_cache, which remembers recent function results'],
-    before: ['Hash maps (dictionaries)', 'Linked lists'],
+    uses: ['Web browsers keeping recent pages and images', 'Databases keeping recently read rows in memory', 'Tools that remember the recent results of a function'],
+    before: ['What a hash map is', 'What a linked list is'],
     words: [
       ['cache', 'A small, fast store that keeps copies of data you may need again.'],
       ['hash map', 'A table that finds a value from its key in one step.'],
@@ -245,7 +243,7 @@ const SD_ABOUT_LLD = {
   elevator: {
     what: 'This lesson designs a two-elevator system for a building. Buttons make requests. A scheduler decides which car answers each one. Each car follows a simple rule for which floors to visit and in what order.',
     analogy: 'Think of a school bus on a fixed road. It picks up everyone on the way up the road, then everyone on the way back.',
-    uses: ['Building elevators in offices and flats', 'Disk drives that order reads so the head sweeps in one direction', 'Delivery apps that assign orders to the nearest rider'],
+    uses: ['Building elevators in offices and flats', 'Computer disks that read in one sweep', 'Delivery apps that assign orders to the nearest rider'],
     before: ['strategy', 'parking'],
     words: [
       ['request', 'A call for an elevator, with a floor and a direction.'],
@@ -264,7 +262,7 @@ const SD_ABOUT_LLD = {
       'Each car visits stops in its current direction, then turns. It removes each stop once served.'
     ],
     use: ['Several workers share a stream of requests and need a fair rule.', 'The assignment rule may change, such as for rush hour.'],
-    avoid: ['A single elevator. A simple queue may be enough.', 'Anything that needs exact real-time safety. Real lifts have hardware controls.'],
+    avoid: ['A single elevator. A simple queue may be enough.', 'Anything that needs exact real-time safety. Real elevators have hardware controls.'],
     mistakes: [
       'Sending a car the wrong way to reach a new stop. Prefer cars already heading there.',
       'Mixing the scheduler rule into the Elevator class. It becomes hard to change.',
@@ -279,7 +277,7 @@ const SD_ABOUT_LLD = {
     what: 'This lesson designs a movie ticket system. Its hard part is that two people may tap the same seat at once. A temporary hold on each seat makes sure only one person wins.',
     analogy: 'Think of a cinema counter. The clerk puts a reserved card on a seat while you pay. If you leave, the card goes away.',
     uses: ['Cinema and concert booking sites', 'Flight and train seat selection', 'Online shops that hold a stock item in your basket for a short time'],
-    before: ['parking', 'Threads and locks'],
+    before: ['parking'],
     words: [
       ['show', 'One screening of a movie at one time.'],
       ['seat hold', 'A short lock on a seat for one user, with an end time.'],
@@ -329,7 +327,7 @@ const SD_ABOUT_LLD = {
       'Let a state set the machine\'s next state when something changes, such as taking a coin.'
     ],
     use: ['What an action does depends on what happened before.', 'You see the same if-else on the situation in many methods.'],
-    avoid: ['Only two states with one small difference. A flag may be clearer.', 'The states barely differ in behaviour.'],
+    avoid: ['Only two states with one small difference. A single yes/no value may be clearer.', 'The states barely differ in behaviour.'],
     mistakes: [
       'Missing a transition, so the machine gets stuck in one state.',
       'Letting every state know every other state. Keep the links few.',
@@ -343,7 +341,7 @@ const SD_ABOUT_LLD = {
   decorator: {
     what: 'A decorator is an object that wraps another object with the same interface. It adds behaviour before or after passing the call on. You can stack wrappers to mix features without writing a class for each mix.',
     analogy: 'Think of a gift. The gift stays the same, and you add paper, then a ribbon, then a card. Each layer is optional.',
-    uses: ['Java BufferedReader wrapped around a FileReader to add buffering', 'Web servers that add logging, login checks and caching around a handler', 'HTTP clients that add retries and logging'],
+    uses: ['Readers that add speed on top of a plain file reader', 'Web servers that add logging, login checks and caching around a handler', 'HTTP clients that add retries and logging'],
     before: ['solid', 'strategy'],
     words: [
       ['decorator', 'A wrapper object that adds one feature and then calls the object inside.'],
@@ -366,7 +364,7 @@ const SD_ABOUT_LLD = {
     mistakes: [
       'Stacking layers in the wrong order. A cache on the outside hides calls from the layers inside.',
       'Forgetting to call the inner object, so nothing real happens.',
-      'Mixing up with Python\'s @decorator syntax. It is related, but it is not this pattern.',
+      'Wrapping so many layers that nobody can tell what runs.',
       'Making a wrapper that changes the meaning of the call.'
     ],
     cheat: ['same interface in and out', 'wrapper holds an inner object', 'do extra, then call inner', 'order of layers matters', 'build the stack at start-up'],
@@ -377,7 +375,7 @@ const SD_ABOUT_LLD = {
     what: 'The Command pattern turns an action into an object. The object knows how to do the action and how to undo it. A history list of these objects gives you undo and redo.',
     analogy: 'Think of a recipe card. The card says what to do, and you can keep it, repeat it, or follow it backward.',
     uses: ['Undo and redo in text and image editors', 'Job queues that store tasks to run later', 'Macro recorders that save actions and replay them'],
-    before: ['solid', 'Stacks'],
+    before: ['solid'],
     words: [
       ['command', 'An object that stands for one action.'],
       ['do and undo', 'The two methods every command has. One makes the change, one reverses it.'],
@@ -407,7 +405,7 @@ const SD_ABOUT_LLD = {
   },
   splitter: {
     what: 'This lesson designs an expense splitter for a group of friends. Each expense records who paid and how to split it. A running balance per person shows the net debt, which lets you settle with few payments.',
-    analogy: 'Think of a trip with friends. Instead of everyone paying everyone, you each find your net figure and settle with one or two people.',
+    analogy: 'Think of a trip with friends. Instead of everyone paying everyone, you each find your balance and settle with one or two people.',
     uses: ['Apps that split bills among friends and flatmates', 'Accounting tools that match what is owed and what is paid', 'Payment systems that net many small transfers into fewer ones'],
     before: ['strategy', 'parking'],
     words: [

@@ -2740,7 +2740,7 @@ function startInLevel(n) { return START_CHAPTERS.filter((c) => startLevel(c) ===
 
 const START_CHAPTERS = [
   // ---- Chapter 1: Talking to the computer ----
-  { id: 'what-is-a-program', n: 1, part: 1, short: 'A program', title: 'What is a program?', idea: 'A program is a list of exact steps. The computer does just what is written, from the top.', minutes: 7,
+  { id: 'what-is-a-program', n: 1, part: 1, short: 'A program', title: 'What is a program?', idea: 'A program is a list of exact steps. The computer does exactly what is written, from the top.', minutes: 7,
     teaches: ['program'], after: [], trap: 'Expecting the computer to guess what you meant.' },
   { id: 'first-run', n: 2, part: 1, short: 'First run', title: 'Your first run', idea: 'print shows text on the screen. Quotes mark where the text starts and ends.', minutes: 7, teaches: ['print'], after: ['what-is-a-program'], trap: 'Leaving out a quote.' },
   { id: 'calculator', n: 3, part: 1, short: 'Calculator', title: 'Calculator mode', idea: 'Python works out sums: + - * / plus // for whole parts and % for what is left over.', minutes: 8, teaches: ['math'], after: ['first-run'], trap: 'Forgetting that * and / go before + and -.' },
@@ -2751,7 +2751,7 @@ const START_CHAPTERS = [
   { id: 'input-output', n: 7, part: 2, short: 'Input', title: 'Asking and answering', idea: 'input() asks a question. The answer always comes back as text, so convert it first.', minutes: 9, teaches: ['io'], after: ['types'], trap: '"5" + "3" giving 53 instead of 8.' },
   { id: 'compare', n: 8, part: 2, short: 'Compare', title: 'True or false questions', idea: 'A comparison asks a yes or no question. = stores a value, == asks if two are equal.', minutes: 8, teaches: ['logic'], after: ['types'], trap: 'Writing = when you mean ==.' },
   { id: 'if-else', n: 9, part: 2, short: 'if / else', title: 'Choosing a path', idea: 'if runs its block only when the question is True. elif and else cover the rest.', minutes: 10, teaches: ['if'], after: ['compare'], trap: 'Wrong indentation, so a line falls outside its block.' },
-  { id: 'and-or-not', n: 10, part: 2, short: 'and / or / not', title: 'and, or, not', idea: 'and needs both sides True, or needs just one, and not flips the answer.', minutes: 8, teaches: ['boolops'], after: ['if-else'], trap: 'Writing x == 1 or 2 instead of x == 1 or x == 2.' },
+  { id: 'and-or-not', n: 10, part: 2, short: 'and / or / not', title: 'and, or, not', idea: 'and needs both sides True, or needs only one, and not flips the answer.', minutes: 8, teaches: ['boolops'], after: ['if-else'], trap: 'Writing x == 1 or 2 instead of x == 1 or x == 2.' },
   { id: 'edge-cases', n: 11, part: 2, short: 'Edge cases', title: 'What could go wrong?', idea: 'Test the odd cases first: zero, negatives and the exact boundary.', minutes: 8, teaches: ['edges'], after: ['and-or-not'], trap: 'Using < where the rule says "or more".' },
   { id: 'path-project', n: 12, part: 2, short: 'Project: path', title: 'Project: choose your path', idea: 'Put input and if together into a tiny adventure with three endings.', minutes: 12, teaches: [], after: ['edge-cases', 'input-output'], project: true },
   // ---- Chapter 3: Repeating and collecting ----
@@ -2814,7 +2814,7 @@ const START_CHAPTERS = [
   { id: 'polymorphism', level: 3, n: 10, part: 13, short: 'Same call', title: 'Same call, different robots', idea: 'Ask every object to do the same thing and each does its own version. The loop never needs to know which kind it has.',
     minutes: 10, teaches: ['polymorphism'], after: ['super'], trap: 'Writing a long if and elif on the type instead of letting each class answer.' },
   { id: 'composition', level: 3, n: 11, part: 14, short: 'Composition', title: 'Built from parts', idea: 'Is-a means inheritance. Has-a means an object keeps another object as a part. Has-a is often the better fit.',
-    minutes: 11, teaches: ['composition'], after: ['inheritance', 'polymorphism'], trap: 'Inheriting from a class just to borrow some of its code.' },
+    minutes: 11, teaches: ['composition'], after: ['inheritance', 'polymorphism'], trap: 'Inheriting from a class only to borrow some of its code.' },
   { id: 'dunder', level: 3, n: 12, part: 14, short: 'Dunders', title: 'Teaching objects print, == and len', idea: 'Methods with double underscores let print, == and len work on your own objects.',
     minutes: 10, teaches: ['dunder'], after: ['attributes'], trap: 'Expecting == to compare the data when the class never said how.' },
   { id: 'interfaces', level: 3, n: 13, part: 14, short: 'Contracts', title: 'A contract every class signs', idea: 'An abstract class lists the methods every child must write. Forget one and Python stops you before anything runs.',
@@ -2842,14 +2842,14 @@ function st1Story() {
   const card = (cur) => ({ cards: [{ id: 'card', x: 120, y: 120, w: 400, lines: ST1_CODE.py, cur: cur || [] }] });
   const screen = (lines) => ({ screens: [{ id: 'screen', x: 120, y: 238, w: 400, h: 116, lines }] });
   return [
-    stBeat('hoot', 'Meet the computer, our robot. The computer does exactly what it is told. Nothing more, nothing less.', stScene(cast(), toaster()), ['cast:bolt']),
+    stBeat('hoot', 'This is the computer. It does exactly what it is told, and nothing else.', stScene(cast(), toaster()), ['cast:bolt']),
     stBeat('dot', 'Computer, make toast, please!', stScene(cast(), toaster(), { tokens: [{ id: 'loaf', x: 320, y: 150, text: 'the whole loaf' }] }), ['loaf', 'cast:dot']),
-    stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. A computer is just as literal.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
+    stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. A computer takes every word exactly as it is written.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
     stBeat('dot', 'So I need to say every step, exactly, in the right order?', stScene(cast(['hoot', 'dot']), steps()), ['step0', 'step1', 'step2']),
     stBeat('hoot', 'Yes. A list of exact steps is a program. The computer runs them from the top down.', stScene(cast(['hoot', 'dot']), steps(0), { arrows: [{ id: 'down', from: [150, 150], to: [150, 280], c: 'a' }] }), ['step0', 'down']),
     stBeat('hoot', 'We write the steps in a language the computer reads. Ours is Python. Each line is one step.', stScene(cast(['hoot', 'dot']), card()), ['card']),
     stBeat('dot', 'The last line has no quotes. It says print(2 + 3).', stScene(cast(['hoot', 'dot']), card([2])), ['card'], 2),
-    stBeat('hoot', 'With no quotes, the computer works it out. print(2 + 3) shows 5. You just used Python as a calculator.', stScene(cast(['hoot', 'dot']), card([2]), screen(['5'])), ['screen'], 2),
+    stBeat('hoot', 'With no quotes, the computer calculates the answer. print(2 + 3) shows 5. You used Python as a calculator.', stScene(cast(['hoot', 'dot']), card([2]), screen(['5'])), ['screen'], 2),
     stBeat('dot', 'All three lines run in order. Now I want to run one myself!', stScene(cast(['hoot', 'dot']), card([0, 1, 2]), screen(['Take one slice', 'Put it in the toaster', '5'])), ['cast:dot', 'screen'], [0, 1, 2])
   ];
 }
@@ -2991,7 +2991,7 @@ function st5Story() {
     stBeat('hoot', 'Give the number a box with a name tag. acorns = 12 puts 12 in a box called acorns.', stScene(cast, card([0]), box('12')), ['box'], 0),
     stBeat('dot', 'So = does not mean "is equal" here. It means: put this value in that box.', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
     stBeat('hoot', 'print(acorns) looks in the box and shows 12. No quotes, so acorns is a name, not text.', stScene(cast, card([1]), box('12'), screen(['12'])), ['box', 'screen'], 1),
-    stBeat('penny', 'I just found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
+    stBeat('penny', 'I found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
     stBeat('hoot', 'acorns = acorns + 5 works out the right side first: 12 + 5 is 17. Then 17 goes in the box.', stScene(cast, card([2]), box('17'), screen(['12'])), ['box', 'card'], 2),
     stBeat('hoot', 'The old 12 is gone. A box holds one value at a time.', stScene(cast, card([3]), box('17'), screen(['12', '17'])), ['box', 'screen'], 3),
     stBeat('dot', 'And a name needs a value before I use it. Otherwise Python says NameError.', stScene(cast, card([0, 1, 2, 3]), box('17'), screen(['12', '17'])), ['cast:dot'])
@@ -3039,7 +3039,7 @@ START_LESSON('types', {
   check: { q: 'What type is "True", written with quotes?',
     choices: [['True or False (a bool)', false, 'The quotes make it text, even though the word inside is True.'],
       ['Text (a string)', true, 'Right. Anything in quotes is text.'],
-      ['A whole number', false, 'There is no number here, just the word True in quotes.'],
+      ['A whole number', false, 'There is no number here. It is only the word True in quotes.'],
       ['It is an error', false, 'Text can hold any words, including True.']] }
 });
 
@@ -3262,7 +3262,7 @@ function st13Story() {
   return [
     stBeat('penny', 'I want to hide one acorn in each of 5 trees. Do I write print five times?', stScene(cast, { tokens: [1, 2, 3, 4, 5].map((n, i) => ({ id: 'tr' + n, x: 140 + i * 90, y: 210, text: 'tree ' + n, w: 80 })) }), ['cast:penny']),
     stBeat('hoot', 'No. A for loop repeats a block for you, once per lap.', stScene(cast, card([0, 1])), ['card'], [0, 1]),
-    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops just before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
+    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
     stBeat('hoot', 'On each lap, tree holds the next number, and the indented line runs once.', stScene(cast, card([1]), box('1'), screen(['Acorn in tree 1'])), ['tree', 'screen'], 1),
     stBeat('penny', 'Lap two: tree is 2. Lap three: tree is 3. The box changes every lap.', stScene(cast, card([1]), box('3'), screen(['Acorn in tree 1', 'Acorn in tree 2', 'Acorn in tree 3'])), ['tree'], 1),
     stBeat('hoot', 'After the last lap the loop ends, and the line after it runs once.', stScene(cast, card([2]), box('5'), screen(['Acorn in tree 4', 'Acorn in tree 5', 'All hidden!'])), ['screen'], 2),
@@ -3359,7 +3359,7 @@ function st16Story() {
     stBeat('hoot', 'bag[0] is the first pocket: "map". bag[-1] counts from the back: "snack".', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] }), card(3)), ['p0', 'p3'], [2, 3]),
     stBeat('dot', 'len(bag) is 4, so the last pocket must be bag[4]?', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"']), card(4)), ['cast:dot', 'ix3'], 4),
     stBeat('hoot', 'No: four pockets are numbered 0 to 3. bag[4] does not exist, so Python says IndexError.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [3] }), { tokens: [{ id: 'bad', x: 320, y: 300, text: 'bag[4] → IndexError', c: 'bad' }] }), ['bad', 'ix3']),
-    stBeat('dot', 'First pocket 0, last pocket len - 1, or just -1. Got it!', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] })), ['cast:dot'])
+    stBeat('dot', 'First pocket 0. Last pocket len - 1, or -1 for short. Got it!', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] })), ['cast:dot'])
   ];
 }
 START_LESSON('lists', {
@@ -3413,7 +3413,7 @@ function st18Story() {
   const card = (i) => st1Card('card', 60, 266, 520, [ST18_CODE.py[i]], [0]);
   return [
     stBeat('dot', 'I wrote a secret note: hello. Can Python read it letter by letter?', stScene(cast, beads('hello')), ['cast:dot']),
-    stBeat('hoot', 'Yes. A string is a row of letters, numbered from 0 just like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
+    stBeat('hoot', 'Yes. A string is a row of letters. They are numbered from 0, like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
     stBeat('hoot', 'len(note) counts the letters: 5. note[0] is h and note[-1] is o.', stScene(cast, beads('hello', [0, 4]), card(2)), ['b0', 'b4'], [1, 2]),
     stBeat('bolt', 'A slice: note[1:4]. Taking letters 1, 2 and 3. Stopping before 4. Result: ell.', stScene(cast, beads('hello', [1, 2, 3]), card(3)), ['b1', 'b2', 'b3'], 3),
     stBeat('bolt', 'Reversing: note[::-1] reads from the back. Result: olleh.', stScene(cast, beads('olleh'), card(4)), ['b0', 'b1', 'b2', 'b3', 'b4'], 4),
@@ -3457,7 +3457,7 @@ START_LESSON('nested-loops', {
   tryit: { py: 'for row in range(3):\n    line = ""\n    for col in range(4):\n        line = line + "*"\n    print(line)\n', js: 'for (let row = 0; row < 3; row++) {\n  let line = "";\n  for (let col = 0; col < 4; col++) {\n    line = line + "*";\n  }\n  console.log(line);\n}\n',
     goals: ['Press Run.', 'Make the floor 5 rows by 2 tiles.', 'Make row number r get r + 1 stars, to draw a triangle.'] },
   check: { q: 'An outer loop runs 3 laps and the inner loop runs 4 laps each time. How many times does the inner body run in all?',
-    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is just one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
+    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is only one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
 });
 
 // Level 1, chapter 4 (lessons 20 to 24): reusing and organising. Every word is our own.
@@ -3566,7 +3566,7 @@ function st23Story() {
     stBeat('hoot', 'Where did they split? Look inside: a print in the loop shows each lap.', stScene(cast, card([3])), ['card'], 3),
     stBeat('dot', 'It prints i: 1, 2, 3, 4. It never reaches 5! range(1, 5) stops before 5.', stScene(cast, card([1]), { tokens: [{ id: 'lap', x: 320, y: 300, text: 'i: 4  total: 10' }] }), ['lap'], 1),
     stBeat('hoot', 'Change one thing, then run it again: range(1, 6). One change at a time, so you know what fixed it.', stScene(cast, card([1])), ['card'], 1),
-    stBeat('hoot', 'If it is still unclear, shrink the example: try range(1, 2) and check one lap by hand.', stScene(cast, qs(2)), ['q2']),
+    stBeat('hoot', 'If it is still unclear, shrink the example: try range(1, 2) and check one lap yourself on paper.', stScene(cast, qs(2)), ['q2']),
     stBeat('dot', 'Expect, observe, find the split, change one thing. Then take the debug print out.', stScene(cast, qs(null)), ['cast:dot'])
   ];
 }
@@ -3857,7 +3857,7 @@ START_LESSON('many-args', {
     js: 'function total(...acorns) {\n  let s = 0;\n  for (const a of acorns) {\n    s = s + a;\n  }\n  return s;\n}\n\nconsole.log(total(3, 4, 5));\nconsole.log(total(10));\nlet bag = [1, 2, 3, 4];\nconsole.log(total(...bag));\n',
     goals: ['Press Run.', 'What does total() with nothing inside return? Predict, then run.', 'Write biggest(*nums) that returns the largest value it is given.'] },
   check: { q: 'def total(*acorns). Inside the function, what is acorns after total(3, 4, 5)?',
-    choices: [['One group holding 3, 4 and 5', true, 'Right. The star gathers every value into one tuple: (3, 4, 5).'], ['Just 3, the first value', false, 'The star gathers all of them, not only the first.'], ['An error: total takes one value', false, 'With the star it takes any number.'], ['The text "3, 4, 5"', false, 'It is a group of numbers, not text.']] }
+    choices: [['One group holding 3, 4 and 5', true, 'Right. The star gathers every value into one tuple: (3, 4, 5).'], ['Only 3, the first value', false, 'The star gathers all of them, not only the first.'], ['An error: total takes one value', false, 'With the star it takes any number.'], ['The text "3, 4, 5"', false, 'It is a group of numbers, not text.']] }
 });
 
 // Level 2, lessons 6 to 9: shared lists, functions as values, closures and recursion. Every word is our own.
@@ -4035,7 +4035,7 @@ function st301Story() {
     stBeat('hoot', 'Welcome to my workshop. Every robot here is built from one blueprint, pinned to the wall.', stScene(cast, plan(230, 170)), ['cls']),
     stBeat('dot', 'So the blueprint is a robot?', stScene(cast, plan(230, 170)), ['cls', 'cast:dot']),
     stBeat('hoot', 'No. class Robot: is only the plan. It says what robots are like, but you cannot charge a drawing.', stScene(cast, plan(20, 150), st1Card('card', 250, 150, 360, ST301_CODE.py.slice(0, 2), [0, 1])), ['cls', 'card'], [0, 1]),
-    stBeat('hoot', 'Robot() builds a real robot from the plan: an object. bolt is a name with an arrow to it.', stScene(cast, plan(20, 150), l3Bot('b1', 410, 128, []), l3Tag('bolt', 300, 160, [406, 160], true)), ['b1', 'nm:bolt', 'ar:bolt'], 2),
+    stBeat('hoot', 'Robot() builds a real robot from the plan. That robot is an object. bolt is a name that points to it.', stScene(cast, plan(20, 150), l3Bot('b1', 410, 128, []), l3Tag('bolt', 300, 160, [406, 160], true)), ['b1', 'nm:bolt', 'ar:bolt'], 2),
     stBeat('dot', 'Robot() again builds a second, separate robot. nova points at that one.', stScene(cast, plan(20, 150), l3Bot('b1', 410, 128, []), l3Tag('bolt', 300, 160, [406, 160]), l3Bot('b2', 410, 250, []), l3Tag('nova', 300, 282, [406, 282], true)), ['b2', 'nm:nova'], 3),
     stBeat('hoot', 'Each object keeps its own data. bolt.name = "Ray" writes on Ray’s box, and only there.', two('"Ray"', null, 'b'), ['b1'], 4),
     stBeat('bolt', 'I am a robot. The other box is a second robot. Same blueprint, two different robots.', two('"Ray"', '"Kim"', 'n'), ['b1', 'b2'], [5, 6]),
@@ -4094,12 +4094,12 @@ function st303Story() {
     { tokens: [{ id: 'selfT', x: 90, y: 200, text: 'self', w: 90 }], arrows: [{ id: 'selfA', from: [139, 200], to: [376, 200], c: 'a' }] }, vars ? { boxes: [stVar('nameV', 'name', '"Ray"', 40, 228, { w: 160, h: 50, size: 18 })] } : null);
   const bot = (fields, lit) => l3Bot('b1', 380, 160, fields, { lit });
   return [
-    stBeat('dot', 'Every new robot needs a name and a full battery. Setting them by hand after each Robot() is a chore.', stScene(cast, bot([])), ['b1', 'cast:dot']),
+    stBeat('dot', 'Every new robot needs a name and a full battery. Setting them yourself after each Robot() is tiring work.', stScene(cast, bot([])), ['b1', 'cast:dot']),
     stBeat('hoot', 'Write __init__. Python calls it once, right after it builds a brand-new, empty object.', stScene(cast, st1Card('card', 40, 140, 560, ST303_CODE.py.slice(0, 4), [1, 2, 3])), ['card'], [1, 2, 3]),
     stBeat('hoot', 'Robot("Ray") first builds an empty box. Then __init__ runs with self pointing at it and name holding "Ray".', stScene(cast, plate(true), bot([])), ['selfA', 'nameV', 'b1'], 4),
     stBeat('bolt', 'self.name = name writes the name onto my box.', stScene(cast, plate(true), bot([['name', '"Ray"']], ['name'])), ['b1'], 2),
     stBeat('bolt', 'self.battery = 100 adds a full battery. Now I am set up.', stScene(cast, plate(true), bot([['name', '"Ray"'], ['battery', '100']], ['battery'])), ['b1'], 3),
-    stBeat('dot', 'So __init__ does not build the robot. It sets up the one Python just built?', stScene(cast, bot([['name', '"Ray"'], ['battery', '100']]), l3Tag('bolt', 250, 190, [376, 190], true)), ['nm:bolt', 'cast:dot'], 4),
+    stBeat('dot', 'So __init__ does not build the robot. It sets up the robot Python already built?', stScene(cast, bot([['name', '"Ray"'], ['battery', '100']]), l3Tag('bolt', 250, 190, [376, 190], true)), ['nm:bolt', 'cast:dot'], 4),
     stBeat('hoot', 'Exactly. And forget self. and name = name only writes on __init__’s plate, which is gone a moment later.', stScene(cast, plate(true), bot([]), { tokens: [{ id: 'oops', x: 145, y: 320, text: 'name = name', c: 'bad' }] }), ['oops', 'b1']),
     stBeat('dot', 'Python builds the object, __init__ fills it in. Every new robot starts ready!', stScene(cast, bot([['name', '"Ray"'], ['battery', '100']]), l3Tag('bolt', 250, 190, [376, 190])), ['cast:dot'], 5)
   ];
@@ -4111,7 +4111,7 @@ START_LESSON('init', {
     js: 'class Robot {\n  constructor(name) {\n    this.name = name;\n    this.battery = 100;\n  }\n}\n\nlet bolt = new Robot("Ray");\nlet nova = new Robot("Kim");\nconsole.log(bolt.name, bolt.battery);\nconsole.log(nova.name, nova.battery);\n',
     goals: ['Press Run.', 'Add a second parameter, size, and store it on the robot.', 'Change self.name = name to name = name. What does print(bolt.name) say now?'] },
   check: { q: 'What does __init__ do?',
-    choices: [['Fills in the starting data of an object Python has just built', true, 'Right. Python builds the empty object, then calls __init__ with self pointing at it.'], ['Builds the object out of nothing', false, 'Python has already built it by the time __init__ runs.'], ['Runs every time you use the object', false, 'It runs once, when the object is built.'], ['Deletes the old object', false, 'It only sets up the new one.']] }
+    choices: [['Fills in the starting data of an object Python has already built', true, 'Right. Python builds the empty object, then calls __init__ with self pointing at it.'], ['Builds the object out of nothing', false, 'Python has already built it by the time __init__ runs.'], ['Runs every time you use the object', false, 'It runs once, when the object is built.'], ['Deletes the old object', false, 'It only sets up the new one.']] }
 });
 
 // ---------- L3.4 What it knows, what it does ----------
@@ -4313,8 +4313,8 @@ function st310Story() {
     stBeat('hoot', 'Morning! I shout one word to the whole team: work!', stScene(cast, team()), ['mop', 'dash']),
     stBeat('dot', 'And each robot does something different?', stScene(cast, team(null, [['mop', 'sweeps the floor'], ['dash', 'delivers a parcel']])), ['say0', 'say1']),
     stBeat('hoot', 'Yes. Cleaner’s work sweeps, Courier’s work delivers. Same call, and each class answers in its own way.', stScene(cast, st1Card('card', 30, 140, 580, ST310_CODE.py.slice(0, 4), [1, 3])), ['card'], [1, 3]),
-    stBeat('penny', 'The loop only says bot.work(). bot points at Eli first, and the loop never asks what kind of robot it is.', stScene(cast, team('mop', [['mop', 'sweeps the floor']]), { tokens: [{ id: 'bot', x: 320, y: 320, text: 'bot', w: 80 }], arrows: [{ id: 'botA', from: [282, 312], to: [150, 236], c: 'a' }] }), ['mop', 'botA'], [5, 6]),
-    stBeat('penny', 'Without this I would write if it is a Cleaner, elif it is a Courier... for every new kind!', stScene(cast, { tokens: [{ id: 'bad1', x: 320, y: 180, text: 'if type(bot) == Cleaner: ...', c: 'bad' }, { id: 'bad2', x: 320, y: 240, text: 'elif type(bot) == Courier: ...', c: 'bad' }] }), ['bad1', 'bad2']),
+    stBeat('penny', 'The loop only says bot.work(). bot points at Eli first. The loop never asks what kind of robot it is.', stScene(cast, team('mop', [['mop', 'sweeps the floor']]), { tokens: [{ id: 'bot', x: 320, y: 320, text: 'bot', w: 80 }], arrows: [{ id: 'botA', from: [282, 312], to: [150, 236], c: 'a' }] }), ['mop', 'botA'], [5, 6]),
+    stBeat('penny', 'Without this I would write one check for every new kind of robot. That is a lot of work!', stScene(cast, { tokens: [{ id: 'bad1', x: 320, y: 180, text: 'if type(bot) == Cleaner: ...', c: 'bad' }, { id: 'bad2', x: 320, y: 240, text: 'elif type(bot) == Courier: ...', c: 'bad' }] }), ['bad1', 'bad2']),
     stBeat('hoot', 'Next lap, bot points at Tom and the same line runs Courier’s work. A new kind of robot needs no change to the loop.', stScene(cast, team('dash', [['dash', 'delivers a parcel']]), { tokens: [{ id: 'bot', x: 320, y: 320, text: 'bot', w: 80 }], arrows: [{ id: 'botA', from: [320, 300], to: [320, 236], c: 'a' }] }), ['dash', 'botA']),
     stBeat('hoot', 'Python does not even need a family tree. Any object with a work method fits the loop. That is duck typing.', stScene(cast, team('kettle', [['kettle', 'boils water']])), ['kettle']),
     stBeat('dot', 'One call, many answers. Each object knows its own job!', stScene(cast, team(null, [['mop', 'sweeps the floor'], ['dash', 'delivers a parcel']])), ['cast:dot'])
@@ -4389,7 +4389,7 @@ START_LESSON('dunder', {
     js: 'class Robot {\n  constructor(name) {\n    this.name = name;\n  }\n  toString() {\n    return "Robot " + this.name;\n  }\n  equals(other) {\n    return this.name === other.name;\n  }\n}\n\nclass Team {\n  constructor(bots) {\n    this.bots = bots;\n  }\n  get length() {\n    return this.bots.length;\n  }\n}\n\nlet team = new Team([new Robot("Ray"), new Robot("Kim")]);\nconsole.log(team.length);\nconsole.log(String(new Robot("Ray")));\nconsole.log(new Robot("Ray").equals(new Robot("Ray")));\n', differs: true,
     goals: ['Press Run.', 'Delete __eq__ and run again. What does == say now?', 'Make __str__ show the battery too, like Robot Ray (100%).'] },
   check: { q: 'You wrote __str__ in Robot. When does it run?',
-    choices: [['When print (or str) needs the robot as text', true, 'Right. Python calls it for you. You never call __str__ by hand.'], ['Only when you call robot.__str__() yourself', false, 'You can, but the point is that print calls it for you.'], ['When the robot is built', false, 'That is __init__.'], ['Never: it is just a comment', false, 'It is a real method that Python calls.']] }
+    choices: [['When print (or str) needs the robot as text', true, 'Right. Python calls it for you. You never need to call __str__ yourself.'], ['Only when you call robot.__str__() yourself', false, 'You can, but the point is that print calls it for you.'], ['When the robot is built', false, 'That is __init__.'], ['Never: it is just a comment', false, 'It is a real method that Python calls.']] }
 });
 
 // ---------- L3.13 A contract every class signs ----------
@@ -4432,11 +4432,11 @@ function st314Story() {
   const tools = (lit) => ({ boxes: [['fn', 'function', 'one action'], ['dict', 'dictionary', 'plain data'], ['cls', 'class', 'data + actions']].map(([id, tag, t], i) => ({ id: 'tool:' + id, x: 30 + i * 205, y: 180, w: 180, h: 70, text: t, size: 16, mono: false, tag, solid: lit === id })) });
   return [
     stBeat('dot', 'I love classes now! I made class Adder with one method, add, and nothing else.', stScene(cast, st1Card('card', 60, 140, 520, ST314_CODE.py.slice(0, 4), [0, 1, 2])), ['card', 'cast:dot'], [0, 1, 2, 3]),
-    stBeat('hoot', 'A class with no data and one method is a function in a costume. def add(a, b) does the same job.', stScene(cast, st1Card('card', 60, 140, 520, ST314_CODE.py.slice(4, 7), [0, 1])), ['card'], [4, 5, 6]),
-    stBeat('penny', 'And my robot spec: just a name and a size, with no actions. Does that need a class?', stScene(cast, { tokens: [{ id: 'spec', x: 320, y: 210, text: 'name: Ray, size: 3', mono: false }] }), ['spec', 'cast:penny']),
+    stBeat('hoot', 'A class with no data and one method is a function in disguise. It does the same job as def add(a, b).', stScene(cast, st1Card('card', 60, 140, 520, ST314_CODE.py.slice(4, 7), [0, 1])), ['card'], [4, 5, 6]),
+    stBeat('penny', 'And my robot spec is only a name and a size, with no actions. Does that need a class?', stScene(cast, { tokens: [{ id: 'spec', x: 320, y: 210, text: 'name: Ray, size: 3', mono: false }] }), ['spec', 'cast:penny']),
     stBeat('hoot', 'Plain data with no actions fits a dictionary: {"name": "Ray", "size": 3}.', stScene(cast, stObj('dict', 'dict', 300, 160, [['"name"', '"Ray"'], ['"size"', '3']], { w: 260 }), l3Tag('spec', 160, 210, [296, 210], true)), ['dict', 'ar:spec'], [7, 8]),
     stBeat('dot', 'So when is a class worth it?', stScene(cast, tools()), ['cast:dot']),
-    stBeat('hoot', 'When data and the actions on it belong together, like a Robot with a battery and a charge method.', stScene(cast, tools('cls')), ['tool:cls']),
+    stBeat('hoot', 'Use a class when data and its actions belong together. A Robot with a battery and a charge method is an example.', stScene(cast, tools('cls')), ['tool:cls']),
     stBeat('hoot', 'Beware the do-everything class: a Workshop that builds, sells, cleans and pays. Split it into small parts.', stScene(cast, { boxes: [{ id: 'god', x: 150, y: 150, w: 340, h: 110, text: 'build, sell, clean, pay, log...', size: 16, mono: false, tag: 'class Workshop', c: 'bad', tc: 'c' }] }), ['god']),
     stBeat('dot', 'Function for one action, dictionary for plain data, class when they live together.', stScene(cast, tools()), ['cast:dot'])
   ];
@@ -4482,7 +4482,7 @@ const START_EXERCISES = {
     { id: 'what-is-a-program:3', kind: 'predict', title: 'Quotes or no quotes', ask: 'What does this program print?',
       code: { py: 'print(2 + 3)\nprint("2 + 3")', js: 'console.log(2 + 3);\nconsole.log("2 + 3");' },
       choices: { py: ['5\n2 + 3', '5\n5', '2 + 3\n2 + 3', '2 + 3\n5'], js: ['5\n2 + 3', '5\n5', '2 + 3\n2 + 3', '2 + 3\n5'] }, answer: 0,
-      why: 'Without quotes the computer does the sum. With quotes it is just text, shown exactly as written.',
+      why: 'Without quotes the computer does the sum. With quotes it is only text, shown exactly as written.',
       hints: ['Look at which line has quotes.', 'Quotes mean "show this text as it is".'] },
     { id: 'what-is-a-program:4', kind: 'write', title: 'Let the computer add', ask: 'Write one line that prints the sum of 10 and 15. Let the computer do the adding.',
       starter: { py: '# Write your line below\n', js: '// Write your line below\n' }, ref: { py: 'print(10 + 15)\n', js: 'console.log(10 + 15);\n' },
@@ -4509,7 +4509,7 @@ const START_EXERCISES = {
   'calculator': [
     { id: 'calculator:1', kind: 'predict', title: 'Times goes first', ask: 'What does this print?',
       code: { py: 'print(10 - 2 * 3)', js: 'console.log(10 - 2 * 3);' }, choices: stSame(['24', '4', '10', '-4']), answer: 1,
-      why: '2 * 3 is worked out first, giving 6, and 10 - 6 is 4.', hints: ['Which comes first, * or -?', 'Work out 2 * 3 before the take-away.'] },
+      why: '2 * 3 is worked out first, giving 6, and 10 - 6 is 4.', hints: ['Which comes first, * or -?', 'Find 2 * 3 before the take-away.'] },
     { id: 'calculator:2', kind: 'predict', title: 'Sharing 17 acorns', ask: 'Ana shares 17 acorns between 5 friends. What does this print?',
       code: { py: 'print(17 // 5, 17 % 5)', js: 'console.log(Math.floor(17 / 5), 17 % 5);' }, choices: stSame(['3.4 0', '3 2', '2 3', '3 3']), answer: 1,
       why: 'Each friend gets 3 whole acorns (15 in all), and 2 are left over.', hints: ['How many whole fives fit in 17?', 'Three fives make 15. What is left?'] },
@@ -4646,7 +4646,7 @@ const START_EXERCISES = {
       cases: [{ out: 'ride' }], hints: ['Both rules must hold.', { py: 'The word is and.', js: 'Use &&.' }] },
     { id: 'and-or-not:4', kind: 'choose', title: 'Which is True?', ask: 'Which of these is True?',
       choices: [{ py: 'True and False', js: 'true && false' }, { py: 'False or False', js: 'false || false' }, { py: 'not True', js: '!true' }, { py: 'not False', js: '!false' }], answer: 3,
-      why: 'not flips False into True.', hints: ['Work out each one.', 'not turns an answer around.'] },
+      why: 'not flips False into True.', hints: ['Find the answer to each one.', 'not turns an answer around.'] },
     { id: 'and-or-not:5', kind: 'write', title: 'In range', ask: 'Read a whole number. Print in range if it is from 1 to 10 (both included), otherwise print out of range.',
       starter: { py: 'n = int(input("Number? "))\n', js: 'let n = Number(prompt("Number? "));\n' },
       ref: { py: 'n = int(input("Number? "))\nif n >= 1 and n <= 10:\n    print("in range")\nelse:\n    print("out of range")\n', js: 'let n = Number(prompt("Number? "));\nif (n >= 1 && n <= 10) {\n  console.log("in range");\n} else {\n  console.log("out of range");\n}\n' },
@@ -4670,7 +4670,7 @@ const START_EXERCISES = {
       cases: [{ stdin: ['0'], out: 'invalid' }, { stdin: ['-1'], out: 'invalid' }, { stdin: ['1'], out: '5' }, { stdin: ['2'], out: '5' }, { stdin: ['3'], out: '10' }],
       hints: ['Check the invalid case first.', '"Up to 2" includes 2, so use <= 2.'] },
     { id: 'edge-cases:5', kind: 'choose', title: 'The best tests', ask: 'Rule: you pass with a score of 50 or more. Which set of tests is best?',
-      choices: ['10, 20, 30', '49, 50, 51', '100', '60, 70, 80'], answer: 1, why: '49, 50 and 51 sit right around the edge, where mistakes happen.', hints: ['Where does the result change?', 'Pick numbers just below, at and above 50.'] }
+      choices: ['10, 20, 30', '49, 50, 51', '100', '60, 70, 80'], answer: 1, why: '49, 50 and 51 sit right around the edge, where mistakes happen.', hints: ['Where does the result change?', 'Pick numbers right below, at and above 50.'] }
   ],
   'path-project': [
     { id: 'path-project:1', kind: 'fill', title: 'The first fork', ask: 'Fill the blank so typing left leads to the river.',
@@ -4953,7 +4953,7 @@ Object.assign(START_EXERCISES, {
     { id: 'calls:1', kind: 'predict', title: 'Tip on tip', ask: 'What does this print?',
       code: { py: 'def add_tip(bill):\n    return bill + 2\n\ntotal = add_tip(10)\nprint(total)\nprint(add_tip(total))', js: 'function add_tip(bill) {\n  return bill + 2;\n}\n\nlet total = add_tip(10);\nconsole.log(total);\nconsole.log(add_tip(total));' },
       choices: stSame(['12\n14', '12\n12', '10\n12', '14\n14']), answer: 0,
-      why: 'add_tip(10) gives 12, kept in total. Then add_tip(total) hands 12 in and 14 comes back.', hints: ['Work out add_tip(10) first.', 'The second call gets the value in total, which is 12.'] },
+      why: 'add_tip(10) gives 12, kept in total. Then add_tip(total) hands 12 in and 14 comes back.', hints: ['Find add_tip(10) first.', 'The second call gets the value in total, which is 12.'] },
     { id: 'calls:2', kind: 'fill', title: 'Hand back half', ask: 'Fill the blank so half(9) hands back 4 and the program prints it.',
       code: { py: 'def half(n):\n    ___ n // 2\n\nprint(half(9))', js: 'function half(n) {\n  ___ Math.floor(n / 2);\n}\n\nconsole.log(half(9));' }, answers: { py: ['return'], js: ['return'] },
       cases: [{ out: '4' }], hints: ['The value must travel back to the call.', 'One word sends a value back: return.'] },
@@ -5067,7 +5067,7 @@ Object.assign(START_EXERCISES, {
   'callbacks': [
     { id: 'callbacks:1', kind: 'predict', title: 'Apply, apply', ask: 'What does this print?',
       code: { py: 'def apply(f, x):\n    return f(x)\n\ndef inc(n):\n    return n + 1\n\nprint(apply(inc, apply(inc, 1)))', js: 'function apply(f, x) {\n  return f(x);\n}\n\nfunction inc(n) {\n  return n + 1;\n}\n\nconsole.log(apply(inc, apply(inc, 1)));' },
-      choices: stSame(['3', '2', '1', 'An error']), answer: 0, why: 'The inner apply gives inc(1) = 2. The outer one gives inc(2) = 3.', hints: ['Work out the inner apply first.', 'Each apply runs inc once.'] },
+      choices: stSame(['3', '2', '1', 'An error']), answer: 0, why: 'The inner apply gives inc(1) = 2. The outer one gives inc(2) = 3.', hints: ['Find the inner apply first.', 'Each apply runs inc once.'] },
     { id: 'callbacks:2', kind: 'choose', title: 'Hand over the recipe', ask: 'twice(f, x) runs f two times on x. Which call shouts "hi" twice?',
       choices: ['twice(shout, "hi")', 'twice(shout(), "hi")', 'twice("shout", "hi")', 'twice(shout("hi"))'], answer: 0, why: 'twice needs the function itself. shout() would run it straight away, with no word to shout.',
       hints: ['twice wants a recipe, not a dish.', 'No brackets after shout.'] },

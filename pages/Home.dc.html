@@ -2141,7 +2141,8 @@ function stFlatten(scene, C, focus) {
     halo(k.id, k.x - w / 2, k.y - 18, w, 36, 9);
   });
   (scene.dots || []).forEach((d) => O.push({ k: 'dt:' + d.id, cx: d.x, cy: d.y, r: d.r || 5, fill: col(d.c, 't2'), stroke: 'none', sw: 0, dash: '', op: dim(d.id) }));
-  (scene.cast || []).forEach((p) => {
+  // The guide speaks in plain text and is not drawn on the stage.
+  (scene.cast || []).filter((p) => p.id !== 'hoot').forEach((p) => {
     const who = START_CAST[p.id] || START_CAST.hoot, r = p.r || 26, op = dim('cast:' + p.id);
     const solid = p.id === 'dot', c = solid ? C.a : p.id === 'bolt' ? C.b : p.id === 'penny' ? C.c : p.id === 'pip' ? C.ok : C.t2;
     O.push({ k: 'cs:' + p.id, cx: p.x, cy: p.y, r, fill: solid ? C.a : C.sunk, stroke: c, sw: 2.5, dash: '', op });
@@ -5145,8 +5146,11 @@ function markAboutSeen(key) {
 // Puts build-time MathML (our own about files, rendered by KaTeX in scripts/build_about.js) into an element.
 function aboutMath(html) { return (el) => { if (el && el.nodeType === 1 && el.getAttribute('data-math') !== html) { el.innerHTML = html; el.setAttribute('data-math', html); } }; }
 function aboutVals(cmp, key, a, t, link) {
+  // The first look at a lesson decides its opening view; it is kept on the component so marking the lesson as
+  // seen does not flip it to Watch it on the next render.
+  if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: aboutSeenList().includes(key) ? 'watch' : 'about' };
   const v = cmp.state.aboutView;
-  let view = !a ? 'watch' : v && v.key === key ? v.view : aboutSeenList().includes(key) ? 'watch' : 'about';
+  const view = !a ? 'watch' : v && v.key === key ? v.view : cmp.aboutFirst.view;
   if (view === 'about') markAboutSeen(key);
   const set = (k) => cmp.setState({ aboutView: { key, view: k } });
   const tab = (k, label) => ({ label, on: view === k ? 'true' : 'false', bg: view === k ? t.text : 'transparent', fg: view === k ? t.bg : t.muted, pick: () => set(k) });

@@ -276,7 +276,8 @@ function stFlatten(scene, C, focus) {
     halo(k.id, k.x - w / 2, k.y - 18, w, 36, 9);
   });
   (scene.dots || []).forEach((d) => O.push({ k: 'dt:' + d.id, cx: d.x, cy: d.y, r: d.r || 5, fill: col(d.c, 't2'), stroke: 'none', sw: 0, dash: '', op: dim(d.id) }));
-  (scene.cast || []).forEach((p) => {
+  // The guide speaks in plain text and is not drawn on the stage.
+  (scene.cast || []).filter((p) => p.id !== 'hoot').forEach((p) => {
     const who = START_CAST[p.id] || START_CAST.hoot, r = p.r || 26, op = dim('cast:' + p.id);
     const solid = p.id === 'dot', c = solid ? C.a : p.id === 'bolt' ? C.b : p.id === 'penny' ? C.c : p.id === 'pip' ? C.ok : C.t2;
     O.push({ k: 'cs:' + p.id, cx: p.x, cy: p.y, r, fill: solid ? C.a : C.sunk, stroke: c, sw: 2.5, dash: '', op });

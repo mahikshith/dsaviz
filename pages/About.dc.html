@@ -1727,8 +1727,11 @@ function markAboutSeen(key) {
 // Puts build-time MathML (our own about files, rendered by KaTeX in scripts/build_about.js) into an element.
 function aboutMath(html) { return (el) => { if (el && el.nodeType === 1 && el.getAttribute('data-math') !== html) { el.innerHTML = html; el.setAttribute('data-math', html); } }; }
 function aboutVals(cmp, key, a, t, link) {
+  // The first look at a lesson decides its opening view; it is kept on the component so marking the lesson as
+  // seen does not flip it to Watch it on the next render.
+  if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: aboutSeenList().includes(key) ? 'watch' : 'about' };
   const v = cmp.state.aboutView;
-  let view = !a ? 'watch' : v && v.key === key ? v.view : aboutSeenList().includes(key) ? 'watch' : 'about';
+  const view = !a ? 'watch' : v && v.key === key ? v.view : cmp.aboutFirst.view;
   if (view === 'about') markAboutSeen(key);
   const set = (k) => cmp.setState({ aboutView: { key, view: k } });
   const tab = (k, label) => ({ label, on: view === k ? 'true' : 'false', bg: view === k ? t.text : 'transparent', fg: view === k ? t.bg : t.muted, pick: () => set(k) });

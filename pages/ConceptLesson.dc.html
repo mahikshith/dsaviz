@@ -308,7 +308,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <p style="margin: 0; max-width: 68ch; font-size: var(--fs18); line-height: 1.55; color: {{t.text}}">{{ab.A.what}}</p>
 <sc-if value="{{ab.A.hasAnalogy}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; max-width: 68ch; padding: 10px 14px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}"><b style="color: {{t.text}}">Think of it like this: </b>{{ab.A.analogy}}</p></sc-if>
 </div>
-<div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px">
+<div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start">
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Where it is used<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-used" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-used" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Real places where this idea shows up. Good for seeing why it matters.</span></span></h2>
 <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5"><sc-for list="{{ab.A.uses}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
@@ -337,7 +337,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">How it works<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-how" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-how" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The idea in order, step by step. Read it once the picture makes sense.</span></span></h2>
 <ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.55"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
 </div>
-<div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px">
+<div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start">
 <div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Use it when<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-use" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-use" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Situations where this idea is the right tool for the job.</span></span></h2>
 <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
@@ -1770,8 +1770,11 @@ function markAboutSeen(key) {
 // Puts build-time MathML (our own about files, rendered by KaTeX in scripts/build_about.js) into an element.
 function aboutMath(html) { return (el) => { if (el && el.nodeType === 1 && el.getAttribute('data-math') !== html) { el.innerHTML = html; el.setAttribute('data-math', html); } }; }
 function aboutVals(cmp, key, a, t, link) {
+  // The first look at a lesson decides its opening view; it is kept on the component so marking the lesson as
+  // seen does not flip it to Watch it on the next render.
+  if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: aboutSeenList().includes(key) ? 'watch' : 'about' };
   const v = cmp.state.aboutView;
-  let view = !a ? 'watch' : v && v.key === key ? v.view : aboutSeenList().includes(key) ? 'watch' : 'about';
+  const view = !a ? 'watch' : v && v.key === key ? v.view : cmp.aboutFirst.view;
   if (view === 'about') markAboutSeen(key);
   const set = (k) => cmp.setState({ aboutView: { key, view: k } });
   const tab = (k, label) => ({ label, on: view === k ? 'true' : 'false', bg: view === k ? t.text : 'transparent', fg: view === k ? t.bg : t.muted, pick: () => set(k) });

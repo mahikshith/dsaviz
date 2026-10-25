@@ -43,6 +43,13 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid curre
    segmented controls (gap 2px or 4px); four-up grids go two-up.
    Page-specific rules go in the page's own helmet, scoped with [data-page="Name"]; the automatic
    grid rules sit in :where() so any page rule beats them. */
+/* "i" explainers (every page): <span class="ds-tip"><button aria-describedby="ID">i</button><span role="tooltip" id="ID">…</span></span>.
+   The sentence shows on hover and on keyboard focus (and on tap, which focuses the button); colours come from the
+   page's theme tokens on the tooltip itself. It is fixed-position, placed under the button by the runtime
+   (scripts/site-runtime.js), so scroll boxes never clip it. */
+.ds-tip{position:relative;display:inline-flex;vertical-align:middle}
+.ds-tip>[role="tooltip"]{display:none;position:fixed;z-index:60;width:max-content;max-width:min(300px,80vw);white-space:normal;text-transform:none;letter-spacing:normal}
+.ds-tip:hover>[role="tooltip"],.ds-tip:focus-within>[role="tooltip"]{display:block}
 @media (max-width: 759px){
 [data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
@@ -389,7 +396,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- side panel: idea, slider, sources -->
 <aside aria-label="About this lesson" class="ai-scroll" style="box-sizing: border-box; min-width: 0; min-height: 0; padding: {{L.asidePad}}; border-left: {{L.asideBorder}}; overflow-y: {{L.asideScroll}}; display: flex; flex-direction: column; gap: 12px">
 <div style="padding: 14px 16px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 12px; font-weight: 700; color: {{t.muted}}">The idea in one line</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: {{t.muted}}">The idea in one line<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-ai-idea" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: 12px; font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-ai-idea" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: 14px; font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The whole lesson in one sentence. Read it first, then watch how the picture shows it.</span></span></span>
 <span style="font-size: 16px; line-height: 1.45; font-weight: 600">{{lesson.idea}}</span>
 </div>
 
@@ -1684,6 +1691,8 @@ function navVals(cmp, t, themeKey, page) {
   const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
   return Object.assign(dv, {
+    // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
+    tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {

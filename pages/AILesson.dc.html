@@ -290,7 +290,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="display: flex; align-items: center; gap: 14px; flex-wrap: {{L.titleWrap}}; min-height: 40px">
 <h1 style="margin: 0; min-width: 0; font-family: {{t.display}}; font-size: {{L.h1}}px; line-height: 1.1; font-weight: 700; white-space: {{L.titleWs}}; overflow: hidden; text-overflow: ellipsis">{{lesson.title}}</h1>
-<span style="flex-shrink: 0; font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">{{lesson.tag}} · {{lesson.minutes}} min</span>
+<span style="flex-shrink: 1; min-width: 0; font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">{{lesson.tag}} · {{lesson.minutes}} min</span>
 <div style="flex-grow: 1"></div>
 <sc-if value="{{nextLesson.show}}" hint-placeholder-val="{{ false }}"><button onClick="{{nextLesson.go}}" aria-label="{{nextLesson.label}}" style="flex-shrink: 0; height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs16); font-weight: 700">Next lesson →</button></sc-if>
 </div>

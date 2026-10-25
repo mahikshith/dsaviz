@@ -34168,7 +34168,7 @@ class Component extends DCLogic {
       actors, actorRowH, actorBoxW: S.phone ? 28 : 56, move: MOVE, settle: SETTLE,
       statusText: found ? S.status[1] : S.status[0],
       statusColor: found ? t.ok : t.sceneMuted,
-      meter: { text: st.meter.text, scale: 'scaleX(' + (pct / 100).toFixed(3) + ')', markAt: Math.max(0, Math.min(100, st.meter.mark)) + '%', markLabel: st.meter.markLabel, markShift: st.meter.mark > 85 ? 'translateX(-100%)' : st.meter.mark < 15 ? 'none' : 'translateX(-50%)' },
+      meter: { text: st.meter.text, scale: 'scaleX(' + (pct / 100).toFixed(3) + ')', markAt: Math.max(0, Math.min(100, st.meter.mark)) + '%', markLabel: st.meter.markLabel, markShift: 'translateX(-' + Math.round(Math.max(0, Math.min(100, st.meter.mark))) + '%)' },
       meterColor: toneBar[st.tone], verdict: st.verdict, verdictBg: toneBg[st.tone],
       caption: st.nar.kid,
       dialog: st.dialog.map(([k, text]) => { const w = who[k] || who.narr; return Object.assign({}, w, { text, label: w.name ? w.name + ': ' : '' }); }),

@@ -272,7 +272,7 @@
    "story": "two-sum-ii",
    "kind": "code",
    "sig": "(List[int], int) -> List[int]",
-   "words": 21,
+   "words": 25,
    "lists": [
     "starter",
     "core",
@@ -1227,7 +1227,7 @@
    "story": null,
    "kind": "code",
    "sig": "(List[int]) -> int",
-   "words": 11,
+   "words": 10,
    "lists": [
     "all"
    ]
@@ -7545,7 +7545,7 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 20,
+   "words": 21,
    "lists": [
     "all"
    ]
@@ -7705,7 +7705,7 @@
    "story": null,
    "kind": "code",
    "sig": "(List[List[int]]) -> int",
-   "words": 34,
+   "words": 32,
    "lists": [
     "all"
    ]

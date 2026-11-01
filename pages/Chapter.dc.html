@@ -2369,7 +2369,7 @@ const RUNNABLE = { py: true, js: true };
 const TEST_SPECS = {
   'two-sum-ii': {
     fn: 'twoSum', params: ['numbers', 'target'], cmp: 'exact',
-    ask: 'The lanterns are sorted from dimmest to brightest. Return the 1-based positions of the two lanterns whose glow adds up to target, smaller position first. There is always exactly one answer.',
+    ask: 'You get a list of numbers sorted from small to big, and a target. Find the two numbers that add up to the target and return their positions, counting from 1, smaller position first. There is always exactly one answer.',
     sig: {
       py: 'def twoSum(numbers: List[int], target: int) -> List[int]:',
       js: 'function twoSum(numbers, target) {',
@@ -3438,7 +3438,7 @@ const TEST_SPECS = {
   },
   'unique-paths': {
     fn: 'uniquePaths', params: ['m', 'n'], cmp: 'exact',
-    ask: 'A robot starts at the top-left of an m by n grid and may only move right or down. Return how many different paths reach the bottom-right corner.',
+    ask: 'You start at the top-left of an m by n grid and may only move right or down. Return how many different paths reach the bottom-right corner.',
     sig: {
       py: 'def uniquePaths(m: int, n: int) -> int:',
       js: 'function uniquePaths(m, n) {',
@@ -4908,7 +4908,7 @@ const TEST_SPECS = {
   },
   'find-the-highest-altitude': {
     fn: 'largestAltitude', params: ['gain'], cmp: 'exact', meta: ['Find the Highest Altitude', 'Easy', 'Prefix Sum'],
-    ask: 'A hiker starts at altitude 0, and gain[i] is the change in altitude on leg i. Return the highest altitude reached, counting the start.',
+    ask: 'You start at altitude 0, and gain[i] is the change in altitude on leg i. Return the highest altitude reached, counting the start.',
     sig: {
       py: 'def largestAltitude(gain: List[int]) -> int:',
       js: 'function largestAltitude(gain) {',
@@ -5507,7 +5507,7 @@ const TEST_SPECS = {
   },
   'assign-cookies': {
     fn: 'findContentChildren', params: ['g', 's'], cmp: 'exact', meta: ['Assign Cookies', 'Easy', 'Greedy'],
-    ask: 'Child i is happy with a cookie of size at least g[i], and s[j] is the size of cookie j. Each child gets at most one cookie. Return the most children you can make happy.',
+    ask: 'Person i is happy with a cookie of size at least g[i], and s[j] is the size of cookie j. Each person gets at most one cookie. Return the most people you can make happy.',
     sig: {
       py: 'def findContentChildren(g: List[int], s: List[int]) -> int:',
       js: 'function findContentChildren(g, s) {',
@@ -5707,7 +5707,7 @@ const TEST_SPECS = {
   },
   'candy': {
     fn: 'candy', params: ['ratings'], cmp: 'exact', meta: ['Candy', 'Hard', 'Greedy'],
-    ask: 'Children stand in a line with ratings. Each child gets at least one candy, and a child with a higher rating than a neighbour gets more candy than that neighbour. Return the fewest candies needed.',
+    ask: 'People stand in a line with ratings. Each person gets at least one candy. A person rated higher than a neighbour gets more candy than that neighbour. Return the fewest candies needed.',
     sig: {
       py: 'def candy(ratings: List[int]) -> int:',
       js: 'function candy(ratings) {',
@@ -8203,7 +8203,7 @@ const TEST_SPECS = {
   },
   'unique-paths-ii': {
     fn: 'uniquePathsWithObstacles', params: ['obstacleGrid'], cmp: 'exact', meta: ['Unique Paths II', 'Medium', 'Dynamic Programming'],
-    ask: 'A robot starts at the top-left cell and moves only right or down to the bottom-right cell. Cells with 1 are rocks it cannot enter. Return how many different routes there are.',
+    ask: 'You start at the top-left cell and may only move right or down to the bottom-right cell. Cells with 1 are rocks you cannot enter. Return how many different routes there are.',
     sig: {
       py: 'def uniquePathsWithObstacles(obstacleGrid: List[List[int]]) -> int:',
       js: 'function uniquePathsWithObstacles(obstacleGrid) {',
@@ -12487,7 +12487,7 @@ const TEST_SPECS = {
   },
   'dungeon-game': {
     fn: 'calculateMinimumHP', params: ['dungeon'], cmp: 'exact', meta: ['Dungeon Game', 'Hard', 'DP on Grids & Strings'],
-    ask: 'A knight starts at the top-left room and must reach the bottom-right room, moving only right or down. Each room\'s number is added to his health (negative numbers hurt). If his health ever drops to 0 or below, he fails. Return the smallest starting health that lets him get through.',
+    ask: 'You start at the top-left room and must reach the bottom-right room, moving only right or down. Each room\'s number is added to your health (negative numbers hurt). If your health ever drops to 0 or below, you fail. Return the smallest starting health that lets you get through.',
     sig: {
       py: 'def calculateMinimumHP(dungeon: List[List[int]]) -> int:',
       js: 'function calculateMinimumHP(dungeon) {',
@@ -12969,7 +12969,7 @@ const TEST_SPECS = {
   },
   'find-the-winner-of-the-circular-game': {
     fn: 'findTheWinner', params: ['n', 'k'], cmp: 'exact', meta: ['Find the Winner of the Circular Game', 'Medium', 'Math & Geometry'],
-    ask: 'Friends 1 to n stand in a circle. Starting from friend 1, count k friends clockwise (counting the one you start on); the last one counted leaves, and counting starts again from the next friend. Return the friend who is left at the end.',
+    ask: 'People 1 to n stand in a circle. Starting from person 1, count k people clockwise, counting the one you start on. The last one counted leaves. Counting starts again from the next person. Return the person who is left at the end.',
     sig: {
       py: 'def findTheWinner(n: int, k: int) -> int:',
       js: 'function findTheWinner(n, k) {',

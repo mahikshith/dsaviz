@@ -2442,7 +2442,7 @@ const RUNNABLE = { py: true, js: true };
 const TEST_SPECS = {
   'two-sum-ii': {
     fn: 'twoSum', params: ['numbers', 'target'], cmp: 'exact',
-    ask: 'The lanterns are sorted from dimmest to brightest. Return the 1-based positions of the two lanterns whose glow adds up to target, smaller position first. There is always exactly one answer.',
+    ask: 'You get a list of numbers sorted from small to big, and a target. Find the two numbers that add up to the target and return their positions, counting from 1, smaller position first. There is always exactly one answer.',
     sig: {
       py: 'def twoSum(numbers: List[int], target: int) -> List[int]:',
       js: 'function twoSum(numbers, target) {',
@@ -3511,7 +3511,7 @@ const TEST_SPECS = {
   },
   'unique-paths': {
     fn: 'uniquePaths', params: ['m', 'n'], cmp: 'exact',
-    ask: 'A robot starts at the top-left of an m by n grid and may only move right or down. Return how many different paths reach the bottom-right corner.',
+    ask: 'You start at the top-left of an m by n grid and may only move right or down. Return how many different paths reach the bottom-right corner.',
     sig: {
       py: 'def uniquePaths(m: int, n: int) -> int:',
       js: 'function uniquePaths(m, n) {',
@@ -4981,7 +4981,7 @@ const TEST_SPECS = {
   },
   'find-the-highest-altitude': {
     fn: 'largestAltitude', params: ['gain'], cmp: 'exact', meta: ['Find the Highest Altitude', 'Easy', 'Prefix Sum'],
-    ask: 'A hiker starts at altitude 0, and gain[i] is the change in altitude on leg i. Return the highest altitude reached, counting the start.',
+    ask: 'You start at altitude 0, and gain[i] is the change in altitude on leg i. Return the highest altitude reached, counting the start.',
     sig: {
       py: 'def largestAltitude(gain: List[int]) -> int:',
       js: 'function largestAltitude(gain) {',
@@ -5580,7 +5580,7 @@ const TEST_SPECS = {
   },
   'assign-cookies': {
     fn: 'findContentChildren', params: ['g', 's'], cmp: 'exact', meta: ['Assign Cookies', 'Easy', 'Greedy'],
-    ask: 'Child i is happy with a cookie of size at least g[i], and s[j] is the size of cookie j. Each child gets at most one cookie. Return the most children you can make happy.',
+    ask: 'Person i is happy with a cookie of size at least g[i], and s[j] is the size of cookie j. Each person gets at most one cookie. Return the most people you can make happy.',
     sig: {
       py: 'def findContentChildren(g: List[int], s: List[int]) -> int:',
       js: 'function findContentChildren(g, s) {',
@@ -5780,7 +5780,7 @@ const TEST_SPECS = {
   },
   'candy': {
     fn: 'candy', params: ['ratings'], cmp: 'exact', meta: ['Candy', 'Hard', 'Greedy'],
-    ask: 'Children stand in a line with ratings. Each child gets at least one candy, and a child with a higher rating than a neighbour gets more candy than that neighbour. Return the fewest candies needed.',
+    ask: 'People stand in a line with ratings. Each person gets at least one candy. A person rated higher than a neighbour gets more candy than that neighbour. Return the fewest candies needed.',
     sig: {
       py: 'def candy(ratings: List[int]) -> int:',
       js: 'function candy(ratings) {',
@@ -8276,7 +8276,7 @@ const TEST_SPECS = {
   },
   'unique-paths-ii': {
     fn: 'uniquePathsWithObstacles', params: ['obstacleGrid'], cmp: 'exact', meta: ['Unique Paths II', 'Medium', 'Dynamic Programming'],
-    ask: 'A robot starts at the top-left cell and moves only right or down to the bottom-right cell. Cells with 1 are rocks it cannot enter. Return how many different routes there are.',
+    ask: 'You start at the top-left cell and may only move right or down to the bottom-right cell. Cells with 1 are rocks you cannot enter. Return how many different routes there are.',
     sig: {
       py: 'def uniquePathsWithObstacles(obstacleGrid: List[List[int]]) -> int:',
       js: 'function uniquePathsWithObstacles(obstacleGrid) {',
@@ -12560,7 +12560,7 @@ const TEST_SPECS = {
   },
   'dungeon-game': {
     fn: 'calculateMinimumHP', params: ['dungeon'], cmp: 'exact', meta: ['Dungeon Game', 'Hard', 'DP on Grids & Strings'],
-    ask: 'A knight starts at the top-left room and must reach the bottom-right room, moving only right or down. Each room\'s number is added to his health (negative numbers hurt). If his health ever drops to 0 or below, he fails. Return the smallest starting health that lets him get through.',
+    ask: 'You start at the top-left room and must reach the bottom-right room, moving only right or down. Each room\'s number is added to your health (negative numbers hurt). If your health ever drops to 0 or below, you fail. Return the smallest starting health that lets you get through.',
     sig: {
       py: 'def calculateMinimumHP(dungeon: List[List[int]]) -> int:',
       js: 'function calculateMinimumHP(dungeon) {',
@@ -13042,7 +13042,7 @@ const TEST_SPECS = {
   },
   'find-the-winner-of-the-circular-game': {
     fn: 'findTheWinner', params: ['n', 'k'], cmp: 'exact', meta: ['Find the Winner of the Circular Game', 'Medium', 'Math & Geometry'],
-    ask: 'Friends 1 to n stand in a circle. Starting from friend 1, count k friends clockwise (counting the one you start on); the last one counted leaves, and counting starts again from the next friend. Return the friend who is left at the end.',
+    ask: 'People 1 to n stand in a circle. Starting from person 1, count k people clockwise, counting the one you start on. The last one counted leaves. Counting starts again from the next person. Return the person who is left at the end.',
     sig: {
       py: 'def findTheWinner(n: int, k: int) -> int:',
       js: 'function findTheWinner(n, k) {',
@@ -13793,33 +13793,33 @@ const PLANS = {
   "two-sum-ii": {
     goal: "sorted numbers and a target → the 1-based positions of the two that add up to target",
     steps: [
-      ["Put a left marker on the first number and a right marker on the last.",1,1,"intro"],
-      ["While the markers have not met, add the two numbers they point at.",2,2,"intro"],
+      ["Put a left pointer on the first number and a right pointer on the last.",1,1,"intro"],
+      ["While the pointers have not met, add the two numbers they point at.",2,2,"intro"],
       ["If the sum equals target, return both positions plus one.",2,2,"found"],
-      ["If the sum is too big, move the right marker one step left.",2,2,"over"],
-      ["If the sum is too small, move the left marker one step right.",2,2,"under"],
-      ["If the markers meet with no match, return an empty list.",3,3]
+      ["If the sum is too big, move the right pointer one step left.",2,2,"over"],
+      ["If the sum is too small, move the left pointer one step right.",2,2,"under"],
+      ["If the pointers meet with no match, return an empty list.",3,3]
     ]
   },
   "valid-palindrome": {
     goal: "a string → true if its letters and digits read the same both ways",
     steps: [
       ["Decide which characters count: letters and digits only.",1,1],
-      ["Put one marker at the start and one at the end.",2,2,"intro"],
+      ["Put one pointer at the start and one at the end.",2,2,"intro"],
       ["Skip any character that does not count, on either side.",4,5,"skipR"],
       ["Compare the two characters, ignoring case; a mismatch means false.",6,6,"match"],
-      ["On a match, move both markers inward.",7,7,"match"],
-      ["If the markers meet without a mismatch, return true.",9,9,"found"]
+      ["On a match, move both pointers inward.",7,7,"match"],
+      ["If the pointers meet without a mismatch, return true.",9,9,"found"]
     ]
   },
   "container": {
     goal: "plank heights → the most water any two planks can hold",
     steps: [
-      ["Put markers on the first and last plank, best = 0.",1,1,"intro"],
-      ["While the markers have not met, water = shorter plank x distance.",2,2,"intro"],
+      ["Put pointers on the first and last plank, best = 0.",1,1,"intro"],
+      ["While the pointers have not met, water = shorter plank x distance.",2,2,"intro"],
       ["Keep the biggest water seen so far.",2,2],
-      ["Move the marker on the shorter plank inward; it cannot do better.",2,2,"moveL|moveR"],
-      ["When the markers meet, return the best.",3,3,"found"]
+      ["Move the pointer on the shorter plank inward; it cannot do better.",2,2,"moveL|moveR"],
+      ["When the pointers meet, return the best.",3,3,"found"]
     ]
   },
   "longest-substring": {
@@ -13910,9 +13910,9 @@ const PLANS = {
     steps: [
       ["Sort a copy of the numbers.",1,1],
       ["Fix each number in turn as the first, skipping repeats.",2,3],
-      ["Put markers just after it and at the far end.",4,4],
+      ["Put pointers right after it and at the far end.",4,4],
       ["Add the three numbers.",5,6],
-      ["Too small: move the left marker right. Too big: move the right left.",7,7],
+      ["Too small: move the left pointer right. Too big: move the right pointer left.",7,7],
       ["Exactly 0: save the trio, move both, skip repeated values.",8,8],
       ["Return all the trios.",11,11]
     ]
@@ -13920,8 +13920,8 @@ const PLANS = {
   "trapping-rain": {
     goal: "rock heights → how much water sits between them",
     steps: [
-      ["Put markers at both ends, track the tallest seen from each side.",1,1],
-      ["While the markers have not met, look at the shorter side.",2,2],
+      ["Put pointers at both ends, track the tallest seen from each side.",1,1],
+      ["While the pointers have not met, look at the shorter side.",2,2],
       ["Left is shorter: update its tallest, add tallest - height, step in.",3,3],
       ["Right is shorter: do the same on the right, step in.",4,4],
       ["Return the total water.",6,6]
@@ -14389,19 +14389,19 @@ const PLANS = {
   "reverse-string": {
     goal: "a list of characters → the same list reversed in place",
     steps: [
-      ["Put a marker at each end.",0,0],
-      ["Swap the two characters under the markers.",0,0],
-      ["Move both markers inward.",0,0],
+      ["Put a pointer at each end.",0,0],
+      ["Swap the two characters under the pointers.",0,0],
+      ["Move both pointers inward.",0,0],
       ["Stop when they meet in the middle.",0,0]
     ]
   },
   "squares-of-a-sorted-array": {
     goal: "sorted numbers that may be negative → their squares, sorted",
     steps: [
-      ["Make an answer list and put markers at both ends.",1,1],
+      ["Make an answer list and put pointers at both ends.",1,1],
       ["Fill the answer from the back, biggest square first.",2,2],
       ["Compare the sizes of the two end numbers, ignoring the sign.",2,2],
-      ["Square the bigger one, write it, and move that marker inward.",2,2],
+      ["Square the bigger one, write it, and move that pointer inward.",2,2],
       ["Return the answer.",3,3]
     ]
   },
@@ -14418,7 +14418,7 @@ const PLANS = {
   "sort-colors": {
     goal: "a list of 0s, 1s and 2s → the same list sorted in one pass",
     steps: [
-      ["Keep three markers: lo for 0s, mid to read, hi for 2s.",1,1],
+      ["Keep three pointers: lo for 0s, mid to read, hi for 2s.",1,1],
       ["A small helper swaps two positions.",2,2],
       ["While mid has not passed hi, look at the number at mid.",3,3],
       ["A 0 swaps to lo; move lo and mid on.",3,3],
@@ -14654,10 +14654,10 @@ const PLANS = {
     goal: "a linked list → it relinked as first, last, second, second to last...",
     steps: [
       ["Put every node into a list so any one is easy to reach.",1,1],
-      ["Put markers at the two ends and keep the last linked node.",2,2],
-      ["Take the left node, then the right node, while markers have not crossed.",3,3],
+      ["Put pointers at the two ends and keep the last linked node.",2,2],
+      ["Take the left node, then the right node, while pointers have not crossed.",3,3],
       ["Link each one after the last linked node.",3,3],
-      ["Move both markers inward.",3,3],
+      ["Move both pointers inward.",3,3],
       ["End the list by pointing the last node to nothing.",4,4]
     ]
   },
@@ -14866,8 +14866,8 @@ const PLANS = {
   "reverse-vowels-of-a-string": {
     goal: "a string → it with only the vowels in reverse order",
     steps: [
-      ["Split the string and put markers at both ends.",1,1],
-      ["While the markers have not met:",2,2],
+      ["Split the string and put pointers at both ends.",1,1],
+      ["While the pointers have not met:",2,2],
       ["If the left letter is not a vowel, move left on.",3,3],
       ["If the right letter is not a vowel, move right back.",4,4],
       ["Both are vowels: swap them and move both inward.",5,5],
@@ -14897,7 +14897,7 @@ const PLANS = {
     goal: "a string → true if deleting at most one letter makes a palindrome",
     steps: [
       ["A helper checks whether a range reads the same both ways.",1,1],
-      ["Put markers at both ends.",2,2],
+      ["Put pointers at both ends.",2,2],
       ["Walk inward while the letters match.",3,3],
       ["At the first mismatch, try skipping the left or the right letter.",3,3],
       ["If there was no mismatch, return true.",4,4]
@@ -14915,7 +14915,7 @@ const PLANS = {
   "boats-to-save-people": {
     goal: "weights and a limit → the fewest two-seat boats for everyone",
     steps: [
-      ["Sort the weights; put markers on the lightest and heaviest.",1,1],
+      ["Sort the weights; put pointers on the lightest and heaviest.",1,1],
       ["While anyone is left, the heaviest gets a boat.",2,2],
       ["If the lightest fits too, they share it.",2,2],
       ["Count each boat.",2,2],
@@ -14927,7 +14927,7 @@ const PLANS = {
     steps: [
       ["Sort a copy and start with the first three as the best.",1,1],
       ["Fix each number in turn as the first of the three.",2,2],
-      ["Put markers after it and at the end; add the three.",3,5],
+      ["Put pointers after it and at the end; add the three.",3,5],
       ["If this sum is closer to target, keep it.",6,6],
       ["Too small: move left on. Too big: move right back. Exact: return it.",7,7],
       ["Return the closest sum.",10,10]
@@ -15492,13 +15492,13 @@ const PLANS = {
     ]
   },
   "assign-cookies": {
-    goal: "greed of children and cookie sizes → the most happy children",
+    goal: "greed of people and cookie sizes → the most happy people",
     steps: [
       ["Sort both lists from small to large.",1,1],
       ["Walk the cookies from smallest.",2,2],
-      ["If a cookie satisfies the least greedy waiting child, give it.",2,2],
-      ["Move on to the next child after each happy one.",2,2],
-      ["Return how many children are happy.",3,3]
+      ["If a cookie satisfies the least greedy waiting person, give it.",2,2],
+      ["Move on to the next person after each happy one.",2,2],
+      ["Return how many people are happy.",3,3]
     ]
   },
   "lemonade-change": {
@@ -15610,7 +15610,7 @@ const PLANS = {
   "candy": {
     goal: "ratings in a line → the fewest candies that obey the rules",
     steps: [
-      ["Give every child 1 candy.",1,1],
+      ["Give every person 1 candy.",1,1],
       ["Left to right: higher than the left neighbour means one more.",2,2],
       ["Right to left: higher than the right neighbour means at least one more.",3,3],
       ["Keep the bigger of the two counts.",3,3],
@@ -17639,7 +17639,7 @@ const PLANS = {
     ]
   },
   "first-bad-version": {
-    goal: "n and a checker → the first broken build",
+    goal: "n and a function that says if a build is bad → the first broken build",
     steps: [
       ["Search from 1 to n.",1,1],
       ["Check the middle build.",2,2],
@@ -19114,12 +19114,12 @@ const PLANS = {
     ]
   },
   "find-the-winner-of-the-circular-game": {
-    goal: "n friends and a count k → the friend left at the end",
+    goal: "n people and a count k → the person left at the end",
     steps: [
-      ["With one friend, the winner is position 0.",0,0],
-      ["Grow the circle one friend at a time.",0,0],
+      ["With one person, the winner is position 0.",0,0],
+      ["Grow the circle one person at a time.",0,0],
       ["The winner shifts by k each time, wrapping round.",0,0],
-      ["Convert the position back to a friend number.",0,0]
+      ["Convert the position back to a person number.",0,0]
     ]
   },
   "rectangle-area": {
@@ -19405,12 +19405,12 @@ const PLANS = {
     ]
   },
   "employees-earning-more-than-their-managers": {
-    goal: "the Crew table → names of sailors paid more than their boss",
+    goal: "the Crew table → names of crew members paid more than their manager",
     steps: [
-      ["FROM: take each sailor as c.",1,1],
-      ["JOIN: pair them with their boss, a second copy of Crew.",2,2],
-      ["WHERE: keep pairs where the sailor's pay beats the boss's.",3,3],
-      ["SELECT: the sailor's name, as crew.",0,0]
+      ["FROM: take each crew member as c.",1,1],
+      ["JOIN: pair them with their manager, a second copy of Crew.",2,2],
+      ["WHERE: keep pairs where the crew member's pay beats the manager's.",3,3],
+      ["SELECT: the crew member's name, as crew.",0,0]
     ]
   },
   "customers-who-never-order": {
@@ -32933,7 +32933,7 @@ SCENE_REGISTRY.push(photoScene, coinJarScene);
 PATTERN_KITS['Prefix Sum'] = { right: 1, spot: 'Why a running total, not a recount?', ask: 'How should the tally keeper add things up?',
   quiz: [['Add it all up again', 'Recount the whole run for every question'], ['Keep a running total', 'Write the total so far after every step'], ['Two friends from both ends', 'One at each end, walking inward'], ['Sort the numbers first', 'Put them in order, then look']] };
 STORY_CAST.tally = { name: 'Tally keeper', initial: 'T', color: 'left', radius: '12px' };
-// ---------- In-place Reversal: the conductor the conductor ----------
+// ---------- In-place Reversal: the conductor ----------
 
 // Turning the Train Around — Reverse Linked List
 function rvTrainScene() {
@@ -32991,7 +32991,7 @@ function rvTrainScene() {
     },
     rules: [['Start at the front, nothing behind', 'intro'], ['First carriage → hook it to None', 'tail'], ['Next carriage → hook it to the one behind', 'flip'], ['Nothing ahead → the last carriage is the new front', 'found']],
     complexity: [['O(n)', 'each hook is turned once'], ['O(1)', 'three hands, no spare train']],
-    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station the other way round. There is no turntable and no spare track.', 'The conductor the conductor may only change where each carriage’s hook points. Can he turn the whole train around?'],
+    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station the other way round. There is no turntable and no spare track.', 'The conductor may only change where each carriage’s hook points. Can he turn the whole train around?'],
     example: ['head = 2 → 7 → 4 → 9 → 5', 'answer = 5 → 9 → 4 → 7 → 2'],
     hints: ['“You cannot pick up the carriages. What can you change about each one?”', '“If you turn a hook to point backward, how do you still reach the rest of the train?”', '“Hold three things: the carriage behind, the one you are on, and the one ahead. Save the one ahead before you turn the hook.”'],
     clues: ['each carriage only knows the next', 'no spare train allowed', 'every hook must point the other way'],

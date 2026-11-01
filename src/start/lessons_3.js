@@ -14,7 +14,7 @@ function st13Story() {
   return [
     stBeat('penny', 'I want to hide one acorn in each of 5 trees. Do I write print five times?', stScene(cast, { tokens: [1, 2, 3, 4, 5].map((n, i) => ({ id: 'tr' + n, x: 140 + i * 90, y: 210, text: 'tree ' + n, w: 80 })) }), ['cast:penny']),
     stBeat('hoot', 'No. A for loop repeats the indented lines for you. Each time round is one lap.', stScene(cast, card([0, 1])), ['card'], [0, 1]),
-    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops just before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
+    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
     stBeat('hoot', 'tree is a name you choose. The word in hands it the next number on each lap. The indented line runs once.', stScene(cast, card([1]), box('1'), screen(['Acorn in tree 1'])), ['tree', 'screen'], 1),
     stBeat('penny', 'Lap two: tree is 2. Lap three: tree is 3. The box changes every lap.', stScene(cast, card([1]), box('3'), screen(['Acorn in tree 1', 'Acorn in tree 2', 'Acorn in tree 3'])), ['tree'], 1),
     stBeat('hoot', 'After the last lap the loop ends, and the line after it runs once.', stScene(cast, card([2]), box('5'), screen(['Acorn in tree 4', 'Acorn in tree 5', 'All hidden!'])), ['screen'], 2),
@@ -49,7 +49,7 @@ function st14Story() {
     stBeat('bolt', 'Water: 2. Still less than 3. Pouring. Water: 3.', stScene(cast, card([3]), cup(3)), ['water', 'cast:bolt'], 3),
     stBeat('hoot', 'Now water < 3 is False. The loop stops and the program goes on: Full!', stScene(cast, card([4]), cup(3)), ['card'], 4),
     stBeat('dot', 'What if I forget the line that adds 1?', stScene(cast, card([1, 3]), cup(0)), ['cast:dot'], [1, 3]),
-    stBeat('bolt', 'Water: 0. Pouring. Water: 0. Pouring. Water: 0. Pouring...', stScene(cast, cup(0, true), { tokens: [{ id: 'flood', x: 240, y: 230, text: 'never ends', c: 'bad' }] }), ['flood', 'cup']),
+    stBeat('bolt', 'Water: 0. Pouring. Water: 0. Pouring. Water: 0. Pouring again and again.', stScene(cast, cup(0, true), { tokens: [{ id: 'flood', x: 240, y: 230, text: 'never ends', c: 'bad' }] }), ['flood', 'cup']),
     stBeat('hoot', 'The question never turns False, so the loop never stops. Something inside the loop must change what the question checks.', stScene(cast, card([2]), cup(3)), ['card'], 2)
   ];
 }
@@ -166,7 +166,7 @@ function st18Story() {
   const card = (i) => st1Card('card', 60, 266, 520, [ST18_CODE.py[i]], [0]);
   return [
     stBeat('dot', 'I wrote a secret note: hello. Can Python read it letter by letter?', stScene(cast, beads('hello')), ['cast:dot']),
-    stBeat('hoot', 'Yes. A string is a row of letters, numbered from 0 just like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
+    stBeat('hoot', 'Yes. A string is a row of letters, numbered from 0, like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
     stBeat('hoot', 'len(note) counts the letters: 5. note[0] is h and note[-1] is o.', stScene(cast, beads('hello', [0, 4]), card(2)), ['b0', 'b4'], [1, 2]),
     stBeat('bolt', 'A slice: note[1:4]. Taking letters 1, 2 and 3. Stopping before 4. Result: ell.', stScene(cast, beads('hello', [1, 2, 3]), card(3)), ['b1', 'b2', 'b3'], 3),
     stBeat('bolt', '[::-1] means: take every letter, going backwards. So note[::-1] gives olleh.', stScene(cast, beads('olleh'), card(4)), ['b0', 'b1', 'b2', 'b3', 'b4'], 4),
@@ -213,5 +213,5 @@ START_LESSON('nested-loops', {
   tryit: { py: 'for row in range(3):\n    line = ""\n    for col in range(4):\n        line = line + "*"\n    print(line)\n', js: 'for (let row = 0; row < 3; row++) {\n  let line = "";\n  for (let col = 0; col < 4; col++) {\n    line = line + "*";\n  }\n  console.log(line);\n}\n',
     goals: ['Press Run.', 'Make the floor 5 rows by 2 tiles.', 'Make row number r get r + 1 stars, to draw a triangle.'] },
   check: { q: 'An outer loop runs 3 laps and the inner loop runs 4 laps each time. How many times does the inner body run in all?',
-    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is just one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
+    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
 });

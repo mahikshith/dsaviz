@@ -69,7 +69,7 @@ START_LESSON('callbacks', {
   watch: { code: 'def shout(word):\n    return word.upper() + "!"\n\ndef twice(f, x):\n    return f(f(x))\n\nyell = shout\nprint(twice(yell, "hi"))\n', heap: true },
   tryit: { py: 'def shout(word):\n    return word.upper() + "!"\n\ndef ask(word):\n    return word + "?"\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(shout, "hi"))\nprint(twice(ask, "hi"))\n',
     js: 'function shout(word) {\n  return word.toUpperCase() + "!";\n}\n\nfunction ask(word) {\n  return word + "?";\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(shout, "hi"));\nconsole.log(twice(ask, "hi"));\n',
-    goals: ['Press Run.', 'Write whisper(word) that returns word.lower() + "..." and pass it to twice.', 'Change twice(shout, "hi") to twice(shout(), "hi") and read the error.'] },
+    goals: ['Press Run.', 'Write whisper(word) that returns word.lower() + "?" and pass it to twice.', 'Change twice(shout, "hi") to twice(shout(), "hi") and read the error.'] },
   check: { q: 'What is the difference between shout and shout("hi")?',
     choices: [['shout is the function itself; shout("hi") runs it and gives its answer', true, 'Right. Pass shout to hand over the recipe. Add () only when you want it to run now.'], ['There is no difference', false, 'One is the recipe, the other is what the recipe makes.'], ['shout("hi") is the function; shout is an error', false, 'shout on its own is fine: it is the function as a value.'], ['shout runs the function twice', false, 'Without () it does not run at all.']] }
 });

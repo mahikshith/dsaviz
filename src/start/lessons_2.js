@@ -47,7 +47,7 @@ function st8Story() {
   return [
     stBeat('bolt', 'Club rule: you must be 10 or older. Visitor age: 12. Checking.', stScene(cast, { boxes: [stVar('age', 'age', '12', 260, 180)] }), ['age', 'cast:bolt']),
     stBeat('hoot', 'A comparison asks a yes or no question. The answer is always True or False.', stScene(cast, q('age >= 10', 'True', 'q1', 200)), ['q1', 'q1a']),
-    stBeat('hoot', '< is less than and > is more than. <= means less than or equal to. >= means more than or equal to.', stScene(cast, { tokens: [['o1', '<'], ['o2', '>'], ['o3', '<='], ['o4', '>=']].map(([id, t], i) => ({ id, x: 170 + i * 100, y: 200, text: t, size: 22 })) }), ['o3', 'o4']),
+    stBeat('hoot', '< is less than and > is more than. <= means less than or equal. >= means more than or equal.', stScene(cast, { tokens: [['o1', '<'], ['o2', '>'], ['o3', '<='], ['o4', '>=']].map(([id, t], i) => ({ id, x: 170 + i * 100, y: 200, text: t, size: 22 })) }), ['o3', 'o4']),
     stBeat('dot', 'How do I ask "is the age exactly 13?"', stScene(cast, q('age == 13', '?', 'q2', 200)), ['q2', 'cast:dot']),
     stBeat('hoot', 'Use two equals signs. One = puts a value in a box. Two == asks if two values are equal.', stScene(cast, { tokens: [{ id: 'set', x: 190, y: 190, text: 'age = 13', sub: 'puts 13 in age' }, { id: 'ask', x: 450, y: 190, text: 'age == 13', sub: 'asks a question', solid: true }] }), ['set', 'ask']),
     stBeat('hoot', '!= asks "are they different?" age != 13 is True, because 12 is not 13.', stScene(cast, q('age == 13', 'False', 'q2', 180), q('age != 13', 'True', 'q3', 260)), ['q3', 'q3a']),

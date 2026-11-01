@@ -218,7 +218,7 @@ const START_EXERCISES = {
       cases: [{ stdin: ['0'], out: 'invalid' }, { stdin: ['-1'], out: 'invalid' }, { stdin: ['1'], out: '5' }, { stdin: ['2'], out: '5' }, { stdin: ['3'], out: '10' }],
       hints: ['Check the invalid case first.', '"Up to 2" includes 2, so use <= 2.'] },
     { id: 'edge-cases:5', kind: 'choose', title: 'The best tests', ask: 'Rule: you pass with a score of 50 or more. Which set of tests is best?',
-      choices: ['10, 20, 30', '49, 50, 51', '100', '60, 70, 80'], answer: 1, why: '49, 50 and 51 sit right around the edge, where mistakes happen.', hints: ['Where does the result change?', 'Pick numbers just below, at and above 50.'] }
+      choices: ['10, 20, 30', '49, 50, 51', '100', '60, 70, 80'], answer: 1, why: '49, 50 and 51 sit right around the edge, where mistakes happen.', hints: ['Where does the result change?', 'Pick numbers a little below, at and above 50.'] }
   ],
   'path-project': [
     { id: 'path-project:1', kind: 'fill', title: 'The first fork', ask: 'Fill the blank so typing left leads to the river.',
@@ -441,7 +441,7 @@ const START_EXERCISES = {
     { id: 'guess-project:2', kind: 'predict', title: 'One round', ask: 'The secret is 7 and the player types 9. What is printed for that guess?',
       code: { py: 'secret = 7\nguess = 9\nif guess < secret:\n    print("Higher")\nelif guess > secret:\n    print("Lower")\nelse:\n    print("You got it!")', js: 'let secret = 7;\nlet guess = 9;\nif (guess < secret) {\n  console.log("Higher");\n} else if (guess > secret) {\n  console.log("Lower");\n} else {\n  console.log("You got it!");\n}' },
       choices: stSame(['Higher', 'You got it!', 'Lower', 'Higher\nLower']), answer: 2, why: '9 is more than 7, so the secret is lower.', hints: ['Is 9 below or above 7?', 'Only one branch runs.'] },
-    { id: 'guess-project:3', kind: 'write', title: 'The whole game', ask: 'The secret is 7. Read guesses until it is found. Print Higher or Lower after each wrong guess, then print You got it in 3 tries, using the real number of tries.',
+    { id: 'guess-project:3', kind: 'write', title: 'The whole game', ask: 'The secret is 7. Read guesses until it is found. Print Higher or Lower after each wrong guess. At the end, print You got it in 3 tries, with the real number of tries.',
       starter: { py: 'secret = 7\ntries = 0\nguess = 0\n', js: 'let secret = 7;\nlet tries = 0;\nlet guess = 0;\n' },
       ref: { py: 'secret = 7\ntries = 0\nguess = 0\nwhile guess != secret:\n    guess = int(input("Guess? "))\n    tries = tries + 1\n    if guess < secret:\n        print("Higher")\n    elif guess > secret:\n        print("Lower")\nprint("You got it in", tries, "tries")\n',
         js: 'let secret = 7;\nlet tries = 0;\nlet guess = 0;\nwhile (guess !== secret) {\n  guess = Number(prompt("Guess? "));\n  tries = tries + 1;\n  if (guess < secret) {\n    console.log("Higher");\n  } else if (guess > secret) {\n    console.log("Lower");\n  }\n}\nconsole.log("You got it in", tries, "tries");\n' },
@@ -475,7 +475,7 @@ const START_EXERCISES = {
       starter: { py: 'def cheapest(prices):\n    return 0\n', js: 'function cheapest(prices) {\n}\n' },
       ref: { py: 'def cheapest(prices):\n    best = prices[0]\n    for p in prices:\n        if p < best:\n            best = p\n    return best\n', js: 'function cheapest(prices) {\n  let best = prices[0];\n  for (const p of prices) {\n    if (p < best) {\n      best = p;\n    }\n  }\n  return best;\n}\n' },
       cases: [[[[5, 3, 8]], 3], [[[7]], 7], [[[2, 2, 9]], 2], [[[10, -1, 4]], -1], [[[6, 5, 4, 3]], 3]], hints: ['Start with the first price as the best so far.', 'Visit each price; keep it if it is smaller.'] },
-    { id: 'read-a-problem:5', kind: 'choose', title: 'The odd case', ask: 'Problem: "Return how many numbers in the list are below zero." Which test is the best odd case to try first?',
+    { id: 'read-a-problem:5', kind: 'choose', title: 'The odd case', ask: 'Problem: "Return how many numbers in the list are below zero." Which odd case should you test first?',
       choices: ['[1, 2, 3]', '[-1, -2]', '[] (an empty list)', '[5, -5, 5]'], answer: 2, why: 'An empty list is the case code most often forgets. The answer should be 0.', hints: ['What is the smallest list there could be?', 'Odd cases are about edges, not big numbers.'] }
   ],
   'counting-steps': [

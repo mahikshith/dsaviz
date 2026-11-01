@@ -46,7 +46,7 @@ function st26Story() {
     stBeat('dot', 'Example: [3, -1, -7, 2] has two numbers below zero, so the answer is 2.', stScene(cast, card(['ex'])), ['ex']),
     stBeat('hoot', 'Watch out for odd cases: an empty list gives 0. Zero itself is not below zero.', stScene(cast, card(['edge'])), ['edge']),
     stBeat('hoot', 'The lines at the top that start with # are comments. They write the job card inside the program.', stScene(cast, st1Card('card', 40, 124, 560, ST26_CODE.py.slice(0, 3), [])), ['card'], [0, 1, 2]),
-    stBeat('hoot', 'Then plan in words, try the simple way first, and test it on the example before you trust it.', stScene(cast, st1Card('card', 40, 124, 560, ST26_CODE.py.slice(3), [])), ['card'], [3, 4, 5, 6, 7, 8]),
+    stBeat('hoot', 'Then plan in words and try the simple way first. Test it on the example before you trust it.', stScene(cast, st1Card('card', 40, 124, 560, ST26_CODE.py.slice(3), [])), ['card'], [3, 4, 5, 6, 7, 8]),
     stBeat('dot', 'Receives, gives back, example, odd cases, plan, test. I can do this!', stScene(cast, card(['in', 'out', 'ex', 'edge'])), ['cast:dot'])
   ];
 }

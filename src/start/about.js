@@ -429,7 +429,7 @@ const START_ABOUT = {
     steps: ['Write the outer for loop, such as for row in range(3):.', 'Inside it, indent and write the inner loop.', 'The outer loop starts lap 1.', 'The inner loop runs all its laps.', 'Then the outer loop starts lap 2, and the inner loop runs all its laps again.'],
     use: ['You need to visit every cell in a grid.', 'You need every pairing of two groups.'],
     avoid: ['Nesting when one loop would do.', 'Nesting many loops deep, which gets slow.'],
-    mistakes: ['Mixing up the inner and outer counters. Fix: name them clearly, such as row and col.', 'Wrong indentation, so the print is in the wrong loop. Fix: line it up with the loop it belongs to.', 'Forgetting that the inner loop restarts every time. Fix: set up its variables inside the outer loop.'],
+    mistakes: ['Mixing up the inner and outer counters. Fix: give them names that say what they count, such as row and col.', 'Wrong indentation, so the print is in the wrong loop. Fix: line it up with the loop it belongs to.', 'Forgetting that the inner loop restarts every time. Fix: set up its variables inside the outer loop.'],
     cheat: ['for row in range(3):', '    for col in range(4):', 'inner loop finishes first', '3 * 4 = 12 laps in all', 'indent each level more'],
     next: ['functions'],
     sources: [PY_TUT + 'controlflow.html#for-statements', PY_REF + 'compound_stmts.html#the-for-statement']
@@ -814,35 +814,35 @@ const START_ABOUT = {
       ['object', 'One thing built from a class, with its own data.'],
       ['instance', 'Another word for an object made from a class.'],
       ['attribute', 'A piece of data that belongs to an object, such as its name.'],
-      ['dot', 'The . that reaches inside an object, as in bot1.name.']
+      ['dot', 'The . that reaches inside an object, as in robot1.name.']
     ],
     math: null,
-    steps: ['Write class Robot: to make the blueprint.', 'Build an object by calling it: bot1 = Robot().', 'Build another: bot2 = Robot().', 'Store data on each with a dot: bot1.name = "Ray".', 'Each object keeps its own data.'],
+    steps: ['Write class Robot: to make the blueprint.', 'Build an object by calling it: robot1 = Robot().', 'Build another: robot2 = Robot().', 'Store data on each with a dot: robot1.name = "Mira".', 'Each object keeps its own data.'],
     use: ['You have many similar things, each with its own data.', 'You want data and actions to belong together.'],
     avoid: ['A class for a thing you only need once.', 'Putting everything in one giant class.'],
     mistakes: ['Thinking the class is the object. Fix: the class is the blueprint. Robot() builds an object.', 'Forgetting the brackets when building. Fix: write Robot(), not Robot.', 'Expecting objects to share data they set separately. Fix: each object has its own.'],
-    cheat: ['class Robot:', 'bot1 = Robot()', 'bot1.name = "Ray"', 'one class, many objects', 'each object has its own data'],
+    cheat: ['class Robot:', 'robot1 = Robot()', 'robot1.name = "Mira"', 'one class, many objects', 'each object has its own data'],
     next: ['self'],
     sources: [PY_TUT + 'classes.html', PY_REF + 'compound_stmts.html#class-definitions']
   },
   self: {
-    what: 'Inside a class, a method is a function that belongs to an object. The word self is the object the method was called on. In bot1.beep(), self points at bot1.',
+    what: 'Inside a class, a method is a function that belongs to an object. The word self is the object the method was called on. In robot1.beep(), self points at robot1.',
     analogy: 'A teacher says "open your own book". The words "your own" mean a different book for each student.',
     uses: ['A game where each enemy moves using its own position', 'A website where each user\'s page shows that user\'s name', 'A music app where each song object plays its own file'],
     before: ['objects'],
     words: [
       ['method', 'A function written inside a class.'],
       ['self', 'The first parameter of a method. It points at the object being used.'],
-      ['dot call', 'Calling a method with a dot, as in bot1.beep().'],
+      ['dot call', 'Calling a method with a dot, as in robot1.beep().'],
       ['attribute', 'A piece of data on an object, read as self.name.'],
       ['object', 'One thing built from a class.']
     ],
     math: null,
-    steps: ['Write a method with self first: def beep(self):.', 'Call it on an object: bot1.beep().', 'Python hands bot1 in as self.', 'Inside, self.name means this object\'s name.', 'Another object gives its own name.'],
+    steps: ['Write a method with self first: def beep(self):.', 'Call it on an object: robot1.beep().', 'Python hands robot1 in as self.', 'Inside, self.name means this object\'s name.', 'Another object gives its own name.'],
     use: ['A method needs to read or change its object\'s data.', 'You want the same action to work on any object of the class.'],
     avoid: ['Using a plain name where you need self.name.', 'Passing self yourself when you call.'],
-    mistakes: ['Leaving self out of the def line, so the call has one value too many. Fix: always write self first.', 'Writing name instead of self.name. Fix: use self. to reach the object\'s data.', 'Passing self when calling. Fix: write bot1.beep(), and Python adds self.'],
-    cheat: ['def beep(self):', 'self is the object', 'bot1.beep() makes self = bot1', 'self.name reads its data', 'never pass self yourself'],
+    mistakes: ['Leaving self out of the def line, so the call has one value too many. Fix: always write self first.', 'Writing name instead of self.name. Fix: use self. to reach the object\'s data.', 'Passing self when calling. Fix: write robot1.beep(), and Python adds self.'],
+    cheat: ['def beep(self):', 'self is the object', 'robot1.beep() makes self = robot1', 'self.name reads its data', 'never pass self yourself'],
     next: ['init'],
     sources: [PY_TUT + 'classes.html#method-objects', PY_TUT + 'classes.html#random-remarks']
   },
@@ -853,17 +853,17 @@ const START_ABOUT = {
     before: ['self'],
     words: [
       ['__init__', 'The special method that sets up a new object. People say "init".'],
-      ['constructor', 'Another word for the code that sets up a new object.'],
+      ['initializer', 'The __init__ method. It sets up a new object. It does not build it.'],
       ['self', 'The new object being set up.'],
       ['attribute', 'A piece of data stored on the object, such as self.name.'],
       ['dunder', 'A name with double underscores on each side.']
     ],
     math: null,
-    steps: ['Write def __init__(self, name): inside the class.', 'Store each value on self: self.name = name.', 'Add default data too: self.battery = 100.', 'Build an object: bot1 = Robot("Ray").', 'Python makes it, runs __init__ with it, and gives it back.'],
+    steps: ['Write def __init__(self, name): inside the class.', 'Store each value on self: self.name = name.', 'Add default data too: self.battery = 100.', 'Build an object: robot1 = Robot("Mira").', 'Python makes it, runs __init__ with it, and gives it back.'],
     use: ['Every object needs some starting data.', 'You want to give values when you build an object.'],
     avoid: ['Doing heavy work inside __init__.', 'Leaving some attributes unset until later.'],
     mistakes: ['Forgetting self. in front of a name, so the value never lands on the object. Fix: write self.name = name.', 'Writing _init_ with one underscore. Fix: use two on each side.', 'Returning a value from __init__. Fix: it must not return anything.'],
-    cheat: ['def __init__(self, name):', 'self.name = name', 'bot1 = Robot("Ray")', 'runs once, when built', 'two underscores each side'],
+    cheat: ['def __init__(self, name):', 'self.name = name', 'robot1 = Robot("Mira")', 'runs once, when built', 'two underscores each side'],
     next: ['attributes'],
     sources: [PY_TUT + 'classes.html#class-objects', PY_REF + 'datamodel.html#object.__init__']
   },
@@ -880,11 +880,11 @@ const START_ABOUT = {
       ['self', 'The object the method works on.']
     ],
     math: null,
-    steps: ['Set attributes in __init__, such as self.battery = 100.', 'Write a method with self first.', 'Inside, change an attribute: self.battery = self.battery - 30.', 'Call it: bot1.work().', 'Read the new value: bot1.battery.'],
+    steps: ['Set attributes in __init__, such as self.battery = 100.', 'Write a method with self first.', 'Inside, change an attribute: self.battery = self.battery - 30.', 'Call it: robot1.work().', 'Read the new value: robot1.battery.'],
     use: ['An object needs to remember something that changes.', 'You want one place that holds all the actions for a thing.'],
     avoid: ['Changing attributes from many places in the program.', 'Adding new attributes in odd methods.'],
     mistakes: ['Making a plain variable inside a method and expecting the object to keep it. Fix: use self.name so it stays on the object.', 'Forgetting self in the def line. Fix: every method starts with self.', 'Reading an attribute that was never set. Fix: set it in __init__.'],
-    cheat: ['attribute = what it knows', 'method = what it does', 'self.battery = ...', 'bot1.work() changes bot1', 'set attributes in __init__'],
+    cheat: ['attribute = what it knows', 'method = what it does', 'self.battery = 70', 'robot1.work() changes robot1', 'set attributes in __init__'],
     next: ['references', 'class-attributes', 'encapsulation', 'inheritance', 'dunder'],
     sources: [PY_TUT + 'classes.html#instance-objects', PY_TUT + 'classes.html#method-objects']
   },
@@ -895,17 +895,17 @@ const START_ABOUT = {
     before: ['attributes', 'mutable-args'],
     words: [
       ['reference', 'An arrow from a name to an object.'],
-      ['alias', 'A second name for the same object.'],
+      ['twin', 'A second name for the same object, such as twin = robot1.'],
       ['is', 'Asks if two names point at the very same object.'],
       ['copy', 'A new object with the same data, which is separate.'],
-      ['identity', 'Whether two names are the very same object, not only equal.']
+      ['same object', 'Two names that point at one object. The word is asks about this.']
     ],
     math: null,
-    steps: ['Build an object: bot1 = Robot("Ray").', 'Write twin = bot1. No new object is made.', 'Both names point at one object.', 'twin.name = "Twin" changes that one object.', 'bot1.name now shows "Twin" too.'],
+    steps: ['Build an object: robot1 = Robot("Mira").', 'Write twin = robot1. No new object is made.', 'Both names point at one object.', 'twin.name = "Twin" changes that one object.', 'robot1.name now shows "Twin" too.'],
     use: ['You want two parts of a program to share one object.', 'You want to know why a change showed up in an unexpected place.'],
     avoid: ['Sharing an object when you wanted a separate copy.', 'Comparing objects with is when you mean ==.'],
-    mistakes: ['Thinking = makes a copy of the object. Fix: it makes another name. Use copy.copy(obj) for a new object.', 'Confusing is and ==. Fix: is asks about the same object. == asks about equal data.', 'Changing a shared object by accident. Fix: make a copy when you want separate data.'],
-    cheat: ['b = a: two names, one object', 'a is b asks if same', 'change through one, see in both', 'copy.copy(a) makes a new one', 'arrows, not boxes'],
+    mistakes: ['Thinking = makes a copy of the object. Fix: it makes another name. Build a new object with Robot(robot1.name).', 'Confusing is and ==. Fix: is asks about the same object. == asks about equal data.', 'Changing a shared object by accident. Fix: make a copy when you want separate data.'],
+    cheat: ['b = a: two names, one object', 'a is b asks if same', 'change through one, see in both', 'Robot(a.name) makes a new one', 'arrows, not boxes'],
     next: ['class-attributes'],
     sources: [PY_REF + 'datamodel.html#objects-values-and-types', PY_LIB + 'copy.html']
   },
@@ -917,21 +917,21 @@ const START_ABOUT = {
     words: [
       ['class attribute', 'Data stored on the class and shared by all its objects.'],
       ['instance attribute', 'Data stored on one object only.'],
-      ['lookup', 'How Python finds a name: the object first, then the class.'],
+      ['search order', 'How Python finds a name: the object first, then the class.'],
       ['shared', 'Seen by every object of the class.'],
       ['override', 'Setting the same name on an object, which hides the class value for that object.']
     ],
     math: null,
-    steps: ['Write a name inside the class, outside any method: maker = "Jay".', 'Build objects. They do not store maker themselves.', 'Reading bot1.maker finds it on the class.', 'Setting bot2.maker = "Maria" creates a new name on bot2 only.', 'bot1 still sees the class value.'],
+    steps: ['Write a name inside the class, outside any method: maker = "Hana".', 'Build objects. They do not store maker themselves.', 'Reading robot1.maker finds it on the class.', 'Setting robot2.maker = "Maria" creates a new name on robot2 only.', 'robot1 still sees the class value.'],
     use: ['Every object of the class should share the same value.', 'You want a constant that belongs to the class.'],
     avoid: ['Putting a list on the class when each object needs its own.', 'Setting through an object and expecting all to see it.'],
     mistakes: ['Setting a value through one object and expecting every object to see it. Fix: set it on the class, such as Robot.maker = "Maria".', 'Putting a list on the class and changing it from an object. Fix: the list is shared, so use an instance attribute.', 'Forgetting the class name. Fix: write Robot.maker to reach the shared value.'],
-    cheat: ['maker = "Jay" in the class', 'objects read it from the class', 'bot2.maker = ... only changes bot2', 'Robot.maker = ... changes all', 'object first, then class'],
+    cheat: ['maker = "Hana" in the class', 'objects read it from the class', 'robot2.maker = "Maria" only changes robot2', 'Robot.maker = "Priya" changes all', 'object first, then class'],
     next: ['encapsulation'],
     sources: [PY_TUT + 'classes.html#class-and-instance-variables']
   },
   encapsulation: {
-    what: 'Let methods guard every change to an object\'s data. Then it can never end up in a broken state. A name starting with an underscore says "please leave this to the methods".',
+    what: 'Let methods guard every change to an object\'s data. Then it stays valid when everyone uses the methods. A name starting with an underscore says "please leave this to the methods".',
     analogy: 'A bank counter. You ask the teller to move money, instead of reaching into the safe.',
     uses: ['A game that never lets health go above the maximum', 'A bank app that never lets a balance break a rule', 'A website that checks a new age before saving it'],
     before: ['attributes'],
@@ -1027,11 +1027,11 @@ const START_ABOUT = {
       ['delegate', 'Letting the part do a job instead of doing it yourself.']
     ],
     math: null,
-    steps: ['Write a class for the part, such as Battery.', 'Write the main class, such as Robot.', 'In __init__, build the part: self.battery = Battery().', 'Reach inside with dots: bot1.battery.level.', 'Let the part do its own jobs.'],
+    steps: ['Write a class for the part, such as Battery.', 'Write the main class, such as Robot.', 'In __init__, build the part: self.battery = Battery().', 'Reach inside with dots: robot1.battery.level.', 'Let the part do its own jobs.'],
     use: ['One thing is made of other things.', 'You want to swap or change a part later.'],
     avoid: ['Inheriting only to reuse some code.', 'Building huge objects with too many parts.'],
     mistakes: ['Inheriting from a class only to borrow some of its code. Fix: keep it as a part with has-a.', 'Forgetting to build the part in __init__. Fix: create it with self.battery = Battery().', 'Sharing one part between objects by accident. Fix: build a new part for each object.'],
-    cheat: ['is-a: inherit', 'has-a: keep as a part', 'self.battery = Battery()', 'bot1.battery.level', 'prefer has-a when unsure'],
+    cheat: ['is-a: inherit', 'has-a: keep as a part', 'self.battery = Battery()', 'robot1.battery.level', 'prefer has-a when unsure'],
     next: ['dunder', 'no-class'],
     sources: [PY_TUT + 'classes.html', PY_REF + 'datamodel.html#objects-values-and-types']
   },
@@ -1069,7 +1069,7 @@ const START_ABOUT = {
       ['TypeError', 'The error Python shows when you build a class with a missing method.']
     ],
     math: null,
-    steps: ['Import ABC and abstractmethod from abc.', 'Write the abstract class with ABC in brackets.', 'Mark each required method with @abstractmethod.', 'Write children that fill in every method.', 'Python refuses to build a child that missed one.'],
+    steps: ['Bring in the tools with: from abc import ABC, abstractmethod.', 'Write the abstract class with ABC in brackets.', 'Mark each required method with @abstractmethod.', 'Write children that fill in every method.', 'Python refuses to build a child that missed one.'],
     use: ['Many classes must offer the same set of methods.', 'You want mistakes to show up early.'],
     avoid: ['Abstract classes in very small programs.', 'Long lists of required methods.'],
     mistakes: ['Trying to build an object straight from the abstract class. Fix: build one of the children.', 'Forgetting to write one of the required methods. Fix: write every one, or Python raises a TypeError.', 'Forgetting @abstractmethod. Fix: add it above each required method.'],

@@ -12,7 +12,7 @@ function st20Story() {
   return [
     stBeat('hoot', 'Every evening someone feeds two baby birds. The same two steps, bird after bird.', stScene(cast, { tokens: [{ id: 'o1', x: 220, y: 200, text: 'Wren' }, { id: 'o2', x: 420, y: 200, text: 'Finch' }] }), ['o1', 'o2']),
     stBeat('dot', 'So you write the same lines again for every bird?', stScene(cast, { cards: [{ id: 'rep', x: 120, y: 130, w: 400, lines: ['print("Feeding", "Wren")', 'print("Wren", "is full")', 'print("Feeding", "Finch")', 'print("Finch", "is full")'], cur: [] }] }), ['rep', 'cast:dot']),
-    stBeat('hoot', 'No. Write the steps once and give them a name. def feed(bird): starts a function, a named set of steps.', stScene(cast, card([0, 1, 2])), ['card'], [0, 1, 2]),
+    stBeat('hoot', 'No. Write the steps once and name them: def feed(bird): starts a function, a named set of steps.', stScene(cast, card([0, 1, 2])), ['card'], [0, 1, 2]),
     stBeat('hoot', 'bird is a parameter: an empty box that is filled each time the function is used.', stScene(cast, card([0])), ['card'], 0),
     stBeat('hoot', 'feed("Wren") calls the function. The value "Wren" is the argument. It goes into bird.', stScene(cast, card([3]), bird('"Wren"')), ['bird'], 3),
     stBeat('dot', 'So feed("Finch") runs the same two lines again, now with "Finch" in bird?', stScene(cast, card([4]), bird('"Finch"')), ['bird', 'card'], 4),
@@ -133,7 +133,7 @@ function st24Story() {
     stBeat('hoot', 'Lower. So the secret is 6 or 7.', stScene(cast, line(6, 7)), ['n6', 'n7']),
     stBeat('dot', 'Then is it 7?', stScene(cast, line(7, 7, 7)), ['n7', 'cast:dot']),
     stBeat('hoot', 'Yes! You found it in three guesses.', stScene(cast, line(7, 7, 7)), ['n7']),
-    stBeat('hoot', 'The game is a while loop: keep asking while the guess is not the secret. guess starts at 0, so the loop runs at least once.', stScene(cast, st1Card('card', 30, 124, 580, ST24_CODE.py.slice(2, 6), [0])), ['card'], 2),
+    stBeat('hoot', 'The game is a while loop: keep asking while the guess is not the secret. We start guess at 0, so the loop runs at least once.', stScene(cast, st1Card('card', 30, 124, 580, ST24_CODE.py.slice(2, 6), [0])), ['card'], 2),
     stBeat('hoot', 'Inside the loop: read a guess, then use if and elif to answer higher or lower.', stScene(cast, st1Card('card', 30, 124, 580, ST24_CODE.py.slice(2, 8), [1, 2, 4])), ['card'], [3, 4, 6]),
     stBeat('dot', 'And when the loop ends, the guess must be right, so I print You got it!', stScene(cast, line(7, 7, 7)), ['n7', 'cast:dot'])
   ];

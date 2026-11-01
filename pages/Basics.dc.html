@@ -292,7 +292,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <a href="Glossary.dc.html" style="color: {{t.muted}}">Glossary</a>
 <div style="flex-grow: 1"></div>
 <span style="color: {{t.muted}}">Compare with</span>
-<button onClick="{{cycleCompare}}" aria-label="Change comparison language" style="height: 44px; padding: 0 16px; border-radius: 12px; border: 0; background: {{t.surface}}; color: {{t.text}}; font-size: var(--fs16); font-weight: 600; cursor: pointer">{{compareName}} ↻</button>
+<button class="ds-hit" onClick="{{cycleCompare}}" aria-label="Change comparison language" style="height: 44px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-size: var(--fs16); font-weight: 600; cursor: pointer">{{compareName}} ↻</button>
 </div>
 
 <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 290px minmax(0, 1fr) 340px; gap: 24px; padding: 24px 48px 48px">
@@ -303,7 +303,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-for list="{{chapters}}" as="c" hint-placeholder-count="11">
 <button onClick="{{c.pick}}" aria-current="{{c.cur}}" style="min-height: 44px; padding: 0 10px; border: 0; border-radius: 6px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; background: {{c.bg}}; color: {{c.fg}}; font-size: var(--fs16); font-weight: {{c.weight}}"><span style="color: {{c.markColor}}">{{c.mark}}</span>{{c.label}}</button>
 </sc-for>
-<a href="Patterns.dc.html" style="margin: 16px 0 0; padding: 16px; border-radius: 12px; background: {{t.surface}}; font-size: var(--fs16); line-height: 1.6; color: {{t.muted}}">Ready for real problems?<br><span style="color: {{t.text}}; font-weight: 600">Start with strings →</span></a>
+<a class="ds-hit" href="Patterns.dc.html" style="margin: 16px 0 0; padding: 16px; border-radius: 12px; background: {{t.surface}}; font-size: var(--fs16); line-height: 1.6; color: {{t.muted}}">Ready for real problems?<br><span style="color: {{t.text}}; font-weight: 600">Start with strings →</span></a>
 </nav>
 
 <!-- lesson -->
@@ -316,7 +316,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.7; color: {{t.text2}}; max-width: 760px">A list is a backpack with numbered pockets. The first pocket is number 0, not 1. You can add to the end, peek into any pocket, or pull the last thing out.</p>
 </div>
 
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<div class="ds-box" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--fs16); color: {{t.muted}}">
 <span>frame {{frameNo}} / 4 — <span style="color: {{t.text}}">{{frameTitle}}</span></span>
 <div style="display: flex; gap: 6px">
@@ -353,7 +353,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-for>
 </div>
 
-<fieldset style="margin: 0; padding: 24px; border-radius: 16px; border: 0; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<fieldset class="ds-box" style="margin: 0; padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
 <legend style="padding: 0; font-size: var(--fs16); color: {{t.muted}}">Quick check</legend>
 <span style="font-size: var(--fs18); font-weight: 700">After the pop, what's in the last pocket?</span>
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
@@ -371,7 +371,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="font-size: var(--fs16); color: {{t.muted}}">chapter {{other.num}}</span>
 <h1 style="margin: 0; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05">{{other.title}}</h1>
 <p style="margin: 0; font-size: var(--fs20); line-height: 1.7; max-width: 720px">{{other.story}}</p>
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; font-size: var(--fs17); line-height: 1.6; color: {{t.text2}}">This page is a quick refresher across five languages. New to coding? Start here teaches it from zero, one short animated lesson at a time, with code you run yourself.</div>
+<div class="ds-box" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; font-size: var(--fs17); line-height: 1.6; color: {{t.text2}}">This page is a quick refresher across five languages. New to coding? Start here teaches it from zero, one short animated lesson at a time, with code you run yourself.</div>
 <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center"><a href="Start.dc.html" style="height: 44px; padding: 0 16px; border-radius: 8px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-weight: 700">open Start here →</a>
 <button onClick="{{backToLists}}" style="height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-weight: 700">read chapter 03 here</button></div>
 </div>
@@ -379,7 +379,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </main>
 
 <!-- toolkit -->
-<aside style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; gap: 16px; background: {{t.surface}}; align-self: start">
+<aside class="ds-box" style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; gap: 16px; background: {{t.surface}}; align-self: start">
 <span style="font-size: var(--fs18); font-weight: 600">Toolkit</span>
 <span style="font-size: var(--fs16); line-height: 1.6; color: {{t.muted}}">The built-ins every pattern borrows, named the {{langName}} way. Tap one for its story.</span>
 <a href="Glossary.dc.html" style="padding: 16px; border-radius: 12px; background: {{t.sunk}}; font-size: var(--fs16); font-weight: 600; color: {{t.text}}">Forgot enumerate, zip or //? Open the keyword glossary →</a>

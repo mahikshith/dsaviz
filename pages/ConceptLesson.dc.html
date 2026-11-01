@@ -302,14 +302,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <button onClick="{{toggleLessons}}" aria-expanded="{{lessonsOpen}}" aria-controls="cs-lessons" style="height: 48px; padding: 0 4px 0 12px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 500; white-space: nowrap">{{lessonsLabel}}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{lessonsRot}}deg); transition: transform 0.16s ease-out"><path d="M6 9l6 6 6-6"></path></svg></button>
 </div>
 <sc-if value="{{lessonsOpen}}" hint-placeholder-val="{{ false }}">
-<nav id="cs-lessons" aria-label="DSA concept lessons" style="box-sizing: border-box; min-width: 0; padding: {{L.listPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<nav class="ds-box" id="cs-lessons" aria-label="DSA concept lessons" style="box-sizing: border-box; min-width: 0; padding: {{L.listPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
 <div role="group" aria-label="Track" class="cs-scroll" style="display: flex; flex-wrap: {{L.trackWrap}}; overflow-x: {{L.lessonScroll}}; gap: 4px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
 <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7"><button onClick="{{tr.pick}}" aria-pressed="{{tr.on}}" style="flex-shrink: 0; height: 36px; padding: 0 10px; border: 0; border-radius: 9px; cursor: pointer; font-size: var(--fs15); font-weight: 700; white-space: nowrap; background: {{tr.bg}}; color: {{tr.fg}}">{{tr.label}}</button></sc-for>
 </div>
 
 <div style="display: grid; grid-template-columns: {{L.listCols}}; gap: 4px 24px">
 <sc-for list="{{lessons}}" as="ls" hint-placeholder-count="7">
-<button onClick="{{ls.pick}}" aria-current="{{ls.cur}}" style="box-sizing: border-box; min-height: 56px; padding: 8px 12px; border-radius: 10px; border: 0; background: {{ls.bg}}; color: {{ls.fg}}; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; text-align: left"><span style="flex-shrink: 0; min-width: 24px; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 28px; font-weight: 600; color: {{ls.numFg}}">{{ls.num}}</span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: var(--fs18); line-height: 28px; font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs15); line-height: 22px; color: {{t.muted}}">{{ls.tag}}</span></span></button>
+<button class="ds-hit" onClick="{{ls.pick}}" aria-current="{{ls.cur}}" style="box-sizing: border-box; min-height: 56px; padding: 8px 12px; border-radius: 10px; background: {{ls.bg}}; color: {{ls.fg}}; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; text-align: left"><span style="flex-shrink: 0; min-width: 24px; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 28px; font-weight: 600; color: {{ls.numFg}}">{{ls.num}}</span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: var(--fs18); line-height: 28px; font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs15); line-height: 22px; color: {{t.muted}}">{{ls.tag}}</span></span></button>
 </sc-for>
 </div>
 <a href="Concepts.dc.html" style="font-size: var(--fs17); color: {{t.text2}}">All DSA concepts <span style="color: {{t.accent}}">→</span></a>
@@ -341,16 +341,16 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <div style="display: flex; flex-direction: column; border-bottom: 1px solid {{t.line}}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ol style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <dl style="margin: 0; padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
 </details>
 <sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px">
 <div class="ab-math" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; font-size: var(--fs22); color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">What each symbol means</span>
@@ -361,7 +361,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </details>
 </sc-if>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 24px">
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Use it when</span>
 <ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
@@ -370,11 +370,11 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}; font-weight: 500"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
 </details>
 </div>
@@ -386,7 +386,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <!-- /ABOUT TAB -->
 <sc-if value="{{ab.watch}}" hint-placeholder-val="{{ true }}">
-<section aria-label="Lesson" style="box-sizing: border-box; padding: {{L.nowPad}}; border-radius: 16px; background: {{t.surface}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 24px; align-items: stretch">
+<section class="ds-box" aria-label="Lesson" style="box-sizing: border-box; padding: {{L.nowPad}}; border-radius: 16px; background: {{t.surface}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 24px; align-items: stretch">
 <sc-for list="{{cardParts}}" as="cp" hint-placeholder-count="2">
 <sc-if value="{{cp.canvas}}" hint-placeholder-val="{{ true }}">
 <section aria-label="Animation" ref="{{canvasRef}}" class="cs-scroll" style="position: relative; box-sizing: border-box; flex: {{L.canvasFlex}}; min-height: 0; aspect-ratio: {{L.canvasRatio}}; max-height: {{L.canvasMax}}; border-radius: 12px; background: transparent; border: 0; overflow-x: {{L.canvasScroll}}; overflow-y: hidden; display: flex; align-items: center; justify-content: {{L.canvasJustify}}">
@@ -441,7 +441,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 [data-fold] summary:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:8px}
 </style>
 <sc-if value="{{slider.show}}" hint-placeholder-val="{{ true }}">
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 8px">
+<div class="ds-box" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 8px">
 <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><label for="cs-param" style="display: flex; align-items: center; gap: 6px; font-size: var(--fs16); font-weight: 700">Try it: {{slider.label}}<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-concept-slider" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-concept-slider" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Move the slider to change one number. The picture updates so you can see the effect.</span></span></label><span style="font-family: {{t.mono}}; font-size: var(--fs22); font-weight: 800; color: {{t.accent}}">{{slider.text}}</span></div>
 <input id="cs-param" class="cs-range" type="range" min="{{slider.min}}" max="{{slider.max}}" step="{{slider.step}}" value="{{slider.value}}" onChange="{{slider.change}}" aria-valuetext="{{slider.text}}" style="accent-color: {{t.accent}}">
 <div style="display: flex; justify-content: space-between; font-family: {{t.mono}}; font-size: var(--fs13); color: {{t.muted}}"><span>{{slider.minText}}</span><span>{{slider.maxText}}</span></div>
@@ -451,7 +451,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <div style="display: flex; flex-direction: column; border-bottom: 1px solid {{t.line}}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Now try it on a problem<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Now try it on a problem<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px">
 <div style="padding: 0; background: transparent; display: flex; flex-direction: column; gap: 8px">
 <span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs16); font-weight: 700">Now try it on a problem<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-concept-try" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-concept-try" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Real problems that use this idea. Open one to practise it yourself.</span></span></span>
@@ -461,7 +461,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Read the steps<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Read the steps<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs16); line-height: 1.45; color: {{t.muted}}">The dashed outline marks what changed. Faded items are context. Press a step to jump the picture to it.</span>
 <ol ref="{{readRef}}" class="cs-scroll" style="position: relative; margin: 0; padding: 0; list-style: none; max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{transcript}}" as="tx" hint-placeholder-count="10"><li><button onClick="{{tx.go}}" aria-current="{{tx.cur}}" style="width: 100%; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 8px; background: {{tx.bg}}; color: {{tx.fg}}; cursor: pointer; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; text-align: left; font-size: var(--fs17); line-height: 1.45"><span style="font-family: {{t.mono}}; font-weight: 600; color: {{tx.numFg}}">{{tx.n}}</span><span>{{tx.say}}</span></button></li></sc-for>

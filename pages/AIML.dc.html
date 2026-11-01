@@ -297,7 +297,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <section aria-label="Lessons" style="display: flex; flex-direction: column; gap: 16px">
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; max-width: 760px">{{cur.blurb}}</p>
-<ol style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
+<ol class="ds-box" style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
 <sc-for list="{{cur.lessons}}" as="ls" hint-placeholder-count="6">
 <li style="border-top: 1px solid {{ls.rule}}"><a href="AILesson.dc.html" onClick="{{ls.go}}" aria-label="{{ls.aria}}" style="min-height: 72px; box-sizing: border-box; padding: 16px 0; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 16px; align-items: center"><span style="font-size: var(--fs17); font-weight: 600; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ls.meta}}</span></span><span style="font-size: var(--fs16); font-weight: 600; color: {{ls.chipFg}}">{{ls.chip}}</span></a></li>
 </sc-for>
@@ -309,14 +309,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- the rest sits in folds -->
 <section aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
-<button onClick="{{toggleAbout}}" aria-expanded="{{foldAbout}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">How the lessons work<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevAbout}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{toggleAbout}}" aria-expanded="{{foldAbout}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">How the lessons work<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevAbout}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldAbout}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}; max-width: 760px">Each lesson is one screen. Press play and watch the idea move, one change per step, with a single plain sentence underneath. Some lessons have a slider for the one setting that matters.</p>
 <sc-for list="{{chips}}" as="ch" hint-placeholder-count="4"><p style="margin: 0; font-size: var(--fs17); color: {{t.text2}}"><span style="font-weight: 600; color: {{t.text}}">{{ch.n}}</span> {{ch.label}}</p></sc-for>
 </div>
 </sc-if>
-<button onClick="{{toggleSoon}}" aria-expanded="{{foldSoon}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Coming soon<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevSoon}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{toggleSoon}}" aria-expanded="{{foldSoon}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Coming soon<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevSoon}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldSoon}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">These lessons are not built yet.</p>

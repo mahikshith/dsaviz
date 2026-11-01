@@ -338,7 +338,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <sc-if value="{{showTools}}" hint-placeholder-val="{{ false }}">
 <div data-toolbar style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
-<div style="flex-grow: 1; max-width: 520px; height: 48px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; gap: 12px; color: {{t.muted}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Search problems or companies" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: var(--fs17)"></div>
+<div class="ds-box" style="flex-grow: 1; max-width: 520px; height: 48px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; gap: 12px; color: {{t.muted}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Search problems or companies" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: var(--fs17)"></div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
 <span style="font-size: var(--fs16); color: {{t.muted}}">Difficulty</span>
 <sc-for list="{{diffs}}" as="df" hint-placeholder-count="4">
@@ -375,7 +375,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- the canvas (desktop): lanes top to bottom, topics left to right -->
 <sc-if value="{{rm.desk}}" hint-placeholder-val="{{ true }}">
-<section aria-label="Learning roadmap" style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 8px">
+<section class="ds-box" aria-label="Learning roadmap" style="border-radius: 20px; background: {{t.surface}}; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 8px">
 <div data-rm-scroll style="display: flex; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin">
 <div style="position: relative; flex-shrink: 0; width: {{rm.w}}px; height: {{rm.h}}px; margin: 0 auto">
 <sc-for list="{{rm.lanes}}" as="ln" hint-placeholder-count="6">
@@ -412,7 +412,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </svg>
 <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs13); font-weight: 700; color: {{mn.markFg}}">{{mn.mark}}</span>
 <sc-if value="{{mn.next}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 5px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs13); font-weight: 800; line-height: 15px; letter-spacing: 0.04em">NEXT</span></sc-if>
-<sc-if value="{{mn.soonTag}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 4px; border-radius: 999px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.muted}}; font-size: var(--fs13); font-weight: 700; line-height: 13px; letter-spacing: 0.04em">SOON</span></sc-if>
+<sc-if value="{{mn.soonTag}}" hint-placeholder-val="{{ false }}"><span class="ds-box" style="position: absolute; left: 36px; top: 9px; padding: 0 4px; border-radius: 999px; background: {{t.surface}}; color: {{t.muted}}; font-size: var(--fs13); font-weight: 700; line-height: 13px; letter-spacing: 0.04em">SOON</span></sc-if>
 </span>
 <span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: var(--fs15); font-weight: 600; line-height: 20px; text-align: center; max-width: 124px; display: inline-block; color: {{mn.labelFg}}">{{mn.label}}</span>
 </button>
@@ -447,7 +447,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{pl.open}}" hint-placeholder-val="{{ true }}">
 <ol style="list-style: none; margin: 0 0 0 13px; padding: 0 0 0 14px; border-left: 2px dotted {{t.line2}}; display: flex; flex-direction: column; gap: 6px">
 <sc-for list="{{pl.items}}" as="pi" hint-placeholder-count="8"><li>
-<button data-path-node="{{pi.id}}" onClick="{{pi.pick}}" aria-label="{{pi.aria}}" style="width: 100%; min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pi.border}}; background: {{pi.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px">
+<button class="ds-hit" data-path-node="{{pi.id}}" onClick="{{pi.pick}}" aria-label="{{pi.aria}}" style="width: 100%; min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pi.border}}; background: {{pi.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px">
 <span aria-hidden="true" style="width: 30px; height: 30px; flex-shrink: 0; box-sizing: border-box; border-radius: 999px; border: 2px {{pi.ringStyle}} {{pi.ring}}; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{pi.markFg}}; display: flex; align-items: center; justify-content: center">{{pi.mark}}</span>
 <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: var(--fs18); font-weight: 700; color: {{pi.nameFg}}">{{pi.name}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{pi.sub}}</span></span>
 <sc-if value="{{pi.next}}" hint-placeholder-val="{{ false }}"><span style="flex-shrink: 0; padding: 2px 8px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs15); font-weight: 800">Next</span></sc-if>
@@ -464,7 +464,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- the drawer for the picked topic -->
 <sc-if value="{{rm.card.open}}" hint-placeholder-val="{{ false }}">
-<aside data-rm-drawer role="dialog" aria-modal="false" aria-labelledby="rm-drawer-title" onKeyDown="{{rm.key}}" style="position: fixed; top: 0; right: 0; z-index: 60; width: {{rm.drawerW}}px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-left: 1px solid {{t.line2}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px">
+<aside class="ds-box" data-rm-drawer role="dialog" aria-modal="false" aria-labelledby="rm-drawer-title" onKeyDown="{{rm.key}}" style="position: fixed; top: 0; right: 0; z-index: 60; width: {{rm.drawerW}}px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-left: 1px solid {{t.line2}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 24px 32px; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
 <span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{rm.card.eyebrow}}</span>
@@ -546,12 +546,12 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-for>
 </div>
 
-<div style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 26px 28px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; animation: rise 0.35s ease">
+<div class="ds-box" style="border-radius: 20px; background: {{t.surface}}; padding: 26px 28px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; animation: rise 0.35s ease">
 <div style="display: flex; flex-direction: column; gap: 12px">
 <span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Stage {{stage.num}} of 8 · {{stage.state}}</span>
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs34); font-weight: 600; letter-spacing: -0.02em">{{stage.name}} <span style="font-style: italic; font-weight: 400; color: {{t.muted}}">— {{stage.meta}}</span></h2>
 <p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs22); line-height: 1.55">{{stage.blurb}}</p>
-<details style="color: {{t.muted}}"><summary style="min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}">Why here in the path?</summary><p style="margin: 0; font-size: var(--fs17); line-height: 1.5">{{stage.why}}</p></details>
+<details style="color: {{t.muted}}"><summary class="ds-hit" style="min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}">Why here in the path?</summary><p style="margin: 0; font-size: var(--fs17); line-height: 1.5">{{stage.why}}</p></details>
 </div>
 <div style="display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -569,7 +569,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </div>
 
-<div style="border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
+<div class="ds-box" style="border-radius: 18px; background: {{t.surface}}; overflow: hidden">
 <sc-for list="{{stage.rows}}" as="r" hint-placeholder-count="4">
 <div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 208px; gap: 16px; align-items: center; padding: 16px 24px; border-bottom: 1px solid {{t.line}}">
 <span aria-label="{{r.statusLabel}}" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{r.statusRing}}; background: {{r.statusFill}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs15); font-weight: 800">{{r.statusMark}}</span>
@@ -597,7 +597,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="display: flex; flex-direction: column; gap: 16px">
 <sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
 <section data-pattern="{{g.idx}}" style="border-radius: 18px; background: {{t.surface}}; border: 1px solid {{g.border}}; overflow: hidden; transition: border-color 0.3s">
-<button data-pgroup onClick="{{g.toggle}}" aria-expanded="{{g.open}}" style="width: 100%; min-height: 76px; padding: 16px 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 18px; text-align: left">
+<button class="ds-hit" data-pgroup onClick="{{g.toggle}}" aria-expanded="{{g.open}}" style="width: 100%; min-height: 76px; padding: 16px 22px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 18px; text-align: left">
 <span style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: {{t.sunk}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700; color: {{t.accent}}">{{g.num}}</span>
 <span style="display: flex; flex-direction: column; gap: 3px; flex-grow: 1">
 <span style="font-size: var(--fs22); font-weight: 600">{{g.name}}</span>
@@ -670,7 +670,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-for>
 </div>
 
-<div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 22px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}">
+<div class="ds-box" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 22px; border-radius: 18px; background: {{t.surface}}">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs22); line-height: 1.5">{{coLine}}</p>
 </div>
@@ -678,7 +678,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
 <sc-for list="{{coPatterns}}" as="cp" hint-placeholder-count="4">
-<div style="border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; animation: rise 0.35s ease">
+<div class="ds-box" style="border-radius: 18px; background: {{t.surface}}; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; animation: rise 0.35s ease">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 3px">
 <span style="font-size: var(--fs20); font-weight: 700">{{cp.name}}</span>

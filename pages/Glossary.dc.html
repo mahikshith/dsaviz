@@ -283,7 +283,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 24px; padding: 24px 48px 48px">
 <aside style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
-<div style="height: 48px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; color: {{t.muted}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search keywords" placeholder="Try getOrDefault, range, heap…" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: var(--fs17)"></div>
+<div class="ds-box" style="height: 48px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; color: {{t.muted}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search keywords" placeholder="Try getOrDefault, range, heap…" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: var(--fs17)"></div>
 <div style="display: flex; flex-wrap: wrap; gap: 0 16px"><sc-for list="{{cats}}" as="ct" hint-placeholder-count="5"><button onClick="{{ct.pick}}" aria-pressed="{{ct.on}}" style="min-height: 44px; padding: 0; border: 0; border-bottom: 2px solid {{ct.border}}; border-radius: 0; background: transparent; color: {{ct.fg}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{ct.label}}</button></sc-for></div>
 <nav aria-label="Keywords" style="display: flex; flex-direction: column; gap: 4px; max-height: 720px; overflow-y: auto">
 <sc-for list="{{list}}" as="kw" hint-placeholder-count="12">
@@ -299,7 +299,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <h2 style="margin: 0; font-family: {{t.mono}}; font-size: var(--fs32); font-weight: 800; letter-spacing: -0.01em">{{k.kw}}</h2>
 <p style="margin: 0; font-size: var(--fs19); line-height: 1.55; color: {{t.text2}}; max-width: 820px">{{k.what}}</p>
 </div>
-<div style="display: flex; gap: 16px; align-items: flex-start; padding: 24px; border-radius: 16px; background: {{t.surface}}">
+<div class="ds-box" style="display: flex; gap: 16px; align-items: flex-start; padding: 24px; border-radius: 16px; background: {{t.surface}}">
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">In plain words</span><span style="font-size: var(--fs20); line-height: 1.5">{{k.kid}}</span></div>
 </div>
 
@@ -338,14 +338,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs18); font-weight: 600">Same idea in every language</span>
-<div style="border-radius: 16px; overflow: hidden; background: {{t.surface}}">
+<div class="ds-box" style="border-radius: 16px; overflow: hidden; background: {{t.surface}}">
 <sc-for list="{{others}}" as="ot" hint-placeholder-count="5">
 <button onClick="{{ot.pick}}" aria-pressed="{{ot.on}}" style="width: 100%; min-height: 48px; padding: 8px 16px; border: 0; border-top: 1px solid {{ot.divider}}; background: {{ot.bg}}; color: {{t.text}}; cursor: pointer; display: grid; grid-template-columns: 110px 240px minmax(0, 1fr); gap: 14px; align-items: center; text-align: left"><span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">{{ot.lang}}</span><span style="font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700">{{ot.kw}}</span><span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.text2}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ot.first}}</span></button>
 </sc-for>
 </div>
 </div>
 
-<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap"><span style="font-size: var(--fs18); font-weight: 600">Practise it in</span><sc-for list="{{k.stories}}" as="sy" hint-placeholder-count="2"><a href="Briefing.dc.html" onClick="{{sy.go}}" style="min-height: 44px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600">{{sy.story}}</a></sc-for></div>
+<div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap"><span style="font-size: var(--fs18); font-weight: 600">Practise it in</span><sc-for list="{{k.stories}}" as="sy" hint-placeholder-count="2"><a class="ds-hit" href="Briefing.dc.html" onClick="{{sy.go}}" style="min-height: 44px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600">{{sy.story}}</a></sc-for></div>
 </main>
 </div>
 </div>

@@ -309,7 +309,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </div>
 <sc-if value="{{lessonsOpen}}" hint-placeholder-val="{{ false }}">
-<nav id="sd-lessons" aria-label="System design lessons" style="box-sizing: border-box; min-width: 0; padding: {{L.listPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
+<nav class="ds-box" id="sd-lessons" aria-label="System design lessons" style="box-sizing: border-box; min-width: 0; padding: {{L.listPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
 <div ref="{{railRef}}" style="display: flex; flex-direction: column; gap: 24px">
 <sc-for list="{{groups}}" as="gp" hint-placeholder-count="2">
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -351,16 +351,16 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <div style="display: flex; flex-direction: column; border-bottom: 1px solid {{t.line}}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ol style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <dl style="margin: 0; padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
 </details>
 <sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px">
 <div class="ab-math" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; font-size: var(--fs22); color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">What each symbol means</span>
@@ -371,7 +371,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </details>
 </sc-if>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 24px">
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Use it when</span>
 <ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
@@ -380,11 +380,11 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}; font-weight: 500"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
 </details>
 </div>
@@ -396,7 +396,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <!-- /ABOUT TAB -->
 <sc-if value="{{ab.watch}}" hint-placeholder-val="{{ true }}">
-<section aria-label="Lesson" style="box-sizing: border-box; padding: {{L.nowPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
+<section class="ds-box" aria-label="Lesson" style="box-sizing: border-box; padding: {{L.nowPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
 <div style="display: grid; grid-template-columns: {{L.nowCols}}; gap: 24px; align-items: end">
 <div aria-live="polite" aria-atomic="true" style="min-width: 0; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">step {{stepNo}}/{{stepCount}}</span>
@@ -464,12 +464,12 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- numbers -->
 <section aria-label="{{strip.label}}" style="flex-shrink: 0; display: grid; grid-template-columns: {{L.stripCols}}; gap: 16px">
 <sc-for list="{{strip.tiles}}" as="tl" hint-placeholder-count="3">
-<div style="box-sizing: border-box; min-width: 0; padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; box-shadow: inset 0 0 0 1.5px {{tl.border}}; display: flex; flex-direction: column; gap: 2px; transition: border-color 0.3s">
+<div class="ds-box" style="box-sizing: border-box; min-width: 0; padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; box-shadow: inset 0 0 0 1.5px {{tl.border}}; display: flex; flex-direction: column; gap: 2px; transition: border-color 0.3s">
 <span style="font-size: var(--fs15); line-height: 1.4; color: {{t.muted}}">{{tl.label}}</span>
 <div style="display: flex; align-items: baseline; gap: 10px; min-width: 0"><span class="sd-pop" style="font-family: {{t.display}}; font-size: var(--fs28); line-height: 1.1; font-weight: 700; color: {{tl.fg}}; white-space: nowrap; animation: {{tl.anim}}">{{tl.value}}</span><span style="font-family: {{t.mono}}; font-size: var(--fs15); color: {{t.text2}}">{{tl.delta}}</span></div>
 </div>
 </sc-for>
-<div style="box-sizing: border-box; min-width: 0; padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 4px; justify-content: center">
+<div class="ds-box" style="box-sizing: border-box; min-width: 0; padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 4px; justify-content: center">
 <span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">{{strip.mathTitle}}</span>
 <span style="font-family: {{t.mono}}; font-size: var(--fs17); line-height: 1.45; color: {{t.text}}">{{strip.math}}</span>
 </div>
@@ -486,7 +486,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </style>
 <div style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}; border-bottom: 1px solid {{t.line}}">
 <details>
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How to read it<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How to read it<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs16); line-height: 1.45; color: {{t.muted}}">What the colours and shapes mean in the picture. Check here if a box confuses you.</span>
 <div style="display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; font-size: var(--fs16); color: {{t.text2}}">
 <sc-for list="{{legend}}" as="lg" hint-placeholder-count="3"><span aria-hidden="true" style="justify-self: center; width: 12px; height: 12px; border-radius: 999px; background: {{lg.color}}"></span><span>{{lg.text}}</span></sc-for>

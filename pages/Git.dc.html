@@ -294,11 +294,11 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{L.desk}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.muted}}">Git lessons</span></sc-if>
 <div class="git-scroll" style="display: flex; flex-direction: {{L.lessonDir}}; gap: 4px; overflow-x: {{L.lessonScroll}}">
 <sc-for list="{{lessons}}" as="ls" hint-placeholder-count="8">
-<button onClick="{{ls.pick}}" aria-current="{{ls.cur}}" style="flex-shrink: 0; min-height: 48px; padding: 6px 12px; border-radius: 10px; border: 1px solid {{ls.border}}; background: {{ls.bg}}; color: {{ls.fg}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left"><span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{ls.numFg}}">{{ls.num}}</span><span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: var(--fs18); font-weight: 600; white-space: nowrap">{{ls.title}}</span><sc-if value="{{L.desk}}" hint-placeholder-val="{{ true }}"><span style="font-family: {{t.mono}}; font-size: var(--fs13); color: {{t.muted}}; white-space: nowrap">{{ls.tag}}</span></sc-if></span></button>
+<button class="ds-hit" onClick="{{ls.pick}}" aria-current="{{ls.cur}}" style="flex-shrink: 0; min-height: 48px; padding: 6px 12px; border-radius: 10px; border: 1px solid {{ls.border}}; background: {{ls.bg}}; color: {{ls.fg}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left"><span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{ls.numFg}}">{{ls.num}}</span><span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: var(--fs18); font-weight: 600; white-space: nowrap">{{ls.title}}</span><sc-if value="{{L.desk}}" hint-placeholder-val="{{ true }}"><span style="font-family: {{t.mono}}; font-size: var(--fs13); color: {{t.muted}}; white-space: nowrap">{{ls.tag}}</span></sc-if></span></button>
 </sc-for>
 </div>
 <sc-if value="{{L.desk}}" hint-placeholder-val="{{ true }}">
-<div style="margin-top: auto; padding: 16px; border-radius: 12px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px">
+<div class="ds-box" style="margin-top: auto; padding: 16px; border-radius: 12px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px">
 <span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">How to read it</span>
 <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; font-size: var(--fs16); color: {{t.text2}}">
 <sc-for list="{{legend}}" as="lg" hint-placeholder-count="4"><span style="justify-self: start; font-family: {{t.mono}}; font-size: var(--fs13); font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid {{lg.color}}; color: {{lg.color}}">{{lg.badge}}</span><span>{{lg.text}}</span></sc-for>
@@ -320,7 +320,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 
 <!-- now: command, output, caption, controls -->
-<section aria-label="Current step" style="box-sizing: border-box; padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 12px 24px; align-items: center">
+<section class="ds-box" aria-label="Current step" style="box-sizing: border-box; padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; display: grid; grid-template-columns: {{L.nowCols}}; gap: 12px 24px; align-items: center">
 <div aria-live="polite" aria-atomic="true" style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
 <div style="display: flex; align-items: baseline; gap: 12px; min-width: 0"><span style="font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{now.promptFg}}; flex-shrink: 0">{{now.prompt}}</span><code style="font-family: {{t.mono}}; font-size: {{L.cmdSize}}px; font-weight: 700; color: {{now.cmdFg}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{now.cmd}}</code></div>
 <div style="min-height: 38px; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 1.6; color: {{t.muted}}; display: flex; flex-direction: column">
@@ -345,7 +345,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </section>
 
 <!-- commit graph -->
-<section aria-label="{{graph.label}}" style="box-sizing: border-box; height: {{L.graphH}}; flex-grow: {{L.graphGrow}}; min-height: {{L.graphMin}}; flex-shrink: 0; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
+<section class="ds-box" aria-label="{{graph.label}}" style="box-sizing: border-box; height: {{L.graphH}}; flex-grow: {{L.graphGrow}}; min-height: {{L.graphMin}}; flex-shrink: 0; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
 <div style="height: 34px; flex-shrink: 0; padding: 0 18px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid {{t.line}}">
 <span style="font-size: var(--fs16); font-weight: 700">Commit graph</span>
 <span style="font-size: var(--fs15); color: {{t.muted}}">{{graph.note}}</span>

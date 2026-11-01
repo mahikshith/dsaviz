@@ -24,16 +24,16 @@
 </div>
 <div style="display: flex; flex-direction: column; border-bottom: 1px solid {{t.line}}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ol style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <dl style="margin: 0; padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
 </details>
 <sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px">
 <div class="ab-math" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; font-size: var(--fs22); color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">What each symbol means</span>
@@ -44,7 +44,7 @@
 </details>
 </sc-if>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 24px">
 <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Use it when</span>
 <ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
@@ -53,11 +53,11 @@
 </div>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </details>
 <details style="border-top: 1px solid {{t.line}}">
-<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}; font-weight: 500"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
 </details>
 </div>

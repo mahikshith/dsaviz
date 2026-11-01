@@ -31,7 +31,7 @@ button{font:inherit}
 </style>
 <!-- PHONE CSS -->
 <style>
-:root{--fs13:calc(13px * var(--ts, 1));--fs14:calc(14px * var(--ts, 1));--fs15:calc(15px * var(--ts, 1));--fs16:calc(16px * var(--ts, 1));--fs17:calc(17px * var(--ts, 1));--fs18:calc(18px * var(--ts, 1));--fs19:calc(19px * var(--ts, 1));--fs20:calc(20px * var(--ts, 1));--fs22:calc(22px * var(--ts, 1));--fs24:calc(24px * var(--ts, 1));--fs26:calc(26px * var(--ts, 1));--fs28:calc(28px * var(--ts, 1));--fs30:calc(30px * var(--ts, 1));--fs32:calc(32px * var(--ts, 1));--fs34:calc(34px * var(--ts, 1));--fs36:calc(36px * var(--ts, 1));--fs40:calc(40px * var(--ts, 1));--fs42:calc(42px * var(--ts, 1));--fs44:calc(44px * var(--ts, 1));--fs46:calc(46px * var(--ts, 1));--fs48:calc(48px * var(--ts, 1));--fs52:calc(52px * var(--ts, 1));--fs56:calc(56px * var(--ts, 1));--fs58:calc(58px * var(--ts, 1));--fs72:calc(72px * var(--ts, 1));--fs76:calc(76px * var(--ts, 1));--fs96:calc(96px * var(--ts, 1));--fs180:calc(180px * var(--ts, 1))}
+:root{--fs13:calc(13px * var(--ts, 1));--fs14:calc(14px * var(--ts, 1));--fs15:calc(15px * var(--ts, 1));--fs16:calc(16px * var(--ts, 1));--fs17:calc(17px * var(--ts, 1));--fs18:calc(18px * var(--ts, 1));--fs19:calc(19px * var(--ts, 1));--fs20:calc(20px * var(--ts, 1));--fs22:calc(22px * var(--ts, 1));--fs24:calc(24px * var(--ts, 1));--fs26:calc(26px * var(--ts, 1));--fs28:calc(28px * var(--ts, 1));--fs30:calc(30px * var(--ts, 1));--fs32:calc(32px * var(--ts, 1));--fs34:calc(34px * var(--ts, 1));--fs36:calc(36px * var(--ts, 1));--fs40:calc(40px * var(--ts, 1));--fs42:calc(42px * var(--ts, 1));--fs44:calc(44px * var(--ts, 1));--fs46:calc(46px * var(--ts, 1));--fs48:calc(48px * var(--ts, 1));--fs56:calc(56px * var(--ts, 1));--fs58:calc(58px * var(--ts, 1));--fs72:calc(72px * var(--ts, 1));--fs76:calc(76px * var(--ts, 1));--fs96:calc(96px * var(--ts, 1));--fs180:calc(180px * var(--ts, 1))}
 @media (max-width: 759px){:root{--fs18:calc(17px * var(--ts, 1))}}
 /* Shared phone layout (shared/ui/phone.html, copied into every page's helmet by the build).
    A page opts in with data-fluid="true" data-page="Name" on its root div. Below 760px the runtime
@@ -84,7 +84,7 @@ button{font:inherit}
 [data-page] [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
-[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 48px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 32px 24px 48px;"]{padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
 [data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
@@ -125,15 +125,11 @@ button{font:inherit}
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fluid="true" data-page="Main" style="width: 1440px; height: 8100px; box-sizing: border-box; justify-content: space-between; background: {{t.bg}}; display: flex; flex-direction: column; font-family: {{t.body}}; color: {{t.text}}; transition: background 0.3s, color 0.3s">
+<div data-fluid="true" data-page="Main" style="width: 1440px; height: 3480px; box-sizing: border-box; justify-content: space-between; background: {{t.bg}}; display: flex; flex-direction: column; font-family: {{t.body}}; color: {{t.text}}; transition: background 0.3s, color 0.3s">
 
 <!-- NAV -->
 
 
-<!-- HERO -->
-
-
-<!-- AUDIENCE -->
 <!-- PILL NAV -->
 <style>
 [data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
@@ -282,33 +278,25 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<section style="padding: 88px 80px 72px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; align-items: center; height: 530px">
-<div style="display: flex; flex-direction: column; gap: 28px">
-<div style="display: flex; gap: 8px; align-items: center; font-size: var(--fs16); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">
-<span style="width: 8px; height: 8px; border-radius: 999px; background: {{t.accent}}"></span>Data structures &amp; algorithms, as stories
-</div>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs76); line-height: 1.02; font-weight: 600; letter-spacing: -0.03em"><span style="font-weight: normal">Every algorithm<br>is a story.<br><span style="color: {{t.accent}}">Learn the plot.</span></span></h1>
-<p style="margin: 0; font-size: var(--fs22); line-height: 1.55; color: {{t.text2}}; max-width: 540px">Each problem comes with a cast, a goal and a step-by-step animation you can scrub forward and back. Every step is explained in plain words, with a Go deeper fold when you want the exact reason.</p>
-<div style="display: flex; gap: 12px; align-items: center">
-<a href="Briefing.dc.html" style="height: 52px; padding: 0 26px; display: flex; gap: 10px; align-items: center; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs18); font-weight: 600">Play a story free<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-<a href="Patterns.dc.html" style="height: 52px; padding: 0 24px; display: flex; align-items: center; border-radius: 999px; border: 1.5px solid {{t.text}}; font-size: var(--fs18); font-weight: 600">Browse patterns</a>
-</div>
-<div style="display: flex; gap: 20px; font-size: var(--fs17); color: {{t.muted}}">
-<a href="Sheet.dc.html" aria-label="{{sheetAria}}" style="color: {{t.text}}; font-weight: 700"><span style="font-family: {{t.mono}}; font-size: var(--fs18); color: {{t.accent}}">{{sheetTotal}}</span> practice problems</a><span>·</span><a href="Patterns.dc.html" style="color: {{t.text}}; font-weight: 700"><span style="font-family: {{t.mono}}; font-size: var(--fs18); color: {{t.accent}}">{{storyTotal}}</span> animated stories</a><span>·</span><span>Python · Java · C++ · JavaScript · Go</span>
-</div>
-</div>
+<section style="padding: 96px 80px 48px; display: flex; flex-direction: column; align-items: center; gap: 32px; text-align: center">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs76); line-height: 1.02; font-weight: 600; letter-spacing: -0.03em"><span style="font-weight: normal">Every algorithm is a story.</span></h1>
+<p style="margin: 0; font-size: var(--fs22); line-height: 1.5; color: {{t.text2}}; max-width: 640px">Learn data structures and algorithms from short animated stories, told in plain words.</p>
+<a href="{{cta.href}}" style="height: 56px; padding: 0 32px; display: inline-flex; gap: 12px; align-items: center; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs18); font-weight: 600">{{cta.label}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</section>
 
-<!-- hero preview: the Lantern Bridge, playing live -->
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 24px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 30px 60px -30px rgba(60,40,20,0.25)">
+<!-- HOW IT WORKS -->
+<section style="padding: 48px 80px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center">
+<!-- how it works: one picture, steps on demand -->
+<div style="background: {{t.surface}}; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; justify-content: space-between; align-items: center">
 <div style="display: flex; flex-direction: column; gap: 2px">
-<span style="font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Two Sum II · live preview</span>
-<span style="font-family: {{t.display}}; font-size: var(--fs24); font-weight: 600">The Lantern Bridge</span>
+<span style="font-size: var(--fs15); font-weight: 500; color: {{t.muted}}">Two Sum II, one step at a time</span>
+<span style="font-size: var(--fs18); font-weight: 600">Find the two numbers that add up to the target</span>
 </div>
 <span style="padding: 6px 12px; border-radius: 999px; background: {{t.sunk}}; font-size: var(--fs16); font-weight: 600">Step {{hero.no}} of 6</span>
 </div>
 <div style="background: #1B1E26; border-radius: 16px; padding: 18px 20px 12px; display: flex; flex-direction: column; gap: 12px; align-items: center">
-<div style="align-self: stretch; display: flex; justify-content: space-between; font-size: var(--fs16); color: #B9BCC4"><span>Gate opens at exactly <b style="color: #F3F0E8">10</b></span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: {{hero.sumColor}}">{{hero.sumText}}</span></div>
+<div style="align-self: stretch; display: flex; justify-content: space-between; font-size: var(--fs16); color: #B9BCC4"><span>Target <b style="color: #F3F0E8">10</b></span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: {{hero.sumColor}}">{{hero.sumText}}</span></div>
 <div data-hero-row style="display: flex; gap: 12px">
 <sc-for list="{{hero.lanterns}}" as="ln" hint-placeholder-count="6">
 <div style="width: 56px; height: 72px; box-sizing: border-box; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: {{t.num}}; font-size: var(--fs28); font-weight: 600; font-variant-numeric: tabular-nums; background: {{ln.fill}}; color: {{ln.ink}}; box-shadow: {{ln.glow}}; border: 2px solid {{ln.ring}}; text-decoration: {{ln.strike}}; transition: all 0.45s ease">{{ln.v}}</div>
@@ -331,101 +319,119 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </button>
 <button onClick="{{heroNext}}" aria-label="Next step" style="width: 40px; height: 40px; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
 <div style="flex-grow: 1; height: 6px; border-radius: 999px; background: {{t.sunk}}; margin: 0 8px"><div style="width: {{hero.pct}}; height: 6px; border-radius: 999px; background: {{t.accent}}; transition: width 0.45s ease"></div></div>
-<a href="Story.dc.html" style="font-size: var(--fs16); font-weight: 700; color: {{t.accent}}">Open story →</a>
+<a href="Story.dc.html" style="font-size: var(--fs16); font-weight: 600; color: {{t.text}}">Open a story →</a>
 </div>
 </div>
-</section>
-<section style="padding: 64px 80px; display: flex; flex-direction: column; gap: 36px; border-top: 1px solid {{t.line}}">
-<div style="display: flex; justify-content: space-between; align-items: flex-end">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em; max-width: 640px">One library, three starting lines.</h2>
-<p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}; max-width: 420px; line-height: 1.55">Tell us where you're starting and we'll suggest the pace and the first chapter.</p>
-</div>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">01 · Starting from zero</span>
-<h3 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); font-weight: 600">“What's an array?”</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">Begin with language basics, then Starter stories in plain words. No jargon until you've seen the idea move.</p>
-<span style="margin-top: 6px; font-size: var(--fs17); font-weight: 600; color: {{t.accent}}">Path: Start here → First problems → Patterns</span>
-</div>
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">02 · Students &amp; placement prep</span>
-<h3 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); font-weight: 600">“I can code, but patterns don't click.”</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">Pattern-by-pattern tracks with company tags, typical solve times and a timer you can race.</p>
-<span style="margin-top: 6px; font-size: var(--fs17); font-weight: 600; color: {{t.accent}}">Path: Pattern tracks → timed practice</span>
-</div>
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">03 · Working engineers</span>
-<h3 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); font-weight: 600">“I knew this once. Interview's Friday.”</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">The Go deeper notes for the exact reason, the master sheet for breadth, and Revisit to bring old patterns back.</p>
-<span style="margin-top: 6px; font-size: var(--fs17); font-weight: 600; color: {{t.accent}}">Path: Sheet → Code → Revisit</span>
-</div>
+<div style="display: flex; flex-direction: column; gap: 32px">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em">How it works</h2>
+<div style="display: flex; gap: 24px; align-items: flex-start"><span style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 600">1</span><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Watch it move</span><span style="font-size: var(--fs18); line-height: 28px; color: {{t.text2}}">Each problem is a short story. Step forward and back at your own pace.</span></span></div>
+<div style="display: flex; gap: 24px; align-items: flex-start"><span style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 600">2</span><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Name the pattern</span><span style="font-size: var(--fs18); line-height: 28px; color: {{t.text2}}">Guess which idea fits, then see why. Hints are clues, never spoilers.</span></span></div>
+<div style="display: flex; gap: 24px; align-items: flex-start"><span style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid {{t.line2}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 600">3</span><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Write the code</span><span style="font-size: var(--fs18); line-height: 28px; color: {{t.text2}}">Python, Java, C++, JavaScript and Go. Run your own code against tests.</span></span></div>
 </div>
 </section>
 
-<!-- HOW A STORY WORKS -->
-<section style="padding: 72px 80px; background: {{t.band}}; color: {{t.bandText}}; display: flex; flex-direction: column; gap: 40px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">How a story plays</h2>
+<!-- TRACKS -->
+<section aria-label="Tracks" style="padding: 48px 80px; display: flex; flex-direction: column; gap: 24px">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em">Pick a track</h2>
+<div style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
+<a href="Start.dc.html" style="min-height: 96px; padding: 24px 0; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 24px">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Start here</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">Never coded? Begin from zero.</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<a href="Patterns.dc.html" style="min-height: 96px; padding: 24px 0; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 24px">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">DSA</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">{{sheetTotal}} problems, {{storyTotal}} animated stories.</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<a href="SystemDesign.dc.html" style="min-height: 96px; padding: 24px 0; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 24px">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">System design</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">Big systems, one picture at a time.</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<a href="AIML.dc.html" style="min-height: 96px; padding: 24px 0; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 24px">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">AI &amp; ML</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">How models learn, step by step.</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+</div>
+</section>
+
+<!-- CLOSING CALL TO ACTION -->
+<section style="padding: 48px 80px; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); line-height: 1.1; font-weight: 600; letter-spacing: -0.02em">{{cta.closing}}</h2>
+<a href="{{cta.href}}" style="height: 56px; padding: 0 32px; display: inline-flex; gap: 12px; align-items: center; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs18); font-weight: 600">{{cta.label}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</section>
+
+<!-- MORE ABOUT THE SITE (folds) -->
+<section aria-label="More about the site" style="padding: 48px 80px; display: flex; flex-direction: column; gap: 24px">
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em">More about the site</h2>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Where should I start?</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Three paths, by what you know today</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column">
+<a href="Start.dc.html" style="padding: 24px 0; border-bottom: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); font-weight: 600">I have never coded</span><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Begin with language basics, then Starter stories in plain words. Start here, then First problems, then Patterns.</span></a>
+<a href="Patterns.dc.html" style="padding: 24px 0; border-bottom: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); font-weight: 600">I can code, but patterns do not click</span><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Pattern-by-pattern tracks with company tags, typical solve times and a timer you can race.</span></a>
+<a href="Sheet.dc.html" style="padding: 24px 0; display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); font-weight: 600">I knew this once and the interview is soon</span><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">The Go deeper notes for the exact reason, the master sheet for breadth, and Revisit to bring old patterns back.</span></a>
+</div>
+</div>
+</details>
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">How a story plays</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Four chapters, one step at a time</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 32px">
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px">
-<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 2px solid {{t.bandAccent}}">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.bandAccent}}">Chapter 1</span>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 2px solid {{t.line2}}">
+<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Chapter 1</span>
 <h3 style="margin: 0; font-size: var(--fs24); font-weight: 600">Meet the cast</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.bandMuted}}">A briefing before the clock starts: the quest, the typical solve time, who asked it in interviews, and the story hints waiting for you.</p>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">A briefing before the clock starts: the quest, the typical solve time, who asked it in interviews, and the story hints waiting for you.</p>
 </div>
-<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 2px solid {{t.bandAccent}}">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.bandAccent}}">Chapter 2</span>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 2px solid {{t.line2}}">
+<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Chapter 2</span>
 <h3 style="margin: 0; font-size: var(--fs24); font-weight: 600">Spot the pattern</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.bandMuted}}">The pattern name stays hidden until you guess it. Hints come from the characters, as clues in the story, never as spoilers.</p>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">The pattern name stays hidden until you guess it. Hints come from the characters, as clues in the story, never as spoilers.</p>
 </div>
-<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 2px solid {{t.bandAccent}}">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.bandAccent}}">Chapter 3</span>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 2px solid {{t.line2}}">
+<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Chapter 3</span>
 <h3 style="margin: 0; font-size: var(--fs24); font-weight: 600">Walk it frame by frame</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.bandMuted}}">Every smallest step is a scene. Play it, pause it, go back. The characters talk it through and the code line lights up with them.</p>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">Every smallest step is a scene. Play it, pause it, go back. The characters talk it through and the code line lights up with them.</p>
 </div>
-<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 2px solid {{t.bandAccent}}">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.bandAccent}}">Chapter 4</span>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 2px solid {{t.line2}}">
+<span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Chapter 4</span>
 <h3 style="margin: 0; font-size: var(--fs24); font-weight: 600">Write it in your language</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.bandMuted}}">Same logic in Python, Java, C++, JavaScript and Go. Then run your own code against the tests, and try a related story.</p>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">Same logic in Python, Java, C++, JavaScript and Go. Then run your own code against the tests, and try a related story.</p>
 </div>
 </div>
-</section>
-<!-- SUCCESS STORIES (auto-scrolling, also scrollable by hand) -->
-<section aria-label="Success stories" style="padding: 80px 0 72px; display: flex; flex-direction: column; gap: 32px">
-<div style="padding: 0 80px; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Success stories</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs48); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05">From “what's an array?”<br>to offer letters.</h2>
 </div>
-<p style="margin: 0; max-width: 420px; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">Students, career switchers, parents on a one-hour budget and senior engineers brushing up. Different starting lines, same ending.</p>
+<div style="display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}; line-height: 1.55">One moment from Two Sum II: the numbers are 1 and 11, and the target is 10. Every step reads like this, and the fold under it holds the exact reason.</p>
 </div>
-<div ref="{{marqueeRef}}" onMouseEnter="{{pauseMarquee}}" onMouseLeave="{{resumeMarquee}}" onTouchStart="{{pauseMarquee}}" tabindex="0" aria-label="Success stories, scroll sideways" style="overflow-x: auto; padding: 8px 0 18px; scrollbar-width: thin; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%)">
-<div style="display: flex; gap: 20px; width: max-content; padding: 0 80px">
-<sc-for list="{{stories}}" as="ss" hint-placeholder-count="8">
-<article style="width: 380px; flex-shrink: 0; box-sizing: border-box; padding: 26px; border-radius: 22px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; gap: 12px; align-items: center">
-<span style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 999px; background: {{ss.color}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs18); font-weight: 800">{{ss.initials}}</span>
-<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
-<span style="font-size: var(--fs18); font-weight: 700">{{ss.name}}</span>
-<span style="font-size: var(--fs16); color: {{t.muted}}">{{ss.from}}</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs16); font-weight: 700">The step</span>
+<p style="margin: 0; font-size: var(--fs24); line-height: 1.5">1 + 11 = 12, which is too big. The only way to get smaller is a smaller number on the right, so the right marker steps left.</p>
+</div>
+<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{t.sunk}}; color: {{t.text}}; font-size: var(--fs16); font-weight: 700">Go deeper</span>
+<p style="margin: 0; font-size: var(--fs20); line-height: 1.6"><code style="font-family: {{t.mono}}; font-size: var(--fs18); background: {{t.sunk}}; padding: 2px 6px; border-radius: 6px">total = 12 &gt; target</code>. Every pair that uses 11 is at least 1 + 11, so index 5 can never be in the answer. <code style="font-family: {{t.mono}}; font-size: var(--fs18); background: {{t.sunk}}; padding: 2px 6px; border-radius: 6px">right -= 1</code> drops it in O(1), and the answer stays between the two pointers.</p>
 </div>
 </div>
-<p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs20); line-height: 1.5; flex-grow: 1">“{{ss.quote}}”</p>
-<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid {{t.line}}">
-<span style="font-size: var(--fs17); font-weight: 700; color: {{t.accent}}">→ {{ss.to}}</span>
-<span style="font-size: var(--fs15); color: {{t.muted}}">Pattern that clicked: {{ss.pattern}}</span>
-</div>
-</article>
-</sc-for>
 </div>
 </div>
-<span style="padding: 0 80px; font-size: var(--fs15); color: {{t.muted}}">Illustrative learner journeys.</span>
-</section>
-
-
-<!-- PATTERN SHELF -->
-<section style="padding: 80px 80px 64px; display: flex; flex-direction: column; gap: 36px">
+</details>
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Patterns, not piles of problems</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Eight patterns, each a few animated stories</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 32px">
 <div style="display: flex; justify-content: space-between; align-items: flex-end">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">Patterns, not piles of problems</h2>
 <p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}; max-width: 640px; line-height: 1.55">Two Sum, 3Sum and Container With Most Water are one plot with different props. Learn the plot once; recognise it everywhere.</p>
 </div>
 <a href="Patterns.dc.html" style="font-size: var(--fs18); font-weight: 600; color: {{t.accent}}">All patterns →</a>
@@ -488,87 +494,18 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.dp.line}}</span>
 </a>
 </div>
-</section>
-
-<!-- ONE STEP, TWO LEVELS -->
-<section style="padding: 64px 80px; display: flex; flex-direction: column; gap: 32px; border-top: 1px solid {{t.line}}">
-<div style="display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">Plain words first. Go deeper when you want.</h2>
-<p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}; line-height: 1.55">One moment from the Lantern Bridge: the lanterns hold 1 and 11, the gate wants 10. Every step reads like this, and the fold under it holds the exact reason.</p>
-</div>
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
-<span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs16); font-weight: 700">The step</span>
-<p style="margin: 0; font-size: var(--fs24); line-height: 1.5">1 + 11 = 12, which is too bright. The only way to get dimmer is a dimmer lantern on the right, so the right marker steps left.</p>
-</div>
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
-<span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{t.sunk}}; color: {{t.text}}; font-size: var(--fs16); font-weight: 700">Go deeper</span>
-<p style="margin: 0; font-size: var(--fs20); line-height: 1.6"><code style="font-family: {{t.mono}}; font-size: var(--fs18); background: {{t.sunk}}; padding: 2px 6px; border-radius: 6px">total = 12 &gt; target</code>. Every pair that uses 11 is at least 1 + 11, so index 5 can never be in the answer. <code style="font-family: {{t.mono}}; font-size: var(--fs18); background: {{t.sunk}}; padding: 2px 6px; border-radius: 6px">right -= 1</code> drops it in O(1), and the answer stays between the two pointers.</p>
 </div>
 </div>
-</section>
-<!-- RIGHT NOW -->
-<section style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px">
-<div style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="display: flex; gap: 8px; align-items: center; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{t.ok}}; animation: pulse 1.6s ease-in-out infinite"></span>Right now on DSAMaxxing <span title="Sample data until accounts launch" style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: var(--fs13); font-weight: 700; letter-spacing: 0; text-transform: none; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span></span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600; letter-spacing: -0.02em">You won't be learning alone.</h2>
-</div>
-<div style="display: flex; flex-direction: column; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
-<sc-for list="{{feed}}" as="fd" hint-placeholder-count="5">
-<div style="display: flex; gap: 14px; align-items: center; padding: 14px 18px; border-bottom: 1px solid {{t.line}}; animation: {{fd.anim}}">
-<span style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; background: {{fd.bg}}; color: {{t.text}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700">{{fd.tag}}</span>
-<span style="flex-grow: 1; font-size: var(--fs18); line-height: 1.4">{{fd.who}} <span style="color: {{t.muted}}">{{fd.verb}}</span> <b>{{fd.what}}</b></span>
-<span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{fd.when}}</span>
-</div>
-</sc-for>
-</div>
-<span style="font-size: var(--fs15); color: {{t.muted}}">Sample activity until accounts launch. Your own progress is real and stays in this browser.</span>
-</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="padding: 22px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: var(--fs19); font-weight: 700; display: flex; align-items: center; gap: 8px">This week's Lantern League <span title="Sample data until accounts launch" style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: var(--fs13); font-weight: 700; letter-spacing: 0; text-transform: none; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span></span><a href="Leaderboard.dc.html" style="font-size: var(--fs16); font-weight: 700; color: {{t.accent}}">Full board →</a></div>
-<sc-for list="{{leaders}}" as="ld" hint-placeholder-count="5">
-<div style="display: flex; gap: 12px; align-items: center; min-height: 36px">
-<span style="width: 24px; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{ld.rankColor}}">{{ld.rank}}</span>
-<span style="flex-grow: 1; font-size: var(--fs17); font-weight: 600">{{ld.name}}</span>
-<span style="font-size: var(--fs15); color: {{t.muted}}">{{ld.streak}}-day streak</span>
-<span style="width: 70px; text-align: right; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700">{{ld.xp}} XP</span>
-</div>
-</sc-for>
-</div>
-<div style="padding: 22px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: var(--fs19); font-weight: 700">Stories to try next</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px">
-<sc-for list="{{trending}}" as="tr" hint-placeholder-count="4"><a href="Briefing.dc.html" onClick="{{tr.go}}" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; gap: 8px; font-size: var(--fs17)"><span style="font-family: {{t.display}}; font-style: italic">{{tr.story}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{tr.pattern}}</span></a></sc-for>
-</div>
-</div>
-</div>
-</section>
-
-
-<!-- BASICS TEASER -->
-<section style="padding: 0 80px 72px">
-<div style="background: #0C110B; color: #C9EBB4; border: 1px solid #23321F; border-radius: 24px; padding: 48px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center; font-family: 'JetBrains Mono', monospace">
-<div style="display: flex; flex-direction: column; gap: 16px">
-<span style="font-size: var(--fs16); color: #7F9C70">~/start-here $ python lesson_1.py</span>
-<h2 style="margin: 0; font-size: var(--fs36); font-weight: 700; line-height: 1.2; color: #9FE870">Never written code? Start here.</h2>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.7; color: #B4D3A1">Short animated lessons take you from your first line of code to your first real problem. Watch each program run line by line, then run your own.</p>
-<a href="Start.dc.html" style="align-self: flex-start; height: 48px; padding: 0 22px; display: flex; align-items: center; border-radius: 10px; background: #9FE870; color: #0C110B; font-size: var(--fs18); font-weight: 700">Start here</a>
-</div>
-<div style="background: #121A10; border: 1px solid #23321F; border-radius: 14px; padding: 24px; font-size: var(--fs18); line-height: 1.9; white-space: pre; color: #C9EBB4"><span style="color: #7F9C70"># a backpack with numbered pockets</span>
-bag = ["map", "torch", "rope"]
-bag.append("snack")   <span style="color: #7F9C70"># new pocket at the end</span>
-bag[0]                <span style="color: #7F9C70"># → "map"  (pockets start at 0)</span>
-bag[-1]               <span style="color: #7F9C70"># → "snack" (count from the back)</span>
-bag.pop()             <span style="color: #7F9C70"># take out the last thing</span></div>
-</div>
-</section>
-<!-- WHY IT STICKS -->
-<section style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 28px">
+</details>
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Why it sticks</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Revisit, spot the pattern, code, streaks, the sheet</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 32px">
 <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Why it sticks</span>
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs42); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">You forget a solved problem<br>within a week. We built for that.</h2>
 </div>
 <p style="margin: 0; max-width: 380px; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">Watching is the start. You also name the pattern, write the code and come back at the right time. That is how a pattern becomes yours.</p>
@@ -582,11 +519,16 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </a>
 </sc-for>
 </div>
-</section>
-
-<!-- MORE WAYS IN -->
-<section style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 28px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600; letter-spacing: -0.02em">Everything you need around the stories</h2>
+</div>
+</div>
+</details>
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Everything around the stories</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Interview plans, glossary, Git, code and more</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 32px">
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px">
 <a href="Interview.dc.html" onClick="{{toPlans}}" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Interview prep</span>
@@ -629,13 +571,42 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{more.code}}</span>
 </a>
 </div>
-</section>
-
-
-<!-- TRIAL -->
-<section id="trial" style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; align-items: center">
+</div>
+</div>
+</details>
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Never written code?</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">A taste of the Start here lessons</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div>
+<div style="background: #0C110B; color: #C9EBB4; border: 1px solid #23321F; border-radius: 24px; padding: 48px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center; font-family: 'JetBrains Mono', monospace">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: var(--fs16); color: #7F9C70">~/start-here $ python lesson_1.py</span>
+<h2 style="margin: 0; font-size: var(--fs36); font-weight: 700; line-height: 1.2; color: #9FE870">Never written code? Start here.</h2>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.7; color: #B4D3A1">Short animated lessons take you from your first line of code to your first real problem. Watch each program run line by line, then run your own.</p>
+<a href="Start.dc.html" style="align-self: flex-start; height: 48px; padding: 0 22px; display: flex; align-items: center; border-radius: 10px; background: #9FE870; color: #0C110B; font-size: var(--fs18); font-weight: 700">Start here</a>
+</div>
+<div style="background: #121A10; border: 1px solid #23321F; border-radius: 14px; padding: 24px; font-size: var(--fs18); line-height: 1.9; white-space: pre; color: #C9EBB4"><span style="color: #7F9C70"># a backpack with numbered pockets</span>
+bag = ["map", "torch", "rope"]
+bag.append("snack")   <span style="color: #7F9C70"># new pocket at the end</span>
+bag[0]                <span style="color: #7F9C70"># → "map"  (pockets start at 0)</span>
+bag[-1]               <span style="color: #7F9C70"># → "snack" (count from the back)</span>
+bag.pop()             <span style="color: #7F9C70"># take out the last thing</span></div>
+</div>
+</div>
+</div>
+</details>
+<details id="trial" style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Free in early access</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Plans come later, with a 3-day free trial</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center">
 <div style="display: flex; flex-direction: column; gap: 18px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs52); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05">Free in early access.<br>Plans come later.</h2>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">Free in early access.<br>Plans come later.</h2>
 <p style="margin: 0; font-size: var(--fs20); color: {{t.text2}}; line-height: 1.55">Everything is open now, with no account, no card and no trial clock. Your progress is saved in this browser. When accounts launch, each plan will start with a 3-day free trial, at the prices below.</p>
 <a href="Auth.dc.html" style="align-self: flex-start; height: 52px; padding: 0 26px; display: flex; align-items: center; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs18); font-weight: 600">Make a free profile</a>
 </div>
@@ -655,11 +626,17 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 </sc-for>
 </div>
-</section>
-<!-- FAQ -->
-<section id="faq" style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px">
+</div>
+</div>
+</details>
+<details id="faq" style="border-radius: 16px; background: {{t.surface}}">
+<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Questions, answered</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Six short answers</span></span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 24px">
 <div style="display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600; letter-spacing: -0.02em">Questions, answered</h2>
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">Still unsure? <a href="About.dc.html" style="color: {{t.accent}}; font-weight: 700">Write to us</a> — a real person reads every message.</p>
 </div>
 <div style="display: flex; flex-direction: column">
@@ -670,8 +647,12 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 </sc-for>
 </div>
+</div>
+</div>
+</details>
+</div>
+<a href="About.dc.html" style="align-self: flex-start; font-size: var(--fs18); font-weight: 600; color: {{t.accent}}">About DSAMaxxing →</a>
 </section>
-
 
 <!-- FOOTER -->
 <footer style="padding: 56px 80px 32px; background: {{t.band}}; color: {{t.bandMuted}}; display: flex; flex-direction: column; gap: 40px; font-size: var(--fs17)">
@@ -694,7 +675,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":8100}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["max","paper","ink","field"],"default":"max"},"$preview":{"width":1440,"height":3480}}'>
 // @@THEMES@@ — generated block, shared by every board.
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SERIF = "'Fraunces', Georgia, serif";
@@ -2244,18 +2225,6 @@ const HERO = [
 ];
 const PITCH = 68; // 56px lantern + 12px gap
 const PITCH_PHONE = 52; // 44px lantern + 8px gap on phones (see the Main phone CSS)
-// Illustrative learner journeys (labelled as such on the page).
-const STORIES = [
-  { initials: 'AM', name: 'Aishwarya Menon', from: 'Complete beginner · B.Com graduate, Kochi', quote: 'In March I didn\u2019t know what an array was. The plain-words steps never made me feel stupid, and by the Lantern Bridge I was explaining two pointers to my little sister.', to: 'Junior developer at Zoho', pattern: 'Two Pointers' },
-  { initials: 'RD', name: 'Rohan Das', from: 'Final-year student · tier-3 college, Bhubaneswar', quote: 'Forty days before placements I followed the learning path from strings to graphs and stopped memorising. In the interview I saw Rotting Oranges as a ripple before they finished reading it out.', to: 'SDE-1 at Amazon', pattern: 'Breadth-First Search' },
-  { initials: 'SK', name: 'Siddharth Kulkarni', from: 'Career switcher · mechanical engineer, Pune', quote: 'Every other site assumed I already thought like a programmer. Here the story came first and the code second \u2014 the only order that ever worked for me.', to: 'Backend engineer at Razorpay', pattern: 'Hash Map' },
-  { initials: 'VI', name: 'Venkatesh Iyer', from: 'Senior engineer · 9 years in services, Chennai', quote: 'I hadn\u2019t touched DP since college. The Go deeper notes plus the company view got me through five rounds in three weeks without grinding hundreds of problems.', to: 'Senior SDE at Microsoft', pattern: 'Dynamic Programming' },
-  { initials: 'MJ', name: 'Meghna Joshi', from: 'Working parent · one hour a night, Ahmedabad', quote: 'The streak kept me honest: twenty minutes a night, one story at a time. Related stories made new problems feel like sequels, not strangers.', to: 'Frontend lead at Swiggy', pattern: 'Sliding Window' },
-  { initials: 'KA', name: 'Kabir Ahmed', from: 'Bootcamp graduate, Hyderabad', quote: 'Bootcamp taught me React. This taught me why a hash map is a coat check \u2014 and the glossary page on enumerate saved me in a Python round.', to: 'SDE at CRED', pattern: 'Hash Map' },
-  { initials: 'DR', name: 'Deepa Raghavan', from: 'Java developer moving to Python, Bengaluru', quote: 'Same story in Java, then in Python, with the matching line lit up each time. Switching back and forth did more for my Python than a month of tutorials.', to: 'Data engineer at Flipkart', pattern: 'Binary Search' },
-  { initials: 'NR', name: 'Nandini Rao', from: 'Back after a four-year career break, Mysuru', quote: 'My confidence was gone. The hints nudged without spoiling anything. I got the confidence back before I got the job.', to: 'Software engineer at Infosys', pattern: 'Depth-First Search' }
-];
-// who, verb, what, tag — live activity feed
 // Library shelf cards: tagline and story count per pattern, from the catalog.
 function mainShelf() {
   const rank = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };
@@ -2269,17 +2238,6 @@ function mainShelf() {
   });
   return out;
 }
-const FEED = [
-  ['Sneha in Pune', 'started', 'The Campfire Trio', '2P'],
-  ['Karthik, backend dev in Bengaluru', 'finished', 'Islands on the Map', 'DFS'],
-  ['Farhan in Hyderabad', 'kept a 30-day streak on', 'The Coat-Check Counter', 'HM'],
-  ['Divya in Chennai', 'unlocked stage 4:', 'Stacks, queues & heaps', 'LVL'],
-  ['Ishaan in Delhi', 'read the glossary card for', 'enumerate', 'KW'],
-  ['Rahul, SDE-2 in Gurugram', 'started a mock interview on', 'The Train Yard Merge', 'MOCK'],
-  ['Neha in Kolkata', 'finished', 'The Exact Change Counter', 'DP'],
-  ['Arjun in Jaipur', 'switched to Go and replayed', 'The Lantern Bridge', '2P']
-];
-const LEADERS = [['Priya Iyer', 2140, 41], ['Karthik Reddy', 1985, 28], ['Sneha Kulkarni', 1760, 16], ['Arjun Mehta', 1690, 12], ['Fatima Shaikh', 1540, 9]];
 // What keeps people coming back, and where each piece lives.
 const STICKS = [
   ['Revisit', 'Remember it next month', 'Each story comes back right before you would forget it. Five cards a day.', 'Revisit.dc.html', null],
@@ -2300,24 +2258,23 @@ const FAQS = [
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, step: 0, playing: true, feed: 0, faq: 0 };
-    this.marqueeRef = (el) => { this.marquee = el; };
+    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, step: 0, playing: false, faq: 0 };
   }
   componentDidMount() {
-    this.startTimer();
     listenTheme(this);
-    this.feedTimer = setInterval(() => this.setState({ feed: this.state.feed + 1 }), 3200);
-    this.scrollTimer = setInterval(() => {
-      const el = this.marquee;
-      if (!el || this.marqueePaused) return;
-      el.scrollLeft += 1;
-      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft -= el.scrollWidth / 2;
-    }, 28);
+    // Footer links to Pricing and FAQ open the matching fold.
+    this.openHash = () => {
+      try {
+        const el = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
+        if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView(); }
+      } catch (e) {}
+    };
+    window.addEventListener('hashchange', this.openHash);
+    this.openHash();
   }
   componentWillUnmount() {
     clearInterval(this.timer);
-    clearInterval(this.feedTimer);
-    clearInterval(this.scrollTimer);
+    try { window.removeEventListener('hashchange', this.openHash); } catch (e) {}
     unlistenTheme(this);
   }
   startTimer() {
@@ -2338,8 +2295,9 @@ class Component extends DCLogic {
       lumi: { initial: 'L', color: t.accent, radius: '999px' },
       roo: { initial: 'R', color: t.right, radius: '10px' }
     }[who];
+    let back = false;
+    try { back = loadUser() || DS.stories().count + DS.lessons().count + DS.codePasses().count + DS.sheet().ticked > 0 || Object.keys(DS.start().done).length > 0; } catch (e) {}
     const th = {};
-    const feedAt = this.state.feed;
     ['max', 'paper', 'ink', 'field'].forEach((k) => {
       const on = themeKey === k;
       th[k] = () => { saveTheme(k); this.setState({ theme: k }); };
@@ -2359,19 +2317,9 @@ class Component extends DCLogic {
         ai: SITE_INDEX.counts.ai + ' animated lessons, from gradient descent to attention and agents.',
         code: SITE_INDEX.counts.runnable + ' problems with tests you can run in Python or JavaScript.'
       },
-      marqueeRef: this.marqueeRef,
-      pauseMarquee: () => { this.marqueePaused = true; },
-      resumeMarquee: () => { this.marqueePaused = false; },
-      stories: STORIES.concat(STORIES).map((st, i) => Object.assign({}, st, { color: [t.accent, t.right, t.ok, t.owl][i % 4] })),
-      feed: [0, 1, 2, 3, 4].map((k) => {
-        const f = FEED[(feedAt + k) % FEED.length];
-        return { who: f[0], verb: f[1], what: f[2], tag: f[3], when: ['just now', '1 min ago', '2 min ago', '4 min ago', '6 min ago'][k], bg: k === 0 ? t.okBg : t.sunk, anim: k === 0 ? 'feedin 0.5s ease' : 'none' };
-      }),
-      leaders: LEADERS.map(([name, xp, streak], i) => ({ rank: i + 1, name, xp, streak, rankColor: i === 0 ? t.accent : t.muted })),
-      trending: ['container', '3sum', 'number-of-islands', 'coin-change'].map((id) => {
-        const p = PROBLEMS.find((x) => x.id === id);
-        return { story: p.story, pattern: p.pattern, go: () => saveProblem(id) };
-      }),
+      cta: back
+        ? { href: 'Home.dc.html', label: 'Continue to Home', closing: 'Pick up where you left off.' }
+        : { href: 'Start.dc.html', label: 'Start here', closing: 'Ready when you are.' },
       faqs: FAQS.map(([q, a], i) => ({ q, a, open: this.state.faq === i, rot: this.state.faq === i ? 'rotate(45deg)' : 'none', toggle: () => this.setState({ faq: this.state.faq === i ? -1 : i }) })),
       toPlans: () => { try { window.localStorage.setItem('dsaviz-interview-tab', 'plans'); } catch (e) {} },
       toFine: () => { try { window.localStorage.setItem('dsaviz-about-jump', 'fine'); } catch (e) {} },

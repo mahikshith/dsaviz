@@ -3907,7 +3907,7 @@ function aiHier(p) {
   s.push(aiStep('Hierarchical clustering begins with every cafe as its own group of one. It then joins groups, one pair at a time.', [], aiScene({ axes }, pts())));
   s.push(aiStep('Join 1: find the two closest groups. Cafes ' + (m1.a + 1) + ' and ' + (m1.b + 1) + ' are closest, ' + aiFmt(m1.h, 2) + ' apart. They become one group.', ['rg' + m1.m.slice().sort().join('_')], aiScene({ axes }, pts(D.groups(1)), rings(D.groups(1)))));
   s.push(aiStep('Join 2: cafes ' + (m2.a + 1) + ' and ' + (m2.b + 1) + ', ' + aiFmt(m2.h, 2) + ' apart. Each join lowers the number of groups by one.', [], aiScene({ axes }, pts(D.groups(2)), rings(D.groups(2)))));
-  s.push(aiStep('How far apart are two groups? Average linkage takes the mean of all distances between their cafes. Here ' + mg3.pairs + ' distances give ' + aiFmt(mg3.h, 2) + '.', [], aiScene({ axes }, pts(D.groups(4)), rings(D.groups(4)))));
+  s.push(aiStep('How far apart are two groups? Average linkage takes the average of all distances between their cafes. Here ' + mg3.pairs + ' distances give ' + aiFmt(mg3.h, 2) + '.', [], aiScene({ axes }, pts(D.groups(4)), rings(D.groups(4)))));
   s.push(aiStep('After 4 joins, ' + (n - 4) + ' groups are left. The rings show where the groups are.', [], aiScene({ axes }, pts(D.groups(4)), rings(D.groups(4)))));
   s.push(aiStep('The last two joins are far longer: ' + aiFmt(M[n - 3].h, 1) + ' and ' + aiFmt(M[n - 2].h, 1) + '. After ' + full + ' joins everything is one group.', [], aiScene({ axes }, pts(D.groups(full)), rings(D.groups(full)))));
   s.push(aiStep('A dendrogram records the joins. Each U is one join. Its height is the distance when the join happened.', ['dj' + (n - 2)], aiScene({ axes }, pts(), dendro(full, n - 2))));
@@ -4046,7 +4046,7 @@ function aiTsne(p) {
   s.push(aiStep('After 60 rounds the clumps are clearer. Shops of one colour have moved next to each other.', [], aiScene({ axes }, pts(R.snaps[60]), ro('round 60'))));
   s.push(aiStep('After 250 rounds the map settles. ' + (R.sep >= 2.5 ? 'The three real groups are now three clumps, found without being told the groups.' : 'The groups stay blurry, because a perplexity this large looks past each group of six.'), [], aiScene({ axes }, pts(fin), ro('round 250'))));
   s.push(aiStep('A check: for each shop, its 3 nearest shops on the map match the original 3 nearest ' + aiPct(R.kept) + ' of the time.', [], aiScene({ axes }, pts(fin), ro('neighbours kept: ' + aiPct(R.kept)))));
-  s.push(aiStep('The name t-SNE comes from the curve it uses on the map. Its heavy tails let far-apart shops sit far apart, so clumps do not crowd.', [], aiScene({ axes }, pts(fin))));
+  s.push(aiStep('t-SNE draws the map with a curve that lets far-apart shops stay far apart. That stops the clumps from crowding together.', [], aiScene({ axes }, pts(fin))));
   s.push(aiStep('Read the map with care: gaps and clump sizes can mislead. Perplexity 3 keeps ' + aiPct(aiTsneRun(3).kept) + ' of neighbours; 10 keeps ' + aiPct(aiTsneRun(10).kept) + '.', [], aiScene({ axes }, pts(fin), ro('perplexity ' + perp))));
   s.push(aiStep('UMAP has the same goal. It links each shop to its nearest shops in a graph, then lays the graph flat. It is often faster.', [], aiScene({ axes }, pts(fin), graph)));
   return s;
@@ -4267,7 +4267,7 @@ function aiRforest(p) {
   s.push(aiStep('One decision tree asks yes or no questions until every leaf holds one colour. Its map has sharp, jagged edges.', [], aiScene({ axes }, cell(fullFn, 'g'), dots(), key)));
   s.push(aiStep('That tree has memorised the 50 training fruit, noise included. On the 200 new fruit it is right ' + aiPct(accFull) + ' of the time.', [], aiScene({ axes }, cell(fullFn, 'g'), dots(), testDots, ro('new fruit: ' + aiPct(accFull)))));
   s.push(aiStep('Idea: ask many trees and take a vote. If every tree is the same, the vote adds nothing. So we make the trees differ.', [], aiScene({ axes }, dots())));
-  s.push(aiStep('Trick 1: each tree trains on a bootstrap sample. Draw ' + n + ' fruit with replacement, so some repeat and some are left out.', [], aiScene({ axes }, dots(undefined, outIdx), ro('hollow = left out of tree 2'))));
+  s.push(aiStep('Trick 1: each tree trains on a bootstrap sample. Draw ' + n + ' fruit one at a time, putting each back. Some repeat and some are left out.', [], aiScene({ axes }, dots(undefined, outIdx), ro('hollow = left out of tree 2'))));
   s.push(aiStep('Tree 2 saw only ' + uniq + ' different fruit. About 63% are seen and 37% are left out, on average.', [], aiScene({ axes }, dots(undefined, outIdx), ro(uniq + ' of ' + n + ' fruit seen'))));
   s.push(aiStep('Trick 2: at each split, a tree may look at only one randomly chosen measure. That also makes the trees differ.', [], aiScene({ axes }, cell(f2Fn, 'g'), dots(), ro('tree 2'))));
   s.push(aiStep('Tree 2 draws a different map from the full tree. By itself it scores ' + aiPct(accOne) + ' on new fruit.', [], aiScene({ axes }, cell(f2Fn, 'g'), dots(), testDots, ro('tree 2: ' + aiPct(accOne)))));
@@ -4404,7 +4404,7 @@ function aiLongctx(p) {
   s.push(aiStep('Text is cut into tokens, small pieces such as words or word parts. Window size is counted in tokens. A longer window holds more.', [], aiScene(win(9, 'a'), ro('window full: 9 of 14 tokens', 180))));
   s.push(aiStep('Attention lets each new token look back at every earlier token. For 6 tokens that is a triangle of 21 looks.', [], aiScene(tri(6), ro('6 tokens: 21 looks'))));
   s.push(aiStep('Double the tokens and the looks grow about four times. 12 tokens give 78 looks. The cost grows with the square of the length.', [], aiScene(tri(6), ro('6 tokens: 21   12 tokens: 78'))));
-  s.push(aiStep('Your slider: ' + K + 'K tokens, where 1K is 1,024. That is about ' + aiBig(looks) + ' looks for each attention head in each layer.', [], aiScene(ro(K + 'K tokens', 200), { labels: [{ id: 'lk', x: 500, y: 240, text: aiBig(looks) + ' looks per head per layer', c: 'a', size: 18, mono: true }] })));
+  s.push(aiStep('Your slider: ' + K + 'K tokens, where 1K is 1,024. One attention head makes about ' + aiBig(looks) + ' looks in one layer.', [], aiScene(ro(K + 'K tokens', 200), { labels: [{ id: 'lk', x: 500, y: 240, text: aiBig(looks) + ' looks per head per layer', c: 'a', size: 18, mono: true }] })));
   s.push(aiStep('To skip repeated work, the model saves notes on every earlier token. These notes are the KV cache. Each token’s notes take 131 KB here.', [], aiScene(ro('131,072 bytes per token', 200), { labels: [{ id: 'ex', x: 500, y: 240, text: '32 layers x 8 heads x 128 numbers', c: 'm', size: 15, mono: true }, { id: 'ex2', x: 500, y: 266, text: 'x 2 (keys and values) x 2 bytes', c: 'm', size: 15, mono: true }] })));
   s.push(aiStep('At ' + K + 'K tokens the notes take ' + aiFmt(gib, 1) + ' GB. The example model, with 8 billion 16-bit weights, takes ' + aiFmt(wGib, 0) + ' GB.', ['bk'], aiScene(bars, ro(K + 'K tokens: ' + aiFmt(gib, 1) + ' GB of notes', 130))));
   s.push(aiStep('So a long window costs time and memory. Smarter memory layouts, such as paged storage for the notes, waste less of it.', [], aiScene(bars, ro(K + 'K tokens', 130))));

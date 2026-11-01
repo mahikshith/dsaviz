@@ -139,9 +139,11 @@ function dailyVals(cmp, t) {
 // The Back link names the page it returns to. The runtime keeps the trail (scripts/site-runtime.js).
 const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Learn', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Sheet',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
-function navBack() {
+// Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
+const BACK_PAGES = ['Chapter', 'Code', 'Story', 'AILesson', 'ConceptLesson', 'SDLesson', 'Briefing'];
+function navBack(page) {
   let to = null;
-  try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
+  try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   return { show: !!to, label: BACK_LABELS[name] || 'Back', aria: 'Back to ' + (BACK_LABELS[name] || 'the last page'), go: () => { try { window.__dsBack(); } catch (e) {} } };
 }
@@ -154,7 +156,7 @@ function navVals(cmp, t, themeKey, page) {
     // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
     tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
-      back: navBack(),
+      back: navBack(page),
       glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
         const on = key === section;

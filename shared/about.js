@@ -1,6 +1,6 @@
 // @@ABOUT@@ — "About this lesson" tab, shared by the lesson players (markup in shared/ui/about.html).
-// A lesson with about data gets two tabs under its title: Watch it and About this lesson. About opens by itself
-// the first time a learner opens that lesson (remembered in dsaviz-about-seen), Watch it after that.
+// A lesson with about data gets two tabs under its title: the lesson itself, which always opens first, and About
+// this lesson, a fold of detail the learner opens when they want it.
 // aboutVals(cmp, key, a, t, link): key is the lesson's id, a its about data ({ what, analogy, uses, before, words,
 // math: { lines: [mathml], symbols: [[mathml, meaning]], example }, steps, use, avoid, mistakes, cheat, next }),
 // link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name); watchLabel names
@@ -18,7 +18,7 @@ function aboutMath(html) { return (el) => { if (el && el.nodeType === 1 && el.ge
 function aboutVals(cmp, key, a, t, link, watchLabel) {
   // The first look at a lesson decides its opening view; it is kept on the component so marking the lesson as
   // seen does not flip it to Watch it on the next render.
-  if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: aboutSeenList().includes(key) ? 'watch' : 'about' };
+  if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: 'watch' };
   const v = cmp.state.aboutView;
   const view = !a ? 'watch' : v && v.key === key ? v.view : cmp.aboutFirst.view;
   if (view === 'about') markAboutSeen(key);

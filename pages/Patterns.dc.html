@@ -383,7 +383,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="position: absolute; left: 8px; top: {{lg.labelTop}}px; width: {{rm.gutterW}}px; display: flex; gap: 10px">
 <span aria-hidden="true" style="width: 26px; height: 26px; flex-shrink: 0; border-radius: 999px; background: {{t.sunk}}; border: 1px solid {{t.line2}}; font-size: var(--fs15); font-weight: 800; display: flex; align-items: center; justify-content: center">{{lg.n}}</span>
 <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs22); font-weight: 600; line-height: 1.1">{{lg.title}}</h2>
+<h3 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs20); font-weight: 600; line-height: 1.1">{{lg.title}}</h3>
 <p style="margin: 0; font-size: var(--fs15); line-height: 1.4; color: {{t.muted}}">{{lg.line}}</p>
 <sc-if value="{{lg.live}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--fs15); font-weight: 700; color: {{t.text2}}">{{lg.count}}</span></sc-if>
 <sc-if value="{{lg.soon}}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; padding: 2px 8px; border-radius: 999px; border: 1px dashed {{t.muted}}; font-size: var(--fs15); font-weight: 700; color: {{t.text2}}">{{lg.count}}</span></sc-if>
@@ -406,7 +406,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{mn.next}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 5px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs13); font-weight: 800; line-height: 15px; letter-spacing: 0.04em">NEXT</span></sc-if>
 <sc-if value="{{mn.soonTag}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 4px; border-radius: 999px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.muted}}; font-size: var(--fs13); font-weight: 700; line-height: 13px; letter-spacing: 0.04em">SOON</span></sc-if>
 </span>
-<span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: var(--fs17); font-weight: 600; line-height: 22px; white-space: nowrap; color: {{mn.labelFg}}">{{mn.label}}</span>
+<span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: var(--fs15); font-weight: 600; line-height: 20px; text-align: center; max-width: 124px; display: inline-block; color: {{mn.labelFg}}">{{mn.label}}</span>
 </button>
 </sc-for>
 </div>
@@ -2837,7 +2837,7 @@ const ringLen = (r) => 2 * Math.PI * r;
 const markOf = (name) => name.split(/[\s&/-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
 // ---- the roadmap (shared/roadmap.js): every lane, node and edge, laid out on one canvas ----
-const RM_GEO = { w: 1296, gutter: 200, padX: 64, padY: 26, rowH: 76 };
+const RM_GEO = { w: 1296, gutter: 200, padX: 72, padY: 26, rowH: 88 };
 const RM_NODES = ROADMAP_NODES.concat(PATTERN_MAP.nodes.map(([name, label, col, row]) => ({ id: name, lane: 'patterns', label, col, row, name, group: name })));
 const RM_EDGES = PATTERN_MAP.edges.concat(ROADMAP_EDGES);
 const RM_BY = {}; RM_NODES.forEach((n) => { RM_BY[n.id] = n; });
@@ -2997,7 +2997,7 @@ class Component extends DCLogic {
       l.top = layY;
       if (l.hidden) { l.h = 0; return; }
       const rows = ns.map((n) => n.row).filter((r, i, a) => a.indexOf(r) === i).sort((a, b) => a - b);
-      l.h = Math.max(RM_GEO.padY + 17 + (rows.length - 1) * RM_GEO.rowH + 45 + 24, l.key === "start" || l.key === "core" ? 216 : 176);
+      l.h = Math.max(RM_GEO.padY + 17 + (rows.length - 1) * RM_GEO.rowH + 45 + 24, l.key === "start" || l.key === "core" ? 264 : 248);
       ns.forEach((n) => { n.y = Math.round(l.top + RM_GEO.padY + 17 + rows.indexOf(n.row) * RM_GEO.rowH); });
       layY += l.h;
     });

@@ -169,8 +169,15 @@
   class App extends React.Component {
     constructor(p) { super(p); this.state = { page: pageFromHash() || 'Main.dc.html' }; }
     componentDidMount() {
-      window.__dsNav = (name, query) => {
+      // The Back link (shared/nav.js): a trail of the pages the learner came through, newest last, kept for the tab.
+      const TRAIL = 'dsaviz-trail';
+      const readTrail = () => { try { const v = JSON.parse(window.sessionStorage.getItem(TRAIL) || '[]'); return Array.isArray(v) ? v : []; } catch (err) { return []; } };
+      const saveTrail = (v) => { try { window.sessionStorage.setItem(TRAIL, JSON.stringify(v.slice(-20))); } catch (err) {} };
+      window.__dsTrail = () => { const v = readTrail(); return v.length ? v[v.length - 1] : null; };
+      window.__dsBack = () => { const v = readTrail(); const to = v.pop(); if (!to) return; saveTrail(v); window.__dsNav(to.page, to.query, true); };
+      window.__dsNav = (name, query, back) => {
         if (!window.DS_BOARDS[name]) return;
+        if (!back && name !== this.state.page) saveTrail(readTrail().concat([{ page: this.state.page, query: location.search }]));
         // Set the URL first so the new page reads its query (?problem=...) when it mounts; a plain link clears it.
         try { history.pushState(null, '', location.pathname + (query || '') + '#' + name.replace('.dc.html', '')); } catch (err) { try { location.hash = name.replace('.dc.html', ''); } catch (e2) {} }
         // A visit counter in the key remounts the page even when a link (or a search result) points at the page

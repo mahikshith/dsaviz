@@ -29,13 +29,13 @@ function basketScene() {
   B.node('b', '{ }', null); B.trail = ['b']; B.fate.b = 'ok'; out.push([]);
   steps.push(snap('intro', { snack: '—',
     dialog: [say('narr', 'Three snacks: 1, 2 and 3. How many different baskets can you pack?'), say('marker', 'I’ll take one path for each basket, and mark each snack I put in.'), say('narr', 'The empty basket counts too. Write it down first.')],
-    nar: { kid: 'The marker starts at the top with an empty basket. Even an empty basket is a choice, so he writes it on his list.', builder: 'dfs(0) starts with path = []. Its first line records a copy of path, so [] is answer 1.', expert: 'Each call records its path on entry, so every node of this tree is one subset. A set of n items has 2ⁿ subsets: here 2³ = 8.' } }));
+    nar: { kid: 'The marker starts at the top with an empty basket. Even an empty basket is a choice, so the marker writes it on the list.', builder: 'dfs(0) starts with path = []. Its first line records a copy of path, so [] is answer 1.', expert: 'Each call records its path on entry, so every node of this tree is one subset. A set of n items has 2ⁿ subsets: here 2³ = 8.' } }));
   const undoStep = () => {
     if (!popped.length) return;
     const back = name(path);
     steps.push(snap('undo', { snack: popped[popped.length - 1],
       dialog: [say('marker', 'Nothing more to add here. I take out ' + listText(popped) + ' and rub out the mark' + (popped.length > 1 ? 's' : '') + '.'), say('narr', 'Now you stand at ' + back + ' again, just as before.')],
-      nar: { kid: 'No snacks are left to try down there. The marker takes ' + listText(popped) + ' back out and walks up to ' + back + '.', builder: popped.map(() => 'path.pop()').join(', ') + ' → path = [' + path.join(', ') + ']. The loop at ' + back + ' tries its next snack.', expert: 'Un-choosing puts path back exactly as it was before the choice, so one shared list serves every branch. Open calls: ' + (path.length + 1) + '.' } }));
+      nar: { kid: 'No snacks are left to try down there. The marker takes ' + listText(popped) + ' back out and walks up to ' + back + '.', builder: popped.map(() => 'path.pop()').join(', ') + ' → path = [' + path.join(', ') + ']. The loop at ' + back + ' tries its next snack.', expert: 'Un-choosing puts path back as it was before the choice. So one shared list works for every branch. Open calls: ' + (path.length + 1) + '.' } }));
     popped = [];
   };
   const dfs = (s) => {
@@ -47,7 +47,7 @@ function basketScene() {
       B.node(id, name(path), idOf(path.slice(0, -1))); B.trail.push(id); B.fate[id] = 'ok'; out.push(path.slice());
       steps.push(snap('choose', { snack: nums[j],
         dialog: [say('marker', 'From ' + from + ', I put snack ' + nums[j] + ' in and step down.'), say('narr', 'The basket is ' + name(path) + '. New, so write it down. That makes ' + out.length + '.')],
-        nar: { kid: 'The marker puts snack ' + nums[j] + ' in the basket and marks it. The basket is now ' + name(path) + '. He writes it on the list.', builder: 'path.append(' + nums[j] + ') → path = [' + path.join(', ') + ']. Then dfs(' + (j + 1) + ') records it. Baskets so far: ' + out.length + '.', expert: 'The next call starts at index ' + (j + 1) + ', so a snack is only ever added after the ones already in. That is why {2,1} never appears next to {1,2}.' } }));
+        nar: { kid: 'The marker puts snack ' + nums[j] + ' in the basket and marks it. The basket is now ' + name(path) + '. The marker writes it on the list.', builder: 'path.append(' + nums[j] + ') → path = [' + path.join(', ') + ']. Then dfs(' + (j + 1) + ') records it. Baskets so far: ' + out.length + '.', expert: 'The next call starts at index ' + (j + 1) + ', so a snack is only ever added after the ones already in. That is why {2,1} never appears next to {1,2}.' } }));
       dfs(j + 1);
       B.trail.pop(); path.pop(); popped.push(nums[j]); start = s;
     }
@@ -57,7 +57,7 @@ function basketScene() {
   B.trail = [];
   steps.push(snap('done', { snack: '—', done: true, actorAt: 'b',
     dialog: [say('marker', 'Back at the top. Every snack has been tried in every spot.'), say('narr', 'And each stop on the tree is one basket: ' + out.length + ' in all.')],
-    nar: { kid: 'The marker is back at the start. Every stop on the tree is a different basket, so he has all ' + out.length + ' of them.', builder: 'dfs(0) returns. out holds ' + out.length + ' lists: ' + out.map((p) => '[' + p.join(',') + ']').join(' ') + '.', expert: '2ⁿ subsets, each copied in O(n): O(n·2ⁿ) time. The path and the call stack are O(n) deep, not counting the output.' } }));
+    nar: { kid: 'The marker is back at the start. Every stop on the tree is a different basket, so the marker has all ' + out.length + ' of them.', builder: 'dfs(0) returns. out holds ' + out.length + ' lists: ' + out.map((p) => '[' + p.join(',') + ']').join(' ') + '.', expert: '2ⁿ subsets, each copied in O(n): O(n·2ⁿ) time. The path and the call stack are O(n) deep, not counting the output.' } }));
   const T = { intro: ['Write down the empty basket', 'plain'], choose: ['Choose → step down', 'cool'], undo: ['Un-choose → step back up', 'warn'], done: [out.length + ' baskets found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -83,7 +83,7 @@ function basketScene() {
     example: ['nums = [1, 2, 3]', '[ ] [1] [1,2] [1,2,3] [1,3] [2] [2,3] [3]'],
     hints: ['“Every snack is either in or out. How many baskets does that make for three snacks?”', '“Build a basket one snack at a time. After each choice, write the basket down, then try adding a later snack.”', '“Choose a snack, explore from there, then take it back out before you try the next one. Only add snacks that come after the last one, so no basket repeats.”'],
     clues: ['list every possible group', 'each item is in or out', 'no group listed twice'],
-    quizFb: ['“Taking the best snack each time builds just one basket. We need all eight.”', '“Yes! Choose a snack, explore, then rub it out and try the next. Every basket shows up exactly once.”', '“Two friends from both ends look for one pair. A basket can hold any number of snacks.”', '“Starting over for each basket works, but you would rebuild the same beginnings again and again.”'],
+    quizFb: ['“Taking the best snack each time builds only one basket. We need all eight.”', '“Yes! Choose a snack, explore, then rub it out and try the next. Every basket shows up exactly once.”', '“Two friends from both ends look for one pair. A basket can hold any number of snacks.”', '“Starting over for each basket works, but you would rebuild the same beginnings again and again.”'],
     steps
   };
 }
@@ -129,7 +129,7 @@ function seatingScene() {
       B.fate[id] = 'future';
       steps.push(snap('choose', { guest: g,
         dialog: [say('marker', 'From “' + from + '”, guest ' + g + ' sits in chair ' + path.length + '. The marker mark on.'), say('narr', 'Now step down and fill the next chair.')],
-        nar: { kid: 'Guest ' + g + ' is free, so the marker seats them in chair ' + path.length + ' and marks them. Then he moves on to the next chair.', builder: 'used.add(' + g + '); path.append(' + g + ') → path = [' + path.join(', ') + ']. Call dfs() for chair ' + (path.length + 1) + '.', expert: 'The used set makes the “is this guest free?” check O(1). Each choice shrinks the free set by one.' } }));
+        nar: { kid: 'Guest ' + g + ' is free, so the marker seats them in chair ' + path.length + ' and marks them. Then the marker moves on to the next chair.', builder: 'used.add(' + g + '); path.append(' + g + ') → path = [' + path.join(', ') + ']. Call dfs() for chair ' + (path.length + 1) + '.', expert: 'The used set makes the “is this guest free?” check O(1). Each choice shrinks the free set by one.' } }));
       dfs();
       path.pop(); used.delete(g); B.trail.pop(); popped.push(g);
     }
@@ -140,7 +140,7 @@ function seatingScene() {
   B.trail = [];
   steps.push(snap('done', { guest: '—', done: true, actorAt: 'p',
     dialog: [say('marker', 'Every guest has had a turn in every chair.'), say('narr', 'Six seatings, and no row written twice.')],
-    nar: { kid: 'The marker is back at the start with no chalk left on anyone. He found all ' + out.length + ' ways to seat the guests.', builder: 'dfs() returns. out holds ' + out.length + ' seatings: ' + out.map((p) => p.join('')).join(', ') + '.', expert: 'n! leaves, each copied in O(n): O(n·n!) time. The path, the used set and the stack are O(n), not counting the output.' } }));
+    nar: { kid: 'The marker is back at the start with no chalk left on anyone. The marker found all ' + out.length + ' ways to seat the guests.', builder: 'dfs() returns. out holds ' + out.length + ' seatings: ' + out.map((p) => p.join('')).join(', ') + '.', expert: 'n! leaves, each copied in O(n): O(n·n!) time. The path, the used set and the stack are O(n), not counting the output.' } }));
   const T = { intro: ['Three empty chairs', 'plain'], choose: ['Choose → seat a guest', 'cool'], seat: ['Row full → write it down', 'ok'], undo: ['Un-choose → stand them up', 'warn'], done: [out.length + ' seatings found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -163,9 +163,9 @@ function seatingScene() {
     lines: tagLines(code), code,
     rules: [['Three empty chairs, no one seated', 'intro'], ['Seat a free guest in the next chair', 'choose'], ['Last chair filled → write the row down', 'seat'], ['Stand the guest up and rub out the chalk', 'undo'], ['Back at the start → every order found', 'done']],
     complexity: [['O(n·n!)', 'n! full rows, each copied onto the list'], ['O(n)', 'the trail and the seated set hold at most n guests']],
-    quest: ['Three guests, numbered 1, 2 and 3, are coming to dinner. There are three chairs in a row.', 'The host wants a list of every possible seating order, each one exactly once, so she can pick her favourite.'],
+    quest: ['Three guests, numbered 1, 2 and 3, are coming to dinner. There are three chairs in a row.', 'The host wants a list of every possible seating order, each one exactly once. Then the host can pick a favourite.'],
     example: ['nums = [1, 2, 3]', '123 132 213 231 312 321'],
-    hints: ['“How many guests could sit in the first chair? And once one is seated, how many are left for the second?”', '“Fill the chairs one at a time. Keep track of who is already seated so nobody sits twice.”', '“Seat a free guest, fill the rest of the row, then stand that guest up and seat the next free one in the same chair.”'],
+    hints: ['“How many guests could sit in the first chair? And once one is seated, how many are left for the second?”', '“Fill the chairs one at a time. Keep track of who is already seated so nobody sits twice.”', '“Seat a free guest and fill the rest of the row. Then stand that guest up. Seat the next free guest in the same chair.”'],
     clues: ['every order of the items', 'each item used once per order', 'list them all'],
     quizFb: ['“Seating the best guest first gives one row. We need every row.”', '“Yes! Seat someone, fill the rest, then stand them up and try the next guest in that chair.”', '“Two friends from both ends swap a pair. They cannot list all six orders.”', '“Starting over for every row repeats the same first chairs again and again.”'],
     steps
@@ -186,7 +186,7 @@ function priceScene() {
   B.node('c', 'start', null); B.trail = ['c']; B.fate.c = 'future'; tags.c = 0;
   steps.push(snap('intro', { item: '—', start: 0,
     dialog: [say('narr', 'The shop sells items for 2 and 3 coins. You may buy each as often as you like. Which baskets cost exactly 6?'), say('marker', 'I’ll add items cheapest first, and never go back to a cheaper one.'), say('narr', 'Good. Then 2+3 and 3+2 can’t both turn up.')],
-    nar: { kid: 'The marker has an empty basket that costs 0. He will add items one at a time until the price is exactly 6.', builder: 'Sort the prices: [2, 3]. dfs(start = 0, total = 0). Each call may only add items from index start onward.', expert: 'Only adding items at index ≥ start keeps every basket in sorted order, so each multiset is built once. The number under each stop is the running total.' } }));
+    nar: { kid: 'The marker has an empty basket that costs 0. The marker will add items one at a time until the price is exactly 6.', builder: 'Sort the prices: [2, 3]. dfs(start = 0, total = 0). Each call may only add items from index start onward.', expert: 'Only adding items at index ≥ start keeps every basket in sorted order, so each multiset is built once. The number under each stop is the running total.' } }));
   const undoStep = () => {
     if (!popped.length) return;
     const back = name(path);
@@ -204,7 +204,7 @@ function priceScene() {
         B.node(id, name(tryPath), idOf(path)); B.fate[id] = 'out'; tags[id] = total + p;
         steps.push(snap('prune', { item: p, start,
           dialog: [say('marker', 'Adding a ' + p + ' makes ' + (total + p) + '. That is more than ' + target + '.'), say('narr', 'So don’t step down. The items after it cost even more, so stop here.')],
-          nar: { kid: 'The marker checks before he steps: ' + total + ' + ' + p + ' = ' + (total + p) + ', too much. He doesn’t go down that path at all.', builder: total + ' + ' + p + ' > ' + target + ' → break. The prices are sorted, so every later item is too dear as well.', expert: 'Pruning: a branch that already overshoots can never come back to ' + target + ', so its whole subtree is skipped. Sorting lets one break cut all later siblings too.' } }));
+          nar: { kid: 'The marker checks before stepping: ' + total + ' + ' + p + ' = ' + (total + p) + ', too much. The marker does not go down that path at all.', builder: total + ' + ' + p + ' > ' + target + ' → break. The prices are sorted, so every later item is too dear as well.', expert: 'Pruning: a branch that already overshoots can never come back to ' + target + ', so its whole subtree is skipped. Sorting lets one break cut all later siblings too.' } }));
         break;
       }
       undoStep();
@@ -232,7 +232,7 @@ function priceScene() {
   B.trail = [];
   steps.push(snap('done', { item: '—', start: '—', done: true, actorAt: 'c',
     dialog: [say('marker', 'Back at the start. Every basket under 6 has been tried.'), say('narr', 'Two baskets cost exactly 6: ' + out.map((p) => p.join('+')).join(' and ') + '.')],
-    nar: { kid: 'The marker is back at the start with no chalk left. He found ' + out.length + ' baskets that cost exactly ' + target + '.', builder: 'dfs(0, 0) returns. out = ' + out.map((p) => '[' + p.join(',') + ']').join(', ') + '.', expert: 'The tree is at most target / min(price) deep. The worst case is exponential in that depth, which pruning keeps small in practice.' } }));
+    nar: { kid: 'The marker is back at the start with no chalk left. The marker found ' + out.length + ' baskets that cost exactly ' + target + '.', builder: 'dfs(0, 0) returns. out = ' + out.map((p) => '[' + p.join(',') + ']').join(', ') + '.', expert: 'The tree is at most target / min(price) deep. The worst case is exponential in that depth, which pruning keeps small in practice.' } }));
   const T = { intro: ['An empty basket costs 0', 'plain'], choose: ['Choose → add an item', 'cool'], found: ['Exactly ' + target + ' → write it down', 'ok'], prune: ['Too dear → don’t step down', 'warn'], undo: ['Un-choose → take it back out', 'warn'], done: [out.length + ' baskets found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;

@@ -37,7 +37,7 @@ function treehouseScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', size: 1,
     dialog: [say('narr', 'The ripple wants a list of who lives on each floor of the treehouse, top floor first.'), say('ripple', 'I’ll keep a line of people to visit. Only the top floor is in it now.'), say('narr', 'Visit everyone in line for this floor, and send the people below them to the back.')],
-    nar: { kid: 'The treehouse has three floors. The ripple starts with a line that holds just the person at the top, 3.', builder: 'q = deque([root]). Each round of the while loop handles exactly one floor: the people in q when the round starts.', expert: 'BFS with a FIFO queue visits nodes in order of depth. Taking len(q) at the start of a round splits the queue into floors.' } }));
+    nar: { kid: 'The treehouse has three floors. The ripple starts with a line that holds only the person at the top, 3.', builder: 'q = deque([root]). Each round of the while loop handles exactly one floor: the people in q when the round starts.', expert: 'BFS with a FIFO queue visits nodes in order of depth. Taking len(q) at the start of a round splits the queue into floors.' } }));
   while (q.length) {
     const size = q.length;
     floor = [];
@@ -52,13 +52,13 @@ function treehouseScene() {
       fate[id] = 'stored';
       steps.push(snap('visit', id, { node: val(id), size, edge,
         dialog: [say('ripple', 'Hello, ' + val(id) + '! You’re on floor ' + level + '.'), say('narr', kids.length ? 'Send ' + listText(kids.map(val)) + ' to the back of the line.' : 'Nobody lives below ' + val(id) + '. Nothing to add.')],
-        nar: { kid: 'The ripple visits ' + val(id) + ' and writes it down for floor ' + level + '. ' + (kids.length ? listText(kids.map(val)) + ' live' + (kids.length === 1 ? 's' : '') + ' just below, so they join the back of the line.' : 'No one lives below, so the line gets no one new.'), builder: 'node = q.popleft() → ' + val(id) + '. floor = [' + floor.join(', ') + ']. ' + (kids.length ? 'Append ' + kids.map(val).join(', ') + '. ' : '') + 'q = ' + show(q) + '.', expert: 'Children join the back of the queue, behind everyone on this floor, so the next floor never mixes in early. Visit ' + (i + 1) + ' of ' + size + ' this round.' } }));
+        nar: { kid: 'The ripple visits ' + val(id) + ' and writes it down for floor ' + level + '. ' + (kids.length ? listText(kids.map(val)) + ' live' + (kids.length === 1 ? 's' : '') + ' on the next floor down, so they join the back of the line.' : 'No one lives below, so the line gets no one new.'), builder: 'node = q.popleft() → ' + val(id) + '. floor = [' + floor.join(', ') + ']. ' + (kids.length ? 'Append ' + kids.map(val).join(', ') + '. ' : '') + 'q = ' + show(q) + '.', expert: 'Children join the back of the queue, behind everyone on this floor. So the next floor never mixes in early. Visit ' + (i + 1) + ' of ' + size + ' this round.' } }));
     }
     floors.push(floor.slice());
     const doneFloor = floor.slice();
     const st = snap('floor', null, { node: '—', size,
       dialog: [say('ripple', 'That’s everyone on floor ' + level + ': ' + doneFloor.join(', ') + '.'), say('narr', q.length ? 'Write the floor down. The line now holds exactly the next floor.' : 'Write it down. The line is empty, so that was the last floor.')],
-      nar: { kid: 'Floor ' + level + ' is finished. The ripple writes ' + doneFloor.join(', ') + ' on the list. ' + (q.length ? 'Everyone left in line lives on the next floor down.' : 'Nobody is left in line.'), builder: 'out.append([' + doneFloor.join(', ') + ']). q = ' + show(q) + (q.length ? ', which is all of floor ' + (level + 1) + '.' : ', so the while loop ends.'), expert: 'After the round, the queue holds exactly the next level: every node of this level has been popped and only their children were pushed.' } });
+      nar: { kid: 'Floor ' + level + ' is finished. The ripple writes ' + doneFloor.join(', ') + ' on the list. ' + (q.length ? 'Everyone left in line lives on the next floor down.' : 'Nobody is left in line.'), builder: 'out.append([' + doneFloor.join(', ') + ']). q = ' + show(q) + (q.length ? ', which is all of floor ' + (level + 1) + '.' : ', so the while loop ends.'), expert: 'After the round, the queue holds exactly the next level. Every node of this level was popped, and only their children were pushed.' } });
     floorIds.forEach((id) => { st.nodes[id] = 'ok'; });
     st.actorAt = floorIds[floorIds.length - 1];
     steps.push(st);
@@ -89,7 +89,7 @@ function treehouseScene() {
     lines: tagLines(code), code,
     rules: [['Put the top person in the line', 'intro'], ['Visit the next in line, send the people below to the back', 'visit'], ['Everyone on this floor visited → write the floor down', 'floor'], ['The line is empty → the list is done', 'done']],
     complexity: [['O(n)', 'each person joins and leaves the line once'], ['O(w)', 'the line holds at most one floor, w = the widest floor']],
-    quest: ['A treehouse has people on three floors. Each person can point to at most two people on the floor just below.', 'The party planner needs a list, floor by floor from the top: who lives on each one, left to right?'],
+    quest: ['A treehouse has people on three floors. Each person can point to at most two people on the floor right below.', 'The party planner needs a list, floor by floor from the top. Who lives on each floor, from left to right?'],
     example: ['root = [3, 9, 20, 8, null, 15, 7]', '[[3], [9, 20], [8, 15, 7]]'],
     hints: ['“Going deep down one side mixes floors up. How can you finish a whole floor before starting the next?”', '“Keep a line. Whoever you visit sends the people below them to the back of it.”', '“At the start of each round, count the line. Visit exactly that many people: that is one floor.”'],
     clues: ['top to bottom, floor by floor', 'left to right on each floor', 'people only know who is below them'],
@@ -138,7 +138,7 @@ function balconyScene() {
       } else {
         fate[id] = 'stored';
         steps.push(snap('visit', id, { node: val(id), edge,
-          dialog: [say('ripple', val(id) + ' is on floor ' + level + ', but someone is still to the right of it.'), say('narr', 'So it is hidden. Just send whoever is below it to the line.')],
+          dialog: [say('ripple', val(id) + ' is on floor ' + level + ', but someone is still to the right of it.'), say('narr', 'So it is hidden. Send whoever is below it to the line.')],
           nar: { kid: val(id) + ' is not the last on floor ' + level + ', so someone to its right blocks the view.' + queued, builder: 'node = q.popleft() → ' + val(id) + '. i = ' + i + ' < n − 1, so it is not in the view. q = ' + show(q) + '.', expert: 'Hidden nodes still matter: their children belong to the next level and must be queued, in order.' } }));
       }
     }

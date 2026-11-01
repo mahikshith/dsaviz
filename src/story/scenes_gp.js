@@ -44,9 +44,9 @@ function courseBuild(v) {
   };
   const free0 = ids.filter((_, i) => needs[i] === 0);
   steps.push(runStep('intro', snap(), [say('narr', 'The ripple wants to take all ' + n + ' classes. An arrow means “take this one first”.'), say('ripple', 'I’ll write under each class how many classes it still waits for.')],
-    'The ripple plans her classes. An arrow from one class to another means “take this one first”. The number under each class says how many it still waits for.',
+    'The ripple plans the classes. An arrow from one class to another means “take this one first”. The number under each class says how many it still waits for.',
     'needs[c] = how many arrows point into class c. unlocks[b] lists the classes that wait for b.',
-    'This is a directed graph. Kahn’s method repeatedly takes a class with no unmet needs, so it lists the classes in a safe order, or shows there is none.'));
+    'This is a directed graph: its arrows point one way. Kahn’s method keeps taking a class that needs nothing more. That gives a safe order, or shows there is none.'));
   free0.forEach((id) => { look[Number(id)] = 'buy'; line.push(Number(id)); });
   steps.push(runStep('seed', snap(), free0.length ? [say('ripple', listAnd(free0.map((x) => 'Class ' + x)) + (free0.length === 1 ? ' waits' : ' wait') + ' for nothing.'), say('narr', 'Then put ' + (free0.length === 1 ? 'it' : 'them') + ' in the line first.')] : [say('ripple', 'Every class waits for another one.'), say('narr', 'Then nobody can even start.')],
     free0.length ? listAnd(free0.map((x) => 'Class ' + x)) + (free0.length === 1 ? ' waits' : ' wait') + ' for nothing, so ' + (free0.length === 1 ? 'it joins' : 'they join') + ' the line first.' : 'No class is free to start. Every class waits for another one.',
@@ -117,8 +117,8 @@ function courseScene() {
     lines: tagLines(code), code,
     rules: [['Count what each class waits for', 'intro'], ['Classes that wait for nothing join the line', 'seed'], ['Line not empty → take the class at the front', 'take'], ['It still waits for others → count one less', 'unlock'], ['Its count reaches 0 → it joins the line', 'free'], ['Line empty, all taken → True', 'done'], ['Line empty, some still waiting → False', 'stuck']],
     complexity: [['O(V + E)', 'each class and each arrow is handled once'], ['O(V + E)', 'the lists of arrows and the line']],
-    quest: ['The ripple signs up for six classes, numbered 0 to 5. Some classes need another class first: 2 needs 0 and 1, 3 needs 1, 4 needs 2 and 3, and 5 needs 4.', 'Can she take all six, one after another, without breaking a rule?'],
-    hints: ['“Which classes could the ripple take on day one?”', '“After she takes a class, which other classes come one step closer to being free?”', '“Count what each class waits for. Keep a line of classes at 0. Take one, lower the counts it unlocks, and add any that reach 0. Did you take them all?”'],
+    quest: ['The ripple signs up for six classes, numbered 0 to 5. Some classes need another class first: 2 needs 0 and 1, 3 needs 1, 4 needs 2 and 3, and 5 needs 4.', 'Can the ripple take all six, one after another, without breaking a rule?'],
+    hints: ['“Which classes could the ripple take on day one?”', '“After the ripple takes a class, which other classes come one step closer to being free?”', '“Count what each class waits for. Keep a line of classes at 0. Take one, lower the counts it unlocks, and add any that reach 0. Did you take them all?”'],
     clues: ['some things must come before others', 'a loop of needs makes it impossible', 'yes or no: is there a safe order?'],
     kit: { right: 1, spot: 'Why start with the free classes?', ask: 'How should the ripple plan?',
       quiz: [['Start anywhere and follow arrows', 'Pick a class and walk to whatever it unlocks'], ['Take free classes first', 'Keep a line of classes that wait for nothing, and count down the rest'], ['Sort by class number', 'Take 0, then 1, then 2, and so on'], ['Take the busiest class first', 'Start with the class that unlocks the most']] },
@@ -195,7 +195,7 @@ function cloneScene() {
       board.forEach((r) => { r[2] = r[0] === String(k) ? 'hit' : ''; });
       st.board = board.map((r) => r.slice());
       steps.push(runStep('reuse', st, [say('explorer', 'Friend ' + k + ' is already in my notebook.'), say('narr', 'So ' + from + '′ just links to ' + k + '′. No new copy.')],
-        'Friend ' + k + ' was copied before. The explorer looks it up in his notebook, and ' + from + '′ links to ' + k + '′.',
+        'Friend ' + k + ' was copied before. The explorer looks it up in the notebook, and ' + from + '′ links to ' + k + '′.',
         'clone(' + k + '): ' + k + ' in copies → return ' + k + '′. Append it to ' + from + '′.neighbors.',
         'This lookup is what stops the loop. Without it, clone(' + k + ') would copy ' + k + ' again and run forever.'));
       board.forEach((r) => { r[2] = ''; });
@@ -228,7 +228,7 @@ function cloneScene() {
   steps.push(runStep('done', snap({ old: 1, nb: '—', done: true }), [say('explorer', 'Every friend has a copy, and every copy has its friends.'), say('narr', 'Hand back 1′. The whole copy hangs off it.')],
     'All four friends are copied, and every copy has both of its friends. The explorer hands back copy 1′.',
     'clone(1) returns 1′. 4 copies, 8 links (each friendship twice, once from each side).',
-    'Each node is copied once and each link is made once: O(V + E) time, O(V) for the notebook and the call stack.'));
+    'Each node is copied once and each link is made once. Time is O(V + E). Space is O(V) for the notebook and the call stack.'));
   runFinish(steps, { intro: ['Copy every friend and friendship', 'plain'], copy: ['Not in the notebook → make a copy', 'cool'], reuse: ['Already copied → link to it', 'warn'], link: ['Friend copied → link the copies', 'cool'], done: ['Copy complete → return 1′', 'ok'] }, (st) => {
     st.meter = { text: 'links made: ' + st.linkCount + ' / 8', pct: (st.linkCount / 8) * 100, mark: 100, markLabel: '4 friendships, both ways' };
     st.watch = [['old', st.old == null ? '—' : st.old, 'left'], ['friend', st.nb, 'right'], ['copies', st.made + ' / 4', 'text'], ['links', st.linkCount + ' / 8', 'text'], ['call depth', st.depth, 'right'], ['result', st.done ? '1′' : '…', st.done ? 'ok' : 'text']];
@@ -251,12 +251,12 @@ function cloneScene() {
     rules: [['Start with an empty notebook', 'intro'], ['Friend not in the notebook → make a copy', 'copy'], ['Friend already copied → link to that copy', 'reuse'], ['Back from a new copy → link the two copies', 'link'], ['Every friend copied → return the first copy', 'done']],
     predictFull: true,
     complexity: [['O(V + E)', 'each friend is copied once, each link made once'], ['O(V)', 'the notebook and the call stack']],
-    quest: ['Four friends form a ring: 1 knows 2 and 4, 2 knows 1 and 3, 3 knows 2 and 4, and 4 knows 1 and 3.', 'The explorer must hand back a full copy: new friends with the same numbers and the same friendships, starting from friend 1.'],
+    quest: ['Four friends form a ring: 1 knows 2 and 4, 2 knows 1 and 3, 3 knows 2 and 4, and 4 knows 1 and 3.', 'The explorer must hand back a full copy. It has new friends with the same numbers and the same friendships. Start from friend 1.'],
     example: ['adjList = [[2, 4], [1, 3], [2, 4], [1, 3]]', 'answer = [[2, 4], [1, 3], [2, 4], [1, 3]]  (all new nodes)'],
     answer: [[2, 4], [1, 3], [2, 4], [1, 3]],
     hints: ['“Friend 1 knows 2, and 2 knows 1. What stops you copying them back and forth forever?”', '“Keep a notebook from each old friend to its copy. Check it before you copy anyone.”', '“clone(old): if it is in the notebook, return the copy. Else make the copy, write it down, then add clone(friend) for each friend.”'],
     clues: ['a deep copy, not the same nodes', 'friendships can loop back', 'every node is reachable from the first'],
-    kit: { right: 2, spot: 'Why a notebook, not just recursion?', ask: 'How should the explorer copy the group?',
+    kit: { right: 2, spot: 'Why keep a notebook as well as recursion?', ask: 'How should the explorer copy the group?',
       quiz: [['Copy each friend, then each friend’s friends', 'Recurse into every friend without remembering anything'], ['Hand back the same friends', 'Return the nodes you were given'], ['Keep a notebook of copies', 'Old friend → copy, checked before making a new one'], ['Copy the friends in number order', 'Make 1′, 2′, 3′, 4′, then guess the links']] },
     quizFb: ['“1 knows 2 and 2 knows 1. Without remembering, the copying never stops.”', '“That is not a copy. Change one and the other changes too.”', '“Yes! Write each copy down first, and every loop back finds it in the notebook.”', '“You only get friend 1. You have to walk the friendships to find the rest.”'],
     steps
@@ -311,7 +311,7 @@ function roadsBuild(v) {
     steps.push(runStep('join', sj, [say('checker', 'Head ' + small + ' now reports to head ' + big + '.'), say('narr', 'One group of ' + size[big] + ' towns.')],
       'The checker joins the two groups. Head ' + small + ' now reports to ' + big + ', so the group has ' + many(size[big], 'town') + '. The road is kept.',
       'head[' + small + '] = ' + big + ' (the smaller group joins the bigger one).',
-      'Hanging the smaller group under the bigger one keeps every walk short: about O(α(n)) per find, which is almost constant.'));
+      'Hanging the smaller group under the bigger one keeps every walk short. Each find costs about O(α(n)), which is almost constant.'));
   }
   runFinish(steps, { intro: ['Every town is its own head', 'plain'], look: ['Different heads → not joined yet', 'cool'], join: ['Join the two groups', 'cool'], cycle: ['Same head → extra road', 'ok'] }, (st) => {
     st.meter = { text: 'roads kept: ' + st.joins + ' / ' + (n - 1), pct: (st.joins / (n - 1)) * 100, mark: 100, markLabel: 'a tree needs ' + (n - 1) };
@@ -405,7 +405,7 @@ function delayBuild(v) {
     if (done.has(u)) {
       cur = u;
       steps.push(runStep('stale', snap({ u, t }), [say('checker', 'Town ' + u + ' at time ' + t + '? I already settled it at ' + best[u] + '.'), say('narr', 'An old note. Cross it off.')],
-        'This note says town ' + u + ' at time ' + t + ', but the checker already reached it at time ' + best[u] + '. It is an old note, so he skips it.',
+        'This note says town ' + u + ' at time ' + t + ', but the checker already reached it at time ' + best[u] + '. It is an old note, so the checker skips it.',
         'u = ' + u + ' is in done → continue.',
         'Instead of changing a time inside the heap, the method adds a new note and skips old ones later. Each road adds at most one note.'));
       continue;
@@ -422,7 +422,7 @@ function delayBuild(v) {
         const st = snap({ u, t, v: w2, w, nt }, [nt, w2]);
         st.edges[key] = 'active';
         steps.push(runStep('improve', st, [say('checker', 'From ' + u + ' to ' + w2 + ' takes ' + w + ': time ' + t + ' + ' + w + ' = ' + nt + '.'), say('narr', old == null ? 'Town ' + w2 + ' had no time yet. Write ' + nt + '.' : 'That beats ' + old + '. Write ' + nt + '.')],
-          'The road to town ' + w2 + ' takes ' + w + ', so the checker could get there at time ' + nt + '. ' + (old == null ? 'That is the first time found for town ' + w2 + '.' : 'That is sooner than ' + old + ', so he writes the new time.'),
+          'The road to town ' + w2 + ' takes ' + w + ', so the checker could get there at time ' + nt + '. ' + (old == null ? 'That is the first time found for town ' + w2 + '.' : 'That is sooner than ' + old + ', so the checker writes the new time.'),
           t + ' + ' + w + ' = ' + nt + ' < ' + (old == null ? '∞' : old) + ' → best[' + w2 + '] = ' + nt + ', push (' + nt + ', ' + w2 + ').',
           'This is called relaxing a road. A town’s time only goes down, and only when a road gives a sooner arrival.'));
       } else {
@@ -431,7 +431,7 @@ function delayBuild(v) {
         steps.push(runStep('keep', st, [say('checker', 'From ' + u + ' to ' + w2 + ': ' + t + ' + ' + w + ' = ' + nt + '.'), say('narr', 'Town ' + w2 + ' already has ' + old + '. Keep it.')],
           'Going to town ' + w2 + ' this way arrives at time ' + nt + '. Town ' + w2 + ' already has ' + old + ', which is not later, so nothing changes.',
           t + ' + ' + w + ' = ' + nt + ' ≥ ' + old + ' → no change.',
-          'A road that does not give a sooner time is simply ignored. It may still be checked once from each settled town.'));
+          'A road that does not give a sooner time is ignored. It may still be checked once from each settled town.'));
       }
       seen[key] = seen[key] || 'out';
     }

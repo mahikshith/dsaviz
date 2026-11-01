@@ -72,7 +72,7 @@ function platesScene() {
     },
     rules: [['Start with an empty pile', 'intro'], ['Opener → put a plate on top', 'push'], ['Closer matches the top → lift it off', 'pop'], ['Closer meets the wrong plate → False', 'mismatch'], ['Slip done and pile empty → True', 'found']],
     complexity: [['O(n)', 'each bracket is read once'], ['O(n)', 'the pile can hold every opener']],
-    quest: ['Lunch rush at the canteen. An order slip comes in covered in brackets: ( [ { } ] ) ( ).', 'The stack must say whether every opening bracket is closed by the right kind, in the right order, using nothing but his pile of plates.'],
+    quest: ['Lunch rush at the canteen. An order slip comes in covered in brackets: ( [ { } ] ) ( ).', 'The stack must say if every opening bracket is closed by the right kind, in the right order. It may use only the pile of plates.'],
     example: ['s = "([{}])()"', 'answer = True'],
     hints: ['“Which opener should a closer be matched with? The first one you saw, or the latest one still open?”', '“The latest one still open sounds like the top of a pile of plates.”', '“Opener: put a plate on. Closer: the top plate must match, then lift it off. An empty pile at the end means True.”'],
     clues: ['brackets must nest', 'the latest open one closes first', 'one pass through the slip'],
@@ -93,7 +93,7 @@ function weatherScene() {
   const snap = (o) => Object.assign({ board: pileRows(o.fresh), pileText: pileText(), size: pile.length, answer: answer.slice(), answered: answered.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1, j: -1,
     dialog: [say('narr', 'Seven days of weather: 73, 70, 68, 71, 69, 75, 72. For each day, how long until a warmer one?'), say('stack', 'Each day waits on my pile until a warmer day shows up.'), say('narr', 'And when one does?'), say('stack', 'Every colder day on top gets its answer and comes off.')],
-    nar: { kid: 'The stack writes each day on a plate and puts it on his pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n, pile = []. For each day i: while the top day is colder than today, pop it and set answer[top] = i − top. Then push i.', expert: 'The pile keeps days with falling temperatures from bottom to top. Each day is pushed once and popped at most once, so the whole pass is O(n).' } }));
+    nar: { kid: 'The stack writes each day on a plate and puts it on the pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n, pile = []. For each day i: while the top day is colder than today, pop it and set answer[top] = i − top. Then push i.', expert: 'The pile keeps days with falling temperatures from bottom to top. Each day is pushed once and popped at most once, so the whole pass is O(n).' } }));
   for (let i = 0; i < temps.length; i++) {
     while (pile.length && temps[pile[pile.length - 1]] < temps[i]) {
       const j = pile.pop();
@@ -101,13 +101,13 @@ function weatherScene() {
       answered.push(j);
       steps.push(snap({ L: i, kind: 'pop', fresh: -1, j,
         dialog: [say('stack', 'Today is ' + temps[i] + '°. Day ' + j + ' on top was only ' + temps[j] + '°.'), say('narr', 'Then day ' + j + ' waited ' + i + ' − ' + j + ' = ' + (i - j) + (i - j === 1 ? ' day' : ' days') + '. Lift that plate off.')],
-        nar: { kid: 'Day ' + i + ' is warmer than day ' + j + ', the plate on top. So day ' + j + ' gets its answer: ' + (i - j) + (i - j === 1 ? ' day' : ' days') + ' of waiting. The stack takes that plate off.', builder: 'temps[' + j + '] = ' + temps[j] + ' < ' + temps[i] + ' → pop ' + j + ', answer[' + j + '] = ' + i + ' − ' + j + ' = ' + (i - j) + '.', expert: 'Day ' + i + ' is the first warmer day after day ' + j + ': every day between them is already off the pile or was colder than day ' + j + '.' } }));
+        nar: { kid: 'Day ' + i + ' is warmer than day ' + j + ', the plate on top. So day ' + j + ' gets its answer: ' + (i - j) + (i - j === 1 ? ' day' : ' days') + ' of waiting. The stack takes that plate off.', builder: 'temps[' + j + '] = ' + temps[j] + ' < ' + temps[i] + ' → pop ' + j + ', answer[' + j + '] = ' + i + ' − ' + j + ' = ' + (i - j) + '.', expert: 'Day ' + i + ' is the first warmer day after day ' + j + '. Every day between them is already off the pile, or was colder than day ' + j + '.' } }));
     }
     pile.push(i);
     const below = pile.length > 1 ? pile[pile.length - 2] : -1;
     steps.push(snap({ L: i, kind: 'push', fresh: i, j: -1,
       dialog: [say('stack', 'Day ' + i + ', ' + temps[i] + '°. ' + (below < 0 ? 'Nobody else is waiting.' : 'Day ' + below + ' below is ' + temps[below] + '°, not colder.')), say('narr', 'Day ' + i + ' waits on the pile for a warmer day.')],
-      nar: { kid: 'Day ' + i + ' does not know its answer yet, so the stack puts it on top of the pile to wait. ' + (pile.length === 1 ? 'It is the only plate.' : 'There are ' + pile.length + ' plates now.'), builder: (below < 0 ? 'Pile is empty' : 'temps[' + below + '] = ' + temps[below] + ' ≥ ' + temps[i]) + ' → pile.append(' + i + '). pile = ' + pileText() + '.', expert: 'Temperatures on the pile, bottom to top: ' + pile.map((x) => temps[x]).join(' ≥ ') + '. They never rise toward the top.' } }));
+      nar: { kid: 'Day ' + i + ' does not know its answer yet, so the stack puts it on the pile to wait. ' + (pile.length === 1 ? 'It is the only plate.' : 'There are ' + pile.length + ' plates now.'), builder: (below < 0 ? 'Pile is empty' : 'temps[' + below + '] = ' + temps[below] + ' ≥ ' + temps[i]) + ' → pile.append(' + i + '). pile = ' + pileText() + '.', expert: 'Temperatures on the pile, bottom to top: ' + pile.map((x) => temps[x]).join(' ≥ ') + '. They never rise toward the top.' } }));
   }
   steps.push(snap({ L: temps.length - 1, kind: 'found', fresh: -1, j: -1,
     dialog: [say('stack', 'The week is over. Days ' + pile.join(' and ') + ' are still on my pile.'), say('narr', 'No warmer day came for them, so their answer stays 0. The full answer is [' + answer.join(', ') + '].')],
@@ -144,7 +144,7 @@ function weatherScene() {
     },
     rules: [['Start with an empty pile', 'intro'], ['Top day is colder than today → answer it and lift it off', 'pop'], ['Nothing colder on top → today waits on the pile', 'push'], ['Week over → leftovers keep 0', 'found']],
     complexity: [['O(n)', 'each day goes on and comes off once'], ['O(n)', 'a cold spell can fill the pile']],
-    quest: ['The stack keeps a weather log pinned above the canteen sink. This week reads 73, 70, 68, 71, 69, 75 and 72 degrees.', 'For every day he wants to know how many days pass before a warmer one. If none ever comes, the answer is 0.'],
+    quest: ['The stack keeps a weather log pinned above the canteen sink. This week reads 73, 70, 68, 71, 69, 75 and 72 degrees.', 'For every day, the stack wants to know how many days pass before a warmer one. If none ever comes, the answer is 0.'],
     example: ['temps = [73, 70, 68, 71, 69, 75, 72]', 'answer = [5, 2, 1, 2, 1, 0, 0]'],
     hints: ['“A day can’t know its answer until a warmer day arrives. Where should it wait?”', '“When a warm day comes, which waiting days does it answer? The newest ones, from the top down, while they are colder.”', '“Pop while the top is colder and write i − top. Then push today. Whatever is left at the end gets 0.”'],
     clues: ['the next warmer day, for every day', 'days wait until they are answered', 'the newest waiting day is answered first'],

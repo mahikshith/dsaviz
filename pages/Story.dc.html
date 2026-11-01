@@ -29741,7 +29741,7 @@ function treehouseScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', size: 1,
     dialog: [say('narr', 'The ripple wants a list of who lives on each floor of the treehouse, top floor first.'), say('ripple', 'I’ll keep a line of people to visit. Only the top floor is in it now.'), say('narr', 'Visit everyone in line for this floor, and send the people below them to the back.')],
-    nar: { kid: 'The treehouse has three floors. The ripple starts with a line that holds just the person at the top, 3.', builder: 'q = deque([root]). Each round of the while loop handles exactly one floor: the people in q when the round starts.', expert: 'BFS with a FIFO queue visits nodes in order of depth. Taking len(q) at the start of a round splits the queue into floors.' } }));
+    nar: { kid: 'The treehouse has three floors. The ripple starts with a line that holds only the person at the top, 3.', builder: 'q = deque([root]). Each round of the while loop handles exactly one floor: the people in q when the round starts.', expert: 'BFS with a FIFO queue visits nodes in order of depth. Taking len(q) at the start of a round splits the queue into floors.' } }));
   while (q.length) {
     const size = q.length;
     floor = [];
@@ -29756,13 +29756,13 @@ function treehouseScene() {
       fate[id] = 'stored';
       steps.push(snap('visit', id, { node: val(id), size, edge,
         dialog: [say('ripple', 'Hello, ' + val(id) + '! You’re on floor ' + level + '.'), say('narr', kids.length ? 'Send ' + listText(kids.map(val)) + ' to the back of the line.' : 'Nobody lives below ' + val(id) + '. Nothing to add.')],
-        nar: { kid: 'The ripple visits ' + val(id) + ' and writes it down for floor ' + level + '. ' + (kids.length ? listText(kids.map(val)) + ' live' + (kids.length === 1 ? 's' : '') + ' just below, so they join the back of the line.' : 'No one lives below, so the line gets no one new.'), builder: 'node = q.popleft() → ' + val(id) + '. floor = [' + floor.join(', ') + ']. ' + (kids.length ? 'Append ' + kids.map(val).join(', ') + '. ' : '') + 'q = ' + show(q) + '.', expert: 'Children join the back of the queue, behind everyone on this floor, so the next floor never mixes in early. Visit ' + (i + 1) + ' of ' + size + ' this round.' } }));
+        nar: { kid: 'The ripple visits ' + val(id) + ' and writes it down for floor ' + level + '. ' + (kids.length ? listText(kids.map(val)) + ' live' + (kids.length === 1 ? 's' : '') + ' on the next floor down, so they join the back of the line.' : 'No one lives below, so the line gets no one new.'), builder: 'node = q.popleft() → ' + val(id) + '. floor = [' + floor.join(', ') + ']. ' + (kids.length ? 'Append ' + kids.map(val).join(', ') + '. ' : '') + 'q = ' + show(q) + '.', expert: 'Children join the back of the queue, behind everyone on this floor. So the next floor never mixes in early. Visit ' + (i + 1) + ' of ' + size + ' this round.' } }));
     }
     floors.push(floor.slice());
     const doneFloor = floor.slice();
     const st = snap('floor', null, { node: '—', size,
       dialog: [say('ripple', 'That’s everyone on floor ' + level + ': ' + doneFloor.join(', ') + '.'), say('narr', q.length ? 'Write the floor down. The line now holds exactly the next floor.' : 'Write it down. The line is empty, so that was the last floor.')],
-      nar: { kid: 'Floor ' + level + ' is finished. The ripple writes ' + doneFloor.join(', ') + ' on the list. ' + (q.length ? 'Everyone left in line lives on the next floor down.' : 'Nobody is left in line.'), builder: 'out.append([' + doneFloor.join(', ') + ']). q = ' + show(q) + (q.length ? ', which is all of floor ' + (level + 1) + '.' : ', so the while loop ends.'), expert: 'After the round, the queue holds exactly the next level: every node of this level has been popped and only their children were pushed.' } });
+      nar: { kid: 'Floor ' + level + ' is finished. The ripple writes ' + doneFloor.join(', ') + ' on the list. ' + (q.length ? 'Everyone left in line lives on the next floor down.' : 'Nobody is left in line.'), builder: 'out.append([' + doneFloor.join(', ') + ']). q = ' + show(q) + (q.length ? ', which is all of floor ' + (level + 1) + '.' : ', so the while loop ends.'), expert: 'After the round, the queue holds exactly the next level. Every node of this level was popped, and only their children were pushed.' } });
     floorIds.forEach((id) => { st.nodes[id] = 'ok'; });
     st.actorAt = floorIds[floorIds.length - 1];
     steps.push(st);
@@ -29793,7 +29793,7 @@ function treehouseScene() {
     lines: tagLines(code), code,
     rules: [['Put the top person in the line', 'intro'], ['Visit the next in line, send the people below to the back', 'visit'], ['Everyone on this floor visited → write the floor down', 'floor'], ['The line is empty → the list is done', 'done']],
     complexity: [['O(n)', 'each person joins and leaves the line once'], ['O(w)', 'the line holds at most one floor, w = the widest floor']],
-    quest: ['A treehouse has people on three floors. Each person can point to at most two people on the floor just below.', 'The party planner needs a list, floor by floor from the top: who lives on each one, left to right?'],
+    quest: ['A treehouse has people on three floors. Each person can point to at most two people on the floor right below.', 'The party planner needs a list, floor by floor from the top. Who lives on each floor, from left to right?'],
     example: ['root = [3, 9, 20, 8, null, 15, 7]', '[[3], [9, 20], [8, 15, 7]]'],
     hints: ['“Going deep down one side mixes floors up. How can you finish a whole floor before starting the next?”', '“Keep a line. Whoever you visit sends the people below them to the back of it.”', '“At the start of each round, count the line. Visit exactly that many people: that is one floor.”'],
     clues: ['top to bottom, floor by floor', 'left to right on each floor', 'people only know who is below them'],
@@ -29842,7 +29842,7 @@ function balconyScene() {
       } else {
         fate[id] = 'stored';
         steps.push(snap('visit', id, { node: val(id), edge,
-          dialog: [say('ripple', val(id) + ' is on floor ' + level + ', but someone is still to the right of it.'), say('narr', 'So it is hidden. Just send whoever is below it to the line.')],
+          dialog: [say('ripple', val(id) + ' is on floor ' + level + ', but someone is still to the right of it.'), say('narr', 'So it is hidden. Send whoever is below it to the line.')],
           nar: { kid: val(id) + ' is not the last on floor ' + level + ', so someone to its right blocks the view.' + queued, builder: 'node = q.popleft() → ' + val(id) + '. i = ' + i + ' < n − 1, so it is not in the view. q = ' + show(q) + '.', expert: 'Hidden nodes still matter: their children belong to the next level and must be queued, in order.' } }));
       }
     }
@@ -30244,13 +30244,13 @@ function basketScene() {
   B.node('b', '{ }', null); B.trail = ['b']; B.fate.b = 'ok'; out.push([]);
   steps.push(snap('intro', { snack: '—',
     dialog: [say('narr', 'Three snacks: 1, 2 and 3. How many different baskets can you pack?'), say('marker', 'I’ll take one path for each basket, and mark each snack I put in.'), say('narr', 'The empty basket counts too. Write it down first.')],
-    nar: { kid: 'The marker starts at the top with an empty basket. Even an empty basket is a choice, so he writes it on his list.', builder: 'dfs(0) starts with path = []. Its first line records a copy of path, so [] is answer 1.', expert: 'Each call records its path on entry, so every node of this tree is one subset. A set of n items has 2ⁿ subsets: here 2³ = 8.' } }));
+    nar: { kid: 'The marker starts at the top with an empty basket. Even an empty basket is a choice, so the marker writes it on the list.', builder: 'dfs(0) starts with path = []. Its first line records a copy of path, so [] is answer 1.', expert: 'Each call records its path on entry, so every node of this tree is one subset. A set of n items has 2ⁿ subsets: here 2³ = 8.' } }));
   const undoStep = () => {
     if (!popped.length) return;
     const back = name(path);
     steps.push(snap('undo', { snack: popped[popped.length - 1],
       dialog: [say('marker', 'Nothing more to add here. I take out ' + listText(popped) + ' and rub out the mark' + (popped.length > 1 ? 's' : '') + '.'), say('narr', 'Now you stand at ' + back + ' again, just as before.')],
-      nar: { kid: 'No snacks are left to try down there. The marker takes ' + listText(popped) + ' back out and walks up to ' + back + '.', builder: popped.map(() => 'path.pop()').join(', ') + ' → path = [' + path.join(', ') + ']. The loop at ' + back + ' tries its next snack.', expert: 'Un-choosing puts path back exactly as it was before the choice, so one shared list serves every branch. Open calls: ' + (path.length + 1) + '.' } }));
+      nar: { kid: 'No snacks are left to try down there. The marker takes ' + listText(popped) + ' back out and walks up to ' + back + '.', builder: popped.map(() => 'path.pop()').join(', ') + ' → path = [' + path.join(', ') + ']. The loop at ' + back + ' tries its next snack.', expert: 'Un-choosing puts path back as it was before the choice. So one shared list works for every branch. Open calls: ' + (path.length + 1) + '.' } }));
     popped = [];
   };
   const dfs = (s) => {
@@ -30262,7 +30262,7 @@ function basketScene() {
       B.node(id, name(path), idOf(path.slice(0, -1))); B.trail.push(id); B.fate[id] = 'ok'; out.push(path.slice());
       steps.push(snap('choose', { snack: nums[j],
         dialog: [say('marker', 'From ' + from + ', I put snack ' + nums[j] + ' in and step down.'), say('narr', 'The basket is ' + name(path) + '. New, so write it down. That makes ' + out.length + '.')],
-        nar: { kid: 'The marker puts snack ' + nums[j] + ' in the basket and marks it. The basket is now ' + name(path) + '. He writes it on the list.', builder: 'path.append(' + nums[j] + ') → path = [' + path.join(', ') + ']. Then dfs(' + (j + 1) + ') records it. Baskets so far: ' + out.length + '.', expert: 'The next call starts at index ' + (j + 1) + ', so a snack is only ever added after the ones already in. That is why {2,1} never appears next to {1,2}.' } }));
+        nar: { kid: 'The marker puts snack ' + nums[j] + ' in the basket and marks it. The basket is now ' + name(path) + '. The marker writes it on the list.', builder: 'path.append(' + nums[j] + ') → path = [' + path.join(', ') + ']. Then dfs(' + (j + 1) + ') records it. Baskets so far: ' + out.length + '.', expert: 'The next call starts at index ' + (j + 1) + ', so a snack is only ever added after the ones already in. That is why {2,1} never appears next to {1,2}.' } }));
       dfs(j + 1);
       B.trail.pop(); path.pop(); popped.push(nums[j]); start = s;
     }
@@ -30272,7 +30272,7 @@ function basketScene() {
   B.trail = [];
   steps.push(snap('done', { snack: '—', done: true, actorAt: 'b',
     dialog: [say('marker', 'Back at the top. Every snack has been tried in every spot.'), say('narr', 'And each stop on the tree is one basket: ' + out.length + ' in all.')],
-    nar: { kid: 'The marker is back at the start. Every stop on the tree is a different basket, so he has all ' + out.length + ' of them.', builder: 'dfs(0) returns. out holds ' + out.length + ' lists: ' + out.map((p) => '[' + p.join(',') + ']').join(' ') + '.', expert: '2ⁿ subsets, each copied in O(n): O(n·2ⁿ) time. The path and the call stack are O(n) deep, not counting the output.' } }));
+    nar: { kid: 'The marker is back at the start. Every stop on the tree is a different basket, so the marker has all ' + out.length + ' of them.', builder: 'dfs(0) returns. out holds ' + out.length + ' lists: ' + out.map((p) => '[' + p.join(',') + ']').join(' ') + '.', expert: '2ⁿ subsets, each copied in O(n): O(n·2ⁿ) time. The path and the call stack are O(n) deep, not counting the output.' } }));
   const T = { intro: ['Write down the empty basket', 'plain'], choose: ['Choose → step down', 'cool'], undo: ['Un-choose → step back up', 'warn'], done: [out.length + ' baskets found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -30298,7 +30298,7 @@ function basketScene() {
     example: ['nums = [1, 2, 3]', '[ ] [1] [1,2] [1,2,3] [1,3] [2] [2,3] [3]'],
     hints: ['“Every snack is either in or out. How many baskets does that make for three snacks?”', '“Build a basket one snack at a time. After each choice, write the basket down, then try adding a later snack.”', '“Choose a snack, explore from there, then take it back out before you try the next one. Only add snacks that come after the last one, so no basket repeats.”'],
     clues: ['list every possible group', 'each item is in or out', 'no group listed twice'],
-    quizFb: ['“Taking the best snack each time builds just one basket. We need all eight.”', '“Yes! Choose a snack, explore, then rub it out and try the next. Every basket shows up exactly once.”', '“Two friends from both ends look for one pair. A basket can hold any number of snacks.”', '“Starting over for each basket works, but you would rebuild the same beginnings again and again.”'],
+    quizFb: ['“Taking the best snack each time builds only one basket. We need all eight.”', '“Yes! Choose a snack, explore, then rub it out and try the next. Every basket shows up exactly once.”', '“Two friends from both ends look for one pair. A basket can hold any number of snacks.”', '“Starting over for each basket works, but you would rebuild the same beginnings again and again.”'],
     steps
   };
 }
@@ -30344,7 +30344,7 @@ function seatingScene() {
       B.fate[id] = 'future';
       steps.push(snap('choose', { guest: g,
         dialog: [say('marker', 'From “' + from + '”, guest ' + g + ' sits in chair ' + path.length + '. The marker mark on.'), say('narr', 'Now step down and fill the next chair.')],
-        nar: { kid: 'Guest ' + g + ' is free, so the marker seats them in chair ' + path.length + ' and marks them. Then he moves on to the next chair.', builder: 'used.add(' + g + '); path.append(' + g + ') → path = [' + path.join(', ') + ']. Call dfs() for chair ' + (path.length + 1) + '.', expert: 'The used set makes the “is this guest free?” check O(1). Each choice shrinks the free set by one.' } }));
+        nar: { kid: 'Guest ' + g + ' is free, so the marker seats them in chair ' + path.length + ' and marks them. Then the marker moves on to the next chair.', builder: 'used.add(' + g + '); path.append(' + g + ') → path = [' + path.join(', ') + ']. Call dfs() for chair ' + (path.length + 1) + '.', expert: 'The used set makes the “is this guest free?” check O(1). Each choice shrinks the free set by one.' } }));
       dfs();
       path.pop(); used.delete(g); B.trail.pop(); popped.push(g);
     }
@@ -30355,7 +30355,7 @@ function seatingScene() {
   B.trail = [];
   steps.push(snap('done', { guest: '—', done: true, actorAt: 'p',
     dialog: [say('marker', 'Every guest has had a turn in every chair.'), say('narr', 'Six seatings, and no row written twice.')],
-    nar: { kid: 'The marker is back at the start with no chalk left on anyone. He found all ' + out.length + ' ways to seat the guests.', builder: 'dfs() returns. out holds ' + out.length + ' seatings: ' + out.map((p) => p.join('')).join(', ') + '.', expert: 'n! leaves, each copied in O(n): O(n·n!) time. The path, the used set and the stack are O(n), not counting the output.' } }));
+    nar: { kid: 'The marker is back at the start with no chalk left on anyone. The marker found all ' + out.length + ' ways to seat the guests.', builder: 'dfs() returns. out holds ' + out.length + ' seatings: ' + out.map((p) => p.join('')).join(', ') + '.', expert: 'n! leaves, each copied in O(n): O(n·n!) time. The path, the used set and the stack are O(n), not counting the output.' } }));
   const T = { intro: ['Three empty chairs', 'plain'], choose: ['Choose → seat a guest', 'cool'], seat: ['Row full → write it down', 'ok'], undo: ['Un-choose → stand them up', 'warn'], done: [out.length + ' seatings found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -30378,9 +30378,9 @@ function seatingScene() {
     lines: tagLines(code), code,
     rules: [['Three empty chairs, no one seated', 'intro'], ['Seat a free guest in the next chair', 'choose'], ['Last chair filled → write the row down', 'seat'], ['Stand the guest up and rub out the chalk', 'undo'], ['Back at the start → every order found', 'done']],
     complexity: [['O(n·n!)', 'n! full rows, each copied onto the list'], ['O(n)', 'the trail and the seated set hold at most n guests']],
-    quest: ['Three guests, numbered 1, 2 and 3, are coming to dinner. There are three chairs in a row.', 'The host wants a list of every possible seating order, each one exactly once, so she can pick her favourite.'],
+    quest: ['Three guests, numbered 1, 2 and 3, are coming to dinner. There are three chairs in a row.', 'The host wants a list of every possible seating order, each one exactly once. Then the host can pick a favourite.'],
     example: ['nums = [1, 2, 3]', '123 132 213 231 312 321'],
-    hints: ['“How many guests could sit in the first chair? And once one is seated, how many are left for the second?”', '“Fill the chairs one at a time. Keep track of who is already seated so nobody sits twice.”', '“Seat a free guest, fill the rest of the row, then stand that guest up and seat the next free one in the same chair.”'],
+    hints: ['“How many guests could sit in the first chair? And once one is seated, how many are left for the second?”', '“Fill the chairs one at a time. Keep track of who is already seated so nobody sits twice.”', '“Seat a free guest and fill the rest of the row. Then stand that guest up. Seat the next free guest in the same chair.”'],
     clues: ['every order of the items', 'each item used once per order', 'list them all'],
     quizFb: ['“Seating the best guest first gives one row. We need every row.”', '“Yes! Seat someone, fill the rest, then stand them up and try the next guest in that chair.”', '“Two friends from both ends swap a pair. They cannot list all six orders.”', '“Starting over for every row repeats the same first chairs again and again.”'],
     steps
@@ -30401,7 +30401,7 @@ function priceScene() {
   B.node('c', 'start', null); B.trail = ['c']; B.fate.c = 'future'; tags.c = 0;
   steps.push(snap('intro', { item: '—', start: 0,
     dialog: [say('narr', 'The shop sells items for 2 and 3 coins. You may buy each as often as you like. Which baskets cost exactly 6?'), say('marker', 'I’ll add items cheapest first, and never go back to a cheaper one.'), say('narr', 'Good. Then 2+3 and 3+2 can’t both turn up.')],
-    nar: { kid: 'The marker has an empty basket that costs 0. He will add items one at a time until the price is exactly 6.', builder: 'Sort the prices: [2, 3]. dfs(start = 0, total = 0). Each call may only add items from index start onward.', expert: 'Only adding items at index ≥ start keeps every basket in sorted order, so each multiset is built once. The number under each stop is the running total.' } }));
+    nar: { kid: 'The marker has an empty basket that costs 0. The marker will add items one at a time until the price is exactly 6.', builder: 'Sort the prices: [2, 3]. dfs(start = 0, total = 0). Each call may only add items from index start onward.', expert: 'Only adding items at index ≥ start keeps every basket in sorted order, so each multiset is built once. The number under each stop is the running total.' } }));
   const undoStep = () => {
     if (!popped.length) return;
     const back = name(path);
@@ -30419,7 +30419,7 @@ function priceScene() {
         B.node(id, name(tryPath), idOf(path)); B.fate[id] = 'out'; tags[id] = total + p;
         steps.push(snap('prune', { item: p, start,
           dialog: [say('marker', 'Adding a ' + p + ' makes ' + (total + p) + '. That is more than ' + target + '.'), say('narr', 'So don’t step down. The items after it cost even more, so stop here.')],
-          nar: { kid: 'The marker checks before he steps: ' + total + ' + ' + p + ' = ' + (total + p) + ', too much. He doesn’t go down that path at all.', builder: total + ' + ' + p + ' > ' + target + ' → break. The prices are sorted, so every later item is too dear as well.', expert: 'Pruning: a branch that already overshoots can never come back to ' + target + ', so its whole subtree is skipped. Sorting lets one break cut all later siblings too.' } }));
+          nar: { kid: 'The marker checks before stepping: ' + total + ' + ' + p + ' = ' + (total + p) + ', too much. The marker does not go down that path at all.', builder: total + ' + ' + p + ' > ' + target + ' → break. The prices are sorted, so every later item is too dear as well.', expert: 'Pruning: a branch that already overshoots can never come back to ' + target + ', so its whole subtree is skipped. Sorting lets one break cut all later siblings too.' } }));
         break;
       }
       undoStep();
@@ -30447,7 +30447,7 @@ function priceScene() {
   B.trail = [];
   steps.push(snap('done', { item: '—', start: '—', done: true, actorAt: 'c',
     dialog: [say('marker', 'Back at the start. Every basket under 6 has been tried.'), say('narr', 'Two baskets cost exactly 6: ' + out.map((p) => p.join('+')).join(' and ') + '.')],
-    nar: { kid: 'The marker is back at the start with no chalk left. He found ' + out.length + ' baskets that cost exactly ' + target + '.', builder: 'dfs(0, 0) returns. out = ' + out.map((p) => '[' + p.join(',') + ']').join(', ') + '.', expert: 'The tree is at most target / min(price) deep. The worst case is exponential in that depth, which pruning keeps small in practice.' } }));
+    nar: { kid: 'The marker is back at the start with no chalk left. The marker found ' + out.length + ' baskets that cost exactly ' + target + '.', builder: 'dfs(0, 0) returns. out = ' + out.map((p) => '[' + p.join(',') + ']').join(', ') + '.', expert: 'The tree is at most target / min(price) deep. The worst case is exponential in that depth, which pruning keeps small in practice.' } }));
   const T = { intro: ['An empty basket costs 0', 'plain'], choose: ['Choose → add an item', 'cool'], found: ['Exactly ' + target + ' → write it down', 'ok'], prune: ['Too dear → don’t step down', 'warn'], undo: ['Un-choose → take it back out', 'warn'], done: [out.length + ' baskets found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -30507,7 +30507,7 @@ function islandsScene() {
   let islands = 0, size = 0, chalked = 0, last = null;
   steps.push({ kind: 'intro', r: '—', c: '—', vals: map.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: [], actorAt: [0, 0],
     dialog: [say('narr', 'A sea map, 5 squares by 5. A 1 is land, a 0 is water. How many islands are there?'), say('explorer', 'Land squares that touch up, down, left or right are the same island.'), say('narr', 'So when you find land, explore all of it before you count again.')],
-    nar: { kid: 'The explorer reads the map row by row. When he steps on new land, that is a new island. He chalks every square of it so he never counts it twice.', builder: 'Scan every square. On an unvisited "1", add one to islands and call chalk(r, c), which marks the square and spreads to its four neighbours.', expert: 'Count connected components in a grid graph: each square is a node, with edges to its 4 neighbours. One DFS (depth-first search: follow a path as deep as it goes, then back up) per component.' } });
+    nar: { kid: 'The explorer reads the map row by row. When the explorer steps on new land, that is a new island. The explorer chalks every square of it to avoid counting it twice.', builder: 'Scan every square. On an unvisited "1", add one to islands and call chalk(r, c). It marks the square and spreads to its four neighbours.', expert: 'Count connected components in a grid graph: each square is a node, with edges to its 4 neighbours. One DFS (depth-first search: follow a path as deep as it goes, then back up) per component.' } });
   const visit = (r, c) => {
     if (r < 0 || c < 0 || r >= R || c >= C || g[r][c] !== '1') return;
     g[r][c] = '#'; owner[r][c] = islands - 1; size++; chalked++;
@@ -30519,13 +30519,13 @@ function islandsScene() {
     const st = { kind: first ? 'found' : 'chalk', r, c, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: trail.map((p) => p.slice()), actorAt: [r, c] };
     if (first) {
       st.dialog = [say('explorer', 'Land at ' + where(r, c) + ', and no chalk on it.'), say('narr', 'Then it is a new island. That makes ' + islands + '. The marker it and explore.')];
-      st.nar = { kid: 'The explorer finds land with no chalk. It must be a new island! That is island number ' + islands + '. He chalks the square.', builder: 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', then chalk(' + r + ', ' + c + ') writes "#" there.', expert: 'The scan only starts a DFS on an unvisited land square, so each component is counted exactly once, at its first square in reading order.' };
+      st.nar = { kid: 'The explorer finds land with no chalk. It must be a new island! That is island number ' + islands + '. The explorer chalks the square.', builder: 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', then chalk(' + r + ', ' + c + ') writes "#" there.', expert: 'The scan starts a DFS only on an unvisited land square. So each component is counted once, at its first square in reading order.' };
     } else if (backed) {
       st.dialog = [say('explorer', 'Dead end. I walk back along my trail to ' + where(parent[0], parent[1]) + '.'), say('explorer', 'From there, ' + dir + ' is land. Chalked!')];
-      st.nar = { kid: 'The explorer hit water or chalk on every side, so he walked back along his trail. Then he found more land ' + dir + ' and chalked it.', builder: 'Some chalk() calls returned at once (water, chalk or the edge). Back in chalk(' + parent[0] + ', ' + parent[1] + '), the ' + dir + ' call lands on fresh land: grid[' + r + '][' + c + '] = "#".', expert: 'Returning from a call is the “back up” half of DFS. The drawn trail is the call stack: ' + trail.length + ' calls deep right now.' };
+      st.nar = { kid: 'The explorer hit water or chalk on every side, so the explorer walked back along the trail. Then the explorer found more land ' + dir + ' and chalked it.', builder: 'Some chalk() calls returned at once (water, chalk or the edge). Back in chalk(' + parent[0] + ', ' + parent[1] + '), the ' + dir + ' call lands on fresh land: grid[' + r + '][' + c + '] = "#".', expert: 'Returning from a call is the “back up” half of DFS. The drawn trail is the call stack: ' + trail.length + ' calls deep right now.' };
     } else {
       st.dialog = [say('explorer', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('narr', 'The marker it and keep going deeper.')];
-      st.nar = { kid: 'The explorer steps ' + dir + ' and finds more land. Same island! He chalks it and keeps going.', builder: 'chalk(' + r + ', ' + c + ') from chalk(' + parent[0] + ', ' + parent[1] + '): it is "1", so mark it "#". This island has ' + size + ' squares so far.', expert: 'Each square is marked before its neighbours are tried, so no square is entered twice. Trail depth: ' + trail.length + '.' };
+      st.nar = { kid: 'The explorer steps ' + dir + ' and finds more land. Same island! The explorer chalks it and keeps going.', builder: 'chalk(' + r + ', ' + c + ') from chalk(' + parent[0] + ', ' + parent[1] + '): it is "1", so mark it "#". This island has ' + size + ' squares so far.', expert: 'Each square is marked before its neighbours are tried, so no square is entered twice. Trail depth: ' + trail.length + '.' };
     }
     steps.push(st);
     last = [r, c];
@@ -30594,7 +30594,7 @@ function islandsRun(input) {
   let islands = 0, size = 0, chalked = 0;
   const snap = (kind, r, c, extra) => Object.assign({ r, c, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: trail.map((p) => p.slice()), actorAt: [r === '—' ? 0 : r, c === '—' ? 0 : c] }, extra);
   steps.push(runStep('intro', snap('intro', '—', '—'), [say('narr', 'A ' + R + ' by ' + C + ' map. 1 is land, 0 is water. How many islands?'), say('explorer', 'Land that touches up, down, left or right is one island.')],
-    'The explorer reads the map row by row. New land means a new island, and he chalks all of it so it is never counted twice.', 'Scan every square. On unchalked land: islands += 1, then chalk(r, c).', 'Count connected groups: one search per group, O(R·C) in total.'));
+    'The explorer reads the map row by row. New land means a new island. The explorer chalks all of it, so it is never counted twice.', 'Scan every square. On unchalked land: islands += 1, then chalk(r, c).', 'Count connected groups: one search per group, O(R·C) in total.'));
   const visit = (r, c) => {
     if (r < 0 || c < 0 || r >= R || c >= C || g[r][c] !== '1') return;
     g[r][c] = '#'; owner[r][c] = islands - 1; size++; chalked++;
@@ -30606,7 +30606,7 @@ function islandsRun(input) {
     } else {
       const dir = dirName(parent, [r, c]);
       steps.push(runStep('chalk', snap('chalk', r, c), [say('explorer', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('narr', 'The marker it and keep going.')],
-        'The explorer steps ' + dir + ' and finds more land on the same island. He chalks it.', 'chalk(' + r + ', ' + c + '): "1" → "#". This island has ' + size + ' squares so far.', 'Mark first, then try the neighbours, so no square is entered twice.'));
+        'The explorer steps ' + dir + ' and finds more land on the same island. The explorer chalks it.', 'chalk(' + r + ', ' + c + '): "1" → "#". This island has ' + size + ' squares so far.', 'Mark first, then try the neighbours, so no square is entered twice.'));
     }
     visit(r + 1, c); visit(r - 1, c); visit(r, c + 1); visit(r, c - 1);
     trail.pop();
@@ -30670,15 +30670,15 @@ function tallestScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', l: '—', r: '—', ans: '—',
     dialog: [say('narr', 'How tall is this tree? Count the branches on the longest way from the top down to a tip.'), say('explorer', 'I can’t see the whole tree at once. I’ll ask each branch how deep it goes.'), say('narr', 'And each branch asks its own two children first.')],
-    nar: { kid: 'The explorer stands at the top branch, 8. To learn how tall the tree is, he asks each branch how far down it goes.', builder: 'maxDepth(root) asks maxDepth(left) and maxDepth(right), then returns 1 + the bigger answer. An empty child answers 0.', expert: 'Post-order DFS: a node’s answer depends only on its children’s answers, so solve the children first, then combine. The number under a branch is its answer, passed up.' } }));
+    nar: { kid: 'The explorer stands at the top branch, 8. To learn how tall the tree is, the explorer asks each branch how far down it goes.', builder: 'maxDepth(root) asks maxDepth(left) and maxDepth(right), then returns 1 + the bigger answer. An empty child answers 0.', expert: 'Post-order DFS: a node’s answer depends only on its children’s answers, so solve the children first, then combine. The number under a branch is its answer, passed up.' } }));
   const visit = (id) => {
     trail.push(id);
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
     if (!L && !R) {
       fate[id] = 'stored'; tags[id] = '↑1'; done++; best = Math.max(best, trail.length);
       steps.push(snap('leaf', id, { node: val(id), l: 0, r: 0, ans: 1,
-        dialog: [say('explorer', 'Branch ' + val(id) + ' has no children at all.'), say('narr', 'So it is just itself: 1 deep. Pass that up.')],
-        nar: { kid: 'Branch ' + val(id) + ' is a tip. Nothing grows below it, so it answers 1: just itself.', builder: 'maxDepth(' + val(id) + '): both children are None and return 0. 1 + max(0, 0) = 1.', expert: 'A leaf is the smallest case. Its answer comes straight from the two empty calls, with no further work. The trail is ' + trail.length + ' calls deep.' } }));
+        dialog: [say('explorer', 'Branch ' + val(id) + ' has no children at all.'), say('narr', 'So it is only itself: 1 deep. Pass that up.')],
+        nar: { kid: 'Branch ' + val(id) + ' is a tip. Nothing grows below it, so it answers 1: only itself.', builder: 'maxDepth(' + val(id) + '): both children are None and return 0. 1 + max(0, 0) = 1.', expert: 'A leaf is the smallest case. Its answer comes straight from the two empty calls, with no further work. The trail is ' + trail.length + ' calls deep.' } }));
       trail.pop();
       return 1;
     }
@@ -30721,9 +30721,9 @@ function tallestScene() {
     lines: tagLines(code), code,
     rules: [['Start at the top branch', 'intro'], ['Ask both children before answering', 'ask'], ['A tip with no children answers 1', 'leaf'], ['Answer 1 + the deeper child’s answer', 'report'], ['The top branch’s answer is the height', 'done']],
     complexity: [['O(n)', 'every branch answers exactly once'], ['O(h)', 'the trail is as long as the tree is tall']],
-    quest: ['An old tree has seven branches. Each branch splits into at most two smaller ones.', 'The gardener wants to know how tall it is: how many branches are on the longest way from the top down to a tip?'],
+    quest: ['An old tree has seven branches. Each branch splits into at most two smaller ones.', 'The gardener wants to know how tall it is. How many branches are on the longest way from the top down to a tip?'],
     example: ['root = [8, 3, 10, 1, 6, null, 14, null, null, 4]', 'answer = 4  (8 → 3 → 6 → 4)'],
-    hints: ['“If you knew how deep the left side goes and how deep the right side goes, how deep would this branch be?”', '“A branch with nothing under it is 1 deep. An empty spot is 0 deep.”', '“Ask the left child, ask the right child, then answer 1 + the bigger of the two. Start that question at the top.”'],
+    hints: ['“Say you knew how deep the left side goes and how deep the right side goes. How deep would this branch be?”', '“A branch with nothing under it is 1 deep. An empty spot is 0 deep.”', '“Ask the left child, ask the right child, then answer 1 + the bigger of the two. Start that question at the top.”'],
     clues: ['a tree, top to tips', 'the longest way down', 'each branch only knows its children'],
     kit: { right: 2, spot: 'Why ask the children first?', ask: 'How should the explorer measure the tree?',
       quiz: [['Count every branch', 'The height is how many branches there are'], ['Always go left', 'Walk down the left side and count'], ['Ask the children, add one', 'Each branch answers 1 + its deeper child'], ['Measure the widest floor', 'The height is the most branches side by side']] },
@@ -30746,7 +30746,7 @@ function mirrorGardenScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', wasL: '—', wasR: '—',
     dialog: [say('narr', 'The garden must look as if you saw it in a mirror. Every left bed goes right, and every right bed goes left.'), say('explorer', 'I’ll swap the two beds at each gardener, then visit the children.'), say('narr', 'Start with the head gardener at the top.')],
-    nar: { kid: 'Each gardener looks after a left bed and a right bed. The explorer will swap the two beds of every gardener. Then the whole garden is mirrored.', builder: 'invert(node): swap node.left and node.right, then call invert on both children. An empty spot just returns.', expert: 'Pre-order DFS: do the work at the node, then recurse. Mirroring every node’s two children mirrors the whole tree.' } }));
+    nar: { kid: 'Each gardener looks after a left bed and a right bed. The explorer will swap the two beds of every gardener. Then the whole garden is mirrored.', builder: 'invert(node): swap node.left and node.right, then call invert on both children. An empty spot returns at once.', expert: 'Pre-order DFS: do the work at the node, then recurse. Mirroring every node’s two children mirrors the whole tree.' } }));
   const visit = (id) => {
     trail.push(id); seen++;
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
@@ -30792,13 +30792,13 @@ function mirrorGardenScene() {
     lines: tagLines(code), code,
     rules: [['Start with the head gardener', 'intro'], ['Swap this gardener’s two beds, then visit them', 'swap'], ['No beds below → nothing to swap', 'leaf'], ['Everyone visited → the garden is mirrored', 'done']],
     complexity: [['O(n)', 'every gardener is visited once'], ['O(h)', 'the trail is as long as the tree is tall']],
-    quest: ['The Mirror Garden has seven gardeners. Each one looks after a left bed and a right bed, and each bed has its own gardener below.', 'The queen wants the garden to look exactly as it does in her mirror. Every left must become right, all the way down.'],
+    quest: ['The Mirror Garden has seven gardeners. Each one looks after a left bed and a right bed, and each bed has its own gardener below.', 'The queen wants the garden to look exactly as it does in the queen’s mirror. Every left must become right, all the way down.'],
     example: ['root = [4, 2, 7, 1, 3, 6, 9]', '[4, 7, 2, 9, 6, 3, 1]'],
-    hints: ['“What changes for the head gardener alone, if the garden is mirrored?”', '“Her two beds trade places. Then the same is true for every gardener below her.”', '“At each gardener: swap left and right, then do the same for both children. An empty spot needs nothing.”'],
+    hints: ['“What changes for the head gardener alone, if the garden is mirrored?”', '“The two beds trade places. Then the same is true for every gardener below.”', '“At each gardener: swap left and right, then do the same for both children. An empty spot needs nothing.”'],
     clues: ['every node, left and right', 'the same small job everywhere', 'the shape is mirrored'],
     kit: { right: 2, spot: 'Why swap at every gardener?', ask: 'How should the explorer mirror the garden?',
       quiz: [['Reverse the bottom row', 'Flip the tips and leave the rest'], ['Swap only at the top', 'Trade the two big halves and stop'], ['Swap at every gardener', 'Swap left and right, then do the same below'], ['Sort each floor backwards', 'Line every floor up from big to small']] },
-    quizFb: ['“Then 2 and 7 stay put. A mirror flips every floor, not just the bottom.”', '“The halves trade sides, but inside each half the beds are still the old way round.”', '“Yes! One swap at every gardener, top to bottom, mirrors the whole garden.”', '“Sorting changes who sits where. A mirror only flips left and right.”'],
+    quizFb: ['“Then 2 and 7 stay put. A mirror flips every floor, not only the bottom.”', '“The halves trade sides, but inside each half the beds are still the old way round.”', '“Yes! One swap at every gardener, top to bottom, mirrors the whole garden.”', '“Sorting changes who sits where. A mirror only flips left and right.”'],
     steps
   };
 }
@@ -30867,11 +30867,11 @@ function orchardScene() {
     lines: tagLines(code), code,
     rules: [['Start at the top: any height is allowed', 'intro'], ['Fits its range → go down with tighter limits', 'check'], ['Outside its range → the rule is broken', 'fail'], ['Pass the answer back up to the top', 'done']],
     complexity: [['O(n)', 'each tree is checked at most once'], ['O(h)', 'the trail is as long as the orchard is tall']],
-    quest: ['In the orchard every tree has a height. The rule: everything on a tree’s left side is shorter than it, and everything on its right side is taller.', 'That must hold for every ancestor, not just the parent. The inspector asks the explorer: does this orchard obey the rule?'],
+    quest: ['In the orchard every tree has a height. Here is the rule. Everything on a tree’s left side is shorter than it. Everything on its right side is taller.', 'That must hold for every ancestor, not only the parent. The inspector asks the explorer: does this orchard obey the rule?'],
     example: ['root = [8, 3, 10, 1, 6, null, 14, null, null, 4, 9]', 'false  (9 is on the left of 8)'],
     hints: ['“Tree 9 is taller than its parent 6. Is that enough to make it fine?”', '“Each tree has a lowest and a highest height it may be, set by every tree above it.”', '“Carry a range down. Going left, the top limit becomes this tree’s height. Going right, the bottom limit does. Fail as soon as a tree is outside its range.”'],
     clues: ['left is smaller, right is bigger', 'the rule holds for every ancestor', 'one break fails the whole tree'],
-    kit: { right: 2, spot: 'Why carry limits, not just compare?', ask: 'How should the explorer check the orchard?',
+    kit: { right: 2, spot: 'Why carry limits, not only compare?', ask: 'How should the explorer check the orchard?',
       quiz: [['Compare each tree with its parent', 'Left child shorter, right child taller'], ['Check the top three trees', 'If the top is right, the rest follows'], ['Carry the limits down', 'Each tree must fit a range set by all trees above it'], ['Count the trees on each side', 'Both sides should have the same number']] },
     quizFb: ['“Then 9 passes, since 9 > 6. But 9 sits on the left of 8, so it must be shorter than 8.”', '“The break here is three floors down. The top three trees look fine.”', '“Yes! Each step down tightens the range, so every ancestor’s rule travels with the explorer.”', '“The rule is about heights, not how many trees there are. Uneven sides are allowed.”'],
     steps
@@ -31420,9 +31420,9 @@ function fsBridgeScene() {
     complexity: [['O(n)', 'The hare crosses the train once'], ['O(1)', 'two walkers, no notes']],
     quest: ['A train of 7 carriages stands on the bridge: 5, 1, 8, 3, 7, 2, 6.', 'The tortoise and the hare must find the middle carriage. Each carriage only knows the next one, and nobody may count the train first.'],
     example: ['head = 5 → 1 → 8 → 3 → 7 → 2 → 6', 'answer = the carriage holding 3'],
-    hints: ['“If one walker goes twice as fast as the other, how far has the slow one gone when the fast one finishes?”', '“Start both at the front. Move the tortoise one carriage and the hare two, every turn.”', '“Stop when the hare has no carriage to hop to. The tortoise is then in the middle.”'],
+    hints: ['“One walker goes twice as fast as the other. How far has the slow one gone when the fast one finishes?”', '“Start both at the front. Move the tortoise one carriage and the hare two, every turn.”', '“Stop when the hare has no carriage to hop to. The tortoise is then in the middle.”'],
     clues: ['each carriage only knows the next', 'the length is not given', 'one walk, no notes'],
-    quizFb: ['“Writing every carriage in a notebook works, but the notebook grows with the train. Two walkers need no notes.”', '“Counting first, then walking again, takes two trips. The tortoise and the hare can do it in one.”', '“Yes! The hare goes twice as fast. When she finishes, the tortoise is halfway.”', '“Nobody can walk backward from the end of this train. Each carriage only points forward.”'],
+    quizFb: ['“Writing every carriage in a notebook works, but the notebook grows with the train. Two walkers need no notes.”', '“Counting first, then walking again, takes two trips. The tortoise and the hare can do it in one.”', '“Yes! The hare goes twice as fast. When the hare finishes, the tortoise is halfway.”', '“Nobody can walk backward from the end of this train. Each carriage only points forward.”'],
     steps
   };
 }
@@ -31437,7 +31437,7 @@ function fsLoopScene() {
   const gapOf = (s, f) => (s < loopStart || f < loopStart ? '—' : ((s - f) % loopLen + loopLen) % loopLen);
   steps.push({ slow, fast, kind: 'intro', gap: '—',
     dialog: [say('narr', 'Six carriages. Does this track end, or does it loop back on itself?'), say('tortoise', 'I walk one carriage per turn.'), say('hare', 'I hop two. If there is a loop, I will catch up with the tortoise from behind.')],
-    nar: { kid: 'The tortoise is slow and the hare is fast. On a straight track, the hare just reaches the end. On a loop, the hare comes round and meets the tortoise.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. If they land on the same carriage, there is a loop.', expert: 'Floyd’s cycle check. Inside a loop the gap shrinks by 1 each turn, so they meet within one lap. O(n) time, O(1) space.' } });
+    nar: { kid: 'The tortoise is slow and the hare is fast. On a straight track, the hare reaches the end. On a loop, the hare comes round and meets the tortoise.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. If they land on the same carriage, there is a loop.', expert: 'Floyd’s cycle check. Inside a loop the gap shrinks by 1 each turn, so they meet within one lap. O(n) time, O(1) space.' } });
   while (true) {
     slow = next[slow];
     const mid = next[fast];
@@ -31480,9 +31480,9 @@ function fsLoopScene() {
     complexity: [['O(n)', 'they meet within one lap'], ['O(1)', 'two walkers, no notes']],
     quest: ['Six carriages sit on a track: 3, 7, 1, 9, 4, 6. The last one, 6, might hook back to an earlier carriage. Nobody can see the whole track.', 'The tortoise and the hare must find out: does the track end, or go round in a loop?'],
     example: ['head = 3 → 7 → 1 → 9 → 4 → 6 → back to 1', 'answer = True   (the track loops)'],
-    hints: ['“On a straight track, a fast runner just reaches the end. What happens to a fast runner on a round track?”', '“Send the tortoise one carriage per turn and the hare two. Watch whether they ever stand on the same carriage.”', '“If the hare reaches the end, there is no loop. If they meet, there is one.”'],
+    hints: ['“On a straight track, a fast runner reaches the end. What happens to a fast runner on a round track?”', '“Send the tortoise one carriage per turn and the hare two. Watch whether they ever stand on the same carriage.”', '“If the hare reaches the end, there is no loop. If they meet, there is one.”'],
     clues: ['the track may loop', 'you cannot see the whole track', 'no notebook allowed'],
-    quizFb: ['“A notebook of visited carriages works, but it can grow as long as the train. The tortoise and the hare need no notes.”', '“On a loop there is no end to count to. You would walk forever.”', '“Yes! The hare gains one carriage per turn. On a loop she must catch the tortoise.”', '“There is no back end to start from. Each carriage only points forward.”'],
+    quizFb: ['“A notebook of visited carriages works, but it can grow as long as the train. The tortoise and the hare need no notes.”', '“On a loop there is no end to count to. You would walk forever.”', '“Yes! The hare gains one carriage per turn. On a loop the hare must catch the tortoise.”', '“There is no back end to start from. Each carriage only points forward.”'],
     steps
   };
 }
@@ -31538,9 +31538,9 @@ function courseBuild(v) {
   };
   const free0 = ids.filter((_, i) => needs[i] === 0);
   steps.push(runStep('intro', snap(), [say('narr', 'The ripple wants to take all ' + n + ' classes. An arrow means “take this one first”.'), say('ripple', 'I’ll write under each class how many classes it still waits for.')],
-    'The ripple plans her classes. An arrow from one class to another means “take this one first”. The number under each class says how many it still waits for.',
+    'The ripple plans the classes. An arrow from one class to another means “take this one first”. The number under each class says how many it still waits for.',
     'needs[c] = how many arrows point into class c. unlocks[b] lists the classes that wait for b.',
-    'This is a directed graph. Kahn’s method repeatedly takes a class with no unmet needs, so it lists the classes in a safe order, or shows there is none.'));
+    'This is a directed graph: its arrows point one way. Kahn’s method keeps taking a class that needs nothing more. That gives a safe order, or shows there is none.'));
   free0.forEach((id) => { look[Number(id)] = 'buy'; line.push(Number(id)); });
   steps.push(runStep('seed', snap(), free0.length ? [say('ripple', listAnd(free0.map((x) => 'Class ' + x)) + (free0.length === 1 ? ' waits' : ' wait') + ' for nothing.'), say('narr', 'Then put ' + (free0.length === 1 ? 'it' : 'them') + ' in the line first.')] : [say('ripple', 'Every class waits for another one.'), say('narr', 'Then nobody can even start.')],
     free0.length ? listAnd(free0.map((x) => 'Class ' + x)) + (free0.length === 1 ? ' waits' : ' wait') + ' for nothing, so ' + (free0.length === 1 ? 'it joins' : 'they join') + ' the line first.' : 'No class is free to start. Every class waits for another one.',
@@ -31611,8 +31611,8 @@ function courseScene() {
     lines: tagLines(code), code,
     rules: [['Count what each class waits for', 'intro'], ['Classes that wait for nothing join the line', 'seed'], ['Line not empty → take the class at the front', 'take'], ['It still waits for others → count one less', 'unlock'], ['Its count reaches 0 → it joins the line', 'free'], ['Line empty, all taken → True', 'done'], ['Line empty, some still waiting → False', 'stuck']],
     complexity: [['O(V + E)', 'each class and each arrow is handled once'], ['O(V + E)', 'the lists of arrows and the line']],
-    quest: ['The ripple signs up for six classes, numbered 0 to 5. Some classes need another class first: 2 needs 0 and 1, 3 needs 1, 4 needs 2 and 3, and 5 needs 4.', 'Can she take all six, one after another, without breaking a rule?'],
-    hints: ['“Which classes could the ripple take on day one?”', '“After she takes a class, which other classes come one step closer to being free?”', '“Count what each class waits for. Keep a line of classes at 0. Take one, lower the counts it unlocks, and add any that reach 0. Did you take them all?”'],
+    quest: ['The ripple signs up for six classes, numbered 0 to 5. Some classes need another class first: 2 needs 0 and 1, 3 needs 1, 4 needs 2 and 3, and 5 needs 4.', 'Can the ripple take all six, one after another, without breaking a rule?'],
+    hints: ['“Which classes could the ripple take on day one?”', '“After the ripple takes a class, which other classes come one step closer to being free?”', '“Count what each class waits for. Keep a line of classes at 0. Take one, lower the counts it unlocks, and add any that reach 0. Did you take them all?”'],
     clues: ['some things must come before others', 'a loop of needs makes it impossible', 'yes or no: is there a safe order?'],
     kit: { right: 1, spot: 'Why start with the free classes?', ask: 'How should the ripple plan?',
       quiz: [['Start anywhere and follow arrows', 'Pick a class and walk to whatever it unlocks'], ['Take free classes first', 'Keep a line of classes that wait for nothing, and count down the rest'], ['Sort by class number', 'Take 0, then 1, then 2, and so on'], ['Take the busiest class first', 'Start with the class that unlocks the most']] },
@@ -31689,7 +31689,7 @@ function cloneScene() {
       board.forEach((r) => { r[2] = r[0] === String(k) ? 'hit' : ''; });
       st.board = board.map((r) => r.slice());
       steps.push(runStep('reuse', st, [say('explorer', 'Friend ' + k + ' is already in my notebook.'), say('narr', 'So ' + from + '′ just links to ' + k + '′. No new copy.')],
-        'Friend ' + k + ' was copied before. The explorer looks it up in his notebook, and ' + from + '′ links to ' + k + '′.',
+        'Friend ' + k + ' was copied before. The explorer looks it up in the notebook, and ' + from + '′ links to ' + k + '′.',
         'clone(' + k + '): ' + k + ' in copies → return ' + k + '′. Append it to ' + from + '′.neighbors.',
         'This lookup is what stops the loop. Without it, clone(' + k + ') would copy ' + k + ' again and run forever.'));
       board.forEach((r) => { r[2] = ''; });
@@ -31722,7 +31722,7 @@ function cloneScene() {
   steps.push(runStep('done', snap({ old: 1, nb: '—', done: true }), [say('explorer', 'Every friend has a copy, and every copy has its friends.'), say('narr', 'Hand back 1′. The whole copy hangs off it.')],
     'All four friends are copied, and every copy has both of its friends. The explorer hands back copy 1′.',
     'clone(1) returns 1′. 4 copies, 8 links (each friendship twice, once from each side).',
-    'Each node is copied once and each link is made once: O(V + E) time, O(V) for the notebook and the call stack.'));
+    'Each node is copied once and each link is made once. Time is O(V + E). Space is O(V) for the notebook and the call stack.'));
   runFinish(steps, { intro: ['Copy every friend and friendship', 'plain'], copy: ['Not in the notebook → make a copy', 'cool'], reuse: ['Already copied → link to it', 'warn'], link: ['Friend copied → link the copies', 'cool'], done: ['Copy complete → return 1′', 'ok'] }, (st) => {
     st.meter = { text: 'links made: ' + st.linkCount + ' / 8', pct: (st.linkCount / 8) * 100, mark: 100, markLabel: '4 friendships, both ways' };
     st.watch = [['old', st.old == null ? '—' : st.old, 'left'], ['friend', st.nb, 'right'], ['copies', st.made + ' / 4', 'text'], ['links', st.linkCount + ' / 8', 'text'], ['call depth', st.depth, 'right'], ['result', st.done ? '1′' : '…', st.done ? 'ok' : 'text']];
@@ -31745,12 +31745,12 @@ function cloneScene() {
     rules: [['Start with an empty notebook', 'intro'], ['Friend not in the notebook → make a copy', 'copy'], ['Friend already copied → link to that copy', 'reuse'], ['Back from a new copy → link the two copies', 'link'], ['Every friend copied → return the first copy', 'done']],
     predictFull: true,
     complexity: [['O(V + E)', 'each friend is copied once, each link made once'], ['O(V)', 'the notebook and the call stack']],
-    quest: ['Four friends form a ring: 1 knows 2 and 4, 2 knows 1 and 3, 3 knows 2 and 4, and 4 knows 1 and 3.', 'The explorer must hand back a full copy: new friends with the same numbers and the same friendships, starting from friend 1.'],
+    quest: ['Four friends form a ring: 1 knows 2 and 4, 2 knows 1 and 3, 3 knows 2 and 4, and 4 knows 1 and 3.', 'The explorer must hand back a full copy. It has new friends with the same numbers and the same friendships. Start from friend 1.'],
     example: ['adjList = [[2, 4], [1, 3], [2, 4], [1, 3]]', 'answer = [[2, 4], [1, 3], [2, 4], [1, 3]]  (all new nodes)'],
     answer: [[2, 4], [1, 3], [2, 4], [1, 3]],
     hints: ['“Friend 1 knows 2, and 2 knows 1. What stops you copying them back and forth forever?”', '“Keep a notebook from each old friend to its copy. Check it before you copy anyone.”', '“clone(old): if it is in the notebook, return the copy. Else make the copy, write it down, then add clone(friend) for each friend.”'],
     clues: ['a deep copy, not the same nodes', 'friendships can loop back', 'every node is reachable from the first'],
-    kit: { right: 2, spot: 'Why a notebook, not just recursion?', ask: 'How should the explorer copy the group?',
+    kit: { right: 2, spot: 'Why keep a notebook as well as recursion?', ask: 'How should the explorer copy the group?',
       quiz: [['Copy each friend, then each friend’s friends', 'Recurse into every friend without remembering anything'], ['Hand back the same friends', 'Return the nodes you were given'], ['Keep a notebook of copies', 'Old friend → copy, checked before making a new one'], ['Copy the friends in number order', 'Make 1′, 2′, 3′, 4′, then guess the links']] },
     quizFb: ['“1 knows 2 and 2 knows 1. Without remembering, the copying never stops.”', '“That is not a copy. Change one and the other changes too.”', '“Yes! Write each copy down first, and every loop back finds it in the notebook.”', '“You only get friend 1. You have to walk the friendships to find the rest.”'],
     steps
@@ -31805,7 +31805,7 @@ function roadsBuild(v) {
     steps.push(runStep('join', sj, [say('checker', 'Head ' + small + ' now reports to head ' + big + '.'), say('narr', 'One group of ' + size[big] + ' towns.')],
       'The checker joins the two groups. Head ' + small + ' now reports to ' + big + ', so the group has ' + many(size[big], 'town') + '. The road is kept.',
       'head[' + small + '] = ' + big + ' (the smaller group joins the bigger one).',
-      'Hanging the smaller group under the bigger one keeps every walk short: about O(α(n)) per find, which is almost constant.'));
+      'Hanging the smaller group under the bigger one keeps every walk short. Each find costs about O(α(n)), which is almost constant.'));
   }
   runFinish(steps, { intro: ['Every town is its own head', 'plain'], look: ['Different heads → not joined yet', 'cool'], join: ['Join the two groups', 'cool'], cycle: ['Same head → extra road', 'ok'] }, (st) => {
     st.meter = { text: 'roads kept: ' + st.joins + ' / ' + (n - 1), pct: (st.joins / (n - 1)) * 100, mark: 100, markLabel: 'a tree needs ' + (n - 1) };
@@ -31899,7 +31899,7 @@ function delayBuild(v) {
     if (done.has(u)) {
       cur = u;
       steps.push(runStep('stale', snap({ u, t }), [say('checker', 'Town ' + u + ' at time ' + t + '? I already settled it at ' + best[u] + '.'), say('narr', 'An old note. Cross it off.')],
-        'This note says town ' + u + ' at time ' + t + ', but the checker already reached it at time ' + best[u] + '. It is an old note, so he skips it.',
+        'This note says town ' + u + ' at time ' + t + ', but the checker already reached it at time ' + best[u] + '. It is an old note, so the checker skips it.',
         'u = ' + u + ' is in done → continue.',
         'Instead of changing a time inside the heap, the method adds a new note and skips old ones later. Each road adds at most one note.'));
       continue;
@@ -31916,7 +31916,7 @@ function delayBuild(v) {
         const st = snap({ u, t, v: w2, w, nt }, [nt, w2]);
         st.edges[key] = 'active';
         steps.push(runStep('improve', st, [say('checker', 'From ' + u + ' to ' + w2 + ' takes ' + w + ': time ' + t + ' + ' + w + ' = ' + nt + '.'), say('narr', old == null ? 'Town ' + w2 + ' had no time yet. Write ' + nt + '.' : 'That beats ' + old + '. Write ' + nt + '.')],
-          'The road to town ' + w2 + ' takes ' + w + ', so the checker could get there at time ' + nt + '. ' + (old == null ? 'That is the first time found for town ' + w2 + '.' : 'That is sooner than ' + old + ', so he writes the new time.'),
+          'The road to town ' + w2 + ' takes ' + w + ', so the checker could get there at time ' + nt + '. ' + (old == null ? 'That is the first time found for town ' + w2 + '.' : 'That is sooner than ' + old + ', so the checker writes the new time.'),
           t + ' + ' + w + ' = ' + nt + ' < ' + (old == null ? '∞' : old) + ' → best[' + w2 + '] = ' + nt + ', push (' + nt + ', ' + w2 + ').',
           'This is called relaxing a road. A town’s time only goes down, and only when a road gives a sooner arrival.'));
       } else {
@@ -31925,7 +31925,7 @@ function delayBuild(v) {
         steps.push(runStep('keep', st, [say('checker', 'From ' + u + ' to ' + w2 + ': ' + t + ' + ' + w + ' = ' + nt + '.'), say('narr', 'Town ' + w2 + ' already has ' + old + '. Keep it.')],
           'Going to town ' + w2 + ' this way arrives at time ' + nt + '. Town ' + w2 + ' already has ' + old + ', which is not later, so nothing changes.',
           t + ' + ' + w + ' = ' + nt + ' ≥ ' + old + ' → no change.',
-          'A road that does not give a sooner time is simply ignored. It may still be checked once from each settled town.'));
+          'A road that does not give a sooner time is ignored. It may still be checked once from each settled town.'));
       }
       seen[key] = seen[key] || 'out';
     }
@@ -32107,7 +32107,7 @@ function hpTalentScene() {
   const board = (fresh, hit) => room.map((j, p) => [String(nums[j]), p === 0 ? 'door' : 'inside', j === hit ? 'hit' : j === fresh ? 'fresh' : '']);
   steps.push({ L: 0, kind: 'intro', at: -1, room: [], gone: [], board: [],
     dialog: [say('narr', 'Six acts will perform tonight, each with a score. The triage nurse must name the act with the 2nd highest score.'), say('triage', 'My green room has only 2 chairs. I keep the weakest act in the chair by the door.'), say('narr', 'And when a new act comes along?'), say('triage', 'I only look at the one by the door. Beat them and you get a chair.')],
-    nar: { kid: 'The triage nurse runs a small green room with 2 chairs. She lets in the best acts she has seen so far, and the weakest of them always sits by the door.', builder: 'room = [] is a min-heap. For each x: if the room has a free chair, push x. Otherwise, if x beats room[0], replace room[0] with x.', expert: 'A min-heap of size k keeps the k largest values seen so far. Its root is the kth largest of that prefix, and each step costs O(log k).' } });
+    nar: { kid: 'The triage nurse runs a small green room with 2 chairs. The room holds the best acts seen so far. The weakest of them always sits by the door.', builder: 'room = [] is a min-heap. For each x: if the room has a free chair, push x. Otherwise, if x beats room[0], replace room[0] with x.', expert: 'A min-heap of size k keeps the k largest values seen so far. Its root is the kth largest of that prefix, and each step costs O(log k).' } });
   const gone = [];
   nums.forEach((x, i) => {
     if (room.length < k) {
@@ -32166,7 +32166,7 @@ function hpTalentScene() {
     },
     rules: [['Open an empty room with k chairs', 'intro'], ['Free chair → the act walks in', 'push'], ['Beats the one by the door → swap them', 'replace'], ['Not better than the door → sent home', 'turnaway'], ['Show over → the door holds the answer', 'found']],
     complexity: [['O(n log k)', 'each act costs one small sift'], ['O(k)', 'the room never holds more than k']],
-    quest: ['Six acts perform at the village talent show. Their scores come in one at a time: 3, 2, 1, 5, 6, 4.', 'The judges want the act with the 2nd highest score. The triage nurse has a green room with just 2 chairs, and she must decide who gets one.'],
+    quest: ['Six acts perform at the village talent show. Their scores come in one at a time: 3, 2, 1, 5, 6, 4.', 'The judges want the act with the 2nd highest score. The triage nurse has a green room with only 2 chairs. The nurse must decide who gets one.'],
     example: ['nums = [3, 2, 1, 5, 6, 4]   k = 2', 'answer = 5   (6 is first, 5 is second)'],
     hints: ['“You only need the top 2. Do you really have to remember all six scores?”', '“Keep the best 2 you have seen so far. Which of those two is the one in danger of losing a chair?”', '“Seat the weakest of the room by the door. A newcomer only has to beat that one act.”'],
     clues: ['the kth best, not the best', 'scores arrive in any order', 'no need to sort everything'],
@@ -32245,7 +32245,7 @@ function hpSongsScene() {
     },
     rules: [['Tally first, then open an empty booth', 'intro'], ['Free slot → the song goes in', 'push'], ['More plays than the door → swap them', 'replace'], ['Fewer plays than the door → stays out', 'turnaway'], ['Every song checked → the booth is the answer', 'found']],
     complexity: [['O(n log k)', 'one count each, one small sift per song'], ['O(n)', 'the tally can hold every song']],
-    quest: ['The village radio took seven song requests tonight: 1, 2, 3, 2, 4, 3, 2.', 'The DJ will only play the 2 songs people asked for most. The shopkeeper has counted the requests, and the triage nurse must choose which songs get a slot in her tiny booth.'],
+    quest: ['The village radio took seven song requests tonight: 1, 2, 3, 2, 4, 3, 2.', 'The DJ will play only the 2 songs people asked for most. The shopkeeper has counted the requests. The triage nurse must choose which songs get a slot in the tiny booth.'],
     example: ['nums = [1, 2, 3, 2, 4, 3, 2]   k = 2', 'answer = [2, 3]   (song 2 ×3, song 3 ×2, any order)'],
     hints: ['“Before you can pick favourites, you need to know how often each song was asked for. Who is good at counting?”', '“Once the counts are known, this is the talent show again: keep only the best k.”', '“Seat the least-requested song of the booth by the door. A new song only has to beat that one.”'],
     clues: ['how often, not how big', 'only the top k matter', 'counts first, then choose'],
@@ -32274,7 +32274,7 @@ function hpYardScene() {
   sortDesk();
   steps.push({ L: desk[0].idx, kind: 'seed', sent: -1, desk: deskVals(), deskIdx: desk.map((c) => c.idx), merged: [], board: board(null),
     dialog: [say('triage', 'Fronts on my desk: ' + trains.map(([name]) => name + carOf(name, 0).v).join(', ') + '.'), say('narr', 'The smallest is on top: ' + desk[0].v + ' from train ' + desk[0].name + '.')],
-    nar: { kid: 'The triage nurse puts the first carriage of each train on her desk: ' + deskVals().join(', ') + '. She can see at once that ' + desk[0].v + ' is the smallest.', builder: 'Push every non-empty head: desk = ' + hpList(deskVals()) + ', desk[0] = ' + desk[0].v + '.', expert: 'Seeding costs O(k log k), or O(k) with heapify.' } });
+    nar: { kid: 'The triage nurse puts the first carriage of each train on the desk: ' + deskVals().join(', ') + '. Now the nurse can see that ' + desk[0].v + ' is the smallest.', builder: 'Push every non-empty head: desk = ' + hpList(deskVals()) + ', desk[0] = ' + desk[0].v + '.', expert: 'Seeding costs O(k log k), or O(k) with heapify.' } });
   while (desk.length) {
     const c = desk.shift();
     merged.push(c.v);
@@ -32283,11 +32283,11 @@ function hpYardScene() {
       desk.push(nxt); sortDesk();
       steps.push({ L: c.idx, kind: 'send', sent: c.idx, desk: deskVals(), deskIdx: desk.map((d) => d.idx), merged: merged.slice(), board: board(nxt), from: c.name,
         dialog: [say('triage', c.v + ' from train ' + c.name + ' is the smallest. Out it goes.'), say('triage', 'Train ' + c.name + ' moves up its next carriage: ' + nxt.v + '.'), say('narr', 'Desk: ' + hpList(deskVals()) + '. Out train: ' + merged.join(' → ') + '.')],
-        nar: { kid: 'The triage nurse sends ' + c.v + ' to the out train. Train ' + c.name + ' still has carriages, so its next one, ' + nxt.v + ', comes up to the desk.', builder: 'heappop → ' + c.v + ' (train ' + c.name + '); tail.next = it; push its next, ' + nxt.v + '. desk = ' + hpList(deskVals()) + '.', expert: 'The popped node is the global minimum of every carriage not yet sent, because each train is sorted and its front is on the desk.' } });
+        nar: { kid: 'The triage nurse sends ' + c.v + ' to the out train. Train ' + c.name + ' still has carriages, so its next one, ' + nxt.v + ', comes up to the desk.', builder: 'heappop → ' + c.v + ' (train ' + c.name + '); tail.next = it; push its next, ' + nxt.v + '. desk = ' + hpList(deskVals()) + '.', expert: 'The popped node is the smallest of all carriages not yet sent. Each train is sorted, and its front is on the desk.' } });
     } else {
       steps.push({ L: c.idx, kind: 'empty', sent: c.idx, desk: deskVals(), deskIdx: desk.map((d) => d.idx), merged: merged.slice(), board: board(null), from: c.name,
         dialog: [say('triage', c.v + ' from train ' + c.name + ' is the smallest. Out it goes.'), say('narr', 'Train ' + c.name + ' has no carriages left, so nothing new comes to the desk.' + (desk.length ? ' Desk: ' + hpList(deskVals()) + '.' : ' The desk is empty.'))],
-        nar: { kid: 'The triage nurse sends ' + c.v + ' out. That was the last carriage of train ' + c.name + ', so the desk gets smaller.', builder: 'heappop → ' + c.v + '; node.next is None → push nothing. desk = ' + hpList(deskVals()) + '.', expert: 'A finished list simply drops out; the heap shrinks toward empty, which ends the loop.' } });
+        nar: { kid: 'The triage nurse sends ' + c.v + ' out. That was the last carriage of train ' + c.name + ', so the desk gets smaller.', builder: 'heappop → ' + c.v + '; node.next is None → push nothing. desk = ' + hpList(deskVals()) + '.', expert: 'A finished list drops out. The heap shrinks toward empty, which ends the loop.' } });
     }
   }
   steps.push({ L: cars.find((c) => c.v === merged[merged.length - 1]).idx, kind: 'found', sent: -1, desk: [], deskIdx: [], merged: merged.slice(), board: [],
@@ -32319,11 +32319,11 @@ function hpYardScene() {
     },
     rules: [['Start with an empty desk', 'intro'], ['Put every train’s front on the desk', 'seed'], ['Send the smallest, bring up its next carriage', 'send'], ['Send the smallest, its train is finished', 'empty'], ['Desk empty → the out train is done', 'found']],
     complexity: [['O(N log k)', 'each carriage passes the desk once'], ['O(k)', 'one front per train on the desk']],
-    quest: ['Three trains pull into the yard, each already sorted from small to big: A carries 2, 5, 8. B carries 1, 6. C carries 3, 4.', 'The station master wants one long train, still sorted. The triage nurse keeps the front carriage of every train on her desk and always knows which one is smallest.'],
+    quest: ['Three trains pull into the yard, each already sorted from small to big: A carries 2, 5, 8. B carries 1, 6. C carries 3, 4.', 'The station master wants one long train, still sorted. The triage nurse keeps the front carriage of every train on the desk. The nurse always knows which one is smallest.'],
     example: ['lists = [[2, 5, 8], [1, 6], [3, 4]]', 'answer = 1 → 2 → 3 → 4 → 5 → 6 → 8'],
     hints: ['“Each train is already sorted. Where in a train is its smallest carriage?”', '“So the next carriage of the big train must be one of the fronts. How many fronts are there?”', '“Keep the fronts on a desk that always shows the smallest. Send it out, then bring up the next carriage from the same train.”'],
     clues: ['every train is sorted', 'only the fronts can be next', 'many trains, one output'],
-    quizFb: ['“Pouring every carriage into one pile and sorting works, but it throws away the order the trains already had.”', '“Comparing all k fronts every time is O(k) per carriage. The desk gets it down to O(log k).”', '“Yes! A desk of fronts, smallest on top. Send it, bring up the next from that train, repeat.”', '“Two friends from both ends only works on one sorted row. We have three trains to weave together.”'],
+    quizFb: ['“Pouring every carriage into one pile and sorting works. But it ignores the order the trains already had.”', '“Comparing all k fronts every time is O(k) per carriage. The desk gets it down to O(log k).”', '“Yes! A desk of fronts, smallest on top. Send it, bring up the next from that train, repeat.”', '“Two friends from both ends only works on one sorted row. We have three trains to weave together.”'],
     steps
   };
 }
@@ -32348,7 +32348,7 @@ function diaryScene() {
   const snap = (o) => Object.assign({ board: rows(o.fresh), merged: merged.map((m) => m.slice()), owner: owner.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1,
     dialog: [say('narr', 'Six meetings for one room, written in no order. Some of them overlap.'), say('sched', 'First I sort them by start time: 1-3, 2-5, 6-8, 9-12, 10-11, 14-16.'), say('narr', 'Then?'), say('sched', 'I walk through once. If a meeting starts before my last block ends, I stretch that block.')],
-    nar: { kid: 'The scheduler puts the meetings in order of when they start. Then she copies them into her diary, joining any that overlap into one long block.', builder: 'Sort by start. merged = []. For each meeting: if it starts after the last block ends, add a new block; otherwise set last.end = max(last.end, end).', expert: 'After sorting, a meeting can only overlap the most recent block, so one comparison per meeting is enough. O(n log n) for the sort, O(n) for the sweep.' } }));
+    nar: { kid: 'The scheduler puts the meetings in order of when they start. Then the scheduler copies them into the diary. Any meetings that overlap join into one long block.', builder: 'Sort by start. merged = []. For each meeting, check the last block. If the meeting starts after it ends, add a new block. If not, set last.end = max(last.end, end).', expert: 'After sorting, a meeting can only overlap the most recent block, so one comparison per meeting is enough. O(n log n) for the sort, O(n) for the sweep.' } }));
   meets.forEach((m, i) => {
     const lastB = merged[merged.length - 1];
     if (!lastB || lastB[1] < m[0]) {
@@ -32405,7 +32405,7 @@ function diaryScene() {
     },
     rules: [['Sort the meetings by start time', 'intro'], ['Starts after the last block ends → new block', 'add'], ['Overlaps the last block → stretch its end', 'extend'], ['Fits inside the last block → keep the end', 'inside'], ['Every meeting placed → hand over the diary', 'found']],
     complexity: [['O(n log n)', 'the sort; the sweep is one pass'], ['O(n)', 'the diary can hold every meeting']],
-    quest: ['The meeting room has been double-booked all week. The bookings are 6-8, 1-3, 14-16, 2-5, 9-12 and 10-11, written down in no order.', 'The scheduler must rewrite the diary so that overlapping meetings become one long block, and nothing overlaps any more.'],
+    quest: ['The meeting room has been double-booked all week. The bookings are 6-8, 1-3, 14-16, 2-5, 9-12 and 10-11, written down in no order.', 'The scheduler must rewrite the diary. Overlapping meetings must become one long block, so nothing overlaps any more.'],
     example: ['intervals = [[6,8], [1,3], [14,16], [2,5], [9,12], [10,11]]', 'answer = [[1,5], [6,8], [9,12], [14,16]]'],
     hints: ['“Meetings in a muddle are hard to compare. What order would make overlaps sit next to each other?”', '“Once they are sorted by start, a meeting can only overlap the last block you wrote.”', '“Starts after the last block ends: new block. Otherwise stretch the end, but only if this meeting ends later.”'],
     clues: ['overlapping meetings join up', 'the input is not in order', 'one sweep after sorting'],
@@ -32426,14 +32426,14 @@ function bookingScene() {
   const snap = (o) => Object.assign({ board: rows(o.fresh), late: late.slice(), outText: ivList(out), size: out.length, status: status.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1,
     dialog: [say('narr', 'The diary is tidy: 1-2, 3-4, 6-8, 9-10, 13-15, 17-18. Then a late booking comes in for 5-9.'), say('sched', 'I copy every meeting that ends before 5. Then I join everything that overlaps the booking.'), say('narr', 'And the rest?'), say('sched', 'Once the booking is written, the rest are copied as they are.')],
-    nar: { kid: 'The scheduler has a neat diary and one new meeting to fit in. She copies the early meetings, joins any that clash with the new one, and copies the late ones.', builder: 'Three loops. Copy while end < late.start. Merge while start ≤ late.end, growing late. Append late. Copy the rest.', expert: 'The input is sorted and has no overlaps, so the meetings split into three runs: before, overlapping, after. One pass, O(n).' } }));
+    nar: { kid: 'The scheduler has a neat diary and one new meeting to fit in. The scheduler copies the early meetings. Any that clash with the new one join it. Then the late ones are copied.', builder: 'Three loops. Copy while end < late.start. Merge while start ≤ late.end, growing late. Append late. Copy the rest.', expert: 'The input is sorted and has no overlaps, so the meetings split into three runs: before, overlapping, after. One pass, O(n).' } }));
   let i = 0;
   const n = meets.length;
   while (i < n && meets[i][1] < late[0]) {
     out.push(meets[i].slice()); status[i] = 'copied';
     steps.push(snap({ L: i, kind: 'before', fresh: out.length - 1,
       dialog: [say('sched', 'Meeting ' + ivText(meets[i]) + ' ends at ' + meets[i][1] + ', before the booking starts at ' + late[0] + '.'), say('narr', 'No clash. Copy it across as it is.')],
-      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' is over before the new booking begins, so the scheduler copies it into the new diary.', builder: 'end = ' + meets[i][1] + ' < late.start = ' + late[0] + ' → out.append([' + meets[i][0] + ', ' + meets[i][1] + ']).', expert: 'Everything in this first run ends before the booking, so it can be copied without a check against it again.' } }));
+      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' is over before the new booking begins, so the scheduler copies it into the new diary.', builder: 'end = ' + meets[i][1] + ' < late.start = ' + late[0] + ' → out.append([' + meets[i][0] + ', ' + meets[i][1] + ']).', expert: 'Everything in this first run ends before the booking. So it can be copied with no more checks.' } }));
     i++;
   }
   while (i < n && meets[i][0] <= late[1]) {
@@ -32452,7 +32452,7 @@ function bookingScene() {
     dialog: i < n
       ? [say('sched', 'Meeting ' + ivText(meets[i]) + ' starts at ' + meets[i][0] + ', after the booking ends at ' + late[1] + '.'), say('narr', 'So nothing else clashes. Write the booking in now: ' + ivText(late) + '.')]
       : [say('sched', 'No meetings left to check.'), say('narr', 'Write the booking in now: ' + ivText(late) + '.')],
-    nar: { kid: 'Nothing else overlaps the booking, so the scheduler writes it into the diary as one block, ' + ivText(late) + '.', builder: 'start = ' + (i < n ? meets[i][0] : '—') + ' > late.end = ' + late[1] + ' → out.append([' + late[0] + ', ' + late[1] + ']).', expert: 'The booking goes in exactly once, after every meeting that ends before it and before every meeting that starts after it. Order is kept with no sort.' } }));
+    nar: { kid: 'Nothing else overlaps the booking, so the scheduler writes it into the diary as one block, ' + ivText(late) + '.', builder: 'start = ' + (i < n ? meets[i][0] : '—') + ' > late.end = ' + late[1] + ' → out.append([' + late[0] + ', ' + late[1] + ']).', expert: 'The booking goes in once. It sits after every meeting that ends before it, and before every meeting that starts after it. The order stays right with no sort.' } }));
   while (i < n) {
     out.push(meets[i].slice()); status[i] = 'copied';
     steps.push(snap({ L: i, kind: 'after', fresh: out.length - 1,
@@ -32799,7 +32799,7 @@ function photoScene() {
   });
   steps.push({ L: 0, kind: 'intro', left: 1, right: 1, board: notes(-1, 'intro'),
     dialog: [say('narr', 'Six friends hold number cards. A friend’s score is all the other cards multiplied.'), say('tally', 'I may not divide.'), say('narr', 'Then walk the row twice: left to right, then back.'), say('tally', 'Every note starts at 1. I carry one number: the product so far.')],
-    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, she multiplies in the cards on their right.', builder: 'answer = [1] * n. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'Score(i) = prefix(i) × suffix(i), where prefix and suffix are running products. Two linear passes, no division, O(1) extra space besides the output.' } });
+    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, the tally keeper multiplies in the cards on their right.', builder: 'answer = [1] * n. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'Score(i) = prefix(i) × suffix(i), where prefix and suffix are running products. Two linear passes, no division, O(1) extra space besides the output.' } });
   let left = 1;
   for (let i = 0; i < n; i++) {
     const before = left;
@@ -32809,7 +32809,7 @@ function photoScene() {
       dialog: i === 0
         ? [say('tally', 'Seat 0 has nobody on the left. Their note stays 1.'), say('tally', '1 × 2 = 2. Now I carry 2.')]
         : [say('tally', 'I carry ' + before + '. I write ' + before + ' on seat ' + i + '’s note.'), say('tally', before + ' × ' + nums[i] + ' = ' + left + '. Now I carry ' + left + '.')],
-      nar: { kid: 'The tally keeper writes ' + before + ' on seat ' + i + '’s note. That is all the cards on the left, multiplied. Then she multiplies her number by ' + nums[i] + '. It becomes ' + left + '.', builder: 'answer[' + i + '] = left = ' + before + '. Then left *= nums[' + i + '], so left = ' + left + '.', expert: 'Invariant before the write: left = ∏ nums[0..' + (i - 1) + '] (empty product = 1). One multiply and one write per seat.' } });
+      nar: { kid: 'The tally keeper writes ' + before + ' on seat ' + i + '’s note. That is all the cards on the left, multiplied. Then the tally keeper multiplies the running number by ' + nums[i] + '. It becomes ' + left + '.', builder: 'answer[' + i + '] = left = ' + before + '. Then left *= nums[' + i + '], so left = ' + left + '.', expert: 'Invariant before the write: left = ∏ nums[0..' + (i - 1) + '] (empty product = 1). One multiply and one write per seat.' } });
   }
   let right = 1;
   for (let i = n - 1; i >= 0; i--) {
@@ -32920,7 +32920,7 @@ function coinJarScene() {
       js: [['function subarraySum(nums, k) {', ''], ['  const seen = new Map([[0, 1]]);', '  // the empty jar'], ['  let total = 0, count = 0;', ''], ['  for (const x of nums) {', ''], ['    total += x;', ''], ['    count += seen.get(total - k) || 0;', ''], ['    seen.set(total, (seen.get(total) || 0) + 1);', ''], ['  }', ''], ['  return count;', ''], ['}', '']],
       go: [['func subarraySum(nums []int, k int) int {', ''], ['    seen := map[int]int{0: 1}', '  // the empty jar'], ['    total, count := 0, 0', ''], ['    for _, x := range nums {', ''], ['        total += x', ''], ['        count += seen[total-k]', ''], ['        seen[total]++', ''], ['    }', ''], ['    return count', ''], ['}', '']]
     },
-    rules: [['Start the book with 0, seen once', 'intro'], ['Total − k is in the book → add its count', 'hit'], ['Not in the book → just write the total down', 'miss'], ['Last stop → report the count', 'found']],
+    rules: [['Start the book with 0, seen once', 'intro'], ['Total − k is in the book → add its count', 'hit'], ['Not in the book → write the total down', 'miss'], ['Last stop → report the count', 'found']],
     complexity: [['O(n)', 'one look at each stop'], ['O(n)', 'the book can hold every total']],
     quest: ['A path has seven stops. At each stop, coins go into a jar or come out: +3, +1, −2, +2, +3, −1, +1.', 'How many runs of stops, side by side, add exactly 3? The tally keeper writes the total after each stop. The shopkeeper counts how often each total shows up.'],
     example: ['nums = [3, 1, −2, 2, 3, −1, 1]   k = 3', 'answer = 6'],
@@ -33080,7 +33080,7 @@ function platesScene() {
     },
     rules: [['Start with an empty pile', 'intro'], ['Opener → put a plate on top', 'push'], ['Closer matches the top → lift it off', 'pop'], ['Closer meets the wrong plate → False', 'mismatch'], ['Slip done and pile empty → True', 'found']],
     complexity: [['O(n)', 'each bracket is read once'], ['O(n)', 'the pile can hold every opener']],
-    quest: ['Lunch rush at the canteen. An order slip comes in covered in brackets: ( [ { } ] ) ( ).', 'The stack must say whether every opening bracket is closed by the right kind, in the right order, using nothing but his pile of plates.'],
+    quest: ['Lunch rush at the canteen. An order slip comes in covered in brackets: ( [ { } ] ) ( ).', 'The stack must say if every opening bracket is closed by the right kind, in the right order. It may use only the pile of plates.'],
     example: ['s = "([{}])()"', 'answer = True'],
     hints: ['“Which opener should a closer be matched with? The first one you saw, or the latest one still open?”', '“The latest one still open sounds like the top of a pile of plates.”', '“Opener: put a plate on. Closer: the top plate must match, then lift it off. An empty pile at the end means True.”'],
     clues: ['brackets must nest', 'the latest open one closes first', 'one pass through the slip'],
@@ -33101,7 +33101,7 @@ function weatherScene() {
   const snap = (o) => Object.assign({ board: pileRows(o.fresh), pileText: pileText(), size: pile.length, answer: answer.slice(), answered: answered.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1, j: -1,
     dialog: [say('narr', 'Seven days of weather: 73, 70, 68, 71, 69, 75, 72. For each day, how long until a warmer one?'), say('stack', 'Each day waits on my pile until a warmer day shows up.'), say('narr', 'And when one does?'), say('stack', 'Every colder day on top gets its answer and comes off.')],
-    nar: { kid: 'The stack writes each day on a plate and puts it on his pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n, pile = []. For each day i: while the top day is colder than today, pop it and set answer[top] = i − top. Then push i.', expert: 'The pile keeps days with falling temperatures from bottom to top. Each day is pushed once and popped at most once, so the whole pass is O(n).' } }));
+    nar: { kid: 'The stack writes each day on a plate and puts it on the pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n, pile = []. For each day i: while the top day is colder than today, pop it and set answer[top] = i − top. Then push i.', expert: 'The pile keeps days with falling temperatures from bottom to top. Each day is pushed once and popped at most once, so the whole pass is O(n).' } }));
   for (let i = 0; i < temps.length; i++) {
     while (pile.length && temps[pile[pile.length - 1]] < temps[i]) {
       const j = pile.pop();
@@ -33109,13 +33109,13 @@ function weatherScene() {
       answered.push(j);
       steps.push(snap({ L: i, kind: 'pop', fresh: -1, j,
         dialog: [say('stack', 'Today is ' + temps[i] + '°. Day ' + j + ' on top was only ' + temps[j] + '°.'), say('narr', 'Then day ' + j + ' waited ' + i + ' − ' + j + ' = ' + (i - j) + (i - j === 1 ? ' day' : ' days') + '. Lift that plate off.')],
-        nar: { kid: 'Day ' + i + ' is warmer than day ' + j + ', the plate on top. So day ' + j + ' gets its answer: ' + (i - j) + (i - j === 1 ? ' day' : ' days') + ' of waiting. The stack takes that plate off.', builder: 'temps[' + j + '] = ' + temps[j] + ' < ' + temps[i] + ' → pop ' + j + ', answer[' + j + '] = ' + i + ' − ' + j + ' = ' + (i - j) + '.', expert: 'Day ' + i + ' is the first warmer day after day ' + j + ': every day between them is already off the pile or was colder than day ' + j + '.' } }));
+        nar: { kid: 'Day ' + i + ' is warmer than day ' + j + ', the plate on top. So day ' + j + ' gets its answer: ' + (i - j) + (i - j === 1 ? ' day' : ' days') + ' of waiting. The stack takes that plate off.', builder: 'temps[' + j + '] = ' + temps[j] + ' < ' + temps[i] + ' → pop ' + j + ', answer[' + j + '] = ' + i + ' − ' + j + ' = ' + (i - j) + '.', expert: 'Day ' + i + ' is the first warmer day after day ' + j + '. Every day between them is already off the pile, or was colder than day ' + j + '.' } }));
     }
     pile.push(i);
     const below = pile.length > 1 ? pile[pile.length - 2] : -1;
     steps.push(snap({ L: i, kind: 'push', fresh: i, j: -1,
       dialog: [say('stack', 'Day ' + i + ', ' + temps[i] + '°. ' + (below < 0 ? 'Nobody else is waiting.' : 'Day ' + below + ' below is ' + temps[below] + '°, not colder.')), say('narr', 'Day ' + i + ' waits on the pile for a warmer day.')],
-      nar: { kid: 'Day ' + i + ' does not know its answer yet, so the stack puts it on top of the pile to wait. ' + (pile.length === 1 ? 'It is the only plate.' : 'There are ' + pile.length + ' plates now.'), builder: (below < 0 ? 'Pile is empty' : 'temps[' + below + '] = ' + temps[below] + ' ≥ ' + temps[i]) + ' → pile.append(' + i + '). pile = ' + pileText() + '.', expert: 'Temperatures on the pile, bottom to top: ' + pile.map((x) => temps[x]).join(' ≥ ') + '. They never rise toward the top.' } }));
+      nar: { kid: 'Day ' + i + ' does not know its answer yet, so the stack puts it on the pile to wait. ' + (pile.length === 1 ? 'It is the only plate.' : 'There are ' + pile.length + ' plates now.'), builder: (below < 0 ? 'Pile is empty' : 'temps[' + below + '] = ' + temps[below] + ' ≥ ' + temps[i]) + ' → pile.append(' + i + '). pile = ' + pileText() + '.', expert: 'Temperatures on the pile, bottom to top: ' + pile.map((x) => temps[x]).join(' ≥ ') + '. They never rise toward the top.' } }));
   }
   steps.push(snap({ L: temps.length - 1, kind: 'found', fresh: -1, j: -1,
     dialog: [say('stack', 'The week is over. Days ' + pile.join(' and ') + ' are still on my pile.'), say('narr', 'No warmer day came for them, so their answer stays 0. The full answer is [' + answer.join(', ') + '].')],
@@ -33152,7 +33152,7 @@ function weatherScene() {
     },
     rules: [['Start with an empty pile', 'intro'], ['Top day is colder than today → answer it and lift it off', 'pop'], ['Nothing colder on top → today waits on the pile', 'push'], ['Week over → leftovers keep 0', 'found']],
     complexity: [['O(n)', 'each day goes on and comes off once'], ['O(n)', 'a cold spell can fill the pile']],
-    quest: ['The stack keeps a weather log pinned above the canteen sink. This week reads 73, 70, 68, 71, 69, 75 and 72 degrees.', 'For every day he wants to know how many days pass before a warmer one. If none ever comes, the answer is 0.'],
+    quest: ['The stack keeps a weather log pinned above the canteen sink. This week reads 73, 70, 68, 71, 69, 75 and 72 degrees.', 'For every day, the stack wants to know how many days pass before a warmer one. If none ever comes, the answer is 0.'],
     example: ['temps = [73, 70, 68, 71, 69, 75, 72]', 'answer = [5, 2, 1, 2, 1, 0, 0]'],
     hints: ['“A day can’t know its answer until a warmer day arrives. Where should it wait?”', '“When a warm day comes, which waiting days does it answer? The newest ones, from the top down, while they are colder.”', '“Pop while the top is colder and write i − top. Then push today. Whatever is left at the end gets 0.”'],
     clues: ['the next warmer day, for every day', 'days wait until they are answered', 'the newest waiting day is answered first'],
@@ -33202,14 +33202,14 @@ function trieScene() {
         } else {
           trail.push(p);
           steps.push(snap('walk', op, w, ch, {
-            dialog: [say('filer', 'The “' + ch + '” branch is already here.'), say('narr', 'Another word made it. Just step down.')],
-            nar: { kid: 'The “' + ch + '” branch is already there, because an earlier word starts the same way. The filer just steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"]. Nothing new is made.', expert: 'Shared beginnings are stored once. That is why a trie of many similar words stays small.' } }));
+            dialog: [say('filer', 'The “' + ch + '” branch is already here.'), say('narr', 'Another word made it. Step down.')],
+            nar: { kid: 'The “' + ch + '” branch is already there, because an earlier word starts the same way. The filer steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"]. Nothing new is made.', expert: 'Shared beginnings are stored once. That is why a trie of many similar words stays small.' } }));
         }
       }
       ends.add(w); calls++; results.push('null');
       steps.push(snap('mark', op, w, '', {
         dialog: [say('filer', 'That was the last letter of “' + w + '”.'), say('narr', 'Tick it. A whole word ends here.')],
-        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so he knows a whole word ends at this spot.', builder: 'node["$"] = True. insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
+        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so the filer knows a whole word ends at this spot.', builder: 'node["$"] = True. insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
       continue;
     }
     let missed = false;
@@ -33229,7 +33229,7 @@ function trieScene() {
       trail.push(p);
       steps.push(snap('look', op, w, ch, {
         dialog: [say('filer', op === 'search' ? 'Looking for “' + w + '”. Letter “' + ch + '” is here.' : 'Does any word start with “' + w + '”? Letter “' + ch + '” is here.'), say('narr', 'Step down and check the next letter.')],
-        nar: { kid: 'The filer follows the letters of “' + w + '”. The “' + ch + '” branch is there, so he steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"].', expert: 'Searching never looks sideways at other words. It only follows one branch per letter.' } }));
+        nar: { kid: 'The filer follows the letters of “' + w + '”. The “' + ch + '” branch is there, so the filer steps down it.', builder: '"' + ch + '" in node → node = node["' + ch + '"].', expert: 'Searching never looks sideways at other words. It only follows one branch per letter.' } }));
     }
     if (missed) continue;
     const at = trail[trail.length - 1];
@@ -33274,9 +33274,9 @@ function trieScene() {
     rules: [['Start with an empty cabinet', 'intro'], ['Inserting, letter missing → add a branch', 'grow'], ['Inserting, letter there → step down', 'walk'], ['Inserting, no letters left → tick the end', 'mark'], ['Looking up, letter there → step down', 'look'], ['Looking up, letter missing → False', 'miss'], ['search done → True only if ticked', 'word'], ['startsWith done → True', 'prefix']],
     predictFull: true,
     complexity: [['O(L)', 'each call follows one branch per letter of its word'], ['O(total letters)', 'one node per new letter ever inserted']],
-    quest: ['The filer files three words in his cabinet: cat, car and dog. Then four questions come in.', 'Is “car” a word? Is “ca” a word? Does any word start with “ca”? Does any word start with “cow”?'],
+    quest: ['The filer files three words in the cabinet: cat, car and dog. Then four questions come in.', 'Is “car” a word? Is “ca” a word? Does any word start with “ca”? Does any word start with “cow”?'],
     example: ['insert cat, car, dog; search car, search ca; startsWith ca, startsWith cow', 'answer = [True, False, True, False]'],
-    hints: ['“cat and car start the same. Should their first two letters be stored twice?”', '“Make a tree where each step down is one letter. Shared beginnings share branches.”', '“insert: walk the letters, adding branches as needed, then tick the last node. search: walk, then check the tick. startsWith: just walk.”'],
+    hints: ['“cat and car start the same. Should their first two letters be stored twice?”', '“Make a tree where each step down is one letter. Shared beginnings share branches.”', '“insert: walk the letters and add any missing branches. Then tick the last node. search: walk, then check the tick. startsWith: only walk.”'],
     clues: ['many words that share beginnings', 'lookups by the letters typed so far', 'a whole word versus the start of one'],
     kit: { right: 1, spot: 'Why a letter tree, not a list of words?', ask: 'How should the filer file the words?',
       quiz: [['A list of words', 'Check every stored word against the question'], ['A tree of letters', 'One branch per letter, shared by words that start the same'], ['A set of whole words', 'Store each word once and look it up'], ['Sort the words', 'Keep them in order and halve the list']] },

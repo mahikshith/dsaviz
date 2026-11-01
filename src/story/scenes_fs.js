@@ -48,9 +48,9 @@ function fsBridgeScene() {
     complexity: [['O(n)', 'The hare crosses the train once'], ['O(1)', 'two walkers, no notes']],
     quest: ['A train of 7 carriages stands on the bridge: 5, 1, 8, 3, 7, 2, 6.', 'The tortoise and the hare must find the middle carriage. Each carriage only knows the next one, and nobody may count the train first.'],
     example: ['head = 5 → 1 → 8 → 3 → 7 → 2 → 6', 'answer = the carriage holding 3'],
-    hints: ['“If one walker goes twice as fast as the other, how far has the slow one gone when the fast one finishes?”', '“Start both at the front. Move the tortoise one carriage and the hare two, every turn.”', '“Stop when the hare has no carriage to hop to. The tortoise is then in the middle.”'],
+    hints: ['“One walker goes twice as fast as the other. How far has the slow one gone when the fast one finishes?”', '“Start both at the front. Move the tortoise one carriage and the hare two, every turn.”', '“Stop when the hare has no carriage to hop to. The tortoise is then in the middle.”'],
     clues: ['each carriage only knows the next', 'the length is not given', 'one walk, no notes'],
-    quizFb: ['“Writing every carriage in a notebook works, but the notebook grows with the train. Two walkers need no notes.”', '“Counting first, then walking again, takes two trips. The tortoise and the hare can do it in one.”', '“Yes! The hare goes twice as fast. When she finishes, the tortoise is halfway.”', '“Nobody can walk backward from the end of this train. Each carriage only points forward.”'],
+    quizFb: ['“Writing every carriage in a notebook works, but the notebook grows with the train. Two walkers need no notes.”', '“Counting first, then walking again, takes two trips. The tortoise and the hare can do it in one.”', '“Yes! The hare goes twice as fast. When the hare finishes, the tortoise is halfway.”', '“Nobody can walk backward from the end of this train. Each carriage only points forward.”'],
     steps
   };
 }
@@ -65,7 +65,7 @@ function fsLoopScene() {
   const gapOf = (s, f) => (s < loopStart || f < loopStart ? '—' : ((s - f) % loopLen + loopLen) % loopLen);
   steps.push({ slow, fast, kind: 'intro', gap: '—',
     dialog: [say('narr', 'Six carriages. Does this track end, or does it loop back on itself?'), say('tortoise', 'I walk one carriage per turn.'), say('hare', 'I hop two. If there is a loop, I will catch up with the tortoise from behind.')],
-    nar: { kid: 'The tortoise is slow and the hare is fast. On a straight track, the hare just reaches the end. On a loop, the hare comes round and meets the tortoise.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. If they land on the same carriage, there is a loop.', expert: 'Floyd’s cycle check. Inside a loop the gap shrinks by 1 each turn, so they meet within one lap. O(n) time, O(1) space.' } });
+    nar: { kid: 'The tortoise is slow and the hare is fast. On a straight track, the hare reaches the end. On a loop, the hare comes round and meets the tortoise.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. If they land on the same carriage, there is a loop.', expert: 'Floyd’s cycle check. Inside a loop the gap shrinks by 1 each turn, so they meet within one lap. O(n) time, O(1) space.' } });
   while (true) {
     slow = next[slow];
     const mid = next[fast];
@@ -108,9 +108,9 @@ function fsLoopScene() {
     complexity: [['O(n)', 'they meet within one lap'], ['O(1)', 'two walkers, no notes']],
     quest: ['Six carriages sit on a track: 3, 7, 1, 9, 4, 6. The last one, 6, might hook back to an earlier carriage. Nobody can see the whole track.', 'The tortoise and the hare must find out: does the track end, or go round in a loop?'],
     example: ['head = 3 → 7 → 1 → 9 → 4 → 6 → back to 1', 'answer = True   (the track loops)'],
-    hints: ['“On a straight track, a fast runner just reaches the end. What happens to a fast runner on a round track?”', '“Send the tortoise one carriage per turn and the hare two. Watch whether they ever stand on the same carriage.”', '“If the hare reaches the end, there is no loop. If they meet, there is one.”'],
+    hints: ['“On a straight track, a fast runner reaches the end. What happens to a fast runner on a round track?”', '“Send the tortoise one carriage per turn and the hare two. Watch whether they ever stand on the same carriage.”', '“If the hare reaches the end, there is no loop. If they meet, there is one.”'],
     clues: ['the track may loop', 'you cannot see the whole track', 'no notebook allowed'],
-    quizFb: ['“A notebook of visited carriages works, but it can grow as long as the train. The tortoise and the hare need no notes.”', '“On a loop there is no end to count to. You would walk forever.”', '“Yes! The hare gains one carriage per turn. On a loop she must catch the tortoise.”', '“There is no back end to start from. Each carriage only points forward.”'],
+    quizFb: ['“A notebook of visited carriages works, but it can grow as long as the train. The tortoise and the hare need no notes.”', '“On a loop there is no end to count to. You would walk forever.”', '“Yes! The hare gains one carriage per turn. On a loop the hare must catch the tortoise.”', '“There is no back end to start from. Each carriage only points forward.”'],
     steps
   };
 }

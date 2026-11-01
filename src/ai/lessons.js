@@ -9,8 +9,8 @@ const AI_TRACKS = [
 ];
 // Planned next, from the research curriculum. Shown on the hub as "next up", not as lessons.
 const AI_NEXT = {
-  ml: ['Random forests', 'pandas and SQL: group by and joins', 'Optimizers: momentum and Adam'],
-  now: ['Long context and “lost in the middle”', 'Multimodal models', 'Small and on-device models', 'Reasoning with verifiable rewards']
+  ml: ['Convolutional neural networks', 'Cleaning data: missing values and outliers', 'Serving a model and watching for drift'],
+  now: ['Multimodal models', 'Reasoning with verifiable rewards']
 };
 
 // ---------- shared helpers ----------
@@ -2368,6 +2368,72 @@ function aiPandas(p) {
   return s;
 }
 
+// ---------- AI now: long context and "lost in the middle" ----------
+function aiBig(v) { return v >= 1e9 ? aiFmt(v / 1e9, 1) + ' billion' : v >= 1e6 ? Math.round(v / 1e6) + ' million' : Math.round(v / 1e3) + ' thousand'; }
+function aiLongctx(p) {
+  const K = Math.max(1, Math.min(128, Math.round(p))); const n = K * 1024;
+  const looks = (n * (n + 1)) / 2; const perTok = 2 * 32 * 8 * 128 * 2; // bytes: keys and values, 32 layers, 8 heads, 128 numbers, 2 bytes
+  const gib = (n * perTok) / 1e9; const wGib = (8e9 * 2) / 1e9;
+  const win = (cnt, fill) => { const b = []; for (let i = 0; i < 14; i++) b.push({ id: 'w' + i, x: 70 + i * 62, y: 240, w: 54, h: 40, rx: 8, label: i < cnt ? 'tok' : '', size: 13, mono: true, fill: i < cnt ? fill : undefined, c: 'l', op: i < cnt ? 1 : 0.4 }); return { boxes: b }; };
+  const tri = (cnt) => { const b = []; const n6 = 6; for (let r = 0; r < n6; r++) for (let c = 0; c <= r; c++) { b.push({ id: 'g' + r + '_' + c, x: 90 + c * 44, y: 130 + r * 44, w: 38, h: 38, rx: 6, fill: r < cnt ? 'a' : undefined, c: 'l', op: r < cnt ? 1 : 0.5 }); } return { boxes: b, labels: [{ id: 'gl', x: 90, y: 108, text: 'row = a new token, boxes = earlier tokens it looks at', c: 'm', size: 14 }] }; };
+  const ro = (txt, y) => ({ labels: [{ id: 'ro', x: 500, y: y || 150, text: txt, c: 't', size: 16, mono: true }] });
+  const U = [0.9, 0.8, 0.66, 0.56, 0.5, 0.48, 0.5, 0.56, 0.66, 0.8, 0.9];
+  const ux = (i) => aiR(80 + i * 78); const uy = (v) => aiR(440 - v * 300);
+  const curve = { paths: [{ id: 'ax', pts: [[80, 120], [80, 440], [860, 440]], c: 'l', w: 1.5 }, { id: 'u', pts: U.map((v, i) => [ux(i), uy(v)]), c: 'a', w: 4 }],
+    labels: [{ id: 'ay', x: 90, y: 112, text: '↑ chance the answer is right (shape only)', c: 'm', size: 13 }, { id: 'ax1', x: 80, y: 466, text: 'start', c: 'm', size: 13, anchor: 'middle' }, { id: 'ax2', x: 470, y: 466, text: 'where the key fact sits in the text', c: 'm', size: 13, anchor: 'middle' }, { id: 'ax3', x: 860, y: 466, text: 'end', c: 'm', size: 13, anchor: 'middle' }],
+    points: [{ id: 'mid', x: ux(5), y: uy(U[5]), c: 'c', r: 9, ring: true, label: 'middle: worst', lx: 0, ly: -22, la: 'middle' }] };
+  const bars = { bars: [{ id: 'bw', x: 120, y: 440 - aiR((wGib / 20) * 200), w: 120, h: aiR((wGib / 20) * 200), c: 'm', val: aiFmt(wGib, 1) + ' GB', label: 'weights' }, { id: 'bk', x: 300, y: 440 - aiR(Math.min(1, gib / 20) * 200), w: 120, h: aiR(Math.min(1, gib / 20) * 200), c: 'a', val: aiFmt(gib, 1) + ' GB', label: K + 'K notes', ly: 462 }], labels: [{ id: 'bt', x: 120, y: 210, text: 'memory in GB (one billion bytes each)', c: 'm', size: 14 }] };
+  const s = [];
+  s.push(aiStep('A context window is all the text a model can read at one time. It holds your question, the chat so far and any documents.', [], aiScene(win(14, 'a'), ro('context window', 180))));
+  s.push(aiStep('Text is cut into tokens, small pieces such as words or word parts. Window size is counted in tokens. A longer window holds more.', [], aiScene(win(9, 'a'), ro('window full: 9 of 14 tokens', 180))));
+  s.push(aiStep('Attention lets each new token look back at every earlier token. For 6 tokens that is a triangle of 21 looks.', [], aiScene(tri(6), ro('6 tokens: 21 looks'))));
+  s.push(aiStep('Double the tokens and the looks grow about four times. 12 tokens give 78 looks. The cost grows with the square of the length.', [], aiScene(tri(6), ro('6 tokens: 21   12 tokens: 78'))));
+  s.push(aiStep('Your slider: ' + K + 'K tokens, where 1K is 1,024. That is about ' + aiBig(looks) + ' looks for each attention head in each layer.', [], aiScene(ro(K + 'K tokens', 200), { labels: [{ id: 'lk', x: 500, y: 240, text: aiBig(looks) + ' looks per head per layer', c: 'a', size: 18, mono: true }] })));
+  s.push(aiStep('To skip repeated work, the model saves notes on every earlier token. These notes are the KV cache. Each token’s notes take 131 KB here.', [], aiScene(ro('131,072 bytes per token', 200), { labels: [{ id: 'ex', x: 500, y: 240, text: '32 layers x 8 heads x 128 numbers', c: 'm', size: 15, mono: true }, { id: 'ex2', x: 500, y: 266, text: 'x 2 (keys and values) x 2 bytes', c: 'm', size: 15, mono: true }] })));
+  s.push(aiStep('At ' + K + 'K tokens the notes take ' + aiFmt(gib, 1) + ' GB. The example model, with 8 billion 16-bit weights, takes ' + aiFmt(wGib, 0) + ' GB.', ['bk'], aiScene(bars, ro(K + 'K tokens: ' + aiFmt(gib, 1) + ' GB of notes', 130))));
+  s.push(aiStep('So a long window costs time and memory. Smarter memory layouts, such as paged storage for the notes, waste less of it.', [], aiScene(bars, ro(K + 'K tokens', 130))));
+  s.push(aiStep('Room to read is not skill at reading. A test: hide one fact at different places in a long text, then ask about it.', [], aiScene(curve)));
+  s.push(aiStep('Researchers found that several models answered best when the fact was at the start or end. The middle was worse.', ['u', 'mid'], aiScene(curve)));
+  s.push(aiStep('RULER, a harder test, found models drop as inputs grow. Only about half of 17 stayed reliable at 32K tokens.', [], aiScene(curve)));
+  s.push(aiStep('So put key instructions at the start or end. Send only the parts you need. Test your own task at your real length.', [], aiScene(curve)));
+  return s;
+}
+
+// ---------- AI now: small and on-device models ----------
+function aiOndevice(p) {
+  const b = Math.max(2, Math.min(16, Math.round(p))); const L = Math.pow(2, b);
+  const W = 3.8e9; const gb = (bits) => (W * bits) / 8 / 1e9;
+  const gap = 2 / (L - 1);
+  const nx = (v) => aiR(100 + ((v + 1) / 2) * 760);
+  const sample = [-0.82, -0.31, 0.07, 0.37, 0.76];
+  const snap = (v) => Math.max(-1, Math.min(1, -1 + Math.round((v + 1) / gap) * gap));
+  const ticks = []; if (L <= 32) for (let i = 0; i < L; i++) { const v = -1 + i * gap; ticks.push({ id: 'tk' + i, pts: [[nx(v), 372], [nx(v), 392]], c: 'a', w: 2 }); }
+  const line = (withTicks) => ({ paths: [{ id: 'nl', pts: [[nx(-1), 382], [nx(1), 382]], c: 'l', w: 2 }].concat(withTicks ? ticks : []), labels: [{ id: 'nlm', x: nx(-1), y: 416, text: '−1', c: 'm', size: 13, anchor: 'middle' }, { id: 'nlp', x: nx(1), y: 416, text: '+1', c: 'm', size: 13, anchor: 'middle' }] });
+  const dots = (snapped) => ({ points: sample.map((v, i) => ({ id: 'sd' + i, x: nx(snapped ? snap(v) : v), y: 360, c: snapped ? 'a' : 'b', r: 7 })) });
+  const errs = sample.map((v) => Math.abs(snap(v) - v)); const maxErr = Math.max.apply(null, errs);
+  const arrows = { arrows: sample.map((v, i) => ({ id: 'ar' + i, from: { x: nx(v), y: 330 }, to: { x: nx(snap(v)), y: 330 }, c: 'c', w: 2, op: Math.abs(nx(snap(v)) - nx(v)) > 6 ? 1 : 0 })) };
+  const bitsList = [2, 4, 8, 16];
+  const bars = { bars: bitsList.map((bb, i) => ({ id: 'mb' + i, x: 110 + i * 150, y: 430 - aiR((gb(bb) / 8) * 240), w: 100, h: aiR((gb(bb) / 8) * 240), c: bb === b ? 'a' : 'm', val: aiFmt(gb(bb), 1) + ' GB', label: bb + ' bits', ly: 454 })).concat(bitsList.indexOf(b) < 0 ? [{ id: 'mbY', x: 710, y: 430 - aiR((gb(b) / 8) * 240), w: 100, h: aiR((gb(b) / 8) * 240), c: 'a', val: aiFmt(gb(b), 1) + ' GB', label: b + ' bits', ly: 454 }] : []),
+    paths: [{ id: 'cap', pts: [[90, 190], [900, 190]], c: 'c', w: 2, dash: true }], labels: [{ id: 'capl', x: 900, y: 180, text: 'an example phone with 8 GB of memory', c: 'c', size: 14, anchor: 'end' }] };
+  const ro = (txt, y) => ({ labels: [{ id: 'ro', x: 480, y: y || 120, text: txt, c: 't', size: 16, mono: true, anchor: 'middle' }] });
+  const note = (a, b2) => ({ labels: [{ id: 'n1', x: 480, y: 200, text: a, c: 't', size: 18, anchor: 'middle' }, { id: 'n2', x: 480, y: 240, text: b2, c: 'm', size: 16, anchor: 'middle' }] });
+  const s = [];
+  s.push(aiStep('Why run a model on a phone? Your data stays with you, it works with no signal, and there is no wait for a network.', [], aiScene(note('private   offline   quick to answer', 'the price: a phone has little memory and a small battery'))));
+  s.push(aiStep('A model is mostly numbers called weights. Memory needed = how many weights × how much room each one takes.', [], aiScene(note('3.8 billion weights', 'the size of Phi-3-mini, a model made for phones'))));
+  s.push(aiStep('Stored in 16 bits (2 bytes) each, 3.8 billion weights take 7.6 GB. A phone also needs memory for its system and apps.', ['mb3', 'capl'], aiScene(bars, ro('16 bits: 7.6 GB', 120))));
+  s.push(aiStep('Quantization stores each weight with fewer bits. It rounds the weight to the nearest of a small set of allowed values.', [], aiScene(line(true), dots(false), ro('weights on a number line', 130))));
+  s.push(aiStep('With ' + b + ' bits there are 2^' + b + ' = ' + L + ' allowed values, spread from −1 to +1. Your slider says ' + b + ' bits.', [], aiScene(line(true), dots(false), ro(b + ' bits = ' + L + ' values', 130))));
+  s.push(aiStep('Each weight snaps to the nearest allowed value. The biggest move here is ' + aiFmt(maxErr, 3) + '. Fewer bits mean bigger moves.', [], aiScene(line(true), dots(true), arrows, ro('biggest move: ' + aiFmt(maxErr, 3), 130))));
+  s.push(aiStep('Memory at ' + b + ' bits: 3.8 billion × ' + b + ' ÷ 8 = ' + aiFmt(gb(b), 1) + ' GB. Real files add a little for the rounding scales.', [bitsList.indexOf(b) < 0 ? 'mbY' : 'mb' + bitsList.indexOf(b)], aiScene(bars, ro(b + ' bits: ' + aiFmt(gb(b), 1) + ' GB', 120))));
+  s.push(aiStep('Does rounding hurt answers? The GPTQ method reported only a small drop in accuracy at 3 to 4 bits per weight on large models.', [], aiScene(note('3 to 4 bits: small loss reported', 'fewer bits: harder to keep quality'))));
+  s.push(aiStep('Fewer bytes can also mean faster text. GPTQ reported text made up to 3.25 times faster than 16-bit on one kind of server chip.', [], aiScene(note('smaller weights, quicker reading', 'reported on server chips, not phones'))));
+  s.push(aiStep('Small models can also be built better. Phi-3-mini’s authors report it rivals larger models on tested tasks, with 3.8 billion weights.', [], aiScene(note('careful choice of training text', 'results come from the authors’ own tests'))));
+  s.push(aiStep('Under a billion weights, MobileLLM’s authors find design matters. A deep, thin shape and shared weights help.', [], aiScene(note('deep and thin, weights shared', 'a design for phones'))));
+  s.push(aiStep('Apple’s 2025 report describes a phone model of 3 billion weights, trained with 2-bit rounding built in. This is quantization-aware training.', [], aiScene(note('train while rounding', 'so less quality is lost at 2 bits'))));
+  s.push(aiStep('The trade: a small model knows less. Some systems pair a phone model for easy tasks with a larger server model for hard ones.', [], aiScene(note('small model: fast, private', 'big model: more skill, needs a network'))));
+  return s;
+}
+
 const AI_LESSONS = [
   { id: 'graphs', track: 'ml', title: 'Numbers on a graph', tag: 'x, y and a straight line', minutes: 3, make: aiGraphs,
     idea: 'A graph pairs two numbers as a point. A straight line follows the rule y = w × x + b.',
@@ -2581,10 +2647,28 @@ const AI_LESSONS = [
   { id: 'pandas', track: 'ml', title: 'pandas and SQL: joins and group by', tag: 'combine tables, then total them', minutes: 4, make: aiPandas,
     idea: 'Glue two tables by a shared key. Sort the rows into piles, then boil each pile down to one number.',
     param: { label: 'Join type (0 inner, 1 left)', min: 0, max: 1, step: 1, value: 0, digits: 0, hint: 'Inner keeps matches only. Left keeps every order, even with no match.' } },
+  { id: 'longctx', track: 'now', title: 'Long context and “lost in the middle”', tag: 'room to read is not skill', minutes: 4, make: aiLongctx,
+    idea: 'A longer window holds more text, but costs more, and models often use the middle of it worst.',
+    param: { label: 'Context length (K tokens)', min: 1, max: 128, step: 1, value: 32, digits: 0, hint: '1K is 1,024 tokens. The looks and the memory for the notes are recomputed.' },
+    sources: [
+      { title: 'Lost in the Middle: How Language Models Use Long Contexts', org: 'Liu, Lin, Hewitt, Paranjape, Bevilacqua, Petroni, Liang', date: '2023-07-06', link: 'https://arxiv.org/abs/2307.03172' },
+      { title: 'RULER: What’s the Real Context Size of Your Long-Context Language Models?', org: 'Hsieh, Sun, Kriman, Acharya et al.', date: '2024-04-09', link: 'https://arxiv.org/abs/2404.06654' },
+      { title: 'Attention Is All You Need', org: 'Vaswani, Shazeer, Parmar, Uszkoreit et al.', date: '2017-06-12', link: 'https://arxiv.org/abs/1706.03762' },
+      { title: 'Efficient Memory Management for Large Language Model Serving with PagedAttention', org: 'Kwon, Li, Zhuang, Sheng et al.', date: '2023-09-12', link: 'https://arxiv.org/abs/2309.06180' }
+    ] },
+  { id: 'ondevice', track: 'now', title: 'Small and on-device models', tag: 'a model that fits in your pocket', minutes: 4, make: aiOndevice,
+    idea: 'Fewer weights, stored with fewer bits, let a model run on your phone. The price is some lost skill.',
+    param: { label: 'Bits per weight', min: 2, max: 16, step: 1, value: 4, digits: 0, hint: 'Memory for 3.8 billion weights and the rounding error are recomputed.' },
+    sources: [
+      { title: 'Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone', org: 'Abdin, Aneja, Awadalla, Awadallah et al.', date: '2024-04-22', link: 'https://arxiv.org/abs/2404.14219' },
+      { title: 'GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers', org: 'Frantar, Ashkboos, Hoefler, Alistarh', date: '2022-10-31', link: 'https://arxiv.org/abs/2210.17323' },
+      { title: 'MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases', org: 'Liu, Zhao, Iandola, Lai et al.', date: '2024-02-22', link: 'https://arxiv.org/abs/2402.14905' },
+      { title: 'Apple Intelligence Foundation Language Models: Tech Report 2025', org: 'Li, Larsen et al.', date: '2025-07-17', link: 'https://arxiv.org/abs/2507.13575' }
+    ] },
 ];
 // Track order: ML starts with the maths (graphs to chance), then a line to clusters; AI now from tokens to evals (the capstone).
 const AI_ORDER = ['graphs', 'slope', 'derivative', 'chainrule', 'gradarrow', 'vectors', 'probability', 'pandas', 'gradient', 'logistic', 'knn', 'tree', 'nbayes', 'svm', 'confusion', 'overfit', 'crossval', 'biasvar', 'regular', 'rforest', 'gboost', 'kmeans', 'hier', 'dbscan', 'gmm', 'pca', 'tsne', 'anomaly', 'backprop', 'optim', 'embeddings',
-  'tokens', 'attention', 'vit', 'systems', 'agents', 'rag', 'moe', 'lora', 'prefs', 'distill', 'diffusion', 'jepa', 'evals'];
+  'tokens', 'attention', 'vit', 'systems', 'agents', 'rag', 'longctx', 'moe', 'lora', 'prefs', 'distill', 'ondevice', 'diffusion', 'jepa', 'evals'];
 AI_LESSONS.sort((a, b) => AI_ORDER.indexOf(a.id) - AI_ORDER.indexOf(b.id));
 const AI_STEP_CACHE = {};
 function aiSteps(i, p) {

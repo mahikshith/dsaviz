@@ -6,6 +6,7 @@
 #   s   the call stack, bottom first: [name, line, [[variable, shown value, type name], ...]]
 #   o   everything printed so far
 #   r   on 'return': the value handed back; on 'error': the error message
+#   x   on 'return', only when an error stopped the function: the kind of error (such as ValueError)
 #   h   (heap mode only) the objects the names point at: { 'o1': [label, kind, fields, class id, base ids, methods] }
 #       kind is list, tuple, dict, set, object, class or function; fields are [[name, shown value, type, object id]]
 #       (the id is '' for a plain value). In heap mode a variable that points at an object gets that id as a 4th item.
@@ -15,6 +16,8 @@ import sys
 import json
 
 DS_MAX_STEPS = 400
+# A comprehension or generator expression runs in a hidden little frame. It is part of the line that wrote it, so it is not traced.
+DS_HIDDEN = ('<listcomp>', '<setcomp>', '<dictcomp>', '<genexpr>')
 
 
 def ds_repr(v, depth=0):
@@ -204,7 +207,7 @@ def ds_trace(src, stdin=None, heap=False):
         frames = []
         f = frame
         while f is not None:
-            if f.f_code.co_filename == '<prog>':
+            if f.f_code.co_filename == '<prog>' and f.f_code.co_name not in DS_HIDDEN:
                 frames.append(f)
             f = f.f_back
         frames.reverse()
@@ -236,9 +239,17 @@ def ds_trace(src, stdin=None, heap=False):
     class Stop(Exception):
         pass
 
+    raised = {}
+
     def tracer(frame, event, arg):
-        if frame.f_code.co_filename != '<prog>':
+        if frame.f_code.co_filename != '<prog>' or frame.f_code.co_name in DS_HIDDEN:
             return None
+        # An error leaving a function shows as a 'return' of None. Remember it, so the step can say the function stopped.
+        if event == 'exception':
+            raised[id(frame)] = arg[0].__name__
+            return tracer
+        if event == 'line':
+            raised.pop(id(frame), None)
         if event in ('line', 'call', 'return'):
             if len(steps) >= DS_MAX_STEPS:
                 raise Stop()
@@ -255,6 +266,9 @@ def ds_trace(src, stdin=None, heap=False):
                 step['h'] = hp
             if event == 'return':
                 step['r'] = ds_show(arg)[0]
+                gone = raised.pop(id(frame), None)
+                if gone and arg is None:
+                    step['x'] = gone
                 if H is not None and ds_is_object(arg):
                     step['rr'] = H.ref(arg)
             steps.append(step)

@@ -20,8 +20,8 @@ const START_LEVELS = [
   { n: 1, title: 'Basics', blurb: 'From your first line of code to your first real problem.' },
   { n: 2, title: 'Functions in depth', blurb: 'Calls, the call stack, scope, arguments, functions as values, closures and recursion.' },
   { n: 3, title: 'Objects and classes', blurb: 'Blueprints, objects, references, family trees, and when a class is not worth it.' },
-  { n: 4, title: 'Writing better code', blurb: 'Names, small functions, tests and tidy files.' },
-  { n: 5, title: 'Waiting without freezing', blurb: 'Async code: the event loop, tasks and callbacks.' }
+  { n: 4, title: 'Clean code and working with others', blurb: 'Clear names, honest functions, errors, and checks that run themselves.' },
+  { n: 5, title: 'Async and systems', blurb: 'Waiting without freezing: the event loop, tasks, time limits, retries, and threads.' }
 ];
 const START_PARTS = [
   { n: 1, level: 1, title: 'Talking to the computer', blurb: 'Run a line, do sums, read an error, name a value.' },
@@ -38,8 +38,12 @@ const START_PARTS = [
   { n: 12, level: 3, title: 'Names and shared data', blurb: 'Follow the arrows, share data, guard it.' },
   { n: 13, level: 3, title: 'Family trees', blurb: 'Inheritance, super() and the same call doing different things.' },
   { n: 14, level: 3, title: 'Building well', blurb: 'Parts, special methods, contracts, and when to skip the class.' },
-  { n: 15, level: 4, title: 'Code people can read', blurb: 'Clear names and short functions.' },
-  { n: 16, level: 5, title: 'The event loop', blurb: 'A queue of jobs that never blocks.' }
+  { n: 15, level: 4, title: 'Code people can read', blurb: 'Clear names, honest functions, one-line lists and type hints.' },
+  { n: 16, level: 4, title: 'When things go wrong', blurb: 'Catch errors, raise your own, and always clean up.' },
+  { n: 17, level: 4, title: 'Checks that run themselves', blurb: 'Write checks, try awkward inputs, and check first.' },
+  { n: 18, level: 5, title: 'Waiting', blurb: 'Why waiting matters, the event loop, and call-me-back functions.' },
+  { n: 19, level: 5, title: 'Several jobs at once', blurb: 'async and await, several waits together, errors, timeouts and retries.' },
+  { n: 20, level: 5, title: 'Turns or at once', blurb: 'Async, threads and processes, and a race on a shared number.' }
 ];
 function startLevel(c) { return c.level || 1; }
 // What a lesson can teach. A runnable problem's needs (needs.js) use the same keys.
@@ -54,7 +58,10 @@ const START_NEEDS_KEYS = {
   objects: 'classes and objects', self: 'self', init: '__init__', methods: 'attributes and methods', refs: 'references',
   classattrs: 'class attributes', encapsulation: 'encapsulation', inheritance: 'inheritance', super: 'super()',
   polymorphism: 'polymorphism', composition: 'composition', dunder: 'special methods', interfaces: 'abstract classes',
-  design: 'when to use a class', style: 'clean code', async: 'async code'
+  design: 'when to use a class', style: 'clean names', async: 'async code',
+  onejob: 'functions with one honest job', comprehensions: 'list comprehensions', hints: 'type hints', exceptions: 'try and except', raising: 'raise and finally',
+  tests: 'checks that run themselves', edgetests: 'edge checks and test-first', blocking: 'blocking and waiting', eventloop: 'the event loop', later: 'call-me-back functions',
+  asyncawait: 'async and await', gather: 'several waits at once', timeouts: 'errors and timeouts', retries: 'retries', threads: 'threads and shared data'
 };
 const START_STAGES = [['story', 'Story'], ['watch', 'Your variables'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
 const START_EASE_MS = 600;
@@ -167,6 +174,8 @@ function startTraceSay(steps, i) {
     if (cur.e === 'call') {
       const args = startFrameVars(cur).map((v) => v[0] + ' = ' + startClip(v[1], 14)).join(', ');
       bits.push(fname(cur) + ' starts' + (args ? ' with ' + args : '') + '. A new frame opens on the stack.');
+    } else if (cur.e === 'return' && cur.x) {
+      bits.push(fname(cur) + ' stops: a ' + cur.x + ' alarm. Its frame closes.');
     } else if (cur.e === 'return') {
       bits.push(fname(cur) + ' hands back ' + startClip(cur.r, 18) + '. Its frame closes.');
     } else {

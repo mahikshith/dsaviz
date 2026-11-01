@@ -23,17 +23,17 @@ function lanternScene() {
   const nums = [1, 3, 4, 6, 8, 11], target = 10;
   const raw = [
     [0, 5, 'intro', [say('narr', 'Six lanterns stand in a row, dimmest to brightest. The gate opens for two lanterns whose glow adds up to exactly 10.'), say('lmark', 'I will stand at the dimmest end.'), say('rmark', 'I will take the brightest end. We will walk inward until we find the pair.')],
-      ['Two markers start at opposite ends of a row of lanterns. They walk toward each other until their two lanterns add up to exactly 10.', 'The list numbers is sorted. Set left = 0 and right = n − 1 (the first and last spots). Each step, add numbers[left] and numbers[right], then move one marker inward.', 'Sorted input ⇒ pair sums are monotone in each index. Invariant: if an answer exists, it lies inside [left, right]. Every step shrinks the window by one.']],
+      ['Two markers start at opposite ends of a row of lanterns. They walk toward each other until their two lanterns add up to exactly 10.', 'The list numbers is sorted from small to big. Set left = 0 and right = n − 1, the first and last spots (n is how many lanterns there are). Each step, add numbers[left] and numbers[right]. Then move one marker inward.', 'Because the list is sorted, moving left up can only raise the sum, and moving right down can only lower it. This stays true: if an answer exists, it sits between left and right. Every step shrinks that gap by one.']],
     [0, 5, 'over', [say('lmark', 'Mine glows 1.'), say('rmark', 'Mine glows 11. Together that is 12. Too bright!'), say('narr', 'The 11 is too bright, even with the dimmest lantern. It can never be in the answer, so the right marker steps left.')],
-      ['1 + 11 = 12. That is too bright. To get dimmer, the right marker must move to a dimmer lantern, so it steps left.', 'total = 12 > target. Every pair that uses 11 is at least 1 + 11 = 12, so index 5 can never be in the answer. right -= 1.', 'numbers[L] is the window minimum, so numbers[i] + numbers[R] ≥ 12 > t for every i in [L, R). Column R is dominated — discard it in O(1).']],
+      ['1 + 11 = 12. That is too bright. To get dimmer, the right marker must move to a dimmer lantern, so it steps left.', 'total is 12, which is more than target. Any pair with 11 adds up to at least 1 + 11 = 12, so spot 5 can never be in the answer. So right -= 1 (move the right marker one spot left).', 'The left lantern is the dimmest one still in play. So every partner for the right lantern gives at least 12, which is over the target t. Drop the right lantern at once, in O(1) time (a fixed amount of work).']],
     [0, 4, 'under', [say('rmark', 'Now I hold 8.'), say('lmark', '1 + 8 = 9. Too dim now.'), say('narr', 'Even 8, the brightest partner left, is not enough for the 1. The 1 is out, so the left marker steps right.')],
-      ['1 + 8 = 9. Too dim. To get brighter, the left marker must move to a brighter lantern, so it steps right.', 'total = 9 is less than target. 8 is the biggest partner left for 1, and it is still too small. So 1 is out: left += 1 (move the left marker one spot right).', 'numbers[R] is the window maximum, so numbers[L] + numbers[j] ≤ 9 < t for every j. Row L is dominated; discard it.']],
+      ['1 + 8 = 9. Too dim. To get brighter, the left marker must move to a brighter lantern, so it steps right.', 'total = 9 is less than target. 8 is the biggest partner left for 1, and it is still too small. So 1 is out: left += 1 (move the left marker one spot right).', 'The right lantern is the brightest one still in play. So every partner for the left lantern gives at most 9, which is under the target t. Drop the left lantern.']],
     [1, 4, 'over', [say('lmark', 'I hold 3.'), say('rmark', '3 + 8 = 11. A little too bright, so I step left again.'), say('narr', 'The rule is the same as before. Too bright means the bright end moves in.')],
-      ['3 + 8 = 11. Still a bit too bright, so the right marker steps left again.', '11 is more than 10, so right -= 1 (move the right marker one spot left). No marker ever walks back. Every lantern we leave is ruled out for good.', 'Symmetric to step 2. Each index is discarded at most once ⇒ at most n − 1 moves ⇒ O(n) time.']],
+      ['3 + 8 = 11. Still a bit too bright, so the right marker steps left again.', '11 is more than 10, so right -= 1 (move the right marker one spot left). No marker ever walks back. Every lantern we leave is ruled out for good.', 'Same idea as step 2. Each lantern is dropped at most once, so there are at most n − 1 moves. That is O(n) time: the work grows in step with the number of lanterns.']],
     [1, 3, 'under', [say('rmark', 'Now I hold 6.'), say('lmark', '3 + 6 = 9. Only one short!'), say('narr', 'Too dim means the dim end moves up. That is the left marker.')],
-      ['3 + 6 = 9. That is one too dim. The left marker steps right.', '9 is less than 10, so left += 1. Only lanterns #3 and #4 are left, so there is one pair to try.', 'Window size 2. Either this pair hits t or no answer exists — and the problem guarantees one does.']],
+      ['3 + 6 = 9. That is one too dim. The left marker steps right.', '9 is less than 10, so left += 1 (the left marker steps right). Only lanterns #3 and #4 are left, so there is one pair to try.', 'Only two lanterns are left in play. Either this pair hits the target t, or no answer exists. The problem promises that one does.']],
     [2, 3, 'found', [say('lmark', 'I hold 4!'), say('rmark', '4 + 6 = 10!'), say('narr', 'The gate swings open. Lanterns #3 and #4 are the answer: [3, 4].')],
-      ['4 + 6 = 10. Exactly right! The gate opens. The answer is lantern #3 and lantern #4.', 'total equals target, so return [left + 1, right + 1] = [3, 4]. (This problem counts places from 1, not 0.)', 'Found after 5 comparisons for n = 6. It takes O(n) time and O(1) space. A hash map would need O(n) memory.']]
+      ['4 + 6 = 10. Exactly right! The gate opens. The answer is lantern #3 and lantern #4.', 'total equals target, so return [left + 1, right + 1] = [3, 4]. (This problem counts places from 1, not 0.)', 'Found after 5 checks for n = 6 lanterns. It takes O(n) time and O(1) space, which is a fixed bit of memory. A hash map (a lookup notebook) would need O(n) memory.']]
   ];
   const verdicts = { intro: ['Ready at both ends', 'plain'], over: ['Too bright → the right marker steps left', 'warn'], under: ['Too dim → the left marker steps right', 'cool'], found: ['Exactly 10 — gate opens!', 'ok'] };
   const steps = raw.map(([L, R, kind, dialog, nar]) => {
@@ -63,7 +63,7 @@ function lanternScene() {
     example: ['numbers = [1, 3, 4, 6, 8, 11]   target = 10', 'answer  = [3, 4]   (4 + 6 = 10)'],
     hints: ['“Look at how the lanterns are lined up, dimmest to brightest. When things are in order, what can you skip?”', '“Two lanterns shine too brightly together. Which one is to blame? Could it ever be part of the answer?”', '“Put one marker at each end. If the glow is too bright, the bright end steps in. If it is too dim, the dim end steps in. No marker walks back.”'],
     clues: ['the lanterns are sorted', 'we need a pair that hits a target', 'no notebook allowed (O(1) space means a fixed, tiny amount of memory)'],
-    quizFb: ['“That works for 6 lanterns. With 30,000 lanterns it is about 450 million checks. The lanterns are sorted. Can that save work?”', '“Yes! The row is sorted. One look at the two ends shows a lantern that can never be in the answer.”', '“A window looks at lanterns that sit side by side. Our two lanterns might be far apart, like #1 and #6.”', '“Clever. That is how the plain Two Sum problem is solved. But the notebook grows with the bridge, and this gate allows no notebook.”'],
+    quizFb: ['“That works for 6 lanterns. With 30,000 lanterns it is about 450 million checks. The lanterns are sorted. Can that save work?”', '“Yes! The row is sorted. One look at the two ends shows a lantern that can never be in the answer.”', '“A window is a short stretch of lanterns side by side. Our two lanterns might be far apart, like #1 and #6.”', '“Clever. That is how the plain Two Sum problem is solved. But the notebook grows with the bridge, and this gate allows no notebook.”'],
     steps
   };
 }
@@ -77,31 +77,31 @@ function mirrorScene() {
   const shown = (c) => (c === ' ' ? 'a space' : '“' + c + '”');
   steps.push({ L, R, kind: 'intro',
     dialog: [say('narr', 'A hallway is painted with the letters “taco cat”. If it reads the same from both ends, the mirror door opens.'), say('lmark', 'I will start at the first letter.'), say('rmark', 'I will take the last one. Spaces and commas do not count.')],
-    nar: { kid: 'The two markers start at the two ends of the hallway. They compare letters as they walk toward each other.', builder: 'left = 0, right = n − 1 (the first and last spots). Skip anything that is not a letter or digit. Compare lowercase letters. On a match, move both markers inward.', expert: 'Two markers move toward each other and each character is seen at most once. That is O(n) time and O(1) space, with no reversed copy.' } });
+    nar: { kid: 'The two markers start at the two ends of the hallway. They compare letters as they walk toward each other.', builder: 'left = 0, right = n − 1: the first and last spots (n is how many characters there are). Skip anything that is not a letter or digit. Compare in lowercase. On a match, move both markers inward.', expert: 'Two markers move toward each other, and each character is seen at most once. That is O(n) time, so the work grows in step with the text length. It is also O(1) space, so there is no reversed copy.' } });
   while (L < R) {
     if (!ok(s[L])) {
       steps.push({ L, R, kind: 'skipL', dialog: [say('lmark', 'I am on ' + shown(s[L]) + '. It does not count.'), say('narr', 'The left marker steps over it.')],
-        nar: { kid: 'The left marker is on ' + shown(s[L]) + '. It is not a letter, so the left marker steps past it.', builder: 's[left] is not a letter or digit, so left += 1 (no comparison).', expert: 'Skipping never moves a marker back, so total work stays O(n).' } });
+        nar: { kid: 'The left marker is on ' + shown(s[L]) + '. It is not a letter, so the left marker steps past it.', builder: 'The character at s[left] is not a letter or digit, so left += 1 (the marker steps right, with no comparison).', expert: 'Skipping never moves a marker back, so the total work stays O(n), which grows in step with the text length.' } });
       L++; continue;
     }
     if (!ok(s[R])) {
       steps.push({ L, R, kind: 'skipR', dialog: [say('rmark', 'I am on ' + shown(s[R]) + '. It does not count.'), say('narr', 'The right marker steps over it.')],
-        nar: { kid: 'The right marker is on ' + shown(s[R]) + '. It is not a letter, so the right marker steps past it without comparing.', builder: 's[right] is not a letter or digit, so right -= 1 (no comparison).', expert: 'Skipping never moves a marker back, so total work stays O(n).' } });
+        nar: { kid: 'The right marker is on ' + shown(s[R]) + '. It is not a letter, so the right marker steps past it without comparing.', builder: 'The character at s[right] is not a letter or digit, so right -= 1 (the marker steps left, with no comparison).', expert: 'Skipping never moves a marker back, so the total work stays O(n), which grows in step with the text length.' } });
       R--; continue;
     }
     if (s[L].toLowerCase() !== s[R].toLowerCase()) {
       steps.push({ L, R, kind: 'mismatch', dialog: [say('lmark', 'I see ' + shown(s[L]) + '.'), say('rmark', 'And I see ' + shown(s[R]) + '.'), say('narr', 'They do not match. It is not a mirror.')],
-        nar: { kid: 'The letters do not match, so the hallway is not a mirror.', builder: 's[left] is not s[right], so return False.', expert: 'First mismatch is a certificate: no palindrome.' } });
+        nar: { kid: 'The letters do not match, so the hallway is not a mirror.', builder: 'The characters at s[left] and s[right] differ, so return False.', expert: 'One mismatch is enough proof that the text is not a palindrome.' } });
       break;
     }
     pairs++;
     steps.push({ L, R, kind: 'match', pairs, dialog: [say('lmark', 'I see ' + shown(s[L]) + '.'), say('rmark', 'Me too: ' + shown(s[R]) + '! A match.'), say('narr', 'Both markers take one step inward.')],
-      nar: { kid: shown(s[L]) + ' and ' + shown(s[R]) + ' match, so both markers take one step inward.', builder: 's[left] == s[right] (' + shown(s[L]) + ') → left += 1, right -= 1.', expert: 'Invariant: s[0..left) mirrors s(right..n−1]. Each match extends it by one pair.' } });
+      nar: { kid: shown(s[L]) + ' and ' + shown(s[R]) + ' match, so both markers take one step inward.', builder: 'The characters at s[left] and s[right] are equal (' + shown(s[L]) + '), so left += 1 and right -= 1.', expert: 'This stays true: everything left of the left marker mirrors everything right of the right marker. Each match adds one more pair.' } });
     L++; R--;
   }
   steps.push({ L: Math.min(L, s.length - 1), R: Math.max(Math.min(L, s.length - 1), R), kind: 'found', pairs,
     dialog: [say('lmark', 'We met in the middle!'), say('narr', 'Every pair matched. The mirror door opens. A word that reads the same both ways is called a palindrome.')],
-    nar: { kid: 'They met in the middle and every pair matched. The hallway is a perfect mirror!', builder: 'left has reached right, so return True.', expert: pairs + ' comparisons for n = 8, O(1) extra space. Reversing a cleaned copy would cost O(n) memory.' } });
+    nar: { kid: 'They met in the middle and every pair matched. The hallway is a perfect mirror!', builder: 'left has reached right, so return True.', expert: pairs + ' comparisons for n = 8 characters, with O(1) extra space (no new copy). Reversing a cleaned copy would cost O(n) memory.' } });
   let matched = 0;
   const T = { intro: ['Ready at both ends', 'plain'], skipL: ['Not a letter → the left marker skips', 'cool'], skipR: ['Not a letter → the right marker skips', 'cool'], match: ['Match → both step in', 'warn'], mismatch: ['Mismatch → not a mirror', 'warn'], found: ['Mirror! Door opens', 'ok'] };
   steps.forEach((st) => {
@@ -130,7 +130,7 @@ function mirrorScene() {
     example: ['s = "taco cat"', 'answer = True   ("tacocat" reads the same both ways)'],
     hints: ['“A mirror pairs the first letter with the last. Who should stand where?”', '“What should a marker do when it stands on a space?”', '“Compare, then both step inward. One mismatch keeps the door shut.”'],
     clues: ['compare first with last', 'ignore spaces and punctuation', 'no copies allowed'],
-    quizFb: ['“Reversing a cleaned copy works, but it doubles the memory. The markers can compare in place.”', '“Yes! Compare from both ends and walk inward. That is the Two Pointers idea again.”', '“A window watches lanterns side by side. Our pairs are far apart.”', '“No notebook is needed. Each letter’s partner is fixed by its place.”'],
+    quizFb: ['“Reversing a cleaned copy works, but it doubles the memory. The markers can compare in place.”', '“Yes! Compare from both ends and walk inward. That is the same two-marker idea as before.”', '“A window is a short stretch of letters side by side. Our pairs are far apart.”', '“No notebook is needed. Each letter’s partner is fixed by its place.”'],
     steps
   };
 }
@@ -142,7 +142,7 @@ function waterScene() {
   let L = 0, R = h.length - 1, best = 0;
   steps.push({ L, R, kind: 'intro', area: 0, best: 0,
     dialog: [say('narr', 'Nine planks stand at different heights. Pick two as the walls of a rain barrel. The wider and taller it is, the more water it holds.'), say('lmark', 'I will start at the first plank.'), say('rmark', 'I will take the last plank. Widest barrel first!')],
-    nar: { kid: 'Two markers start at the two ends of a fence. The water in their barrel can only rise as high as the shorter plank.', builder: 'left = 0, right = n − 1, best = 0. Area = the shorter of h[left] and h[right], times the width (right − left).', expert: 'Start at maximum width; every move trades one unit of width for a chance at more height.' } });
+    nar: { kid: 'Two markers start at the two ends of a fence. The water in their barrel can only rise as high as the shorter plank.', builder: 'left = 0, right = n − 1, best = 0 (n is how many planks there are; best is the biggest area so far). Area = the shorter of h[left] and h[right], times the width (right − left). Here h[left] is the height of the left plank.', expert: 'Start at maximum width; every move trades one unit of width for a chance at more height.' } });
   while (L < R) {
     const m = Math.min(h[L], h[R]), w = R - L, area = m * w;
     const record = area > best;
@@ -152,13 +152,13 @@ function waterScene() {
     steps.push({ L, R, kind: moveLeft ? 'moveL' : 'moveR', area, best,
       dialog: [say('lmark', 'My plank is ' + h[L] + '.'), say('rmark', 'Mine is ' + h[R] + '.'), say('narr', 'Water rises to the shorter wall: ' + m + ' × ' + w + ' = ' + area + '.' + (record ? ' A new record!' : '') + ' The ' + mover + ' has the shorter plank, so it steps in.')],
       nar: { kid: 'The shorter plank is ' + m + ' and the barrel is ' + w + ' wide, so it holds ' + area + '. The ' + mover + ' has the short plank, so it steps inward to look for a taller one.',
-        builder: 'area = min(' + h[L] + ', ' + h[R] + ') × ' + w + ' = ' + area + '; best = ' + best + '. ' + (moveLeft ? 'h[left] < h[right] → left += 1.' : 'h[right] ≤ h[left] → right -= 1.'),
-        expert: 'Every narrower barrel that keeps the shorter wall (index ' + (moveLeft ? L : R) + ') holds at most ' + area + ', so that wall is dominated. Discard it: O(1) per step, O(n) total.' } });
+        builder: 'area = min(' + h[L] + ', ' + h[R] + ') × ' + w + ' = ' + area + '; best = ' + best + '. ' + (moveLeft ? 'The left plank is shorter, so left += 1.' : 'The right plank is shorter or equal, so right -= 1.'),
+        expert: 'Any narrower barrel that keeps the shorter wall (spot ' + (moveLeft ? L : R) + ') holds at most ' + area + '. So that wall can never win, and we drop it. Each step costs O(1), a fixed amount of work, and the total is O(n).' } });
     if (moveLeft) L++; else R--;
   }
   steps.push({ L, R, kind: 'found', area: 0, best,
     dialog: [say('lmark', 'We bumped into each other!'), say('narr', 'The search is over. The biggest barrel held ' + best + ' units of rain.')],
-    nar: { kid: 'The markers met in the middle. The best barrel held ' + best + ' units of rain.', builder: 'left == right → return best = ' + best + '.', expert: 'n − 1 = 8 moves and O(1) space. Brute force would try all 36 pairs.' } });
+    nar: { kid: 'The markers met in the middle. The best barrel held ' + best + ' units of rain.', builder: 'left == right (the markers meet), so return best = ' + best + '.', expert: 'n − 1 = 8 moves and O(1) space. Brute force (trying every pair) would test all 36 pairs.' } });
   const T = { intro: ['Widest barrel first', 'plain'], moveL: ['Left wall shorter → the left marker steps in', 'warn'], moveR: ['Right wall shorter → the right marker steps in', 'cool'], found: ['Best barrel: ' + best, 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -183,7 +183,7 @@ function waterScene() {
     example: ['height = [1, 8, 6, 2, 5, 4, 8, 3, 7]', 'answer = 49   (planks 8 and 7, width 7)'],
     hints: ['“Which barrel is the widest one you can build? Start there.”', '“The water only rises to the shorter wall. As the barrel gets narrower, can keeping that wall ever help?”', '“Always move the marker at the shorter plank. The taller one might still be useful.”'],
     clues: ['two walls from a row', 'wider and taller is better', 'try to beat O(n²)'],
-    quizFb: ['“Trying all 36 pairs works here. With 100,000 planks it is 5 billion pairs.”', '“Yes! Start widest, and always move the shorter wall. It can never do better.”', '“A window of side-by-side planks misses the wide barrels, which are often the best.”', '“Remembering heights does not tell you which wall to drop.”'],
+    quizFb: ['“Trying all 36 pairs works here. With 100,000 planks it is 5 billion pairs.”', '“Yes! Start widest, and always move the shorter wall. It can never do better.”', '“A window is a short stretch of planks side by side. It misses the wide barrels, which are often the best.”', '“Remembering heights does not tell you which wall to drop.”'],
     steps
   };
 }

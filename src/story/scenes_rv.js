@@ -11,7 +11,7 @@ function rvTrainScene() {
   let prev = -1, curr = 0;
   steps.push({ L: 0, kind: 'intro', prev, curr, nxt: 1, flipped: 0, board: sheet(-1),
     dialog: [say('narr', 'The train has five carriages: 2, 7, 4, 9, 5. Each hook points to the next carriage. Turn the train around.'), say('conductor', 'I will not move any carriage. I will turn each hook to point backward.'), say('narr', 'What do you hold while you work?'), say('conductor', 'Three things: the carriage behind me, the carriage I am on, and the carriage ahead.')],
-    nar: { kid: 'The conductor walks from the front of the train. At each carriage, the conductor unhooks it from the carriage ahead and hooks it to the carriage behind.', builder: 'Start with prev = None (nothing behind) and curr = head (the first carriage). Each turn, save nxt = curr.next, set curr.next = prev, then move prev and curr one step on.', expert: 'Three references are enough. Each carriage’s hook is rewritten once, which takes O(n) time and O(1) extra space.' } });
+    nar: { kid: 'The conductor walks from the front of the train. At each carriage, the conductor unhooks it from the carriage ahead and hooks it to the carriage behind.', builder: 'Start with prev = None (nothing behind) and curr = head (the first carriage). The hook of a carriage is its .next. Each turn, save nxt = curr.next (the carriage ahead), set curr.next = prev (turn the hook back), then move prev and curr one step on.', expert: 'Three references (names that point at carriages) are enough. Each carriage’s hook is rewritten once, which takes O(n) time and O(1) extra space, meaning only a fixed bit of memory.' } });
   while (curr >= 0 && curr < n) {
     const nxt = hook[curr];
     hook[curr] = prev;
@@ -21,12 +21,12 @@ function rvTrainScene() {
       dialog: kind === 'tail'
         ? [say('conductor', 'Carriage ' + vals[curr] + '. I remember the next one, ' + name(nxt) + ', so I do not lose the rest of the train.'), say('conductor', 'Nothing is behind me, so ' + vals[curr] + ' now points to None.'), say('narr', 'The old front will be the new back.')]
         : [say('conductor', 'Carriage ' + vals[curr] + '. I remember the next one: ' + name(nxt) + '.'), say('conductor', 'Now ' + vals[curr] + ' points back to ' + vals[prev] + '.'), say('narr', flipped + ' of 5 carriages face backward.')],
-      nar: { kid: kind === 'tail' ? 'The conductor unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + '. There is nothing behind it, so it becomes the end of the turned train.' : 'The conductor unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + ' and hooks it back to ' + vals[prev] + '. Then the conductor steps forward.', builder: 'nxt = ' + name(nxt) + '. Then set ' + vals[curr] + '.next = ' + name(prev) + ', prev = ' + vals[curr] + ', curr = ' + name(nxt) + '.', expert: 'The carriages already turned (' + flipped + ') start at prev. The carriages not yet touched start at curr. Saving nxt first keeps the rest of the train reachable.' } });
+      nar: { kid: kind === 'tail' ? 'The conductor unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + '. There is nothing behind it, so it becomes the end of the turned train.' : (nxt < 0 ? 'Carriage ' + vals[curr] + ' is the last one, so nothing is ahead of it. The conductor hooks it back to ' + vals[prev] + '. Then the conductor steps forward.' : 'The conductor unhooks carriage ' + vals[curr] + ' from ' + name(nxt) + ' and hooks it back to ' + vals[prev] + '. Then the conductor steps forward.'), builder: 'nxt = ' + name(nxt) + '. Then set ' + vals[curr] + '.next = ' + name(prev) + ', prev = ' + vals[curr] + ', curr = ' + name(nxt) + '.', expert: 'The carriages already turned (' + flipped + ') start at prev. The carriages not yet touched start at curr. Saving nxt first keeps the rest of the train reachable.' } });
     prev = curr; curr = nxt;
   }
   steps.push({ L: prev, kind: 'found', prev, curr: -1, nxt: -1, flipped: n, board: sheet(-1),
     dialog: [say('conductor', 'No carriage is left ahead of me.'), say('narr', 'So the last carriage, ' + vals[prev] + ', is the new front. The train reads 5, 9, 4, 7, 2.')],
-    nar: { kid: 'Every hook now points backward. The train reads 5, 9, 4, 7, 2.', builder: 'curr is None, so return prev (' + vals[prev] + ').', expert: n + ' hooks rewritten and no new carriages. A version that calls itself is also O(n) time, but it needs O(n) extra memory.' } });
+    nar: { kid: 'Every hook now points backward. The train reads 5, 9, 4, 7, 2.', builder: 'curr is None, so return prev (' + vals[prev] + ').', expert: n + ' hooks rewritten and no new carriages. A version where the function calls itself (recursion) is also O(n) time, but it needs O(n) extra memory.' } });
   const T = { intro: ['Every hook points forward', 'plain'], tail: ['First carriage → points to None', 'cool'], flip: ['Hook turned → points back', 'warn'], found: ['Train turned around', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -56,7 +56,7 @@ function rvTrainScene() {
     },
     rules: [['Start at the front, nothing behind', 'intro'], ['First carriage → hook it to None', 'tail'], ['Next carriage → hook it to the one behind', 'flip'], ['Nothing ahead → the last carriage is the new front', 'found']],
     complexity: [['O(n)', 'each hook is turned once'], ['O(1)', 'three hands, no spare train']],
-    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station facing the other way. There is no turntable and no spare track.', 'The conductor may only change where each carriage’s hook points. Can the conductor turn the whole train around?'],
+    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station facing the other way. There is no turntable and no spare track.', 'The conductor may only change where each carriage’s hook points. A hook that points to nothing is written as None. Can the conductor turn the whole train around?'],
     example: ['head = 2 → 7 → 4 → 9 → 5', 'answer = 5 → 9 → 4 → 7 → 2'],
     hints: ['“You cannot pick up the carriages. What can you change about each one?”', '“If you turn a hook to point backward, how do you still reach the rest of the train?”', '“Hold three things: the carriage behind, the carriage you are on, and the carriage ahead. Save the one ahead before you turn the hook.”'],
     clues: ['each carriage only knows the next one', 'no spare train allowed', 'every hook must point the other way'],

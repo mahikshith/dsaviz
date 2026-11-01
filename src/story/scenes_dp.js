@@ -13,27 +13,27 @@ function gridWalkerScene() {
   let written = 0;
   steps.push({ kind: 'intro', vals: snap(), at: null, from: [], written, r: '—', c: '—', up: '—', left: '—', actorAt: [0, 0],
     dialog: [say('narr', 'A robot starts in the top-left square and wants to reach the bottom-right square. It may only move right or down.'), say('scribe', 'How many different routes are there? I will write the answer for every square, small ones first.')],
-    nar: { kid: 'The scribe has a notebook shaped like the floor. In each square, the scribe writes how many different ways the robot can get there. This method is called dynamic programming: solve small versions first and write the answers down.', builder: 'ways[r][c] is the number of routes from the start (0, 0) to row r, column c. The answer is ways[3][3]. Start with a table of zeros.', expert: 'Every route into row r, column c arrives from above or from the left. So ways[r][c] = ways[r−1][c] + ways[r][c−1].' } });
+    nar: { kid: 'The scribe has a notebook shaped like the floor. In each square, the scribe writes how many different ways the robot can get there. This method is called dynamic programming: solve small versions first and write the answers down.', builder: 'ways[r][c] is the number of routes from the start (0, 0) to row r, column c. The answer is ways[3][3]. Rows and columns count from 0, so the top-left square is row 0, column 0. Start with a table of zeros.', expert: 'Every route into row r, column c arrives from above (row r−1) or from the left (column c−1). So ways[r][c] = ways[r−1][c] + ways[r][c−1].' } });
   for (let c = 0; c < n; c++) { ways[0][c] = 1; shown[0][c] = 1; written++; }
   steps.push({ kind: 'edge', vals: snap(), at: null, row: 0, from: [], written, r: 0, c: '0..3', up: '—', left: '—', actorAt: [0, n - 1],
     dialog: [say('scribe', 'The top row is easy. The robot can only keep moving right to get there.'), say('narr', 'So there is exactly 1 way into each of those squares.')],
-    nar: { kid: 'To reach any square in the top row, the robot goes right, right, right. There is only 1 way each. The scribe writes 1s.', builder: 'ways[0][c] = 1 for every c.', expert: 'Base case: each square in the first row has one route.' } });
+    nar: { kid: 'To reach any square in the top row, the robot goes right, right, right. There is only 1 way each. The scribe writes 1s.', builder: 'ways[0][c] = 1 for every column c.', expert: 'Base case (a starting answer we know without adding): each square in the first row has one route.' } });
   for (let r = 0; r < m; r++) { if (!shown[r][0]) written++; ways[r][0] = 1; shown[r][0] = 1; }
   steps.push({ kind: 'side', vals: snap(), at: null, col: 0, from: [], written, r: '0..3', c: 0, up: '—', left: '—', actorAt: [m - 1, 0],
     dialog: [say('scribe', 'Same for the left column. The robot can only keep moving down.'), say('narr', '1 way into each of those too.')],
-    nar: { kid: 'To reach a square in the left column, the robot goes down. There is only 1 way each. The scribe writes more 1s.', builder: 'ways[r][0] = 1 for every r.', expert: 'Second base case: the first column. The two edges together start the table.' } });
+    nar: { kid: 'To reach a square in the left column, the robot goes down. There is only 1 way each. The scribe writes more 1s.', builder: 'ways[r][0] = 1 for every row r.', expert: 'Second base case: the first column. The two edges together start the table.' } });
   for (let r = 1; r < m; r++) for (let c = 1; c < n; c++) {
     ways[r][c] = ways[r - 1][c] + ways[r][c - 1]; shown[r][c] = ways[r][c]; written++;
     const up = ways[r - 1][c], left = ways[r][c - 1];
     steps.push({ kind: 'fill', vals: snap(), at: [r, c], from: [[r - 1, c], [r, c - 1]], written, r, c, up, left, actorAt: [r, c],
-      dialog: [say('scribe', 'Row ' + r + ', column ' + c + '. From above: ' + up + ' ways. From the left: ' + left + ' ways.'), say('narr', 'Every route comes from one of those two squares. So ' + up + ' + ' + left + ' = ' + ways[r][c] + '.')],
-      nar: { kid: 'The robot can only arrive from the square above or the square to the left. The scribe adds their notes: ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', builder: 'ways[' + r + '][' + c + '] = ways[' + (r - 1) + '][' + c + '] + ways[' + r + '][' + (c - 1) + '] = ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', expert: 'Both notes were written earlier (row by row, left to right), so each square takes O(1) time. No route is counted twice, because its last move is either down or right, never both.' } });
+      dialog: [say('scribe', 'Row ' + r + ', column ' + c + '. From above: ' + up + (up === 1 ? ' way' : ' ways') + '. From the left: ' + left + (left === 1 ? ' way' : ' ways') + '.'), say('narr', 'Every route comes from one of those two squares. So ' + up + ' + ' + left + ' = ' + ways[r][c] + '.')],
+      nar: { kid: 'The robot can only arrive from the square above or the square to the left. The scribe adds their notes: ' + up + ' + ' + left + ' = ' + ways[r][c] + '.', builder: 'ways[' + r + '][' + c + '] = ways[' + (r - 1) + '][' + c + '] + ways[' + r + '][' + (c - 1) + '] = ' + up + ' + ' + left + ' = ' + ways[r][c] + ' (the square above plus the square to the left).', expert: 'Both notes were written earlier (row by row, left to right), so each square takes O(1) time, a fixed amount of work. No route is counted twice, because its last move is either down or right, never both.' } });
   }
   const answer = ways[m - 1][n - 1];
   const route = [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [3, 3]];
   steps.push({ kind: 'done', vals: snap(), at: [m - 1, n - 1], from: [], written, r: m - 1, c: n - 1, up: ways[m - 2][n - 1], left: ways[m - 1][n - 2], actorAt: [m - 1, n - 1], path: route, done: true,
     dialog: [say('scribe', 'The bottom-right square says ' + answer + '.'), say('narr', 'The drawn line is one of those ' + answer + ' routes. The scribe never had to walk any of them.')],
-    nar: { kid: 'The last square says ' + answer + '. There are ' + answer + ' different routes! The drawn line shows one of them.', builder: 'return ways[3][3] = ' + answer + '.', expert: 'This takes O(m·n) time and space. Keeping only one row of notes gives O(n) space.' } });
+    nar: { kid: 'The last square says ' + answer + '. There are ' + answer + ' different routes! The drawn line shows one of them.', builder: 'return ways[3][3] = ' + answer + '.', expert: 'This takes O(m·n) time and space, where m is the number of rows and n the number of columns. Keeping only one row of notes gives O(n) space.' } });
   const T = { intro: ['Empty notebook', 'plain'], edge: ['Top row → 1 way each', 'cool'], side: ['Left column → 1 way each', 'cool'], fill: ['Above + left', 'warn'], done: [answer + ' routes!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -142,12 +142,12 @@ function nightWalkScene() {
   const steps = [];
   const grid = () => [loot.slice(), best.slice()];
   steps.push({ kind: 'intro', vals: grid(), i: '—', take: '—', skip: '—', at: -1, from: [], actorAt: [0, 0],
-    dialog: [say('narr', 'Six houses left a treat bag on the step. Next-door houses share a doorbell. If you take from two houses side by side, it rings.'), say('scribe', 'The top row is what each house left. In the row below, I note the most I can carry home by each house.')],
-    nar: { kid: 'The scribe walks down the street. Under each house, the scribe notes the most treats that could be carried by then. No two houses side by side are used.', builder: 'best[i] is the most you can collect from houses 0 to i, with no two next-door houses. The answer is best[5].', expert: 'The no-next-door rule means best[i] depends only on best[i−1] and best[i−2].' } });
+    dialog: [say('narr', 'Six houses left a treat bag on the step. Next-door houses share a doorbell. If you take from two houses side by side, it rings.'), say('scribe', 'The top row is what each house left. I number the houses from 0. In the row below, I note the most I can carry home by each house.')],
+    nar: { kid: 'The scribe walks down the street. Under each house, the scribe notes the most treats that could be carried by then. No two houses side by side are used.', builder: 'loot[i] is the number of treats at house i. best[i] is the most you can collect from houses 0 to i, with no two next-door houses. The answer is best[5].', expert: 'The no-next-door rule means best[i] depends only on best[i−1] (skip house i) and best[i−2] (take house i).' } });
   best[0] = loot[0];
   steps.push({ kind: 'first', vals: grid(), i: 0, take: loot[0], skip: 0, at: 0, from: [], actorAt: [1, 0],
     dialog: [say('scribe', 'Only one house so far. Take its ' + loot[0] + '.'), say('narr', 'There is nothing to lose yet.')],
-    nar: { kid: 'With only the first house, the best plan is to take its ' + loot[0] + ' treats.', builder: 'best[0] = loot[0] = ' + loot[0] + '.', expert: 'Base case: a street with one house.' } });
+    nar: { kid: 'With only the first house, the best plan is to take its ' + loot[0] + ' treats.', builder: 'best[0] = loot[0] = ' + loot[0] + '.', expert: 'Base case (an answer we know without adding): a street with one house.' } });
   for (let i = 1; i < n; i++) {
     const take = loot[i] + (i > 1 ? best[i - 2] : 0), skip = best[i - 1];
     const took = take > skip;
@@ -158,13 +158,13 @@ function nightWalkScene() {
         ? [say('scribe', 'House ' + i + ' left ' + loot[i] + '. Take it, plus my note from two houses back: ' + loot[i] + ' + ' + back2 + ' = ' + take + '.'), say('narr', 'Skipping would keep only ' + skip + '. Take it.')]
         : [say('scribe', 'House ' + i + ' left ' + loot[i] + '. Taking it gives ' + loot[i] + ' + ' + back2 + ' = ' + take + '.'), say('narr', 'But skipping keeps ' + skip + ', which is more. Walk past this house.')],
       nar: took
-        ? { kid: 'Take this house (' + loot[i] + ') plus the best from two houses back (' + back2 + '). That makes ' + take + ', which beats ' + skip + ', so the scribe writes ' + take + '.', builder: 'take = loot[' + i + '] + best[' + (i - 2) + '] = ' + take + ', skip = best[' + (i - 1) + '] = ' + skip + '. best[' + i + '] = ' + take + '.', expert: 'Taking house i rules out house i−1, so it pairs with the best plan up to house i−2. The larger of take and skip covers both cases.' }
-        : { kid: 'Taking this house gives only ' + take + '. Skipping it keeps ' + skip + '. The scribe skips it and writes ' + skip + '.', builder: 'take = ' + take + ' is less than skip = ' + skip + ', so best[' + i + '] = best[' + (i - 1) + '] = ' + skip + '.', expert: 'A skip copies the previous note forward. The notes never get smaller from left to right.' } });
+        ? { kid: 'Take this house (' + loot[i] + ') plus the best from two houses back (' + back2 + '). That makes ' + take + ', which beats ' + skip + ', so the scribe writes ' + take + '.', builder: 'take = loot[' + i + '] + best[' + (i - 2) + '] = ' + take + ', skip = best[' + (i - 1) + '] = ' + skip + '. best[' + i + '] = ' + take + '.' + (i < 2 ? ' There is no house before the start, so best[' + (i - 2) + '] counts as 0.' : ''), expert: 'Taking house i rules out house i−1, so it pairs with the best plan up to house i−2. The larger of take and skip covers both cases.' }
+        : { kid: 'Taking this house gives only ' + take + '. Skipping it keeps ' + skip + '. The scribe skips it and writes ' + skip + '.', builder: 'take = ' + take + ' is less than skip = ' + skip + ', so best[' + i + '] = best[' + (i - 1) + '] = ' + skip + '.', expert: 'A skip copies the previous note forward. The notes never get smaller from left to right, because skipping is always allowed.' } });
   }
   const answer = best[n - 1];
   steps.push({ kind: 'done', vals: grid(), i: n - 1, take: '—', skip: '—', at: n - 1, from: [], actorAt: [1, n - 1], done: true,
     dialog: [say('scribe', 'The last note says ' + answer + '.'), say('narr', 'That is 2 + 9 + 5, and no two of those houses are next door to each other.')],
-    nar: { kid: 'The last note says ' + answer + '. That is the most the scribe can carry home without ringing the bell.', builder: 'return best[5] = ' + answer + '.', expert: 'This takes O(n) time. Only two earlier notes are read, so two variables would give O(1) space.' } });
+    nar: { kid: 'The last note says ' + answer + '. That is the most the scribe can carry home without ringing the bell.', builder: 'return best[5] = ' + answer + '.', expert: 'This takes O(n) time, where n is the number of houses. Only two earlier notes are read, so two variables would give O(1) space, a fixed bit of memory.' } });
   const T = { intro: ['Empty notes', 'plain'], first: ['One house → take it', 'cool'], take: ['Take it + two back', 'warn'], skip: ['Skip it → copy the last note', 'cool'], done: ['Most treats: ' + answer, 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -226,15 +226,15 @@ function changeScene() {
       }
     }
     const win = tries.find(([, v]) => v === best[a]);
-    const tryText = tries.map(([c, v]) => 'a ' + c + ' leaves ' + (a - c) + ' → ' + v).join('; ');
+    const tryText = tries.map(([c, v]) => 'a ' + c + ' leaves ' + (a - c) + ', so ' + v + (v === 1 ? ' coin' : ' coins') + ' in all').join('; ');
     steps.push({ kind: 'fill', vals: row(), a, tries: tries.map(([c, v]) => c + ':' + v).join(' '), win: win[0], at: a, from: [a - win[0]], actorAt: [0, a],
       dialog: [say('scribe', 'To make ' + a + ', I try each coin that fits: ' + tryText + '.'), say('narr', 'Fewest is ' + best[a] + (best[a] === 1 ? ' coin' : ' coins') + ', using a ' + win[0] + ' first.')],
-      nar: { kid: 'To make ' + a + ', the scribe tries each coin and looks up the rest in the notes. Using a ' + win[0] + ' is best: ' + (a - win[0]) + ' takes ' + best[a - win[0]] + ', plus this coin = ' + best[a] + '.', builder: 'best[' + a + '] is the smallest value of best[' + a + ' − c] + 1 over every coin c that fits. That is ' + best[a] + ' (coin ' + win[0] + ').', expert: a === amount ? 'The greedy way (biggest coin first) pays 4 + 1 + 1, which is 3 coins. The notes find 3 + 3, which is 2 coins, because they check every possible last coin.' : 'Each amount checks ' + coins.length + ' coins at most. In total that is O(amount × coins).' } });
+      nar: { kid: 'To make ' + a + ', the scribe tries each coin and looks up the rest in the notes. Using a ' + win[0] + ' is best: ' + (a - win[0]) + ' takes ' + best[a - win[0]] + ', plus this coin = ' + best[a] + '.', builder: 'best[' + a + '] is the smallest value of best[' + a + ' − c] + 1, taken over every coin c that fits. The + 1 is the coin we hand over now. That is ' + best[a] + ' (coin ' + win[0] + ').', expert: a === amount ? 'The greedy way (biggest coin first) pays 4 + 1 + 1, which is 3 coins. The notes find 3 + 3, which is 2 coins, because they check every possible last coin.' : 'Each amount checks ' + coins.length + ' coins at most. In total that is O(amount × coins): the work grows with the amount and with the number of coin kinds.' } });
   }
   const answer = best[amount] === INF ? -1 : best[amount];
   steps.push({ kind: 'done', vals: row(), a: amount, tries: '—', win: '—', at: amount, from: [], actorAt: [0, amount], done: true,
     dialog: [say('scribe', 'The note for 6 says ' + answer + '.'), say('narr', 'Two coins: 3 + 3. Taking the biggest coin first would have used three.')],
-    nar: { kid: 'Making 6 takes ' + answer + ' coins: a 3 and another 3.', builder: 'best[6] = ' + answer + ' is not ∞, so return ' + answer + '. (If it were still ∞, return -1.)', expert: 'This takes O(amount · k) time for k kinds of coin, and O(amount) space.' } });
+    nar: { kid: 'Making 6 takes ' + answer + ' coins: a 3 and another 3.', builder: 'best[6] = ' + answer + ' is not ∞, so return ' + answer + '. (If it were still ∞, return -1.)', expert: 'This takes O(amount · k) time for k kinds of coin (here k = 3), and O(amount) space for the notes.' } });
   const T = { intro: ['0 needs no coins', 'plain'], fill: ['Try each coin, keep the fewest', 'warn'], done: ['Fewest coins: ' + answer, 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -261,8 +261,8 @@ function changeScene() {
     gridLabel: 'Fewest coins for amounts 0 to 6', legend: [['cur', 'amount being solved'], ['buy', 'note it builds on'], ['stored', 'solved'], ['future', '∞: not solved yet']],
     goal: 'Make exactly 6 with the fewest coins (1, 3 and 4)', status: ['Counting change…', answer + ' coins'],
     lines: tagLines(code), code,
-    rules: [['0 takes no coins; the rest start at ∞', 'intro'], ['For each amount, try every coin and keep the fewest', 'fill'], ['Read the note for the full amount', 'done']],
-    complexity: [['O(amount · k)', 'each amount tries all k coins'], ['O(amount)', 'one note per amount']],
+    rules: [['0 takes no coins; the rest start at ∞ (no way found yet)', 'intro'], ['For each amount, try every coin and keep the fewest', 'fill'], ['Read the note for the full amount', 'done']],
+    complexity: [['O(amount · k)', 'each amount tries all k kinds of coin'], ['O(amount)', 'one note per amount']],
     quest: ['The corner shop has only three kinds of coin: 1, 3 and 4. A customer is owed exactly 6 in change.', 'The scribe wants to hand over the fewest coins possible. Taking the biggest coin first looks wise. Is it?'],
     example: ['coins = [1, 3, 4]   amount = 6', 'answer = 2   (3 + 3)'],
     hints: ['“Take a 4 first and you need 4 + 1 + 1. Is that the fewest coins?”', '“Whatever coin you hand over last, the rest is a smaller amount. Did you already solve that smaller amount?”', '“Use the smallest value of best[a − c] + 1 over the coins c. Fill amounts from 1 up to 6.”'],

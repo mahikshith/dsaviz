@@ -1,7 +1,10 @@
 // @@RUNNER@@ — generated block (from shared/runner.js): runs learner code off the main thread.
 // JavaScript runs in a Web Worker built from a Blob; Python runs in Pyodide inside another
 // worker, loaded on demand from a pinned jsDelivr URL. Nothing here uses eval on the page.
-const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
+// The npm package carries the core files, and hosts that allow only cdn.jsdelivr.net/npm/ can reach it.
+const PYODIDE_URL = 'https://cdn.jsdelivr.net/npm/pyodide@0.26.4/';
+// A blocked download can hang without an error: give up and say so instead of showing Loading for ever.
+const PY_LOAD_LIMIT = 45000;
 const JS_TIME_LIMIT = 3000;
 const PY_TIME_LIMIT = 5000;
 
@@ -493,11 +496,16 @@ function loadPython(onState) {
   PY.waiters.push(onState);
   if (PY.state === 'loading') return;
   PY.state = 'loading';
+  const gaveUp = setTimeout(() => {
+    if (PY.state !== 'loading') return;
+    killWorker(PY.worker); PY.worker = null; PY.state = 'off';
+    PY.waiters.splice(0).forEach((f) => f('failed', 'Python could not download. Check your connection and press Run again.'));
+  }, PY_LOAD_LIMIT);
   try { PY.worker = blobWorker(PY_WORKER); } catch (e) { PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', 'This browser blocked the code runner.')); return; }
   PY.worker.onmessage = (e) => {
     const d = e.data || {};
-    if (d.type === 'ready') { PY.state = 'ready'; PY.waiters.splice(0).forEach((f) => f('ready')); }
-    else if (d.type === 'loadfail') { killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', d.error)); }
+    if (d.type === 'ready') { clearTimeout(gaveUp); PY.state = 'ready'; PY.waiters.splice(0).forEach((f) => f('ready')); }
+    else if (d.type === 'loadfail') { clearTimeout(gaveUp); killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', d.error)); }
   };
   PY.worker.onerror = (e) => { if (e.preventDefault) e.preventDefault(); killWorker(PY.worker); PY.worker = null; PY.state = 'off'; PY.waiters.splice(0).forEach((f) => f('failed', 'Python could not start.')); };
   PY.worker.postMessage({ type: 'load', url: PYODIDE_URL });

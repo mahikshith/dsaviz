@@ -43,7 +43,7 @@ The build inlines these into the single-file site.
 
 | Component | Version | Licence | Where from | Used for |
 | --- | --- | --- | --- | --- |
-| [Pyodide](https://github.com/pyodide/pyodide) | 0.26.4 | MPL-2.0 | `https://cdn.jsdelivr.net/pyodide/v0.26.4/full/` | Running Python on the Code page. It loads only when a learner runs Python. Pyodide includes CPython, which is under the [PSF License](https://docs.python.org/3/license.html); see Pyodide's own notices for the packages it bundles. |
+| [Pyodide](https://github.com/pyodide/pyodide) | 0.26.4 | MPL-2.0 | `https://cdn.jsdelivr.net/npm/pyodide@0.26.4/` | Running Python on the Code page. It loads only when a learner runs Python. Pyodide includes CPython, which is under the [PSF License](https://docs.python.org/3/license.html); see Pyodide's own notices for the packages it bundles. |
 | [sql.js](https://github.com/sql-js/sql.js) | 1.14.2 | MIT | `https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist/` (`sql-wasm.js` and `sql-wasm.wasm`) | Running SQL on the Code page. SQLite compiled to WebAssembly; it loads in a worker only when a learner runs a query. SQLite itself is in the [public domain](https://www.sqlite.org/copyright.html). |
 | [Anton](https://fonts.google.com/specimen/Anton) | Google Fonts | SIL Open Font License 1.1 | `fonts.googleapis.com` | Display type (Max theme) |
 | [Outfit](https://fonts.google.com/specimen/Outfit) | Google Fonts | SIL Open Font License 1.1 | `fonts.googleapis.com` | Body type (Max theme) |

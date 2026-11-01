@@ -413,7 +413,7 @@ class CodeRunner {
     const out = { mode: 'program', program: true, cases, titles: cases.map((c, i) => (spec.cases && spec.cases.length ? 'Test ' + (i + 1) : 'Output')), results: [], fatal: null, timeout: false, done: false, t0: Date.now() };
     if (!canRunCode()) { this.set({ out: Object.assign(out, { fatal: 'This browser cannot run code here.', done: true }) }); return; }
     const loading = lang === 'py' && PY.state !== 'ready';
-    this.set({ busy: true, out, status: loading ? 'Loading Python… (first run only)' : 'Running…' });
+    this.set({ busy: true, out, status: loading ? 'Getting Python ready…' : 'Running…' });
     let i = 0;
     const next = () => {
       if (this.s.out !== out) return;
@@ -454,7 +454,7 @@ class CodeRunner {
     if (!canRunCode()) { this.set({ out: { mode, results: [], fatal: 'This browser cannot run code here. Copy it to your IDE for now.', cases, titles, done: true } }); return; }
     const out = { mode, cases, titles, results: [], fatal: null, timeout: false, done: false, t0: Date.now() };
     const loading = lang === 'py' && PY.state !== 'ready';
-    this.set({ busy: true, out, status: loading ? 'Loading Python… (first run only)' : 'Running…' });
+    this.set({ busy: true, out, status: loading ? 'Getting Python ready…' : 'Running…' });
     this.cancel = (lang === 'py' ? runPython : runJs)(code, spec.fn, cases.map((c) => c[0]),
       (i, r) => { out.results[i] = r; if (this.s.out === out) this.set({ status: 'Running…' }); },
       (end) => {
@@ -580,7 +580,7 @@ class CodeRunner {
       hasHelp: !!help, help,
       custom: s.custom, setCustom: (e) => this.set({ custom: e && e.target ? e.target.value : '' }),
       customHint: !spec || !spec.examples ? '' : spec.drive ? 'Custom input is off for this problem' : 'Custom input, e.g. ' + spec.examples[0][0].map(showValue).join(', '),
-      statusText: s.status || (runnable ? (lang === 'py' && PY.state !== 'ready' ? 'Python loads on your first run' : 'Runs in your browser') : ''),
+      statusText: s.status || (runnable ? 'Runs in your browser' : ''),
       statusColor: s.busy ? t.accent : t.muted,
       hasBadge: !!badge, badge, badgeBg: badgeOk ? t.okBg : t.warnBg, badgeFg: badgeOk ? t.ok : fail,
       hasMsg: !!msg, msg, msgBg, msgFont: msgMono ? t.mono : t.body,

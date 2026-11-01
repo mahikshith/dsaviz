@@ -27,7 +27,7 @@ shipped.forEach((p) => {
 
 // 2. Problem links stay on the site. These pages show problem names that can be clicked; outside of fonts,
 // the Python and SQLite runtimes and SVG namespaces they link nowhere off the site.
-const ALLOWED = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net\/pyodide\/|cdn\.jsdelivr\.net\/npm\/sql\.js@)|^http:\/\/www\.w3\.org\//;
+const ALLOWED = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net\/npm\/pyodide@|cdn\.jsdelivr\.net\/npm\/sql\.js@)|^http:\/\/www\.w3\.org\//;
 ['Sheet', 'Revisit', 'Briefing', 'Patterns', 'Code', 'Story', 'Home'].forEach((name) => {
   // The test data of the problem specs is not page content (the web-crawler tests hold made-up addresses).
   const src = read('pages', name + '.dc.html').replace(/\/\/ @@TESTS-SPEC@@[\s\S]*?\/\/ @@END-TESTS-SPEC@@/, '');

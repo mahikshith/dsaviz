@@ -174,6 +174,8 @@ function startTraceSay(steps, i) {
     if (cur.e === 'call') {
       const args = startFrameVars(cur).map((v) => v[0] + ' = ' + startClip(v[1], 14)).join(', ');
       bits.push(fname(cur) + ' starts' + (args ? ' with ' + args : '') + '. A new frame opens on the stack.');
+    } else if (cur.e === 'return' && cur.x) {
+      bits.push(fname(cur) + ' stops: a ' + cur.x + ' alarm. Its frame closes.');
     } else if (cur.e === 'return') {
       bits.push(fname(cur) + ' hands back ' + startClip(cur.r, 18) + '. Its frame closes.');
     } else {

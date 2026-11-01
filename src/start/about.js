@@ -1181,6 +1181,90 @@ const START_ABOUT = {
     cheat: ['name: type', '-> type for the result', 'int, float, str, bool, list', 'a note, not a lock'],
     next: ['exceptions'],
     sources: [PY_TUT + 'controlflow.html#function-annotations', PY_LIB + 'typing.html']
+  },
+  exceptions: {
+    what: 'An exception is an alarm Python rings when something goes wrong. It stops the program unless some code answers it. The words try and except let you choose what happens next.',
+    analogy: 'Think of a fire bell in a building. It rings until someone who knows what to do answers it.',
+    uses: ['A game that keeps running when a save file is missing', 'A shop app that asks again when someone types text instead of a number', 'A website that shows a friendly message when a page fails to load'],
+    before: ['debugging', 'call-stack'],
+    words: [
+      ['exception', 'An alarm that Python raises when something goes wrong.'],
+      ['try', 'Marks lines that might ring an alarm.'],
+      ['except', 'Marks the lines that answer one kind of alarm.'],
+      ['ValueError', 'The alarm for a value that has the wrong shape, such as the text "twelve" given to int().'],
+      ['bare except', 'An except with no kind named. It answers every alarm, even a typo.']
+    ],
+    math: null,
+    steps: ['Put the risky line inside try.', 'Write except and the kind of alarm you expect.', 'Write the lines that run when that alarm rings.', 'If an alarm rings, Python skips the rest of the try lines.', 'After the except lines, the program carries on.'],
+    use: ['You expect a known problem, such as bad text typed by a user.', 'You can choose a sensible next step, such as a default value.'],
+    avoid: ['A bare except that hides every bug.', 'Using try to hide a mistake in your own code.'],
+    mistakes: ['Thinking try fixes the error. Fix: try only picks what happens next.', 'Catching every kind with a bare except. Fix: name the kind you expect.', 'Printing a message but returning nothing. Fix: return a value the caller can use.'],
+    cheat: ['try: the risky line', 'except ValueError: the answer', 'name the kind you expect', 'no answer: the program stops', 'the alarm travels down the calls'],
+    next: ['raise'],
+    sources: [PY_TUT + 'errors.html', PY_REF + 'compound_stmts.html#the-try-statement']
+  },
+  raise: {
+    what: 'The word raise rings the alarm yourself when a rule is broken. The word finally adds lines that run every time, whether or not an alarm rang. Together they keep code safe and tidy.',
+    analogy: 'Think of closing time at a shop. The door gets locked whether the day went well or badly.',
+    uses: ['A bank app that stops a withdrawal larger than the balance', 'A game that closes a save file even when saving fails', 'A school website that rejects a negative age'],
+    before: ['exceptions'],
+    words: [
+      ['raise', 'Rings an alarm on purpose, such as raise ValueError("bad age").'],
+      ['message', 'The text that comes with an alarm and says what went wrong.'],
+      ['as', 'Gives a name to the alarm you caught, as in except ValueError as problem.'],
+      ['finally', 'Lines that run every time, even after an alarm.'],
+      ['clean-up', 'Work that must happen at the end, such as closing a file.']
+    ],
+    math: null,
+    steps: ['Check the rule with an if.', 'If the rule is broken, write raise and a kind with a message.', 'The function stops at that line.', 'Catch the alarm where you can handle it, with except.', 'Put clean-up lines in finally so they always run.'],
+    use: ['An input breaks a rule and carrying on would give a wrong answer.', 'You must close or lock something even if an error happens.'],
+    avoid: ['Raising an error for normal, expected work.', 'Putting your main work in finally.'],
+    mistakes: ['Building an error without raise, so nothing happens. Fix: write raise in front of it.', 'Thinking finally runs only on error. Fix: it runs every time.', 'Raising a vague error with no message. Fix: say what went wrong.'],
+    cheat: ['raise ValueError("message")', 'except ValueError as problem:', 'finally: always runs', 'raise stops the function', 'clean-up goes in finally'],
+    next: ['tests'],
+    sources: [PY_TUT + 'errors.html#raising-exceptions', PY_TUT + 'errors.html#defining-clean-up-actions']
+  },
+  tests: {
+    what: 'A check calls your function with an input you know and compares the answer with the one you expect. It prints pass or FAIL. A set of checks tells you at once if a change broke something.',
+    analogy: 'Think of a taste-tester at the pass in a kitchen. Every dish is tried before it leaves.',
+    uses: ['A game that checks the score rules after every change', 'A shop app that checks the tax maths with many prices', 'A school website that checks a name-tidying function on odd names'],
+    before: ['raise', 'return-print'],
+    words: [
+      ['check', 'A line that compares what a function gives with what you expect.'],
+      ['expected', 'The answer you know is right, written down before you run.'],
+      ['pass', 'The answer matched what you expected.'],
+      ['FAIL', 'The answer did not match. Something is wrong.'],
+      ['assert', 'A Python word that raises an error when a statement is false and stays quiet when it is true.']
+    ],
+    math: null,
+    steps: ['Pick an input and work out the right answer by hand.', 'Write a check that calls the function with that input.', 'Compare the answer with the one you expect.', 'Write several checks, not one.', 'Run all the checks after every change.'],
+    use: ['You change code and want to know nothing else broke.', 'You find a bug and want to be sure it stays fixed.'],
+    avoid: ['Trusting a single passing check.', 'Working out the expected answer by running the code you are testing.'],
+    mistakes: ['Writing one check and stopping. Fix: try different inputs.', 'Taking the expected answer from the buggy code. Fix: work it out by hand.', 'Running checks only once. Fix: run them after every change.'],
+    cheat: ['check(name, got, want)', 'pass or FAIL', 'many checks, not one', 'run them after every change', 'assert f(2) == 4'],
+    next: ['edge-tests'],
+    sources: [PY_TUT + 'controlflow.html#defining-functions', PY_REF + 'simple_stmts.html#the-assert-statement']
+  },
+  'edge-tests': {
+    what: 'Edge cases are the awkward inputs where bugs hide: an empty list, one item, negatives and ties. Test-first means you write the check before the code, watch it fail, then write code until it passes.',
+    analogy: 'Think of a shop. The easy customer buys three apples. The awkward one wants nothing, or a refund.',
+    uses: ['A game that handles an empty inventory without crashing', 'A shop app that handles a basket with no items', 'A school website that handles a class with one student'],
+    before: ['tests', 'edge-cases'],
+    words: [
+      ['edge case', 'An unusual input at the limit of what a function must handle.'],
+      ['empty', 'Holding nothing, such as a list with no items.'],
+      ['tie', 'Two items with the same value.'],
+      ['test-first', 'Writing the check before the code that passes it.'],
+      ['happy path', 'The easy, ordinary case where nothing odd happens.']
+    ],
+    math: null,
+    steps: ['List the awkward inputs: empty, one item, negatives, ties.', 'Decide the right answer for each, such as 0 for an empty list.', 'Write a check for each one.', 'Run them and watch the broken ones fail.', 'Change the code until every check passes.'],
+    use: ['You write a function that takes a list or a number.', 'You are about to say a function is finished.'],
+    avoid: ['Testing only the happy path.', 'Skipping the empty case because it looks silly.'],
+    mistakes: ['Testing only ordinary inputs. Fix: add empty, one item and negatives.', 'Starting a running best at 0 when all values may be negative. Fix: start from the first item.', 'Forgetting to decide what an empty input should give. Fix: choose the answer, then check it.'],
+    cheat: ['empty list', 'one item', 'negatives', 'ties and repeats', 'write the check first'],
+    next: [],
+    sources: [PY_TUT + 'controlflow.html#for-statements', PY_TUT + 'datastructures.html#more-on-lists']
   }
 };
 if (typeof module !== 'undefined') module.exports = { START_ABOUT };

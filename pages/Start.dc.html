@@ -1927,7 +1927,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
   };
-  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About this lesson')] : [], A };
+  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About')] : [], A };
 }
 // @@END-ABOUT@@
 // @@START@@ — generated from src/ai/render.js (easing and painting) and src/start/*; edit those, then build.

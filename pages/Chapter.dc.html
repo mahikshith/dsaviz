@@ -136,10 +136,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 [data-page="Chapter"] [data-st-pane]{height:560px!important}
 [data-page="Chapter"] [data-st-choices]{grid-template-columns:minmax(0,1fr)!important}
 [data-page="Chapter"] [data-st-head]{flex-direction:column!important;align-items:stretch!important}
+[data-page="Chapter"] [data-next]{flex:1 1 100%}
+[data-page="Chapter"] aside[aria-label="The code in this story"]{border-left:0!important;padding-left:0!important;padding-top:16px;border-top:1px solid rgba(127,127,127,.25)}
 }
 </style>
 </helmet>
-<div data-fluid="true" data-page="Chapter" style="width: 1440px; height: 1060px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; overflow: hidden; transition: background 0.3s, color 0.3s">
+<div data-fluid="true" data-page="Chapter" style="width: 1440px; height: {{rootH}}; min-height: 1060px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; overflow: hidden; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <style>
 [data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
@@ -288,89 +290,101 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 16px 40px 32px; display: flex; flex-direction: column; gap: 16px">
+<main style="flex-grow: 1; min-height: 0; width: 100%; max-width: 1200px; margin: 0 auto; box-sizing: border-box; padding: 16px 40px 32px; display: flex; flex-direction: column; gap: 16px">
 
-<!-- lesson header: where you are, the five stages, the language -->
-<header data-st-head style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
-<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
-<nav aria-label="Breadcrumb" style="display: flex; align-items: center; gap: 8px; font-size: var(--fs16); color: {{t.muted}}"><a href="Start.dc.html" style="color: {{t.link}}; font-weight: 600">Start here</a><span aria-hidden="true">/</span><span>{{lesson.where}}</span></nav>
-<div style="display: flex; align-items: center; gap: 8px; font-size: var(--fs16); font-weight: 600"><sc-if value="{{lesson.prev}}" hint-placeholder-val="{{ true }}"><a href="{{lesson.prevHref}}" style="color: {{t.link}}">← {{lesson.prev}}</a></sc-if><sc-if value="{{lesson.both}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="color: {{t.faint}}">·</span></sc-if><sc-if value="{{lesson.next}}" hint-placeholder-val="{{ true }}"><a href="{{lesson.nextHref}}" style="color: {{t.link}}">{{lesson.next}} →</a></sc-if></div>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs36); line-height: 1.1; font-weight: 700">{{lesson.title}}</h1>
+<!-- lesson header: title, the Lesson and About tabs, the five stages -->
+<header data-st-head style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div data-m="wrap" style="display: flex; align-items: center; justify-content: space-between; gap: 4px 24px; font-size: var(--fs16); line-height: 24px; font-weight: 500; color: {{t.muted}}">
+<span>{{lesson.where}}</span>
+<span style="display: flex; align-items: center; gap: 8px"><sc-if value="{{lesson.prev}}" hint-placeholder-val="{{ true }}"><a href="{{lesson.prevHref}}" style="color: {{t.muted}}">← Previous: {{lesson.prev}}</a></sc-if><sc-if value="{{lesson.both}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="color: {{t.faint}}">·</span></sc-if><sc-if value="{{lesson.next}}" hint-placeholder-val="{{ true }}"><a href="{{lesson.nextHref}}" style="color: {{t.link}}">Next lesson: {{lesson.next}} →</a></sc-if></span>
+</div>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 1.05; font-weight: 700">{{lesson.title}}</h1>
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; max-width: 760px">{{lesson.idea}}</p>
-</div>
-<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0">
-<div role="group" aria-label="Language" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
-<sc-for list="{{langs}}" as="lg" hint-placeholder-count="2"><button onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" style="height: 32px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>
-</div>
-<ol aria-label="Lesson steps" data-m="scroll" style="margin: 0; padding: 0; list-style: none; display: flex; gap: 6px">
-<sc-for list="{{stages}}" as="sg" hint-placeholder-count="5"><li><button onClick="{{sg.pick}}" aria-current="{{sg.cur}}" style="height: 40px; padding: 0 14px 0 8px; border-radius: 999px; border: 1.5px solid {{sg.border}}; background: {{sg.bg}}; color: {{sg.fg}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 700; white-space: nowrap"><span aria-hidden="true" style="width: 24px; height: 24px; border-radius: 12px; background: {{sg.dotBg}}; color: {{sg.dotFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 800">{{sg.mark}}</span>{{sg.label}}</button></li></sc-for>
-</ol>
-</div>
 </header>
 
+<div data-m="wrap" style="display: flex; align-items: center; justify-content: space-between; gap: 0 24px; border-bottom: 1px solid {{t.line}}">
 <sc-if value="{{ab.has}}" hint-placeholder-val="{{ true }}">
-<div role="group" aria-label="Lesson view" style="align-self: flex-start; display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
-<sc-for list="{{ab.tabs}}" as="abt" hint-placeholder-count="2"><button onClick="{{abt.pick}}" aria-pressed="{{abt.on}}" style="height: 40px; padding: 0 16px; border: 0; border-radius: 9px; cursor: pointer; font-size: var(--fs17); font-weight: 700; background: {{abt.bg}}; color: {{abt.fg}}">{{abt.label}}</button></sc-for>
+<div role="group" aria-label="Lesson view" style="display: flex; gap: 32px">
+<sc-for list="{{ab.tabs}}" as="abt" hint-placeholder-count="2"><button onClick="{{abt.pick}}" aria-pressed="{{abt.on}}" style="position: relative; height: 48px; padding: 0; border: 0; background: transparent; color: {{abt.fg}}; cursor: pointer; font-size: var(--fs18); font-weight: 600; box-shadow: inset 0 -2px 0 {{abt.line}}; margin-bottom: -1px">{{abt.label}}</button></sc-for>
 </div>
 </sc-if>
+<sc-if value="{{ab.watch}}" hint-placeholder-val="{{ true }}">
+<div data-m="scroll" style="display: flex; align-items: center; gap: 4px; min-width: 0">
+<ol aria-label="Lesson steps" data-m="scroll" style="margin: 0; padding: 0; list-style: none; display: flex; gap: 4px">
+<sc-for list="{{stages}}" as="sg" hint-placeholder-count="5"><li><button onClick="{{sg.pick}}" aria-current="{{sg.cur}}" style="height: 44px; padding: 0 12px; border: 0; background: transparent; color: {{sg.fg}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs16); font-weight: {{sg.weight}}; white-space: nowrap"><span aria-hidden="true" style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 600; color: {{sg.dotFg}}">{{sg.mark}}</span>{{sg.label}}</button></li></sc-for>
+</ol>
+<div role="group" aria-label="Language" style="display: flex; gap: 2px; margin-left: 8px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
+<sc-for list="{{langs}}" as="lg" hint-placeholder-count="2"><button onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" style="height: 32px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 600; background: {{lg.bg}}; color: {{lg.fg}}">{{lg.label}}</button></sc-for>
+</div>
+</div>
+</sc-if>
+</div>
 <!-- ABOUT TAB -->
 <sc-if value="{{ab.about}}" hint-placeholder-val="{{ false }}">
-<section aria-label="About this lesson" data-about class="ai-scroll" style="box-sizing: border-box; min-width: 0; flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px">
-<div style="padding: 20px 22px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.accent}}">What it is<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-what" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-what" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">A plain description of the idea and what it does. Read this first.</span></span></h2>
-<p style="margin: 0; max-width: 68ch; font-size: var(--fs18); line-height: 1.55; color: {{t.text}}">{{ab.A.what}}</p>
-<sc-if value="{{ab.A.hasAnalogy}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; max-width: 68ch; padding: 10px 14px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}"><b style="color: {{t.text}}">Think of it like this: </b>{{ab.A.analogy}}</p></sc-if>
+<section aria-label="About this lesson" data-about style="box-sizing: border-box; min-width: 0; width: 100%; max-width: 720px; flex: 1 1 auto; display: flex; flex-direction: column; gap: 32px; padding: 8px 0 24px">
+<style>
+[data-about] details>summary{list-style:none;cursor:pointer}
+[data-about] details>summary::-webkit-details-marker{display:none}
+[data-about] details>summary svg{transition:transform .16s ease-out}
+[data-about] details[open]>summary svg{transform:rotate(180deg)}
+[data-about] summary:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:8px}
+</style>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">What it is</h2>
+<p style="margin: 0; font-size: var(--fs20); line-height: 1.6; color: {{t.text}}">{{ab.A.what}}</p>
+<sc-if value="{{ab.A.hasAnalogy}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><b style="color: {{t.text}}; font-weight: 600">Think of it like this: </b>{{ab.A.analogy}}</p></sc-if>
 </div>
-<div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start">
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Where it is used<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-used" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-used" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Real places where this idea shows up. Good for seeing why it matters.</span></span></h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5"><sc-for list="{{ab.A.uses}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Know these first</h2>
+<sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 500">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="min-height: 44px; padding: 0 16px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: var(--fs17); color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
+<sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">Nothing. This is a good place to start.</p></sc-if>
 </div>
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Know these first<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-know" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-know" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Ideas to learn before this lesson. Follow a link to review one.</span></span></h2>
-<sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="min-height: 36px; padding: 0 12px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: var(--fs17); color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
-<sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs18); color: {{t.text2}}">Nothing. This is a good place to start.</span></sc-if>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Where it is used</h2>
+<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.uses}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </div>
-</div>
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Key words<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-words" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-words" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The special words used in the lesson, each with a short meaning.</span></span></h2>
-<dl data-m="one" style="margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 24px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: var(--fs18); font-weight: 700; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
-</div>
+<div style="display: flex; flex-direction: column; border-bottom: 1px solid {{t.line}}">
+<details style="border-top: 1px solid {{t.line}}">
+<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<ol style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
+</details>
+<details style="border-top: 1px solid {{t.line}}">
+<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<dl style="margin: 0; padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
+</details>
 <sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">The math<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-math" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-math" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The formulas behind the idea, explained symbol by symbol with a worked example.</span></span></h2>
-<div class="ab-math" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs22); color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
-<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: var(--fs17); font-weight: 700; color: {{t.text}}">What each symbol means</span>
-<div data-m="keep" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 6px 14px; align-items: baseline"><sc-for list="{{ab.A.math.symbols}}" as="abms" hint-placeholder-count="3"><span ref="{{abms.put}}" class="ab-math" style="font-size: var(--fs19); color: {{t.accent}}; text-align: center"></span><span style="font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}">{{abms.mean}}</span></sc-for></div></div>
-<sc-if value="{{ab.A.math.hasExample}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: var(--fs17); font-weight: 700; color: {{t.text}}">Worked example</span>
-<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}"><sc-for list="{{ab.A.math.example}}" as="abme" hint-placeholder-count="3"><li>{{abme.text}}</li></sc-for></ol></div></sc-if>
+<details style="border-top: 1px solid {{t.line}}">
+<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px">
+<div class="ab-math" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; font-size: var(--fs22); color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">What each symbol means</span>
+<div data-m="keep" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px 16px; align-items: baseline"><sc-for list="{{ab.A.math.symbols}}" as="abms" hint-placeholder-count="3"><span ref="{{abms.put}}" class="ab-math" style="font-size: var(--fs19); color: {{t.text}}; text-align: center"></span><span style="font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abms.mean}}</span></sc-for></div></div>
+<sc-if value="{{ab.A.math.hasExample}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Worked example</span>
+<ol style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.math.example}}" as="abme" hint-placeholder-count="3"><li>{{abme.text}}</li></sc-for></ol></div></sc-if>
 </div>
+</details>
 </sc-if>
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">How it works<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-how" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-how" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The idea in order, step by step. Read it once the picture makes sense.</span></span></h2>
-<ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.55"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
+<details style="border-top: 1px solid {{t.line}}">
+<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Use it when</span>
+<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Skip it when</span>
+<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.avoid}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
 </div>
-<div data-m="one" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start">
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Use it when<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-use" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-use" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Situations where this idea is the right tool for the job.</span></span></h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
+</details>
+<details style="border-top: 1px solid {{t.line}}">
+<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
+</details>
+<details style="border-top: 1px solid {{t.line}}">
+<summary style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}; font-weight: 500"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
+</details>
 </div>
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Skip it when<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-skip" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-skip" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Situations where a simpler tool works better. Good to know before you overthink.</span></span></h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5"><sc-for list="{{ab.A.avoid}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
-</div>
-</div>
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}">Common mistakes<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-mistakes" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-mistakes" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Errors people often make with this idea. Check your work against them.</span></span></h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
-</div>
-<div style="padding: 18px 20px; border-radius: 14px; background: {{t.surface}}; border: 1.5px solid {{t.accent}}; display: flex; flex-direction: column; gap: 10px">
-<h2 style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.accent}}">Cheat sheet<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-about-cheat" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-about-cheat" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The key facts in one short list. Good for a quick review.</span></span></h2>
-<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs18); line-height: 1.5; font-weight: 600"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
-</div>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
-<button onClick="{{ab.A.watch}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700">Watch the animation →</button>
-<sc-if value="{{ab.A.hasNext}}" hint-placeholder-val="{{ true }}"><span style="margin-left: 8px; font-size: var(--fs17); color: {{t.muted}}">Learn next:</span><sc-for list="{{ab.A.next}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></sc-if>
+<div data-m="wrap" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<button data-next onClick="{{ab.A.watch}}" style="height: 56px; padding: 0 32px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 600">Watch the animation →</button>
+<sc-if value="{{ab.A.hasNext}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--fs17); color: {{t.muted}}">Learn next:</span><sc-for list="{{ab.A.next}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 500">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></sc-if>
 </div>
 </section>
 </sc-if>
@@ -388,25 +402,24 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- ============ STAGE 1: STORY ============ -->
 <sc-if value="{{is.story}}" hint-placeholder-val="{{ true }}">
-<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px">
-<section aria-label="Story" style="min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<section aria-label="Story" style="min-width: 0; padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<div data-m="keep" aria-live="polite" aria-atomic="true" style="display: flex; align-items: flex-start; gap: 16px; min-width: 0">
+<sc-if value="{{story.hasWho}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 22px; background: {{story.whoBg}}; color: {{story.whoFg}}; border: 2px solid {{story.whoRing}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: var(--fs19); font-weight: 800">{{story.initial}}</span></sc-if>
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: var(--fs16); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{story.head}}</span>
+<p class="st-say" key="{{story.key}}" style="margin: 0; min-height: 68px; font-size: var(--fs24); line-height: 1.4">{{story.say}}</p>
+</div>
+</div>
 <div data-m="wrap" style="display: flex; align-items: center; gap: 8px">
-<button onClick="{{story.restart}}" aria-label="Back to the first beat" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
-<button onClick="{{story.prev}}" disabled="{{story.atFirst}}" aria-label="Previous beat" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
-<button onClick="{{story.toggle}}" aria-label="{{story.playLabel}}" style="height: 44px; min-width: 104px; padding: 0 16px; box-sizing: border-box; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: var(--fs17); font-weight: 700"><sc-if value="{{story.playing}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{story.paused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{story.playText}}</button><button onClick="{{spd.next}}" aria-label="{{spd.aria}}" title="Playback speed" data-speed style="height: 44px; min-width: 64px; padding: 0 12px; flex-shrink: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-family: {{t.mono}}; font-size: var(--fs18); font-weight: 700">{{spd.label}}</button>
-<div role="group" aria-label="Jump to a beat" style="flex-grow: 1; display: flex; gap: 3px; padding: 0 8px">
-<sc-for list="{{story.dots}}" as="dt" hint-placeholder-count="8"><button onClick="{{dt.go}}" aria-label="{{dt.label}}" aria-current="{{dt.cur}}" style="flex: 1 1 0; min-width: 0; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center"><span style="display: block; width: 100%; height: 6px; border-radius: 999px; background: {{dt.bg}}; transition: background 0.3s"></span></button></sc-for>
+<button onClick="{{story.restart}}" aria-label="Back to the first beat" title="Restart" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
+<button onClick="{{story.prev}}" disabled="{{story.atFirst}}" aria-label="Previous beat" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{story.toggle}}" aria-label="{{story.playLabel}}" style="height: 44px; min-width: 96px; padding: 0 12px; box-sizing: border-box; border-radius: 999px; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: var(--fs17); font-weight: 600"><sc-if value="{{story.playing}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{story.paused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{story.playText}}</button><button onClick="{{spd.next}}" aria-label="{{spd.aria}}" title="Playback speed" data-speed style="height: 44px; min-width: 56px; padding: 0 12px; flex-shrink: 0; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 600">{{spd.label}}</button>
+<div role="group" aria-label="Jump to a beat" data-m="keep" style="flex: 1 1 160px; min-width: 120px; display: flex; gap: 3px; padding: 0 8px">
+<sc-for list="{{story.dots}}" as="dt" hint-placeholder-count="8"><button onClick="{{dt.go}}" aria-label="{{dt.label}}" aria-current="{{dt.cur}}" data-m="keep" style="flex: 1 1 0; min-width: 0; height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center"><span style="display: block; width: 100%; height: 4px; border-radius: 999px; background: {{dt.bg}}; transition: background 0.3s"></span></button></sc-for>
 </div>
-<button onClick="{{story.next}}" style="height: 48px; padding: 0 22px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700; white-space: nowrap">{{story.nextText}}</button>
+<button data-next onClick="{{story.next}}" style="height: 56px; padding: 0 32px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 600; white-space: nowrap">{{story.nextText}}</button>
 </div>
-<div data-m="keep" style="padding: 14px 18px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: center">
-<span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 22px; background: {{story.whoBg}}; color: {{story.whoFg}}; border: 2px solid {{story.whoRing}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: var(--fs19); font-weight: 800">{{story.initial}}</span>
-<div aria-live="polite" aria-atomic="true" style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: var(--fs16); font-weight: 700; color: {{t.muted}}">{{story.head}}</span>
-<p class="st-say" key="{{story.key}}" style="margin: 0; min-height: 52px; font-size: var(--fs22); line-height: 1.4">{{story.say}}</p>
-</div>
-</div>
-<div style="position: relative; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
+<div style="display: grid; grid-template-columns: minmax(0, calc({{story.stageMax}} * 16 / 9)) minmax(0, 1fr); gap: 24px">
 <svg data-stage="start" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{story.label}}" style="display: block; width: 100%; height: auto; aspect-ratio: 640 / 360; max-height: {{story.stageMax}}">
 <sc-for list="{{S.halos}}" as="h" hint-placeholder-count="1"><rect class="st-halo" x="{{h.x}}" y="{{h.y}}" width="{{h.w}}" height="{{h.h}}" rx="{{h.rx}}" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-dasharray="5 5" opacity="{{h.op}}"></rect></sc-for>
 <sc-for list="{{S.rects}}" as="r" hint-placeholder-count="4"><rect x="{{r.x}}" y="{{r.y}}" width="{{r.w}}" height="{{r.h}}" rx="{{r.rx}}" fill="{{r.fill}}" stroke="{{r.stroke}}" stroke-width="{{r.sw}}" stroke-dasharray="{{r.dash}}" opacity="{{r.op}}"></rect></sc-for>
@@ -414,22 +427,17 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-for list="{{S.circles}}" as="c" hint-placeholder-count="2"><circle cx="{{c.cx}}" cy="{{c.cy}}" r="{{c.r}}" fill="{{c.fill}}" stroke="{{c.stroke}}" stroke-width="{{c.sw}}" opacity="{{c.op}}"></circle></sc-for>
 <sc-for list="{{S.texts}}" as="x" hint-placeholder-count="4"><text x="{{x.x}}" y="{{x.y}}" fill="{{x.fill}}" font-size="{{x.size}}" font-weight="{{x.weight}}" text-anchor="{{x.anchor}}" font-family="{{x.font}}" opacity="{{x.op}}">{{x.text}}</text></sc-for>
 </svg>
-</div>
-</section>
-<aside aria-label="The code in this story" style="min-width: 0; display: flex; flex-direction: column; gap: 12px">
-<div style="border-radius: 14px; border: 1px solid {{t.line}}; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: {{t.sunk}}; font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">{{langName}} · the code in this story<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-code" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-code" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The code this story is about. Its lines light up as the story reaches them.</span></span></div>
-<div style="padding: 8px 0; background: {{t.codeBg}}; font-family: {{t.mono}}; font-size: var(--fs17); line-height: 1.8; overflow-x: auto">
-<sc-for list="{{story.code}}" as="cl" hint-placeholder-count="3"><div class="st-line" style="display: flex; background: {{cl.bg}}; border-left: 3px solid {{cl.bar}}"><span style="width: 34px; flex-shrink: 0; text-align: right; padding-right: 12px; color: {{t.muted}}">{{cl.n}}</span><span style="white-space: pre; color: {{cl.fg}}">{{cl.code}}</span></div></sc-for>
+<aside aria-label="The code in this story" style="min-width: 0; padding-left: 24px; border-left: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; align-self: stretch">
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs16); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{langName}} · the code in this story<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-code" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-code" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The code this story is about. Its lines light up as the story reaches them.</span></span></span>
+<div style="font-family: {{t.mono}}; font-size: var(--fs17); line-height: 1.8; overflow-x: auto">
+<sc-for list="{{story.code}}" as="cl" hint-placeholder-count="3"><div class="st-line" style="display: flex; border-radius: 6px; background: {{cl.bg}}"><span style="width: 34px; flex-shrink: 0; text-align: right; padding-right: 12px; color: {{t.muted}}">{{cl.n}}</span><span style="white-space: pre; color: {{cl.fg}}">{{cl.code}}</span></div></sc-for>
 </div>
 </div>
-<div style="padding: 14px 16px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 6px">
-<span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">The idea in one line<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-idea" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-idea" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The main point of this lesson in one sentence. Read it, then follow the story.</span></span></span>
-<span style="font-size: var(--fs18); line-height: 1.45; font-weight: 600">{{lesson.idea}}</span>
-</div>
-<sc-if value="{{lesson.hasTrap}}" hint-placeholder-val="{{ true }}"><div style="padding: 12px 16px; border-radius: 14px; border: 1px dashed {{t.line2}}; display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Watch out<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-trap" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-trap" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">A common mistake to avoid. Read it before you write your own code.</span></span></span><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{lesson.trap}}</span></div></sc-if>
+<sc-if value="{{lesson.hasTrap}}" hint-placeholder-val="{{ true }}"><div style="padding-top: 16px; border-top: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs16); line-height: 24px; font-weight: 500; color: {{t.muted}}">Watch out<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-trap" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-trap" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">A common mistake to avoid. Read it before you write your own code.</span></span></span><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{lesson.trap}}</span></div></sc-if>
 </aside>
 </div>
+</section>
 </sc-if>
 
 <!-- ============ STAGE 2: WATCH IT RUN ============ -->
@@ -437,14 +445,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px">
 <sc-if value="{{watch.isCustom}}" hint-placeholder-val="{{ false }}"><p role="note" style="margin: 0; padding: 8px 14px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs17)">You are watching your own code from Try it. <button onClick="{{watch.backToLesson}}" style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 700">Watch the lesson’s code</button></p></sc-if>
 <sc-if value="{{watch.jsNote}}" hint-placeholder-val="{{ false }}"><p role="note" style="margin: 0; font-size: var(--fs16); color: {{t.muted}}">Your variables follows the Python version. The JavaScript runs the same steps.</p></sc-if>
-<div style="padding: 12px 16px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="padding: 16px 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
-<button onClick="{{watch.restart}}" aria-label="Back to the first step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
-<button onClick="{{watch.prev}}" disabled="{{watch.atFirst}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
-<button onClick="{{watch.toggle}}" aria-label="{{watch.playLabel}}" style="height: 44px; min-width: 104px; padding: 0 16px; box-sizing: border-box; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: var(--fs17); font-weight: 700"><sc-if value="{{watch.playing}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{watch.paused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{watch.playText}}</button><button onClick="{{spd.next}}" aria-label="{{spd.aria}}" title="Playback speed" data-speed style="height: 44px; min-width: 64px; padding: 0 12px; flex-shrink: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-family: {{t.mono}}; font-size: var(--fs18); font-weight: 700">{{spd.label}}</button>
+<button onClick="{{watch.restart}}" aria-label="Back to the first step" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
+<button onClick="{{watch.prev}}" disabled="{{watch.atFirst}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{watch.toggle}}" aria-label="{{watch.playLabel}}" style="height: 44px; min-width: 104px; padding: 0 16px; box-sizing: border-box; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: var(--fs17); font-weight: 700"><sc-if value="{{watch.playing}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{watch.paused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{watch.playText}}</button><button onClick="{{spd.next}}" aria-label="{{spd.aria}}" title="Playback speed" data-speed style="height: 44px; min-width: 64px; padding: 0 12px; flex-shrink: 0; border-radius: 999px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 600">{{spd.label}}</button>
 <label style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; font-size: var(--fs17); font-weight: 600; cursor: pointer"><input type="checkbox" checked="{{watch.predictOn}}" onChange="{{watch.togglePredict}}" style="width: 18px; height: 18px; accent-color: {{t.accent}}">Predict each line</label>
 <span style="flex-grow: 1"></span>
-<button onClick="{{watch.next}}" style="height: 48px; padding: 0 22px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700; white-space: nowrap">{{watch.nextText}}</button>
+<button data-next onClick="{{watch.next}}" style="height: 56px; padding: 0 32px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700; white-space: nowrap">{{watch.nextText}}</button>
 </div>
 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
 <span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{t.accent}}; white-space: nowrap">STEP {{watch.no}} OF {{watch.count}}</span>
@@ -460,10 +468,10 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px">
 <section aria-label="Code" style="min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 12px">
-<div class="st-scroll" style="flex: 0 1 auto; min-height: 96px; border-radius: 14px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: auto; padding: 10px 0; font-family: {{t.mono}}; font-size: var(--fs18); line-height: 1.8">
+<div class="st-scroll" style="flex: 0 1 auto; min-height: 96px; border-radius: 14px; border: 0; background: {{t.codeBg}}; overflow: auto; padding: 10px 0; font-family: {{t.mono}}; font-size: var(--fs18); line-height: 1.8">
 <sc-for list="{{watch.lines}}" as="wl" hint-placeholder-count="6"><div class="st-line" aria-current="{{wl.cur}}" data-m="keep" style="display: grid; grid-template-columns: 28px 40px minmax(0, 1fr); background: {{wl.bg}}; color: {{wl.fg}}"><span aria-hidden="true" style="text-align: center; color: {{t.accent}}; font-weight: 800">{{wl.mark}}</span><span style="text-align: right; padding-right: 12px; color: {{t.muted}}">{{wl.n}}</span><span style="white-space: pre">{{wl.code}}</span></div></sc-for>
 </div>
-<div style="border-radius: 14px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column">
+<div style="border-radius: 14px; border: 0; background: {{t.surface}}; display: flex; flex-direction: column">
 <span style="display: flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}; border-bottom: 1px solid {{t.line}}">Output<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-output" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-output" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">What the program prints so far. It fills in one line at a time as the story runs.</span></span></span>
 <div role="log" aria-label="Output so far" style="min-height: 72px; max-height: 150px; overflow-y: auto; padding: 10px 14px; font-family: {{t.mono}}; font-size: var(--fs18); line-height: 1.6; white-space: pre-wrap">{{watch.out}}<sc-if value="{{watch.noOut}}" hint-placeholder-val="{{ false }}"><span style="color: {{t.muted}}">Nothing printed yet.</span></sc-if></div>
 </div>
@@ -476,7 +484,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </div>
 <sc-if value="{{watch.picture}}" hint-placeholder-val="{{ false }}">
-<div class="st-scroll" style="flex-grow: 1; min-height: 160px; overflow-y: auto; border-radius: 14px; border: 1px solid {{t.line}}; background: {{t.surface}}">
+<div class="st-scroll" style="flex-grow: 1; min-height: 160px; overflow-y: auto; border-radius: 14px; border: 0; background: {{t.surface}}">
 <svg data-stage="watch" viewBox="0 0 {{watch.mw}} {{watch.mh}}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="{{watch.picLabel}}" style="display: block; width: 100%; height: auto">
 <sc-for list="{{watch.M.rects}}" as="r" hint-placeholder-count="4"><rect x="{{r.x}}" y="{{r.y}}" width="{{r.w}}" height="{{r.h}}" rx="{{r.rx}}" fill="{{r.fill}}" stroke="{{r.stroke}}" stroke-width="{{r.sw}}" stroke-dasharray="{{r.dash}}" opacity="{{r.op}}"></rect></sc-for>
 <sc-for list="{{watch.M.paths}}" as="p" hint-placeholder-count="2"><path d="{{p.d}}" fill="{{p.fill}}" stroke="{{p.stroke}}" stroke-width="{{p.sw}}" stroke-dasharray="{{p.dash}}" stroke-linecap="round" stroke-linejoin="round" opacity="{{p.op}}"></path></sc-for>
@@ -505,7 +513,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px">
 <span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs17); font-weight: 700">Step-by-step table<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-chapter-table" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-chapter-table" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">A table with one row per step. Use it when the boxes are hard to follow.</span></span></span>
 <span style="font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">Each row is one step of the program. Read down to see how the values change.</span>
-<div class="st-scroll" style="flex-grow: 1; min-height: 160px; overflow: auto; border-radius: 14px; border: 1px solid {{t.line}}">
+<div class="st-scroll" style="flex-grow: 1; min-height: 160px; overflow: auto; border-radius: 14px; border: 0; background: {{t.surface}}">
 <table style="width: 100%; border-collapse: collapse; font-family: {{t.mono}}; font-size: var(--fs17)">
 <thead><tr><th scope="col" style="position: sticky; top: 0; padding: 8px 10px; text-align: left; background: {{t.sunk}}; font-size: var(--fs15)">step</th><th scope="col" style="position: sticky; top: 0; padding: 8px 10px; text-align: left; background: {{t.sunk}}; font-size: var(--fs15)">line</th><sc-for list="{{watch.cols}}" as="wc" hint-placeholder-count="2"><th scope="col" style="position: sticky; top: 0; padding: 8px 10px; text-align: left; background: {{t.sunk}}; font-size: var(--fs15)">{{wc.name}}</th></sc-for></tr></thead>
 <tbody><sc-for list="{{watch.rows}}" as="wr" hint-placeholder-count="4"><tr style="background: {{wr.bg}}"><td style="padding: 6px 10px; border-top: 1px solid {{t.line}}; color: {{t.muted}}">{{wr.n}}</td><td style="padding: 6px 10px; border-top: 1px solid {{t.line}}">{{wr.line}}</td><sc-for list="{{wr.cells}}" as="wx" hint-placeholder-count="2"><td style="padding: 6px 10px; border-top: 1px solid {{t.line}}; color: {{wx.fg}}; font-weight: {{wx.weight}}">{{wx.v}}</td></sc-for></tr></sc-for></tbody>
@@ -726,13 +734,13 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <sc-if value="{{work.checkable}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><button onClick="{{work.check}}" disabled="{{work.busy}}" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700">Check</button><span role="status" style="font-size: var(--fs16); color: {{t.muted}}">{{work.runStatus}}</span></div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><button onClick="{{work.check}}" disabled="{{work.busy}}" style="height: 48px; padding: 0 24px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700">Check</button><span role="status" style="font-size: var(--fs16); color: {{t.muted}}">{{work.runStatus}}</span></div>
 <sc-if value="{{work.hasResult}}" hint-placeholder-val="{{ false }}"><div role="status" class="st-say" style="padding: 12px 14px; border-radius: 12px; background: {{work.resultBg}}; display: flex; flex-direction: column; gap: 6px"><span style="font-size: var(--fs18); font-weight: 700">{{work.resultTitle}}</span><sc-if value="{{work.hasDiff}}" hint-placeholder-val="{{ false }}"><span style="font-family: {{t.mono}}; font-size: var(--fs17); line-height: 1.6; white-space: pre-wrap">{{work.diff}}</span></sc-if><sc-if value="{{work.hasHelp}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); line-height: 1.5">{{work.help}}</span></sc-if></div></sc-if>
 </div>
 </sc-if>
 
 <sc-if value="{{work.passed}}" hint-placeholder-val="{{ false }}">
-<div class="st-say" style="padding: 14px 16px; border-radius: 14px; background: {{t.okBg}}; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="flex: 1 1 240px; font-size: var(--fs18); line-height: 1.5; font-weight: 600">{{work.passLine}}</span><button onClick="{{work.next}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">{{work.nextText}}</button></div>
+<div class="st-say" style="padding: 14px 16px; border-radius: 14px; background: {{t.okBg}}; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="flex: 1 1 240px; font-size: var(--fs18); line-height: 1.5; font-weight: 600">{{work.passLine}}</span><button onClick="{{work.next}}" style="height: 44px; padding: 0 18px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">{{work.nextText}}</button></div>
 </sc-if>
 </section>
 </div>
@@ -753,7 +761,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="font-size: var(--fs22); font-weight: 700">{{check.doneTitle}}</span>
 <span style="font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}">{{check.doneLine}}</span>
 <div data-m="wrap" style="display: flex; align-items: center; gap: 12px">
-<a href="{{check.nextHref}}" onClick="{{check.nextGo}}" style="height: 52px; padding: 0 26px; border-radius: 26px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{check.nextText}}</a>
+<a href="{{check.nextHref}}" onClick="{{check.nextGo}}" style="height: 52px; padding: 0 26px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{check.nextText}}</a>
 <a href="Start.dc.html" style="min-height: 44px; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600; color: {{t.link}}">Back to the path</a>
 </div>
 <sc-if value="{{check.hasFirst}}" hint-placeholder-val="{{ false }}">
@@ -2299,7 +2307,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
   };
-  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About this lesson')] : [], A };
+  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About')] : [], A };
 }
 // @@END-ABOUT@@
 // @@TESTS-SPEC@@ — generated block (from shared/tests_spec.js), used by the Code page and tests/specs.js.
@@ -18390,7 +18398,7 @@ const ST_STAGE_KEYS = START_STAGES.map((s) => s[0]);
 // Play: the first beat or step comes this soon after pressing Play. The story picture is never taller than the
 // screen below the controls and the caption card (page px from the top of the page to the picture, plus a margin).
 const ST_PLAY_FIRST_MS = 900;
-const ST_STAGE_TOP = 390;
+const ST_STAGE_TOP = 550;
 const ST_KIND = { predict: 'Predict', choose: 'Choose', order: 'Order', fill: 'Fill in', trace: 'Trace', fix: 'Fix it', write: 'Write it' };
 const ST_KIND_LABEL = { predict: 'Predict the output', choose: 'Choose the answer', order: 'Put in order', fill: 'Fill the blank', trace: 'Fill in the table', fix: 'Fix the bug', write: 'Write the code' };
 function stReduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
@@ -18731,8 +18739,8 @@ class Component extends DCLogic {
     const stages = START_STAGES.map(([k, label], i) => {
       const on = k === stage;
       const done = k === 'practice' ? allPassed : k === 'check' ? row.done : !!this.state.seen[k] || row.done;
-      return { label, cur: on ? 'step' : 'false', mark: done && !on ? '✓' : String(i + 1), border: on ? t.accent : t.line, bg: on ? t.sunk : 'transparent', fg: t.text,
-        dotBg: on ? t.accent : done ? t.ok : t.sunk, dotFg: on || done ? t.onAccent : t.muted, pick: () => { if (ready) this.setStage(k); } };
+      return { label, cur: on ? 'step' : 'false', mark: done && !on ? '✓' : String(i + 1), fg: on ? t.text : t.muted, weight: on ? 700 : 500,
+        dotFg: on ? t.text : done ? t.ok : t.faint, pick: () => { if (ready) this.setStage(k); } };
     });
     const missing = row.missing || [];
     const vals = {
@@ -18748,6 +18756,9 @@ class Component extends DCLogic {
       ab: aboutVals(this, 'start:' + c.id, typeof START_ABOUT !== 'undefined' ? START_ABOUT[c.id] : null, t, (ref) => { const L = startById(ref); return L ? { label: L.title, go: () => { if (typeof window.__dsNav === 'function') window.__dsNav('Chapter.dc.html', '?ch=' + encodeURIComponent(ref)); } } : null; }, 'Lesson'),
       is: { story: stage === 'story', watch: stage === 'watch', try: stage === 'try', practice: stage === 'practice', coding: stage === 'try' || stage === 'practice', check: stage === 'check' }
     };
+    vals.rootH = vals.ab.about ? 'auto' : '1060px';
+    // Lesson and About tabs: a text tab with a lime underline on the open one.
+    vals.ab.tabs.forEach((tb) => { const on = tb.on === 'true'; tb.line = on ? t.accent : 'transparent'; tb.fg = on ? t.text : t.muted; if (/^About/.test(tb.label)) tb.label = 'About'; });
     if (!ready) return Object.assign(vals, this.emptyVals(t), navVals(this, t, themeKey, 'Chapter'));
 
     // ---- story ----
@@ -18766,7 +18777,7 @@ class Component extends DCLogic {
     vals.story = {
       label: 'Beat ' + (bi + 1) + ' of ' + beats.length + '. ' + (narr ? '' : who.name + ': ') + beat.say,
       head: (narr ? 'Beat ' : who.name + ' · beat ') + (bi + 1) + ' of ' + beats.length,
-      name: who.name, initial: narr ? '' : who.initial, say: beat.say, key: c.id + ':' + bi, no: bi + 1, count: beats.length,
+      name: who.name, hasWho: !narr, initial: narr ? '' : who.initial, say: beat.say, key: c.id + ':' + bi, no: bi + 1, count: beats.length,
       whoBg: narr ? 'transparent' : beat.who === 'dot' ? t.accent : t.sunk, whoFg: beat.who === 'dot' ? t.onAccent : t.text, whoRing: narr ? 'transparent' : beat.who === 'dot' ? t.accent : beat.who === 'bolt' ? t.right : t.muted,
       atFirst: bi === 0, restart: () => { this.stopAll(); this.goBeat(0); }, prev: () => { this.stopAll(); this.goBeat(bi - 1); },
       next: () => { this.stopAll(); if (atLastBeat) this.setStage('watch'); else this.goBeat(bi + 1); },

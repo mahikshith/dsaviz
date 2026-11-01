@@ -644,6 +644,106 @@ const AI_ABOUT_NOW = {
     cheat: ['Picture to patches to tokens.', 'Add position vectors and a class token.', 'Then it is an ordinary transformer.', 'Patch size sets the token count.', 'Needs a lot of training data.'],
     next: ['jepa', 'diffusion', 'evals'],
     sources: ['Dosovitskiy, Beyer, Kolesnikov, Weissenborn et al., "An Image is Worth 16x16 Words", 2020. https://arxiv.org/abs/2010.11929', 'Touvron, Cord, Douze, Massa et al., "Training data-efficient image transformers & distillation through attention", 2020. https://arxiv.org/abs/2012.12877', 'He, Chen, Xie, Li et al., "Masked Autoencoders Are Scalable Vision Learners", 2021. https://arxiv.org/abs/2111.06377']
+  },
+  longctx: {
+    what: 'The context window is the amount of text a model can read at once. Longer windows let you paste in books or code. But reading more costs more time and memory. Models also do not use every part of a long text equally well.',
+    analogy: 'A desk lets you spread out many pages. A bigger desk holds more. But you still read the pages near your hands best, and a huge desk is slower to search.',
+    uses: ['Asking questions about a long report or contract', 'Keeping a long chat or a big code project in view', 'Deciding when to send a whole document and when to send only parts of it'],
+    before: ['attention', 'tokens'],
+    words: [
+      ['context window', 'All the text a model can read at one time, counted in tokens. It holds your question, the chat so far and any documents.'],
+      ['token', 'A small piece of text, often a word or part of a word.'],
+      ['attention', 'The step where each token looks back at the earlier tokens and decides which matter.'],
+      ['head', 'One of several separate attention calculations that run side by side inside a layer.'],
+      ['layer', 'One stage of the model. Tokens pass through many layers, one after another.'],
+      ['KV cache', 'Notes that the model saves for each earlier token, so it does not redo the work. K is for keys and V is for values.'],
+      ['lost in the middle', 'The finding that models often use facts at the start or end better than facts in the middle.']
+    ],
+    math: {
+      lines: ['\\text{looks} = \\frac{n\\,(n + 1)}{2}', '\\text{cache bytes} = n \\times 2 \\times L \\times H \\times d \\times b'],
+      symbols: [
+        ['n', 'the number of tokens in the window'],
+        ['\\text{looks}', 'how many token-to-earlier-token looks one attention head makes in one layer'],
+        ['L', 'the number of layers'],
+        ['H', 'the number of heads whose notes are saved'],
+        ['d', 'how many numbers each saved note holds'],
+        ['b', 'bytes per number. A 16-bit number takes 2 bytes'],
+        ['2', 'one set of notes for keys and one for values']
+      ],
+      example: [
+        'This example model is made up to show the sums. It has 32 layers, 8 saved heads, 128 numbers per note and 2 bytes per number.',
+        'Looks for 1,000 tokens: 1,000 x 1,001 / 2 = 500,500. For 2,000 tokens: 2,000 x 2,001 / 2 = 2,001,000. That is 4.0 times more for twice the text.',
+        'Cache for one token: 2 x 32 x 8 x 128 x 2 = 131,072 bytes, about 131 KB.',
+        'For 100,000 tokens: 100,000 x 131,072 = 13.1 billion bytes, or 13.1 GB.',
+        'A model with 8 billion 16-bit weights takes 16 GB. So a long window can need almost as much memory as the model itself.'
+      ]
+    },
+    steps: [
+      'Count the tokens in your question and documents.',
+      'Check that the total fits inside the window with room for the answer.',
+      'Remember that cost and memory grow as the text gets longer.',
+      'Place the key instructions and facts near the start or the end.',
+      'Test your real task at your real length before you trust it.'
+    ],
+    use: ['You need the model to see a whole document at once.', 'The task needs links between far-apart parts of a text.'],
+    avoid: ['Pasting everything when only a few parts matter. Retrieval can pick them.', 'Trusting the advertised window size without a test on your own task.'],
+    mistakes: [
+      'Thinking a model uses all of its window equally. Position can matter.',
+      'Filling the window with unneeded text. It costs money and can hide the key fact.',
+      'Judging a long-context model only by an easy single-fact test.'
+    ],
+    cheat: ['window = text read at once', 'looks grow with the square of length', 'cache grows in step with length', 'middle of a long text is weakest (often)', 'test at your real length'],
+    next: ['rag', 'attention', 'ondevice'],
+    sources: ['Liu, Lin, Hewitt, Paranjape et al., "Lost in the Middle: How Language Models Use Long Contexts", 2023. https://arxiv.org/abs/2307.03172', 'Hsieh, Sun, Kriman, Acharya et al., "RULER: What\'s the Real Context Size of Your Long-Context Language Models?", 2024. https://arxiv.org/abs/2404.06654', 'Vaswani, Shazeer, Parmar, Uszkoreit et al., "Attention Is All You Need", 2017. https://arxiv.org/abs/1706.03762', 'Kwon, Li, Zhuang, Sheng et al., "Efficient Memory Management for Large Language Model Serving with PagedAttention", 2023. https://arxiv.org/abs/2309.06180']
+  },
+  ondevice: {
+    what: 'An on-device model runs on your own phone or laptop instead of a distant server. To fit, it needs fewer weights, or weights stored with fewer bits. This is called quantization. The price is some lost skill, so small models are best at focused jobs.',
+    analogy: 'Packing for a trip with one small bag. You choose what to bring and fold it tightly. You can still do a lot, but not everything.',
+    uses: ['Writing helpers and summaries that keep your text on your device', 'Features that must work with no network', 'Quick replies where waiting for a server would be too slow'],
+    before: ['distill', 'moe'],
+    words: [
+      ['on-device', 'Running on the phone or laptop itself, not on a remote server.'],
+      ['weights', 'The numbers inside a model that training sets.'],
+      ['bit', 'The smallest unit of computer memory. It holds 0 or 1. Eight bits make one byte.'],
+      ['quantization', 'Storing each weight with fewer bits, by rounding it to the nearest of a few allowed values.'],
+      ['quantization-aware training', 'Training the model while the rounding is already switched on, so it learns to cope with it.'],
+      ['parameter', 'Another word for a weight. A 3.8 billion parameter model has 3.8 billion weights.']
+    ],
+    math: {
+      lines: ['\\text{memory} = \\frac{N \\times b}{8} \\text{ bytes}', '\\text{gap} = \\frac{2}{2^{b} - 1}, \\quad \\text{largest rounding move} = \\frac{\\text{gap}}{2}'],
+      symbols: [
+        ['N', 'the number of weights'],
+        ['b', 'bits used for each weight'],
+        ['8', 'bits in one byte'],
+        ['2^b', 'how many different values b bits can store'],
+        ['\\text{gap}', 'the distance between two neighbouring allowed values, if weights range from −1 to +1']
+      ],
+      example: [
+        'Take N = 3.8 billion weights, as in Phi-3-mini.',
+        'At 16 bits: 3.8 billion x 16 / 8 = 7.6 billion bytes, or 7.6 GB.',
+        'At 4 bits: 3.8 billion x 4 / 8 = 1.9 GB. That is four times smaller.',
+        'Rounding with 2 bits: there are 2^2 = 4 allowed values, at −1, −0.33, +0.33 and +1. The gap is 2 / 3 = 0.67.',
+        'The weight 0.37 snaps to 0.33. The move is 0.04. The weight −0.82 snaps to −1.00. The move is 0.18. No move can exceed 0.33.',
+        'With 4 bits there are 16 values, the gap is 0.13, and no move can exceed 0.07. More bits mean smaller moves.'
+      ]
+    },
+    steps: [
+      'Pick a model small enough for the phone’s memory.',
+      'Round its weights to fewer bits, or train with the rounding already switched on.',
+      'Check that quality is still good enough on your own tasks.',
+      'Measure memory, speed, heat and battery on the real device.',
+      'Send hard requests to a larger model on a server, if you allow it.'
+    ],
+    use: ['Privacy matters, or the network is unreliable.', 'The job is focused, such as summing up a message or fixing a sentence.'],
+    avoid: ['Tasks that need wide knowledge or long reasoning.', 'Cutting bits without testing. Quality can drop sharply at very low settings.'],
+    mistakes: [
+      'Counting only the weights. The saved notes and the app also need memory.',
+      'Trusting a score from a big server model for the small version.',
+      'Testing on a fast laptop and forgetting that phones get hot and slow down.'
+    ],
+    cheat: ['memory = weights x bits / 8', '16 bits to 4 bits = 4 times smaller', 'more rounding = more lost detail', 'small models suit focused jobs', 'test on the real device'],
+    next: ['distill', 'lora', 'longctx'],
+    sources: ['Abdin, Aneja, Awadalla, Awadallah et al., "Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone", 2024. https://arxiv.org/abs/2404.14219', 'Frantar, Ashkboos, Hoefler, Alistarh, "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers", 2022. https://arxiv.org/abs/2210.17323', 'Liu, Zhao, Iandola, Lai et al., "MobileLLM: Optimizing Sub-billion Parameter Language Models for On-Device Use Cases", 2024. https://arxiv.org/abs/2402.14905', 'Li, Larsen et al., "Apple Intelligence Foundation Language Models: Tech Report 2025", 2025. https://arxiv.org/abs/2507.13575']
   }
 };
 if (typeof module !== 'undefined') module.exports = { AI_ABOUT_NOW };

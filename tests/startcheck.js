@@ -287,9 +287,11 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   const first = S.START_CHAPTERS[0], ex = S.START_EXERCISES[first.id];
   const sets = built.medals;
   const written = (n) => S.START_CHAPTERS.some((c) => (c.level || 1) === n && c.ready);
-  ok(sets.filter((g) => g.level === 1).length === 5 && sets.filter((g) => g.level === 2).length === (written(2) ? 4 : 0) && sets.filter((g) => g.level === 3).length === (written(3) ? 4 : 0), 'medal sets: five for Level 1, four each for Levels 2 and 3 once written');
+  // A medal joins the shelf once every lesson in its part is written: Level 1 has five sets, Levels 2 to 5 one per finished part.
+  const fullParts = (n) => S.START_PARTS.filter((p) => p.level === n && S.START_CHAPTERS.filter((c) => c.part === p.n).every((c) => c.ready)).length;
+  ok(sets.filter((g) => g.level === 1).length === 5 && [2, 3, 4, 5].every((n) => sets.filter((g) => g.level === n).length === fullParts(n)), 'medal sets: five for Level 1, then one per written part in Levels 2 to 5');
   ok(sets.every((g) => g.lessons.length && g.lessons.every((id) => S.START_CHAPTERS.find((c) => c.id === id && c.ready))), 'every medal is made of ready lessons');
-  [1, 2, 3].filter(written).forEach((n) => { const mine = [].concat(...sets.filter((g) => g.level === n).map((g) => g.lessons)); const all = S.START_CHAPTERS.filter((c) => (c.level || 1) === n).map((c) => c.id); ok(mine.length === all.length && all.every((id) => mine.includes(id)), 'the Level ' + n + ' medals cover every Level ' + n + ' lesson once'); });
+  [1, 2, 3, 4, 5].filter((n) => S.START_CHAPTERS.filter((c) => (c.level || 1) === n).every((c) => c.ready)).forEach((n) => { const mine = [].concat(...sets.filter((g) => g.level === n).map((g) => g.lessons)); const all = S.START_CHAPTERS.filter((c) => (c.level || 1) === n).map((c) => c.id); ok(mine.length === all.length && all.every((id) => mine.includes(id)), 'the Level ' + n + ' medals cover every Level ' + n + ' lesson once'); });
   ok(DS.startMedals().length === sets.length && DS.startMedals().every((m) => !m.tier && m.next.tier === 'bronze'), 'every Start here medal starts unearned');
   ok(DS.startRing() === null, 'no Start here ring before the learner starts');
   ok(DS.profile().isNew, 'a new learner is new');

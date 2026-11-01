@@ -135,7 +135,7 @@ const readable = () => {
 };
 
 // Layout pass pages and widths. A phone width gets phone settings (touch, mobile emulation).
-const LAYOUT_PAGES = ['Main', 'Home', 'Start', 'Sheet', 'Chapter', 'Patterns', 'Complexity'];
+const LAYOUT_PAGES = ['Main', 'Home', 'Start', 'Sheet', 'Chapter', 'Patterns', 'AILesson', 'Complexity'];
 // Snapshot only gets the box check (.ds-hit present, hover transitions); its collapsed sections fail the text checks.
 const BOX_PAGES = ['Snapshot'];
 const LAYOUT_WIDTHS = [1440, 1280, 1024, 390];
@@ -231,6 +231,12 @@ const layout = (boxOnly) => {
   for (const row of document.querySelectorAll('[data-path-row]')) {
     const tops = [...row.querySelectorAll('[data-path-node]')].map((n) => n.getBoundingClientRect().top);
     if (tops.length > 1 && Math.max(...tops) - Math.min(...tops) > 2) gaps.push('path row not on one line: tops ' + tops.map((x) => Math.round(x)).join('/'));
+  }
+  // The pill nav: no item runs into the search button, which is what the Back link can cause.
+  const searchBtn = document.querySelector('[data-pn-search-btn]');
+  if (searchBtn && window.innerWidth >= 760) {
+    const edge = searchBtn.getBoundingClientRect().left;
+    for (const it of document.querySelectorAll('[data-pn-item]')) { const q = it.getBoundingClientRect(); if (q.width && q.right > edge) gaps.push('nav item "' + it.textContent.trim() + '" runs into search by ' + Math.round(q.right - edge) + 'px'); }
   }
   // Headings stay on one line at 1280 and wider (docs/design/BRIEF.md).
   const wraps = [];

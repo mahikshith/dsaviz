@@ -1,136 +1,326 @@
-<div data-fluid="true" data-page="Code" style="width: 1440px; height: 1060px; box-sizing: border-box; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-shell data-page="Code" class="pb-root" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; --sh-ok: {{t.ok}}; --sh-bad: {{pbBad}}; --sh-code: {{t.codeBg}}; --sh-hl: {{t.hl}}; --pp-focus: {{t.accent}}; font-family: {{t.body}}">
 
 <!-- PILL NAV -->
 <!-- /PILL NAV -->
-<div role="region" aria-label="Page tools" data-m="wrap auto pad" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px">
-<label style="display: flex; align-items: center; gap: 8px; font-size: var(--fs15); font-weight: 600; color: {{t.muted}}; white-space: nowrap">Problem
-<select class="ds-box" aria-label="Problem" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 340px; padding: 0 10px; border-radius: 10px; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: var(--fs17); font-weight: 600; cursor: pointer"><sc-for list="{{groups}}" as="gg" hint-placeholder-count="4"><optgroup label="{{gg.label}}"><sc-for list="{{gg.items}}" as="pp" hint-placeholder-count="3"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></optgroup></sc-for></select>
-</label>
-<div style="flex-grow: 1"></div>
-<sc-if value="{{hasStory}}"><a href="{{storyHref}}" onClick="{{keepProblem}}" style="font-size: var(--fs17); font-weight: 600; color: {{t.text2}}; text-decoration: underline; white-space: nowrap">Watch the animation</a></sc-if>
-<sc-if value="{{noStory}}"><a href="Patterns.dc.html" style="font-size: var(--fs17); font-weight: 600; color: {{t.text2}}; text-decoration: underline; white-space: nowrap">Read about {{P.pattern}}</a></sc-if>
+<style>
+/* The Problem page (src/code/code_body.html): statement and tabs on the left (45%), editor, tests and Run on the right (55%).
+   From 1024px both panes fill the height under the top bar and scroll inside themselves; below that the page stacks and the Run bar stays at the bottom of the screen. */
+.pb-sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;min-height:52px;padding:4px 24px;box-sizing:border-box;border-bottom:1px solid var(--sh-line);flex-shrink:0}
+.pb-sub .sh-back{min-height:44px}
+.pb-pager{display:flex;align-items:center;gap:8px}
+.pb-pager button{min-width:44px;min-height:44px;padding:0 12px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.pb-pager button:hover:not(:disabled){background:var(--sh-sunk)}
+.pb-pos{min-width:64px;text-align:center;font-size:calc(16px * var(--ts, 1));color:var(--sh-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pb-split{flex-grow:1;display:grid;grid-template-columns:minmax(0,1fr);min-width:0}
+.pb-left,.pb-right{min-width:0;display:flex;flex-direction:column}
+.pb-left{border-bottom:1px solid var(--sh-line)}
+.pb-tabbar{padding:12px 24px 0;flex-shrink:0}
+.pb-tabs{border-bottom:0;padding-bottom:0}
+.pb-tabs .sh-tab{padding:0 16px}
+.pb-panel{padding:16px 24px 24px;box-sizing:border-box;min-width:0}
+.pb-stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.pb-stack>*{min-width:0}
+.pb-h2{font-size:calc(22px * var(--ts, 1))!important;line-height:1.3!important}
+.pb-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+.pb-meta-l{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:calc(16px * var(--ts, 1));color:var(--sh-muted)}
+.pb-meta-l strong{font-weight:600}
+.pb-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pb-tag{padding:2px 12px;border:1px solid var(--sh-line);border-radius:6px;font-size:calc(14px * var(--ts, 1));color:var(--sh-text);line-height:1.6}
+.pb-ask{max-width:72ch}
+.pb-sect{display:flex;flex-direction:column;gap:8px}
+.pb-ex{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;padding:12px 16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);font-size:calc(16px * var(--ts, 1));line-height:1.5}
+.pb-ex code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));overflow-wrap:anywhere;font-variant-ligatures:none}
+.pb-k{font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted);padding-top:2px}
+.pb-cons{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));font-variant-ligatures:none;overflow-wrap:anywhere}
+.pb-card{padding:12px 16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:8px;min-width:0}
+.pb-strong{font-weight:600}
+.pb-self{align-self:flex-start}
+.pb-hints{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pb-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pb-switch{min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.pb-track{position:relative;width:40px;height:24px;border-radius:12px;background:var(--sh-line);flex-shrink:0;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.pb-track[data-on="true"]{background:var(--sh-accent)}
+.pb-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--sh-text);transition:transform .15s cubic-bezier(.23,1,.32,1)}
+.pb-track[data-on="true"] .pb-knob{transform:translateX(16px);background:var(--sh-on)}
+.pb-grow{flex-grow:1}
+.pb-table{border:1px solid var(--sh-line);border-radius:6px;overflow:hidden}
+.pb-table>div:first-child{padding:8px 12px;background:var(--sh-sunk);font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:600;font-size:calc(16px * var(--ts, 1))}
+.pb-cols{padding:8px 12px;display:flex;flex-direction:column;gap:2px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));font-variant-ligatures:none}
+.pb-cols .pb-k{padding:0}
+.pb-grid{overflow-x:auto;max-width:100%;border-radius:6px;border:1px solid var(--sh-line)}
+.pb-grid [role="table"]{display:table;border-collapse:collapse;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));line-height:1.4;font-variant-ligatures:none}
+.pb-grid [role="row"]{display:table-row;border-top:1px solid var(--sh-line)}
+.pb-grid [role="columnheader"],.pb-grid [role="cell"]{display:table-cell;padding:6px 12px;white-space:nowrap;text-align:left}
+.pb-grid [role="columnheader"]{background:var(--sh-sunk);color:var(--sh-muted);font-weight:600}
+.pb-code{margin:0;padding:12px 16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-code);color:var(--sh-text);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));line-height:1.6;font-variant-ligatures:none;white-space:pre;overflow-x:auto;tab-size:2}
+.pb-atabs{display:flex;flex-wrap:wrap;gap:8px}
+.pb-hist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pb-hist button{width:100%;min-height:56px;padding:8px 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.pb-hist button:hover{background:var(--sh-sunk)}
+.pb-linecode{display:flex}
+.pb-linecode>span:first-child{width:36px;flex-shrink:0;text-align:right;padding-right:12px;color:var(--sh-muted);user-select:none}
+.pb-linecode>span:last-child{min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+/* The right side: a small toolbar, the editor, the tests under it, Run at the bottom right. */
+.pb-bar{display:flex;align-items:center;gap:8px;padding:8px 24px;flex-shrink:0;min-height:56px;box-sizing:border-box}
+.pb-segs{display:inline-flex;border:1px solid var(--sh-line);border-radius:6px;overflow:hidden}
+.pb-seg{min-height:40px;padding:0 12px;border:0;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
+.pb-seg[aria-pressed="true"]{background:var(--sh-sunk);color:var(--sh-text);font-weight:600;box-shadow:inset 0 -2px 0 var(--sh-text)}
+.pb-seg+.pb-seg{border-left:1px solid var(--sh-line)}
+.pb-link{min-height:40px;padding:0 12px;border:0;border-radius:6px;background:transparent;color:var(--sh-muted);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
+.pb-link:hover{color:var(--sh-text);background:var(--sh-sunk)}
+.pb-editor{height:340px;margin:0 24px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-code);overflow:hidden;box-sizing:border-box;min-height:0}
+.pb-tests{margin:12px 24px 0;padding:12px 16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);box-sizing:border-box;min-height:96px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pb-verdict{font-size:calc(18px * var(--ts, 1));font-weight:600}
+.pb-msg{margin:0;padding:8px 12px;border-radius:6px;background:var(--sh-sunk);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.pb-fail{padding:12px 16px;border:1px solid var(--sh-bad);border-radius:6px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(16px * var(--ts, 1));line-height:1.5;font-variant-ligatures:none}
+.pb-fail>span{overflow-wrap:anywhere}
+.pb-fail .pb-k{font-family:'Outfit',system-ui,sans-serif}
+.pb-fail .pb-ft{grid-column:1/-1;font-family:'Outfit',system-ui,sans-serif;font-weight:600}
+.pb-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pb-chip{padding:0 8px;border:1px solid var(--sh-line);border-radius:6px;font-size:calc(14px * var(--ts, 1));line-height:1.7;white-space:nowrap}
+.pb-runbar{display:flex;align-items:center;gap:12px;padding:12px 24px;flex-shrink:0;box-sizing:border-box}
+.pb-run{min-height:44px;min-width:120px;gap:8px}
+.pb-run:disabled{opacity:.6;cursor:default}
+.pb-sub2{min-height:44px;padding:0 16px;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-weight:500;cursor:pointer}
+.pb-note{font-size:calc(14px * var(--ts, 1));color:var(--sh-muted);min-width:0;overflow-wrap:anywhere}
+/* The story, in the left pane: the stage is laid out for the room it has (phoneScene, src/story/comp.js), so these are the phone rules of the old Story page, applied at every width. */
+.pb-story{display:flex;flex-direction:column;gap:16px;min-width:0}
+.pb-story .pp-controls{flex-wrap:wrap}
+.pb-story .pp-controls input[type=range]{order:5;flex-basis:100%;margin:0!important;accent-color:var(--sh-accent)}
+.pb-story .pp-predict{margin-left:auto}
+.pb-story .pp-meter{flex-wrap:wrap}.pb-story .pp-meter>div:nth-child(2){flex-basis:120px}
+.pb-story [style*="font-size: 8px"],.pb-story [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
+.pb-story .pp-goal{display:none!important}
+.pb-story .pp-stage{height:auto!important;padding:16px 4px 12px!important;justify-content:flex-start!important;gap:12px!important;border-radius:6px!important}
+.pb-story .pp-board{position:static!important;width:auto!important;max-height:none!important;align-self:stretch;margin:0 4px;display:grid!important;grid-template-columns:repeat(var(--pp-bcols,2),minmax(0,1fr));align-content:start;gap:4px 6px!important;min-height:var(--pp-bh,0)}
+.pb-story .pp-board>span{grid-column:1/-1;margin-bottom:0!important}
+.pb-story .pp-gridwrap{flex-direction:column;gap:12px!important}
+.pb-story .pp-legend{flex-direction:row!important;flex-wrap:wrap;justify-content:center;gap:6px 12px!important;max-width:none!important;padding:0 8px}
+.pb-story .pp-legend span[aria-hidden]{width:18px!important;height:18px!important;line-height:14px}
+.pb-story .pp-badge{min-width:17px!important;height:17px!important;line-height:17px!important;top:-9px!important;right:-8px!important}
+.pb-story .pp-gmark{line-height:13px!important}
+.pb-story .pp-tag{left:50%!important;top:100%!important;transform:translateX(-50%)!important;margin:2px 0 0!important;padding:0 4px;border-radius:4px;background:var(--pp-scene);line-height:15px!important}
+.pb-story .pp-rows[data-two="true"]{gap:24px!important;padding-top:18px}
+.pb-story .pp-rowlabel{right:auto!important;left:0;top:-19px!important;margin:0!important;line-height:15px}
+.pb-story section[tabindex]:focus:not(:focus-visible){outline:none}
+@media (min-width:1024px){
+[data-shell].pb-root{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+.pb-split{grid-template-columns:minmax(0,45fr) minmax(0,55fr);min-height:0}
+.pb-left,.pb-right{min-height:0}
+.pb-left{border-right:1px solid var(--sh-line);border-bottom:0}
+.pb-panel{flex:1 1 0;overflow-y:auto}
+.pb-editor{flex:1 1 0;height:auto;min-height:160px}
+.pb-tests{flex:0 1 auto;max-height:45%;overflow-y:auto}
+}
+@media (max-width:1023px){
+.pb-root{padding-bottom:76px}
+.pb-runbar{position:fixed;left:0;right:0;bottom:0;z-index:35;padding:8px 16px;background:var(--sh-surface);border-top:1px solid var(--sh-line)}
+}
+@media (max-width:639px){
+.pb-sub{padding:4px 16px}
+.pb-tabbar{padding:8px 16px 0}
+.pb-tabs .sh-tab{padding:0 12px}
+.pb-panel{padding:16px}
+.pb-bar{padding:8px 16px}
+.pb-editor{margin:0 16px}
+.pb-tests{margin:12px 16px 0}
+.pb-lbl{display:none}
+}
+@media (prefers-reduced-motion:reduce){.pb-pager button,.pb-track,.pb-knob,.pb-hist button{transition:none}}
+</style>
+
+<div class="pb-sub">
+<a class="sh-back" data-back href="{{pbBack.href}}" onClick="{{pbBack.go}}">← {{pbBack.label}}</a>
+<nav class="pb-pager" aria-label="Previous and next problem">
+<button onClick="{{pbPrev.go}}" disabled="{{pbPrev.off}}" aria-label="{{pbPrev.aria}}"><span aria-hidden="true">←</span><span class="pb-lbl">Previous</span></button>
+<span class="pb-pos" role="status" aria-label="{{pbPos.aria}}">{{pbPos.text}}</span>
+<button onClick="{{pbNext.go}}" disabled="{{pbNext.off}}" aria-label="{{pbNext.aria}}"><span class="pb-lbl">Next</span><span aria-hidden="true">→</span></button>
+</nav>
 </div>
 
-
-<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 400px minmax(0, 1fr)">
-
-<aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow: {{asideOverflow}}">
-<div style="display: flex; flex-direction: column; gap: 12px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 1.15; font-weight: 600">{{P.title}}</h1>
-<div style="display: flex; flex-wrap: wrap; gap: 8px">
-<span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
-<sc-if value="{{hasTime}}"><span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span></sc-if>
-<span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 600; background: {{t.sunk}}">{{P.pattern}}</span>
+<div class="pb-split">
+<section class="pb-left" aria-label="The problem">
+<div class="pb-tabbar">
+<div class="sh-tabs pb-tabs" role="tablist" aria-label="Problem sections" onKeyDown="{{pbTabKey}}">
+<sc-for list="{{pbTabs}}" as="tb"><button class="sh-tab" role="tab" id="{{tb.id}}" aria-selected="{{tb.sel}}" aria-controls="pb-panel" tabindex="{{tb.idx}}" onClick="{{tb.pick}}">{{tb.label}}</button></sc-for>
 </div>
 </div>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
+<div class="pb-panel" id="pb-panel" role="tabpanel" aria-labelledby="{{pbTabId}}">
+
+<sc-if value="{{pbOnProblem}}">
+<div class="pb-stack">
+<h1>{{P.title}}</h1>
+<div class="pb-meta">
+<span class="pb-meta-l"><strong style="color: {{diffFg}}">{{P.diff}}</strong><span aria-hidden="true">·</span><span>{{P.pattern}}</span><sc-if value="{{hasTime}}"><span aria-hidden="true">·</span><span>about {{P.time}}</span></sc-if></span>
+<sc-if value="{{hasScene}}"><button class="pb-switch" role="switch" aria-checked="{{pbSwitch.on}}" onClick="{{pbSwitch.flip}}"><span>Story</span><span class="pb-track" data-on="{{pbSwitch.on}}" aria-hidden="true"><span class="pb-knob"></span></span></button></sc-if>
+</div>
+
+<sc-if value="{{pbShowStatement}}">
+<sc-if value="{{hasCos}}"><div class="pb-row"><span class="sh-label">Asked at</span><sc-for list="{{cos}}" as="co"><span class="pb-tag">{{co.name}}</span></sc-for></div></sc-if>
+<p class="pb-ask">{{ask}}</p>
 <sc-if value="{{notSql}}">
-<div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">Examples</span>
-<sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
-<div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; font-variant-ligatures: none">
-<span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">in </span>{{ex.input}}</span>
-<span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">out </span>{{ex.output}}</span>
-<sc-if value="{{ex.hasWhy}}"><span style="font-family: {{t.body}}; font-size: var(--fs17); line-height: 1.45; color: {{t.text2}}"><span style="color: {{t.muted}}">why </span>{{ex.why}}</span></sc-if>
+<div class="pb-sect">
+<span class="sh-label">Examples</span>
+<sc-for list="{{examples}}" as="ex">
+<div class="pb-ex">
+<span class="pb-k">Input</span><code>{{ex.input}}</code>
+<span class="pb-k">Output</span><code>{{ex.output}}</code>
+<sc-if value="{{ex.hasWhy}}"><span class="pb-k">Why</span><span>{{ex.why}}</span></sc-if>
 </div>
 </sc-for>
+</div>
+<sc-if value="{{hasCons}}">
+<div class="pb-sect">
+<span class="sh-label">Constraints</span>
+<ul class="pb-cons" aria-label="Constraints"><sc-for list="{{cons}}" as="cn"><li>{{cn.c}}</li></sc-for></ul>
 </div>
 </sc-if>
+</sc-if>
 <sc-if value="{{isSql}}">
-<section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; align-items: center; gap: 8px">
-<h2 id="sql-tables" style="display: flex; align-items: center; gap: 6px; margin: 0; flex-grow: 1; font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Tables<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-tables" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-tables" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The tables your SQL query can read, with a few sample rows. Look here first.</span></span></h2>
-<button onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{sq.rowsLabel}}</button>
-</div>
-<sc-for list="{{sq.tables}}" as="tb" hint-placeholder-count="2">
-<div style="flex-shrink: 0; border-radius: 12px; border: 1px solid {{t.line}}; overflow: hidden">
-<div style="padding: 8px 12px; background: {{t.sunk}}; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700">{{tb.name}}</div>
-<sc-if value="{{sq.rowsClosed}}"><div style="padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; font-variant-ligatures: none"><sc-for list="{{tb.cols}}" as="cl" hint-placeholder-count="3"><div style="display: flex; gap: 8px"><span>{{cl.n}}</span><span style="color: {{t.muted}}">{{cl.ty}}</span></div></sc-for></div></sc-if>
-<sc-if value="{{sq.rowsOpen}}"><div style="overflow-x: auto"><div role="table" aria-label="{{tb.name}} sample rows" style="display: table; border-collapse: collapse; min-width: 100%; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.4; font-variant-ligatures: none"><div role="row" style="display: table-row"><sc-for list="{{tb.grid.cols}}" as="hc"><div role="columnheader" style="display: table-cell; text-align: left; padding: 6px 10px; color: {{t.muted}}; font-weight: 700; white-space: nowrap">{{hc.c}}</div></sc-for></div><sc-for list="{{tb.grid.rows}}" as="gr"><div role="row" style="display: table-row; border-top: 1px solid {{t.line}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="display: table-cell; padding: 6px 10px; white-space: nowrap; color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{tb.grid.empty}}"><div style="padding: 8px 10px; font-size: var(--fs16); color: {{t.muted}}">No rows.</div></sc-if></div></sc-if>
+<div class="pb-sect">
+<div class="pb-row"><span class="sh-label">Tables</span><span class="pb-grow"></span><button class="sh-chip" onClick="{{sq.toggleRows}}" aria-pressed="{{sq.rowsOpen}}">{{sq.rowsLabel}}</button></div>
+<sc-for list="{{sq.tables}}" as="tb">
+<div class="pb-table">
+<div>{{tb.name}}</div>
+<sc-if value="{{sq.rowsClosed}}"><div class="pb-cols"><sc-for list="{{tb.cols}}" as="cl"><div style="display: flex; gap: 8px"><span>{{cl.n}}</span><span class="pb-k">{{cl.ty}}</span></div></sc-for></div></sc-if>
+<sc-if value="{{sq.rowsOpen}}"><div class="pb-grid" style="border: 0; border-radius: 0"><div role="table" aria-label="{{tb.name}} sample rows"><div role="row"><sc-for list="{{tb.grid.cols}}" as="hc"><div role="columnheader">{{hc.c}}</div></sc-for></div><sc-for list="{{tb.grid.rows}}" as="gr"><div role="row"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div></div></sc-if>
 </div>
 </sc-for>
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{sq.tablesNote}}</p>
+<span class="sh-muted">{{sq.tablesNote}}</span>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{pbShowStory}}">
+<section class="pb-story" aria-label="The story" tabindex="0" onKeyDown="{{onKey}}">
+<div class="pb-row"><h2 class="pb-h2">{{storyName}}</h2><span class="pb-grow"></span><span class="sh-label" style="font-variant-numeric: tabular-nums">{{stepLabel}}</span></div>
+<div class="pp-controls pb-ctl" role="group" aria-label="Story controls">
+<button class="sh-ib" data-play onClick="{{togglePlay}}" aria-label="{{playLabel}}" style="min-width: 112px; font-weight: 600">
+<sc-if value="{{playing}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if>
+<sc-if value="{{paused}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{playLabel}}</button>
+<button class="sh-ib" data-speed onClick="{{spd.next}}" aria-label="{{spd.aria}}" title="Playback speed" style="font-variant-numeric: tabular-nums">{{spd.label}}</button>
+<button class="sh-ib" onClick="{{prev}}" disabled="{{atStart}}" aria-label="Previous step"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button class="sh-ib" data-next onClick="{{next}}" disabled="{{nextOff}}" aria-label="Next step"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+<button class="sh-ib pp-predict" onClick="{{togglePredict}}" aria-pressed="{{predictX}}" title="Pause before some steps and guess what happens next" style="background: {{predictBtn.bg}}; border-color: {{predictBtn.border}}">{{predictLabel}}</button>
+<input type="range" min="0" max="{{lastStep}}" step="1" value="{{stepNow}}" onChange="{{scrub}}" aria-label="Step" aria-valuetext="{{stepLabel}}" style="height: 44px; min-width: 0; cursor: pointer">
+</div>
+<!-- STORY STAGE -->
+<!-- /STORY STAGE -->
 </section>
 </sc-if>
-<div style="display: flex; flex-direction: column">
-<style>.ds-fold>summary{list-style:none}.ds-fold>summary::-webkit-details-marker{display:none}.ds-fold[open]>summary .ds-chev{transform:rotate(180deg)}</style>
-<sc-if value="{{fx.has}}"><details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary class="ds-hit" style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Input, output and limits</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div style="padding: 4px 0 16px">
-<!-- PROBLEM FACTS -->
-<!-- /PROBLEM FACTS -->
-</div>
-</details></sc-if>
-<sc-if value="{{notSql}}"><sc-if value="{{hasHints}}">
-<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary class="ds-hit" style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Hints</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{hintCount}}</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div style="padding: 4px 0 16px">
-<div aria-live="polite" style="display: flex; flex-direction: column; gap: 8px">
-<sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
-</div>
-<sc-if value="{{moreHints}}"><button onClick="{{nextHint}}" style="margin-top: 8px; height: 40px; padding: 0 4px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline">{{nextHintLabel}}</button></sc-if>
-</div>
-</details>
-</sc-if></sc-if>
-<sc-if value="{{plan.has}}">
-<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary class="ds-hit" style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Plan it first</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{plan.count}}</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div style="padding: 4px 0 16px">
-<div style="padding: 4px 0 16px; display: flex; flex-direction: column; gap: 10px">
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{plan.goal}}</p>
-<sc-if value="{{plan.listing}}">
-<ol aria-label="Plan steps" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{plan.steps}}" as="ps" hint-placeholder-count="5"><li tabindex="0" onMouseEnter="{{ps.enter}}" onMouseLeave="{{ps.leave}}" onFocus="{{ps.enter}}" onBlur="{{ps.leave}}" style="padding: 6px 8px; border-radius: 8px; border-left: 3px solid {{ps.border}}; background: {{ps.bg}}; display: flex; gap: 6px; font-size: var(--fs17); line-height: 1.45; color: {{t.text}}"><span aria-hidden="true" style="width: 22px; flex-shrink: 0; font-family: {{t.mono}}; font-weight: 700; color: {{t.muted}}">{{ps.n}}</span><span style="min-width: 0">{{ps.text}}</span></li></sc-for>
-</ol>
-<div style="display: flex; flex-wrap: wrap; gap: 8px">
-<button onClick="{{plan.insert}}" aria-label="{{plan.insertAria}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{plan.insertLabel}}</button>
-<sc-if value="{{plan.offerOrder}}"><button onClick="{{plan.startOrder}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Order the steps</button></sc-if>
 </div>
 </sc-if>
-<sc-if value="{{plan.ordering}}">
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Put the steps in order. Drag a step, or use its up and down buttons, then check.</p>
-<ol aria-label="Steps to put in order" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
-<sc-for list="{{plan.ord}}" as="os" hint-placeholder-count="5"><li class="ds-box" draggable="true" onDragStart="{{os.drag}}" onDragOver="{{os.over}}" onDrop="{{os.drop}}" onDragEnd="{{os.end}}" style="padding: 4px 4px 4px 10px; border-radius: 10px; background: {{t.surface}}; opacity: {{os.op}}; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); line-height: 1.4; cursor: grab"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><circle cx="3" cy="3" r="1.5"></circle><circle cx="9" cy="3" r="1.5"></circle><circle cx="3" cy="8" r="1.5"></circle><circle cx="9" cy="8" r="1.5"></circle><circle cx="3" cy="13" r="1.5"></circle><circle cx="9" cy="13" r="1.5"></circle></svg><span style="flex-grow: 1">{{os.text}}</span><span aria-hidden="true" style="width: 14px; font-weight: 800; color: {{t.ok}}">{{os.mark}}</span><button id="{{os.upId}}" onClick="{{os.up}}" disabled="{{os.noUp}}" aria-label="{{os.upAria}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs18)">↑</button><button id="{{os.downId}}" onClick="{{os.down}}" disabled="{{os.noDown}}" aria-label="{{os.downAria}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs18)">↓</button></li></sc-for>
-</ol>
-<div role="status" aria-live="polite"><sc-if value="{{plan.hasOrdMsg}}"><div style="padding: 10px 12px; border-radius: 10px; background: {{plan.ordBg}}; font-size: var(--fs17); line-height: 1.5">{{plan.ordMsg}}</div></sc-if></div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px">
-<button onClick="{{plan.check}}" style="height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Check order</button>
-<button onClick="{{plan.stopOrder}}" style="height: 40px; padding: 0 10px; border-radius: 10px; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline">{{plan.stopLabel}}</button>
-</div>
-</sc-if>
-<div style="border-top: 1px solid {{t.line}}; padding-top: 6px; display: flex; flex-direction: column; gap: 8px">
-<button onClick="{{plan.toggleSol}}" aria-expanded="{{plan.solX}}" style="align-self: flex-start; height: 40px; padding: 0 4px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: var(--fs17); font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>{{plan.solLabel}}</button>
-<sc-if value="{{plan.solOpen}}">
-<span style="font-size: var(--fs16); line-height: 1.4; color: {{t.muted}}">{{plan.solKind}}. {{plan.solHint}}</span>
-<div role="region" aria-label="{{plan.solKind}}" tabindex="0" style="max-height: 320px; overflow: auto; border-radius: 10px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; padding: 8px 0; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 1.6; font-variant-ligatures: none">
-<sc-for list="{{plan.ref}}" as="rl" hint-placeholder-count="5"><div style="display: flex; border-left: 3px solid {{rl.bar}}; background: {{rl.bg}}"><span aria-hidden="true" style="width: 30px; flex-shrink: 0; box-sizing: border-box; text-align: right; padding-right: 8px; color: {{rl.num}}">{{rl.n}}</span><span style="min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; padding-right: 10px">{{rl.code}}</span></div></sc-for>
-</div>
-</sc-if>
-</div>
-</div>
-</div>
-</details>
-</sc-if>
-<!-- APPROACH PANE -->
-<!-- /APPROACH PANE -->
-<sc-if value="{{notSql}}"><sc-if value="{{cr.faq.has}}">
-<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary class="ds-hit" style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Common questions</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div style="padding: 4px 0 16px">
-<dl style="margin: 0; display: flex; flex-direction: column; gap: 16px">
-<sc-for list="{{cr.faq.items}}" as="fq" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 4px"><dt style="font-size: var(--fs17); font-weight: 700; color: {{t.text}}">{{fq.q}}</dt><dd style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{fq.a}}</dd></div></sc-for>
-</dl><a href="Complexity.dc.html?at=grow" style="align-self: flex-start; font-size: var(--fs16); font-weight: 600; color: {{t.link}}">What do O(n) and O(1) mean?</a>
-</div>
-</details>
-</sc-if></sc-if>
-</div>
-</aside>
 
-<main style="padding: 20px 24px; min-width: 0; min-height: 0">
+<sc-if value="{{pbOnHints}}">
+<div class="pb-stack">
+<h2 class="pb-h2">Hints</h2>
+<sc-if value="{{pbHasHints}}">
+<p class="sh-muted">Open one at a time. They are free.</p>
+<ol class="pb-hints" aria-live="polite"><sc-for list="{{pbHintsShown}}" as="hn"><li class="pb-card"><span class="sh-label">{{hn.label}}</span><span>{{hn.text}}</span></li></sc-for></ol>
+<sc-if value="{{pbMoreHints}}"><button class="sh-chip pb-self" onClick="{{pbNextHint}}">{{pbNextHintLabel}}</button></sc-if>
+<sc-if value="{{pbHintsDone}}"><p class="sh-muted">That is every hint. Still stuck? Open the Solution tab.</p></sc-if>
+</sc-if>
+<sc-if value="{{pbNoHints}}">
+<p class="sh-muted">This problem has no hints yet.</p>
+<button class="sh-chip pb-self" onClick="{{pbToSolution}}">Open the solution</button>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{pbOnSolution}}">
+<div class="pb-stack">
+<h2 class="pb-h2">Solution</h2>
+<sc-if value="{{pbSolMissing}}">
+<p class="sh-muted">No written solution for this problem yet.</p>
+<button class="sh-chip pb-self" onClick="{{pbToHints}}">Open the hints</button>
+</sc-if>
+<sc-if value="{{pbSolAsk}}">
+<div class="pb-card" role="group" aria-labelledby="pb-sol-q">
+<p id="pb-sol-q" class="pb-strong">Show the solution now?</p>
+<p class="sh-muted">You learn most by working it out first. Try a hint before you look. Looking costs nothing.</p>
+<div class="sh-ctl"><button class="sh-chip" onClick="{{pbSolYes}}">Show the solution</button><button class="sh-chip" onClick="{{pbToHints}}">Open the hints</button></div>
+</div>
+</sc-if>
+<sc-if value="{{pbSolShow}}">
+<sc-if value="{{ap.has}}">
+<div class="pb-atabs" role="tablist" aria-label="Approaches, slow to fast" onKeyDown="{{ap.onKey}}"><sc-for list="{{ap.tabs}}" as="at"><button class="sh-tab" role="tab" id="{{at.tabId}}" aria-selected="{{at.sel}}" aria-controls="ap-panel" tabindex="{{at.tabIndex}}" onClick="{{at.pick}}">{{at.label}}</button></sc-for></div>
+<div class="pb-stack" role="tabpanel" id="ap-panel" aria-labelledby="{{ap.panelLabel}}">
+<h3>{{ap.name}}</h3>
+<p>{{ap.idea}}</p>
+<div class="pb-card">
+<div class="pb-row"><span><span class="pb-strong">Time </span><code>{{ap.time}}</code></span><span><span class="pb-strong">Space </span><code>{{ap.space}}</code></span><sc-if value="{{ap.slow}}"><span class="pb-tag">Too slow for big inputs</span></sc-if><sc-if value="{{ap.best}}"><span class="pb-tag">Meets the target</span></sc-if></div>
+<span class="sh-muted">{{ap.why}}</span>
+</div>
+<div class="pb-row"><span class="sh-label">{{ap.codeLang}}</span><sc-if value="{{ap.hasCodeNote}}"><span class="sh-label">· {{ap.codeNote}}</span></sc-if><span class="pb-grow"></span><button class="sh-chip" onClick="{{ap.copy}}">{{ap.copyLabel}}</button></div>
+<pre class="pb-code" tabindex="0" aria-label="{{ap.codeLang}} solution">{{ap.code}}</pre>
+<div class="pb-sect"><span class="sh-label">Common pitfalls</span><ul class="pb-hints" style="list-style: disc; padding-left: 24px"><sc-for list="{{ap.pitfalls}}" as="pf"><li>{{pf.p}}</li></sc-for></ul></div>
+</div>
+</sc-if>
+<sc-if value="{{pbRefOnly}}">
+<p class="sh-muted">{{pbRefKind}}</p>
+<pre class="pb-code" tabindex="0" aria-label="{{pbRefKind}}">{{pbRefCode}}</pre>
+</sc-if>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{pbOnHistory}}">
+<div class="pb-stack">
+<h2 class="pb-h2">History</h2>
+<sc-if value="{{pbHist.empty}}"><p class="sh-muted">No attempts yet. Each time you press Run, your code and its score are saved here.</p></sc-if>
+<sc-if value="{{pbHist.listing}}"><sc-if value="{{pbHist.any}}">
+<ul class="pb-hist" aria-label="Your attempts, newest first"><sc-for list="{{pbHist.rows}}" as="hr"><li><button onClick="{{hr.open}}" aria-label="{{hr.aria}}"><span aria-hidden="true" style="font-weight: 600; color: {{hr.markFg}}">{{hr.mark}}</span><span style="display: flex; flex-direction: column; min-width: 0"><span class="pb-strong">{{hr.verdict}}</span><span class="pb-note">{{hr.when}} · {{hr.lang}}</span></span><span class="pb-note">View</span></button></li></sc-for></ul>
+<button class="sh-chip pb-self" onClick="{{pbHist.clear}}">{{pbHist.clearLabel}}</button>
+</sc-if></sc-if>
+<sc-if value="{{pbHist.picked}}">
+<div class="pb-row"><button class="sh-chip" onClick="{{pbHist.back}}">← All attempts</button><span class="pb-note">{{pbHist.when}} · {{pbHist.lang}}</span></div>
+<p class="pb-strong" style="color: {{pbHist.verdictFg}}">{{pbHist.verdict}}</p>
+<div class="pb-code" role="region" aria-label="Saved code" tabindex="0" style="white-space: normal"><sc-for list="{{pbHist.lines}}" as="hl"><div class="pb-linecode"><span aria-hidden="true">{{hl.n}}</span><span>{{hl.code}}</span></div></sc-for></div>
+<button class="sh-chip pb-self" onClick="{{pbHist.restore}}">{{pbHist.restoreLabel}}</button>
+</sc-if>
+</div>
+</sc-if>
+
+</div>
+</section>
+
+<section class="pb-right" aria-label="Your code">
+<div class="pb-bar">
 <sc-if value="{{notSql}}">
-<!-- CODE PANE -->
-<!-- /CODE PANE -->
+<sc-if value="{{pbManyLangs}}"><div class="pb-segs" role="group" aria-label="Language"><sc-for list="{{pbLangs}}" as="lg"><button class="pb-seg" onClick="{{lg.pick}}" aria-pressed="{{lg.on}}">{{lg.label}}</button></sc-for></div></sc-if>
+<sc-if value="{{pbOneLang}}"><span class="sh-label">{{pbLangName}}</span></sc-if>
 </sc-if>
-<sc-if value="{{isSql}}">
-<!-- SQL PANE -->
-<!-- /SQL PANE -->
+<sc-if value="{{isSql}}"><span class="sh-label">SQL, on SQLite</span></sc-if>
+<span class="pb-grow"></span>
+<button class="pb-link" onClick="{{pbReset.go}}" aria-label="{{pbReset.aria}}">{{pbReset.label}}</button>
+</div>
+<sc-if value="{{notSql}}"><div class="pb-editor" ref="{{cr.ref}}"></div></sc-if>
+<sc-if value="{{isSql}}"><div class="pb-editor" ref="{{sq.ref}}"></div></sc-if>
+<section class="pb-tests" aria-label="Tests" aria-live="polite">
+<span class="pb-verdict" style="color: {{pbT.color}}">{{pbT.title}}</span>
+<sc-if value="{{pbT.hasNote}}"><span class="pb-note">{{pbT.note}}</span></sc-if>
+<sc-if value="{{pbT.hasMsg}}"><pre class="pb-msg">{{pbT.msg}}</pre></sc-if>
+<sc-if value="{{pbT.hasHelp}}"><p class="pb-note">{{pbT.help}}</p></sc-if>
+<sc-if value="{{pbT.hasFail}}">
+<div class="pb-fail">
+<span class="pb-ft">First test that does not pass: {{pbT.fail.title}}</span>
+<span class="pb-k">Input</span><span>{{pbT.fail.input}}</span>
+<sc-if value="{{pbT.fail.hasExpected}}"><span class="pb-k">Expected</span><span>{{pbT.fail.expected}}</span></sc-if>
+<span class="pb-k">Got</span><span style="color: {{pbT.fail.gotColor}}">{{pbT.fail.got}}</span>
+<sc-if value="{{pbT.fail.hasLogs}}"><span class="pb-k">Printed</span><span style="white-space: pre-wrap">{{pbT.fail.logs}}</span></sc-if>
+</div>
 </sc-if>
-</main>
+<sc-if value="{{pbT.hasConsole}}"><div role="log" aria-label="What the program printed" class="pb-msg"><sc-for list="{{pbT.console}}" as="cl"><div style="min-height: 1.5em; color: {{cl.fg}}">{{cl.text}}</div></sc-for></div></sc-if>
+<sc-if value="{{pbT.hasChips}}"><div class="pb-chips" aria-label="Every test"><sc-for list="{{pbT.chips}}" as="ch"><span class="pb-chip"><span aria-hidden="true" style="color: {{ch.fg}}">{{ch.mark}}</span> {{ch.title}}</span></sc-for></div></sc-if>
+<sc-if value="{{pbT.hasPanels}}"><sc-for list="{{pbT.panels}}" as="g"><div class="pb-sect"><span class="pb-strong">{{g.title}}</span><div class="pb-grid"><div role="table" aria-label="{{g.title}}"><div role="row"><sc-for list="{{g.cols}}" as="hc"><div role="columnheader">{{hc.c}}</div></sc-for><sc-if value="{{g.hasMark}}"><div role="columnheader">note</div></sc-if></div><sc-for list="{{g.rows}}" as="gr"><div role="row" style="background: {{gr.bg}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{g.empty}}"><div class="pb-note" style="padding: 8px 12px">{{g.emptyText}}</div></sc-if></div><sc-if value="{{g.more}}"><span class="pb-note">{{g.moreText}}</span></sc-if></div></sc-for></sc-if>
+<sc-if value="{{pbT.hasNext}}"><button class="sh-chip pb-self" onClick="{{pbNext.go}}">Next problem →</button></sc-if>
+</section>
+<div class="pb-runbar" data-run-bar>
+<span class="pb-note" role="status">{{pbRunNote}}</span>
+<span class="pb-grow"></span>
+<sc-if value="{{isSql}}"><button class="pb-sub2" onClick="{{sq.submit}}" disabled="{{pbBusy}}" title="Run on every hidden dataset too">Submit</button></sc-if>
+<button class="sh-btn pb-run" onClick="{{pbRun}}" disabled="{{pbRunOff}}" title="{{pbRunTitle}}" aria-keyshortcuts="{{pbRunKeys}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>{{pbRunLabel}}</button>
+</div>
+</section>
 </div>
 </div>

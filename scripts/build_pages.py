@@ -51,9 +51,10 @@ across pages and live in one place; this script copies them back into every page
                                and the lessons alone between // @@START-LITE@@ ... // @@END-START-LITE@@ (Home).
                                First it traces every chapter's "Watch it run" program into src/start/traces.js.
   shared/contests.js        -> between // @@CONTESTS@@ ... // @@END-CONTESTS@@ (Contests page)
-  src/story/*               -> Story.dc.html markup and engine
+  src/story/*               -> Story.dc.html markup and engine (the engine also goes into Code.dc.html, the Problem page, with the stage markup
+                               between <!-- STORY STAGE --> markers in src/story/story_body.html)
   src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
-  src/code/code_body.html + code.js       -> Code
+  src/code/code_body.html + code.js       -> Code (the Problem page: statement, hints, solution, history, story switch, editor and tests)
   scripts/build_registry.js -> data/problem-registry.json and docs/problems/REGISTRY.md (the problem registry)
 
 Run from the repo root:  python3 scripts/build_pages.py
@@ -231,6 +232,10 @@ def main():
               + json.dumps(sheet_data['index'],ensure_ascii=False, separators=(',', ':')) + ';\n' + end)
     phone_pages = [read('pages', f) for f in built if 'data-page=' in read('pages', f)]
     phone_pages += [read(*p) for p in [('src', 'code', 'code_body.html'), ('src', 'pages', 'profile_body.html'), ('src', 'pages', 'welcome_body.html')]]
+    # The story stage (picture, meter and caption) is written once, in the Story page's body, and shared with the Problem page.
+    story_body = read('src', 'story', 'story_body.html')
+    a = story_body.index('<!-- STORY STAGE -->')
+    ui_html['STORY STAGE'] = story_body[a:story_body.index('<!-- /STORY STAGE -->') + len('<!-- /STORY STAGE -->')]
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('/*@@PADS@@*/', phone_pads(phone_pages))
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('<!-- /PHONE CSS -->', read('shared', 'ui', 'shell.html') + '<!-- /PHONE CSS -->')
     # The type scale tokens (scripts/typescale.py writes font sizes as var(--fsN)) ride at the top of the same block.
@@ -348,8 +353,13 @@ def main():
         if name == 'Story':
             a = s.index('// ---- ')
             b = s.index('\n</script>')
-            s = s[:a] + story_engine.rstrip('\n') + '\n' + s[b:]
-        if name in scripts:
+            s = s[:a] + story_engine.rstrip('\n') + '\nclass Component extends StoryComponent {}\n' + s[b:]
+        elif name == 'Code':
+            # The Problem page carries the story engine too (the Story switch): engine first, then the page's own class.
+            a = s.index('// ---- page ----')
+            b = s.index('\n</script>')
+            s = s[:a] + '// ---- page ----\n' + story_engine.rstrip('\n') + '\n' + read('src', 'code', 'code.js').rstrip('\n') + s[b:]
+        elif name in scripts:
             a = s.index('// ---- page ----')
             b = s.index('\n</script>')
             s = s[:a] + read(*scripts[name]).rstrip('\n') + '\n' + s[b:]

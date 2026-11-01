@@ -701,7 +701,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <p style="margin: 0; max-width: 360px; line-height: 1.6">Algorithms, told as stories. Built by one developer in India who struggled with DSA too, for everyone still in that exam hall.</p>
 <a href="About.dc.html" style="font-weight: 700; color: {{t.bandAccent}}">Read our story →</a>
 </div>
-<nav aria-label="Learn" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">Learn</span><a href="Patterns.dc.html">Library &amp; learning path</a><a href="Story.dc.html">Story player</a><a href="Revisit.dc.html">Revisit</a><a href="Basics.dc.html">Language basics</a><a href="Glossary.dc.html">Keyword glossary</a></nav>
+<nav aria-label="Learn" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">Learn</span><a href="Patterns.dc.html">Library &amp; learning path</a><a href="Code.dc.html?story=1">Story player</a><a href="Revisit.dc.html">Revisit</a><a href="Basics.dc.html">Language basics</a><a href="Glossary.dc.html">Keyword glossary</a></nav>
 <nav aria-label="Prepare" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">Prepare</span><a href="Interview.dc.html" onClick="{{toPlans}}">Interview plans</a><a href="Patterns.dc.html">Company tracks</a><a href="Interview.dc.html" onClick="{{toResources}}">Resources</a><a href="Leaderboard.dc.html">Leaderboard</a></nav>
 <nav aria-label="DSAMaxxing" style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.bandText}}">DSA<span style="color: {{t.accent}}">Maxxing</span></span><a href="About.dc.html">Our story</a><a href="About.dc.html">Contact us</a><a href="#faq">FAQ</a><a href="#trial">Pricing</a></nav>
 </div>
@@ -907,6 +907,8 @@ const COMPANY_TABS = [
 ];
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+// The Problem page with its Story switch on: where every link to a story lands.
+function storyHref(id) { return "Code.dc.html?problem=" + encodeURIComponent(id) + "&story=1"; }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
 // Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
 function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }
@@ -1939,7 +1941,7 @@ const SITE_INDEX = {"items":[["story","valid-anagram","Valid Anagram","The Scrab
 // A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
-  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  story: ['Stories', 'Code.dc.html', 'dsaviz-problem', 3],
   start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
   problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
@@ -2023,6 +2025,8 @@ function searchReveal(sel) {
 function searchTarget(it) {
   const [, page, key] = SEARCH_TYPES[it.type];
   try { window.localStorage.setItem(key, it.id); } catch (e) {}
+  // A story opens the Problem page with its Story switch on (the page reads this flag once).
+  if (it.type === 'story') { try { window.localStorage.setItem('dsaviz-problem-story', '1'); } catch (e) {} }
   return page;
 }
 // @@END-FIND@@
@@ -2354,7 +2358,7 @@ function mainShelf() {
 // What keeps people coming back, and where each piece lives.
 const STICKS = [
   ['Revisit', 'Remember it next month', 'Each story comes back right before you would forget it. Five cards a day.', 'Revisit.dc.html', null],
-  ['Spot the pattern', 'Name it before the code', 'Each story asks which pattern fits, with four choices and the reason behind each one.', 'Story.dc.html', 'longest-substring'],
+  ['Spot the pattern', 'Name it before the code', 'Each story asks which pattern fits, with four choices and the reason behind each one.', storyHref('longest-substring'), 'longest-substring'],
   ['Code', 'Write it yourself', 'Run your code against hidden tests in Python or JavaScript, right in the browser.', 'Code.dc.html', 'two-sum'],
   ['Streaks & medals', 'A reason to show up', 'A daily streak and a medal for each pattern, counted from what you do in this browser.', 'Profile.dc.html', null],
   ['Master sheet', 'Every problem in one list', 'Grouped by pattern, with a hint for each, ticks you can back up, and today\u2019s five.', 'Sheet.dc.html', null]

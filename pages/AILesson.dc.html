@@ -1567,7 +1567,7 @@ const SITE_INDEX = {"items":[["story","valid-anagram","Valid Anagram","The Scrab
 // A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
-  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  story: ['Stories', 'Code.dc.html', 'dsaviz-problem', 3],
   start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
   problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
@@ -1651,6 +1651,8 @@ function searchReveal(sel) {
 function searchTarget(it) {
   const [, page, key] = SEARCH_TYPES[it.type];
   try { window.localStorage.setItem(key, it.id); } catch (e) {}
+  // A story opens the Problem page with its Story switch on (the page reads this flag once).
+  if (it.type === 'story') { try { window.localStorage.setItem('dsaviz-problem-story', '1'); } catch (e) {} }
   return page;
 }
 // @@END-FIND@@

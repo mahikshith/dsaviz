@@ -113,6 +113,8 @@ const COMPANY_TABS = [
 ];
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+// The Problem page with its Story switch on: where every link to a story lands.
+function storyHref(id) { return "Code.dc.html?problem=" + encodeURIComponent(id) + "&story=1"; }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
 // Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
 function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }

@@ -53,7 +53,9 @@ function storyKeyRule(id) {
 // 9 tiles fits the width (35px tiles or more at 390px), grids and trees size to the width with 12px labels, the
 // notebook and the legend sit under the picture, and actors whose labels would collide stack on two lines.
 // Desktop never calls these, so its layout stays as it was.
+let STAGE_W = 0;   // the Problem page (src/code) sets this to the room its story pane really has; 0 means the phone screen width
 function stageWidth() {
+  if (STAGE_W > 0) return Math.max(256, STAGE_W);
   const w = typeof window !== 'undefined' && window.innerWidth ? Math.min(window.innerWidth, 759) : 390;
   return Math.max(256, w - 32 - 2 - 8);   // page gutters, the stage border, 4px inside each edge
 }
@@ -101,7 +103,7 @@ function phoneCast(list, S) {
   return stacked;
 }
 
-class Component extends DCLogic {
+class StoryComponent extends DCLogic {
   constructor(props) {
     super(props);
     const scene = sceneIdFor(loadProblem());
@@ -114,9 +116,12 @@ class Component extends DCLogic {
       hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null, notesOpen: false, note: DS.note(scene), noteSaved: false,
       // your own input: run is the re-simulated scene (null = the story's own example); predict: the toggle, the open question and the last feedback
       customOpen: false, run: null, runText: '', runMsg: '', runBad: false, predict: false, ask: null, fb: null, lastAsk: -9 };
-    this.runner = new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true });
+    this.runner = this.makeRunner(scene);
     this.approaches = new ApproachPane(this, scene, { lang: () => this.runner.s.lang });
   }
+  // The Problem page (src/code/code.js) builds its own runner and drives the story from its own page state.
+  makeRunner(scene) { return new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true }); }
+  pageKeysOn() { return true; }
   componentDidMount() {
     listenTheme(this);
     this.runner.mount();
@@ -126,7 +131,7 @@ class Component extends DCLogic {
     // Space and the arrow keys drive the player when nothing else has focus (the story section handles its own keys).
     this.onPageKey = (e) => {
       const tgt = e && e.target;
-      if (!tgt || (tgt !== document.body && tgt !== document.documentElement) || this.state.drawer) return;
+      if (!tgt || (tgt !== document.body && tgt !== document.documentElement) || this.state.drawer || !this.pageKeysOn()) return;
       if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') this.key(e);
     };
     if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('keydown', this.onPageKey);
@@ -563,7 +568,7 @@ class Component extends DCLogic {
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = Object.assign({}, THEMES[themeKey] || THEMES.max, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
-    const S = dsPhone() ? phoneScene(this.scene()) : this.scene();   // phones: the stage laid out for the screen
+    const S = dsPhone() || this.phoneStage ? phoneScene(this.scene()) : this.scene();   // phones, and the Problem page's narrow pane: the stage laid out for the room it has
     const P = PROBLEMS.find((p) => p.id === S.id);
     const spec = SCENE_INPUT[S.id];
     const ask = this.state.ask, fb = this.state.fb && this.state.fb.at === this.state.step ? this.state.fb : null;
@@ -688,7 +693,7 @@ class Component extends DCLogic {
     const btn = (primary) => ({ bg: primary ? t.accent : 'transparent', fg: primary ? t.onAccent : t.text, border: primary ? t.accent : t.line2 });
 
     return {
-      t, ...navVals(this, t, themeKey, 'Story'), S, P, cr,
+      t, ...navVals(this, t, themeKey, this.navPage || 'Story'), S, P, cr,
       backHref: this.fromCode ? 'Code.dc.html?problem=' + encodeURIComponent(S.id) : 'Patterns.dc.html',
       backLabel: this.fromCode ? 'Back to the problem' : 'Library',
       hasPlan: !!plan, planGoal: plan ? plan.goal : '',

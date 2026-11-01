@@ -998,6 +998,8 @@ const COMPANY_TABS = [
 ];
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+// The Problem page with its Story switch on: where every link to a story lands.
+function storyHref(id) { return "Code.dc.html?problem=" + encodeURIComponent(id) + "&story=1"; }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
 // Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
 function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }
@@ -2025,7 +2027,7 @@ const SITE_INDEX = {"items":[["story","valid-anagram","Valid Anagram","The Scrab
 // A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
-  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  story: ['Stories', 'Code.dc.html', 'dsaviz-problem', 3],
   start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
   problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
@@ -2109,6 +2111,8 @@ function searchReveal(sel) {
 function searchTarget(it) {
   const [, page, key] = SEARCH_TYPES[it.type];
   try { window.localStorage.setItem(key, it.id); } catch (e) {}
+  // A story opens the Problem page with its Story switch on (the page reads this flag once).
+  if (it.type === 'story') { try { window.localStorage.setItem('dsaviz-problem-story', '1'); } catch (e) {} }
   return page;
 }
 // @@END-FIND@@
@@ -3132,7 +3136,7 @@ function introLinks(t, name) {
   const allSheet = {}; Object.keys(SHEET_INDEX).forEach((g) => SHEET_INDEX[g].forEach(([id, label]) => { allSheet[id] = label; }));
   const byId = {}; PROBLEMS.forEach((p) => { byId[p.id] = p; });
   const out = [];
-  intro.stories.forEach((id) => { const p = byId[id]; out.push({ kind: 'Story', kindFg: t.accent, label: p.story, mark: p.animated ? '▶' : '›', href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(id) }); });
+  intro.stories.forEach((id) => { const p = byId[id]; out.push({ kind: 'Story', kindFg: t.accent, label: p.story, mark: p.animated ? '▶' : '›', href: p.animated ? storyHref(p.id) : 'Briefing.dc.html', go: () => saveProblem(id) }); });
   // Sheet problems open their own problem page; runnable ones are already known by their problem-page id.
   intro.sheet.forEach((id) => { out.push({ kind: 'Solve', kindFg: t.right, label: sheetName[id] || id, mark: '›', href: solveHref(id), go: () => {} }); });
   intro.run.forEach((id) => { const p = byId[id]; out.push({ kind: 'Code', kindFg: t.text2, label: p ? p.title : allSheet[id] || id, mark: '›', href: 'Code.dc.html?problem=' + encodeURIComponent(id), go: () => openCode(id) }); });
@@ -3342,7 +3346,7 @@ class Component extends DCLogic {
         statusLabel: p.status === 'done' ? 'Solved' : p.status === 'now' ? 'In progress' : 'Not started',
         statusRing: p.status === 'done' ? t.ok : p.status === 'now' ? t.accent : t.line2,
         statusFill: p.status === 'done' ? t.ok : 'transparent',
-        cta: resumeLabel(p), verb: resumeVerb(p), href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html',
+        cta: resumeLabel(p), verb: resumeVerb(p), href: p.animated ? storyHref(p.id) : 'Briefing.dc.html',
         go: () => saveProblem(p.id),
         watch: p.animated ? 'Watch' : 'Read', watchAria: (p.animated ? 'Watch the story for ' : 'Read about ') + p.title,
         codeHref: solveHref(p.id), codeGo: () => saveProblem(p.id), codeAria: 'Write code for ' + p.title,
@@ -3431,7 +3435,7 @@ class Component extends DCLogic {
     const rm = this.state.view === 'map' ? this.roadmapVals(t) : { card: { open: false } };
     return {
       t, why: whyVals(whyHub('patterns')), ...navVals(this, t, themeKey, 'Patterns'),
-      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; const quiet = this.state.view === 'map'; return { label: resumeLabel(p), href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id), bg: quiet ? t.surface : t.accent, fg: quiet ? t.text : t.onAccent }; })(),
+      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; const quiet = this.state.view === 'map'; return { label: resumeLabel(p), href: p.animated ? storyHref(p.id) : 'Briefing.dc.html', go: () => saveProblem(p.id), bg: quiet ? t.surface : t.accent, fg: quiet ? t.text : t.onAccent }; })(),
       themeBtns: [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
         label, on: themeKey === k,
         bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,

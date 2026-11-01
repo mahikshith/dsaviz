@@ -435,6 +435,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <input type="range" min="0" max="{{lastStep}}" step="1" value="{{stepNow}}" onChange="{{scrub}}" aria-label="Step" aria-valuetext="{{stepLabel}}" style="flex-grow: 1; min-width: 0; height: 44px; margin: 0 0 0 8px; cursor: pointer; accent-color: {{t.accent}}">
 <button class="pp-predict" onClick="{{togglePredict}}" aria-pressed="{{predictX}}" title="Pause before some steps and guess what happens next" style="height: 44px; flex-shrink: 0; padding: 0 16px; box-sizing: border-box; border-radius: 999px; border: 1px solid {{predictBtn.border}}; background: {{predictBtn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 700; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"></path><circle cx="12" cy="17.5" r="0.6" fill="currentColor"></circle><circle cx="12" cy="12" r="9"></circle></svg>{{predictLabel}}</button>
 </div>
+<!-- STORY STAGE -->
 <!-- type-scale: stage (the story stage keeps its own sizes; labels lift to 14px, see scripts/typescale.py) -->
 <div class="pp-stagewrap">
 <div class="pp-stage pp-anim" style="--pp-scene: {{t.scene}}; position: relative; height: 288px; box-sizing: border-box; padding: 48px 0 12px; border-radius: 16px; background: {{t.scene}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; overflow: hidden">
@@ -613,6 +614,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 </sc-if>
 </div>
+<!-- /STORY STAGE -->
 
 <sc-if value="{{showTryIt}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; animation: rise 320ms cubic-bezier(.2,.8,.2,1)">
@@ -1151,6 +1153,8 @@ const COMPANY_TABS = [
 ];
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+// The Problem page with its Story switch on: where every link to a story lands.
+function storyHref(id) { return "Code.dc.html?problem=" + encodeURIComponent(id) + "&story=1"; }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
 // Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
 function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }
@@ -2178,7 +2182,7 @@ const SITE_INDEX = {"items":[["story","valid-anagram","Valid Anagram","The Scrab
 // A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
-  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  story: ['Stories', 'Code.dc.html', 'dsaviz-problem', 3],
   start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
   problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
@@ -2262,6 +2266,8 @@ function searchReveal(sel) {
 function searchTarget(it) {
   const [, page, key] = SEARCH_TYPES[it.type];
   try { window.localStorage.setItem(key, it.id); } catch (e) {}
+  // A story opens the Problem page with its Story switch on (the page reads this flag once).
+  if (it.type === 'story') { try { window.localStorage.setItem('dsaviz-problem-story', '1'); } catch (e) {} }
   return page;
 }
 // @@END-FIND@@
@@ -33761,7 +33767,9 @@ function storyKeyRule(id) {
 // 9 tiles fits the width (35px tiles or more at 390px), grids and trees size to the width with 12px labels, the
 // notebook and the legend sit under the picture, and actors whose labels would collide stack on two lines.
 // Desktop never calls these, so its layout stays as it was.
+let STAGE_W = 0;   // the Problem page (src/code) sets this to the room its story pane really has; 0 means the phone screen width
 function stageWidth() {
+  if (STAGE_W > 0) return Math.max(256, STAGE_W);
   const w = typeof window !== 'undefined' && window.innerWidth ? Math.min(window.innerWidth, 759) : 390;
   return Math.max(256, w - 32 - 2 - 8);   // page gutters, the stage border, 4px inside each edge
 }
@@ -33809,7 +33817,7 @@ function phoneCast(list, S) {
   return stacked;
 }
 
-class Component extends DCLogic {
+class StoryComponent extends DCLogic {
   constructor(props) {
     super(props);
     const scene = sceneIdFor(loadProblem());
@@ -33822,9 +33830,12 @@ class Component extends DCLogic {
       hints: 0, pick: null, deeper: false, showHints: false, why: false, rated: null, notesOpen: false, note: DS.note(scene), noteSaved: false,
       // your own input: run is the re-simulated scene (null = the story's own example); predict: the toggle, the open question and the last feedback
       customOpen: false, run: null, runText: '', runMsg: '', runBad: false, predict: false, ask: null, fb: null, lastAsk: -9 };
-    this.runner = new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true });
+    this.runner = this.makeRunner(scene);
     this.approaches = new ApproachPane(this, scene, { lang: () => this.runner.s.lang });
   }
+  // The Problem page (src/code/code.js) builds its own runner and drives the story from its own page state.
+  makeRunner(scene) { return new CodeRunner(this, scene, { starter: storyStarter, hideLangs: true, hideClock: true }); }
+  pageKeysOn() { return true; }
   componentDidMount() {
     listenTheme(this);
     this.runner.mount();
@@ -33834,7 +33845,7 @@ class Component extends DCLogic {
     // Space and the arrow keys drive the player when nothing else has focus (the story section handles its own keys).
     this.onPageKey = (e) => {
       const tgt = e && e.target;
-      if (!tgt || (tgt !== document.body && tgt !== document.documentElement) || this.state.drawer) return;
+      if (!tgt || (tgt !== document.body && tgt !== document.documentElement) || this.state.drawer || !this.pageKeysOn()) return;
       if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') this.key(e);
     };
     if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('keydown', this.onPageKey);
@@ -34271,7 +34282,7 @@ class Component extends DCLogic {
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = Object.assign({}, THEMES[themeKey] || THEMES.max, STORY_EXTRA[themeKey] || STORY_EXTRA.paper);
-    const S = dsPhone() ? phoneScene(this.scene()) : this.scene();   // phones: the stage laid out for the screen
+    const S = dsPhone() || this.phoneStage ? phoneScene(this.scene()) : this.scene();   // phones, and the Problem page's narrow pane: the stage laid out for the room it has
     const P = PROBLEMS.find((p) => p.id === S.id);
     const spec = SCENE_INPUT[S.id];
     const ask = this.state.ask, fb = this.state.fb && this.state.fb.at === this.state.step ? this.state.fb : null;
@@ -34396,7 +34407,7 @@ class Component extends DCLogic {
     const btn = (primary) => ({ bg: primary ? t.accent : 'transparent', fg: primary ? t.onAccent : t.text, border: primary ? t.accent : t.line2 });
 
     return {
-      t, ...navVals(this, t, themeKey, 'Story'), S, P, cr,
+      t, ...navVals(this, t, themeKey, this.navPage || 'Story'), S, P, cr,
       backHref: this.fromCode ? 'Code.dc.html?problem=' + encodeURIComponent(S.id) : 'Patterns.dc.html',
       backLabel: this.fromCode ? 'Back to the problem' : 'Library',
       hasPlan: !!plan, planGoal: plan ? plan.goal : '',
@@ -34523,6 +34534,7 @@ class Component extends DCLogic {
     };
   }
 }
+class Component extends StoryComponent {}
 
 </script>
 </body>

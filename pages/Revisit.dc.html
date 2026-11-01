@@ -686,6 +686,8 @@ const COMPANY_TABS = [
 ];
 const PROBLEM_KEY = "dsaviz-problem";
 function loadProblem() { try { const k = window.localStorage.getItem(PROBLEM_KEY); return PROBLEMS.find((p) => p.id === k) || null; } catch (e) { return null; } }
+// The Problem page with its Story switch on: where every link to a story lands.
+function storyHref(id) { return "Code.dc.html?problem=" + encodeURIComponent(id) + "&story=1"; }
 function saveProblem(id) { try { window.localStorage.setItem(PROBLEM_KEY, id); } catch (e) {} }
 // Entry points that resume or open a problem say "Continue" (or "Start" when it was never opened) and the problem title. No story name.
 function resumeVerb(p) { return p && p.status && p.status !== 'todo' ? 'Continue' : 'Start'; }
@@ -1713,7 +1715,7 @@ const SITE_INDEX = {"items":[["story","valid-anagram","Valid Anagram","The Scrab
 // A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
-  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
+  story: ['Stories', 'Code.dc.html', 'dsaviz-problem', 3],
   start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
   problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
@@ -1797,6 +1799,8 @@ function searchReveal(sel) {
 function searchTarget(it) {
   const [, page, key] = SEARCH_TYPES[it.type];
   try { window.localStorage.setItem(key, it.id); } catch (e) {}
+  // A story opens the Problem page with its Story switch on (the page reads this flag once).
+  if (it.type === 'story') { try { window.localStorage.setItem('dsaviz-problem-story', '1'); } catch (e) {} }
   return page;
 }
 // @@END-FIND@@
@@ -2127,7 +2131,7 @@ function rvCard(c) {
     rule: c.kind === 'story' ? c.rule : c.hint,
     noteId: P ? P.id : c.story || slug,
     // A story card replays its story; a sheet card opens our problem page.
-    href: P ? (P.animated ? 'Story.dc.html' : 'Briefing.dc.html') : c.story ? 'Code.dc.html?problem=' + encodeURIComponent(c.story) : solveHref(slug),
+    href: P ? (P.animated ? storyHref(P.id) : 'Briefing.dc.html') : c.story ? 'Code.dc.html?problem=' + encodeURIComponent(c.story) : solveHref(slug),
     go: () => { if (P) saveProblem(P.id); },
     linkLabel: P ? (P.animated ? 'Replay the story' : 'Read the briefing') : 'Solve it again',
     due: c.due, late: c.late, inDays: c.inDays, reps: c.reps
@@ -2245,7 +2249,7 @@ class Component extends DCLogic {
       upcomingMore: up.cards.length > 6 ? '+' + (up.cards.length - 6) + ' more later' : '',
       hasMore: up.cards.length > 6,
       queueSize: all.length + (all.length === 1 ? ' card' : ' cards') + ' in your queue',
-      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.title, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
+      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.title, pattern: p.pattern, href: p.animated ? storyHref(p.id) : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
       noSaved: s.saved.length === 0
     };
   }

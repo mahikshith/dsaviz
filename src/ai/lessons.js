@@ -2185,6 +2185,189 @@ function aiIsoforest(p) {
   return s;
 }
 
+// ---------- ML: random forests, many different trees that vote ----------
+const AI_RF = (() => {
+  const SEED = 23; const rnd = aiRng(SEED); const train = []; const test = [];
+  const gen = (arr, n) => { for (let i = 0; i < n; i++) { const x = 0.3 + rnd() * 9.4; const y = 0.3 + rnd() * 9.4; arr.push({ x, y, c: x + y + aiGauss(rnd) * 1.8 > 10 ? 1 : 0 }); } };
+  gen(train, 50); gen(test, 200);
+  const gini = (a) => { const n = a.length; if (!n) return 0; const p = a.filter((q) => q.c).length / n; return 2 * p * (1 - p); };
+  const split = (pts, feats) => {
+    let best = null;
+    feats.forEach((f) => {
+      const vs = pts.map((q) => q[f]).sort((a, b) => a - b);
+      for (let i = 0; i + 1 < vs.length; i++) {
+        if (vs[i] === vs[i + 1]) continue; const t = (vs[i] + vs[i + 1]) / 2;
+        const l = pts.filter((q) => q[f] < t); const r = pts.filter((q) => q[f] >= t);
+        const sc = (l.length * gini(l) + r.length * gini(r)) / pts.length;
+        if (!best || sc < best.sc - 1e-12) best = { f, t, sc };
+      }
+    });
+    return best;
+  };
+  const grow = (pts, rr, mtry, depth) => {
+    const k = pts.filter((q) => q.c).length;
+    if (k === 0 || k === pts.length || depth > 14) return { leaf: true, p: pts.length ? k / pts.length : 0.5 };
+    const order = rr() < 0.5 ? ['x', 'y'] : ['y', 'x'];
+    let b = split(pts, order.slice(0, mtry)); if (!b) b = split(pts, order);
+    if (!b) return { leaf: true, p: k / pts.length };
+    return { f: b.f, t: b.t, l: grow(pts.filter((q) => q[b.f] < b.t), rr, mtry, depth + 1), r: grow(pts.filter((q) => q[b.f] >= b.t), rr, mtry, depth + 1) };
+  };
+  const pred = (t, q) => { while (!t.leaf) t = q[t.f] < t.t ? t.l : t.r; return t.p >= 0.5 ? 1 : 0; };
+  const rr = aiRng(77); const forest = []; const bags = [];
+  for (let b = 0; b < 40; b++) {
+    const idx = []; for (let i = 0; i < train.length; i++) idx.push(Math.floor(rr() * train.length));
+    bags.push(idx); forest.push(grow(idx.map((i) => train[i]), rr, 1, 0));
+  }
+  const full = grow(train, aiRng(5), 2, 0);
+  const acc = (vote, arr) => arr.filter((q) => vote(q) === q.c).length / arr.length;
+  const votes = (T, q) => { let s = 0; for (let i = 0; i < T; i++) s += pred(forest[i], q); return s / T; };
+  const oob = (T) => {
+    let ok = 0; let cnt = 0;
+    train.forEach((q, i) => { let s = 0; let m = 0; for (let b = 0; b < T; b++) { if (bags[b].indexOf(i) < 0) { s += pred(forest[b], q); m++; } } if (m) { cnt++; if ((s / m >= 0.5 ? 1 : 0) === q.c) ok++; } });
+    return cnt ? ok / cnt : 0;
+  };
+  const left = bags[1].length ? train.map((_, i) => i).filter((i) => bags[1].indexOf(i) < 0) : [];
+  return { train, test, forest, bags, full, pred, acc, votes, oob, left };
+})();
+function aiRforest(p) {
+  const D = AI_RF; const T = Math.max(1, Math.min(40, Math.round(p)));
+  const [sx, sy] = aiScale(70, 530, 480, 60, 0, 10);
+  const axes = { x0: 70, y0: 480, x1: 530, y1: 60, xl: 'sweetness →', yl: '↑ softness' };
+  const G = 12; const gw = 460 / G; const gh = 420 / G;
+  const cell = (fn, pre) => { const out = []; for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) { const q = { x: (i + 0.5) * (10 / G), y: (j + 0.5) * (10 / G) }; const v = fn(q); out.push({ id: pre + i + '_' + j, x: aiR(70 + i * gw), y: aiR(480 - (j + 1) * gh), w: aiR(gw), h: aiR(gh), c: v >= 0.5 ? 'b' : 'a', op: aiR(0.1 + 0.28 * Math.abs(v - 0.5) * 2), rx: 0 }); } return { regions: out }; };
+  const dots = (idx, hollowIdx, ghost) => ({ points: D.train.map((q, i) => ({ id: 'd' + i, x: sx(q.x), y: sy(q.y), c: q.c ? 'b' : 'a', r: 6, hollow: hollowIdx ? hollowIdx.indexOf(i) >= 0 : false, op: idx && idx.indexOf(i) < 0 ? 0.35 : 1 })) });
+  const testDots = { points: D.test.map((q, i) => ({ id: 't' + i, x: sx(q.x), y: sy(q.y), c: q.c ? 'b' : 'a', r: 3, op: 0.85 })) };
+  const treeFn = (t) => (q) => D.pred(t, q);
+  const fullFn = treeFn(D.full); const f1Fn = treeFn(D.forest[0]); const f2Fn = treeFn(D.forest[1]);
+  const voteFn = (n) => (q) => D.votes(n, q);
+  const accFull = D.acc(fullFn, D.test); const accOne = D.acc(f2Fn, D.test); const accT = D.acc((q) => (D.votes(T, q) >= 0.5 ? 1 : 0), D.test);
+  const acc40 = D.acc((q) => (D.votes(40, q) >= 0.5 ? 1 : 0), D.test); const acc10 = D.acc((q) => (D.votes(10, q) >= 0.5 ? 1 : 0), D.test);
+  const oobT = D.oob(T);
+  const uniq = new Set(D.bags[1]).size; const outIdx = D.left; const n = D.train.length;
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 580, y: 110, text: txt, c: 't', size: 15, mono: true }] });
+  const key = { labels: [{ id: 'k1', x: 580, y: 150, text: 'blue: ripe   orange: not ripe', c: 'm', size: 14 }] };
+  const s = [];
+  s.push(aiStep('Each dot is a fruit with two measures: sweetness and softness. Blue means ripe and orange means not. Small dots are fruit kept for testing.', [], aiScene({ axes }, dots(), testDots, key)));
+  s.push(aiStep('One decision tree asks yes or no questions until every leaf holds one colour. Its map has sharp, jagged edges.', [], aiScene({ axes }, cell(fullFn, 'g'), dots(), key)));
+  s.push(aiStep('That tree has memorised the 50 training fruit, noise included. On the 200 new fruit it is right ' + aiPct(accFull) + ' of the time.', [], aiScene({ axes }, cell(fullFn, 'g'), dots(), testDots, ro('new fruit: ' + aiPct(accFull)))));
+  s.push(aiStep('Idea: ask many trees and take a vote. If every tree is the same, the vote adds nothing. So we make the trees differ.', [], aiScene({ axes }, dots())));
+  s.push(aiStep('Trick 1: each tree trains on a bootstrap sample. Draw ' + n + ' fruit with replacement, so some repeat and some are left out.', [], aiScene({ axes }, dots(undefined, outIdx), ro('hollow = left out of tree 2'))));
+  s.push(aiStep('Tree 2 saw only ' + uniq + ' different fruit. About 63% are seen and 37% are left out, on average.', [], aiScene({ axes }, dots(undefined, outIdx), ro(uniq + ' of ' + n + ' fruit seen'))));
+  s.push(aiStep('Trick 2: at each split, a tree may look at only one randomly chosen measure. That also makes the trees differ.', [], aiScene({ axes }, cell(f2Fn, 'g'), dots(), ro('tree 2'))));
+  s.push(aiStep('Tree 2 draws a different map from the full tree. By itself it scores ' + aiPct(accOne) + ' on new fruit.', [], aiScene({ axes }, cell(f2Fn, 'g'), dots(), testDots, ro('tree 2: ' + aiPct(accOne)))));
+  s.push(aiStep('Now vote. With your slider at ' + T + ' tree' + (T === 1 ? '' : 's') + ', each map square shows the share of trees that say ripe.', [], aiScene({ axes }, cell(voteFn(T), 'g'), dots(), ro(T + ' tree' + (T === 1 ? '' : 's')))));
+  s.push(aiStep('Mistakes that trees make by luck cancel out in the vote. The edge turns smooth. On new fruit, ' + T + ' tree' + (T === 1 ? '' : 's') + ' score ' + aiPct(accT) + '.', [], aiScene({ axes }, cell(voteFn(T), 'g'), dots(), testDots, ro('new fruit: ' + aiPct(accT)))));
+  s.push(aiStep('More trees help up to a point. Ten trees score ' + aiPct(acc10) + ' and forty score ' + aiPct(acc40) + '. The gains get smaller each time.', [], aiScene({ axes }, cell(voteFn(40), 'g'), dots(), testDots, ro('10: ' + aiPct(acc10) + '   40: ' + aiPct(acc40)))));
+  s.push(aiStep('Bonus: fruit left out of a tree can test it. Using only those votes, the forest’s out-of-bag check scores ' + aiPct(oobT) + ', with no test set.', [], aiScene({ axes }, cell(voteFn(T), 'g'), dots(), ro('out-of-bag: ' + aiPct(oobT)))));
+  s.push(aiStep('Forests are hard to read and slow to store. They also cannot guess beyond the range they saw in training.', [], aiScene({ axes }, cell(voteFn(T), 'g'), dots())));
+  return s;
+}
+
+// ---------- ML: optimizers, from plain steps to momentum and Adam ----------
+const AI_OPT = (() => {
+  const B = 30; const N = 40; const start = [-4, 0.6];
+  const f = (x, y) => 0.5 * (x * x + B * y * y); const grad = (x, y) => [x, B * y];
+  const gd = (lr) => { let p = start.slice(); const h = [p.slice()]; for (let i = 0; i < N; i++) { const g = grad(p[0], p[1]); p = [p[0] - lr * g[0], p[1] - lr * g[1]]; h.push(p.slice()); } return h; };
+  const mom = (lr, b) => { let p = start.slice(); let v = [0, 0]; const h = [p.slice()]; for (let i = 0; i < N; i++) { const g = grad(p[0], p[1]); v = [b * v[0] + g[0], b * v[1] + g[1]]; p = [p[0] - lr * v[0], p[1] - lr * v[1]]; h.push(p.slice()); } return h; };
+  const adam = (lr) => {
+    let p = start.slice(); const m = [0, 0]; const v = [0, 0]; const h = [p.slice()];
+    for (let t = 1; t <= N; t++) { const g = grad(p[0], p[1]); for (let k = 0; k < 2; k++) { m[k] = 0.9 * m[k] + 0.1 * g[k]; v[k] = 0.999 * v[k] + 0.001 * g[k] * g[k]; const mh = m[k] / (1 - Math.pow(0.9, t)); const vh = v[k] / (1 - Math.pow(0.999, t)); p[k] -= (lr * mh) / (Math.sqrt(vh) + 1e-8); } h.push(p.slice()); }
+    return h;
+  };
+  return { B, N, start, f, gd, mom, adam, adamLr: 0.3 };
+})();
+function aiOptim(p) {
+  const D = AI_OPT; const lr = Math.max(0.01, Math.min(0.06, p)); const N = D.N;
+  const hg = D.gd(lr); const hm = D.mom(lr, 0.9); const ha = D.adam(D.adamLr);
+  const sx = (v) => aiR(50 + (v + 5) * 63.75); const sy = (v) => aiR(275 - v * 170);
+  const lossOf = (h) => h.map((q) => D.f(q[0], q[1]));
+  const lg = lossOf(hg); const lm = lossOf(hm); const la = lossOf(ha);
+  const axes = { x0: 50, y0: 480, x1: 560, y1: 60, xl: 'weight 1 →', yl: '↑ weight 2 (stretched)' };
+  const rings = []; [1, 3, 6, 10].forEach((c, i) => { const pts = []; for (let j = 0; j <= 36; j++) { const t = (2 * Math.PI * j) / 36; pts.push([sx(Math.sqrt(2 * c) * Math.cos(t)), sy(Math.sqrt((2 * c) / D.B) * Math.sin(t))]); } rings.push({ id: 'ct' + i, pts, c: 'l', w: 1.5 }); });
+  const contour = { paths: rings, points: [{ id: 'goal', x: sx(0), y: sy(0), c: 'ok', r: 6, label: 'best', lx: 10, ly: 18 }] };
+  const trail = (h, upto, id, c) => ({ paths: [{ id: id, pts: h.slice(0, upto + 1).map((q) => [sx(q[0]), sy(q[1])]).concat(upto === 0 ? [[sx(h[0][0]) + 0.1, sy(h[0][1])]] : []), c, w: 3 }], points: [{ id: id + 'p', x: sx(h[upto][0]), y: sy(h[upto][1]), c, r: 7 }] });
+  const startDot = { points: [{ id: 'st', x: sx(D.start[0]), y: sy(D.start[1]), c: 't', r: 7, label: 'start', lx: 0, ly: -14, la: 'middle' }] };
+  // loss curves on the right: height of log10(loss)
+  const cx = (i) => aiR(620 + (i / N) * 300); const cy = (v) => aiR(440 - ((Math.log10(Math.max(v, 1e-5)) + 5) / 7.5) * 330);
+  const curve = (L, upto, id, c) => ({ paths: [{ id, pts: L.slice(0, upto + 1).map((v, i) => [cx(i), cy(v)]).concat(upto === 0 ? [[cx(0) + 0.1, cy(L[0])]] : []), c, w: 3 }] });
+  const chartAx = { paths: [{ id: 'cax', pts: [[620, 100], [620, 440], [925, 440]], c: 'l', w: 1.5 }], labels: [{ id: 'cat', x: 620, y: 88, text: 'loss (log scale, lower is better)', c: 'm', size: 13 }, { id: 'cax2', x: 925, y: 464, text: 'steps →', c: 'm', size: 13, anchor: 'end' }] };
+  const nums = { labels: [{ id: 'nu1', x: 640, y: 150, text: 'plain: ' + aiFmt(lg[N], 3), c: 'c', size: 14, mono: true }, { id: 'nu2', x: 640, y: 174, text: 'momentum: ' + aiFmt(lm[N], 3), c: 'b', size: 14, mono: true }, { id: 'nu3', x: 640, y: 198, text: 'Adam: ' + aiFmt(la[N], 4), c: 'a', size: 14, mono: true }] };
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 620, y: 60, text: txt, c: 't', size: 15, mono: true }] });
+  const s = [];
+  s.push(aiStep('Training is a walk downhill. The loss, one number for how wrong the model is, is the height. These rings join points of equal loss.', [], aiScene({ axes }, contour, startDot)));
+  s.push(aiStep('Here the valley is steep from side to side and gentle along its length. That shape is common. The picture is stretched upward.', [], aiScene({ axes }, contour, startDot)));
+  s.push(aiStep('Plain gradient descent feels the slope and steps downhill: new weight = old weight − step size × slope. Your step size is ' + aiFmt(lr, 2) + '.', [], aiScene({ axes }, contour, startDot, trail(hg, 3, 'g', 'c'), ro('step size = ' + aiFmt(lr, 2)))));
+  s.push(aiStep('The slope across the valley is steep, so steps there are big and bounce. Along the valley the slope is gentle, so steps are small.', [], aiScene({ axes }, contour, startDot, trail(hg, 10, 'g', 'c'), ro('10 steps'))));
+  s.push(aiStep('After ' + N + ' steps, plain descent has loss ' + aiFmt(lg[N], 3) + '. The ' + (lg[N] > 0.15 ? 'small steps along the valley hold it back.' : 'steps are large enough here to get close.'), [], aiScene({ axes }, contour, startDot, trail(hg, N, 'g', 'c'), chartAx, curve(lg, N, 'cg', 'c'), ro('plain: ' + aiFmt(lg[N], 3)))));
+  s.push(aiStep('Momentum keeps a running push: velocity = 0.9 × old velocity + slope. The weight moves along the velocity, like a rolling ball.', [], aiScene({ axes }, contour, startDot, trail(hm, 6, 'm', 'b'), ro('momentum 0.9'))));
+  s.push(aiStep('Bounces from side to side cancel out, because their signs alternate. Pushes along the valley add up, so speed builds.', [], aiScene({ axes }, contour, startDot, trail(hm, 14, 'm', 'b'), ro('momentum, 14 steps'))));
+  s.push(aiStep('Speed has a cost: momentum overshoots the best point and swings back. After ' + N + ' steps its loss is ' + aiFmt(lm[N], 3) + '.', [], aiScene({ axes }, contour, startDot, trail(hm, N, 'm', 'b'), chartAx, curve(lg, N, 'cg', 'c'), curve(lm, N, 'cm', 'b'), ro('momentum: ' + aiFmt(lm[N], 3)))));
+  s.push(aiStep('Adam gives each weight its own step size. It tracks the recent average slope, m, and the recent average of slope times itself, v.', [], aiScene({ axes }, contour, startDot, ro('Adam'))));
+  s.push(aiStep('The step is step size × m ÷ √v. A weight with big slopes gets divided by a big number, so both weights move at a similar pace.', [], aiScene({ axes }, contour, startDot, trail(ha, 8, 'a', 'a'), ro('Adam, 8 steps'))));
+  s.push(aiStep('At the start m and v are zero, so they read too small. Adam divides each by 1 − β^t to fix that. β is a keep-rate.', [], aiScene({ axes }, contour, startDot, trail(ha, 3, 'a', 'a'), ro('bias fix'))));
+  s.push(aiStep('Adam steps a similar distance in both directions, so it runs down the valley. After ' + N + ' steps its loss is ' + aiFmt(la[N], 4) + '.', [], aiScene({ axes }, contour, startDot, trail(ha, N, 'a', 'a'), chartAx, curve(lg, N, 'cg', 'c'), curve(lm, N, 'cm', 'b'), curve(la, N, 'ca', 'a'), nums)));
+  s.push(aiStep('No optimizer wins everywhere. Adam’s usual start is step size 0.001, with β 0.9 for m and 0.999 for v. Tune the step size.', [], aiScene({ axes }, contour, startDot, trail(ha, N, 'a', 'a'), chartAx, curve(lg, N, 'cg', 'c'), curve(lm, N, 'cm', 'b'), curve(la, N, 'ca', 'a'), nums)));
+  return s;
+}
+
+// ---------- ML: pandas and SQL, joins and group by ----------
+function aiPandas(p) {
+  const left = Math.round(p) === 1;
+  const ORD = [['o1', 'Ana', 20], ['o2', 'Ben', 35], ['o3', 'Ana', 15], ['o4', 'Cy', 50], ['o5', 'Ben', 10], ['o6', 'Dee', 25]];
+  const CUS = [['Ana', 'Leeds'], ['Ben', 'Hull'], ['Cy', 'Leeds']];
+  const city = (c) => { const m = CUS.find((x) => x[0] === c); return m ? m[1] : null; };
+  const kept = ORD.map((o, i) => i).filter((i) => left || city(ORD[i][1]));
+  const sums = {}; ORD.forEach((o) => { const c = city(o[1]); if (c || left) sums[c || 'none'] = (sums[c || 'none'] || 0) + o[2]; });
+  const cell = (id, x, y, w, label, o) => Object.assign({ id, x, y, w, h: 30, label: String(label), size: 14, rx: 6, mono: true }, o || {});
+  const head = (id, x, y, w, label) => cell(id, x, y, w, label, { c: 'm', mono: false, size: 13 });
+  const title = (id, x, y, text) => ({ id, x, y, text, c: 't', size: 15, weight: 700 });
+  // orders table (x 30) and customers table (x 380)
+  const ox = [30, 92, 174]; const ow = [60, 80, 70];
+  const orders = (hiCol, op) => { const b = [head('oh0', ox[0], 90, ow[0], 'order'), head('oh1', ox[1], 90, ow[1], 'customer'), head('oh2', ox[2], 90, ow[2], 'amount')];
+    ORD.forEach((o, i) => { o.slice().forEach((v, c) => { b.push(cell('o' + i + c, ox[c], 124 + i * 36, ow[c], v, { fill: hiCol === c && c === 1 ? 'a' : undefined, op })); }); });
+    return { boxes: b, labels: [title('ot', 30, 70, 'orders')] }; };
+  const cx = [380, 470]; const cw = [80, 90];
+  const custs = (hi, op) => { const b = [head('ch0', cx[0], 90, cw[0], 'customer'), head('ch1', cx[1], 90, cw[1], 'city')];
+    CUS.forEach((o, i) => { o.forEach((v, c) => { b.push(cell('c' + i + c, cx[c], 124 + i * 36, cw[c], v, { fill: hi && c === 0 ? 'a' : undefined, op })); }); });
+    return { boxes: b, labels: [title('ct', 380, 70, 'customers')] }; };
+  const links = () => ({ arrows: ORD.map((o, i) => { const k = CUS.findIndex((x) => x[0] === o[1]); return k < 0 ? null : { id: 'lk' + i, from: { x: ox[1] + ow[1], y: 139 + i * 36 }, to: { x: cx[0], y: 139 + k * 36 }, c: 'b', w: 1.8, op: 0.9 }; }).filter(Boolean) });
+  const miss = { labels: [{ id: 'miss', x: 252, y: 124 + 5 * 36 + 20, text: '← Dee has no row here', c: 'c', size: 14 }] };
+  // joined table (x 60): customer, amount, city
+  const jx = [60, 180, 280]; const jw = [110, 90, 110];
+  const jrow = (i, y, op) => { const o = ORD[i]; const c = city(o[1]); return [cell('j' + i + '0', jx[0], y, jw[0], o[1], { op }), cell('j' + i + '1', jx[1], y, jw[1], o[2], { op }), cell('j' + i + '2', jx[2], y, jw[2], c || (left ? 'empty' : ''), { op, c: c ? undefined : 'c' })]; };
+  const joinedHead = [head('jh0', jx[0], 90, jw[0], 'customer'), head('jh1', jx[1], 90, jw[1], 'amount'), head('jh2', jx[2], 90, jw[2], 'city')];
+  const joined = () => { const b = joinedHead.slice(); kept.forEach((i, r) => jrow(i, 124 + r * 36).forEach((x) => b.push(x))); return { boxes: b, labels: [title('jt', 60, 70, left ? 'joined (left join)' : 'joined (inner join)')] }; };
+  // piles: same boxes move into one pile per city
+  const piles = () => { const order = ['Leeds', 'Hull', 'none']; const b = []; const labs = []; let y = 90; const starts = {};
+    order.forEach((g) => { const rows = kept.filter((i) => (city(ORD[i][1]) || 'none') === g); if (!rows.length) return; starts[g] = y;
+      labs.push({ id: 'pile' + g, x: 60, y: y + 4, text: g === 'none' ? 'no city' : g, c: 'a', size: 15, weight: 700 }); y += 14;
+      rows.forEach((i) => { jrow(i, y + 14).forEach((x) => b.push(x)); y += 36; }); y += 16; });
+    return { boxes: b, labels: labs, starts }; };
+  const pl = piles();
+  const total = (g) => sums[g];
+  const results = (hi) => { const b = []; const rows = ['Leeds', 'Hull'].concat(left ? ['none'] : []);
+    b.push(head('rh0', 520, 90, 110, 'city'), head('rh1', 640, 90, 130, 'sum of amount'));
+    rows.forEach((g, i) => { b.push(cell('r' + i + '0', 520, 124 + i * 36, 110, g === 'none' ? 'empty' : g, { c: g === 'none' ? 'c' : undefined }), cell('r' + i + '1', 640, 124 + i * 36, 130, total(g), { fill: hi ? 'a' : undefined })); });
+    return { boxes: b, labels: [title('rt', 520, 70, 'result')] }; };
+  const code = (a, b, c) => ({ labels: [{ id: 'cd1', x: 40, y: 380, text: a, c: 't', size: 14, mono: true }, { id: 'cd2', x: 40, y: 410, text: b, c: 't', size: 14, mono: true }, { id: 'cd3', x: 40, y: 440, text: c || '', c: 'm', size: 14, mono: true }] });
+  const jtype = left ? 'LEFT' : 'INNER'; const how = left ? 'left' : 'inner';
+  const s = [];
+  s.push(aiStep('Two tables from a shop. Orders say who bought and how much. Customers say where each person lives. How much did each city spend?', [], aiScene(orders(), custs())));
+  s.push(aiStep('The city is in one table and the amount is in the other. A key is a column both tables share. Here the key is the customer name.', ['oh1', 'o01', 'o11', 'o21', 'o31', 'o41', 'o51', 'ch0', 'c00', 'c10', 'c20'], aiScene(orders(1), custs(true))));
+  s.push(aiStep('A join matches rows whose keys are equal. Each arrow joins an order to its customer. Dee has no row in the customers table.', [], aiScene(orders(1), custs(true), links(), miss)));
+  s.push(aiStep(left ? 'A left join keeps every row of the left table. Dee’s order stays, with an empty city. SQL calls that empty value NULL.' : 'An inner join keeps only rows that match. Dee’s order is dropped, so ' + kept.length + ' of ' + ORD.length + ' orders remain.', [], aiScene(joined())));
+  s.push(aiStep('Now every row holds an amount and a city. The two tables have become one wide table.', [], aiScene(joined())));
+  s.push(aiStep('Group by gathers rows with the same value into piles. Here the piles are the cities' + (left ? ', plus a pile for the empty city.' : '.'), [], aiScene({ boxes: pl.boxes, labels: pl.labels })));
+  s.push(aiStep('An aggregate boils each pile down to one number. Sum adds up the amounts: Leeds ' + total('Leeds') + ' and Hull ' + total('Hull') + (left ? ', and ' + total('none') + ' for no city.' : '.'), [], aiScene({ boxes: pl.boxes, labels: pl.labels }, results(true))));
+  s.push(aiStep('The same job in SQL. The word ' + jtype + ' chooses the join type, and GROUP BY makes the piles.', [], aiScene(results(), code('SELECT city, SUM(amount) FROM orders ' + jtype + ' JOIN', 'customers USING (customer) GROUP BY city;', ''))));
+  s.push(aiStep('The same job in pandas. merge joins the tables, groupby makes the piles, and sum adds each pile.', [], aiScene(results(), code('orders.merge(customers, on="customer",', '           how="' + how + '").groupby("city")["amount"].sum()', ''))));
+  s.push(aiStep(left ? 'A trap: SQL keeps the empty-city pile, with ' + total('none') + '. pandas drops empty keys from a group by unless you pass dropna=False.' : 'Inner joins hide rows. Dee’s 25 is gone without any warning, so the totals no longer cover every order.', [], aiScene(results(), left ? code('SQL: GROUP BY keeps a NULL group', 'pandas: groupby(..., dropna=False) keeps it', '') : code('Count the rows before and after', 'every join.', ''))));
+  s.push(aiStep('Another trap: if the customers table listed Ana twice, each of her 2 orders would appear twice. Leeds would show 120 instead of 85.', [], aiScene(orders(), custs())));
+  s.push(aiStep('Guard against it. Check row counts after a join. In pandas, merge takes validate="many_to_one" and stops if customer names repeat.', [], aiScene(results(), code('orders.merge(customers, on="customer",', '           validate="many_to_one")', ''))));
+  s.push(aiStep('Summary: a join glues tables by a key. Group by makes piles. An aggregate gives one number per pile.', [], aiScene(results(true))));
+  return s;
+}
+
 const AI_LESSONS = [
   { id: 'graphs', track: 'ml', title: 'Numbers on a graph', tag: 'x, y and a straight line', minutes: 3, make: aiGraphs,
     idea: 'A graph pairs two numbers as a point. A straight line follows the rule y = w × x + b.',
@@ -2389,9 +2572,18 @@ const AI_LESSONS = [
   { id: 'anomaly', track: 'ml', title: 'Anomaly detection', tag: 'spotting the odd one out', minutes: 4, make: aiIsoforest,
     idea: 'Cut the data with random lines. An odd dot is alone after a few cuts. An ordinary dot needs many.',
     param: { label: 'Flag at score T', min: 0.4, max: 0.8, step: 0.05, value: 0.65, digits: 2, hint: 'Payments scoring at least T are flagged. Counts are recomputed.' } },
+  { id: 'rforest', track: 'ml', title: 'Random forests', tag: 'many different trees vote', minutes: 4, make: aiRforest,
+    idea: 'Grow many different trees on random samples, then let them vote. Their mistakes cancel out.',
+    param: { label: 'Trees in the forest', min: 1, max: 40, step: 1, value: 15, digits: 0, hint: 'The forest really votes with this many trees. Scores on new fruit are recomputed.' } },
+  { id: 'optim', track: 'ml', title: 'Optimizers: momentum and Adam', tag: 'smarter steps downhill', minutes: 5, make: aiOptim,
+    idea: 'Plain steps bounce in a narrow valley. Momentum adds speed, and Adam sizes each weight’s step.',
+    param: { label: 'Step size', min: 0.01, max: 0.06, step: 0.01, value: 0.03, digits: 2, hint: 'Used by plain descent and momentum. Both really run again; Adam keeps its own size.' } },
+  { id: 'pandas', track: 'ml', title: 'pandas and SQL: joins and group by', tag: 'combine tables, then total them', minutes: 4, make: aiPandas,
+    idea: 'Glue two tables by a shared key. Sort the rows into piles, then boil each pile down to one number.',
+    param: { label: 'Join type (0 inner, 1 left)', min: 0, max: 1, step: 1, value: 0, digits: 0, hint: 'Inner keeps matches only. Left keeps every order, even with no match.' } },
 ];
 // Track order: ML starts with the maths (graphs to chance), then a line to clusters; AI now from tokens to evals (the capstone).
-const AI_ORDER = ['graphs', 'slope', 'derivative', 'chainrule', 'gradarrow', 'vectors', 'probability', 'gradient', 'logistic', 'knn', 'tree', 'nbayes', 'svm', 'confusion', 'overfit', 'crossval', 'biasvar', 'regular', 'gboost', 'kmeans', 'hier', 'dbscan', 'gmm', 'pca', 'tsne', 'anomaly', 'backprop', 'embeddings',
+const AI_ORDER = ['graphs', 'slope', 'derivative', 'chainrule', 'gradarrow', 'vectors', 'probability', 'pandas', 'gradient', 'logistic', 'knn', 'tree', 'nbayes', 'svm', 'confusion', 'overfit', 'crossval', 'biasvar', 'regular', 'rforest', 'gboost', 'kmeans', 'hier', 'dbscan', 'gmm', 'pca', 'tsne', 'anomaly', 'backprop', 'optim', 'embeddings',
   'tokens', 'attention', 'vit', 'systems', 'agents', 'rag', 'moe', 'lora', 'prefs', 'distill', 'diffusion', 'jepa', 'evals'];
 AI_LESSONS.sort((a, b) => AI_ORDER.indexOf(a.id) - AI_ORDER.indexOf(b.id));
 const AI_STEP_CACHE = {};

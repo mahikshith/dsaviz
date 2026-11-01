@@ -1348,6 +1348,158 @@ const AI_ABOUT_ML = {
     cheat: ['odd items are cut off in few cuts', 'short path = odd, long path = ordinary', 'score near 1 = odd, near 0.5 = ordinary', 'average over many trees', 'flag means look, not guilty'],
     next: ['tree', 'dbscan', 'gmm'],
     sources: ['Liu, Ting, Zhou, Isolation Forest, IEEE International Conference on Data Mining, 2008', 'Liu, Ting, Zhou, Isolation-based anomaly detection, ACM Transactions on Knowledge Discovery from Data, 2012', 'scikit-learn documentation, Novelty and outlier detection: isolation forest']
+  },
+  rforest: {
+    what: 'A random forest is many decision trees that vote. Each tree learns from a different random sample of the data. Each split looks at random measures. Their different mistakes cancel out in the vote.',
+    analogy: 'Ask one friend to guess the weight of a cake and they may be far off. Ask fifty friends and average the guesses, and the answer is usually close.',
+    uses: ['Predicting house prices or ripe fruit from a table of measures', 'A strong first model for tables of numbers', 'Finding which columns matter most to a prediction'],
+    before: ['tree', 'overfit'],
+    words: [
+      ['bootstrap', 'A new data set made by drawing items at random from the old one, with replacement. Some items repeat and some are missed.'],
+      ['replacement', 'After you draw an item, you put it back, so it can be drawn again.'],
+      ['vote', 'Each tree gives an answer. The most common answer wins.'],
+      ['out-of-bag', 'The items a tree never saw. They give a free test of that tree.'],
+      ['Gini', 'A number that says how mixed a group is. Zero means every item is the same kind.'],
+      ['overfit', 'Learning the noise in the training data, so new data goes badly.']
+    ],
+    math: {
+      lines: ['G = 2\\,p\\,(1 - p)', '\\left(1 - \\tfrac{1}{n}\\right)^{n} \\approx 0.368'],
+      symbols: [
+        ['G', 'the Gini number of a group of two kinds. Lower is purer'],
+        ['p', 'the share of items in the group that are one kind'],
+        ['n', 'how many items are in the training data'],
+        ['0.368', 'the chance that one item is never drawn in a bootstrap sample']
+      ],
+      example: [
+        'This is a smaller example than the animation: eight fruit, 4 ripe and 4 not.',
+        'The group is fully mixed: p = 4 / 8 = 0.5, so G = 2 x 0.5 x 0.5 = 0.50.',
+        'A split makes a left group with 4 ripe and 1 not, and a right group with 3 not ripe.',
+        'Left: p = 0.8, so G = 2 x 0.8 x 0.2 = 0.32. Right: G = 0.',
+        'Weighted by size, the split scores (5 / 8) x 0.32 + (3 / 8) x 0 = 0.20. That is lower than 0.50, so the split helps.',
+        'A forest then asks 5 trees. Three say ripe and two say not. The vote is 3 / 5 = 60%, so the answer is ripe.',
+        'Each tree left out about 36% of the fruit. Those fruit give the out-of-bag check.'
+      ]
+    },
+    steps: [
+      'Draw a bootstrap sample of the training data for each tree.',
+      'Grow the tree. At each split, look at only a few randomly chosen columns.',
+      'Repeat for many trees.',
+      'To predict, let every tree vote and take the most common answer. For a number, take the average.',
+      'Check each item using only the trees that never saw it. That is the out-of-bag score.'
+    ],
+    use: ['You have a table of numbers and want a strong model with little tuning.', 'You want an honest score without a separate test set.'],
+    avoid: ['Pictures, sound or text, where neural networks do better.', 'Predicting beyond the range of the training data. Trees cannot go past it.'],
+    mistakes: [
+      'Thinking more trees cause overfitting. More trees mostly settle the vote.',
+      'Using trees that all look at the same columns. They would make the same mistakes.',
+      'Reading one tree to explain the forest. Fifty trees cannot be read like one.'
+    ],
+    cheat: ['bootstrap sample for each tree', 'random columns at each split', 'many different trees vote', 'out-of-bag = free test', 'more trees = steadier vote'],
+    next: ['gboost', 'overfit', 'anomaly'],
+    sources: ['Breiman, Random forests, Machine Learning 45, 2001', 'Breiman, Bagging predictors, Machine Learning 24, 1996', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 15', 'scikit-learn documentation, Ensembles: random forests']
+  },
+  optim: {
+    what: 'An optimizer decides how a model changes its weights after each look at the slope. Plain gradient descent takes a step downhill. Momentum adds speed from earlier steps. Adam gives each weight its own step size.',
+    analogy: 'Walking downhill in fog, you feel the slope under your feet. Plain descent follows each feeling alone. Momentum is a rolling ball that keeps going. Adam changes the stride for each leg.',
+    uses: ['Training every neural network', 'Making training reach a good answer in fewer steps', 'Taming valleys that are steep one way and flat the other way'],
+    before: ['gradient', 'gradarrow'],
+    words: [
+      ['loss', 'One number that says how wrong the model is. Training tries to lower it.'],
+      ['gradient descent', 'Repeatedly stepping the weights in the direction that lowers the loss.'],
+      ['step size', 'How far each step moves. It is also called the learning rate.'],
+      ['slope', 'How steeply the loss rises in one direction. Another word is gradient.'],
+      ['momentum', 'A running push built from earlier slopes. It smooths bounces and builds speed.'],
+      ['Adam', 'An optimizer that gives each weight its own step size, using recent slopes.']
+    ],
+    math: {
+      lines: ['w \\leftarrow w - \\eta\\, g', 'v \\leftarrow \\beta v + g, \\quad w \\leftarrow w - \\eta\\, v', 'm \\leftarrow \\beta_1 m + (1 - \\beta_1) g, \\quad v \\leftarrow \\beta_2 v + (1 - \\beta_2) g^2', 'w \\leftarrow w - \\eta\\, \\frac{m / (1 - \\beta_1^t)}{\\sqrt{v / (1 - \\beta_2^t)} + \\varepsilon}'],
+      symbols: [
+        ['w', 'a weight'],
+        ['g', 'the slope of the loss for that weight'],
+        ['\\eta', 'the step size'],
+        ['v', 'in momentum, the velocity. In Adam, the average of the slope times itself'],
+        ['m', 'the recent average of the slope'],
+        ['\\beta, \\beta_1, \\beta_2', 'keep-rates: how much of the old average to keep. Usual values: 0.9 and 0.999'],
+        ['t', 'the step number'],
+        ['\\varepsilon', 'a tiny number such as 0.00000001, so we never divide by zero']
+      ],
+      example: [
+        'This is a smaller example than the animation: one weight, loss w x w, so the slope is 2w. Start at w = 3 with step size 0.1.',
+        'Plain descent: slope 6, so w = 3 - 0.1 x 6 = 2.4. Then slope 4.8, so w = 2.4 - 0.48 = 1.92.',
+        'Momentum (keep-rate 0.9): velocity 6, so w = 2.4. Then velocity = 0.9 x 6 + 4.8 = 10.2, so w = 2.4 - 1.02 = 1.38. It moved further.',
+        'Adam, step 1: m = 0.1 x 6 = 0.6 and v = 0.001 x 36 = 0.036. Fix the start: 0.6 / 0.1 = 6 and 0.036 / 0.001 = 36.',
+        'The step is 0.1 x 6 / sqrt(36) = 0.1. So w = 2.9. Adam’s first step is the step size, whatever the slope.',
+        'Adam, step 2: the slope is 5.8, and the step is again about 0.1, so w is about 2.80.'
+      ]
+    },
+    steps: [
+      'Measure the slope of the loss for every weight.',
+      'Plain: move each weight against its slope, by the step size.',
+      'Momentum: add the slope to a running velocity, then move along the velocity.',
+      'Adam: also track the average slope squared, and divide each step by its square root.',
+      'Repeat for many steps, and lower the step size if the loss jumps.'
+    ],
+    use: ['Adam is a good first choice when you do not know what else to pick.', 'Momentum helps when steps bounce across a narrow valley.'],
+    avoid: ['Adam’s default step size on every problem. Tune it.', 'A huge step size with any optimizer. The loss will jump or blow up.'],
+    mistakes: [
+      'Blaming the optimizer for a step size that is too big or too small.',
+      'Comparing optimizers with a step size tuned for only one of them.',
+      'Forgetting that real training uses noisy slopes from small batches, so loss curves are not smooth.'
+    ],
+    cheat: ['plain: w = w - step x slope', 'momentum: velocity = 0.9 x velocity + slope', 'Adam: step is m divided by root of v', 'Adam starts at step size 0.001', 'tune the step size first'],
+    next: ['backprop', 'regular', 'gradient'],
+    sources: ['Polyak, Some methods of speeding up the convergence of iteration methods, USSR Computational Mathematics and Mathematical Physics, 1964', 'Sutskever, Martens, Dahl, Hinton, On the importance of initialization and momentum in deep learning, ICML, 2013', 'Kingma and Ba, Adam: A method for stochastic optimization, arXiv:1412.6980, 2014', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 8', 'PyTorch documentation, torch.optim.SGD and torch.optim.Adam']
+  },
+  pandas: {
+    what: 'Tables answer questions when you combine them. A join glues two tables by a shared key column. A group by sorts rows into piles. An aggregate boils each pile down to one number. SQL and pandas do these jobs the same way.',
+    analogy: 'Two lists sit on your desk: who bought what, and where each person lives. You match names, sort the slips into one pile per city, then count each pile.',
+    uses: ['Totals per city, month or product', 'Adding customer details to a list of orders', 'Preparing a table before any model sees it'],
+    before: ['probability'],
+    words: [
+      ['key', 'A column that both tables share, used to match rows.'],
+      ['join', 'Match rows of two tables that have the same key and put them side by side.'],
+      ['inner join', 'Keep only rows that have a match in both tables.'],
+      ['left join', 'Keep every row of the left table. Rows with no match get empty values.'],
+      ['group by', 'Gather rows with the same value into piles.'],
+      ['aggregate', 'Boil a pile down to one number, such as a sum, a count or an average.'],
+      ['NULL', 'An empty value in SQL. pandas shows it as a missing-value marker.'],
+      ['pandas', 'A Python library for working with tables, called data frames.']
+    ],
+    math: {
+      lines: ['\\text{total}(c) = \\sum_{o \\,:\\, \\text{city}(o) = c} \\text{amount}(o)'],
+      symbols: [
+        ['c', 'one city'],
+        ['o', 'one order'],
+        ['\\text{city}(o)', 'the city found by joining the order to its customer'],
+        ['\\text{amount}(o)', 'how much that order cost'],
+        ['\\sum', 'add up the amounts of all orders in the pile']
+      ],
+      example: [
+        'This is the same data as the animation. Orders: Ana 20, Ben 35, Ana 15, Cy 50, Ben 10, Dee 25.',
+        'Customers: Ana lives in Leeds, Ben in Hull, Cy in Leeds. Dee is not listed.',
+        'Inner join: Dee’s order has no match, so 5 orders remain. Leeds has 20, 15 and 50, which add to 85. Hull has 35 and 10, which add to 45.',
+        'Left join: Dee’s order stays with an empty city. SQL keeps that pile and shows 25 for it.',
+        'pandas drops the empty-city pile by default, so you see Leeds 85 and Hull 45 unless you pass dropna=False.',
+        'A hidden duplicate: if Ana appeared twice in customers, her 2 orders would be doubled. Leeds would show 85 + 35 = 120.'
+      ]
+    },
+    steps: [
+      'Pick the key that links the two tables.',
+      'Join them. Choose inner to keep matches only, or left to keep every row of the first table.',
+      'Group the joined rows by the column you care about.',
+      'Aggregate each group with a sum, count or average.',
+      'Check row counts before and after the join.'
+    ],
+    use: ['You need totals or averages per group.', 'The facts you need are spread over more than one table.'],
+    avoid: ['Joining on a column that is not unique in both tables, without checking.', 'Trusting totals before you compare them with the row counts.'],
+    mistakes: [
+      'Using an inner join and losing rows without noticing.',
+      'Joining on a key that repeats, so rows are copied and sums are too large.',
+      'Forgetting that pandas drops empty group keys by default, while SQL keeps them as one group.'
+    ],
+    cheat: ['join = glue by key', 'inner = matches only, left = all left rows', 'group by = piles', 'aggregate = one number per pile', 'count rows before and after'],
+    next: ['probability', 'confusion', 'crossval'],
+    sources: ['pandas documentation, pandas.merge', 'pandas documentation, pandas.DataFrame.groupby (the dropna option)', 'PostgreSQL documentation, Joined tables, and Aggregate functions', 'Codd, A relational model of data for large shared data banks, Communications of the ACM, 1970']
   }
 };
 if (typeof module !== 'undefined') module.exports = { AI_ABOUT_ML };

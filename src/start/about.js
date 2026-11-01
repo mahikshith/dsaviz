@@ -1265,6 +1265,90 @@ const START_ABOUT = {
     cheat: ['empty list', 'one item', 'negatives', 'ties and repeats', 'write the check first'],
     next: [],
     sources: [PY_TUT + 'controlflow.html#for-statements', PY_TUT + 'datastructures.html#more-on-lists']
+  },
+  blocking: {
+    what: 'Many jobs are mostly waiting, for a web page, a file or a timer. Blocking means standing still until the wait ends. While a program blocks, it does nothing else.',
+    analogy: 'Think of a waiter who stares at the oven until the soup is done. The bread and the tables wait.',
+    uses: ['A phone app that freezes while it waits for a slow download', 'A game that stutters while it reads a big file', 'A website that waits for ten pictures one after another'],
+    before: ['functions'],
+    words: [
+      ['blocking', 'Standing still until a wait ends, doing nothing else.'],
+      ['tick', 'One step of the clock in our kitchen. Real clocks use seconds.'],
+      ['waiting', 'Time spent for something outside the program, such as a network reply.'],
+      ['calculating', 'Time spent doing work with the computer\'s own hands.'],
+      ['disk', 'The place where files are stored.']
+    ],
+    math: null,
+    steps: ['Spot a job that mostly waits, such as a download.', 'Add up the waits if they come one after another.', 'See that the total is the sum of the waits.', 'Notice that overlapping waits would finish with the longest one.', 'Look for a way to use the waiting time.'],
+    use: ['Your program feels slow but the computer is not busy.', 'Several waits come one after another.'],
+    avoid: ['Calling a program slow when it is only waiting.', 'Waiting for independent jobs in a row.'],
+    mistakes: ['Thinking slow always means busy. Fix: ask if the program is calculating or waiting.', 'Adding the waits when the jobs could overlap. Fix: use the longest wait for overlapping jobs.', 'Forgetting the clock moves during every wait. Fix: add the ticks to the clock.'],
+    cheat: ['waiting is not working', 'blocking = standing still', 'in a row: add the waits', 'at once: the longest wait', 'look for idle time to use'],
+    next: ['event-loop'],
+    sources: [PY_LIB + 'asyncio.html', 'MDN Web Docs, developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous']
+  },
+  'event-loop': {
+    what: 'The event loop is one worker that keeps a list of jobs that are waiting. It goes round and round, takes the next job that is ready, and runs it. Nothing freezes while a job waits.',
+    analogy: 'Think of a waiter with a rail of order tickets. He always takes the next dish that is ready.',
+    uses: ['A web browser that keeps clicks working while a picture loads', 'A chat server that looks after thousands of people with one worker', 'A game that reads the keyboard while sounds play'],
+    before: ['blocking'],
+    words: [
+      ['event loop', 'One worker that repeats: find a ready job, run it, look again.'],
+      ['queue', 'A list of things waiting for their turn.'],
+      ['ready', 'Its waiting time is over, so it can run now.'],
+      ['job', 'One piece of work waiting in the list.'],
+      ['clock', 'The tick counter that says what time it is.']
+    ],
+    math: null,
+    steps: ['Keep a list of waiting jobs, each with the time it is ready.', 'Start the clock at 0.', 'Look through the list for a job ready now.', 'If one is ready, run it and remove it from the list.', 'Move the clock forward and look again until the list is empty.'],
+    use: ['Many things wait at once and one worker must look after them all.', 'You want a program that stays responsive.'],
+    avoid: ['A job that never lets go of the worker.', 'Assuming jobs run in the order they were added.'],
+    mistakes: ['Expecting the first added job to run first. Fix: the first ready job runs first.', 'Forgetting to remove a finished job. Fix: remove it so it does not run again.', 'Never moving the clock. Fix: add one to the clock each round.'],
+    cheat: ['one worker, one queue', 'take the next ready job', 'remove it when done', 'clock moves forward', 'ready order, not added order'],
+    next: ['later'],
+    sources: [PY_LIB + 'asyncio-eventloop.html', 'MDN Web Docs, developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop']
+  },
+  later: {
+    what: 'A callback is a function you hand over, so the loop can call it when a job is ready. You leave a note and carry on with other work. The loop calls you back later.',
+    analogy: 'Think of a pager from a restaurant. You do other things, and it buzzes when your table is ready.',
+    uses: ['A website that shows a message when a download finishes', 'A game that plays a sound when a level loads', 'A shop app that sends a receipt when a payment clears'],
+    before: ['event-loop', 'callbacks'],
+    words: [
+      ['callback', 'A function handed over to be called later.'],
+      ['hand over', 'Pass a function by its name, with no brackets.'],
+      ['call', 'To run a function by writing brackets after its name.'],
+      ['when_done', 'Our name for the note that says what to run after the job.'],
+      ['later', 'After the wait is over, not now.']
+    ],
+    math: null,
+    steps: ['Write the function that should run afterwards, such as serve.', 'Put its name, with no brackets, in the job: "when_done": serve.', 'Start the job and carry on with other work.', 'When the job is ready, the loop reads the note.', 'The loop writes the brackets and calls it with the dish.'],
+    use: ['Something should happen after a wait ends.', 'The code that starts the job should not wait around.'],
+    avoid: ['Putting brackets after the name when you only want to hand it over.', 'Stacking callbacks inside callbacks until the code is hard to read.'],
+    mistakes: ['Writing serve() and running it too early. Fix: write serve, with no brackets.', 'Giving a callback the wrong number of values. Fix: match the function\'s parameters.', 'Forgetting the callback exists. Fix: keep it in the job so the loop can find it.'],
+    cheat: ['serve = hand it over', 'serve() = run it now', 'the loop calls it when ready', 'leave a note and move on'],
+    next: ['async-await'],
+    sources: [PY_TUT + 'controlflow.html#defining-functions', 'MDN Web Docs, developer.mozilla.org/en-US/docs/Glossary/Callback_function']
+  },
+  'async-await': {
+    what: 'An async task can pause at an await and let other tasks use the worker. When its wait is over, it carries on after the await. await does not make the wait shorter.',
+    analogy: 'Think of a waiter who says "I will come back". He goes to another table while your food cooks.',
+    uses: ['A web server that answers many visitors with one worker', 'A chat app that waits for messages from many friends', 'A game that loads pictures while the menu stays alive'],
+    before: ['later'],
+    words: [
+      ['task', 'A job that can pause and carry on later.'],
+      ['async', 'The word that marks a function as a task that can pause.'],
+      ['await', 'The word that marks where a task waits and lets others go.'],
+      ['turn', 'One short go at the worker before it moves to the next task.'],
+      ['coroutine', 'The object an async function gives back until it is awaited.']
+    ],
+    math: null,
+    steps: ['Mark the function with async def to make it a task.', 'Write await in front of the slow call.', 'The task pauses there and the worker picks another task.', 'When the wait is over, the task carries on with the next line.', 'The loop gives every task turns until all are finished.'],
+    use: ['Many jobs spend most of their time waiting.', 'You want code that reads from top to bottom.'],
+    avoid: ['Using await for work that is all calculating.', 'Expecting await to make a wait shorter.'],
+    mistakes: ['Thinking await makes things faster. Fix: it only shares the waiting time.', 'Forgetting await in front of a slow call. Fix: add it, or the task does not wait.', 'Using await outside an async function. Fix: put it inside async def.'],
+    cheat: ['async def makes a task', 'await = wait here, others go', 'same wait, shared time', 'turns, not threads', 'one worker takes turns'],
+    next: ['gather'],
+    sources: [PY_LIB + 'asyncio-task.html', 'MDN Web Docs, developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises']
   }
 };
 if (typeof module !== 'undefined') module.exports = { START_ABOUT };

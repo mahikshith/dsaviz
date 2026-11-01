@@ -36,7 +36,8 @@ button{font:inherit}
 [data-page="Patterns"] [data-stagemap]{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;margin:0 -16px;padding:0 16px}
 [data-page="Patterns"] [data-stagemap] *{max-width:none}
 [data-page="Patterns"] [data-rm-overview]{grid-template-columns:minmax(0,1fr)!important}
-[data-page="Patterns"] [data-rm-overview]>nav{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+[data-page="Patterns"] [data-rm-overview]>button{width:100%;box-sizing:border-box}
+[data-page="Patterns"] [data-prow]>span:last-child{justify-self:end}
 [data-rm-drawer]{top:auto!important;bottom:0;left:0;width:100%!important;height:86vh!important;border-left:0!important;border-top:1px solid;border-radius:20px 20px 0 0;padding:16px 16px 32px!important;animation-name:rmup!important;zoom:calc(1 / var(--fit, 1))}
 [data-page="Patterns"] [data-prow]{grid-template-columns:24px auto minmax(0,1fr) auto!important;gap:4px 12px!important;padding:12px 16px!important}
 [data-page="Patterns"] [data-prow]>:nth-child(1){grid-column:1;grid-row:1;align-self:start;margin-top:10px}
@@ -44,12 +45,18 @@ button{font:inherit}
 [data-page="Patterns"] [data-prow]>:nth-child(3),[data-page="Patterns"] [data-prow]>:nth-child(6){display:none!important}
 [data-page="Patterns"] [data-prow]>:nth-child(4){grid-column:2;grid-row:2}
 [data-page="Patterns"] [data-prow]>:nth-child(5){grid-column:3;grid-row:2}
-[data-page="Patterns"] [data-prow]>:nth-child(7){grid-column:4;grid-row:2}
+[data-page="Patterns"] [data-prow]>:nth-child(7){grid-column:2/5;grid-row:3;justify-self:start!important}
+[data-page="Patterns"] [data-prow]>:nth-child(5){white-space:nowrap}
+[data-page="Patterns"] [role="tablist"]{gap:8px 16px!important}
+[data-page="Patterns"] [role="tablist"]>button{font-size:var(--fs16)!important}
+[data-page="Patterns"] [data-fold]>button{flex-wrap:wrap}
+[data-page="Patterns"] [data-fold]>button>span:nth-child(2){flex-basis:100%;order:3}
 [data-page="Patterns"] [data-prow-more]{padding:0 16px 16px 52px!important;gap:8px!important}
 [data-page="Patterns"] [data-prow-more]>span:first-child{display:none}
 [data-page="Patterns"] [data-pgroup]{padding:12px 16px!important;gap:12px!important}
 [data-page="Patterns"] [data-pgroup]>span:nth-child(3){display:none!important}
 [data-page="Patterns"] [data-pgroup]>span:nth-child(4),[data-page="Patterns"] [data-pgroup]>span:nth-child(4)>span:last-child{width:72px!important}
+[data-page="Patterns"] [data-pgroup]>span:nth-child(4)>span:first-child{white-space:normal!important}
 }
 </style>
 <!-- PHONE CSS -->
@@ -300,64 +307,60 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- /PILL NAV -->
 
 <!-- MAIN -->
-<main style="padding: 24px 48px 32px; display: flex; flex-direction: column; gap: 22px; min-width: 0">
-<sc-if value="{{showSearch}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="flex-grow: 1; max-width: 520px; height: 44px; padding: 0 14px; border-radius: 12px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 10px; color: {{t.muted}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Search problems, stories or companies" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: var(--fs17)"></div>
-</div>
-</sc-if>
-
-<div style="display: flex; justify-content: space-between; align-items: flex-end">
+<main style="padding: 24px 48px 32px; display: flex; flex-direction: column; gap: 24px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">Library</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">Learn</h1>
 <sc-if value="{{viewLine}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: var(--fs18); color: {{t.muted}}">{{viewLine}}</p></sc-if>
 </div>
-<a href="{{resume.href}}" onClick="{{resume.go}}" style="padding: 12px 16px; border-radius: 14px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; gap: 14px; align-items: center">
-<span style="width: 40px; height: 40px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: var(--fs15); color: {{t.muted}}">{{resume.label}}</span><span style="font-family: {{t.display}}; font-size: var(--fs19); font-weight: 600">{{resume.story}}</span></span>
-</a>
+<a data-resume href="{{resume.href}}" onClick="{{resume.go}}" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{resume.bg}}; color: {{resume.fg}}; display: flex; gap: 12px; align-items: center; font-size: var(--fs18); font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{resume.label}}</a>
 </div>
 
-<!-- view switch + filters -->
-<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding-bottom: 18px; border-bottom: 1px solid {{t.line}}">
-<div role="tablist" aria-label="Group problems" style="display: flex; gap: 2px; padding: 4px; border-radius: 14px; background: {{t.sunk}}">
+<!-- other views: quiet text tabs -->
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; border-bottom: 1px solid {{t.line}}">
+<div role="tablist" aria-label="Ways to browse" style="display: flex; flex-wrap: wrap; gap: 24px">
 <sc-for list="{{views}}" as="vw" hint-placeholder-count="3">
-<button role="tab" aria-selected="{{vw.on}}" onClick="{{vw.pick}}" style="height: 40px; padding: 0 18px; border: 0; border-radius: 10px; cursor: pointer; font-size: var(--fs17); font-weight: 700; background: {{vw.bg}}; color: {{vw.fg}}">{{vw.label}}</button>
+<button role="tab" aria-selected="{{vw.on}}" onClick="{{vw.pick}}" style="height: 48px; padding: 0; margin-bottom: -1px; border: 0; border-bottom: 2px solid {{vw.line}}; border-radius: 0; background: transparent; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{vw.fg}}">{{vw.label}}</button>
 </sc-for>
 </div>
 <div style="flex-grow: 1"></div>
 <sc-if value="{{showFilters}}" hint-placeholder-val="{{ false }}">
+<button data-tools onClick="{{toggleTools}}" aria-expanded="{{tools}}" style="height: 48px; padding: 0; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 600">Search and filter<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="transform: {{toolsChev}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+</sc-if>
+</div>
+<sc-if value="{{showTools}}" hint-placeholder-val="{{ false }}">
+<div data-toolbar style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<div style="flex-grow: 1; max-width: 520px; height: 48px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; display: flex; align-items: center; gap: 12px; color: {{t.muted}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Search problems or companies" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: var(--fs17)"></div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
 <span style="font-size: var(--fs16); color: {{t.muted}}">Difficulty</span>
 <sc-for list="{{diffs}}" as="df" hint-placeholder-count="4">
-<button onClick="{{df.pick}}" aria-pressed="{{df.on}}" style="height: 36px; padding: 0 12px; border-radius: 999px; cursor: pointer; font-size: var(--fs16); font-weight: 600; display: flex; gap: 6px; align-items: center; background: {{df.bg}}; color: {{t.text}}; border: 1px solid {{df.border}}"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{df.dot}}"></span>{{df.label}}</button>
+<button onClick="{{df.pick}}" aria-pressed="{{df.on}}" style="height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-size: var(--fs16); font-weight: 600; display: flex; gap: 8px; align-items: center; background: {{df.bg}}; color: {{t.text}}; border: 1px solid {{df.border}}"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{df.dot}}"></span>{{df.label}}</button>
 </sc-for>
+</div>
 <sc-if value="{{showSort}}" hint-placeholder-val="{{ false }}">
-<div role="group" aria-label="Sort" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; border: 1px solid {{t.line}}">
+<div role="group" aria-label="Sort" style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: var(--fs16); color: {{t.muted}}">Sort</span>
 <sc-for list="{{sorts}}" as="so" hint-placeholder-count="4">
-<button onClick="{{so.pick}}" aria-pressed="{{so.on}}" style="height: 32px; padding: 0 10px; border: 0; border-radius: 8px; cursor: pointer; font-size: var(--fs15); font-weight: 600; background: {{so.bg}}; color: {{so.fg}}">{{so.label}}</button>
+<button onClick="{{so.pick}}" aria-pressed="{{so.on}}" style="height: 40px; padding: 0 16px; border: 1px solid {{so.border}}; border-radius: 999px; cursor: pointer; font-size: var(--fs16); font-weight: 600; background: transparent; color: {{so.fg}}">{{so.label}}</button>
 </sc-for>
 </div>
 </sc-if>
-</sc-if>
 </div>
+</sc-if>
 
 <!-- ============ VIEW: MAP (the roadmap: shared/roadmap.js) ============ -->
 <sc-if value="{{isMap}}" hint-placeholder-val="{{ true }}">
 <div data-map onKeyDown="{{rm.key}}" style="display: flex; flex-direction: column; gap: 16px">
 <!-- mini overview: next for you, then every lane with one dot per topic -->
-<section data-rm-overview aria-label="Roadmap overview" style="display: grid; grid-template-columns: 296px minmax(0, 1fr); gap: 12px; align-items: stretch">
-<button data-rm-next onClick="{{rm.next.pick}}" style="padding: 16px 18px; border-radius: 16px; border: 1.5px solid {{t.accent}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: var(--fs15); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">Next for you</span>
+<section data-rm-overview aria-label="Roadmap overview" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px">
+<button data-rm-next onClick="{{rm.next.pick}}" style="padding: 16px 24px; border-radius: 16px; border: 1.5px solid {{t.accent}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: var(--fs15); font-weight: 600; color: {{t.accent}}">Next for you</span>
 <span style="font-family: {{t.display}}; font-size: var(--fs24); font-weight: 600; line-height: 1.15">{{rm.next.name}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{rm.next.lane}} · {{rm.next.line}}</span>
 </button>
-<nav aria-label="Jump to a part of the roadmap" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+<nav aria-label="Jump to a part of the roadmap" style="display: flex; flex-wrap: wrap; gap: 8px 24px">
 <sc-for list="{{rm.lanes}}" as="ol" hint-placeholder-count="6">
-<button data-rm-jump onClick="{{ol.jump}}" style="padding: 12px; border-radius: 14px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-<span style="display: flex; gap: 8px; align-items: center"><span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 999px; background: {{t.sunk}}; font-size: var(--fs15); font-weight: 800; display: flex; align-items: center; justify-content: center">{{ol.n}}</span><span style="font-size: var(--fs17); font-weight: 700; line-height: 1.2">{{ol.title}}</span></span>
-<span aria-hidden="true" style="display: flex; flex-wrap: wrap; gap: 3px"><sc-for list="{{ol.dots}}" as="od" hint-placeholder-count="10"><span style="width: 6px; height: 6px; border-radius: 999px; box-sizing: border-box; border: 1.5px solid {{od.border}}; background: {{od.bg}}"></span></sc-for></span>
-<span style="font-size: var(--fs15); color: {{t.muted}}">{{ol.count}}</span>
-</button>
+<button data-rm-jump onClick="{{ol.jump}}" style="min-height: 44px; padding: 0; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{ol.n}}. {{ol.title}}</button>
 </sc-for>
 </nav>
 </section>
@@ -388,7 +391,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-for>
 <sc-for list="{{rm.nodes}}" as="mn" hint-placeholder-count="30">
-<button data-map-node data-rm-node="{{mn.id}}" onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: 116px; height: 50px; box-sizing: border-box; padding: 0; border-radius: 12px; border: 1.5px solid {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px">
+<button data-map-node data-path-node="{{mn.id}}" data-rm-node="{{mn.id}}" onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: 132px; height: 62px; box-sizing: border-box; padding: 0; border-radius: 12px; border: 1.5px solid {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px">
 <span style="position: relative; width: 34px; height: 34px; flex-shrink: 0">
 <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true" style="display: block">
 <circle cx="17" cy="17" r="16.75" fill="{{mn.labelBg}}" stroke="none"></circle>
@@ -403,7 +406,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{mn.next}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 5px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs13); font-weight: 800; line-height: 15px; letter-spacing: 0.04em">NEXT</span></sc-if>
 <sc-if value="{{mn.soonTag}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 36px; top: 9px; padding: 0 4px; border-radius: 999px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.muted}}; font-size: var(--fs13); font-weight: 700; line-height: 13px; letter-spacing: 0.04em">SOON</span></sc-if>
 </span>
-<span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: var(--fs15); font-weight: 600; line-height: 14px; white-space: nowrap; color: {{mn.labelFg}}">{{mn.label}}</span>
+<span style="padding: 0 4px; border-radius: 4px; background: {{mn.labelBg}}; font-size: var(--fs17); font-weight: 600; line-height: 22px; white-space: nowrap; color: {{mn.labelFg}}">{{mn.label}}</span>
 </button>
 </sc-for>
 </div>
@@ -412,8 +415,10 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 10px 12px 0; border-top: 1px solid {{t.line}}; font-size: var(--fs15); color: {{t.muted}}">
 <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 3px solid {{t.accent}}; box-sizing: border-box"></span>Outer ring: stories or lessons finished</span>
 <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 3px solid {{t.right}}; box-sizing: border-box"></span>Inner ring: sheet ticks</span>
-<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 1.5px dashed {{t.muted}}; box-sizing: border-box"></span>Dashed: coming soon</span>
+<sc-if value="{{rm.showSoon}}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 999px; border: 1.5px dashed {{t.muted}}; box-sizing: border-box"></span>Dashed: coming soon</span></sc-if>
 <span>Arrows point from what to learn first to what it unlocks. Pick a topic to see where it leads.</span>
+<span style="flex-grow: 1"></span>
+<button data-soon-fold onClick="{{rm.toggleSoon}}" aria-expanded="{{rm.showSoon}}" style="min-height: 44px; padding: 0; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{rm.soonLabel}}</button>
 </div>
 </section>
 </sc-if>
@@ -434,7 +439,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{pl.open}}" hint-placeholder-val="{{ true }}">
 <ol style="list-style: none; margin: 0 0 0 13px; padding: 0 0 0 14px; border-left: 2px dotted {{t.line2}}; display: flex; flex-direction: column; gap: 6px">
 <sc-for list="{{pl.items}}" as="pi" hint-placeholder-count="8"><li>
-<button onClick="{{pi.pick}}" aria-label="{{pi.aria}}" style="width: 100%; min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pi.border}}; background: {{pi.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px">
+<button data-path-node="{{pi.id}}" onClick="{{pi.pick}}" aria-label="{{pi.aria}}" style="width: 100%; min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1px solid {{pi.border}}; background: {{pi.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px">
 <span aria-hidden="true" style="width: 30px; height: 30px; flex-shrink: 0; box-sizing: border-box; border-radius: 999px; border: 2px {{pi.ringStyle}} {{pi.ring}}; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{pi.markFg}}; display: flex; align-items: center; justify-content: center">{{pi.mark}}</span>
 <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: var(--fs18); font-weight: 700; color: {{pi.nameFg}}">{{pi.name}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{pi.sub}}</span></span>
 <sc-if value="{{pi.next}}" hint-placeholder-val="{{ false }}"><span style="flex-shrink: 0; padding: 2px 8px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs15); font-weight: 800">Next</span></sc-if>
@@ -444,6 +449,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 </section>
 </sc-for>
+<button data-soon-fold onClick="{{rm.toggleSoon}}" aria-expanded="{{rm.showSoon}}" style="min-height: 44px; padding: 0; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-align: left">{{rm.soonLabel}}</button>
 </div>
 </sc-if>
 </div>
@@ -524,13 +530,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div data-stagemap style="position: relative; height: 152px">
 <div style="position: absolute; left: 60px; top: 68px; width: 992px; height: 4px; border-radius: 999px; background: {{t.line}}"></div>
 <div style="position: absolute; left: 60px; top: 68px; width: {{trailFill}}px; height: 4px; border-radius: 999px; background: {{t.ok}}; transition: width 0.8s ease"></div>
-<div style="position: absolute; top: 0; left: {{lumiX}}px; width: 36px; transition: left 0.7s cubic-bezier(.5,1.4,.4,1)">
-<div style="animation: bob 1.6s ease-in-out infinite">
-<svg width="36" height="36" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="{{t.left}}"></circle><circle cx="21" cy="25" r="3.2" fill="{{t.bg}}"></circle><circle cx="35" cy="25" r="3.2" fill="{{t.bg}}"></circle><path d="M20 35 Q28 41 36 35" stroke="{{t.bg}}" stroke-width="2.6" fill="none" stroke-linecap="round"></path></svg>
-</div>
-</div>
 <sc-for list="{{stages}}" as="st" hint-placeholder-count="8">
-<button onClick="{{st.pick}}" aria-pressed="{{st.sel}}" aria-label="{{st.aria}}" style="position: absolute; top: 44px; left: {{st.x}}px; width: 130px; border: 0; background: transparent; cursor: pointer; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; color: {{t.text}}">
+<button data-path-node="{{st.idx}}" onClick="{{st.pick}}" aria-pressed="{{st.sel}}" aria-label="{{st.aria}}" style="position: absolute; top: 44px; left: {{st.x}}px; width: 130px; border: 0; background: transparent; cursor: pointer; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; color: {{t.text}}">
 <span style="width: 52px; height: 52px; box-sizing: border-box; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs18); font-weight: 700; background: {{st.bg}}; color: {{st.fg}}; border: 2px solid {{st.border}}; box-shadow: {{st.ring}}; transition: box-shadow 0.25s">{{st.mark}}</span>
 <span style="font-size: var(--fs17); font-weight: 700">{{st.name}}</span>
 </button>
@@ -539,10 +540,10 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 26px 28px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; animation: rise 0.35s ease">
 <div style="display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Stage {{stage.num}} of 8 · {{stage.state}}</span>
+<span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Stage {{stage.num}} of 8 · {{stage.state}}</span>
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs34); font-weight: 600; letter-spacing: -0.02em">{{stage.name}} <span style="font-style: italic; font-weight: 400; color: {{t.muted}}">— {{stage.meta}}</span></h2>
 <p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs22); line-height: 1.55">{{stage.blurb}}</p>
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}"><b style="color: {{t.text}}">Why here in the path?</b> {{stage.why}}</p>
+<details style="color: {{t.muted}}"><summary style="min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}">Why here in the path?</summary><p style="margin: 0; font-size: var(--fs17); line-height: 1.5">{{stage.why}}</p></details>
 </div>
 <div style="display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -562,20 +563,19 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
 <sc-for list="{{stage.rows}}" as="r" hint-placeholder-count="4">
-<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 240px; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid {{t.line}}">
+<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 208px; gap: 16px; align-items: center; padding: 16px 24px; border-bottom: 1px solid {{t.line}}">
 <span aria-label="{{r.statusLabel}}" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{r.statusRing}}; background: {{r.statusFill}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs15); font-weight: 800">{{r.statusMark}}</span>
-<button onClick="{{r.toggle}}" aria-expanded="{{r.open}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; justify-content: center"><span style="font-size: var(--fs18); font-weight: 600">{{r.title}}</span><span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs17); color: {{t.muted}}">{{r.story}} <span style="font-family: {{t.body}}; font-style: normal; color: {{t.accent}}">· story ▾</span></span></button>
+<button onClick="{{r.toggle}}" aria-expanded="{{r.open}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; justify-content: center"><span style="font-size: var(--fs18); font-weight: 600">{{r.title}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">Summary ▾</span></button>
 <span style="font-size: var(--fs16); color: {{t.text2}}">{{r.pattern}}</span>
 <span style="justify-self: start; padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{r.dBg}}; color: {{r.dFg}}">{{r.diff}}</span>
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.text2}}">{{r.time}}</span>
 <span style="display: flex; flex-wrap: wrap; gap: 5px"><sc-for list="{{r.cos}}" as="co" hint-placeholder-count="3"><span style="padding: 2px 8px; border-radius: 6px; border: 1px solid {{t.line}}; font-size: var(--fs15); color: {{t.text2}}">{{co}}</span></sc-for></span>
-<a href="{{r.href}}" onClick="{{r.go}}" title="{{r.cta}}" style="justify-self: end; max-width: 100%; height: 36px; padding: 0 14px; border-radius: 999px; display: flex; gap: 8px; align-items: center; font-size: var(--fs16); font-weight: 700; background: {{r.ctaBg}}; color: {{r.ctaFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{r.cta}}</span></a>
+<span style="justify-self: end; display: flex; gap: 8px"><a href="{{r.href}}" onClick="{{r.go}}" aria-label="{{r.watchAria}}" style="width: 96px; height: 40px; border-radius: 999px; display: flex; gap: 8px; align-items: center; justify-content: center; font-size: var(--fs16); font-weight: 700; background: {{t.sunk}}; color: {{t.text}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{r.watch}}</a><a href="{{r.codeHref}}" onClick="{{r.codeGo}}" aria-label="{{r.codeAria}}" style="width: 96px; height: 40px; box-sizing: border-box; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: var(--fs16); font-weight: 700; border: 1px solid {{t.line2}}; color: {{t.text}}">Code</a></span>
 </div>
 <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
-<div data-prow-more style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 260px; gap: 14px; padding: 4px 22px 18px; border-bottom: 1px solid {{t.line}}; animation: rise 0.25s ease">
+<div data-prow-more style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; padding: 0 24px 16px; border-bottom: 1px solid {{t.line}}; animation: rise 0.25s ease">
 <span></span>
-<p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs19); line-height: 1.55">{{r.synopsis}}</p>
-<span style="display: flex; flex-direction: column; gap: 4px; font-size: var(--fs16); color: {{t.muted}}"><span>Role: <b style="color: {{t.text}}">{{r.cast}}</b></span><span>{{r.anim}}</span></span>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{r.synopsis}}</p>
 </div>
 </sc-if>
 </sc-for>
@@ -586,7 +586,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- ============ VIEW: BY PATTERN ============ -->
 <sc-if value="{{isPattern}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 16px">
 <sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
 <section data-pattern="{{g.idx}}" style="border-radius: 18px; background: {{t.surface}}; border: 1px solid {{g.border}}; overflow: hidden; transition: border-color 0.3s">
 <button data-pgroup onClick="{{g.toggle}}" aria-expanded="{{g.open}}" style="width: 100%; min-height: 76px; padding: 16px 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 18px; text-align: left">
@@ -599,9 +599,9 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span style="font-size: var(--fs15); color: {{t.muted}}">Often asked at</span>
 <span style="font-size: var(--fs16); font-weight: 600; text-align: right">{{g.cosLine}}</span>
 </span>
-<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px; width: 130px">
-<span style="font-size: var(--fs16); color: {{t.muted}}">{{g.progress}}</span>
-<span style="width: 130px; height: 6px; border-radius: 999px; background: {{t.line}}; display: block"><span style="display: block; height: 6px; border-radius: 999px; background: {{t.ok}}; width: {{g.pct}}"></span></span>
+<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; width: 160px">
+<span style="font-size: var(--fs16); color: {{t.muted}}; white-space: nowrap">{{g.progress}}</span>
+<span style="width: 160px; height: 6px; border-radius: 999px; background: {{t.line}}; display: block"><span style="display: block; height: 6px; border-radius: 999px; background: {{t.ok}}; width: {{g.pct}}"></span></span>
 </span>
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="transform: {{g.chev}}; transition: transform 0.25s"><path d="M6 9l6 6 6-6"></path></svg>
 </button>
@@ -609,7 +609,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="border-top: 1px solid {{t.line}}; animation: rise 0.3s ease">
 <div data-fold style="padding: 12px 22px; border-bottom: 1px solid {{t.line}}; background: {{t.sunk}}">
 <button onClick="{{g.intro.toggle}}" aria-expanded="{{g.intro.open}}" style="width: 100%; min-height: 44px; padding: 0; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left">
-<span style="flex-shrink: 0; padding: 3px 9px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs13); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase">Use it when</span>
+<span style="flex-shrink: 0; padding: 3px 9px; border-radius: 999px; background: {{t.line}}; color: {{t.text2}}; font-size: var(--fs13); font-weight: 700">Use it when</span>
 <span style="flex-grow: 1; font-size: var(--fs18); line-height: 1.45">{{g.intro.when}}</span>
 <span style="flex-shrink: 0; font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">{{g.intro.more}}</span>
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{g.intro.chev}}; transition: transform 0.25s"><path d="M6 9l6 6 6-6"></path></svg>
@@ -630,20 +630,19 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 </div>
 <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
-<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 240px; gap: 14px; align-items: center; padding: 14px 22px; border-bottom: 1px solid {{t.line}}">
+<div data-prow style="display: grid; grid-template-columns: 36px minmax(0, 2.2fr) 150px 100px 80px minmax(0, 1.2fr) 208px; gap: 16px; align-items: center; padding: 16px 24px; border-bottom: 1px solid {{t.line}}">
 <span aria-label="{{r.statusLabel}}" style="width: 24px; height: 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{r.statusRing}}; background: {{r.statusFill}}; color: {{t.bg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs15); font-weight: 800">{{r.statusMark}}</span>
-<button onClick="{{r.toggle}}" aria-expanded="{{r.open}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; justify-content: center"><span style="display: flex; gap: 8px; align-items: center"><span style="font-size: var(--fs18); font-weight: 600">{{r.title}}</span><sc-if value="{{r.isNew}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 7px; border-radius: 6px; background: {{t.coolBg}}; color: {{t.text}}; font-size: var(--fs13); font-weight: 700">NEW</span></sc-if><sc-if value="{{r.hot}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 7px; border-radius: 6px; background: {{t.warnBg}}; color: {{t.text}}; font-size: var(--fs13); font-weight: 700">POPULAR</span></sc-if></span><span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs17); color: {{t.muted}}">{{r.story}} <span style="font-family: {{t.body}}; font-style: normal; color: {{t.accent}}">· story ▾</span></span></button>
+<button onClick="{{r.toggle}}" aria-expanded="{{r.open}}" style="border: 0; background: transparent; color: {{t.text}}; cursor: pointer; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; justify-content: center"><span style="display: flex; gap: 8px; align-items: center"><span style="font-size: var(--fs18); font-weight: 600">{{r.title}}</span><sc-if value="{{r.isNew}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 7px; border-radius: 6px; background: {{t.coolBg}}; color: {{t.text}}; font-size: var(--fs13); font-weight: 700">NEW</span></sc-if><sc-if value="{{r.hot}}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 7px; border-radius: 6px; background: {{t.warnBg}}; color: {{t.text}}; font-size: var(--fs13); font-weight: 700">POPULAR</span></sc-if></span><span style="font-size: var(--fs15); color: {{t.muted}}">Summary ▾</span></button>
 <span style="font-size: var(--fs16); color: {{t.text2}}">{{r.dtypeName}}</span>
 <span style="justify-self: start; padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{r.dBg}}; color: {{r.dFg}}">{{r.diff}}</span>
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.text2}}">{{r.time}}</span>
 <span style="display: flex; flex-wrap: wrap; gap: 5px"><sc-for list="{{r.cos}}" as="co" hint-placeholder-count="3"><span style="padding: 2px 8px; border-radius: 6px; border: 1px solid {{t.line}}; font-size: var(--fs15); color: {{t.text2}}">{{co}}</span></sc-for></span>
-<a href="{{r.href}}" onClick="{{r.go}}" title="{{r.cta}}" style="justify-self: end; max-width: 100%; height: 36px; padding: 0 14px; border-radius: 999px; display: flex; gap: 8px; align-items: center; font-size: var(--fs16); font-weight: 700; background: {{r.ctaBg}}; color: {{r.ctaFg}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{r.cta}}</span></a>
+<span style="justify-self: end; display: flex; gap: 8px"><a href="{{r.href}}" onClick="{{r.go}}" aria-label="{{r.watchAria}}" style="width: 96px; height: 40px; border-radius: 999px; display: flex; gap: 8px; align-items: center; justify-content: center; font-size: var(--fs16); font-weight: 700; background: {{t.sunk}}; color: {{t.text}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{r.watch}}</a><a href="{{r.codeHref}}" onClick="{{r.codeGo}}" aria-label="{{r.codeAria}}" style="width: 96px; height: 40px; box-sizing: border-box; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: var(--fs16); font-weight: 700; border: 1px solid {{t.line2}}; color: {{t.text}}">Code</a></span>
 </div>
 <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
-<div data-prow-more style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 260px; gap: 14px; padding: 4px 22px 18px; border-bottom: 1px solid {{t.line}}; animation: rise 0.25s ease">
+<div data-prow-more style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; padding: 0 24px 16px; border-bottom: 1px solid {{t.line}}; animation: rise 0.25s ease">
 <span></span>
-<p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs19); line-height: 1.55">{{r.synopsis}}</p>
-<span style="display: flex; flex-direction: column; gap: 4px; font-size: var(--fs16); color: {{t.muted}}"><span>Role: <b style="color: {{t.text}}">{{r.cast}}</b></span><span>{{r.anim}}</span></span>
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{r.synopsis}}</p>
 </div>
 </sc-if>
 </sc-for>
@@ -2838,7 +2837,7 @@ const ringLen = (r) => 2 * Math.PI * r;
 const markOf = (name) => name.split(/[\s&/-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
 // ---- the roadmap (shared/roadmap.js): every lane, node and edge, laid out on one canvas ----
-const RM_GEO = { w: 1296, gutter: 200, padX: 64, padY: 26, rowH: 60 };
+const RM_GEO = { w: 1296, gutter: 200, padX: 64, padY: 26, rowH: 76 };
 const RM_NODES = ROADMAP_NODES.concat(PATTERN_MAP.nodes.map(([name, label, col, row]) => ({ id: name, lane: 'patterns', label, col, row, name, group: name })));
 const RM_EDGES = PATTERN_MAP.edges.concat(ROADMAP_EDGES);
 const RM_BY = {}; RM_NODES.forEach((n) => { RM_BY[n.id] = n; });
@@ -2972,7 +2971,7 @@ function openCode(id) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), view: 'map', node: null, intro: {}, stage: 1, sort: 'pattern', diffs: {}, open: { 'Two Pointers': true }, company: 'MAANG', query: '', expanded: 'two-sum-ii' };
+    this.state = { theme: loadTheme(), view: 'map', node: null, intro: {}, stage: 1, sort: 'pattern', diffs: {}, open: { 'Two Pointers': true }, company: 'MAANG', query: '', expanded: null, soon: false, tools: false };
   }
   componentDidMount() {
     listenTheme(this);
@@ -2987,6 +2986,22 @@ class Component extends DCLogic {
     const lessons = DS.lessons().ids;
     const stat = {}; RM_NODES.forEach((n) => { stat[n.id] = rmStatus(n, prog, lessons); });
     const nextId = rmNext(stat);
+    const showSoon = !!this.state.soon;
+    const soonCount = RM_NODES.filter((n) => stat[n.id].st === 'soon').length;
+    // Unfinished topics stay behind a fold; the lanes close up around the topics that are shown.
+    RM_NODES.forEach((n) => { n.vis = showSoon || stat[n.id].st !== 'soon' || n.id === this.state.node; });
+    let layY = 0;
+    RM_LANES.forEach((l) => {
+      const ns = l.nodes.filter((n) => n.vis);
+      l.hidden = !ns.length;
+      l.top = layY;
+      if (l.hidden) { l.h = 0; return; }
+      const rows = ns.map((n) => n.row).filter((r, i, a) => a.indexOf(r) === i).sort((a, b) => a - b);
+      l.h = Math.max(RM_GEO.padY + 17 + (rows.length - 1) * RM_GEO.rowH + 45 + 24, l.key === "start" || l.key === "core" ? 216 : 176);
+      ns.forEach((n) => { n.y = Math.round(l.top + RM_GEO.padY + 17 + rows.indexOf(n.row) * RM_GEO.rowH); });
+      layY += l.h;
+    });
+    const rmH = layY;
     const selId = RM_BY[this.state.node] ? this.state.node : null;
     const phone = dsPhone();
     const pick = (id) => () => { this.setState({ node: id, fold: false }); rmFocus('[data-rm-title]'); if (!phone) rmReveal(id); };
@@ -3007,8 +3022,8 @@ class Component extends DCLogic {
       }
       return live.filter((n) => stat[n.id].st === 'done').length + ' of ' + live.length + ' done' + (live.length < l.nodes.length ? ' · ' + (l.nodes.length - live.length) + ' coming soon' : '');
     };
-    const lanes = RM_LANES.map((l, i) => ({
-      key: l.key, n: l.n, title: l.title, line: l.line, count: laneCount(l), anchor: 'rm-lane-' + l.key,
+    const lanes = RM_LANES.filter((l) => !l.hidden).map((l, i) => ({
+      key: l.key, n: i + 1, title: l.title, line: l.line, count: laneCount(l), anchor: 'rm-lane-' + l.key,
       soon: l.nodes.every((n) => stat[n.id].st === 'soon'), live: l.nodes.some((n) => stat[n.id].st !== 'soon'),
       top: l.top, h: l.h, labelTop: l.top + 16, border: i ? t.line : 'transparent',
       // On phones a lane that is all coming soon starts folded, so the path stays short; jumping to it unfolds it.
@@ -3019,9 +3034,9 @@ class Component extends DCLogic {
       jump: () => { if (phone) this.setState({ lanes: Object.assign({}, this.state.lanes, { [l.key]: true }) }); setTimeout(() => rmJump(l.key), 30); },
       dots: l.nodes.map((n) => ({ bg: stat[n.id].st === 'todo' ? 'transparent' : tone(stat[n.id]), border: tone(stat[n.id]) })),
       // Phones read a lane top to bottom in learning order: column by column, except the core lane, which is one level per row.
-      items: phone ? l.nodes.slice().sort((a, b) => l.key === 'core' ? a.row - b.row || a.col - b.col : a.col - b.col || a.row - b.row).map((n) => {
+      items: phone ? l.nodes.filter((n) => n.vis).slice().sort((a, b) => l.key === 'core' ? a.row - b.row || a.col - b.col : a.col - b.col || a.row - b.row).map((n) => {
         const s = stat[n.id], next = n.id === nextId;
-        return { name: n.name, sub: s.st === 'soon' ? 'Coming soon' : RM_STATUS_WORD[s.st] + ' · ' + s.line, next, aria: aria(n), pick: pick(n.id),
+        return { id: n.id, name: n.name, sub: s.st === 'soon' ? 'Coming soon' : RM_STATUS_WORD[s.st] + ' · ' + s.line, next, aria: aria(n), pick: pick(n.id),
           mark: s.st === 'done' ? '✓' : markOf(n.label), markFg: s.st === 'done' ? t.ok : s.st === 'soon' ? t.muted : t.text,
           ring: tone(s), ringStyle: s.st === 'soon' ? 'dashed' : 'solid', border: next ? t.accent : t.line, bg: next ? t.sunk : t.surface,
           nameFg: s.st === 'soon' ? t.text2 : t.text };
@@ -3031,28 +3046,30 @@ class Component extends DCLogic {
     const edges = [];
     if (!phone) RM_EDGES.forEach(([a, b]) => {
       const A = RM_BY[a], B = RM_BY[b];
+      if (!A.vis || !B.vis) return;
       const into = b === selId, out = a === selId;
       let d;
       if (A.lane === B.lane) {
         const x1 = A.x + 20, x2 = B.x - 20, dx = (x2 - x1) / 2;
         // Same row with a node in between: dip under it.
-        const dip = A.row === B.row && RM_LANE_OF[A.lane].nodes.some((m) => m.row === A.row && m.col > A.col && m.col < B.col) ? 50 : 0;
+        const dip = A.row === B.row && RM_LANE_OF[A.lane].nodes.some((m) => m.vis && m.row === A.row && m.col > A.col && m.col < B.col) ? 56 : 0;
         d = 'M' + x1 + ' ' + A.y + ' C' + (x1 + dx) + ' ' + (A.y + dip) + ' ' + (x2 - dx) + ' ' + (B.y + dip) + ' ' + x2 + ' ' + B.y +
           ' M' + (x2 - 6) + ' ' + (B.y - 4) + ' L' + x2 + ' ' + B.y + ' L' + (x2 - 6) + ' ' + (B.y + 4);
       } else if (into || out) {
         // Between lanes: out under the node, along the row gap to the channel left of the first column, down it,
         // then along the gap above the target's row and into its top. The gaps hold no nodes or labels.
-        const y1 = A.y + 37, y2 = B.y - 23, ch = RM_GEO.gutter - 18, end = B.y - 18;
-        d = 'M' + A.x + ' ' + (A.y + 31) + ' V' + y1 + ' H' + ch + ' V' + y2 + ' H' + B.x + ' V' + end +
+        const y1 = A.y + 52, y2 = B.y - 24, ch = RM_GEO.gutter - 18, end = B.y - 18;
+        d = 'M' + A.x + ' ' + (A.y + 45) + ' V' + y1 + ' H' + ch + ' V' + y2 + ' H' + B.x + ' V' + end +
           ' M' + (B.x - 4) + ' ' + (end - 6) + ' L' + B.x + ' ' + end + ' L' + (B.x + 4) + ' ' + (end - 6);
       } else return;
       edges.push({ d, color: into ? t.accent : out ? t.text2 : t.faint, width: into || out ? 2.5 : 1.5, dash: A.lane === B.lane ? 'none' : '5 5', hot: into || out });
     });
     edges.sort((a, b) => (a.hot ? 1 : 0) - (b.hot ? 1 : 0));
     // The road down the gutter, joining each lane's number to the next.
-    const road = RM_LANES.slice(0, -1).map((l, i) => ({ d: 'M20 ' + (l.top + 46) + ' L20 ' + (RM_LANES[i + 1].top + 14) }));
+    const shown = RM_LANES.filter((l) => !l.hidden);
+    const road = shown.slice(0, -1).map((l, i) => ({ d: 'M20 ' + (l.top + 46) + ' L20 ' + (shown[i + 1].top + 14) }));
     // Nodes render lane by lane, column by column, so Tab walks the roadmap in reading order.
-    const nodes = phone ? [] : RM_LANES.reduce((a, l) => a.concat(l.nodes), []).map((n) => {
+    const nodes = phone ? [] : RM_LANES.reduce((a, l) => a.concat(l.nodes), []).filter((n) => n.vis).map((n) => {
       const s = stat[n.id], pr = s.pr, sel = n.id === selId;
       const near = !!selId && (RM_PRE[selId].includes(n.id) || RM_POST[selId].includes(n.id));
       const two = !!(pr && pr.sTotal);
@@ -3064,7 +3081,7 @@ class Component extends DCLogic {
         id: n.id, label: n.label, sel, next, soon, aria: aria(n), pick: pick(n.id),
         // A lane that is all coming soon says so once in its header; a SOON tag marks soon topics in a lane that is partly live.
         soonTag: soon && RM_LANE_OF[n.lane].nodes.some((m) => stat[m.id].st !== 'soon'),
-        left: n.x - 58, top: n.y - 17,
+        left: n.x - 66, top: n.y - 17,
         bg: sel ? t.sunk : 'transparent', border: sel ? t.text : 'transparent',
         labelFg: sel || near ? t.text : soon ? t.muted : t.text2, labelBg: sel ? t.sunk : t.surface,
         trackDash: soon ? '3 3' : 'none', trackW: soon ? 1.5 : 3.5, trackStroke: soon ? t.faint : sel ? t.line2 : t.sunk,
@@ -3113,7 +3130,7 @@ class Component extends DCLogic {
       };
     }
     return {
-      desk: !phone, phone, w: RM_GEO.w, reserve: selId && !phone ? RM_DRAWER_W + 16 : 0, drawerW: RM_DRAWER_W, h: RM_H, gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
+      desk: !phone, phone, w: RM_GEO.w, reserve: selId && !phone ? RM_DRAWER_W + 16 : 0, drawerW: RM_DRAWER_W, h: rmH, showSoon, soonLabel: showSoon ? 'Hide topics that are coming soon' : 'Show ' + soonCount + ' topics that are coming soon', toggleSoon: () => this.setState({ soon: !showSoon }), gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
       key: (e) => { if (e.key === 'Escape' && selId) { e.preventDefault(); close(); } }
     };
   }
@@ -3143,8 +3160,10 @@ class Component extends DCLogic {
         statusLabel: p.status === 'done' ? 'Solved' : p.status === 'now' ? 'In progress' : 'Not started',
         statusRing: p.status === 'done' ? t.ok : p.status === 'now' ? t.accent : t.line2,
         statusFill: p.status === 'done' ? t.ok : 'transparent',
-        cta: resumeLabel(p), verb: resumeVerb(p), href: solveHref(p.id),
+        cta: resumeLabel(p), verb: resumeVerb(p), href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html',
         go: () => saveProblem(p.id),
+        watch: p.animated ? 'Watch' : 'Read', watchAria: (p.animated ? 'Watch the story for ' : 'Read about ') + p.title,
+        codeHref: solveHref(p.id), codeGo: () => saveProblem(p.id), codeAria: 'Write code for ' + p.title,
         open: this.state.expanded === p.id,
         toggle: () => this.setState({ expanded: this.state.expanded === p.id ? null : p.id }),
         cast: (PATTERNS.find(([n]) => n === p.pattern) || [])[2] || '',
@@ -3169,7 +3188,7 @@ class Component extends DCLogic {
       const ss = stageState[i];
       const isSel = i === sel;
       return {
-        name: s.name, sel: isSel, x: stageX(i) - 65,
+        idx: i + 1, name: s.name, sel: isSel, x: stageX(i) - 65,
         aria: 'Stage ' + (i + 1) + ': ' + s.name + ', ' + (ss.st === 'done' ? 'complete' : ss.st === 'now' ? 'in progress' : 'not started'),
         mark: ss.st === 'done' ? '✓' : String(i + 1),
         bg: ss.st === 'done' ? t.ok : ss.st === 'now' ? t.accent : t.surface,
@@ -3193,7 +3212,7 @@ class Component extends DCLogic {
       return {
         num: String(i + 1).padStart(2, '0'), idx: i, name, tag, rows, open,
         cosLine: topCompanies(all, 3).join(' · '),
-        progress: done + ' of ' + all.length + ' solved',
+        progress: done + ' of ' + all.length + (all.length === 1 ? ' story done' : ' stories done'),
         pct: Math.round((done / all.length) * 100) + '%',
         chev: open ? 'rotate(180deg)' : 'rotate(0deg)',
         border: open ? t.line2 : t.line,
@@ -3230,7 +3249,7 @@ class Component extends DCLogic {
     const rm = this.state.view === 'map' ? this.roadmapVals(t) : { card: { open: false } };
     return {
       t, ...navVals(this, t, themeKey, 'Patterns'),
-      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; return { story: p.title, label: resumeVerb(p), href: solveHref(p.id), go: () => saveProblem(p.id) }; })(),
+      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; const quiet = this.state.view === 'map'; return { label: resumeLabel(p), href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id), bg: quiet ? t.surface : t.accent, fg: quiet ? t.text : t.onAccent }; })(),
       themeBtns: [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
         label, on: themeKey === k,
         bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
@@ -3240,16 +3259,17 @@ class Component extends DCLogic {
       onQuery: (e) => this.setState({ query: e.target.value }),
       views: VIEWS.map(([k, label]) => ({
         label, on: this.state.view === k,
-        bg: this.state.view === k ? t.surface : 'transparent', fg: this.state.view === k ? t.text : t.muted,
+        line: this.state.view === k ? t.text : 'transparent', fg: this.state.view === k ? t.text : t.muted,
         pick: () => this.setState({ view: k })
       })),
       viewLine: this.state.view === 'map' ? '' : VIEW_LINES[this.state.view],
-      rm, isMap: this.state.view === 'map', showSearch: this.state.view !== 'map', showFilters: this.state.view !== 'map',
+      rm, isMap: this.state.view === 'map', showFilters: this.state.view !== 'map', tools: !!this.state.tools, showTools: !!this.state.tools && this.state.view !== 'map',
+      toggleTools: () => this.setState({ tools: !this.state.tools }), toolsChev: this.state.tools ? 'rotate(180deg)' : 'rotate(0deg)',
       isPath: this.state.view === 'path', isPattern: this.state.view === 'pattern', isCompany: this.state.view === 'company',
       showSort: this.state.view !== 'company' && this.state.view !== 'map',
       sorts: SORTS.map(([k, label]) => ({
         label, on: this.state.sort === k,
-        bg: this.state.sort === k ? t.text : 'transparent', fg: this.state.sort === k ? t.bg : t.muted,
+        border: this.state.sort === k ? t.text : t.line, fg: this.state.sort === k ? t.text : t.muted,
         pick: () => this.setState({ sort: k })
       })),
       diffs: Object.keys(RANK).map((k) => {
@@ -3261,7 +3281,6 @@ class Component extends DCLogic {
       }),
       stages,
       trailFill: stageX(firstOpen) - X0,
-      lumiX: stageX(sel) - 18,
       stage: {
         num: sel + 1, name: S.name, meta: S.meta, blurb: S.blurb, why: S.why,
         state: SS.st === 'done' ? 'complete' : SS.st === 'now' ? SS.done + ' of ' + SS.all.length + ' solved' : 'not started',

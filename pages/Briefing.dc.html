@@ -52,6 +52,14 @@ button{font:inherit}
 .ds-tip{position:relative;display:inline-flex;vertical-align:middle}
 .ds-tip>[role="tooltip"]{display:none;position:fixed;z-index:60;width:max-content;max-width:min(300px,80vw);white-space:normal;text-transform:none;letter-spacing:normal}
 .ds-tip:hover>[role="tooltip"],.ds-tip:focus-within>[role="tooltip"]{display:block}
+/* Boxes (every page). .ds-box: the subtle 1px outline on any section, card, pane or block; about 10% of the text
+   colour, so it suits every theme. .ds-hit: add it to anything clickable: on hover or keyboard focus the outline
+   warms toward the accent and the background lifts a little. Never a flash; reduced motion turns the ease off. */
+.ds-box,.ds-hit{border:1px solid color-mix(in srgb,currentColor 10%,transparent);box-sizing:border-box}
+.ds-hit{cursor:pointer;transition:border-color 180ms ease,background-color 180ms ease}
+.ds-hit:hover{border-color:color-mix(in srgb,#C5F04A 50%,transparent);background-color:color-mix(in srgb,currentColor 4%,transparent)}
+.ds-hit:focus-visible{outline:2px solid color-mix(in srgb,#C5F04A 70%,transparent);outline-offset:2px;border-color:color-mix(in srgb,#C5F04A 50%,transparent)}
+@media (prefers-reduced-motion: reduce){.ds-hit{transition:none}}
 @media (max-width: 759px){
 [data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */

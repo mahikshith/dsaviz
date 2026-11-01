@@ -43,6 +43,7 @@ const WHY = {
     sd: ['Learn how large apps are built from servers, databases and queues.', 'Chat, video and shopping apps serve millions of people with designs like these.', 'Many interviews ask you to sketch how you would build a big app.'],
     ai: ['Learn how machines learn from examples, one step you can watch at a time.', 'Photo tagging, voice assistants and recommendations use these ideas.', 'More roles now ask about AI and ML, so knowing the basics helps.'],
     patterns: ['Learn the small set of repeatable methods behind most coding problems.', 'The same methods power search, maps, feeds and schedulers.', 'Interviewers pick problems that fit these methods, so you can spot them quickly.'],
+    complexity: ['Learn to tell how much work and memory a method needs as the input grows.', 'Search boxes, maps and feeds stay fast because someone checked how their work grows.', 'Almost every interview asks you for the time and space of your answer.'],
     git: ['Learn to save, share and undo changes to your code.', 'Almost every software team uses Git to work on the same code together.', 'Employers expect you to know Git, and it protects your own work.']
   }
 };

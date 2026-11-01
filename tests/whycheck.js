@@ -49,20 +49,20 @@ for (const n of names) {
 Object.keys(W.patterns).forEach((n) => { if (!names.has(n)) fail('pattern:' + n, 'in src/why.js but not a pattern the site has'); });
 
 // Hubs.
-['start', 'concepts', 'sd', 'ai', 'patterns', 'git'].forEach((h) => {
+['start', 'concepts', 'sd', 'ai', 'patterns', 'git', 'complexity'].forEach((h) => {
   const e = W.hubs[h];
   if (!e || e.length !== 3 || e.some((x) => !x)) fail('hub:' + h, 'needs three sentences in src/why.js');
 });
-Object.keys(W.hubs).forEach((h) => { if (!['start', 'concepts', 'sd', 'ai', 'patterns', 'git'].includes(h)) fail('hub:' + h, 'unknown hub'); });
+Object.keys(W.hubs).forEach((h) => { if (!['start', 'concepts', 'sd', 'ai', 'patterns', 'git', 'complexity'].includes(h)) fail('hub:' + h, 'unknown hub'); });
 
 // Every page that shows the fold has its marker and feeds it values.
-const pages = { AILesson: 'whyFromAbout', ConceptLesson: 'whyFromAbout', SDLesson: 'whyFromAbout', Chapter: 'whyFromAbout', Start: 'whyHub', Concepts: 'whyHub', SystemDesign: 'whyHub', AIML: 'whyHub', Patterns: 'whyHub', Git: 'whyHub', Briefing: 'whyPattern', Story: 'whyPattern' };
+const pages = { AILesson: 'whyFromAbout', ConceptLesson: 'whyFromAbout', SDLesson: 'whyFromAbout', Chapter: 'whyFromAbout', Start: 'whyHub', Concepts: 'whyHub', SystemDesign: 'whyHub', AIML: 'whyHub', Patterns: 'whyHub', Git: 'whyHub', Complexity: 'whyHub', Briefing: 'whyPattern', Story: 'whyPattern' };
 for (const [pg, fn] of Object.entries(pages)) {
   const s = read('pages', pg + '.dc.html');
   if (!s.includes('<!-- WHY -->') || !s.includes('{{why.does}}')) fail(pg, 'no Why block');
   if (!s.includes('why: whyVals(' + fn)) fail(pg, 'renderVals does not pass why: whyVals(' + fn + '(...))');
 }
 
-console.log('Why learn this: ' + lessons + ' lessons, ' + names.size + ' patterns, 6 hubs');
+console.log('Why learn this: ' + lessons + ' lessons, ' + names.size + ' patterns, 7 hubs');
 console.log(bad ? bad + ' problem(s)' : 'why clean');
 if (bad) process.exitCode = 1;

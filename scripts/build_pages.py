@@ -315,6 +315,7 @@ def main():
             if '// @@' + marker + '@@' in s:
                 s = block(s, '// @@' + marker + '@@', '// @@END-' + marker + '@@', abouts[key])
         s = block(s, '// @@SNAPSHOT@@', '// @@END-SNAPSHOT@@', abouts['snapshot'])
+        s = block(s, '// @@COMPLEXITY@@', '// @@END-COMPLEXITY@@', '// @@COMPLEXITY@@ — generated from src/complexity.js; edit that, then build.' + chr(10) + read('src', 'complexity.js') + '// @@END-COMPLEXITY@@')
         s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)
 
         s = block(s, '// @@CONCEPTS@@', '// @@END-CONCEPTS@@', concepts)

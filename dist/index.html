@@ -18890,7 +18890,7 @@ const ringLen = (r) => 2 * Math.PI * r;
 const markOf = (name) => name.split(/[\s&/-]+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
 // ---- the roadmap (shared/roadmap.js): every lane, node and edge, laid out on one canvas ----
-const RM_GEO = { w: 1296, gutter: 200, padX: 64, padY: 26, rowH: 60 };
+const RM_GEO = { w: 1296, gutter: 200, padX: 64, padY: 26, rowH: 76 };
 const RM_NODES = ROADMAP_NODES.concat(PATTERN_MAP.nodes.map(([name, label, col, row]) => ({ id: name, lane: 'patterns', label, col, row, name, group: name })));
 const RM_EDGES = PATTERN_MAP.edges.concat(ROADMAP_EDGES);
 const RM_BY = {}; RM_NODES.forEach((n) => { RM_BY[n.id] = n; });
@@ -19024,7 +19024,7 @@ function openCode(id) {
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), view: 'map', node: null, intro: {}, stage: 1, sort: 'pattern', diffs: {}, open: { 'Two Pointers': true }, company: 'MAANG', query: '', expanded: 'two-sum-ii' };
+    this.state = { theme: loadTheme(), view: 'map', node: null, intro: {}, stage: 1, sort: 'pattern', diffs: {}, open: { 'Two Pointers': true }, company: 'MAANG', query: '', expanded: null, soon: false, tools: false };
   }
   componentDidMount() {
     listenTheme(this);
@@ -19039,6 +19039,22 @@ class Component extends DCLogic {
     const lessons = DS.lessons().ids;
     const stat = {}; RM_NODES.forEach((n) => { stat[n.id] = rmStatus(n, prog, lessons); });
     const nextId = rmNext(stat);
+    const showSoon = !!this.state.soon;
+    const soonCount = RM_NODES.filter((n) => stat[n.id].st === 'soon').length;
+    // Unfinished topics stay behind a fold; the lanes close up around the topics that are shown.
+    RM_NODES.forEach((n) => { n.vis = showSoon || stat[n.id].st !== 'soon' || n.id === this.state.node; });
+    let layY = 0;
+    RM_LANES.forEach((l) => {
+      const ns = l.nodes.filter((n) => n.vis);
+      l.hidden = !ns.length;
+      l.top = layY;
+      if (l.hidden) { l.h = 0; return; }
+      const rows = ns.map((n) => n.row).filter((r, i, a) => a.indexOf(r) === i).sort((a, b) => a - b);
+      l.h = Math.max(RM_GEO.padY + 17 + (rows.length - 1) * RM_GEO.rowH + 45 + 24, l.key === "start" || l.key === "core" ? 216 : 176);
+      ns.forEach((n) => { n.y = Math.round(l.top + RM_GEO.padY + 17 + rows.indexOf(n.row) * RM_GEO.rowH); });
+      layY += l.h;
+    });
+    const rmH = layY;
     const selId = RM_BY[this.state.node] ? this.state.node : null;
     const phone = dsPhone();
     const pick = (id) => () => { this.setState({ node: id, fold: false }); rmFocus('[data-rm-title]'); if (!phone) rmReveal(id); };
@@ -19059,8 +19075,8 @@ class Component extends DCLogic {
       }
       return live.filter((n) => stat[n.id].st === 'done').length + ' of ' + live.length + ' done' + (live.length < l.nodes.length ? ' · ' + (l.nodes.length - live.length) + ' coming soon' : '');
     };
-    const lanes = RM_LANES.map((l, i) => ({
-      key: l.key, n: l.n, title: l.title, line: l.line, count: laneCount(l), anchor: 'rm-lane-' + l.key,
+    const lanes = RM_LANES.filter((l) => !l.hidden).map((l, i) => ({
+      key: l.key, n: i + 1, title: l.title, line: l.line, count: laneCount(l), anchor: 'rm-lane-' + l.key,
       soon: l.nodes.every((n) => stat[n.id].st === 'soon'), live: l.nodes.some((n) => stat[n.id].st !== 'soon'),
       top: l.top, h: l.h, labelTop: l.top + 16, border: i ? t.line : 'transparent',
       // On phones a lane that is all coming soon starts folded, so the path stays short; jumping to it unfolds it.
@@ -19071,9 +19087,9 @@ class Component extends DCLogic {
       jump: () => { if (phone) this.setState({ lanes: Object.assign({}, this.state.lanes, { [l.key]: true }) }); setTimeout(() => rmJump(l.key), 30); },
       dots: l.nodes.map((n) => ({ bg: stat[n.id].st === 'todo' ? 'transparent' : tone(stat[n.id]), border: tone(stat[n.id]) })),
       // Phones read a lane top to bottom in learning order: column by column, except the core lane, which is one level per row.
-      items: phone ? l.nodes.slice().sort((a, b) => l.key === 'core' ? a.row - b.row || a.col - b.col : a.col - b.col || a.row - b.row).map((n) => {
+      items: phone ? l.nodes.filter((n) => n.vis).slice().sort((a, b) => l.key === 'core' ? a.row - b.row || a.col - b.col : a.col - b.col || a.row - b.row).map((n) => {
         const s = stat[n.id], next = n.id === nextId;
-        return { name: n.name, sub: s.st === 'soon' ? 'Coming soon' : RM_STATUS_WORD[s.st] + ' · ' + s.line, next, aria: aria(n), pick: pick(n.id),
+        return { id: n.id, name: n.name, sub: s.st === 'soon' ? 'Coming soon' : RM_STATUS_WORD[s.st] + ' · ' + s.line, next, aria: aria(n), pick: pick(n.id),
           mark: s.st === 'done' ? '✓' : markOf(n.label), markFg: s.st === 'done' ? t.ok : s.st === 'soon' ? t.muted : t.text,
           ring: tone(s), ringStyle: s.st === 'soon' ? 'dashed' : 'solid', border: next ? t.accent : t.line, bg: next ? t.sunk : t.surface,
           nameFg: s.st === 'soon' ? t.text2 : t.text };
@@ -19083,28 +19099,30 @@ class Component extends DCLogic {
     const edges = [];
     if (!phone) RM_EDGES.forEach(([a, b]) => {
       const A = RM_BY[a], B = RM_BY[b];
+      if (!A.vis || !B.vis) return;
       const into = b === selId, out = a === selId;
       let d;
       if (A.lane === B.lane) {
         const x1 = A.x + 20, x2 = B.x - 20, dx = (x2 - x1) / 2;
         // Same row with a node in between: dip under it.
-        const dip = A.row === B.row && RM_LANE_OF[A.lane].nodes.some((m) => m.row === A.row && m.col > A.col && m.col < B.col) ? 50 : 0;
+        const dip = A.row === B.row && RM_LANE_OF[A.lane].nodes.some((m) => m.vis && m.row === A.row && m.col > A.col && m.col < B.col) ? 56 : 0;
         d = 'M' + x1 + ' ' + A.y + ' C' + (x1 + dx) + ' ' + (A.y + dip) + ' ' + (x2 - dx) + ' ' + (B.y + dip) + ' ' + x2 + ' ' + B.y +
           ' M' + (x2 - 6) + ' ' + (B.y - 4) + ' L' + x2 + ' ' + B.y + ' L' + (x2 - 6) + ' ' + (B.y + 4);
       } else if (into || out) {
         // Between lanes: out under the node, along the row gap to the channel left of the first column, down it,
         // then along the gap above the target's row and into its top. The gaps hold no nodes or labels.
-        const y1 = A.y + 37, y2 = B.y - 23, ch = RM_GEO.gutter - 18, end = B.y - 18;
-        d = 'M' + A.x + ' ' + (A.y + 31) + ' V' + y1 + ' H' + ch + ' V' + y2 + ' H' + B.x + ' V' + end +
+        const y1 = A.y + 52, y2 = B.y - 24, ch = RM_GEO.gutter - 18, end = B.y - 18;
+        d = 'M' + A.x + ' ' + (A.y + 45) + ' V' + y1 + ' H' + ch + ' V' + y2 + ' H' + B.x + ' V' + end +
           ' M' + (B.x - 4) + ' ' + (end - 6) + ' L' + B.x + ' ' + end + ' L' + (B.x + 4) + ' ' + (end - 6);
       } else return;
       edges.push({ d, color: into ? t.accent : out ? t.text2 : t.faint, width: into || out ? 2.5 : 1.5, dash: A.lane === B.lane ? 'none' : '5 5', hot: into || out });
     });
     edges.sort((a, b) => (a.hot ? 1 : 0) - (b.hot ? 1 : 0));
     // The road down the gutter, joining each lane's number to the next.
-    const road = RM_LANES.slice(0, -1).map((l, i) => ({ d: 'M20 ' + (l.top + 46) + ' L20 ' + (RM_LANES[i + 1].top + 14) }));
+    const shown = RM_LANES.filter((l) => !l.hidden);
+    const road = shown.slice(0, -1).map((l, i) => ({ d: 'M20 ' + (l.top + 46) + ' L20 ' + (shown[i + 1].top + 14) }));
     // Nodes render lane by lane, column by column, so Tab walks the roadmap in reading order.
-    const nodes = phone ? [] : RM_LANES.reduce((a, l) => a.concat(l.nodes), []).map((n) => {
+    const nodes = phone ? [] : RM_LANES.reduce((a, l) => a.concat(l.nodes), []).filter((n) => n.vis).map((n) => {
       const s = stat[n.id], pr = s.pr, sel = n.id === selId;
       const near = !!selId && (RM_PRE[selId].includes(n.id) || RM_POST[selId].includes(n.id));
       const two = !!(pr && pr.sTotal);
@@ -19116,7 +19134,7 @@ class Component extends DCLogic {
         id: n.id, label: n.label, sel, next, soon, aria: aria(n), pick: pick(n.id),
         // A lane that is all coming soon says so once in its header; a SOON tag marks soon topics in a lane that is partly live.
         soonTag: soon && RM_LANE_OF[n.lane].nodes.some((m) => stat[m.id].st !== 'soon'),
-        left: n.x - 58, top: n.y - 17,
+        left: n.x - 66, top: n.y - 17,
         bg: sel ? t.sunk : 'transparent', border: sel ? t.text : 'transparent',
         labelFg: sel || near ? t.text : soon ? t.muted : t.text2, labelBg: sel ? t.sunk : t.surface,
         trackDash: soon ? '3 3' : 'none', trackW: soon ? 1.5 : 3.5, trackStroke: soon ? t.faint : sel ? t.line2 : t.sunk,
@@ -19165,7 +19183,7 @@ class Component extends DCLogic {
       };
     }
     return {
-      desk: !phone, phone, w: RM_GEO.w, reserve: selId && !phone ? RM_DRAWER_W + 16 : 0, drawerW: RM_DRAWER_W, h: RM_H, gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
+      desk: !phone, phone, w: RM_GEO.w, reserve: selId && !phone ? RM_DRAWER_W + 16 : 0, drawerW: RM_DRAWER_W, h: rmH, showSoon, soonLabel: showSoon ? 'Hide topics that are coming soon' : 'Show ' + soonCount + ' topics that are coming soon', toggleSoon: () => this.setState({ soon: !showSoon }), gutterW: RM_GEO.gutter - 48, lanes, nodes, edges, road, next, card,
       key: (e) => { if (e.key === 'Escape' && selId) { e.preventDefault(); close(); } }
     };
   }
@@ -19195,8 +19213,10 @@ class Component extends DCLogic {
         statusLabel: p.status === 'done' ? 'Solved' : p.status === 'now' ? 'In progress' : 'Not started',
         statusRing: p.status === 'done' ? t.ok : p.status === 'now' ? t.accent : t.line2,
         statusFill: p.status === 'done' ? t.ok : 'transparent',
-        cta: resumeLabel(p), verb: resumeVerb(p), href: solveHref(p.id),
+        cta: resumeLabel(p), verb: resumeVerb(p), href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html',
         go: () => saveProblem(p.id),
+        watch: p.animated ? 'Watch' : 'Read', watchAria: (p.animated ? 'Watch the story for ' : 'Read about ') + p.title,
+        codeHref: solveHref(p.id), codeGo: () => saveProblem(p.id), codeAria: 'Write code for ' + p.title,
         open: this.state.expanded === p.id,
         toggle: () => this.setState({ expanded: this.state.expanded === p.id ? null : p.id }),
         cast: (PATTERNS.find(([n]) => n === p.pattern) || [])[2] || '',
@@ -19221,7 +19241,7 @@ class Component extends DCLogic {
       const ss = stageState[i];
       const isSel = i === sel;
       return {
-        name: s.name, sel: isSel, x: stageX(i) - 65,
+        idx: i + 1, name: s.name, sel: isSel, x: stageX(i) - 65,
         aria: 'Stage ' + (i + 1) + ': ' + s.name + ', ' + (ss.st === 'done' ? 'complete' : ss.st === 'now' ? 'in progress' : 'not started'),
         mark: ss.st === 'done' ? '✓' : String(i + 1),
         bg: ss.st === 'done' ? t.ok : ss.st === 'now' ? t.accent : t.surface,
@@ -19245,7 +19265,7 @@ class Component extends DCLogic {
       return {
         num: String(i + 1).padStart(2, '0'), idx: i, name, tag, rows, open,
         cosLine: topCompanies(all, 3).join(' · '),
-        progress: done + ' of ' + all.length + ' solved',
+        progress: done + ' of ' + all.length + (all.length === 1 ? ' story done' : ' stories done'),
         pct: Math.round((done / all.length) * 100) + '%',
         chev: open ? 'rotate(180deg)' : 'rotate(0deg)',
         border: open ? t.line2 : t.line,
@@ -19282,7 +19302,7 @@ class Component extends DCLogic {
     const rm = this.state.view === 'map' ? this.roadmapVals(t) : { card: { open: false } };
     return {
       t, ...navVals(this, t, themeKey, 'Patterns'),
-      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; return { story: p.title, label: resumeVerb(p), href: solveHref(p.id), go: () => saveProblem(p.id) }; })(),
+      resume: (() => { const p = loadProblem() || PROBLEMS.find((x) => x.animated && x.status !== 'done') || PROBLEMS[0]; const quiet = this.state.view === 'map'; return { label: resumeLabel(p), href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id), bg: quiet ? t.surface : t.accent, fg: quiet ? t.text : t.onAccent }; })(),
       themeBtns: [['max', 'Max'], ['paper', 'Light'], ['ink', 'Dark'], ['field', 'Terminal']].map(([k, label]) => ({
         label, on: themeKey === k,
         bg: themeKey === k ? t.text : 'transparent', fg: themeKey === k ? t.bg : t.muted,
@@ -19292,16 +19312,17 @@ class Component extends DCLogic {
       onQuery: (e) => this.setState({ query: e.target.value }),
       views: VIEWS.map(([k, label]) => ({
         label, on: this.state.view === k,
-        bg: this.state.view === k ? t.surface : 'transparent', fg: this.state.view === k ? t.text : t.muted,
+        line: this.state.view === k ? t.text : 'transparent', fg: this.state.view === k ? t.text : t.muted,
         pick: () => this.setState({ view: k })
       })),
       viewLine: this.state.view === 'map' ? '' : VIEW_LINES[this.state.view],
-      rm, isMap: this.state.view === 'map', showSearch: this.state.view !== 'map', showFilters: this.state.view !== 'map',
+      rm, isMap: this.state.view === 'map', showFilters: this.state.view !== 'map', tools: !!this.state.tools, showTools: !!this.state.tools && this.state.view !== 'map',
+      toggleTools: () => this.setState({ tools: !this.state.tools }), toolsChev: this.state.tools ? 'rotate(180deg)' : 'rotate(0deg)',
       isPath: this.state.view === 'path', isPattern: this.state.view === 'pattern', isCompany: this.state.view === 'company',
       showSort: this.state.view !== 'company' && this.state.view !== 'map',
       sorts: SORTS.map(([k, label]) => ({
         label, on: this.state.sort === k,
-        bg: this.state.sort === k ? t.text : 'transparent', fg: this.state.sort === k ? t.bg : t.muted,
+        border: this.state.sort === k ? t.text : t.line, fg: this.state.sort === k ? t.text : t.muted,
         pick: () => this.setState({ sort: k })
       })),
       diffs: Object.keys(RANK).map((k) => {
@@ -19313,7 +19334,6 @@ class Component extends DCLogic {
       }),
       stages,
       trailFill: stageX(firstOpen) - X0,
-      lumiX: stageX(sel) - 18,
       stage: {
         num: sel + 1, name: S.name, meta: S.meta, blurb: S.blurb, why: S.why,
         state: SS.st === 'done' ? 'complete' : SS.st === 'now' ? SS.done + ' of ' + SS.all.length + ' solved' : 'not started',

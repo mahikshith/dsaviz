@@ -1,4 +1,4 @@
-// ---------- In-place Reversal: the conductor the conductor ----------
+// ---------- In-place Reversal: the conductor ----------
 
 // Turning the Train Around — Reverse Linked List
 function rvTrainScene() {
@@ -56,7 +56,7 @@ function rvTrainScene() {
     },
     rules: [['Start at the front, nothing behind', 'intro'], ['First carriage → hook it to None', 'tail'], ['Next carriage → hook it to the one behind', 'flip'], ['Nothing ahead → the last carriage is the new front', 'found']],
     complexity: [['O(n)', 'each hook is turned once'], ['O(1)', 'three hands, no spare train']],
-    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station the other way round. There is no turntable and no spare track.', 'The conductor the conductor may only change where each carriage’s hook points. Can he turn the whole train around?'],
+    quest: ['A train of five carriages, 2, 7, 4, 9, 5, has to leave the station the other way round. There is no turntable and no spare track.', 'The conductor may only change where each carriage’s hook points. Can he turn the whole train around?'],
     example: ['head = 2 → 7 → 4 → 9 → 5', 'answer = 5 → 9 → 4 → 7 → 2'],
     hints: ['“You cannot pick up the carriages. What can you change about each one?”', '“If you turn a hook to point backward, how do you still reach the rest of the train?”', '“Hold three things: the carriage behind, the one you are on, and the one ahead. Save the one ahead before you turn the hook.”'],
     clues: ['each carriage only knows the next', 'no spare train allowed', 'every hook must point the other way'],

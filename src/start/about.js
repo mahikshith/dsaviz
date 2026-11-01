@@ -286,7 +286,7 @@ const START_ABOUT = {
       ['loop variable', 'The name that holds the current value on each lap, such as tree.']
     ],
     math: null,
-    steps: ['Write for, a name, in, range(...) and a colon.', 'Python puts the first number in the name.', 'It runs the indented block.', 'It moves to the next number and runs the block again.', 'When the numbers run out, the loop ends and the program carries on.'],
+    steps: ['Write for, a name you choose, the word in, a range of numbers, and a colon.', 'Python puts the first number in the name.', 'It runs the indented block.', 'It moves to the next number and runs the block again.', 'When the numbers run out, the loop ends and the program carries on.'],
     use: ['You know how many times to repeat.', 'You want to do the same thing for every number in a run.'],
     avoid: ['Writing the same line many times by hand.', 'Changing the loop variable inside the block.'],
     mistakes: ['Off by one: range(5) stops at 4. Fix: range(5) gives 0 to 4. For 1 to 5 write range(1, 6).', 'Forgetting the colon after range. Fix: add a : at the end of the for line.', 'Forgetting to indent the block. Fix: indent every line that should repeat.'],
@@ -323,32 +323,30 @@ const START_ABOUT = {
     words: [
       ['accumulator', 'A variable that collects a result, a bit at a time, across loop laps.'],
       ['total', 'The running sum so far.'],
-      ['initialise', 'To give a variable its first value before it is used.'],
-      ['update', 'To change a variable using its old value, such as total = total + c.'],
+      ['start value', 'The first value you give a variable before the loop, such as total = 0.'],
+      ['change', 'To give a variable a new value made from its old one, such as total = total + day.'],
       ['loop', 'Lines that repeat, lap after lap.']
     ],
     math: {
-      lines: ['T_0 = 0', 'T_k = T_{k-1} + x_k'],
+      lines: ['start: total = 0', 'each lap: new total = old total + this value'],
       symbols: [
-        ['T_0', 'the total before any lap. We start it at 0'],
-        ['T_k', 'the total after lap number k'],
-        ['T_{k-1}', 'the total after the lap before'],
-        ['x_k', 'the value used on lap k'],
-        ['k', 'the lap number: 1, 2, 3 and so on']
+        ['total', 'the sum so far'],
+        ['old total', 'the total before this lap'],
+        ['this value', 'the number added on this lap']
       ],
       example: [
-        'The list is 4, 7, 2. We start with T_0 = 0.',
-        'Lap 1 adds 4, so T_1 = 0 + 4 = 4.',
-        'Lap 2 adds 7, so T_2 = 4 + 7 = 11.',
-        'Lap 3 adds 2, so T_3 = 11 + 2 = 13.',
-        'The loop ends and the total is 13.'
+        'The numbers are 1, 2, 3 and 4. We start with total = 0.',
+        'Lap 1 adds 1, so the new total is 0 + 1 = 1.',
+        'Lap 2 adds 2, so the new total is 1 + 2 = 3.',
+        'Lap 3 adds 3, so the new total is 3 + 3 = 6.',
+        'Lap 4 adds 4, so the new total is 6 + 4 = 10. The loop ends.'
       ]
     },
-    steps: ['Before the loop, set total = 0.', 'Start a loop over the values.', 'On each lap, update the total with total = total + c.', 'Do not touch the total anywhere else.', 'After the loop ends, use the total.'],
+    steps: ['Before the loop, set total = 0.', 'Start a loop over the numbers.', 'On each lap, change the total with total = total + day.', 'Do not touch the total anywhere else.', 'After the loop ends, use the total.'],
     use: ['You need a sum, a count, or a product across many values.', 'You want one answer from many numbers.'],
     avoid: ['Starting the total inside the loop, which wipes it each lap.', 'Using it for a task with one value.'],
     mistakes: ['Resetting the total inside the loop. Fix: put total = 0 before the loop, not inside it.', 'Forgetting to start at 0. Fix: a variable must have a value before you add to it.', 'Printing inside the loop when you want one total. Fix: print after the loop ends.'],
-    cheat: ['total = 0', 'for c in counts:', '    total = total + c', 'print(total) after the loop', 'start before, update inside'],
+    cheat: ['total = 0', 'for day in range(1, 5):', '    total = total + day', 'print(total) after the loop', 'start before, change inside'],
     next: ['lists'],
     sources: [PY_TUT + 'controlflow.html#for-statements', PY_REF + 'simple_stmts.html#augmented-assignment-statements']
   },
@@ -432,7 +430,7 @@ const START_ABOUT = {
     use: ['You need to visit every cell in a grid.', 'You need every pairing of two groups.'],
     avoid: ['Nesting when one loop would do.', 'Nesting many loops deep, which gets slow.'],
     mistakes: ['Mixing up the inner and outer counters. Fix: name them clearly, such as row and col.', 'Wrong indentation, so the print is in the wrong loop. Fix: line it up with the loop it belongs to.', 'Forgetting that the inner loop restarts every time. Fix: set up its variables inside the outer loop.'],
-    cheat: ['for row in range(3):', '    for col in range(4):', 'inner loop finishes first', '3 × 4 = 12 laps in all', 'indent each level more'],
+    cheat: ['for row in range(3):', '    for col in range(4):', 'inner loop finishes first', '3 * 4 = 12 laps in all', 'indent each level more'],
     next: ['functions'],
     sources: [PY_TUT + 'controlflow.html#for-statements', PY_REF + 'compound_stmts.html#the-for-statement']
   },

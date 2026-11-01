@@ -11,6 +11,7 @@ const SEARCH_TYPES = {
   sd: ['System design', 'SDLesson.dc.html', 'dsaviz-sd-lesson', 2],
   ai: ['AI & ML', 'AILesson.dc.html', 'dsaviz-ai-lesson', 2],
   dsa: ['DSA concepts', 'ConceptLesson.dc.html', 'dsaviz-concept-lesson', 2.2],
+  cplx: ['Complexity', 'Complexity.dc.html', 'dsaviz-complexity-at', 2.4],
   term: ['Glossary', 'Glossary.dc.html', 'dsaviz-glossary-term', 1.5],
   sheet: ['Master sheet', 'Sheet.dc.html', 'dsaviz-sheet-focus', 1]
 };

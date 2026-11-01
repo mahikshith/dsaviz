@@ -286,7 +286,7 @@
 <details class="ds-fold" style="border-bottom: 1px solid {{t.line}}"><summary class="ds-hit" style="min-height: 48px; padding: 0 4px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: var(--fs18); font-weight: 700; color: {{t.text}}"><span style="flex-grow: 1">Common questions</span><svg class="ds-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
 <dl style="margin: 0; padding: 12px 4px 16px; display: flex; flex-direction: column; gap: 16px">
 <sc-for list="{{cr.faq.items}}" as="fq" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 4px"><dt style="font-size: var(--fs17); font-weight: 700; color: {{t.text}}">{{fq.q}}</dt><dd style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{fq.a}}</dd></div></sc-for>
-</dl>
+</dl><a href="Complexity.dc.html?at=grow" style="align-self: flex-start; font-size: var(--fs16); font-weight: 600; color: {{t.link}}">What do O(n) and O(1) mean?</a>
 </details>
 </sc-if>
 </section>

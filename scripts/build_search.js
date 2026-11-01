@@ -64,6 +64,7 @@ function build() {
   const ctrack = {};
   D.dsa.CS_TRACKS.forEach((t) => { ctrack[t.id] = t.short; });
   D.dsa.CS_LESSONS.forEach((L) => add('dsa', L.id, L.title, ctrack[L.track] + ' · ' + L.tag, L.groups.concat(['concept', 'lesson'])));
+  [['grow', 'How fast steps grow', 'big o growth chart'], ['rules', 'How to work out complexity', 'big o loops recursion amortized'], ['space', 'Space complexity', 'memory call stack'], ['ds', 'Data structure costs', 'big o table array hash tree'], ['sort', 'Sorting algorithm costs', 'big o table stable'], ['graph', 'Graph algorithm costs', 'big o table dijkstra bfs'], ['patterns', 'Pattern costs', 'time space table'], ['target', 'Input size tells you the target', 'constraints n limit']].forEach(([id, title, kw]) => add('cplx', id, title, 'Complexity reference', ['time complexity', 'space complexity', 'big o'].concat(kw.split(' '))));
   D.KEYWORDS.forEach((k) => add('term', k.id, k.id, k.gist, [k.cat]));
   D.SHEET.forEach((r) => add('sheet', r.id, r.name, r.pattern + ' · ' + r.diff));
   // only the 16 patterns count here; stories in sheet groups (Graphs, Tries) are extra

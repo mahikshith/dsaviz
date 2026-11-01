@@ -5,6 +5,7 @@ const MENU = [
   ['Concepts.dc.html', 'DSA concepts', 'Big-O, sorts, hashing, trees, graphs and math, animated', null],
   ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Snapshot.dc.html', 'Snapshot', 'Quick revision of every lesson', null],
+  ['Complexity.dc.html', 'Complexity', 'Big-O growth, how to work it out, cost tables', null],
   ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
   ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
   ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],

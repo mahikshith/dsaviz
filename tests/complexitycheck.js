@@ -144,5 +144,17 @@ if (!/const LAYOUT_PAGES = \[[^\]]*'Complexity'/.test(st)) fail('wiring', 'Compl
 if (!/page\.indexOf\('@@COMPLEXITY@@'\)|@@COMPLEXITY@@/.test(page) || !page.includes('function cxLog10(')) fail('wiring', 'src/complexity.js is not built into the page (run npm run build)');
 
 console.log('Complexity: ' + Object.entries(want).map(([k, v]) => k + ' ' + v).join(', ') + ', 7 curves, ' + rules.length + ' rules, ' + count + ' sentences read');
+// Links into the page name a real section.
+{
+  const fs2 = require('fs'), path2 = require('path');
+  const home = path2.join(__dirname, '..');
+  const page = fs2.readFileSync(path2.join(home, 'pages', 'Complexity.dc.html'), 'utf8');
+  ['pages/Code.dc.html', 'pages/Story.dc.html', 'pages/Snapshot.dc.html'].forEach((f) => {
+    const s2 = fs2.readFileSync(path2.join(home, f), 'utf8');
+    if (!s2.includes('Complexity.dc.html')) throw new Error(f + ' has no link to Complexity');
+    for (const m of s2.matchAll(/Complexity\.dc\.html\?at=(\w+)/g)) if (!page.includes('"' + m[1] + '"') && !page.includes("'" + m[1] + "'")) throw new Error(f + ' links to missing section ' + m[1]);
+  });
+}
+
 console.log(bad ? bad + ' problem(s)' : 'complexity clean');
 if (bad) process.exitCode = 1;

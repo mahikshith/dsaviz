@@ -108,5 +108,17 @@ const CS = new Function(read('src', 'concepts', 'lessons.js') + '\nreturn { CS_L
   console.log('DSA concepts: ' + n + ' sentences, average ' + (total / n).toFixed(1) + ' words, ' + over + ' over ' + MAX_WORDS + ' words, ' + banned + ' talking-down words or idioms');
 }
 
+// ---------- "Why learn this?" text (src/why.js, enforced) ----------
+// Patterns and hubs: three sentences each, held to the same rules, and no story names.
+{
+  const W = new Function(read('src', 'why.js') + String.fromCharCode(10) + 'return WHY;')();
+  const parts = [];
+  Object.entries(W.patterns).forEach(([k, list]) => list.forEach((x, i) => parts.push(['why pattern ' + k + ' #' + (i + 1), x])));
+  Object.entries(W.hubs).forEach(([k, list]) => list.forEach((x, i) => parts.push(['why hub ' + k + ' #' + (i + 1), x])));
+  const r = measure('why', parts, [], true);
+  parts.forEach(([where, text]) => { if (/\b(Old Hoot|Dot|Bolt|Lumi|Roo)\b/.test(text)) fail('why ' + where, 'names a story character'); });
+  console.log('Why learn this: ' + r.n + ' sentences, average ' + r.avg.toFixed(1) + ' words');
+}
+
 console.log(problems ? problems + ' problem(s)' : 'readability clean');
 if (problems) process.exitCode = 1;

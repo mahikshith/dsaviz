@@ -42,4 +42,19 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
   };
   return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About')] : [], A };
 }
+// "Why learn this?" fold (markup: shared/ui/why.html, text for patterns and hubs: src/why.js). A lesson with About data builds it from
+// the About fields: the first sentence of `what`, then the first two `uses`. Patterns and hubs read WHY: [does, app, interview].
+function whyFromAbout(a) {
+  if (!a || !a.what) return null;
+  const m = String(a.what).match(/^.*?[.!?](?=\s|$)/);
+  return { does: m ? m[0] : String(a.what), where: (a.uses || []).slice(0, 2) };
+}
+function whyFromWhy(list) { return list ? { does: list[0], where: list.slice(1) } : null; }
+function whyPattern(name) { return typeof WHY !== 'undefined' ? whyFromWhy(WHY.patterns[name]) : null; }
+function whyHub(key) { return typeof WHY !== 'undefined' ? whyFromWhy(WHY.hubs[key]) : null; }
+// w: { does, where: [text] } or null. The markup shows nothing when w is null.
+function whyVals(w) {
+  const b = w || { does: '', where: [] };
+  return { has: !!w, does: b.does, where: b.where.map((text) => ({ text })), hasWhere: b.where.length > 0 };
+}
 // @@END-ABOUT@@

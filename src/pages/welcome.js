@@ -1,18 +1,18 @@
 // ---- page ----
 const ONBOARD_KEY = 'dsaviz-onboard';
 const REASONS = [
-  ['placements', '🎓', 'Campus placements', 'Online assessments and interviews are coming up'],
-  ['switch', '💼', 'Switching jobs', 'I code for a living, but DSA rounds scare me'],
-  ['maang', '🎯', 'FAANG / MAANG prep', 'Aiming for Google, Amazon, Microsoft and the like'],
-  ['fun', '🌱', 'Learning for the joy of it', 'I want to finally understand how this stuff works']
+  ['placements', '', 'Campus placements', 'Online assessments and interviews are coming up'],
+  ['switch', '', 'Switching jobs', 'I code for a living, but DSA rounds scare me'],
+  ['maang', '', 'FAANG / MAANG prep', 'Aiming for Google, Amazon, Microsoft and the like'],
+  ['fun', '', 'Learning for the joy of it', 'I want to finally understand how this stuff works']
 ];
 const LEVELS = [
-  ['zero', '✏️', 'I’ve never really written code', 'We’ll start with Start here: tiny lessons from your very first line of code', 'Start.dc.html', 'strings'],
-  ['lang', '🧩', 'I know a language, but not DSA', 'Start the learning path at Strings — two friends on a hallway', 'Story.dc.html', 'strings'],
-  ['some', '⚙️', 'I’ve solved some practice problems', 'Jump to patterns: Two Pointers, Sliding Window, Hash Map', 'Story.dc.html', 'arrays'],
-  ['ready', '🚀', 'Interview-ready, just need a refresh', 'Revisit daily, then mock interviews and company tracks', 'Interview.dc.html', 'arrays']
+  ['zero', '', 'I’ve never really written code', 'We’ll start with Start here: tiny lessons from your very first line of code', 'Start.dc.html', 'strings'],
+  ['lang', '', 'I know a language, but not DSA', 'Start the learning path at Strings — two friends on a hallway', 'Story.dc.html', 'strings'],
+  ['some', '', 'I’ve solved some practice problems', 'Jump to patterns: Two Pointers, Sliding Window, Hash Map', 'Story.dc.html', 'arrays'],
+  ['ready', '', 'Interview-ready, just need a refresh', 'Revisit daily, then mock interviews and company tracks', 'Interview.dc.html', 'arrays']
 ];
-const GOALS = [['5', '☕', '5 minutes', 'Casual · one story step set'], ['10', '🚶', '10 minutes', 'Regular · most people pick this'], ['20', '🏃', '20 minutes', 'Serious · a story a day'], ['40', '🔥', '40 minutes', 'Intense · placement season mode']];
+const GOALS = [['5', '', '5 minutes', 'Casual · one story step set'], ['10', '', '10 minutes', 'Regular · most people pick this'], ['20', '', '20 minutes', 'Serious · a story a day'], ['40', '', '40 minutes', 'Intense · placement season mode']];
 const WLANGS = ['Python', 'Java', 'C++', 'JavaScript', 'Go'];
 const TIMES = [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'], ['21:30', '9:30 PM']];
 const CHANNELS = [['WhatsApp', 'WhatsApp'], ['Email', 'Email'], ['Push', 'App notification']];
@@ -56,7 +56,7 @@ class Component extends DCLogic {
     const pick = (key, v) => () => this.setState({ [key]: v });
     const card = (key) => ([v, icon, label, sub]) => {
       const on = st[key] === v;
-      return { icon, label, sub, on, border: on ? t.accent : t.line, bg: on ? t.warnBg : t.surface, pick: pick(key, v) };
+      return { icon, label, sub, on, border: on ? t.accent : 'transparent', bg: on ? t.warnBg : t.surface, pick: pick(key, v) };
     };
     const chip = (key) => ([v, label]) => {
       const on = st[key] === v;
@@ -95,10 +95,11 @@ class Component extends DCLogic {
       times: TIMES.map(chip('time')),
       channels: CHANNELS.map(chip('channel')),
       date: st.date, setDate: (e) => this.setState({ date: e.target.value }),
-      planLine: reasonLine + ' ' + GOALS.find(([g]) => g === st.goal)[2] + ' a day in ' + st.lang + ', with a nudge at ' + TIMES.find(([v]) => v === st.time)[1] + ' on ' + CHANNELS.find(([v]) => v === st.channel)[1] + '.' + countdown,
-      plan: plan.map(([what, kind], i) => {
+      planLine: reasonLine + ' ' + GOALS.find(([g]) => g === st.goal)[2] + ' a day in ' + st.lang + '. Reminders (' + TIMES.find(([v]) => v === st.time)[1] + ' on ' + CHANNELS.find(([v]) => v === st.channel)[1] + ') start when accounts launch.' + countdown,
+      plan: plan.map(([what0, kind], i) => {
+        const sp = PROBLEMS.find((x) => x.story === what0); const what = sp ? sp.title : what0;
         const d = new Date(today); d.setDate(today.getDate() + i);
-        return { day: i === 0 ? 'Today' : days[d.getDay()], what, kind, bg: i === 0 ? t.warnBg : t.surface, border: i === 0 ? t.accent : t.line, dayColor: i === 0 ? t.accent : t.muted };
+        return { day: i === 0 ? 'Today' : days[d.getDay()], what, kind, bg: i === 0 ? t.warnBg : t.surface, border: i === 0 ? t.accent : 'transparent', dayColor: i === 0 ? t.accent : t.muted };
       }),
       summary: [['Starting point', level[2]], ['Daily goal', GOALS.find(([g]) => g === st.goal)[2]], ['Price', 'Free in early access']].map(([k, v]) => ({ k, v })),
       atFirst: step === 0, backOp: step === 0 ? 0.4 : 1,

@@ -5,7 +5,7 @@ function csHubMobile() { try { return typeof window.innerWidth === 'number' && w
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: loadUser(), mobile: csHubMobile(), drawer: false };
+    this.state = { theme: loadTheme(), user: loadUser(), mobile: csHubMobile(), drawer: false, open: -1 };
   }
   componentDidMount() {
     listenTheme(this);
@@ -25,35 +25,32 @@ class Component extends DCLogic {
     const doneAll = CS_LESSONS.filter(isDone).length;
     const colors = [C.a, C.b, C.c, C.ok, C.a, C.b, C.c];
     const tracks = CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id));
-    // Desktop board height: the hero plus each row of three track cards (tallest card per row).
-    let boardH = 360;
-    for (let r = 0; r < tracks.length; r += 3) boardH += 196 + 52 * Math.max.apply(null, tracks.slice(r, r + 3).map((tr) => CS_LESSONS.filter((L) => L.track === tr.id).length));
+    const trk = tracks.map((tr, k) => {
+      const mine = CS_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === tr.id);
+      const groups = {}; mine.forEach(([L]) => L.groups.forEach((g) => { groups[g] = 1; }));
+      return {
+        id: tr.id, title: tr.title, blurb: tr.blurb, next: Object.keys(groups).join(' · '),
+        count: mine.length, done: mine.filter(([L]) => isDone(L)).length,
+        lessons: mine.map(([L, i], j) => ({
+          num: String(j + 1).padStart(2, '0'), title: L.title, done: isDone(L), rule: j === 0 ? 'transparent' : t.line,
+          aria: L.title + ', ' + csSteps(i).length + ' steps' + (isDone(L) ? ', finished' : ''),
+          meta: L.tag + ' · ' + csSteps(i).length + ' steps · ' + L.minutes + ' min' + (L.param ? ' · interactive' : ''),
+          chip: isDone(L) ? 'done' : 'start', chipFg: isDone(L) ? t.ok : t.muted,
+          go: () => { try { window.localStorage.setItem('dsaviz-concept-lesson', L.id); } catch (e) {} }
+        }))
+      };
+    });
+    const firstOpen = Math.max(0, trk.findIndex((x) => x.lessons.some((l) => !l.done)));
+    const openIdx = this.state.open === -1 ? firstOpen : this.state.open;
+    const allL = [].concat(...trk.map((x) => x.lessons));
+    const nextL = allL.find((x) => !x.done) || allL[0];
     return Object.assign({
       t, themeBtns: themeButtons(this, themeKey, t),
-      L: {
-        desk: !mobile, rootW: mobile ? 420 : 1440, rootH: mobile ? 'auto' : boardH + 'px', gutter: mobile ? 12 : 24,
-        pad: mobile ? '20px 16px 28px' : '22px 40px 24px', gap: 20,
-        heroCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) auto', h1: mobile ? 56 : 80, lead: mobile ? 16 : 17, chipJustify: mobile ? 'flex-start' : 'flex-end',
-        trackCols: mobile ? 'minmax(0, 1fr)' : 'repeat(3, minmax(0, 1fr))'
-      },
-      count: CS_LESSONS.length,
-      chips: [[CS_LESSONS.length, 'lessons'], [doneAll + ' / ' + CS_LESSONS.length, 'finished by you'], [steps, 'animated steps'], [Object.keys(tries).length, 'problems to try']].map(([n, label]) => ({ n, label })),
-      tracks: tracks.map((tr, k) => {
-        const mine = CS_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === tr.id);
-        const groups = {}; mine.forEach(([L]) => L.groups.forEach((g) => { groups[g] = 1; }));
-        return {
-          hid: 'cs-track-' + tr.id, num: k + 1, title: tr.title, blurb: tr.blurb, color: colors[k % colors.length], delay: (k * 0.06) + 's',
-          next: Object.keys(groups).join(' · '),
-          count: mine.length, done: mine.filter(([L]) => isDone(L)).length,
-          lessons: mine.map(([L, i], j) => ({
-            num: String(j + 1).padStart(2, '0'), title: L.title, done: isDone(L),
-            aria: L.title + ', ' + csSteps(i).length + ' steps' + (isDone(L) ? ', finished' : ''),
-            meta: L.tag + ' · ' + csSteps(i).length + ' steps · ' + L.minutes + ' min',
-            slider: !!L.param,
-            go: () => { try { window.localStorage.setItem('dsaviz-concept-lesson', L.id); } catch (e) {} }
-          }))
-        };
-      })
+      L: { desk: !mobile, rootW: mobile ? 420 : 1440, pad: mobile ? '24px 16px 32px' : '24px 48px 48px' },
+      total: { done: doneAll, count: CS_LESSONS.length },
+      resume: { text: (doneAll > 0 ? 'Continue: ' : 'Start with: ') + nextL.title, pick: nextL.go },
+      tracks: trk.map((x, k) => ({ ...x, open: k === openIdx, lessons: k === openIdx ? x.lessons : [], chev: k === openIdx ? 'rotate(180deg)' : 'rotate(0deg)',
+        toggle: () => this.setState({ open: k === openIdx ? -2 : k }) }))
     }, navVals(this, t, themeKey, 'Concepts'));
   }
 }

@@ -119,7 +119,7 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offs
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; min-height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 
 <!-- PILL NAV -->
 <style>
@@ -269,36 +269,35 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: {{L.pad}}; display: flex; flex-direction: column; gap: {{L.gap}}px">
-<section aria-labelledby="cs-hub-title" style="display: grid; grid-template-columns: {{L.heroCols}}; gap: 16px 40px; align-items: end">
-<div style="display: flex; flex-direction: column; gap: 10px">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{t.accent}}">NEW · {{count}} ANIMATED LESSONS</span>
-<h1 id="cs-hub-title" style="margin: 0; font-family: {{t.display}}; font-size: {{L.h1}}px; line-height: 0.95; font-weight: 700">DSA <span style="color: {{t.accent}}">concepts</span></h1>
-<p style="margin: 0; max-width: 640px; font-size: {{L.lead}}px; line-height: 1.5; color: {{t.text2}}">The ideas under every pattern, one screen each. Press play and watch it move, one change per step with one plain sentence. Every lesson ends with our own problems to try.</p>
+<main style="box-sizing: border-box; padding: {{L.pad}}; display: flex; flex-direction: column; gap: 24px; min-width: 0">
+
+<section aria-labelledby="cs-hub-title" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 id="cs-hub-title" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05">DSA concepts</h1>
+<p style="margin: 0; font-size: var(--fs18); color: {{t.muted}}">{{total.done}} of {{total.count}} lessons finished. The ideas under every pattern, one screen each.</p>
 </div>
-<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: {{L.chipJustify}}">
-<sc-for list="{{chips}}" as="ch" hint-placeholder-count="3"><span style="padding: 10px 14px; border-radius: 12px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 2px; min-width: 104px"><span style="font-family: {{t.mono}}; font-size: var(--fs24); font-weight: 800; color: {{t.text}}">{{ch.n}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{ch.label}}</span></span></sc-for>
-</div>
+<a data-resume href="ConceptLesson.dc.html" onClick="{{resume.pick}}" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; gap: 12px; align-items: center; font-size: var(--fs18); font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{resume.text}}</a>
 </section>
 
-<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: {{L.trackCols}}; gap: 20px; align-items: start">
-<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="2">
-<section class="cs-card" aria-labelledby="{{tr.hid}}" style="box-sizing: border-box; min-width: 0; padding: 18px 20px 14px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px; animation-delay: {{tr.delay}}">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
-<h2 id="{{tr.hid}}" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs26); line-height: 1.05; font-weight: 700">{{tr.title}}</h2>
-<span style="flex-shrink: 0; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{tr.color}}">TRACK {{tr.num}} · {{tr.done}}/{{tr.count}} DONE</span>
-</div>
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{tr.blurb}}</p>
-<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px">
-<sc-for list="{{tr.lessons}}" as="ls" hint-placeholder-count="6"><li><a class="cs-row" href="ConceptLesson.dc.html" onClick="{{ls.go}}" aria-label="{{ls.aria}}" style="min-height: 48px; box-sizing: border-box; padding: 5px 12px; border-radius: 10px; background: {{t.sunk}}; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 12px; align-items: center"><span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{tr.color}}">{{ls.num}}</span><span style="display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-size: var(--fs18); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ls.title}}</span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ls.meta}}</span></span><span style="display: flex; gap: 6px; align-items: center"><sc-if value="{{ls.done}}" hint-placeholder-val="{{ false }}"><span style="font-family: {{t.mono}}; font-size: var(--fs13); font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid {{t.ok}}; color: {{t.ok}}">done</span></sc-if><sc-if value="{{ls.slider}}" hint-placeholder-val="{{ true }}"><span style="font-family: {{t.mono}}; font-size: var(--fs13); font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid {{t.line2}}; color: {{t.text2}}">slider</span></sc-if><span aria-hidden="true" style="color: {{tr.color}}; font-weight: 700">→</span></span></a></li></sc-for>
-</ol>
-<div style="margin-top: auto; padding-top: 10px; border-top: 1px dashed {{t.line2}}; display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Feeds these sheet groups</span>
-<span style="font-size: var(--fs16); line-height: 1.5; color: {{t.text2}}">{{tr.next}}</span>
-</div>
-</section>
+<!-- one track per row, open on click -->
+<section aria-label="Tracks" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7">
+<div>
+<h2 style="margin: 0; font-weight: 400"><button onClick="{{tr.toggle}}" aria-expanded="{{tr.open}}" style="width: 100%; min-height: 72px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left"><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs32); font-weight: 600; letter-spacing: -0.01em; line-height: 1.15">{{tr.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{tr.done}} of {{tr.count}} done</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{tr.chev}}"><path d="M6 9l6 6 6-6"></path></svg></button></h2>
+<sc-if value="{{tr.open}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; max-width: 760px">{{tr.blurb}}</p>
+<ol style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
+<sc-for list="{{tr.lessons}}" as="ls" hint-placeholder-count="6">
+<li style="border-top: 1px solid {{ls.rule}}"><a href="ConceptLesson.dc.html" onClick="{{ls.go}}" aria-label="{{ls.aria}}" style="min-height: 72px; box-sizing: border-box; padding: 16px 0; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 16px; align-items: center"><span style="font-size: var(--fs17); font-weight: 600; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ls.meta}}</span></span><span style="font-size: var(--fs16); font-weight: 600; color: {{ls.chipFg}}">{{ls.chip}}</span></a></li>
 </sc-for>
+</ol>
+<p style="margin: 0; font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">Feeds these sheet groups: {{tr.next}}</p>
 </div>
+</sc-if>
+</div>
+</sc-for>
+</section>
 </main>
 </div>
 </x-dc>
@@ -3208,7 +3207,7 @@ function csHubMobile() { try { return typeof window.innerWidth === 'number' && w
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: loadUser(), mobile: csHubMobile(), drawer: false };
+    this.state = { theme: loadTheme(), user: loadUser(), mobile: csHubMobile(), drawer: false, open: -1 };
   }
   componentDidMount() {
     listenTheme(this);
@@ -3228,35 +3227,32 @@ class Component extends DCLogic {
     const doneAll = CS_LESSONS.filter(isDone).length;
     const colors = [C.a, C.b, C.c, C.ok, C.a, C.b, C.c];
     const tracks = CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id));
-    // Desktop board height: the hero plus each row of three track cards (tallest card per row).
-    let boardH = 360;
-    for (let r = 0; r < tracks.length; r += 3) boardH += 196 + 52 * Math.max.apply(null, tracks.slice(r, r + 3).map((tr) => CS_LESSONS.filter((L) => L.track === tr.id).length));
+    const trk = tracks.map((tr, k) => {
+      const mine = CS_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === tr.id);
+      const groups = {}; mine.forEach(([L]) => L.groups.forEach((g) => { groups[g] = 1; }));
+      return {
+        id: tr.id, title: tr.title, blurb: tr.blurb, next: Object.keys(groups).join(' · '),
+        count: mine.length, done: mine.filter(([L]) => isDone(L)).length,
+        lessons: mine.map(([L, i], j) => ({
+          num: String(j + 1).padStart(2, '0'), title: L.title, done: isDone(L), rule: j === 0 ? 'transparent' : t.line,
+          aria: L.title + ', ' + csSteps(i).length + ' steps' + (isDone(L) ? ', finished' : ''),
+          meta: L.tag + ' · ' + csSteps(i).length + ' steps · ' + L.minutes + ' min' + (L.param ? ' · interactive' : ''),
+          chip: isDone(L) ? 'done' : 'start', chipFg: isDone(L) ? t.ok : t.muted,
+          go: () => { try { window.localStorage.setItem('dsaviz-concept-lesson', L.id); } catch (e) {} }
+        }))
+      };
+    });
+    const firstOpen = Math.max(0, trk.findIndex((x) => x.lessons.some((l) => !l.done)));
+    const openIdx = this.state.open === -1 ? firstOpen : this.state.open;
+    const allL = [].concat(...trk.map((x) => x.lessons));
+    const nextL = allL.find((x) => !x.done) || allL[0];
     return Object.assign({
       t, themeBtns: themeButtons(this, themeKey, t),
-      L: {
-        desk: !mobile, rootW: mobile ? 420 : 1440, rootH: mobile ? 'auto' : boardH + 'px', gutter: mobile ? 12 : 24,
-        pad: mobile ? '20px 16px 28px' : '22px 40px 24px', gap: 20,
-        heroCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) auto', h1: mobile ? 56 : 80, lead: mobile ? 16 : 17, chipJustify: mobile ? 'flex-start' : 'flex-end',
-        trackCols: mobile ? 'minmax(0, 1fr)' : 'repeat(3, minmax(0, 1fr))'
-      },
-      count: CS_LESSONS.length,
-      chips: [[CS_LESSONS.length, 'lessons'], [doneAll + ' / ' + CS_LESSONS.length, 'finished by you'], [steps, 'animated steps'], [Object.keys(tries).length, 'problems to try']].map(([n, label]) => ({ n, label })),
-      tracks: tracks.map((tr, k) => {
-        const mine = CS_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === tr.id);
-        const groups = {}; mine.forEach(([L]) => L.groups.forEach((g) => { groups[g] = 1; }));
-        return {
-          hid: 'cs-track-' + tr.id, num: k + 1, title: tr.title, blurb: tr.blurb, color: colors[k % colors.length], delay: (k * 0.06) + 's',
-          next: Object.keys(groups).join(' · '),
-          count: mine.length, done: mine.filter(([L]) => isDone(L)).length,
-          lessons: mine.map(([L, i], j) => ({
-            num: String(j + 1).padStart(2, '0'), title: L.title, done: isDone(L),
-            aria: L.title + ', ' + csSteps(i).length + ' steps' + (isDone(L) ? ', finished' : ''),
-            meta: L.tag + ' · ' + csSteps(i).length + ' steps · ' + L.minutes + ' min',
-            slider: !!L.param,
-            go: () => { try { window.localStorage.setItem('dsaviz-concept-lesson', L.id); } catch (e) {} }
-          }))
-        };
-      })
+      L: { desk: !mobile, rootW: mobile ? 420 : 1440, pad: mobile ? '24px 16px 32px' : '24px 48px 48px' },
+      total: { done: doneAll, count: CS_LESSONS.length },
+      resume: { text: (doneAll > 0 ? 'Continue: ' : 'Start with: ') + nextL.title, pick: nextL.go },
+      tracks: trk.map((x, k) => ({ ...x, open: k === openIdx, lessons: k === openIdx ? x.lessons : [], chev: k === openIdx ? 'rotate(180deg)' : 'rotate(0deg)',
+        toggle: () => this.setState({ open: k === openIdx ? -2 : k }) }))
     }, navVals(this, t, themeKey, 'Concepts'));
   }
 }

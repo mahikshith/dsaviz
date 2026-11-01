@@ -2,7 +2,7 @@
 /* The shared page frame (shared/ui/shell.html, added to every page's helmet by the build). A page opts in with
    data-shell on its root div: the runtime then shows it at real size, with no zoom. Rules: docs/design/PLAN-2026-11.md. */
 [data-shell]{width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sh-bg);color:var(--sh-text);font-size:calc(18px * var(--ts, 1));line-height:1.6}
-[data-shell] h1{margin:0;font-size:calc(32px * var(--ts, 1));line-height:1.2;font-weight:600}
+[data-shell] h1{margin:0;font-family:'Anton',Impact,sans-serif;font-size:calc(32px * var(--ts, 1));line-height:1.2;font-weight:400;text-transform:uppercase;letter-spacing:0.01em}
 [data-shell] h2{margin:0;font-size:calc(26px * var(--ts, 1));line-height:1.25;font-weight:600}
 [data-shell] h3{margin:0;font-size:calc(22px * var(--ts, 1));line-height:1.3;font-weight:600}
 [data-shell] p{margin:0}
@@ -19,7 +19,7 @@ a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
 .sh-side{box-sizing:border-box;padding:16px 8px;border-right:1px solid var(--sh-line);position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
 .sh-side a{display:block;padding:6px 8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4}
 .sh-side a:hover{background:var(--sh-sunk)}
-.sh-side a[aria-current="page"]{background:var(--sh-sunk);font-weight:600}
+.sh-side a[aria-current="page"]{background:var(--sh-accent);color:var(--sh-on);font-weight:600}
 .sh-tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--sh-line);padding-bottom:8px}
 .sh-tab{height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
 .sh-tab[aria-selected="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}

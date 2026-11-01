@@ -154,7 +154,7 @@ function navVals(cmp, t, themeKey, page) {
         const live = NAV_PAGES.includes(href);
         return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
           live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.sunk : 'transparent', fg: t.text };
+          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
       }),
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',

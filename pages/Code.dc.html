@@ -32089,7 +32089,7 @@ class Component extends DCLogic {
       testCount: CODE_COUNT_LINE,
       hasStory: !!P.story, noStory: !P.story, hasTime: !!P.time,
       storyHref: 'Story.dc.html?from=code',
-      kicker: P.story ? 'Story · ' + P.story : isSql ? 'SQL · SQLite' : P.pattern,
+      kicker: isSql ? 'SQL · SQLite' : P.pattern,
       pickProblem: (e) => this.pickProblem(e && e.target ? e.target.value : e),
       examples: isSql ? [] : spec.examples.map(([args, want], i) => ({ input: showArgs(spec, args), output: showValue(want), why: H && H.why[i] ? H.why[i] : '', hasWhy: !!(H && H.why[i]) })),
       // the hint ladder: nudge, approach, key trick, one at a time

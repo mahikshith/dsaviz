@@ -5516,7 +5516,8 @@ class Component extends DCLogic {
       }));
     };
     const countOf = (groups) => ({ done: groups.reduce((s, g) => s + g.items.filter((i) => i.check).length, 0), total: groups.reduce((s, g) => s + g.items.length, 0) });
-    const l1 = DS.startCounts(1);
+    const startCount = DS.startCounts(1); // the same count as the Start here hub and the roadmap
+    const l1 = startCount;
     const coreC = [2, 3, 4, 5].map((lv) => DS.startCounts(lv));
     const sdGroups = hubGroups(HOME_SD, 'sd:', 'SDLesson.dc.html', 'dsaviz-sd-lesson');
     const aiGroups = hubGroups(HOME_AI, 'ai:', 'AILesson.dc.html', 'dsaviz-ai-lesson');
@@ -5548,7 +5549,7 @@ class Component extends DCLogic {
       const pct = Math.round((r.done / Math.max(1, r.total)) * 100);
       return {
         name: r.name, num: i + 1, groups: r.groups, links: r.links,
-        meta: state + ' · ' + r.done + ' of ' + r.total + ' ' + r.unit,
+        meta: state + ' · ' + (r.name === 'Start here' ? startCount.done + ' of ' + startCount.total + ' Level 1 lessons done' : r.done + ' of ' + r.total + ' ' + r.unit),
         isDone, isNext: !isDone && isNext, isLater: !isDone && !isNext,
         nbg: isDone ? tint(t.accent, '22') : isNext ? t.surface : t.sunk, nfg: isDone ? t.accent : isNext ? t.text : t.muted,
         ring: ringNow ? '0 0 0 2px ' + t.accent : 'none', fg: isDone || isNext ? t.text : t.muted,

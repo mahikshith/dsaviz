@@ -313,6 +313,7 @@ def main():
         for key, marker in (('ai', 'AI-ABOUT'), ('sd', 'SD-ABOUT'), ('concepts', 'CONCEPT-ABOUT'), ('start', 'START-ABOUT')):
             if '// @@' + marker + '@@' in s:
                 s = block(s, '// @@' + marker + '@@', '// @@END-' + marker + '@@', abouts[key])
+        s = block(s, '// @@SNAPSHOT@@', '// @@END-SNAPSHOT@@', abouts['snapshot'])
         s = block(s, '// @@AILESSONS@@', '// @@END-AILESSONS@@', ai_lessons)
 
         s = block(s, '// @@CONCEPTS@@', '// @@END-CONCEPTS@@', concepts)

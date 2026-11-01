@@ -1,10 +1,335 @@
 // About-this-lesson content for the ML foundations track. Our own writing; facts checked against the sources listed per lesson.
 const AI_ABOUT_ML = {
+  graphs: {
+    what: 'A graph puts two numbers on a page at once. Each pair is one point. A straight line follows the rule y = w × x + b, where w sets the tilt and b sets the start.',
+    analogy: 'A map has a street number and a floor number. Together they point to one flat. A graph does the same with x and y.',
+    uses: ['Reading how a plant grows day by day', 'Seeing whether two things move together, such as study time and test score', 'Describing a model that predicts one number from another'],
+    before: ['Reading numbers on a ruler or a clock'],
+    words: [
+      ['x', 'The number along the bottom of the graph. Here it is the day.'],
+      ['y', 'The number up the side of the graph. Here it is the height of the plant.'],
+      ['point', 'One pair of numbers, written (x, y). It marks one reading on the graph.'],
+      ['w', 'The tilt of the line. It says how much y rises for each step in x.'],
+      ['b', 'The start of the line. It is the value of y when x is 0.']
+    ],
+    math: {
+      lines: ['y = w x + b'],
+      symbols: [
+        ['x', 'the input, the number along the bottom'],
+        ['y', 'the output, the number up the side'],
+        ['w', 'the tilt of the line, called its slope'],
+        ['b', 'where the line starts when x is 0']
+      ],
+      example: [
+        'A plant is 3 cm tall on day 0 and grows 2 cm each day. So w = 2 and b = 3.',
+        'On day 4 the rule gives y = 2 × 4 + 3 = 11. The plant is 11 cm tall.',
+        'On day 6 the rule gives y = 2 × 6 + 3 = 15. We can predict a day nobody measured.'
+      ]
+    },
+    steps: [
+      'Choose what x and y mean, such as the day and the height.',
+      'Mark each reading as a point: go across by x, then up by y.',
+      'If the points line up, draw a straight line through them.',
+      'Write the line as y = w × x + b by finding its start and its tilt.',
+      'Use the rule to predict y for a new x.'
+    ],
+    use: ['Two numbers are linked and you want to see how.', 'The change in y looks about the same for every step in x.'],
+    avoid: ['The points curve or bunch up. One straight line will describe them badly.'],
+    mistakes: [
+      'Mixing up the two directions. The x number goes across first, then y goes up.',
+      'Reading the first tick as 0 when it is not. Check the numbers on the axes.',
+      'Trusting a line far outside the data. The rule may stop holding there.'
+    ],
+    cheat: ['x goes across, y goes up', 'a point is (x, y)', 'y = w × x + b', 'w is the tilt', 'b is the start'],
+    next: ['slope', 'gradient'],
+    sources: ['Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 2 and 5', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 5.1.4 (linear regression)']
+  },
+  slope: {
+    what: 'Slope tells how steep a line is. It is the rise, how far the line goes up, divided by the run. The run is how far it goes across. A straight line has the same slope everywhere.',
+    analogy: 'Think of a ramp. A steep ramp gains height fast for each step forward. A gentle ramp gains height slowly.',
+    uses: ['Finding how fast a price, a speed or a score is changing', 'Reading the weight w in a straight-line model', 'Telling a training program which way to nudge a number'],
+    before: ['graphs'],
+    words: [
+      ['slope', 'How steep a line is: the rise divided by the run.'],
+      ['rise', 'How far you go up between two points on the line. Going down gives a negative rise.'],
+      ['run', 'How far you go across between the same two points.'],
+      ['negative slope', 'A slope below zero. The line goes down as you move right.']
+    ],
+    math: {
+      lines: ['m = \\frac{\\text{rise}}{\\text{run}} = \\frac{y_2 - y_1}{x_2 - x_1}'],
+      symbols: [
+        ['m', 'the slope of the line'],
+        ['(x_1, y_1)', 'the first point'],
+        ['(x_2, y_2)', 'the second point'],
+        ['y_2 - y_1', 'the rise: how much y changes'],
+        ['x_2 - x_1', 'the run: how much x changes']
+      ],
+      example: [
+        'Take the line y = 1.5 × x + 1. Pick the points (2, 4) and (6, 10).',
+        'The run is 6 − 2 = 4. The rise is 10 − 4 = 6.',
+        'The slope is 6 ÷ 4 = 1.5. Any other two points on the line give 1.5 again.'
+      ]
+    },
+    steps: [
+      'Pick two points on the line.',
+      'Find the run: the difference in x.',
+      'Find the rise: the difference in y.',
+      'Divide the rise by the run.',
+      'Read the sign: up means positive, down means negative, flat means 0.'
+    ],
+    use: ['You want one number for how fast y changes with x.', 'The line is straight, so any two points give the same answer.'],
+    avoid: ['The shape is a curve. Its slope changes from place to place, so you need the derivative.'],
+    mistakes: [
+      'Dividing run by rise. The rise goes on top.',
+      'Subtracting the points in different orders. Use the same order for the top and the bottom.',
+      'Forgetting the sign. A line that falls has a negative slope.'
+    ],
+    cheat: ['slope = rise ÷ run', 'up is positive', 'down is negative', 'flat is zero', 'w in y = w × x + b is the slope'],
+    next: ['derivative'],
+    sources: ['Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 5.1', 'Strang, Calculus, 3rd ed., 2017, ch. 1 (slope and straight lines)']
+  },
+  derivative: {
+    what: 'A curve is steeper in some places than others. The derivative is the slope of the curve at one point. Zoom in far enough and the curve looks like a straight line, and that line has the slope.',
+    analogy: 'A car speedometer shows how fast you go at this moment. The derivative does the same for a curve: the rate right here.',
+    uses: ['Finding the speed of something from its position over time', 'Finding the lowest point of a loss, where the slope is 0', 'Telling a model how a small change in a weight changes its error'],
+    before: ['slope'],
+    words: [
+      ['derivative', 'The slope of a curve at one point. It says how fast y changes when x changes a little.'],
+      ['tangent', 'The straight line that touches a curve at one point and has the same slope there.'],
+      ['curve', 'A line that bends, so its slope is different in different places.'],
+      ['zoom', 'Looking at a smaller and smaller piece of the curve, made bigger.']
+    ],
+    math: {
+      lines: ['m_h = \\frac{f(x + h) - f(x)}{h}', '\\frac{df}{dx} = \\lim_{h \\to 0} m_h'],
+      symbols: [
+        ['f(x)', 'the height of the curve at x'],
+        ['h', 'a small step to the right of x'],
+        ['m_h', 'the slope of the line through the point at x and the point at x + h'],
+        ['\\lim_{h \\to 0}', 'the value m_h settles toward as h gets smaller and smaller'],
+        ['\\frac{df}{dx}', 'the derivative of f at x']
+      ],
+      example: [
+        'Take the curve f(x) = x × x ÷ 4 and the point x = 4. There f(4) = 4.',
+        'With h = 3, the point is (7, 12.25). The slope is (12.25 − 4) ÷ 3 = 2.75.',
+        'With h = 0.1, f(4.1) = 4.2025. The slope is (4.2025 − 4) ÷ 0.1 = 2.025.',
+        'The values settle toward 2. The derivative at x = 4 is 2, and the rule is x ÷ 2.'
+      ]
+    },
+    steps: [
+      'Pick the point on the curve where you want the slope.',
+      'Pick a second point a small step h away and find the slope of the line through both.',
+      'Make h smaller and watch the slope settle toward one number.',
+      'That number is the derivative at the point.',
+      'The line with that slope that touches the curve is the tangent.'
+    ],
+    use: ['You want to know how fast something changes at one moment.', 'You are searching for a lowest or highest point, where the slope is 0.'],
+    avoid: ['The shape has a sharp corner. There the slope jumps, so there is no single slope.'],
+    mistakes: [
+      'Using a big step h and calling the result the derivative. It is only a rough guess.',
+      'Mixing up the slope of the curve with the height of the curve.',
+      'Thinking a slope of 0 always means the lowest point. It may also be a top or a flat stretch.'
+    ],
+    cheat: ['derivative = slope at one point', 'zoom in until it looks straight', 'tangent = the touching line', 'slope 0 = flat spot', 'for x × x ÷ 4 the derivative is x ÷ 2'],
+    next: ['chainrule', 'gradarrow'],
+    sources: ['Strang, Calculus, 3rd ed., 2017, ch. 2 (the derivative)', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 5.1', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 4.3']
+  },
+  chainrule: {
+    what: 'Often one number feeds a step, and its answer feeds a second step. A small change at the start passes through both steps. The slope of the chain is the first slope times the second slope.',
+    analogy: 'Think of two gears. B spins twice as fast as A. A wheel spins 2.5 times as fast as B. So the wheel spins 5 times as fast as A.',
+    uses: ['Finding how the last number in a long calculation reacts to the first', 'Training neural networks, where backprop applies it layer by layer', 'Checking how a small error early on grows by the end'],
+    before: ['derivative'],
+    words: [
+      ['chain rule', 'The slope of a chain of steps is the product of the slopes of the steps.'],
+      ['nudge', 'A small change to a number, such as adding 0.1.'],
+      ['slope', 'How many times bigger the output nudge is than the input nudge.'],
+      ['product', 'The answer you get when you multiply numbers.']
+    ],
+    math: {
+      lines: ['\\frac{dy}{dx} = \\frac{dy}{du} \\cdot \\frac{du}{dx}'],
+      symbols: [
+        ['x', 'the first number, the input of step A'],
+        ['u', 'the middle number, the output of step A and the input of step B'],
+        ['y', 'the last number, the output of step B'],
+        ['\\frac{du}{dx}', 'the slope of step A'],
+        ['\\frac{dy}{du}', 'the slope of step B'],
+        ['\\frac{dy}{dx}', 'the slope of the whole chain']
+      ],
+      example: [
+        'Step A is u = 2 × x + 1 and step B is y = u × u ÷ 4. Start with x = 2.',
+        'Then u = 5 and y = 6.25. The slope of A is 2. The slope of B at u = 5 is 5 ÷ 2 = 2.5.',
+        'The slope of the chain is 2 × 2.5 = 5.',
+        'Check by nudging x to 2.1. Then u = 5.2 and y = 6.76. The change is 0.51, close to 5 × 0.1 = 0.5.'
+      ]
+    },
+    steps: [
+      'Write the process as steps, each feeding the next.',
+      'Find the slope of each step at the value it receives.',
+      'Multiply the slopes.',
+      'The product says how much a small change at the start changes the end.'
+    ],
+    use: ['A result depends on a chain of two or more steps.', 'You need how the end responds to the start without redoing the whole calculation.'],
+    avoid: ['The steps are not smooth, so some step has no slope at that point.'],
+    mistakes: [
+      'Adding the slopes instead of multiplying them.',
+      'Finding the slope of step B at x instead of at u. Use the value that step B really receives.',
+      'Trusting the estimate for a big nudge. The slopes change as the numbers move.'
+    ],
+    cheat: ['one change passes through every step', 'multiply the slopes', 'each slope uses its own input', 'works best for small nudges'],
+    next: ['gradarrow', 'backprop'],
+    sources: ['Strang, Calculus, 3rd ed., 2017, ch. 2.5 (the chain rule)', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 6.5.2', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 5.2']
+  },
+  gradarrow: {
+    what: 'A model often has many knobs. The loss has one slope for each knob. The gradient collects those slopes into one arrow that points uphill. Step the opposite way and the loss falls.',
+    analogy: 'Stand on a foggy hillside. You feel how the ground tilts to the left and how it tilts forward. Put the two tilts together and you know the steepest way up.',
+    uses: ['Telling a model how to change many weights at once', 'Finding the fastest way down a landscape with more than one direction', 'Setting up gradient descent, the way most models learn'],
+    before: ['derivative', 'chainrule'],
+    words: [
+      ['knob', 'A number the model can change. Here the two knobs are a and b.'],
+      ['loss', 'One number that says how wrong the model is. Lower is better.'],
+      ['gradient', 'The list of slopes of the loss, one for each knob. As an arrow, it points uphill.'],
+      ['step size', 'A small number that says how far to move each time.'],
+      ['gradient descent', 'Repeat: find the gradient, step the opposite way, and look again.']
+    ],
+    math: {
+      lines: ['\\nabla L = \\left( \\frac{\\partial L}{\\partial a}, \\frac{\\partial L}{\\partial b} \\right)', '(a, b) \\leftarrow (a, b) - \\eta \\, \\nabla L'],
+      symbols: [
+        ['L', 'the loss'],
+        ['a, b', 'the two knobs'],
+        ['\\frac{\\partial L}{\\partial a}', 'the slope of the loss when only a changes'],
+        ['\\frac{\\partial L}{\\partial b}', 'the slope of the loss when only b changes'],
+        ['\\nabla L', 'the gradient: both slopes as one arrow'],
+        ['\\eta', 'the step size'],
+        ['\\leftarrow', 'replace the numbers on the left with the values on the right']
+      ],
+      example: [
+        'Take the loss L = (a − 6)² + (b − 4)². Its lowest point is at (6, 4).',
+        'At a = 3 and b = 7, L = 9 + 9 = 18.',
+        'The slope along a is 2 × (3 − 6) = −6. The slope along b is 2 × (7 − 4) = 6. The gradient is (−6, 6).',
+        'Use a step size of 0.3. The new knobs are (3 − 0.3 × (−6), 7 − 0.3 × 6) = (4.8, 5.2).',
+        'The new loss is 1.44 + 1.44 = 2.88. It fell from 18.'
+      ]
+    },
+    steps: [
+      'Find the slope of the loss for each knob, keeping the others still.',
+      'Collect the slopes in a list. That list is the gradient.',
+      'Draw it as an arrow. It points uphill.',
+      'Move the knobs a small step the opposite way.',
+      'Repeat until the loss stops falling.'
+    ],
+    use: ['The model has two or more numbers to tune.', 'You can measure the loss and find its slopes.'],
+    avoid: ['The step size is large and the landscape is steep. The steps may overshoot.'],
+    mistakes: [
+      'Stepping along the gradient instead of against it. That raises the loss.',
+      'Using one slope and ignoring the others. The arrow needs every knob.',
+      'Setting the step size too big. The knobs jump past the lowest point and zigzag.'
+    ],
+    cheat: ['one slope per knob', 'gradient = all the slopes as one arrow', 'it points uphill', 'go the opposite way', 'step size scales each move'],
+    next: ['gradient'],
+    sources: ['Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 4.3 (gradient-based optimisation)', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 5.2 and 7.1', 'Strang, Calculus, 3rd ed., 2017, ch. 13 (partial derivatives and the gradient)']
+  },
+  vectors: {
+    what: 'A vector is a short list of numbers. You can draw it as an arrow. The dot product multiplies matching places and adds them. It is large when two arrows point the same way, and negative when they face away.',
+    analogy: 'Two people walk across a field. If they head the same way, their efforts add up. If they pull opposite ways, they cancel. The dot product scores that.',
+    uses: ['Giving each word a list of numbers that a computer can compare', 'Adding up inputs times weights inside a neuron', 'Recommending items whose number lists match what you like'],
+    before: ['graphs'],
+    words: [
+      ['vector', 'A list of numbers. Drawn as an arrow, each number tells how far to go along one direction.'],
+      ['length', 'How long the arrow is. Square each number, add, then take the square root.'],
+      ['dot product', 'Multiply the matching places of two vectors, then add. The answer is one number.'],
+      ['neuron', 'A small unit of a model. It takes a dot product of its inputs and its weights.'],
+      ['embedding', 'A vector of numbers that stands for a word or an item.']
+    ],
+    math: {
+      lines: ['\\vec{a} \\cdot \\vec{b} = a_1 b_1 + a_2 b_2', '\\lVert \\vec{a} \\rVert = \\sqrt{a_1^2 + a_2^2}', '\\vec{a} \\cdot \\vec{b} = \\lVert \\vec{a} \\rVert \\, \\lVert \\vec{b} \\rVert \\cos\\theta'],
+      symbols: [
+        ['\\vec{a}, \\vec{b}', 'two vectors'],
+        ['a_1, a_2', 'the first and second numbers of a'],
+        ['\\cdot', 'the dot product'],
+        ['\\lVert \\vec{a} \\rVert', 'the length of a'],
+        ['\\theta', 'the angle between the two arrows'],
+        ['\\cos\\theta', 'a number that is 1 at 0 degrees, 0 at 90 degrees and −1 at 180 degrees']
+      ],
+      example: [
+        'Take a = [3, 2] and b = [1, 3].',
+        'The dot product is 3 × 1 + 2 × 3 = 3 + 6 = 9.',
+        'The length of a is √(9 + 4) = √13, about 3.61.',
+        'Now take a neuron with inputs [3, 2] and weights [2, 0.5]. Its dot product is 3 × 2 + 2 × 0.5 = 7.'
+      ]
+    },
+    steps: [
+      'Write each thing as a list of numbers.',
+      'Multiply the numbers in matching places.',
+      'Add the products.',
+      'Read the result: large and positive means they agree, 0 means a right angle, negative means they face away.'
+    ],
+    use: ['You want one score for how well two lists of numbers match.', 'You need weighted sums, as in a neuron.'],
+    avoid: ['The two lists have different lengths. The places do not match up.'],
+    mistakes: [
+      'Adding the places instead of multiplying them.',
+      'Comparing vectors of very different length by dot product alone. A long arrow scores high from its size.',
+      'Forgetting that the dot product is one number, not another vector.'
+    ],
+    cheat: ['vector = list of numbers = arrow', 'add place by place', 'dot = multiply places, then add', 'big and positive = agree', '0 = right angle, negative = opposite'],
+    next: ['backprop', 'embeddings'],
+    sources: ['Strang, Introduction to Linear Algebra, 5th ed., 2016, ch. 1 (vectors and dot products)', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 2 and 3', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 2.1 to 2.5']
+  },
+  probability: {
+    what: 'The mean is the balance point of some numbers. The spread says how far they wander from it. A chance, or probability, is a number from 0 to 1 that says how likely something is.',
+    analogy: 'Roll a die many times. Any one roll is a surprise. After hundreds of rolls the average is steady and easy to predict.',
+    uses: ['Judging whether a test score is unusual', 'Measuring a model with the mean of its errors', 'Turning a classifier answer into a chance, such as 0.9 for spam'],
+    before: ['graphs'],
+    words: [
+      ['mean', 'The total divided by how many numbers there are. It is the balance point.'],
+      ['spread', 'How far the numbers sit from the mean.'],
+      ['variance', 'The mean of the squared gaps from the mean.'],
+      ['standard deviation', 'The square root of the variance. It is the usual gap from the mean.'],
+      ['chance', 'A number from 0 to 1 that says how likely something is. It is also called probability.'],
+      ['random', 'Picked with no pattern, so each outcome has its fair chance.'],
+      ['loss', 'One number that says how wrong a model is. Often it is the mean of squared gaps.'],
+      ['classifier', 'A model that sorts things into groups. It often gives a chance for each group.']
+    ],
+    math: {
+      lines: ['\\mu = \\frac{1}{n} \\sum_{i=1}^{n} x_i', '\\sigma^2 = \\frac{1}{n} \\sum_{i=1}^{n} (x_i - \\mu)^2', 'P(\\text{event}) = \\frac{\\text{ways it can happen}}{\\text{all ways}}'],
+      symbols: [
+        ['\\mu', 'the mean'],
+        ['x_i', 'one of the numbers'],
+        ['n', 'how many numbers there are'],
+        ['\\sum', 'add up the value for every number'],
+        ['\\sigma^2', 'the variance'],
+        ['\\sigma', 'the standard deviation, the square root of the variance'],
+        ['P(\\text{event})', 'the chance that the event happens']
+      ],
+      example: [
+        'Ten quiz scores: 4, 5, 5, 6, 6, 6, 7, 7, 8, 9. The total is 63, so the mean is 6.3.',
+        'The gaps from 6.3 are −2.3, −1.3, −1.3, −0.3, −0.3, −0.3, 0.7, 0.7, 1.7, 2.7.',
+        'The squares add up to 20.1. The variance is 20.1 ÷ 10 = 2.01.',
+        'The standard deviation is √2.01, about 1.42.',
+        'Four of the ten scores are 7 or more. A random student has a chance of 4 ÷ 10 = 0.4.'
+      ]
+    },
+    steps: [
+      'Add up the numbers and divide by how many there are. That is the mean.',
+      'Find each gap from the mean.',
+      'Square the gaps and take their mean. That is the variance.',
+      'Take the square root to get the standard deviation.',
+      'Count the ways something can happen and divide by all the ways. That is its chance.'
+    ],
+    use: ['You want one number for the middle, and one for how much values vary.', 'You want to say how likely an outcome is.'],
+    avoid: ['A few extreme values sit in the data. They pull the mean, so check the spread too.'],
+    mistakes: [
+      'Judging chance from a few trials. Ten rolls of a die rarely look fair.',
+      'Forgetting that all chances must add up to 1.',
+      'Reading a mean without its spread. Two groups can share a mean and differ a lot.'
+    ],
+    cheat: ['mean = total ÷ count', 'variance = mean of squared gaps', 'standard deviation = square root of variance', 'chance is from 0 to 1', 'more trials give steadier averages'],
+    next: ['gradient', 'logistic', 'nbayes'],
+    sources: ['Wasserman, All of Statistics, 2004, ch. 1 to 3', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 6', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 2.4']
+  },
   gradient: {
     what: 'Linear regression draws the best straight line through a cloud of dots. Gradient descent finds that line by trial. It makes a guess, measures the error, and nudges the line to lower the error.',
     analogy: 'Imagine walking down a foggy hill. You cannot see the bottom. You feel which way slopes down and take a small step.',
     uses: ['Predicting house prices from size', 'Training almost every neural network, including chatbots', 'Forecasting sales from past months of data'],
-    before: ['Averages', 'Straight lines (y = w x + b)'],
+    before: ['gradarrow', 'Averages', 'Straight lines (y = w x + b)'],
     words: [
       ['weight', 'A number the model can change. Here it is the slope of the line: it tilts the line.'],
       ['bias', 'The second number. It lifts or lowers the whole line.'],

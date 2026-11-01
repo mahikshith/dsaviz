@@ -21,6 +21,26 @@ button,input{font:inherit}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 @keyframes feedin{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @keyframes flicker{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.06) rotate(-3deg)}60%{transform:scale(0.97) rotate(2deg)}}
+[data-page="Home"] summary{list-style:none}
+[data-page="Home"] summary::-webkit-details-marker{display:none}
+[data-page="Home"] summary:focus-visible,[data-page="Home"] a:focus-visible,[data-page="Home"] button:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:12px}
+[data-page="Home"] details[open]>summary [data-hp="chev"]{transform:rotate(90deg)}
+[data-page="Home"] [data-hp="chev"]{transition:transform .15s}
+[data-page="Home"] [data-hp="cta"]{transition:transform .12s,filter .15s}
+[data-page="Home"] [data-hp="cta"]:active{transform:scale(.98)}
+[data-page="Home"] [data-hp="cta"]:hover{filter:brightness(1.06);opacity:1}
+@media (prefers-reduced-motion: reduce){[data-page="Home"] *{transition:none!important}}
+@media (max-width: 759px){
+[data-page="Home"] [data-hp="cta"]{flex:1 1 100%}
+[data-page="Home"] [data-hp="path"]{flex-direction:column!important;gap:24px}
+[data-page="Home"] [data-hp="pli"]{flex-direction:row!important;align-items:center!important;gap:16px!important;text-align:left!important;min-height:48px}
+[data-page="Home"] [data-hp="conn"]{top:-22px!important;left:18px!important;width:12px!important;height:20px!important;flex-direction:column}
+[data-page="Home"] [data-hp="conn"] i{width:2px!important;height:auto!important;flex:1}
+[data-page="Home"] [data-hp="conn"] svg{transform:rotate(90deg);margin:-3px 0 0!important}
+[data-page="Home"] [data-hp="sum"]{padding:16px!important;gap:16px}
+[data-page="Home"] [data-hp="body"]{padding:0 16px 16px!important}
+[data-page="Home"] [data-hp="mbody"]{padding:0 16px 16px!important}
+}
 </style>
 <!-- PHONE CSS -->
 <style>
@@ -118,7 +138,7 @@ button,input{font:inherit}
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fluid="true" data-page="Home" style="width: 1440px; height: 1300px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fluid="true" data-page="Home" style="width: 1440px; min-height: 1300px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 
 <!-- PILL NAV -->
 <style>
@@ -268,32 +288,145 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="flex-grow: 1; padding: 24px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+<main style="width: 100%; max-width: 1120px; margin: 0 auto; box-sizing: border-box; padding: 0px 40px; display: flex; flex-direction: column; gap: 48px">
 
-<!-- HERO: one primary action -->
-<section style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px">
-<div style="padding: 32px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; justify-content: center">
-<span style="font-size: var(--fs16); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: {{t.accent}}">{{hero.eyebrow}}</span>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 60px; font-weight: 700">{{hero.title}}</h1>
-<p style="margin: 0; max-width: 600px; font-size: var(--fs19); line-height: 26px; color: {{t.text2}}">{{hero.line}}</p>
-<div data-m="wrap" style="display: flex; align-items: center; gap: 16px; margin-top: 8px">
-<a href="{{hero.href}}" onClick="{{hero.go}}" style="height: 56px; padding: 0 28px; border-radius: 28px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; gap: 12px; font-size: var(--fs18); font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>{{hero.cta}}</a>
-<a href="{{daily.href}}" onClick="{{daily.go}}" style="min-height: 44px; display: flex; flex-direction: column; justify-content: center; gap: 4px"><span style="font-size: var(--fs16); color: {{t.muted}}">or today’s story</span><span style="font-size: var(--fs18); font-weight: 600; text-decoration: underline; text-decoration-color: {{t.line2}}; text-underline-offset: 4px">{{daily.story}}</span></a>
+<!-- TODAY: the plan, the streak and the path -->
+<section aria-label="Today" style="margin-top: 32px; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 24px">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 1; font-weight: 700">Today</h1>
+<p style="margin: 0; font-size: var(--fs17); line-height: 28px; color: {{t.muted}}">{{dateLine}}</p>
+</div>
+<div data-hp="grid" style="display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 24px; align-items: stretch">
+<div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+
+<section aria-labelledby="hp-plan" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap">
+<h2 id="hp-plan" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Three small steps</h2>
+<span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{plan.meta}}</span>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+<sc-for list="{{plan.steps}}" as="sp" hint-placeholder-count="3">
+<li style="display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 16px 0; border-top: {{sp.bt}}">
+<span aria-hidden="true" style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; background: {{sp.ibg}}; color: {{sp.ifg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="{{sp.d}}"></path></svg></span>
+<span style="flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 500; color: {{sp.fg}}">{{sp.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{sp.meta}}</span></span>
+<sc-if value="{{sp.primary}}" hint-placeholder-val="{{ true }}"><a data-hp="cta" href="{{sp.href}}" onClick="{{sp.go}}" style="height: 48px; padding: 0 24px; box-sizing: border-box; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; font-size: var(--fs17); font-weight: 600">{{sp.cta}}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></sc-if>
+<sc-if value="{{sp.link}}" hint-placeholder-val="{{ false }}"><a href="{{sp.href}}" onClick="{{sp.go}}" aria-label="{{sp.aria}}" style="min-height: 44px; display: flex; align-items: center; gap: 4px; flex-shrink: 0; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">{{sp.cta}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></sc-if>
+</li>
+</sc-for>
+</ol>
+</section>
+
+<section aria-labelledby="hp-path" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap">
+<h2 id="hp-path" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">On the path</h2>
+<a href="{{pathNow.href}}" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">{{pathNow.link}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
+</div>
+<ol data-hp="path" aria-label="{{pathNow.aria}}" style="list-style: none; margin: 0; padding: 0; display: flex">
+<sc-for list="{{pathNow.nodes}}" as="pn" hint-placeholder-count="5">
+<li data-hp="pli" style="position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+<sc-if value="{{pn.arrow}}" hint-placeholder-val="{{ false }}"><span data-hp="conn" aria-hidden="true" style="position: absolute; top: 18px; left: calc(-50% + 32px); width: calc(100% - 64px); height: 12px; display: flex; align-items: center"><i style="flex: 1; height: 2px; background: {{t.line2}}"></i><svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="{{t.line2}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: -2px"><path d="M2 1l5 5-5 5"></path></svg></span></sc-if>
+<a href="{{pn.href}}" onClick="{{pn.go}}" aria-label="{{pn.aria}}" aria-current="{{pn.cur}}" style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; background: {{pn.bg}}; color: {{pn.fg}}; box-shadow: {{pn.ring}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 600"><sc-if value="{{pn.check}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if><sc-if value="{{pn.plain}}" hint-placeholder-val="{{ true }}"><span>{{pn.num}}</span></sc-if></a>
+<span data-hp="plbl" style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{pn.lbl}}">{{pn.label}}</span>
+</li>
+</sc-for>
+</ol>
+</section>
+
+</div>
+
+<section aria-labelledby="hp-streak" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 16px">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .5 1.5 1.5 2 2 2 0-3-1-5 1-8z"></path></svg>
+<h2 id="hp-streak" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">{{streak.title}}</h2>
+</div>
+<div role="img" aria-label="{{streak.aria}}" style="display: flex; gap: 8px; margin: 16px 0 8px">
+<sc-for list="{{streak.pips}}" as="pp" hint-placeholder-count="7"><i style="flex: 1; height: 8px; border-radius: 4px; background: {{pp.bg}}"></i></sc-for>
+</div>
+<p style="margin: 0; font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{streak.line}}</p>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 24px 0 8px">
+<h3 style="margin: 0; font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.text}}" aria-live="polite">{{cal.title}}</h3>
+<div style="display: flex; gap: 8px">
+<button onClick="{{cal.prev}}" aria-label="Previous month" aria-disabled="{{cal.noPrev}}" style="width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: {{t.muted}}; opacity: {{cal.prevOp}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<button onClick="{{cal.next}}" aria-label="Next month" aria-disabled="{{cal.noNext}}" style="width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: {{t.muted}}; opacity: {{cal.nextOp}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
 </div>
 </div>
-<sc-if value="{{startCard.show}}" hint-placeholder-val="{{ false }}">
-<div data-rise style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1.5px solid {{t.accent}}; display: flex; flex-direction: column; gap: 12px; justify-content: center">
-<span style="font-size: var(--fs16); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: {{t.accent}}">{{startCard.eyebrow}}</span>
-<h2 style="margin: 0; font-size: var(--fs26); line-height: 1.2; font-weight: 700">{{startCard.title}}</h2>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}">{{startCard.line}}</p>
-<span role="progressbar" aria-label="Start here progress" aria-valuemin="0" aria-valuemax="{{startCard.total}}" aria-valuenow="{{startCard.done}}" style="height: 6px; border-radius: 3px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 6px; border-radius: 3px; width: {{startCard.pct}}; background: {{t.accent}}"></span></span>
-<span style="font-size: var(--fs16); color: {{t.muted}}">{{startCard.progress}}</span>
-<a href="{{startCard.href}}" onClick="{{startCard.go}}" style="align-self: flex-start; height: 48px; padding: 0 22px; box-sizing: border-box; border-radius: 24px; border: 1.5px solid {{t.accent}}; color: {{t.text}}; display: flex; align-items: center; gap: 8px; font-size: var(--fs18); font-weight: 700">{{startCard.cta}} <span aria-hidden="true" style="color: {{t.accent}}">→</span></a>
+<div data-m="keep" role="grid" aria-label="{{cal.title}}" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); row-gap: 8px">
+<sc-for list="{{cal.heads}}" as="wd" hint-placeholder-count="7"><span aria-hidden="true" style="font-size: var(--fs15); line-height: 24px; font-weight: 500; text-align: center; color: {{t.muted}}">{{wd.d}}</span></sc-for>
+<sc-for list="{{cal.cells}}" as="cd" hint-placeholder-count="35"><span role="gridcell" aria-label="{{cd.aria}}" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-variant-numeric: tabular-nums; font-weight: {{cd.weight}}; color: {{cd.fg}}; background: {{cd.bg}}; border-radius: {{cd.radius}}; box-shadow: {{cd.ring}}">{{cd.n}}</span></sc-for>
 </div>
-</sc-if>
-<sc-if value="{{startCard.hide}}" hint-placeholder-val="{{ true }}">
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Patterns</h2><a href="Patterns.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: var(--fs16); font-weight: 600">All {{patternCount}} ›</a></div>
+</section>
+
+</div>
+</section>
+
+<!-- THE FULL ROADMAP -->
+<section aria-labelledby="hp-road" style="display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap">
+<h2 id="hp-road" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">The full roadmap</h2>
+<span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{roadMeta}}</span>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+<sc-for list="{{road}}" as="rw" hint-placeholder-count="5">
+<li style="display: flex; flex-direction: column">
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary data-hp="sum" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer">
+<span aria-hidden="true" style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; background: {{rw.nbg}}; color: {{rw.nfg}}; box-shadow: {{rw.ring}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 600"><sc-if value="{{rw.isDone}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if><sc-if value="{{rw.isLater}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></sc-if><sc-if value="{{rw.isNext}}" hint-placeholder-val="{{ true }}"><span>{{rw.num}}</span></sc-if></span>
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600; color: {{rw.fg}}">{{rw.name}}</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{rw.meta}}</span></span>
+<span data-m="hide" role="progressbar" aria-label="{{rw.name}} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{rw.pctNum}}" style="width: 120px; height: 6px; flex-shrink: 0; border-radius: 3px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 6px; border-radius: 3px; width: {{rw.pct}}; background: {{rw.bar}}"></span></span>
+<svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
+</summary>
+<div data-hp="body" style="padding: 0 24px 24px 88px; display: flex; flex-direction: column; gap: 24px">
+<sc-for list="{{rw.groups}}" as="gr" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: var(--fs17); line-height: 24px; font-weight: 600; color: {{t.text2}}">{{gr.title}}</h3>
+<ul data-m="one" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px">
+<sc-for list="{{gr.items}}" as="it" hint-placeholder-count="6">
+<li><a href="{{it.href}}" onClick="{{it.go}}" aria-label="{{it.aria}}" style="min-height: 48px; display: flex; align-items: center; gap: 16px; color: {{t.text}}">
+<span aria-hidden="true" style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: {{it.bg}}; color: {{it.fg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs15); font-weight: 600"><sc-if value="{{it.check}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if><sc-if value="{{it.plain}}" hint-placeholder-val="{{ true }}"><span>{{it.num}}</span></sc-if></span>
+<span style="flex: 1 1 0; min-width: 0; font-size: var(--fs17); line-height: 24px; color: {{it.tfg}}">{{it.title}}</span>
+<span style="flex-shrink: 0; font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{it.meta}}</span>
+</a></li>
+</sc-for>
+</ul>
+</div>
+</sc-for>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 24px">
+<sc-for list="{{rw.links}}" as="lk" hint-placeholder-count="2"><a href="{{lk.href}}" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">{{lk.label}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></sc-for>
+</div>
+</div>
+</details>
+<sc-if value="{{rw.arrow}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width: 48px; height: 24px; margin-left: 24px; display: flex; flex-direction: column; align-items: center"><i style="flex: 1; width: 2px; background: {{t.line2}}"></i><svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="{{t.line2}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-top: -2px"><path d="M1 2l5 5 5-5"></path></svg></span></sc-if>
+</li>
+</sc-for>
+</ol>
+</section>
+
+<!-- MORE: everything else Home had, behind folds -->
+<section aria-labelledby="hp-more" style="margin-bottom: 64px; display: flex; flex-direction: column; gap: 24px">
+<h2 id="hp-more" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">More about your progress</h2>
+<div style="display: flex; flex-direction: column; gap: 24px">
+
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary data-hp="sum" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Your numbers</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.numbersMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
+<!-- STAT TILES -->
+<div data-m="two" style="display: grid; grid-template-columns: repeat({{tiles.cols}}, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{tiles.list}}" as="ti" hint-placeholder-count="4">
+<div data-rise style="padding: 16px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation-delay: {{ti.delay}}">
+<span style="width: 32px; height: 32px; border-radius: 10px; background: {{ti.box}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{ti.fill}}" stroke="{{ti.stroke}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ti.d}}"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: baseline; gap: 4px"><span style="font-family: {{t.body}}; font-size: var(--fs28); font-weight: 700; line-height: 32px">{{ti.value}}</span><span style="font-size: var(--fs17); color: {{t.muted}}">{{ti.unit}}</span></span><span style="font-size: var(--fs17); color: {{t.muted}}">{{ti.label}}</span></span>
+<sc-if value="{{ti.bar}}" hint-placeholder-val="{{ true }}"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; border-radius: 2px; width: {{ti.pct}}; background: {{ti.fg}}; transition: width 0.7s cubic-bezier(.33,1,.68,1)"></span></span></sc-if>
+</div>
+</sc-for>
+</div>
+<!-- /STAT TILES -->
+<span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{weekLine}}</span>
+</div>
+</details>
+
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary data-hp="sum" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Patterns</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.patternsMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <!-- RINGS -->
 <div role="img" aria-label="{{rings.aria}}" style="display: flex; align-items: center; gap: 24px">
 <svg width="{{rings.size}}" height="{{rings.size}}" viewBox="0 0 {{rings.size}} {{rings.size}}" aria-hidden="true" style="flex-shrink: 0">
@@ -308,26 +441,13 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </div>
 <!-- /RINGS -->
+<a href="Patterns.dc.html" style="min-height: 44px; display: flex; align-items: center; gap: 4px; align-self: flex-start; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">All {{patternCount}} patterns<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
 </div>
-</sc-if>
-</section>
+</details>
 
-<!-- STAT TILES -->
-<div data-m="two" style="display: grid; grid-template-columns: repeat({{tiles.cols}}, minmax(0, 1fr)); gap: 12px">
-<sc-for list="{{tiles.list}}" as="ti" hint-placeholder-count="4">
-<div data-rise style="padding: 16px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation-delay: {{ti.delay}}">
-<span style="width: 32px; height: 32px; border-radius: 10px; background: {{ti.box}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{ti.fill}}" stroke="{{ti.stroke}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ti.d}}"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: baseline; gap: 4px"><span style="font-family: {{t.body}}; font-size: var(--fs28); font-weight: 700; line-height: 32px">{{ti.value}}</span><span style="font-size: var(--fs17); color: {{t.muted}}">{{ti.unit}}</span></span><span style="font-size: var(--fs17); color: {{t.muted}}">{{ti.label}}</span></span>
-<sc-if value="{{ti.bar}}" hint-placeholder-val="{{ true }}"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; border-radius: 2px; width: {{ti.pct}}; background: {{ti.fg}}; transition: width 0.7s cubic-bezier(.33,1,.68,1)"></span></span></sc-if>
-</div>
-</sc-for>
-</div>
-<!-- /STAT TILES -->
-
-<section style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px; align-items: start">
-<div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Medals</h2><a href="Profile.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: var(--fs16); font-weight: 600">{{shelf.caption}} ›</a></div>
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary data-hp="sum" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Medals</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{shelf.caption}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <!-- MEDALS -->
 <div role="list" aria-label="Pattern medals" style="display: flex; flex-wrap: wrap; gap: 16px 8px">
 <sc-for list="{{shelf.items}}" as="md" hint-placeholder-count="8">
@@ -348,45 +468,44 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-for>
 </div>
 <!-- /MEDALS -->
-<span style="font-size: var(--fs17); color: {{t.muted}}">Next: {{shelf.nextLine}}</span>
+<span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">Next: {{shelf.nextLine}}</span>
+<a href="Profile.dc.html" style="min-height: 44px; display: flex; align-items: center; gap: 4px; align-self: flex-start; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">All medals on your profile<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
 </div>
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Up next in {{nextStage}}</h2><a href="Patterns.dc.html" style="height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: var(--fs16); font-weight: 600">Library ›</a></div>
+</details>
+
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary data-hp="sum" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Problems to try</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.problemsMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <div role="list" aria-label="Learning path" style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px">
-<sc-for list="{{path}}" as="pt" hint-placeholder-count="8"><span role="listitem" aria-label="{{pt.aria}}" style="display: flex; flex-direction: column; gap: 8px"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; border-radius: 2px; width: {{pt.pct}}; background: {{pt.color}}"></span></span><span style="font-size: var(--fs15); font-weight: 600; color: {{pt.fg}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pt.name}}</span></span></sc-for>
+<sc-for list="{{path}}" as="pt" hint-placeholder-count="8"><span role="listitem" aria-label="{{pt.aria}}" style="display: flex; flex-direction: column; gap: 8px"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; width: {{pt.pct}}; background: {{pt.color}}"></span></span><span style="font-size: var(--fs15); line-height: 24px; color: {{pt.fg}}">{{pt.name}}</span></span></sc-for>
 </div>
 <div style="display: flex; flex-direction: column">
+<a href="{{daily.href}}" onClick="{{daily.go}}" style="min-height: 56px; display: flex; gap: 16px; align-items: center; border-top: 1px solid {{t.line}}"><span style="display: flex; flex-direction: column; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">{{daily.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">Today's problem · {{daily.pattern}}</span></span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{daily.time}}</span></a>
 <sc-for list="{{upNext}}" as="un" hint-placeholder-count="3">
-<a href="{{un.href}}" onClick="{{un.go}}" style="min-height: 56px; display: flex; gap: 12px; align-items: center; border-top: 1px solid {{t.line}}">
-<span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: {{un.dot}}"></span>
-<span style="display: flex; flex-direction: column; gap: 4px; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs18); font-weight: 600">{{un.story}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{un.title}}</span></span>
-<span style="font-size: var(--fs16); color: {{t.muted}}; white-space: nowrap">{{un.diff}} · {{un.time}}</span>
-</a>
+<a href="{{un.href}}" onClick="{{un.go}}" style="min-height: 56px; display: flex; gap: 16px; align-items: center; border-top: 1px solid {{t.line}}"><span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: {{un.dot}}"></span><span style="display: flex; flex-direction: column; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">{{un.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{un.pattern}}</span></span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{un.diff}} · {{un.time}}</span></a>
 </sc-for>
 </div>
+<a href="Patterns.dc.html" style="min-height: 44px; display: flex; align-items: center; gap: 4px; align-self: flex-start; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">Open the library<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
 </div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 24px">
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">This week</h2>
-<div role="list" aria-label="This week" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px">
-<sc-for list="{{week}}" as="wk" hint-placeholder-count="7"><span role="listitem" aria-label="{{wk.aria}}" style="height: 56px; border-radius: 12px; background: {{t.sunk}}; border: 1px solid {{wk.border}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: var(--fs15); font-weight: 600; color: {{wk.fg}}">{{wk.d}}<span style="width: 10px; height: 10px; border-radius: 5px; background: {{wk.dot}}"></span></span></sc-for>
-</div>
-<span style="font-size: var(--fs17); line-height: 20px; color: {{t.muted}}">{{weekLine}}</span>
-</div>
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: center; gap: 12px"><h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">League</h2><span title="Sample learners until accounts launch. Your row is real." style="height: 20px; padding: 0 8px; border-radius: 10px; border: 1px solid {{t.line2}}; font-size: var(--fs13); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{t.muted}}; display: inline-flex; align-items: center">Demo</span><a href="Leaderboard.dc.html" style="margin-left: auto; height: 28px; padding: 0 12px; border-radius: 14px; background: {{t.sunk}}; border: 1px solid {{t.line}}; color: {{t.link}}; display: flex; align-items: center; font-size: var(--fs16); font-weight: 600">Full league ›</a></div>
+</details>
+
+<details style="border-radius: 16px; background: {{t.surface}}">
+<summary data-hp="sum" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">League <span title="Sample learners until accounts launch. Your row is real." style="margin-left: 8px; font-size: var(--fs13); font-weight: 600; color: {{t.muted}}">Demo</span></span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.leagueMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 8px">
 <sc-for list="{{league}}" as="lg" hint-placeholder-count="4">
-<div style="display: flex; gap: 12px; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 12px; background: {{lg.bg}}">
-<span style="width: 28px; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{lg.rankColor}}">{{lg.rank}}</span>
+<div style="display: flex; gap: 16px; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 12px; background: {{lg.bg}}">
+<span style="width: 28px; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{lg.rankColor}}">{{lg.rank}}</span>
 <span style="flex-grow: 1; font-size: var(--fs17); font-weight: {{lg.weight}}">{{lg.name}}</span>
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700">{{lg.xp}} XP</span>
+<span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700">{{lg.xp}} XP</span>
 </div>
 </sc-for>
-<span style="font-size: var(--fs16); line-height: 20px; color: {{t.muted}}">{{leagueLine}}</span>
+<span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{leagueLine}}</span>
 </div>
+</details>
+
 </div>
 </section>
+
 </main>
 </div>
 
@@ -5196,10 +5315,25 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
 // @@END-ABOUT@@
 const DIFF_ORDER = { Starter: 0, Easy: 1, Medium: 2, Hard: 3 };
 
+// Home (direction B): Today = three small steps, the streak and a month calendar, the path strip; the full roadmap below.
+// System design and AI & ML lessons (id, title) in teaching order, as the two hubs list them. Progress comes from DS ('sd:<id>', 'ai:<id>').
+const HOME_SD = [['hld', 'Fundamentals', [['scale', 'Scale up or out'], ['lb', 'Load balancer'], ['cache', 'Caching'], ['dcache', 'Distributed cache'], ['cdn', 'CDN'], ['replicas', 'Read replicas'], ['sharding', 'Sharding'], ['hashing', 'Consistent hashing'], ['cap', 'CAP and consistency'], ['sqlnosql', 'SQL or NoSQL'], ['indexes', 'Database indexes'], ['queue', 'Message queue'], ['idempotency', 'Idempotency and retries'], ['ratelimit', 'Rate limiting'], ['observability', 'Observability']]],
+  ['case', 'Case studies', [['shortener', 'URL shortener'], ['chat', 'Chat app'], ['feed', 'News feed'], ['ride', 'Ride sharing'], ['video', 'Video streaming'], ['payments', 'Payments'], ['typeahead', 'Search autocomplete'], ['notify', 'Notification system'], ['crawler', 'Web crawler'], ['dlimit', 'Rate limiter at scale'], ['drive', 'File storage and sync'], ['leaderboard', 'Leaderboard']]],
+  ['lld', 'Low-level design', [['solid', 'SOLID in one picture'], ['strategy', 'Strategy pattern'], ['observer', 'Observer pattern'], ['factory', 'Factory pattern'], ['singleton', 'Singleton, with care'], ['decorator', 'Decorator pattern'], ['command', 'Command and undo'], ['vending', 'Vending machine'], ['lru', 'LRU cache'], ['parking', 'Parking lot'], ['elevator', 'Elevator system'], ['movies', 'Movie ticket booking'], ['splitter', 'Expense splitter']]]];
+const HOME_AI = [['ml', 'ML and data science foundations', [['gradient', 'Fit a line by gradient descent'], ['logistic', 'Logistic regression and the sigmoid'], ['knn', 'k-nearest neighbours'], ['tree', 'Decision tree splits'], ['nbayes', 'Naive Bayes'], ['svm', 'Support vector machines'], ['confusion', 'Precision, recall and the confusion matrix'], ['overfit', 'Train, test and overfitting'], ['crossval', 'Cross-validation'], ['biasvar', 'The bias-variance picture'], ['regular', 'Regularization: L1 and L2'], ['gboost', 'Gradient boosting'], ['kmeans', 'k-means clustering'], ['pca', 'PCA: many columns into few'], ['backprop', 'A neuron and backprop'], ['embeddings', 'Embeddings and cosine similarity']]],
+  ['now', 'AI now', [['tokens', 'Tokens and byte-pair encoding'], ['attention', 'Attention in a transformer'], ['vit', 'Vision transformers'], ['systems', 'System 1 and System 2 thinking'], ['agents', 'Agents, tools and MCP'], ['rag', 'RAG: retrieve, then generate'], ['moe', 'Mixture of experts'], ['lora', 'Fine-tuning with LoRA'], ['prefs', 'RLHF and DPO'], ['distill', 'Distillation: big teacher, small student'], ['diffusion', 'Diffusion: noise to image'], ['jepa', 'JEPA: predict meaning, not pixels'], ['evals', 'Evals and benchmarks']]]];
+const HOME_PATHS = {
+  book: 'M12 6c-2-1.5-5-2-8-2v14c3 0 6 .5 8 2 2-1.5 5-2 8-2V4c-3 0-6 .5-8 2zM12 6v14',
+  refresh: 'M20 11a8 8 0 0 0-14-4M4 5v4h4M4 13a8 8 0 0 0 14 4m2 2v-4h-4',
+  code: 'M8 7l-5 5 5 5M16 7l5 5-5 5'
+};
+const HOME_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const HOME_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: true, drawer: false, now: Date.now() };
+    this.state = { theme: loadTheme(), user: true, drawer: false, now: Date.now(), calOff: 0 };
     // Medals earned since the last visit shine once; then they are marked seen.
     const medals = DS.medals(PROBLEMS, PATTERNS);
     this.fresh = {};
@@ -5214,90 +5348,251 @@ class Component extends DCLogic {
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
-    const now = new Date(this.state.now);
-    const hour = now.getHours();
+    const pad2 = (n) => (n < 10 ? '0' : '') + n;
     const me = DS.profile();
     const st = DS.streak();
     const xp = DS.xp();
     const stories = DS.stories();
     const sheet = DS.sheet();
     const open = (p) => (p.animated ? 'Story.dc.html' : 'Briefing.dc.html');
-    // Today's story: a different unsolved problem each day.
-    const todo = PROBLEMS.filter((p) => p.status !== 'done');
-    const pool = todo.length ? todo : PROBLEMS;
-    const dp = pool[Math.floor(this.state.now / 86400000) % pool.length];
-    // The learning path: stages in order; the current one is the first not finished.
+    const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+    // Today, from the same clock the streak uses.
+    const tw = st.week.find((w) => w.today);
+    const [ty, tm, td] = tw.date.split('-').map(Number);
+    const dateLine = HOME_WEEKDAYS[new Date(ty, tm - 1, td).getDay()] + ', ' + td + ' ' + HOME_MONTHS[tm - 1];
+    const dmap = DS.days();
+    const doneToday = (dmap[tw.date] || {}).total || 0;
+    // Problems: the path stages in order; the current stage is the first not finished.
     const stageStats = STAGES.map((s) => {
       const all = PROBLEMS.filter((p) => p.dtype === s.key);
       return { s, all, done: all.filter((p) => p.status === 'done').length };
     });
     const cur = stageStats.find((x) => x.done < x.all.length) || stageStats[0];
     const nextUp = cur.all.filter((p) => p.status !== 'done').sort((a, b) => (b.animated - a.animated) || DIFF_ORDER[a.diff] - DIFF_ORDER[b.diff]);
-    // Continue: the problem last opened, else the first story on the path.
     const last = loadProblem();
-    const resume = last && last.status !== 'done' ? last : nextUp.find((p) => p.animated) || nextUp[0] || PROBLEMS[0];
-    // Rings: the four patterns furthest along (catalog order breaks ties).
-    const pats = DS.patterns(PROBLEMS, PATTERNS).filter((p) => p.total);
-    const sr = DS.startRing();
-    const top = (sr ? [sr] : []).concat(pats.slice().sort((a, b) => b.pct - a.pct || pats.indexOf(a) - pats.indexOf(b))).slice(0, 4);
-    const ringColors = [t.accent, t.right, t.flame, t.ok];
+    const lastOpen = last && last.status !== 'done' ? last : null;
+    const resume = lastOpen || nextUp.find((p) => p.animated) || nextUp[0] || PROBLEMS[0];
+    const dayN = Math.floor(this.state.now / 86400000);
+    const todo = PROBLEMS.filter((p) => p.status !== 'done');
+    const pool = todo.length ? todo : PROBLEMS;
+    const dp = pool[dayN % pool.length];
+    // Start here: the lesson to continue.
+    const sp = startProgress();
+    const settled = (r) => r.done || r.known;
+    const coreIds = startCore().map((c) => c.id);
+    const coreRows = sp.rows.filter((r) => coreIds.includes(r.c.id));
+    const coreDone = coreRows.filter(settled).length;
+    const startedAny = sp.rows.some(settled) || Object.keys(DS.start().ex).length > 0 || !!DS.start().last;
+    const lastRow = sp.last ? sp.rows.find((r) => r.c.id === sp.last && r.ready && !settled(r)) : null;
+    const curRow = lastRow || sp.next;
+    const lessonMode = !!curRow && coreDone < coreRows.length;
+    const lvlTotal = (lv) => DS.startCounts(lv).total;
+    const lessonMeta = (c) => (startLevel(c) > 1 ? 'Level ' + startLevel(c) + ' · ' : '') + 'Lesson ' + c.n + ' of ' + lvlTotal(startLevel(c)) + (c.minutes ? ' · ' + c.minutes + ' min' : '');
+    const lessonLink = (c) => ({ href: 'Chapter.dc.html?ch=' + c.id, go: () => DS.startVisit(c.id) });
+    const problemLink = (p) => ({ href: solveHref(p.id), go: () => saveProblem(p.id) });
+    // The three steps. The first is the one lime button.
+    const steps = [];
+    let used = null;
+    if (lessonMode) {
+      const c = curRow.c;
+      steps.push({ icon: 'book', primary: true, title: c.title, meta: lessonMeta(c), cta: startedAny ? 'Resume' : 'Start lesson ' + c.n, ...lessonLink(c) });
+    } else {
+      used = resume;
+      steps.push({ icon: 'code', primary: true, title: resume.title, meta: resume.pattern + ' · ' + resume.diff + ' · ' + resume.time, cta: lastOpen ? 'Resume' : 'Start', ...problemLink(resume) });
+    }
+    const due = DS.reviewDue();
+    if (due.length) {
+      const c = due[0];
+      const P = c.kind === 'story' ? PROBLEMS.find((x) => x.id === c.id) : null;
+      const ch = c.kind === 'start' ? startById(c.id.slice(6)) : null;
+      steps.push({ icon: 'refresh', link: true, title: P ? P.title : ch ? ch.title : c.name || 'A problem you finished', meta: 'Quick review · ' + plural(due.length, 'card', 'cards') + ' due', cta: 'Start', href: 'Revisit.dc.html', go: () => {} });
+    } else {
+      steps.push({ icon: 'refresh', quiet: true, title: 'No review due', meta: 'Finished work comes back here' });
+    }
+    const third = lessonMode ? resume : nextUp.find((p) => p.id !== resume.id) || resume;
+    steps.push({ icon: 'code', link: true, title: third.title, meta: third.pattern + ' · ' + third.diff + ' · ' + third.time, cta: 'Start', ...problemLink(third) });
+    const plan = {
+      meta: doneToday ? plural(doneToday, 'thing', 'things') + ' done today' : 'Nothing done yet today',
+      steps: steps.map((s, i) => ({
+        title: s.title, meta: s.meta, href: s.href || '', go: s.go || (() => {}), cta: s.cta || '', primary: !!s.primary, link: !!s.link,
+        aria: s.link ? s.cta + ': ' + s.title : '', d: HOME_PATHS[s.icon],
+        bt: i ? '1px solid ' + t.line : '0', fg: s.quiet ? t.muted : t.text,
+        ibg: s.primary ? tint(t.accent, '22') : t.sunk, ifg: s.primary ? t.accent : t.muted
+      }))
+    };
+    // Streak bar: seven segments, then it starts over; the calendar beside it shows the real days.
+    const run = st.current;
+    const on7 = run === 0 ? 0 : ((run - 1) % 7) + 1;
+    const streak = {
+      title: run === 0 ? 'Start a streak today' : plural(run, 'day', 'days') + ' in a row',
+      line: run === 0 ? 'A lesson, a story or a sheet tick counts' : st.atRisk ? 'Learn today to keep it going' : on7 === 7 ? 'A full week. Keep going' : (7 - on7 === 1 ? 'One more for a full week' : (7 - on7) + ' more for a full week'),
+      pips: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ bg: i < on7 ? t.accent : t.sunk })),
+      aria: on7 + ' of 7 days toward a full week'
+    };
+    // Month calendar, Monday first. Days with activity form a band; today is the lime end.
+    const off = this.state.calOff || 0;
+    const first = new Date(ty, tm - 1 + off, 1);
+    const cy = first.getFullYear(), cm = first.getMonth();
+    const dim = new Date(cy, cm + 1, 0).getDate();
+    const lead = (first.getDay() + 6) % 7;
+    const act = (d) => d >= 1 && d <= dim && !!dmap[cy + '-' + pad2(cm + 1) + '-' + pad2(d)];
+    const cells = [];
+    for (let i = 0; i < lead; i++) cells.push({ n: '', aria: '', weight: '400', fg: t.muted, bg: 'transparent', radius: '0', ring: 'none' });
+    for (let d = 1; d <= dim; d++) {
+      const col = (lead + d - 1) % 7;
+      const onD = act(d), pv = onD && col > 0 && act(d - 1), nx = onD && col < 6 && act(d + 1);
+      const isToday = off === 0 && d === td;
+      const r = (x) => (x ? '0' : '20px');
+      let bg = 'transparent', fg = t.muted, weight = '400', ring = 'none', radius = '20px';
+      if (onD) { bg = tint(t.accent, '26'); fg = t.text; weight = '500'; radius = r(pv) + ' ' + r(nx) + ' ' + r(nx) + ' ' + r(pv); }
+      if (isToday) { fg = onD ? t.onAccent : t.text; weight = '600'; if (onD) { bg = t.accent; } else { ring = 'inset 0 0 0 2px ' + t.accent; } }
+      cells.push({ n: String(d), weight, fg, bg, radius, ring, aria: d + ' ' + HOME_MONTHS[cm] + ' ' + cy + (isToday ? ', today' : '') + (onD ? ', learned' : '') });
+    }
+    const cal = {
+      title: HOME_MONTHS[cm] + ' ' + cy,
+      heads: ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d) => ({ d })),
+      cells,
+      prev: () => this.setState({ calOff: Math.max(-24, off - 1) }), next: () => this.setState({ calOff: Math.min(0, off + 1) }),
+      noPrev: off <= -24 ? 'true' : 'false', noNext: off >= 0 ? 'true' : 'false',
+      prevOp: off <= -24 ? '0.35' : '1', nextOp: off >= 0 ? '0.35' : '1'
+    };
+    // On the path: five nodes for the learner's current track, the lessons while the basics are unfinished, else the problem stages.
+    let pathItems, pathLink, pathHref, pathName;
+    if (lessonMode) {
+      const idx = sp.rows.indexOf(curRow);
+      const lvl = startLevel(curRow.c);
+      const rows = sp.rows.filter((r) => startLevel(r.c) === lvl);
+      const ci = rows.indexOf(curRow);
+      const from = Math.max(0, Math.min(ci - 2, rows.length - 5));
+      pathItems = rows.slice(from, from + 5).map((r) => ({
+        done: settled(r), now: r === curRow, num: r.c.n, label: r.c.short || r.c.title, aria: 'Lesson ' + r.c.n + ', ' + r.c.title + (settled(r) ? ', done' : r === curRow ? ', current' : ''), ...lessonLink(r.c)
+      }));
+      pathLink = 'Full path'; pathHref = 'Start.dc.html'; pathName = 'Start here, level ' + lvl;
+    } else {
+      const ci = Math.max(0, stageStats.indexOf(cur));
+      const from = Math.max(0, Math.min(ci - 2, stageStats.length - 5));
+      pathItems = stageStats.slice(from, from + 5).map((x, i) => ({
+        done: x.done === x.all.length, now: x === cur, num: from + i + 1, label: x.s.name, aria: x.s.name + ', ' + x.done + ' of ' + x.all.length + ' problems done' + (x === cur ? ', current' : ''), href: 'Patterns.dc.html', go: () => {}
+      }));
+      pathLink = 'Full path'; pathHref = 'Patterns.dc.html'; pathName = 'Problem stages';
+    }
+    const pathNow = {
+      link: pathLink, href: pathHref, aria: pathName,
+      nodes: pathItems.map((n, i) => ({
+        arrow: i > 0, href: n.href, go: n.go, aria: n.aria, cur: n.now ? 'step' : 'false', num: n.num, label: n.label,
+        check: n.done, plain: !n.done,
+        bg: n.done ? tint(t.accent, '22') : n.now ? t.surface : t.sunk,
+        fg: n.done ? t.accent : n.now ? t.text : t.muted,
+        ring: n.now ? '0 0 0 2px ' + t.accent : 'none',
+        lbl: n.now ? t.text : t.muted
+      }))
+    };
+    // The full roadmap.
+    const lessonSet = {};
+    DS.lessons().ids.forEach((id) => { lessonSet[id] = 1; });
+    const lessonItem = (r) => {
+      const st2 = r.done ? 'Done' : r.known ? 'Known' : r === curRow ? 'Up next' : !r.ready ? 'Being written' : '';
+      const ok = r.done || r.known;
+      return { num: r.c.n, title: r.c.title, meta: st2, check: ok, plain: !ok, bg: ok ? tint(t.accent, '22') : r === curRow ? t.surface : t.sunk, fg: ok ? t.accent : r === curRow ? t.text : t.muted,
+        tfg: ok || r.ready ? t.text : t.muted, aria: 'Lesson ' + r.c.n + ', ' + r.c.title + (st2 ? ', ' + st2.toLowerCase() : ''), ...lessonLink(r.c) };
+    };
+    const levelGroups = (levels) => levels.map((lv) => ({
+      title: 'Level ' + lv + ': ' + START_LEVELS[lv - 1].title,
+      items: sp.rows.filter((r) => startLevel(r.c) === lv).map(lessonItem)
+    }));
+    const partGroups = START_PARTS.filter((p) => p.level === 1).map((p) => ({
+      title: 'Part ' + p.n + ': ' + p.title,
+      items: sp.rows.filter((r) => r.c.part === p.n).map(lessonItem)
+    })).filter((g) => g.items.length);
+    const hubGroups = (spec, prefix, page, key) => {
+      let firstOpen = true;
+      return spec.map(([k, title, list]) => ({
+        title,
+        items: list.map(([id, name], i) => {
+          const ok = !!lessonSet[prefix + id];
+          const isNext = !ok && firstOpen; if (isNext) firstOpen = false;
+          return { num: i + 1, title: name, meta: ok ? 'Done' : isNext ? 'Up next' : '', check: ok, plain: !ok, bg: ok ? tint(t.accent, '22') : isNext ? t.surface : t.sunk, fg: ok ? t.accent : isNext ? t.text : t.muted,
+            tfg: t.text, aria: name + (ok ? ', done' : isNext ? ', up next' : ''), href: page, go: () => { try { window.localStorage.setItem(key, id); } catch (e) {} } };
+        })
+      }));
+    };
+    const countOf = (groups) => ({ done: groups.reduce((s, g) => s + g.items.filter((i) => i.check).length, 0), total: groups.reduce((s, g) => s + g.items.length, 0) });
+    const startCount = DS.startCounts(1); // the same count as the Start here hub and the roadmap
+    const l1 = startCount;
+    const coreC = [2, 3, 4, 5].map((lv) => DS.startCounts(lv));
+    const sdGroups = hubGroups(HOME_SD, 'sd:', 'SDLesson.dc.html', 'dsaviz-sd-lesson');
+    const aiGroups = hubGroups(HOME_AI, 'ai:', 'AILesson.dc.html', 'dsaviz-ai-lesson');
+    let nextStageSet = false;
+    const stageGroups = [{
+      title: 'Problem stages, in order',
+      items: stageStats.map((x, i) => {
+        const ok = x.all.length > 0 && x.done === x.all.length;
+        const isNext = !ok && !nextStageSet; if (isNext) nextStageSet = true;
+        return { num: i + 1, title: x.s.name, meta: x.done + ' of ' + x.all.length + ' problems', check: ok, plain: !ok, bg: ok ? tint(t.accent, '22') : isNext ? t.surface : t.sunk, fg: ok ? t.accent : isNext ? t.text : t.muted,
+          tfg: t.text, aria: x.s.name + ', ' + x.done + ' of ' + x.all.length + ' problems done', href: 'Patterns.dc.html', go: () => {} };
+      })
+    }];
+    const stageDone = stageStats.reduce((s, x) => s + x.done, 0), stageAll = stageStats.reduce((s, x) => s + x.all.length, 0);
+    const rowsRaw = [
+      { name: 'Start here', done: l1.done, total: l1.total, unit: 'lessons', groups: partGroups, links: [{ label: 'Open Start here', href: 'Start.dc.html' }] },
+      { name: 'Core programming', done: coreC.reduce((s, c) => s + c.done, 0), total: coreC.reduce((s, c) => s + c.total, 0), unit: 'lessons', groups: levelGroups([2, 3, 4, 5]), links: [{ label: 'Open Start here', href: 'Start.dc.html' }] },
+      { name: 'DSA patterns', done: stageDone, total: stageAll, unit: 'problems', groups: stageGroups, links: [{ label: 'Open the pattern library', href: 'Patterns.dc.html' }, { label: 'DSA concepts', href: 'Concepts.dc.html' }, { label: 'The master sheet', href: 'Sheet.dc.html' }] },
+      { name: 'System design', ...countOf(sdGroups), unit: 'lessons', groups: sdGroups, links: [{ label: 'Open System design', href: 'SystemDesign.dc.html' }] },
+      { name: 'AI & ML', ...countOf(aiGroups), unit: 'lessons', groups: aiGroups, links: [{ label: 'Open AI & ML', href: 'AIML.dc.html' }] }
+    ];
+    let nextSeen = false, ringUsed = false;
+    const road = rowsRaw.map((r, i) => {
+      const isDone = r.total > 0 && r.done >= r.total;
+      const isNext = !isDone && (!nextSeen || r.done > 0);
+      if (!isDone) nextSeen = true;
+      const ringNow = !isDone && isNext && !ringUsed; if (ringNow) ringUsed = true;
+      const state = isDone ? 'Done' : isNext ? (r.done ? 'In progress' : 'Up next') : 'Later';
+      const pct = Math.round((r.done / Math.max(1, r.total)) * 100);
+      return {
+        name: r.name, num: i + 1, groups: r.groups, links: r.links,
+        meta: state + ' · ' + (r.name === 'Start here' ? startCount.done + ' of ' + startCount.total + ' Level 1 lessons done' : r.done + ' of ' + r.total + ' ' + r.unit),
+        isDone, isNext: !isDone && isNext, isLater: !isDone && !isNext,
+        nbg: isDone ? tint(t.accent, '22') : isNext ? t.surface : t.sunk, nfg: isDone ? t.accent : isNext ? t.text : t.muted,
+        ring: ringNow ? '0 0 0 2px ' + t.accent : 'none', fg: isDone || isNext ? t.text : t.muted,
+        pct: pct + '%', pctNum: pct, bar: isDone ? t.accent : t.text2, arrow: i < rowsRaw.length - 1
+      };
+    });
     const weekOn = st.week.filter((w) => w.on).length;
     const board = DS.leaderboard('league');
     const you = board.rows.find((r) => r.me);
     const shown = board.rows.slice(0, 3).concat(you.rank > 3 ? [you] : board.rows.slice(3, 4));
-    const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    // Start here: new learners and learners part way through the track see its card instead of the rings.
-    const sp = startProgress();
-    const coreIds = startCore().map((c) => c.id);
-    const coreRows = sp.rows.filter((r) => coreIds.includes(r.c.id));
-    const coreDone = coreRows.filter((r) => r.done || r.known).length;
-    const startCount = DS.startCounts(1); // the same count as the Start here hub and the roadmap
-    const startStarted = coreDone > 0 || Object.keys(DS.start().ex).length > 0 || !!DS.start().last;
-    const startNext = sp.next ? sp.next.c : null;
-    const showStart = !!startNext && (me.isNew || (startStarted && coreDone < coreRows.length));
+    const pats = DS.patterns(PROBLEMS, PATTERNS).filter((p) => p.total);
+    const sr = DS.startRing();
+    const top = (sr ? [sr] : []).concat(pats.slice().sort((a, b) => b.pct - a.pct || pats.indexOf(a) - pats.indexOf(b))).slice(0, 4);
+    const ringColors = [t.accent, t.right, t.flame, t.ok];
     return {
       t, ...navVals(this, t, themeKey, 'Home'),
-      startCard: {
-        show: showStart, hide: !showStart,
-        eyebrow: startStarted ? 'Start here' : 'New to coding?', title: startStarted ? 'Keep going: lesson ' + (startNext ? startNext.n : '') : 'Start here',
-        line: startStarted && startNext ? startNext.title + '. ' + startNext.idea : 'Short animated lessons take you from your first line of code to your first real problem. No experience needed.',
-        done: startCount.done, total: startCount.total, pct: startCount.pct + '%',
-        progress: startCount.done + ' of ' + startCount.total + ' Level 1 lessons done',
-        cta: startStarted ? 'Continue lesson ' + (startNext ? startNext.n : '') : 'Start lesson 1',
-        href: startNext ? 'Chapter.dc.html?ch=' + startNext.id : 'Start.dc.html', go: () => { if (startNext) DS.startVisit(startNext.id); }
-      },
-      hero: {
-        eyebrow: greet + (me.name ? ', ' + me.name.split(' ')[0] : ''),
-        title: me.isNew ? 'Your first story is waiting' : st.atRisk ? 'Keep your streak alive' : st.activeToday ? 'Today counts' : 'Welcome back',
-        line: me.isNew ? 'Every problem is a story you watch step by step. Finish one today to start your streak.'
-          : st.atRisk ? 'Finish one story today to make it ' + (st.current + 1) + ' days in a row.'
-          : st.activeToday ? 'You learned today, so your ' + st.current + '-day streak is safe. One more story keeps the habit warm.'
-          : 'Pick up where you left off. One story today starts a new streak.',
-        cta: (me.isNew ? 'Start: ' : 'Continue: ') + resume.title,
-        href: solveHref(resume.id), go: () => saveProblem(resume.id)
-      },
+      dateLine, plan, streak, cal, pathNow, road,
+      roadMeta: l1.done + coreC.reduce((s, c) => s + c.done, 0) + sdGroups.concat(aiGroups).reduce((s, g) => s + g.items.filter((i) => i.check).length, 0) + ' lessons done',
       patternCount: pats.length,
       rings: ringSet(t, top.map((p, i) => ({ label: p.name, value: p.done + '/' + p.total, pct: p.pct, color: ringColors[i] })), 152, 12),
       tiles: statTiles(t, [
         { icon: 'flame', color: t.flame, value: st.current, unit: st.current === 1 ? 'day' : 'days', label: 'Streak', pct: (weekOn / 7) * 100 },
-        { icon: 'story', color: t.accent, value: stories.count, unit: '/ ' + PROBLEMS.length, label: 'Stories finished', pct: (stories.count / PROBLEMS.length) * 100 },
+        { icon: 'story', color: t.accent, value: stories.count, unit: '/ ' + PROBLEMS.length, label: 'Problems finished', pct: (stories.count / PROBLEMS.length) * 100 },
         { icon: 'sheet', color: t.right, value: sheet.ticked, unit: '/ ' + sheet.total, label: 'Sheet ticked', pct: (sheet.ticked / sheet.total) * 100 },
         { icon: 'bolt', color: t.ok, value: xp.total.toLocaleString('en-US'), unit: 'XP', label: 'Level ' + xp.level, pct: xp.pct }
       ]),
-      week: st.week.map((w) => ({
-        d: w.d, dot: w.on ? t.flame : t.line2, fg: w.today ? t.text : t.muted, border: w.today ? t.accent : 'transparent',
-        aria: w.date + (w.today ? ', today' : '') + (w.on ? ', learned' : w.future ? '' : ', no learning')
-      })),
-      weekLine: weekOn ? weekOn + ' of 7 days this week · longest streak ' + st.longest + (st.longest === 1 ? ' day' : ' days') : 'No learning yet this week. A story, a sheet tick or a passed test all count.',
+      weekLine: weekOn ? weekOn + ' of 7 days this week · longest streak ' + st.longest + (st.longest === 1 ? ' day' : ' days') : 'No learning yet this week. A lesson, a sheet tick or a passed test all count.',
       shelf: medalShelf(t, DS.medals(PROBLEMS, PATTERNS), 8, this.fresh),
-      daily: { story: dp.story, title: dp.title, pattern: dp.pattern, time: dp.time, synopsis: dp.synopsis, href: open(dp), go: () => saveProblem(dp.id) },
+      daily: { title: dp.title, pattern: dp.pattern, time: dp.time, href: solveHref(dp.id), go: () => saveProblem(dp.id) },
       nextStage: cur.s.name,
       path: stageStats.map((x) => ({
         name: x.s.name, pct: Math.round((x.done / Math.max(1, x.all.length)) * 100) + '%',
         color: x.done === x.all.length ? t.ok : t.accent, fg: x === cur ? t.accent : t.muted,
         aria: x.s.name + ': ' + x.done + ' of ' + x.all.length + ' done'
       })),
-      upNext: nextUp.slice(0, 3).map((p) => ({ title: p.title, story: p.story, diff: p.diff, time: p.time, dot: t.diff[p.diff][0], href: open(p), go: () => saveProblem(p.id) })),
+      upNext: nextUp.slice(0, 3).map((p) => ({ title: p.title, pattern: p.pattern, diff: p.diff, time: p.time, dot: t.diff[p.diff][0], href: solveHref(p.id), go: () => saveProblem(p.id) })),
+      more: {
+        numbersMeta: 'Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP',
+        patternsMeta: pats.length + ' patterns',
+        problemsMeta: 'Next up in ' + cur.s.name,
+        leagueMeta: 'You are #' + board.you.rank + ' of ' + board.you.of
+      },
       league: shown.map((r) => ({
         rank: r.rank, name: r.me ? 'You' : r.name, xp: r.xp.toLocaleString('en-US'),
         bg: r.me ? t.hl : 'transparent', weight: r.me ? '800' : '600', rankColor: r.rank <= 7 ? t.ok : t.muted

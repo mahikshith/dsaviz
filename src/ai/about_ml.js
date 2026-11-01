@@ -2,8 +2,8 @@
 const AI_ABOUT_ML = {
   graphs: {
     what: 'A graph puts two numbers on a page at once. Each pair is one point. A straight line follows the rule y = w × x + b, where w sets the tilt and b sets the start.',
-    analogy: 'A map has a street number and a floor number. Together they point to one flat. A graph does the same with x and y.',
-    uses: ['Reading how a plant grows day by day', 'Seeing whether two things move together, such as study time and test score', 'Describing a model that predicts one number from another'],
+    analogy: 'A map has a street number and a floor number. Together they point to one apartment. A graph does the same with x and y.',
+    uses: ['Reading how a plant grows day by day', 'Seeing whether two things move together, such as study time and test score', 'Describing a rule that predicts one number from another'],
     before: ['Reading numbers on a ruler or a clock'],
     words: [
       ['x', 'The number along the bottom of the graph. Here it is the day.'],
@@ -17,7 +17,7 @@ const AI_ABOUT_ML = {
       symbols: [
         ['x', 'the input, the number along the bottom'],
         ['y', 'the output, the number up the side'],
-        ['w', 'the tilt of the line, called its slope'],
+        ['w', 'the tilt of the line, called its slope (the next lesson explains it)'],
         ['b', 'where the line starts when x is 0']
       ],
       example: [
@@ -47,7 +47,7 @@ const AI_ABOUT_ML = {
   slope: {
     what: 'Slope tells how steep a line is. It is the rise, how far the line goes up, divided by the run. The run is how far it goes across. A straight line has the same slope everywhere.',
     analogy: 'Think of a ramp. A steep ramp gains height fast for each step forward. A gentle ramp gains height slowly.',
-    uses: ['Finding how fast a price, a speed or a score is changing', 'Reading the weight w in a straight-line model', 'Telling a training program which way to nudge a number'],
+    uses: ['Finding how fast a price, a speed or a score is changing', 'Reading the number w in the rule y = w × x + b', 'Telling a computer that learns which way to change a number'],
     before: ['graphs'],
     words: [
       ['slope', 'How steep a line is: the rise divided by the run.'],
@@ -91,7 +91,7 @@ const AI_ABOUT_ML = {
   derivative: {
     what: 'A curve is steeper in some places than others. The derivative is the slope of the curve at one point. Zoom in far enough and the curve looks like a straight line, and that line has the slope.',
     analogy: 'A car speedometer shows how fast you go at this moment. The derivative does the same for a curve: the rate right here.',
-    uses: ['Finding the speed of something from its position over time', 'Finding the lowest point of a loss, where the slope is 0', 'Telling a model how a small change in a weight changes its error'],
+    uses: ['Finding the speed of something from its position over time', 'Finding the lowest point of an error number, where the slope is 0', 'Showing how a small change to a setting changes a computer\'s mistake'],
     before: ['slope'],
     words: [
       ['derivative', 'The slope of a curve at one point. It says how fast y changes when x changes a little.'],
@@ -135,8 +135,8 @@ const AI_ABOUT_ML = {
   },
   chainrule: {
     what: 'Often one number feeds a step, and its answer feeds a second step. A small change at the start passes through both steps. The slope of the chain is the first slope times the second slope.',
-    analogy: 'Think of two gears. B spins twice as fast as A. A wheel spins 2.5 times as fast as B. So the wheel spins 5 times as fast as A.',
-    uses: ['Finding how the last number in a long calculation reacts to the first', 'Training neural networks, where backprop applies it layer by layer', 'Checking how a small error early on grows by the end'],
+    analogy: 'Think of three gears in a row. The middle gear spins 2 times as fast as the first. The last gear spins 2.5 times as fast as the middle one. So the last gear spins 5 times as fast as the first.',
+    uses: ['Finding how the last number in a long calculation reacts to the first', 'Teaching a neural network, a learning program made of many steps in a chain', 'Checking how a small error early on grows by the end'],
     before: ['derivative'],
     words: [
       ['chain rule', 'The slope of a chain of steps is the product of the slopes of the steps.'],
@@ -179,15 +179,15 @@ const AI_ABOUT_ML = {
     sources: ['Strang, Calculus, 3rd ed., 2017, ch. 2.5 (the chain rule)', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 6.5.2', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 5.2']
   },
   gradarrow: {
-    what: 'A model often has many knobs. The loss has one slope for each knob. The gradient collects those slopes into one arrow that points uphill. Step the opposite way and the loss falls.',
+    what: 'A model often has many knobs. The loss has one slope for each knob. The gradient collects those slopes into one arrow that points uphill. Step the opposite way and the loss falls. The next lesson uses this to fit a line.',
     analogy: 'Stand on a foggy hillside. You feel how the ground tilts to the left and how it tilts forward. Put the two tilts together and you know the steepest way up.',
     uses: ['Telling a model how to change many weights at once', 'Finding the fastest way down a landscape with more than one direction', 'Setting up gradient descent, the way most models learn'],
     before: ['derivative', 'chainrule'],
     words: [
-      ['knob', 'A number the model can change. Here the two knobs are a and b.'],
+      ['knob', 'A number the model can change, like a knob on a radio. Here the two knobs are a and b.'],
       ['loss', 'One number that says how wrong the model is. Lower is better.'],
       ['gradient', 'The list of slopes of the loss, one for each knob. As an arrow, it points uphill.'],
-      ['step size', 'A small number that says how far to move each time.'],
+      ['step size', 'A small number that says how far to move each time. It is also called the learning rate.'],
       ['gradient descent', 'Repeat: find the gradient, step the opposite way, and look again.']
     ],
     math: {
@@ -228,15 +228,15 @@ const AI_ABOUT_ML = {
     sources: ['Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 4.3 (gradient-based optimisation)', 'Deisenroth, Faisal, Ong, Mathematics for Machine Learning, 2020, ch. 5.2 and 7.1', 'Strang, Calculus, 3rd ed., 2017, ch. 13 (partial derivatives and the gradient)']
   },
   vectors: {
-    what: 'A vector is a short list of numbers. You can draw it as an arrow. The dot product multiplies matching places and adds them. It is large when two arrows point the same way, and negative when they face away.',
+    what: 'A vector is a short list of numbers. You can draw it as an arrow. The dot product multiplies matching places and adds them. It is large when two arrows point the same way. It is 0 at a right angle. It is negative when they face away.',
     analogy: 'Two people walk across a field. If they head the same way, their efforts add up. If they pull opposite ways, they cancel. The dot product scores that.',
     uses: ['Giving each word a list of numbers that a computer can compare', 'Adding up inputs times weights inside a neuron', 'Recommending items whose number lists match what you like'],
     before: ['graphs'],
     words: [
       ['vector', 'A list of numbers. Drawn as an arrow, each number tells how far to go along one direction.'],
-      ['length', 'How long the arrow is. Square each number, add, then take the square root.'],
+      ['length', 'How long the arrow is. Multiply each number by itself, add the results, then take the square root.'],
       ['dot product', 'Multiply the matching places of two vectors, then add. The answer is one number.'],
-      ['neuron', 'A small unit of a model. It takes a dot product of its inputs and its weights.'],
+      ['neuron', 'A tiny part of a learning program. It multiplies each input by a weight, which says how much it counts, and adds the results.'],
       ['embedding', 'A vector of numbers that stands for a word or an item.']
     ],
     math: {
@@ -281,10 +281,10 @@ const AI_ABOUT_ML = {
     words: [
       ['mean', 'The total divided by how many numbers there are. It is the balance point.'],
       ['spread', 'How far the numbers sit from the mean.'],
-      ['variance', 'The mean of the squared gaps from the mean.'],
+      ['variance', 'The mean of the squared gaps from the mean. To square a gap, multiply it by itself.'],
       ['standard deviation', 'The square root of the variance. It is the usual gap from the mean.'],
       ['chance', 'A number from 0 to 1 that says how likely something is. It is also called probability.'],
-      ['random', 'Picked with no pattern, so each outcome has its fair chance.'],
+      ['random', 'Picked with no pattern, so each student or outcome has the same chance.'],
       ['loss', 'One number that says how wrong a model is. Often it is the mean of squared gaps.'],
       ['classifier', 'A model that sorts things into groups. It often gives a chance for each group.']
     ],

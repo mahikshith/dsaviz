@@ -142,7 +142,7 @@
 <section class="pb-left" aria-label="The problem">
 <div class="pb-tabbar">
 <div class="sh-tabs pb-tabs" role="tablist" aria-label="Problem sections" onKeyDown="{{pbTabKey}}">
-<sc-for list="{{pbTabs}}" as="tb"><button class="sh-tab" role="tab" id="{{tb.id}}" aria-selected="{{tb.sel}}" aria-controls="pb-panel" tabindex="{{tb.idx}}" onClick="{{tb.pick}}">{{tb.label}}</button></sc-for>
+<sc-for list="{{pbTabs}}" as="pt"><button class="sh-tab" role="tab" id="{{pt.id}}" aria-selected="{{pt.sel}}" aria-controls="pb-panel" tabindex="{{pt.idx}}" onClick="{{pt.pick}}">{{pt.label}}</button></sc-for>
 </div>
 </div>
 <div class="pb-panel" id="pb-panel" role="tabpanel" aria-labelledby="{{pbTabId}}">

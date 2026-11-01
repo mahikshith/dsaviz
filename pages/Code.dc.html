@@ -277,6 +277,8 @@ a.sh-row:hover{background:var(--sh-sunk)}
 @media (prefers-reduced-motion: reduce){[data-pn] a,[data-pn] button{transition:none}}
 @media (max-width: 759px){
 [data-pn]{padding:0 8px!important}
+[data-pn-item]{padding:0 8px!important}
+@media (max-width: 359px){[data-pn]{gap:0!important;padding:0 4px!important}[data-pn-items]{gap:0!important}[data-pn-item]{padding:0 5px!important}}
 [data-pn-name],[data-pn-kbd]{display:none!important}
 [data-drawer]{zoom:calc(1 / var(--fit, 1))}
 [data-drawer] aside{width:min(360px,86vw)!important}
@@ -529,7 +531,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <section class="pb-left" aria-label="The problem">
 <div class="pb-tabbar">
 <div class="sh-tabs pb-tabs" role="tablist" aria-label="Problem sections" onKeyDown="{{pbTabKey}}">
-<sc-for list="{{pbTabs}}" as="tb"><button class="sh-tab" role="tab" id="{{tb.id}}" aria-selected="{{tb.sel}}" aria-controls="pb-panel" tabindex="{{tb.idx}}" onClick="{{tb.pick}}">{{tb.label}}</button></sc-for>
+<sc-for list="{{pbTabs}}" as="pt"><button class="sh-tab" role="tab" id="{{pt.id}}" aria-selected="{{pt.sel}}" aria-controls="pb-panel" tabindex="{{pt.idx}}" onClick="{{pt.pick}}">{{pt.label}}</button></sc-for>
 </div>
 </div>
 <div class="pb-panel" id="pb-panel" role="tabpanel" aria-labelledby="{{pbTabId}}">
@@ -38242,7 +38244,7 @@ class Component extends StoryComponent {
   // One line says where the learner stands; below it only the first test that fails is spelled out, then a chip for every test.
   testsVals(t, cr) {
     const r = this.runner, out = r.s.out, spec = r.spec(), bad = t.diff.Hard[2];
-    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: {},
+    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: { title: '', input: '', expected: '', hasExpected: false, got: '', gotColor: t.text, hasLogs: false, logs: '' },
       hasConsole: false, console: [], hasChips: false, chips: [], hasPanels: false, panels: [], hasNext: false };
     if (!spec) return o;
     if (!cr.runnable) { o.title = 'This language cannot run this problem'; o.hasNote = true; o.note = cr.notRunnableMsg; return o; }
@@ -38266,7 +38268,7 @@ class Component extends StoryComponent {
     return o;
   }
   sqlTestsVals(t, sq) {
-    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: {},
+    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: { title: '', input: '', expected: '', hasExpected: false, got: '', gotColor: t.text, hasLogs: false, logs: '' },
       hasConsole: false, console: [], hasChips: false, chips: [], hasPanels: false, panels: [], hasNext: false };
     const out = this.sql.s.out;
     if (!out) { if (sq.busy) o.title = 'Running…'; return o; }
@@ -38291,7 +38293,7 @@ class Component extends StoryComponent {
     const P = isSql ? sqlInfo(pid) : specInfo(pid);
     const hasScene = !isSql && !!SCENES[pid] && PROBLEMS.some((p) => p.id === pid);
     const showStory = hasScene && this.state.pbStory && tab === 'problem';
-    const sv = hasScene ? super.renderVals() : {};   // the story's values are always there for a problem that has one, so the markup's holes all resolve
+    const sv = super.renderVals();   // the story's values are always there (state.scene keeps the last story shown), so the markup's holes all resolve
     this.pbLogSql();
     const cr = this.runner.vals(t), sq = this.sql.vals(t);
     const H = isSql ? null : hintsFor(pid), hints = this.hintList(pid);

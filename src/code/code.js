@@ -210,7 +210,7 @@ class Component extends StoryComponent {
   // One line says where the learner stands; below it only the first test that fails is spelled out, then a chip for every test.
   testsVals(t, cr) {
     const r = this.runner, out = r.s.out, spec = r.spec(), bad = t.diff.Hard[2];
-    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: {},
+    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: { title: '', input: '', expected: '', hasExpected: false, got: '', gotColor: t.text, hasLogs: false, logs: '' },
       hasConsole: false, console: [], hasChips: false, chips: [], hasPanels: false, panels: [], hasNext: false };
     if (!spec) return o;
     if (!cr.runnable) { o.title = 'This language cannot run this problem'; o.hasNote = true; o.note = cr.notRunnableMsg; return o; }
@@ -234,7 +234,7 @@ class Component extends StoryComponent {
     return o;
   }
   sqlTestsVals(t, sq) {
-    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: {},
+    const o = { title: 'Press Run to test your code', color: t.text, hasNote: false, note: '', hasMsg: false, msg: '', hasHelp: false, help: '', hasFail: false, fail: { title: '', input: '', expected: '', hasExpected: false, got: '', gotColor: t.text, hasLogs: false, logs: '' },
       hasConsole: false, console: [], hasChips: false, chips: [], hasPanels: false, panels: [], hasNext: false };
     const out = this.sql.s.out;
     if (!out) { if (sq.busy) o.title = 'Running…'; return o; }
@@ -259,7 +259,7 @@ class Component extends StoryComponent {
     const P = isSql ? sqlInfo(pid) : specInfo(pid);
     const hasScene = !isSql && !!SCENES[pid] && PROBLEMS.some((p) => p.id === pid);
     const showStory = hasScene && this.state.pbStory && tab === 'problem';
-    const sv = hasScene ? super.renderVals() : {};   // the story's values are always there for a problem that has one, so the markup's holes all resolve
+    const sv = super.renderVals();   // the story's values are always there (state.scene keeps the last story shown), so the markup's holes all resolve
     this.pbLogSql();
     const cr = this.runner.vals(t), sq = this.sql.vals(t);
     const H = isSql ? null : hintsFor(pid), hints = this.hintList(pid);

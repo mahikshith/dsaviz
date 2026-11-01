@@ -66,6 +66,10 @@ button{font:inherit}
 [data-fit][data-fluid]{width:100%!important}
 [data-fit][data-fluid] [style*="font-size: var(--fs13)"],[data-fit][data-fluid] [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
 [data-page] *{max-width:100%}
+/* Code page: Run and Submit stay in view, above the bottom pill nav. */
+[data-code-bar]{display:flex!important;gap:8px;position:fixed;left:0;right:0;bottom:calc(76px / var(--fit, 1));z-index:35;padding:8px 16px;box-sizing:border-box;border-top:1px solid rgba(127,127,127,.3);zoom:calc(1 / var(--fit, 1))}
+[data-code-bar]>button{flex:1 1 0}
+body:has([data-code-bar]){padding-bottom:calc(144px / var(--fit, 1))}
 [data-page] main,[data-page] [data-m~="pad"]{padding-left:16px!important;padding-right:16px!important}
 [data-page]:where([style*="grid-template-columns"]),[data-page] :where([style*="grid-template-columns"]:not([data-m~="keep"]):not([style*="gap: 2px"]):not([style*="gap: 4px"]):not([data-drawer] *):not([data-m~="two"]):not([style*="repeat(4,"]):not([style*="repeat(5,"]):not([style*="repeat(6,"]):not([style*="repeat(7,"]):not([style*="repeat(8,"]):not([style*="repeat(9,"])){grid-template-columns:minmax(0,1fr)!important}
 [data-page] [data-m~="one"]{grid-template-columns:minmax(0,1fr)!important}

@@ -512,6 +512,37 @@ server.listen(0, async () => {
     }
   }
   if (!ONLY_READ && !ONLY_LAYOUT) console.log(problems > readProblems ? (problems - readProblems) + ' problem(s) with player controls' : 'player controls in view and working in every player');
+  // Code page on a phone: Run and Submit in view and not covered (the bar sits above the bottom pill nav)
+  if (!ONLY_READ && !ONLY_LAYOUT) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(e.message));
+    await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-problem', 'two-sum'); } catch (e) {} });
+    await page.goto(url);
+    await page.waitForTimeout(500);
+    await page.evaluate(() => window.__dsNav('Code.dc.html'));
+    await page.waitForTimeout(1200);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const res = await page.evaluate(() => {
+      const out = {};
+      for (const name of ['Run', 'Submit']) {
+        const b = [...document.querySelectorAll('#app button')].find((el) => el.textContent.trim().replace(/\s+/g, ' ').startsWith(name) && el.getBoundingClientRect().width > 0);
+        if (!b) { out[name] = 'missing'; continue; }
+        const r = b.getBoundingClientRect();
+        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        const nav = document.querySelector('[data-pn]');
+        const nr = nav ? nav.getBoundingClientRect() : null;
+        const clear = !nr || r.bottom <= nr.top + 0.5;
+        out[name] = r.top >= 0 && r.bottom <= window.innerHeight && hit && b.contains(hit) && clear ? 'ok' : 'bad ' + Math.round(r.top) + '..' + Math.round(r.bottom) + (hit && b.contains(hit) ? '' : ' covered') + (clear ? '' : ' over nav');
+      }
+      return out;
+    });
+    const cf = Object.entries(res).filter(([, v]) => v !== 'ok').map(([k, v]) => k + ' ' + v);
+    if (errs.length) cf.push('errors: ' + errs.slice(0, 2).join(' | '));
+    if (cf.length) problems++;
+    console.log(cf.length ? '✗' : '✓', 'p-390x844'.padEnd(12), 'Code'.padEnd(10), cf.length ? cf.join('; ') : 'Run and Submit in view, not covered');
+    await page.close();
+  }
   const controlProblems = problems;
 
   // ---------- layout pass ----------

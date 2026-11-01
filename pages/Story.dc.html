@@ -90,6 +90,10 @@ button:disabled{opacity:0.35;cursor:default}
 [data-fit][data-fluid]{width:100%!important}
 [data-fit][data-fluid] [style*="font-size: var(--fs13)"],[data-fit][data-fluid] [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
 [data-page] *{max-width:100%}
+/* Code page: Run and Submit stay in view, above the bottom pill nav. */
+[data-code-bar]{display:flex!important;gap:8px;position:fixed;left:0;right:0;bottom:calc(76px / var(--fit, 1));z-index:35;padding:8px 16px;box-sizing:border-box;border-top:1px solid rgba(127,127,127,.3);zoom:calc(1 / var(--fit, 1))}
+[data-code-bar]>button{flex:1 1 0}
+body:has([data-code-bar]){padding-bottom:calc(144px / var(--fit, 1))}
 [data-page] main,[data-page] [data-m~="pad"]{padding-left:16px!important;padding-right:16px!important}
 [data-page]:where([style*="grid-template-columns"]),[data-page] :where([style*="grid-template-columns"]:not([data-m~="keep"]):not([style*="gap: 2px"]):not([style*="gap: 4px"]):not([data-drawer] *):not([data-m~="two"]):not([style*="repeat(4,"]):not([style*="repeat(5,"]):not([style*="repeat(6,"]):not([style*="repeat(7,"]):not([style*="repeat(8,"]):not([style*="repeat(9,"])){grid-template-columns:minmax(0,1fr)!important}
 [data-page] [data-m~="one"]{grid-template-columns:minmax(0,1fr)!important}
@@ -835,8 +839,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <sc-if value="{{cr.runnable}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex-shrink: 0">
-<button onClick="{{cr.run}}" disabled="{{cr.busy}}" title="{{cr.runTitle}}" aria-keyshortcuts="{{cr.runKeysAria}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>{{cr.runLabel}}</button>
-<sc-if value="{{cr.showSubmit}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.submit}}" disabled="{{cr.busy}}" title="{{cr.submitTitle}}" aria-keyshortcuts="{{cr.submitKeysAria}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">Submit</button></sc-if>
+<div data-code-bar style="display: contents; background: {{t.surface}}"><button onClick="{{cr.run}}" disabled="{{cr.busy}}" title="{{cr.runTitle}}" aria-keyshortcuts="{{cr.runKeysAria}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700; display: flex; align-items: center; gap: 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"></path></svg>{{cr.runLabel}}</button>
+<sc-if value="{{cr.showSubmit}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.submit}}" disabled="{{cr.busy}}" title="{{cr.submitTitle}}" aria-keyshortcuts="{{cr.submitKeysAria}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 700">Submit</button></sc-if></div>
 <sc-if value="{{cr.showCustom}}" hint-placeholder-val="{{ true }}"><input value="{{cr.custom}}" onChange="{{cr.setCustom}}" aria-label="Custom input for Run, written like the call's arguments in JSON" placeholder="{{cr.customHint}}" spellcheck="false" style="flex: 1 1 200px; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: var(--fs16)"></sc-if>
 <sc-if value="{{cr.noCustom}}" hint-placeholder-val="{{ false }}"><span style="flex-grow: 1"></span></sc-if>
 <span role="status" style="font-size: var(--fs16); white-space: nowrap; color: {{cr.statusColor}}">{{cr.statusText}}</span>

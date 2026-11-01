@@ -82,9 +82,10 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offs
 [data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
 [data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 32px 24px 48px;"]{padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
 [data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 16px 22px;"],[data-page] [style*="padding: 16px 24px 24px;"],[data-page] [style*="padding: 20px 22px;"],[data-page] [style*="padding: 20px 22px 28px;"],[data-page] [style*="padding: 20px 24px;"],[data-page] [style*="padding: 20px 24px 32px;"],[data-page] [style*="padding: 22px;"],[data-page] [style*="padding: 22px 22px 24px;"],[data-page] [style*="padding: 24px;"],[data-page] [style*="padding: 24px 26px;"],[data-page] [style*="padding: 24px 32px;"],[data-page] [style*="padding: 26px;"],[data-page] [style*="padding: 26px 28px;"],[data-page] [style*="padding: 28px;"],[data-page] [style*="padding: 28px 32px;"],[data-page] [style*="padding: 32px;"]{padding:16px!important}
+[data-page] [style*="padding: 16px 22px;"],[data-page] [style*="padding: 16px 24px;"],[data-page] [style*="padding: 16px 24px 24px;"],[data-page] [style*="padding: 20px 22px;"],[data-page] [style*="padding: 20px 22px 28px;"],[data-page] [style*="padding: 20px 24px;"],[data-page] [style*="padding: 20px 24px 32px;"],[data-page] [style*="padding: 22px;"],[data-page] [style*="padding: 22px 22px 24px;"],[data-page] [style*="padding: 24px;"],[data-page] [style*="padding: 24px 26px;"],[data-page] [style*="padding: 24px 32px;"],[data-page] [style*="padding: 26px;"],[data-page] [style*="padding: 26px 28px;"],[data-page] [style*="padding: 28px;"],[data-page] [style*="padding: 28px 32px;"],[data-page] [style*="padding: 32px;"]{padding:16px!important}
 [data-page] [data-m~="col"]{flex-direction:column!important;align-items:stretch!important}
 [data-page] [data-m~="wrap"]{flex-wrap:wrap!important}
 [data-page] [data-m~="hide"]{display:none!important}
@@ -125,10 +126,11 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offs
 @media (max-width: 759px){
 [data-page="Start"] [data-road]{grid-template-columns:minmax(0,1fr)!important}
 [data-page="Start"] [data-road-arrow]{display:none!important}
+[data-page="Start"] [role="tablist"]{flex-wrap:wrap!important;overflow:visible}
 }
 </style>
 </helmet>
-<div data-fluid="true" data-page="Start" style="width: 1440px; height: {{L.rootH}}px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; overflow: hidden; transition: background 0.3s, color 0.3s">
+<div data-fluid="true" data-page="Start" style="width: 1440px; min-height: 900px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <style>
 [data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
@@ -277,50 +279,33 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="flex-grow: 1; box-sizing: border-box; padding: 24px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+<main style="flex-grow: 1; box-sizing: border-box; padding: 32px 24px 48px">
+<div style="width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px">
 
-<!-- hero: one primary action, plus the road map -->
-<section aria-labelledby="st-title" style="display: grid; grid-template-columns: minmax(0, 1fr) 456px; gap: 24px">
-<div style="padding: 32px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; justify-content: center">
-<span style="font-size: var(--fs16); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: {{t.accent}}">Programming from zero</span>
+<!-- hero: one line, one primary button -->
+<section aria-labelledby="st-title" style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
 <h1 id="st-title" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 60px; font-weight: 700">{{hero.title}}</h1>
-<p style="margin: 0; max-width: 620px; font-size: var(--fs19); line-height: 26px; color: {{t.text2}}">{{hero.line}}</p>
-<div role="progressbar" aria-label="Level 1 progress" aria-valuemin="0" aria-valuemax="{{hero.total}}" aria-valuenow="{{hero.done}}" style="max-width: 520px; display: flex; flex-direction: column; gap: 8px">
-<span style="height: 8px; border-radius: 4px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 8px; border-radius: 4px; width: {{hero.pct}}; background: {{t.accent}}; transition: width 0.7s cubic-bezier(0.33,1,0.68,1)"></span></span>
-<span style="font-size: var(--fs17); color: {{t.muted}}">{{hero.progress}}</span>
+<p style="margin: 0; font-size: var(--fs19); line-height: 28px; color: {{t.text2}}">{{hero.line}}</p>
+<div data-m="wrap" style="display: flex; align-items: center; gap: 24px; margin-top: 8px">
+<a href="{{hero.href}}" onClick="{{hero.go}}" style="height: 56px; padding: 0 28px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; gap: 12px; font-size: var(--fs18); font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>{{hero.cta}}</a>
+<button onClick="{{place.open}}" style="min-height: 44px; padding: 0; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline; text-underline-offset: 4px">{{place.label}}</button>
 </div>
-<div data-m="wrap" style="display: flex; align-items: center; gap: 16px; margin-top: 8px">
-<a href="{{hero.href}}" onClick="{{hero.go}}" style="height: 56px; padding: 0 28px; border-radius: 28px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; gap: 12px; font-size: var(--fs18); font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"></path></svg>{{hero.cta}}</a>
-<button onClick="{{place.open}}" style="min-height: 44px; padding: 0 4px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; text-align: left"><span style="font-size: var(--fs16); color: {{t.muted}}">{{place.eyebrow}}</span><span style="font-size: var(--fs18); font-weight: 600; text-decoration: underline; text-underline-offset: 3px">{{place.label}}</span></button>
-</div>
-</div>
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<h2 style="margin: 0; font-size: var(--fs22); font-weight: 700">Your road map</h2>
-<ol data-road style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
-<sc-for list="{{road}}" as="rd" hint-placeholder-count="4">
-<li><a href="{{rd.href}}" onClick="{{rd.go}}" aria-current="{{rd.cur}}" data-m="keep" style="min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1.5px solid {{rd.border}}; background: {{rd.bg}}; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: center">
-<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 16px; background: {{rd.dotBg}}; color: {{rd.dotFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 800">{{rd.mark}}</span>
-<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: var(--fs18); font-weight: 700">{{rd.title}}</span><span style="font-size: var(--fs16); line-height: 18px; color: {{t.muted}}">{{rd.sub}}</span></span>
-<span style="font-size: var(--fs15); font-weight: 700; color: {{rd.stateFg}}; white-space: nowrap">{{rd.state}}</span>
-</a></li>
-</sc-for>
-</ol>
-</div>
+<span role="progressbar" aria-label="Level 1 progress" aria-valuemin="0" aria-valuemax="{{hero.total}}" aria-valuenow="{{hero.done}}" style="font-size: var(--fs16); color: {{t.muted}}">{{hero.progress}}</span>
 </section>
 
 <!-- "Where are you starting?" -->
 <sc-if value="{{place.on}}" hint-placeholder-val="{{ false }}">
-<section aria-labelledby="st-place-title" class="st-rise" style="padding: 24px 32px; border-radius: 16px; background: {{t.surface}}; border: 1.5px solid {{t.accent}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<section aria-labelledby="st-place-title" class="st-rise" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
 <h2 id="st-place-title" style="margin: 0; font-size: var(--fs24); font-weight: 700">Where are you starting?</h2>
-<button onClick="{{place.close}}" style="height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Close</button>
+<button onClick="{{place.close}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Close</button>
 </div>
 <sc-if value="{{place.asking}}" hint-placeholder-val="{{ true }}">
-<div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start">
-<div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
-<span style="font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{t.accent}}">QUESTION {{place.num}} OF {{place.count}}</span>
+<div style="display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<span style="font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}">QUESTION {{place.num}} OF {{place.count}}</span>
 <p style="margin: 0; font-size: var(--fs20); line-height: 1.4; font-weight: 600">{{place.q}}</p>
-<sc-if value="{{place.hasCode}}" hint-placeholder-val="{{ true }}"><pre style="margin: 0; padding: 14px 16px; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; font-family: {{t.mono}}; font-size: var(--fs18); line-height: 1.6; white-space: pre; overflow-x: auto">{{place.code}}</pre></sc-if>
+<sc-if value="{{place.hasCode}}" hint-placeholder-val="{{ true }}"><pre style="margin: 0; padding: 16px; border-radius: 12px; background: {{t.codeBg}}; font-family: {{t.mono}}; font-size: var(--fs18); line-height: 1.6; white-space: pre; overflow-x: auto">{{place.code}}</pre></sc-if>
 <span style="font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">Not sure? Pick "I don't know yet". Nothing is locked: this only marks lessons you can skip.</span>
 </div>
 <div role="group" aria-label="Answers" style="display: flex; flex-direction: column; gap: 8px">
@@ -329,103 +314,88 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <sc-if value="{{place.result}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 12px">
-<p role="status" style="margin: 0; font-size: var(--fs19); line-height: 1.5">{{place.summary}}</p>
-<div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{place.known}}" as="pk" hint-placeholder-count="3"><span style="padding: 6px 12px; border-radius: 999px; background: {{t.sunk}}; font-size: var(--fs16); font-weight: 600">{{pk.label}}</span></sc-for></div>
-<div data-m="wrap" style="display: flex; gap: 12px; align-items: center">
-<a href="{{hero.href}}" onClick="{{place.finish}}" style="height: 48px; padding: 0 22px; border-radius: 24px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{place.next}}</a>
-<button onClick="{{place.again}}" style="height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Take it again</button>
-</div>
-</div>
-</sc-if>
-</section>
-</sc-if>
-
-<!-- levels -->
-<section aria-labelledby="st-path-title" style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 4px"><h2 id="st-path-title" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs34); line-height: 1.1; font-weight: 700">The path</h2><span style="font-size: var(--fs18); color: {{t.muted}}">{{level.blurb}}</span></div>
-<div role="tablist" aria-label="Levels" style="display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
-<sc-for list="{{levels}}" as="lv" hint-placeholder-count="5"><button role="tab" aria-selected="{{lv.on}}" onClick="{{lv.pick}}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 9px; cursor: pointer; font-size: var(--fs16); font-weight: 700; white-space: nowrap; background: {{lv.bg}}; color: {{lv.fg}}">{{lv.label}}</button></sc-for>
-</div>
-</div>
-
-<sc-if value="{{L.desk}}" hint-placeholder-val="{{ true }}">
-<div style="display: grid; grid-template-columns: minmax(0, 1fr) 392px; gap: 24px; align-items: start">
-<div role="region" aria-label="Path map" style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 16px 16px 12px; display: flex; flex-direction: column; gap: 8px">
-<div style="display: grid; grid-template-columns: repeat({{map.cols}}, minmax(0, 1fr)); gap: 0; width: {{map.w}}px; margin: 0 auto">
-<sc-for list="{{map.heads}}" as="mh" hint-placeholder-count="6"><span style="padding: 0 8px 8px; font-size: var(--fs15); font-weight: 700; line-height: 16px; color: {{t.muted}}; text-align: center">{{mh.label}}</span></sc-for>
-</div>
-<div style="position: relative; width: {{map.w}}px; height: {{map.h}}px; margin: 0 auto">
-<svg width="{{map.w}}" height="{{map.h}}" viewBox="0 0 {{map.w}} {{map.h}}" aria-hidden="true" style="position: absolute; left: 0; top: 0">
-<sc-for list="{{map.edges}}" as="me" hint-placeholder-count="20"><path data-st-edge d="{{me.d}}" fill="none" stroke="{{me.color}}" stroke-width="{{me.width}}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="{{me.dash}}"></path></sc-for>
-</svg>
-<sc-for list="{{map.nodes}}" as="mn" hint-placeholder-count="27">
-<button data-st-node onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: {{map.nodeW}}px; height: 52px; box-sizing: border-box; padding: 0 8px; border-radius: 12px; border: 1.5px {{mn.borderStyle}} {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; text-align: left; opacity: {{mn.op}}">
-<span aria-hidden="true" style="position: relative; width: 30px; height: 30px; flex-shrink: 0; border-radius: 15px; background: {{mn.dotBg}}; color: {{mn.dotFg}}; border: 2px solid {{mn.ring}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 800">{{mn.mark}}</span>
-<span style="min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: var(--fs16); font-weight: 700; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{mn.label}}</span><span style="font-size: var(--fs15); line-height: 14px; color: {{mn.subFg}}; white-space: nowrap">{{mn.sub}}</span></span>
-</button>
-</sc-for>
-</div>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 8px 8px 0; border-top: 1px solid {{t.line}}; font-size: var(--fs15); color: {{t.muted}}">
-<span>Arrows point from a lesson to what it unlocks.</span>
-<span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 7px; background: {{t.ok}}; display: inline-block"></span>Done</span>
-<span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 7px; border: 2px solid {{t.accent}}; box-sizing: border-box; display: inline-block"></span>Next</span>
-<span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 7px; border: 2px dashed {{t.line2}}; box-sizing: border-box; display: inline-block"></span>Coming soon</span>
-</div>
-</div>
-
-<aside aria-label="Selected lesson" class="st-rise" key="{{card.key}}" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px">
-<span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{card.eyebrowFg}}">{{card.eyebrow}}</span>
-<h3 style="margin: 0; font-size: var(--fs26); line-height: 1.2; font-weight: 700">{{card.title}}</h3>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{card.idea}}</p>
-<sc-if value="{{card.hasGate}}" hint-placeholder-val="{{ false }}"><p role="note" style="margin: 0; padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs17); line-height: 1.5">{{card.gate}}</p></sc-if>
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">{{card.beforeLabel}}</span>
-<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{card.before}}" as="cb" hint-placeholder-count="2"><button onClick="{{cb.pick}}" style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{cb.label}}</button></sc-for></div>
-</div>
-<sc-if value="{{card.hasUnlocks}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Unlocks</span>
-<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{card.unlocks}}" as="cu" hint-placeholder-count="2"><button onClick="{{cu.pick}}" style="min-height: 32px; padding: 0 10px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{cu.label}}</button></sc-for></div>
-</div>
-</sc-if>
-<sc-if value="{{card.hasTrap}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Watch out for</span><span style="font-size: var(--fs17); line-height: 1.5">{{card.trap}}</span></div></sc-if>
-<span style="font-size: var(--fs16); color: {{t.muted}}">{{card.meta}}</span>
-<sc-if value="{{card.ready}}" hint-placeholder-val="{{ true }}"><a href="{{card.href}}" onClick="{{card.go}}" style="align-self: flex-start; height: 48px; padding: 0 22px; border-radius: 24px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{card.cta}}</a></sc-if>
-<sc-if value="{{card.soon}}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; padding: 10px 14px; border-radius: 12px; border: 1px dashed {{t.line2}}; font-size: var(--fs17); color: {{t.text2}}">Being written. It will appear here when it is ready.</span></sc-if>
-</aside>
-</div>
-</sc-if>
-
-<sc-if value="{{L.phone}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 16px">
-<sc-for list="{{parts}}" as="pt" hint-placeholder-count="2">
-<div style="display: flex; flex-direction: column; gap: 8px">
-<h3 style="margin: 0; font-size: var(--fs18); font-weight: 700">{{pt.title}}</h3>
-<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px">
-<sc-for list="{{pt.lessons}}" as="pl" hint-placeholder-count="4"><li><a href="{{pl.href}}" onClick="{{pl.go}}" aria-label="{{pl.aria}}" data-m="keep" style="min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; border: 1.5px {{pl.borderStyle}} {{pl.border}}; background: {{t.surface}}; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: center; opacity: {{pl.op}}"><span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 16px; background: {{pl.dotBg}}; color: {{pl.dotFg}}; border: 2px solid {{pl.ring}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 800">{{pl.mark}}</span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: var(--fs18); font-weight: 600">{{pl.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{pl.sub}}</span></span><span aria-hidden="true" style="color: {{t.accent}}; font-weight: 700">→</span></a></li></sc-for>
-</ol>
+<p role="status" style="margin: 0; font-size: var(--fs19); line-height: 1.5">{{place.summary}}</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{place.known}}" as="pk" hint-placeholder-count="3"><span style="padding: 8px 16px; border-radius: 999px; background: {{t.sunk}}; font-size: var(--fs16); font-weight: 600">{{pk.label}}</span></sc-for></div>
+<div data-m="wrap" style="display: flex; gap: 16px; align-items: center">
+<a href="{{hero.href}}" onClick="{{place.finish}}" style="height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{place.next}}</a>
+<button onClick="{{place.again}}" style="height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">Take it again</button>
 </div>
-</sc-for>
 </div>
 </sc-if>
+</section>
+</sc-if>
+
+<!-- the path: one level at a time, one node per lesson, equal gaps -->
+<section aria-labelledby="st-path-title" style="display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div data-m="wrap" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+<h2 id="st-path-title" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs34); line-height: 40px; font-weight: 700">The path</h2>
+<div role="tablist" aria-label="Levels" style="display: flex; flex-wrap: wrap; gap: 0 8px">
+<sc-for list="{{levels}}" as="lv" hint-placeholder-count="5"><button role="tab" aria-selected="{{lv.on}}" onClick="{{lv.pick}}" style="height: 44px; padding: 0 8px; border: 0; border-bottom: 2px solid {{lv.line}}; border-radius: 0; background: transparent; cursor: pointer; font-size: var(--fs16); font-weight: 600; white-space: nowrap; color: {{lv.fg}}">{{lv.label}}</button></sc-for>
+</div>
+</div>
+<span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">{{level.blurb}}</span>
+</div>
+<ol data-path style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{flow}}" as="fl" hint-placeholder-count="40">
+<sc-if value="{{fl.isLink}}" hint-placeholder-val="{{ false }}"><li data-m="keep" style="height: 48px; box-sizing: border-box; padding-left: 16px; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center">
+<span aria-hidden="true" style="width: 48px; height: 48px; display: flex; justify-content: center"><sc-if value="{{fl.arrow}}" hint-placeholder-val="{{ true }}"><svg width="24" height="48" viewBox="0 0 24 48" fill="none" stroke="{{t.text2}}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 V44 M5 36 L12 44 L19 36"></path></svg></sc-if></span>
+<span style="font-size: var(--fs17); line-height: 24px; font-weight: 600; color: {{t.text}}">{{fl.label}}</span>
+</li></sc-if>
+<sc-if value="{{fl.isNode}}" hint-placeholder-val="{{ true }}"><li data-path-node data-state="{{fl.state}}" style="box-sizing: border-box; border-radius: 16px; background: {{t.surface}}; box-shadow: {{fl.shadow}}">
+<button data-m="keep" onClick="{{fl.pick}}" aria-expanded="{{fl.open}}" style="width: 100%; min-height: 80px; box-sizing: border-box; padding: 16px; border: 0; border-radius: 16px; background: transparent; color: {{t.text}}; cursor: pointer; display: grid; grid-template-columns: 48px minmax(0, 1fr) 24px; gap: 12px; align-items: center; text-align: left">
+<span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 24px; background: {{fl.dotBg}}; color: {{fl.dotFg}}; border: 2px {{fl.ringStyle}} {{fl.ring}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs18); font-weight: 800">{{fl.mark}}</span>
+<span style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: var(--fs18); line-height: 24px; font-weight: 600">{{fl.title}}</span><span style="font-size: var(--fs15); line-height: 20px; font-weight: 500; color: {{fl.subFg}}">{{fl.sub}}</span></span>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{fl.rot}}"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{fl.open}}" hint-placeholder-val="{{ false }}">
+<div class="st-rise" style="padding: 0 16px 24px 76px; display: flex; flex-direction: column; gap: 16px">
+<p style="margin: 0; font-size: var(--fs17); line-height: 28px; color: {{t.text2}}">{{fl.idea}}</p>
+<sc-if value="{{fl.hasAfter}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: var(--fs17); line-height: 24px"><span style="font-weight: 600">After: </span><span style="color: {{t.text2}}">{{fl.after}}</span></p></sc-if>
+<sc-if value="{{fl.hasTrap}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: var(--fs17); line-height: 24px"><span style="font-weight: 600">Watch out for: </span><span style="color: {{t.text2}}">{{fl.trap}}</span></p></sc-if>
+<span style="font-size: var(--fs16); line-height: 24px; color: {{t.muted}}">{{fl.meta}}</span>
+<sc-if value="{{fl.ready}}" hint-placeholder-val="{{ true }}"><a href="{{fl.href}}" onClick="{{fl.go}}" style="align-self: flex-start; height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{fl.cta}}</a></sc-if>
+<sc-if value="{{fl.soon}}" hint-placeholder-val="{{ false }}"><span style="align-self: flex-start; padding: 8px 16px; border-radius: 12px; border: 1px dashed {{t.line2}}; font-size: var(--fs17); color: {{t.text2}}">Being written. It will appear here when it is ready.</span></sc-if>
+</div>
+</sc-if>
+</li></sc-if>
+</sc-for>
+</ol>
 </section>
 
-<!-- first problems -->
-<section aria-labelledby="st-first-title" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1.5px solid {{first.border}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
-<h2 id="st-first-title" style="margin: 0; font-size: var(--fs22); font-weight: 700">First problems</h2>
-<span style="font-size: var(--fs16); color: {{t.muted}}">{{first.meta}}</span>
+<!-- road map and first problems, folded below the path -->
+<section aria-label="More on this track" style="display: flex; flex-direction: column; gap: 16px">
+<div style="border-radius: 16px; background: {{t.surface}}">
+<button onClick="{{folds.roadToggle}}" aria-expanded="{{folds.roadOpen}}" style="width: 100%; min-height: 72px; box-sizing: border-box; padding: 16px 24px; border: 0; border-radius: 16px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left"><span style="font-size: var(--fs22); font-weight: 700">Your road map</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; transform: {{folds.roadRot}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{folds.roadOpen}}" hint-placeholder-val="{{ false }}">
+<ol data-road style="margin: 0; padding: 0 24px 24px; list-style: none; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{road}}" as="rd" hint-placeholder-count="4">
+<li><a href="{{rd.href}}" onClick="{{rd.go}}" aria-current="{{rd.cur}}" data-m="keep" style="min-height: 56px; box-sizing: border-box; padding: 8px 16px; border-radius: 12px; background: {{rd.bg}}; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 16px; align-items: center">
+<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 16px; background: {{rd.dotBg}}; color: {{rd.dotFg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 800">{{rd.mark}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: var(--fs18); font-weight: 600">{{rd.title}}</span><span style="font-size: var(--fs16); line-height: 24px; color: {{t.muted}}">{{rd.sub}}</span></span>
+<span style="font-size: var(--fs15); font-weight: 600; color: {{rd.stateFg}}; white-space: nowrap">{{rd.state}}</span>
+</a></li>
+</sc-for>
+</ol>
+</sc-if>
 </div>
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{first.line}}</p>
+<div style="border-radius: 16px; background: {{t.surface}}">
+<button id="st-first-title" onClick="{{folds.firstToggle}}" aria-expanded="{{folds.firstOpen}}" style="width: 100%; min-height: 72px; box-sizing: border-box; padding: 16px 24px; border: 0; border-radius: 16px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left"><span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px"><span style="font-size: var(--fs22); font-weight: 700">First problems</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{first.meta}}</span></span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; transform: {{folds.firstRot}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{folds.firstOpen}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
+<p style="margin: 0; font-size: var(--fs17); line-height: 28px; color: {{t.text2}}">{{first.line}}</p>
 <sc-if value="{{first.has}}" hint-placeholder-val="{{ true }}">
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
-<sc-for list="{{first.items}}" as="fp" hint-placeholder-count="6"><a href="{{fp.href}}" style="min-height: 56px; box-sizing: border-box; padding: 8px 12px; border-radius: 12px; background: {{t.sunk}}; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{fp.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{fp.sub}}</span></a></sc-for>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px">
+<sc-for list="{{first.items}}" as="fp" hint-placeholder-count="6"><a href="{{fp.href}}" style="min-height: 56px; box-sizing: border-box; padding: 8px 16px; border-radius: 12px; background: {{t.sunk}}; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{fp.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{fp.sub}}</span></a></sc-for>
 </div>
 </sc-if>
-<sc-if value="{{first.after}}" hint-placeholder-val="{{ false }}"><a href="Patterns.dc.html" style="align-self: flex-start; height: 44px; padding: 0 18px; border-radius: 22px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: var(--fs17); font-weight: 700">Then open the pattern map →</a></sc-if>
+<sc-if value="{{first.after}}" hint-placeholder-val="{{ false }}"><a href="Patterns.dc.html" style="align-self: flex-start; height: 44px; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600; text-decoration: underline; text-underline-offset: 4px">Then open the pattern map</a></sc-if>
+</div>
+</sc-if>
+</div>
 </section>
+</div>
 </main>
 </div>
 </x-dc>
@@ -5456,8 +5426,7 @@ const START_TRACER_PY = "# The \"Watch it run\" tracer for the Start here track.
 // @@END-START@@
 
 // ---- page ----
-// Start here, the hub: the road map, the placement check, the path map of the chosen level and the first problems.
-const ST_MAP = { w: 912, nodeW: 146, rowH: 64, top: 8 };
+// Start here, the hub: one calm path per level (one node per lesson, equal gaps, a fold for the detail), the placement check, the road map and the first problems.
 function stQuery(k) { try { return new URLSearchParams(window.location.search).get(k); } catch (e) { return null; } }
 
 class Component extends DCLogic {
@@ -5465,95 +5434,84 @@ class Component extends DCLogic {
     super(props);
     const pr = startProgress();
     const want = stQuery('lesson');
-    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, level: 1, sel: startById(want) ? want : (pr.next ? pr.next.c.id : START_CHAPTERS[0].id),
+    const wantC = startById(want);
+    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, level: wantC ? startLevel(wantC) : 1, sel: wantC ? want : null,
+      roadOpen: false, firstOpen: stQuery('view') === 'first',
       placing: false, pq: 0, picks: [], placed: null };
   }
   componentDidMount() {
     listenTheme(this);
-    if (stQuery('view') === 'first') setTimeout(() => { try { const el = document.getElementById('st-first-title'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); } catch (e) {} }, 60);
+    if (stQuery('view') === 'first') setTimeout(() => { try { const el = document.getElementById('st-first-title'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); } catch (e) {} }, 120);
   }
   componentWillUnmount() { unlistenTheme(this); }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
-    const phone = dsPhone();
     const pr = startProgress();
     const row = (id) => pr.rows[startIndex(id)];
     const core = startCore();
     const coreRows = core.map((c) => row(c.id));
-    const coreDone = coreRows.filter((r) => r.done || r.known).length;
-    // The progress bar counts every lesson of the chosen level, from the one shared count (DS.startCounts).
+    // The progress line counts every lesson of Level 1, from the one shared count (DS.startCounts).
     const counts = DS.startCounts(1);
     const next = pr.next;
     const open = (id) => () => DS.startVisit(id);
     const lessonHref = (id) => 'Chapter.dc.html?ch=' + id;
-    const label = (c) => (startLevel(c) > 1 ? 'Level ' + startLevel(c) + ' · ' : '') + 'Lesson ' + c.n + ': ' + c.short;
     const started = pr.done > 0 || Object.keys(DS.start().ex).length > 0;
     const firstOpen = coreRows.every((r) => r.done || r.known || !r.ready) && coreRows.some((r) => r.done || r.known);
 
-    // node look, shared by the map and the phone list
+    // node look: done is filled with a check, next has the accent ring, soon is dashed
     const look = (r) => {
       const c = r.c;
-      const mark = r.done ? '✓' : r.known ? '✓' : c.project ? '★' : String(c.n);
+      const mark = r.done || r.known ? '✓' : c.project ? '★' : String(c.n);
+      const sub = !r.ready ? 'Coming soon' : r.done ? 'Done' : r.known ? 'Known, you can skip it' : r.next ? 'Up next' : c.minutes + ' min' + (c.optional ? ' · optional' : '');
       return {
-        mark, ring: r.done ? t.ok : r.known ? t.text2 : r.next ? t.accent : r.ready ? t.line2 : t.line2,
-        dotBg: r.done ? t.ok : r.next ? t.accent : t.sunk, dotFg: r.done || r.next ? t.onAccent : r.known ? t.text2 : t.text,
-        border: r.next ? t.accent : r.ready ? t.line : t.line2, borderStyle: r.ready ? 'solid' : 'dashed', op: 1,
-        sub: !r.ready ? 'Soon' : r.done ? 'Done' : r.known ? 'Known: skip it' : r.next ? 'Next' : c.optional ? 'Optional' : r.open ? c.minutes + ' min' : 'Needs ' + r.missing.map((m) => m.n).join(', '),
+        mark, sub,
+        ring: r.done ? t.ok : r.known ? t.text2 : r.next ? t.accent : t.line2, ringStyle: r.ready ? 'solid' : 'dashed',
+        dotBg: r.done ? t.ok : t.sunk, dotFg: r.done ? t.onAccent : r.known ? t.text2 : t.text,
         subFg: r.next ? t.accent : r.done ? t.ok : t.muted,
-        aria: label(c) + '. ' + (r.done ? 'Done. ' : r.known ? 'Known, you can skip it. ' : r.next ? 'Suggested next. ' : '') + (r.ready ? '' : 'Coming soon. ') + c.idea
+        state: !r.ready ? 'soon' : r.done ? 'done' : r.next ? 'next' : 'later'
       };
     };
 
-    // the selected level's map: one column per part, lessons top to bottom
+    // the chosen level: its parts as labelled sections, lessons top to bottom with an arrow between each pair
     const lvl = this.state.level;
     const lessons = startInLevel(lvl);
     const parts = START_PARTS.filter((p) => p.level === lvl);
-    const cols = Math.max(1, parts.length);
-    const colW = ST_MAP.w / cols;
-    const pos = {};
-    let rows = 1;
-    parts.forEach((p, ci) => lessons.filter((c) => c.part === p.n).forEach((c, ri) => { pos[c.id] = { x: Math.round(colW * ci + colW / 2), y: ST_MAP.top + 26 + ri * ST_MAP.rowH }; rows = Math.max(rows, ri + 1); }));
-    const sel = startById(this.state.sel) && startLevel(startById(this.state.sel)) === lvl ? this.state.sel : (lessons.find((c) => row(c.id).next) || lessons[0]).id;
-    const S = startById(sel), sr = row(sel);
-    const half = ST_MAP.nodeW / 2;
-    const edges = [];
-    lessons.forEach((c) => (c.after || []).forEach((a) => {
-      const A = pos[a], B = pos[c.id];
-      if (!A || !B) return;
-      const hot = c.id === sel || a === sel;
-      let d;
-      if (A.x === B.x && B.y - A.y === ST_MAP.rowH) d = 'M' + A.x + ' ' + (A.y + 26) + ' L' + B.x + ' ' + (B.y - 26) + ' M' + (B.x - 4) + ' ' + (B.y - 31) + ' L' + B.x + ' ' + (B.y - 26) + ' L' + (B.x + 4) + ' ' + (B.y - 31);
-      else if (A.x === B.x) { const x = A.x - half; d = 'M' + x + ' ' + A.y + ' C' + (x - 28) + ' ' + A.y + ' ' + (x - 28) + ' ' + B.y + ' ' + x + ' ' + B.y + ' M' + (x - 6) + ' ' + (B.y - 4) + ' L' + x + ' ' + B.y + ' L' + (x - 6) + ' ' + (B.y + 4); }
-      else { const x1 = A.x + half, x2 = B.x - half, dx = (x2 - x1) / 2; d = 'M' + x1 + ' ' + A.y + ' C' + (x1 + dx) + ' ' + A.y + ' ' + (x2 - dx) + ' ' + B.y + ' ' + x2 + ' ' + B.y + ' M' + (x2 - 6) + ' ' + (B.y - 4) + ' L' + x2 + ' ' + B.y + ' L' + (x2 - 6) + ' ' + (B.y + 4); }
-      edges.push({ d, color: hot ? t.accent : t.line2, width: hot ? 2.5 : 1.5, dash: 'none', hot });
+    const sel = this.state.sel && startById(this.state.sel) && startLevel(startById(this.state.sel)) === lvl ? this.state.sel : null;
+    const toggle = (id) => () => this.setState({ sel: this.state.sel === id ? null : id });
+    const flow = [];
+    let prevPart = null;
+    parts.forEach((p) => lessons.filter((c) => c.part === p.n).forEach((c) => {
+      const label = (lvl === 1 && p.n <= 4 ? 'Chapter ' + p.n + ' · ' : '') + p.title;
+      const first = flow.length === 0;
+      if (first) flow.push({ isLink: true, isNode: false, arrow: false, label });
+      else flow.push({ isLink: true, isNode: false, arrow: true, label: prevPart !== p.n ? label : '' });
+      prevPart = p.n;
+      const r = row(c.id), lk = look(r), on = c.id === sel;
+      const before = (c.after || []).map((a) => startById(a)).filter(Boolean);
+      const skip = sr_skip(r, before);
+      flow.push(Object.assign({}, lk, {
+        isLink: false, isNode: true, title: c.title, open: on, rot: on ? 'rotate(180deg)' : 'none',
+        shadow: on ? 'inset 0 0 0 1.5px ' + t.line2 : 'none',
+        pick: toggle(c.id), idea: c.idea,
+        hasAfter: before.length > 0 || r.ready, after: before.length ? before.map((b) => b.title).join(', ') + (skip ? '. You can skip ahead if you know it.' : '') : 'Nothing. This is a good place to start.',
+        hasTrap: !!c.trap, trap: c.trap || '',
+        meta: r.ready ? c.minutes + ' min · story, watch it run, try it, ' + r.total + ' exercises, one check' + (r.passed ? ' · ' + r.passed + ' of ' + r.total + ' passed' : '') : 'In ' + (START_LEVELS.find((L) => L.n === lvl) || {}).title + ' · coming soon',
+        ready: r.ready, soon: !r.ready,
+        cta: r.done ? 'Open lesson ' + c.n + ' again' : r.passed || (DS.start().stage || {})[c.id] ? 'Continue lesson ' + c.n : 'Open lesson ' + c.n,
+        href: lessonHref(c.id), go: open(c.id)
+      }));
     }));
-    edges.sort((a, b) => (a.hot ? 1 : 0) - (b.hot ? 1 : 0));
-    const pickLesson = (id) => () => { const c = startById(id); this.setState({ sel: id, level: startLevel(c) }); };
-
-    // the card for the selected lesson
-    const before = (S.after || []).map((a) => startById(a));
-    const lvlName = START_LEVELS.find((L) => L.n === startLevel(S));
-    const part = START_PARTS.find((p) => p.n === S.part);
-    const card = {
-      key: sel, title: S.title, idea: S.idea,
-      eyebrow: 'LEVEL ' + startLevel(S) + ' · ' + (part ? part.title.toUpperCase() : '') + ' · LESSON ' + S.n,
-      eyebrowFg: sr.next ? t.accent : t.muted,
-      hasGate: sr.ready && !sr.open && !sr.done, gate: sr.missing.length ? 'Usually you would finish ' + sr.missing.map((m) => 'lesson ' + m.n + ' (' + m.short + ')').join(' and ') + ' first. You can skip ahead if you know it.' : '',
-      beforeLabel: before.length ? 'Learn first' : 'A starting point. No lesson comes before it.',
-      before: before.map((b) => ({ label: label(b), pick: pickLesson(b.id) })),
-      unlocks: startUnlocks(sel).map((u) => ({ label: label(startById(u)), pick: pickLesson(u) })), hasUnlocks: startUnlocks(sel).length > 0,
-      hasTrap: !!S.trap, trap: S.trap || '',
-      meta: sr.ready ? S.minutes + ' min · story, watch it run, try it, ' + sr.total + ' exercises, one check' + (sr.passed ? ' · ' + sr.passed + ' of ' + sr.total + ' passed' : '') : 'In ' + lvlName.title + ' · coming soon',
-      ready: sr.ready, soon: !sr.ready,
-      cta: sr.done ? 'Open lesson ' + S.n + ' again' : sr.passed || (DS.start().stage || {})[sel] ? 'Continue lesson ' + S.n : 'Open lesson ' + S.n,
-      href: lessonHref(sel), go: open(sel)
-    };
+    // every flow item carries every key, so the template reads the same shape from a link and a node
+    const blank = { arrow: false, label: '', mark: '', title: '', sub: '', ring: 'transparent', ringStyle: 'solid', dotBg: 'transparent', dotFg: 'inherit', subFg: 'inherit', state: '', open: false, rot: 'none', shadow: 'none', pick: () => {}, idea: '', hasAfter: false, after: '', hasTrap: false, trap: '', meta: '', ready: false, soon: false, cta: '', href: '#', go: () => {} };
+    for (let i = 0; i < flow.length; i++) flow[i] = Object.assign({}, blank, flow[i]);
+    function sr_skip(r, before) { return r.ready && !r.open && !r.done && before.length > 0; }
 
     // placement
     const P = START_PLACEMENT, pq = this.state.pq;
     const asking = this.state.placing && this.state.placed === null && pq < P.length;
     const curQ = P[Math.min(pq, P.length - 1)];
+    const label = (c) => (startLevel(c) > 1 ? 'Level ' + startLevel(c) + ' · ' : '') + 'Lesson ' + c.n + ': ' + c.short;
     const answer = (i) => () => {
       const picks = this.state.picks.concat([i]);
       if (picks.length < P.length) { this.setState({ picks, pq: pq + 1 }); return; }
@@ -5567,7 +5525,7 @@ class Component extends DCLogic {
     const after = startProgress();
     const place = {
       on: this.state.placing, asking, result: this.state.placing && this.state.placed !== null,
-      eyebrow: DS.start().placed ? 'Already took it' : 'Know a little already?', label: 'Find your starting point',
+      label: DS.start().placed ? 'Take the starting check again' : 'Find your starting point',
       open: () => this.setState({ placing: true, pq: 0, picks: [], placed: null }),
       close: () => this.setState({ placing: false }),
       again: () => this.setState({ pq: 0, picks: [], placed: null }),
@@ -5579,45 +5537,39 @@ class Component extends DCLogic {
       finish: () => { if (after.next) DS.startVisit(after.next.c.id); this.setState({ placing: false }); }
     };
 
-    // road map
+    // road map (folded below the path)
     const firstAll = startAllFirstProblems();
     const road = START_ROAD.map((r, i) => {
       const state = r.id === 'start' ? (firstOpen ? 'Done' : started ? 'In progress' : 'Start here') : r.id === 'first' ? (firstOpen ? 'Next' : 'After lesson 26') : r.id === 'patterns' ? (firstOpen ? 'Then' : 'Later') : 'Later';
       const now = (r.id === 'start' && !firstOpen) || (r.id === 'first' && firstOpen);
       return {
         title: r.title, sub: r.sub, href: r.href, go: () => {}, cur: now ? 'step' : 'false', state, mark: String(i + 1),
-        border: now ? t.accent : 'transparent', bg: now ? t.sunk : 'transparent',
+        bg: now ? t.sunk : 'transparent',
         dotBg: now ? t.accent : t.sunk, dotFg: now ? t.onAccent : t.text2, stateFg: now ? t.accent : t.muted
       };
     });
     const nextC = next ? next.c : null;
     const fp = firstAll.filter((x) => START_PROBLEMS[x.pid]);
     return Object.assign({
-      t, L: { desk: !phone, phone, rootH: 1010 + ST_MAP.top + rows * ST_MAP.rowH + (this.state.placing ? 420 : 0) + (fp.length ? 64 * Math.ceil(fp.length / 3) + 60 : 0) },
+      t,
       hero: {
-        title: started ? 'Keep going' : 'Start here',
-        line: started ? 'One short lesson at a time. Each one is a story, a program you run and a few small exercises.' : 'Never written code? Perfect. Each lesson is a tiny story, a program you run yourself, a few small exercises and one quick question.',
-        done: counts.done, total: counts.total, pct: counts.pct + '%',
+        title: 'Start here',
+        line: started ? 'One short lesson at a time.' : 'Never written code? Perfect. One tiny lesson at a time.',
+        done: counts.done, total: counts.total,
         progress: counts.done + ' of ' + counts.total + ' Level 1 lessons done' + (pr.known ? ' · ' + pr.known + ' marked known' : ''),
         cta: nextC ? (started ? 'Continue: lesson ' + nextC.n + ', ' + nextC.short : 'Start lesson 1') : 'See your first problems',
-        href: nextC ? lessonHref(nextC.id) : 'Start.dc.html?view=first', go: nextC ? open(nextC.id) : () => {}
+        href: nextC ? lessonHref(nextC.id) : 'Start.dc.html?view=first', go: nextC ? open(nextC.id) : () => { this.setState({ firstOpen: true }); }
       },
       road, place,
       level: START_LEVELS.find((L) => L.n === lvl),
-      levels: START_LEVELS.map((L) => { const on = L.n === lvl; const n = startInLevel(L.n).filter((c) => c.ready).length; return { label: 'Level ' + L.n + (n ? '' : ' · soon'), on: on ? 'true' : 'false', bg: on ? t.text : 'transparent', fg: on ? t.bg : t.muted, pick: () => this.setState({ level: L.n, sel: startInLevel(L.n)[0].id }) }; }),
-      map: {
-        w: ST_MAP.w, h: ST_MAP.top + rows * ST_MAP.rowH, cols, nodeW: ST_MAP.nodeW,
-        heads: parts.map((p) => ({ label: p.title })),
-        edges,
-        nodes: lessons.map((c) => {
-          const r = row(c.id), lk = look(r), on = c.id === sel;
-          return Object.assign(lk, { label: c.short, left: pos[c.id].x - half, top: pos[c.id].y - 26, sel: on ? 'true' : 'false', bg: on ? t.sunk : t.surface, border: on ? t.text : lk.border, pick: pickLesson(c.id) });
-        })
+      levels: START_LEVELS.map((L) => { const on = L.n === lvl; const n = startInLevel(L.n).filter((c) => c.ready).length; return { label: 'Level ' + L.n + (n ? '' : ' · soon'), on: on ? 'true' : 'false', line: on ? t.accent : 'transparent', fg: on ? t.text : t.muted, pick: () => this.setState({ level: L.n, sel: null }) }; }),
+      flow,
+      folds: {
+        roadOpen: this.state.roadOpen, roadRot: this.state.roadOpen ? 'rotate(180deg)' : 'none', roadToggle: () => this.setState({ roadOpen: !this.state.roadOpen }),
+        firstOpen: this.state.firstOpen, firstRot: this.state.firstOpen ? 'rotate(180deg)' : 'none', firstToggle: () => this.setState({ firstOpen: !this.state.firstOpen })
       },
-      card,
-      parts: parts.map((p) => ({ title: (lvl === 1 && p.n <= 4 ? 'Chapter ' + p.n + ': ' : '') + p.title, lessons: lessons.filter((c) => c.part === p.n).map((c) => Object.assign(look(row(c.id)), { title: c.n + '. ' + c.title, href: lessonHref(c.id), go: open(c.id) })) })),
       first: {
-        border: firstOpen ? t.accent : t.line, has: fp.length > 0, after: firstOpen,
+        has: fp.length > 0, after: firstOpen,
         meta: fp.length ? fp.length + ' problems' : '',
         line: firstOpen ? 'You have the tools for these. Each one uses only what Level 1 taught. Open one, read it with the five questions from lesson 26, then solve it.' : 'These open after lesson 26, How to read a problem. Each one uses only what Level 1 teaches.',
         items: fp.map((x) => ({ title: START_PROBLEMS[x.pid][0], sub: START_PROBLEMS[x.pid][1] + ' · after lesson ' + x.ch.n, href: 'Code.dc.html?problem=' + x.pid }))

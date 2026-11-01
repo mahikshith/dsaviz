@@ -286,7 +286,7 @@ const START_ABOUT = {
       ['loop variable', 'The name that holds the current value on each lap, such as tree.']
     ],
     math: null,
-    steps: ['Write for, a name, in, range(...) and a colon.', 'Python puts the first number in the name.', 'It runs the indented block.', 'It moves to the next number and runs the block again.', 'When the numbers run out, the loop ends and the program carries on.'],
+    steps: ['Write for, a name you choose, the word in, a range of numbers, and a colon.', 'Python puts the first number in the name.', 'It runs the indented block.', 'It moves to the next number and runs the block again.', 'When the numbers run out, the loop ends and the program carries on.'],
     use: ['You know how many times to repeat.', 'You want to do the same thing for every number in a run.'],
     avoid: ['Writing the same line many times by hand.', 'Changing the loop variable inside the block.'],
     mistakes: ['Off by one: range(5) stops at 4. Fix: range(5) gives 0 to 4. For 1 to 5 write range(1, 6).', 'Forgetting the colon after range. Fix: add a : at the end of the for line.', 'Forgetting to indent the block. Fix: indent every line that should repeat.'],
@@ -323,32 +323,30 @@ const START_ABOUT = {
     words: [
       ['accumulator', 'A variable that collects a result, a bit at a time, across loop laps.'],
       ['total', 'The running sum so far.'],
-      ['initialise', 'To give a variable its first value before it is used.'],
-      ['update', 'To change a variable using its old value, such as total = total + c.'],
+      ['start value', 'The first value you give a variable before the loop, such as total = 0.'],
+      ['change', 'To give a variable a new value made from its old one, such as total = total + day.'],
       ['loop', 'Lines that repeat, lap after lap.']
     ],
     math: {
-      lines: ['T_0 = 0', 'T_k = T_{k-1} + x_k'],
+      lines: ['start: total = 0', 'each lap: new total = old total + this value'],
       symbols: [
-        ['T_0', 'the total before any lap. We start it at 0'],
-        ['T_k', 'the total after lap number k'],
-        ['T_{k-1}', 'the total after the lap before'],
-        ['x_k', 'the value used on lap k'],
-        ['k', 'the lap number: 1, 2, 3 and so on']
+        ['total', 'the sum so far'],
+        ['old total', 'the total before this lap'],
+        ['this value', 'the number added on this lap']
       ],
       example: [
-        'The list is 4, 7, 2. We start with T_0 = 0.',
-        'Lap 1 adds 4, so T_1 = 0 + 4 = 4.',
-        'Lap 2 adds 7, so T_2 = 4 + 7 = 11.',
-        'Lap 3 adds 2, so T_3 = 11 + 2 = 13.',
-        'The loop ends and the total is 13.'
+        'The numbers are 1, 2, 3 and 4. We start with total = 0.',
+        'Lap 1 adds 1, so the new total is 0 + 1 = 1.',
+        'Lap 2 adds 2, so the new total is 1 + 2 = 3.',
+        'Lap 3 adds 3, so the new total is 3 + 3 = 6.',
+        'Lap 4 adds 4, so the new total is 6 + 4 = 10. The loop ends.'
       ]
     },
-    steps: ['Before the loop, set total = 0.', 'Start a loop over the values.', 'On each lap, update the total with total = total + c.', 'Do not touch the total anywhere else.', 'After the loop ends, use the total.'],
+    steps: ['Before the loop, set total = 0.', 'Start a loop over the numbers.', 'On each lap, change the total with total = total + day.', 'Do not touch the total anywhere else.', 'After the loop ends, use the total.'],
     use: ['You need a sum, a count, or a product across many values.', 'You want one answer from many numbers.'],
     avoid: ['Starting the total inside the loop, which wipes it each lap.', 'Using it for a task with one value.'],
     mistakes: ['Resetting the total inside the loop. Fix: put total = 0 before the loop, not inside it.', 'Forgetting to start at 0. Fix: a variable must have a value before you add to it.', 'Printing inside the loop when you want one total. Fix: print after the loop ends.'],
-    cheat: ['total = 0', 'for c in counts:', '    total = total + c', 'print(total) after the loop', 'start before, update inside'],
+    cheat: ['total = 0', 'for day in range(1, 5):', '    total = total + day', 'print(total) after the loop', 'start before, change inside'],
     next: ['lists'],
     sources: [PY_TUT + 'controlflow.html#for-statements', PY_REF + 'simple_stmts.html#augmented-assignment-statements']
   },
@@ -431,8 +429,8 @@ const START_ABOUT = {
     steps: ['Write the outer for loop, such as for row in range(3):.', 'Inside it, indent and write the inner loop.', 'The outer loop starts lap 1.', 'The inner loop runs all its laps.', 'Then the outer loop starts lap 2, and the inner loop runs all its laps again.'],
     use: ['You need to visit every cell in a grid.', 'You need every pairing of two groups.'],
     avoid: ['Nesting when one loop would do.', 'Nesting many loops deep, which gets slow.'],
-    mistakes: ['Mixing up the inner and outer counters. Fix: name them clearly, such as row and col.', 'Wrong indentation, so the print is in the wrong loop. Fix: line it up with the loop it belongs to.', 'Forgetting that the inner loop restarts every time. Fix: set up its variables inside the outer loop.'],
-    cheat: ['for row in range(3):', '    for col in range(4):', 'inner loop finishes first', '3 × 4 = 12 laps in all', 'indent each level more'],
+    mistakes: ['Mixing up the inner and outer counters. Fix: give them names that say what they count, such as row and col.', 'Wrong indentation, so the print is in the wrong loop. Fix: line it up with the loop it belongs to.', 'Forgetting that the inner loop restarts every time. Fix: set up its variables inside the outer loop.'],
+    cheat: ['for row in range(3):', '    for col in range(4):', 'inner loop finishes first', '3 * 4 = 12 laps in all', 'indent each level more'],
     next: ['functions'],
     sources: [PY_TUT + 'controlflow.html#for-statements', PY_REF + 'compound_stmts.html#the-for-statement']
   },
@@ -449,11 +447,11 @@ const START_ABOUT = {
       ['call', 'Using a function by writing its name and brackets.']
     ],
     math: null,
-    steps: ['Write def, the name, brackets with parameters, and a colon.', 'Indent the lines of the function body.', 'The function does nothing yet. It is only written down.', 'Call it by name, such as feed("Fluff").', 'Python runs the body with the argument in the parameter.'],
+    steps: ['Write def, the name, brackets with parameters, and a colon.', 'Indent the lines of the function body.', 'The function does nothing yet. It is only written down.', 'Call it by name, such as feed("Wren").', 'Python runs the body with the argument in the parameter.'],
     use: ['You repeat the same lines in many places.', 'You want to give a group of steps a clear name.'],
     avoid: ['Functions that do many unrelated jobs.', 'Copying lines around instead of writing a function.'],
-    mistakes: ['Calling a function before it is defined. Fix: put the def above the call.', 'Forgetting the brackets when calling. Fix: write feed(), not feed.', 'Forgetting the colon on the def line. Fix: add a : at the end.'],
-    cheat: ['def feed(owlet):', 'indent the body', 'feed("Fluff") calls it', 'define first, call after', 'parameters in, work done'],
+    mistakes: ['Calling a function before it is defined. Fix: put the def above the call.', 'Forgetting the brackets and the value when calling. Fix: write feed("Wren"), not feed.', 'Forgetting the colon on the def line. Fix: add a : at the end.'],
+    cheat: ['def feed(bird):', 'indent the body', 'feed("Wren") calls it', 'define first, call after', 'parameters in, work done'],
     next: ['return-print', 'calls'],
     sources: [PY_TUT + 'controlflow.html#defining-functions', PY_REF + 'compound_stmts.html#function-definitions']
   },
@@ -480,7 +478,7 @@ const START_ABOUT = {
   },
   dicts: {
     what: 'A dictionary stores values under names called keys. You find a value by its key, not by its place. It works well for counting things.',
-    analogy: 'A coat check. You hand in a coat and get a ticket. Later, the ticket finds your coat.',
+    analogy: 'You hand in a coat and get a ticket. Later, the ticket finds your coat.',
     uses: ['A game that stores each player\'s score under their name', 'A phone book app that finds a number from a name', 'A website that stores your settings by setting name'],
     before: ['list-loops'],
     words: [
@@ -500,7 +498,7 @@ const START_ABOUT = {
     sources: [PY_TUT + 'datastructures.html#dictionaries', PY_LIB + 'stdtypes.html#mapping-types-dict']
   },
   debugging: {
-    what: 'Debugging means finding and fixing a mistake in a program. Ask three questions: what did I expect, what happened, and where did the two split apart? Then change one thing at a time.',
+    what: 'Debugging means finding and fixing a mistake in a program. Ask three questions: what did I expect, what happened, and where did the two first differ? Then change one thing at a time.',
     analogy: 'A detective walks back through the day to find the exact minute things went wrong.',
     uses: ['A game team finds why a character walks through a wall', 'A website team finds why a button does nothing', 'A phone app team finds why a total comes out wrong'],
     before: ['first-error', 'return-print'],
@@ -508,7 +506,7 @@ const START_ABOUT = {
       ['bug', 'A mistake in a program.'],
       ['debugging', 'Finding and fixing bugs.'],
       ['trace', 'Following a program step by step, writing down each value.'],
-      ['print check', 'A print line added to see a value while the program runs.'],
+      ['debug print', 'A print line added to see a value while the program runs.'],
       ['expected', 'The answer you think the program should give.']
     ],
     math: null,
@@ -516,13 +514,13 @@ const START_ABOUT = {
     use: ['Your program gives a wrong answer without an error.', 'Your program stops and you do not know why.'],
     avoid: ['Changing many things at once.', 'Guessing without looking at real values.'],
     mistakes: ['Changing many things at once. Fix: change one thing, then run again, so you know what helped.', 'Staring at the code without running it. Fix: add print lines and look at the real values.', 'Forgetting to remove print lines later. Fix: delete them when the bug is fixed.'],
-    cheat: ['what did I expect?', 'what happened?', 'where did they split?', 'print to see values', 'change one thing at a time'],
+    cheat: ['what did I expect?', 'what happened?', 'where did it first differ?', 'print to see values', 'change one thing at a time'],
     next: ['guess-project', 'plan-it'],
     sources: [PY_TUT + 'errors.html', PY_LIB + 'functions.html#print']
   },
   'guess-project': {
     what: 'In this project you build a guessing game. The program holds a secret number. A while loop keeps asking until you guess it, and if tells you "Higher" or "Lower".',
-    analogy: 'It is the game "hot and cold". A friend says warmer or colder until you find the hidden thing.',
+    analogy: 'A friend hides a number and says closer or further until you find it.',
     uses: ['A number guessing game', 'A game that repeats a round until you win', 'A quiz that keeps asking until you answer correctly'],
     before: ['while', 'dicts', 'return-print'],
     words: [
@@ -557,13 +555,13 @@ const START_ABOUT = {
     steps: ['Write what goes in and what must come out.', 'Write the steps in plain words, in order.', 'Turn each step into one or two lines of code.', 'Run it with a small example.', 'Check the answer, and fix the plan if needed.'],
     use: ['The job has more than two or three steps.', 'You feel unsure where to start.'],
     avoid: ['Typing code before you know the steps.', 'Plans so long they take longer than the code.'],
-    mistakes: ['Typing code before you know the steps. Fix: write the steps first, even as comments.', 'Steps that are too big. Fix: split any step that needs more than a few lines.', 'Never checking the plan on an example. Fix: walk a small example through your steps by hand.'],
+    mistakes: ['Typing code before you know the steps. Fix: write the steps first, as comments. A comment is a line that starts with #.', 'Steps that are too big. Fix: split any step that needs more than a few lines.', 'Never checking the plan on an example. Fix: walk a small example through your steps by hand.'],
     cheat: ['what goes in?', 'what comes out?', 'steps in plain words', 'one or two lines per step', 'try a small example'],
     next: ['read-a-problem'],
     sources: [PY_TUT + 'controlflow.html#defining-functions', PY_TUT + 'introduction.html#using-python-as-a-calculator']
   },
   'read-a-problem': {
-    what: 'A coding problem always has an input, an output and examples. Read all three before you write anything. Plan in words, try the slow idea first, then test it.',
+    what: 'A coding problem always has an input, an output and examples. Read all three before you write anything. Plan in words, try the simple way first, then test it.',
     analogy: 'It is like a puzzle box with instructions. Read what you are given, what you must produce, and the sample.',
     uses: ['A coding class exercise', 'A game feature request from a designer', 'A bug report from a user'],
     before: ['plan-it', 'debugging'],
@@ -575,17 +573,17 @@ const START_ABOUT = {
       ['test', 'Running your code on chosen inputs to check the answers.']
     ],
     math: null,
-    steps: ['Read the problem twice.', 'Write the input and the output in your own words.', 'Work through the example by hand.', 'Plan the slow, plain idea in words.', 'Code it, then test it on the example and the edge cases.'],
+    steps: ['Read the problem twice.', 'Write the input and the output in your own words.', 'Work through the example by hand.', 'Plan the simple, plain idea in words.', 'Code it, then test it on the example and the edge cases.'],
     use: ['You face a new problem and are unsure how to start.', 'You want to avoid solving the wrong problem.'],
     avoid: ['Skipping the examples.', 'Hunting for a clever idea before a working one.'],
     mistakes: ['Coding before you know what the answer looks like. Fix: write one example answer by hand first.', 'Missing a small word like "below" or "at least". Fix: underline the rule words.', 'Skipping the edge cases. Fix: try an empty list, zero and negatives.'],
-    cheat: ['find the input', 'find the output', 'work an example by hand', 'plan the slow idea first', 'test, then improve'],
+    cheat: ['find the input', 'find the output', 'work an example by hand', 'try the simple way first', 'test, then improve'],
     next: ['counting-steps'],
     sources: [PY_TUT + 'controlflow.html#defining-functions', PY_TUT + 'datastructures.html#more-on-lists']
   },
   'counting-steps': {
     what: 'To compare two solutions, count the laps your loop makes. Then ask what happens when the input doubles. If the work doubles too, the cost grows in step with the input.',
-    analogy: 'Reading every page of a phone book takes twice as long when the book is twice as thick.',
+    analogy: 'Checking every exam paper in a pile takes twice as long when the pile is twice as tall.',
     uses: ['A game that must stay fast with a thousand enemies', 'A search box that must answer quickly on a big website', 'A music app that sorts a long playlist'],
     before: ['read-a-problem'],
     words: [
@@ -605,15 +603,15 @@ const START_ABOUT = {
       example: [
         'A list has n = 10 items. In the worst case, one loop runs 10 laps.',
         'With 20 items, it runs 20 laps. Doubling the input doubled the work.',
-        'Now a loop inside a loop over 10 items runs 10 × 10 = 100 laps.',
-        'With 20 items, it runs 20 × 20 = 400 laps. Doubling the input made the work four times bigger.'
+        'Now a loop inside a loop over 10 items runs 10 * 10 = 100 laps.',
+        'With 20 items, it runs 20 * 20 = 400 laps. Doubling the input made the work four times bigger.'
       ]
     },
     steps: ['Find the loops in your code.', 'Count how many laps each makes for an input of size n.', 'For a loop inside a loop, multiply the laps.', 'Think about the worst case, such as a value not being in the list.', 'Double n in your head and see how the laps change.'],
     use: ['You want to know if a solution will stay fast on big inputs.', 'You are choosing between two ways to solve a problem.'],
     avoid: ['Counting lines of code instead of laps.', 'Worrying about speed before the solution works.'],
     mistakes: ['Counting lines of code instead of laps. Fix: count how many times the loop runs, not how many lines it has.', 'Only checking the lucky case. Fix: ask what happens if the answer is not found.', 'Forgetting that a loop inside a loop multiplies. Fix: multiply the laps of the two loops.'],
-    cheat: ['count laps, not lines', 'n = size of the input', 'one loop: n laps', 'loop in a loop: n × n laps', 'think of the worst case', 'double n: what happens?'],
+    cheat: ['count laps, not lines', 'n = size of the input', 'one loop: n laps', 'loop in a loop: n * n laps', 'think of the worst case', 'double n: what happens?'],
     next: ['calls'],
     sources: [PY_TUT + 'controlflow.html#for-statements', 'Python Wiki, TimeComplexity, wiki.python.org/moin/TimeComplexity']
   },
@@ -737,7 +735,7 @@ const START_ABOUT = {
     math: null,
     steps: ['You make a list and store it: mine = ["nut"].', 'You call add_acorn(mine).', 'The parameter bag points at the same list, not a copy.', 'bag.append("acorn") changes that one list.', 'mine shows the change after the call.'],
     use: ['You want a function to change a list in place.', 'You want to know why a list changed unexpectedly.'],
-    avoid: ['Changing a list the caller did not expect you to touch.', 'Using a list as a default parameter value.'],
+    avoid: ['Changing a list the caller did not expect you to touch.', 'Passing a list when you meant to pass a copy.'],
     mistakes: ['Thinking the function got its own copy of the list. Fix: it is the same list. Use bag.copy() to work on a copy.', 'Being surprised that numbers do not change. Fix: numbers cannot change in place, so the caller keeps the old one.', 'Changing a list while looping over it. Fix: loop over a copy.'],
     cheat: ['lists are shared when passed', 'append changes the one list', 'bag.copy() makes a copy', 'numbers and strings do not change in place', 'return a new list to be safe'],
     next: ['callbacks', 'references'],
@@ -816,35 +814,35 @@ const START_ABOUT = {
       ['object', 'One thing built from a class, with its own data.'],
       ['instance', 'Another word for an object made from a class.'],
       ['attribute', 'A piece of data that belongs to an object, such as its name.'],
-      ['dot', 'The . that reaches inside an object, as in bot1.name.']
+      ['dot', 'The . that reaches inside an object, as in robot1.name.']
     ],
     math: null,
-    steps: ['Write class Robot: to make the blueprint.', 'Build an object by calling it: bot1 = Robot().', 'Build another: bot2 = Robot().', 'Store data on each with a dot: bot1.name = "Ray".', 'Each object keeps its own data.'],
+    steps: ['Write class Robot: to make the blueprint.', 'Build an object by calling it: robot1 = Robot().', 'Build another: robot2 = Robot().', 'Store data on each with a dot: robot1.name = "Mira".', 'Each object keeps its own data.'],
     use: ['You have many similar things, each with its own data.', 'You want data and actions to belong together.'],
     avoid: ['A class for a thing you only need once.', 'Putting everything in one giant class.'],
     mistakes: ['Thinking the class is the object. Fix: the class is the blueprint. Robot() builds an object.', 'Forgetting the brackets when building. Fix: write Robot(), not Robot.', 'Expecting objects to share data they set separately. Fix: each object has its own.'],
-    cheat: ['class Robot:', 'bot1 = Robot()', 'bot1.name = "Ray"', 'one class, many objects', 'each object has its own data'],
+    cheat: ['class Robot:', 'robot1 = Robot()', 'robot1.name = "Mira"', 'one class, many objects', 'each object has its own data'],
     next: ['self'],
     sources: [PY_TUT + 'classes.html', PY_REF + 'compound_stmts.html#class-definitions']
   },
   self: {
-    what: 'Inside a class, a method is a function that belongs to an object. The word self is the object the method was called on. In bot1.beep(), self points at bot1.',
+    what: 'Inside a class, a method is a function that belongs to an object. The word self is the object the method was called on. In robot1.beep(), self points at robot1.',
     analogy: 'A teacher says "open your own book". The words "your own" mean a different book for each student.',
     uses: ['A game where each enemy moves using its own position', 'A website where each user\'s page shows that user\'s name', 'A music app where each song object plays its own file'],
     before: ['objects'],
     words: [
       ['method', 'A function written inside a class.'],
       ['self', 'The first parameter of a method. It points at the object being used.'],
-      ['dot call', 'Calling a method with a dot, as in bot1.beep().'],
+      ['dot call', 'Calling a method with a dot, as in robot1.beep().'],
       ['attribute', 'A piece of data on an object, read as self.name.'],
       ['object', 'One thing built from a class.']
     ],
     math: null,
-    steps: ['Write a method with self first: def beep(self):.', 'Call it on an object: bot1.beep().', 'Python hands bot1 in as self.', 'Inside, self.name means this object\'s name.', 'Another object gives its own name.'],
+    steps: ['Write a method with self first: def beep(self):.', 'Call it on an object: robot1.beep().', 'Python hands robot1 in as self.', 'Inside, self.name means this object\'s name.', 'Another object gives its own name.'],
     use: ['A method needs to read or change its object\'s data.', 'You want the same action to work on any object of the class.'],
     avoid: ['Using a plain name where you need self.name.', 'Passing self yourself when you call.'],
-    mistakes: ['Leaving self out of the def line, so the call has one value too many. Fix: always write self first.', 'Writing name instead of self.name. Fix: use self. to reach the object\'s data.', 'Passing self when calling. Fix: write bot1.beep(), and Python adds self.'],
-    cheat: ['def beep(self):', 'self is the object', 'bot1.beep() makes self = bot1', 'self.name reads its data', 'never pass self yourself'],
+    mistakes: ['Leaving self out of the def line, so the call has one value too many. Fix: always write self first.', 'Writing name instead of self.name. Fix: use self. to reach the object\'s data.', 'Passing self when calling. Fix: write robot1.beep(), and Python adds self.'],
+    cheat: ['def beep(self):', 'self is the object', 'robot1.beep() makes self = robot1', 'self.name reads its data', 'never pass self yourself'],
     next: ['init'],
     sources: [PY_TUT + 'classes.html#method-objects', PY_TUT + 'classes.html#random-remarks']
   },
@@ -855,17 +853,17 @@ const START_ABOUT = {
     before: ['self'],
     words: [
       ['__init__', 'The special method that sets up a new object. People say "init".'],
-      ['constructor', 'Another word for the code that sets up a new object.'],
+      ['initializer', 'The __init__ method. It sets up a new object. It does not build it.'],
       ['self', 'The new object being set up.'],
       ['attribute', 'A piece of data stored on the object, such as self.name.'],
       ['dunder', 'A name with double underscores on each side.']
     ],
     math: null,
-    steps: ['Write def __init__(self, name): inside the class.', 'Store each value on self: self.name = name.', 'Add default data too: self.battery = 100.', 'Build an object: bot1 = Robot("Ray").', 'Python makes it, runs __init__ with it, and gives it back.'],
+    steps: ['Write def __init__(self, name): inside the class.', 'Store each value on self: self.name = name.', 'Add default data too: self.battery = 100.', 'Build an object: robot1 = Robot("Mira").', 'Python makes it, runs __init__ with it, and gives it back.'],
     use: ['Every object needs some starting data.', 'You want to give values when you build an object.'],
     avoid: ['Doing heavy work inside __init__.', 'Leaving some attributes unset until later.'],
     mistakes: ['Forgetting self. in front of a name, so the value never lands on the object. Fix: write self.name = name.', 'Writing _init_ with one underscore. Fix: use two on each side.', 'Returning a value from __init__. Fix: it must not return anything.'],
-    cheat: ['def __init__(self, name):', 'self.name = name', 'bot1 = Robot("Ray")', 'runs once, when built', 'two underscores each side'],
+    cheat: ['def __init__(self, name):', 'self.name = name', 'robot1 = Robot("Mira")', 'runs once, when built', 'two underscores each side'],
     next: ['attributes'],
     sources: [PY_TUT + 'classes.html#class-objects', PY_REF + 'datamodel.html#object.__init__']
   },
@@ -882,11 +880,11 @@ const START_ABOUT = {
       ['self', 'The object the method works on.']
     ],
     math: null,
-    steps: ['Set attributes in __init__, such as self.battery = 100.', 'Write a method with self first.', 'Inside, change an attribute: self.battery = self.battery - 30.', 'Call it: bot1.work().', 'Read the new value: bot1.battery.'],
+    steps: ['Set attributes in __init__, such as self.battery = 100.', 'Write a method with self first.', 'Inside, change an attribute: self.battery = self.battery - 30.', 'Call it: robot1.work().', 'Read the new value: robot1.battery.'],
     use: ['An object needs to remember something that changes.', 'You want one place that holds all the actions for a thing.'],
     avoid: ['Changing attributes from many places in the program.', 'Adding new attributes in odd methods.'],
     mistakes: ['Making a plain variable inside a method and expecting the object to keep it. Fix: use self.name so it stays on the object.', 'Forgetting self in the def line. Fix: every method starts with self.', 'Reading an attribute that was never set. Fix: set it in __init__.'],
-    cheat: ['attribute = what it knows', 'method = what it does', 'self.battery = ...', 'bot1.work() changes bot1', 'set attributes in __init__'],
+    cheat: ['attribute = what it knows', 'method = what it does', 'self.battery = 70', 'robot1.work() changes robot1', 'set attributes in __init__'],
     next: ['references', 'class-attributes', 'encapsulation', 'inheritance', 'dunder'],
     sources: [PY_TUT + 'classes.html#instance-objects', PY_TUT + 'classes.html#method-objects']
   },
@@ -897,17 +895,17 @@ const START_ABOUT = {
     before: ['attributes', 'mutable-args'],
     words: [
       ['reference', 'An arrow from a name to an object.'],
-      ['alias', 'A second name for the same object.'],
+      ['twin', 'A second name for the same object, such as twin = robot1.'],
       ['is', 'Asks if two names point at the very same object.'],
       ['copy', 'A new object with the same data, which is separate.'],
-      ['identity', 'Whether two names are the very same object, not only equal.']
+      ['same object', 'Two names that point at one object. The word is asks about this.']
     ],
     math: null,
-    steps: ['Build an object: bot1 = Robot("Ray").', 'Write twin = bot1. No new object is made.', 'Both names point at one object.', 'twin.name = "Twin" changes that one object.', 'bot1.name now shows "Twin" too.'],
+    steps: ['Build an object: robot1 = Robot("Mira").', 'Write twin = robot1. No new object is made.', 'Both names point at one object.', 'twin.name = "Twin" changes that one object.', 'robot1.name now shows "Twin" too.'],
     use: ['You want two parts of a program to share one object.', 'You want to know why a change showed up in an unexpected place.'],
     avoid: ['Sharing an object when you wanted a separate copy.', 'Comparing objects with is when you mean ==.'],
-    mistakes: ['Thinking = makes a copy of the object. Fix: it makes another name. Use copy.copy(obj) for a new object.', 'Confusing is and ==. Fix: is asks about the same object. == asks about equal data.', 'Changing a shared object by accident. Fix: make a copy when you want separate data.'],
-    cheat: ['b = a: two names, one object', 'a is b asks if same', 'change through one, see in both', 'copy.copy(a) makes a new one', 'arrows, not boxes'],
+    mistakes: ['Thinking = makes a copy of the object. Fix: it makes another name. Build a new object with Robot(robot1.name).', 'Confusing is and ==. Fix: is asks about the same object. == asks about equal data.', 'Changing a shared object by accident. Fix: make a copy when you want separate data.'],
+    cheat: ['b = a: two names, one object', 'a is b asks if same', 'change through one, see in both', 'Robot(a.name) makes a new one', 'arrows, not boxes'],
     next: ['class-attributes'],
     sources: [PY_REF + 'datamodel.html#objects-values-and-types', PY_LIB + 'copy.html']
   },
@@ -919,21 +917,21 @@ const START_ABOUT = {
     words: [
       ['class attribute', 'Data stored on the class and shared by all its objects.'],
       ['instance attribute', 'Data stored on one object only.'],
-      ['lookup', 'How Python finds a name: the object first, then the class.'],
+      ['search order', 'How Python finds a name: the object first, then the class.'],
       ['shared', 'Seen by every object of the class.'],
       ['override', 'Setting the same name on an object, which hides the class value for that object.']
     ],
     math: null,
-    steps: ['Write a name inside the class, outside any method: maker = "Jay".', 'Build objects. They do not store maker themselves.', 'Reading bot1.maker finds it on the class.', 'Setting bot2.maker = "Maria" creates a new name on bot2 only.', 'bot1 still sees the class value.'],
+    steps: ['Write a name inside the class, outside any method: maker = "Hana".', 'Build objects. They do not store maker themselves.', 'Reading robot1.maker finds it on the class.', 'Setting robot2.maker = "Maria" creates a new name on robot2 only.', 'robot1 still sees the class value.'],
     use: ['Every object of the class should share the same value.', 'You want a constant that belongs to the class.'],
     avoid: ['Putting a list on the class when each object needs its own.', 'Setting through an object and expecting all to see it.'],
     mistakes: ['Setting a value through one object and expecting every object to see it. Fix: set it on the class, such as Robot.maker = "Maria".', 'Putting a list on the class and changing it from an object. Fix: the list is shared, so use an instance attribute.', 'Forgetting the class name. Fix: write Robot.maker to reach the shared value.'],
-    cheat: ['maker = "Jay" in the class', 'objects read it from the class', 'bot2.maker = ... only changes bot2', 'Robot.maker = ... changes all', 'object first, then class'],
+    cheat: ['maker = "Hana" in the class', 'objects read it from the class', 'robot2.maker = "Maria" only changes robot2', 'Robot.maker = "Priya" changes all', 'object first, then class'],
     next: ['encapsulation'],
     sources: [PY_TUT + 'classes.html#class-and-instance-variables']
   },
   encapsulation: {
-    what: 'Let methods guard every change to an object\'s data. Then it can never end up in a broken state. A name starting with an underscore says "please leave this to the methods".',
+    what: 'Let methods guard every change to an object\'s data. Then it stays valid when everyone uses the methods. A name starting with an underscore says "please leave this to the methods".',
     analogy: 'A bank counter. You ask the teller to move money, instead of reaching into the safe.',
     uses: ['A game that never lets health go above the maximum', 'A bank app that never lets a balance break a rule', 'A website that checks a new age before saving it'],
     before: ['attributes'],
@@ -1029,11 +1027,11 @@ const START_ABOUT = {
       ['delegate', 'Letting the part do a job instead of doing it yourself.']
     ],
     math: null,
-    steps: ['Write a class for the part, such as Battery.', 'Write the main class, such as Robot.', 'In __init__, build the part: self.battery = Battery().', 'Reach inside with dots: bot1.battery.level.', 'Let the part do its own jobs.'],
+    steps: ['Write a class for the part, such as Battery.', 'Write the main class, such as Robot.', 'In __init__, build the part: self.battery = Battery().', 'Reach inside with dots: robot1.battery.level.', 'Let the part do its own jobs.'],
     use: ['One thing is made of other things.', 'You want to swap or change a part later.'],
     avoid: ['Inheriting only to reuse some code.', 'Building huge objects with too many parts.'],
     mistakes: ['Inheriting from a class only to borrow some of its code. Fix: keep it as a part with has-a.', 'Forgetting to build the part in __init__. Fix: create it with self.battery = Battery().', 'Sharing one part between objects by accident. Fix: build a new part for each object.'],
-    cheat: ['is-a: inherit', 'has-a: keep as a part', 'self.battery = Battery()', 'bot1.battery.level', 'prefer has-a when unsure'],
+    cheat: ['is-a: inherit', 'has-a: keep as a part', 'self.battery = Battery()', 'robot1.battery.level', 'prefer has-a when unsure'],
     next: ['dunder', 'no-class'],
     sources: [PY_TUT + 'classes.html', PY_REF + 'datamodel.html#objects-values-and-types']
   },
@@ -1071,7 +1069,7 @@ const START_ABOUT = {
       ['TypeError', 'The error Python shows when you build a class with a missing method.']
     ],
     math: null,
-    steps: ['Import ABC and abstractmethod from abc.', 'Write the abstract class with ABC in brackets.', 'Mark each required method with @abstractmethod.', 'Write children that fill in every method.', 'Python refuses to build a child that missed one.'],
+    steps: ['Bring in the tools with: from abc import ABC, abstractmethod.', 'Write the abstract class with ABC in brackets.', 'Mark each required method with @abstractmethod.', 'Write children that fill in every method.', 'Python refuses to build a child that missed one.'],
     use: ['Many classes must offer the same set of methods.', 'You want mistakes to show up early.'],
     avoid: ['Abstract classes in very small programs.', 'Long lists of required methods.'],
     mistakes: ['Trying to build an object straight from the abstract class. Fix: build one of the children.', 'Forgetting to write one of the required methods. Fix: write every one, or Python raises a TypeError.', 'Forgetting @abstractmethod. Fix: add it above each required method.'],

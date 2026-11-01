@@ -13,13 +13,14 @@ function st13Story() {
   const screen = (lines) => st1Screen(40, 236, 560, lines.slice(-3), 116);
   return [
     stBeat('penny', 'I want to hide one acorn in each of 5 trees. Do I write print five times?', stScene(cast, { tokens: [1, 2, 3, 4, 5].map((n, i) => ({ id: 'tr' + n, x: 140 + i * 90, y: 210, text: 'tree ' + n, w: 80 })) }), ['cast:penny']),
-    stBeat('hoot', 'No. A for loop repeats a block for you, once per lap.', stScene(cast, card([0, 1])), ['card'], [0, 1]),
-    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops just before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
-    stBeat('hoot', 'On each lap, tree holds the next number, and the indented line runs once.', stScene(cast, card([1]), box('1'), screen(['Acorn in tree 1'])), ['tree', 'screen'], 1),
+    stBeat('hoot', 'No. A for loop repeats the indented lines for you. Each time round is one lap.', stScene(cast, card([0, 1])), ['card'], [0, 1]),
+    stBeat('hoot', 'range(1, 6) hands out 1, 2, 3, 4 and 5. It stops before 6.', stScene(cast, card([0]), nums(null)), ['n1', 'n2', 'n3', 'n4', 'n5', 'n6'], 0),
+    stBeat('hoot', 'tree is a name you choose. The word in hands it the next number on each lap. The indented line runs once.', stScene(cast, card([1]), box('1'), screen(['Acorn in tree 1'])), ['tree', 'screen'], 1),
     stBeat('penny', 'Lap two: tree is 2. Lap three: tree is 3. The box changes every lap.', stScene(cast, card([1]), box('3'), screen(['Acorn in tree 1', 'Acorn in tree 2', 'Acorn in tree 3'])), ['tree'], 1),
     stBeat('hoot', 'After the last lap the loop ends, and the line after it runs once.', stScene(cast, card([2]), box('5'), screen(['Acorn in tree 4', 'Acorn in tree 5', 'All hidden!'])), ['screen'], 2),
-    stBeat('dot', 'And range(5) gives 0, 1, 2, 3, 4. Five numbers, but it starts at 0!', stScene(cast, { tokens: [0, 1, 2, 3, 4].map((n, i) => ({ id: 'z' + n, x: 140 + i * 90, y: 220, text: String(n), w: 60, solid: n === 0 })) }), ['z0', 'cast:dot']),
-    stBeat('hoot', 'Being off by one is the classic slip. Check the first and the last number every time.', stScene(cast, nums(1, 5)), ['n1', 'n5', 'n6'])
+    stBeat('dot', 'What if I write range(5)? Does it start at 1?', stScene(cast, card([0])), ['cast:dot'], 0),
+    stBeat('hoot', 'No. range(5) gives 0, 1, 2, 3, 4. That is five numbers, but it starts at 0.', stScene(cast, { tokens: [0, 1, 2, 3, 4].map((n, i) => ({ id: 'z' + n, x: 140 + i * 90, y: 220, text: String(n), w: 60, solid: n === 0 })) }), ['z0']),
+    stBeat('hoot', 'A common mistake is one number too many or too few. Check the first and the last number every time.', stScene(cast, nums(1, 5)), ['n1', 'n5', 'n6'])
   ];
 }
 START_LESSON('for-range', {
@@ -48,8 +49,8 @@ function st14Story() {
     stBeat('bolt', 'Water: 2. Still less than 3. Pouring. Water: 3.', stScene(cast, card([3]), cup(3)), ['water', 'cast:bolt'], 3),
     stBeat('hoot', 'Now water < 3 is False. The loop stops and the program goes on: Full!', stScene(cast, card([4]), cup(3)), ['card'], 4),
     stBeat('dot', 'What if I forget the line that adds 1?', stScene(cast, card([1, 3]), cup(0)), ['cast:dot'], [1, 3]),
-    stBeat('bolt', 'Water: 0. Pouring. Water: 0. Pouring. Water: 0. Pouring...', stScene(cast, cup(0, true), { tokens: [{ id: 'flood', x: 240, y: 230, text: 'never ends', c: 'bad' }] }), ['flood', 'cup']),
-    stBeat('hoot', 'The question never turns False, so the loop never stops. Something inside must change.', stScene(cast, card([2]), cup(3)), ['card'], 2)
+    stBeat('bolt', 'Water: 0. Pouring. Water: 0. Pouring. Water: 0. Pouring again and again.', stScene(cast, cup(0, true), { tokens: [{ id: 'flood', x: 240, y: 230, text: 'never ends', c: 'bad' }] }), ['flood', 'cup']),
+    stBeat('hoot', 'The question never turns False, so the loop never stops. Something inside the loop must change what the question checks.', stScene(cast, card([2]), cup(3)), ['card'], 2)
   ];
 }
 START_LESSON('while', {
@@ -63,27 +64,27 @@ START_LESSON('while', {
 
 // ---------- L15. Keeping a running total ----------
 const ST15_CODE = {
-  py: ['counts = [4, 7, 2]', 'total = 0', 'for c in counts:', '    total = total + c', 'print(total)'],
-  js: ['let counts = [4, 7, 2];', 'let total = 0;', 'for (const c of counts) {', '  total = total + c; }', 'console.log(total);']
+  py: ['total = 0', 'for day in range(1, 5):', '    total = total + day', 'print(total)'],
+  js: ['let total = 0;', 'for (let day = 1; day < 5; day++) {', '  total = total + day; }', 'console.log(total);']
 };
 function st15Story() {
   const cast = st1Cast([['hoot', 60], ['penny', 320], ['dot', 580]]);
   const card = (cur) => st1Card('card', 30, 124, 380, ST15_CODE.py, cur);
-  const boxes = (c, total) => ({ boxes: [stVar('c', 'c', c, 450, 136, { w: 140 }), stVar('total', 'total', total, 450, 236, { w: 140, tc: 'c' })] });
+  const boxes = (c, total) => ({ boxes: [stVar('day', 'day', c, 450, 136, { w: 140 }), stVar('total', 'total', total, 450, 236, { w: 140, tc: 'c' })] });
   return [
-    stBeat('penny', 'Three trees hold 4, 7 and 2 acorns. I want the total, one tree at a time.', stScene(cast, { tokens: [4, 7, 2].map((n, i) => ({ id: 'k' + i, x: 200 + i * 120, y: 210, text: String(n) })) }), ['k0', 'k1', 'k2']),
-    stBeat('hoot', 'Start an empty box: total = 0. It will collect the count as we go.', stScene(cast, card([1]), boxes('-', '0')), ['total'], 1),
-    stBeat('hoot', 'Lap one: c is 4. total = total + c, so 0 + 4 puts 4 in the box.', stScene(cast, card([2, 3]), boxes('4', '4')), ['c', 'total'], [2, 3]),
-    stBeat('penny', 'Lap two: c is 7, so the total becomes 4 + 7, which is 11.', stScene(cast, card([3]), boxes('7', '11')), ['total'], 3),
-    stBeat('hoot', 'Lap three: 11 + 2 is 13. The loop is out of trees, so print shows 13.', stScene(cast, card([4]), boxes('2', '13')), ['total'], 4),
-    stBeat('dot', 'What if I put total = 0 inside the loop?', stScene(cast, card([1, 3]), boxes('2', '2')), ['cast:dot']),
-    stBeat('hoot', 'Then the box is emptied every lap, and you only keep the last tree. Set it up once, before the loop.', stScene(cast, card([1]), boxes('2', '13')), ['card'], 1),
-    stBeat('dot', 'Start before the loop, add inside, use after. That is an accumulator!', stScene(cast, card([1, 3, 4]), boxes('2', '13')), ['cast:dot', 'total'], [1, 3, 4])
+    stBeat('penny', 'Each day I find as many acorns as the day number. How many do I have after 4 days?', stScene(cast, { tokens: [1, 2, 3, 4].map((n, i) => ({ id: 'k' + i, x: 170 + i * 100, y: 210, text: String(n) })) }), ['k0', 'k1', 'k2', 'k3']),
+    stBeat('hoot', 'Start a box at 0: total = 0. It will collect the acorns as we go.', stScene(cast, card([0]), boxes('-', '0')), ['total'], 0),
+    stBeat('hoot', 'Lap one: day is 1. total = total + day, so 0 + 1 puts 1 in the box.', stScene(cast, card([1, 2]), boxes('1', '1')), ['day', 'total'], [1, 2]),
+    stBeat('penny', 'Lap two: day is 2, so the total becomes 1 + 2, which is 3. Lap three: 3 + 3 is 6.', stScene(cast, card([2]), boxes('3', '6')), ['total'], 2),
+    stBeat('hoot', 'Lap four: 6 + 4 is 10. The loop is out of days, so print shows 10.', stScene(cast, card([3]), boxes('4', '10')), ['total'], 3),
+    stBeat('dot', 'What if I put total = 0 inside the loop?', stScene(cast, card([1, 2]), boxes('4', '4')), ['cast:dot']),
+    stBeat('hoot', 'Then the box goes back to 0 on every lap, and you keep only the last day. Set it up once, before the loop.', stScene(cast, card([0]), boxes('4', '10')), ['card'], 0),
+    stBeat('dot', 'Start before the loop, add inside, use after. That is an accumulator!', stScene(cast, card([0, 2, 3]), boxes('4', '10')), ['cast:dot', 'total'], [0, 2, 3])
   ];
 }
 START_LESSON('accumulator', {
   code: ST15_CODE, story: st15Story(),
-  watch: { code: 'counts = [4, 7, 2]\ntotal = 0\nfor c in counts:\n    total = total + c\nprint(total)\n' },
+  watch: { code: 'total = 0\nfor day in range(1, 5):\n    total = total + day\nprint(total)\n' },
   tryit: { py: 'total = 0\nfor n in range(1, 6):\n    total = total + n\nprint(total)\n', js: 'let total = 0;\nfor (let n = 1; n < 6; n++) {\n  total = total + n;\n}\nconsole.log(total);\n',
     goals: ['Press Run: it adds 1 to 5.', 'Press Watch my code run and switch to the Step-by-step table.', 'Make it add 1 to 100 instead.'] },
   check: { q: 'Where does total = 0 go in an accumulator loop?',
@@ -106,12 +107,12 @@ function st16Story() {
   return [
     stBeat('dot', 'I am packing for a hike: a map, a torch and a rope. Three boxes with three names?', stScene(cast, pockets(['"map"', '"torch"', '"rope"'])), ['cast:dot']),
     stBeat('hoot', 'Use one backpack. A list keeps many values in order, under one name: bag.', stScene(cast, pockets(['"map"', '"torch"', '"rope"']), card(0)), ['p0', 'p1', 'p2']),
-    stBeat('hoot', 'Each pocket has a number. The first pocket is number 0, not 1.', stScene(cast, pockets(['"map"', '"torch"', '"rope"'], { lit: [0] })), ['p0', 'ix0']),
-    stBeat('penny', 'Add a snack! append puts a new pocket at the very end.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { fresh: 3 }), card(1)), ['p3', 'ix3'], 1),
-    stBeat('hoot', 'bag[0] is the first pocket: "map". bag[-1] counts from the back: "snack".', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] }), card(3)), ['p0', 'p3'], [2, 3]),
+    stBeat('hoot', 'Each pocket has a number, called the index. The first pocket is number 0, not 1.', stScene(cast, pockets(['"map"', '"torch"', '"rope"'], { lit: [0] })), ['p0', 'ix0']),
+    stBeat('penny', 'Add a snack! bag.append("snack") adds it at the end. The dot means: do this to bag.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { fresh: 3 }), card(1)), ['p3', 'ix3'], 1),
+    stBeat('hoot', 'bag[0] is the first pocket: "map". bag[-1] counts from the back: "snack". len(bag) counts the pockets.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] }), card(3)), ['p0', 'p3'], [2, 3]),
     stBeat('dot', 'len(bag) is 4, so the last pocket must be bag[4]?', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"']), card(4)), ['cast:dot', 'ix3'], 4),
-    stBeat('hoot', 'No: four pockets are numbered 0 to 3. bag[4] does not exist, so Python says IndexError.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [3] }), { tokens: [{ id: 'bad', x: 320, y: 300, text: 'bag[4] → IndexError', c: 'bad' }] }), ['bad', 'ix3']),
-    stBeat('dot', 'First pocket 0, last pocket len - 1, or just -1. Got it!', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] })), ['cast:dot'])
+    stBeat('hoot', 'No: four pockets are numbered 0 to 3. bag[4] does not exist, so Python says IndexError. It means: no pocket has that number.', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [3] }), { tokens: [{ id: 'bad', x: 320, y: 300, text: 'bag[4] → IndexError', c: 'bad' }] }), ['bad', 'ix3']),
+    stBeat('dot', 'First pocket 0, last pocket len - 1, or -1. Got it!', stScene(cast, pockets(['"map"', '"torch"', '"rope"', '"snack"'], { lit: [0, 3] })), ['cast:dot'])
   ];
 }
 START_LESSON('lists', {
@@ -135,11 +136,11 @@ function st17Story() {
   const card = (cur) => st1Card('card', 40, 222, 560, [ST17_CODE.py[cur[0]]].concat(cur.length > 1 ? [ST17_CODE.py[cur[1]]] : []), [0]);
   return [
     stBeat('penny', 'I weighed my acorns: 3, 9 and 4 grams. Which is the heaviest?', stScene(cast, row(null)), ['w0', 'w1', 'w2']),
-    stBeat('hoot', 'for w in weights visits every item once, from the first to the last.', stScene(cast, row(0), card([2])), ['w0'], 2),
+    stBeat('hoot', 'for w in weights visits every item once. w is a name you choose. It holds one weight per lap.', stScene(cast, row(0), card([2])), ['w0'], 2),
     stBeat('hoot', 'Keep a box for the best so far. Start it with the first item, not 0.', stScene(cast, row(0), best(3), card([1])), ['best'], 1),
     stBeat('penny', 'Next is 9. Is 9 > 3? Yes, so 9 goes in the box.', stScene(cast, row(1), best(9), card([3, 4])), ['w1', 'best'], [3, 4]),
     stBeat('penny', 'Then 4. Is 4 > 9? No, so the box keeps 9.', stScene(cast, row(2), best(9), card([3])), ['w2', 'best'], 3),
-    stBeat('hoot', 'The loop is done and biggest holds 9. One pass over the list was enough.', stScene(cast, row(null), best(9), card([5])), ['best'], 5),
+    stBeat('hoot', 'The loop is done and biggest holds 9. You looked at each number only once.', stScene(cast, row(null), best(9), card([5])), ['best'], 5),
     stBeat('dot', 'Why not start biggest at 0?', stScene(cast, { boxes: [-5, -2, -8].map((v, i) => ({ id: 'n' + i, x: 60 + i * 110, y: 140, w: 96, h: 60, text: String(v) })) }, best(0)), ['cast:dot']),
     stBeat('hoot', 'If every weight is below 0, nothing beats 0 and you get a wrong answer. Start from a real item.', stScene(cast, { boxes: [-5, -2, -8].map((v, i) => ({ id: 'n' + i, x: 60 + i * 110, y: 140, w: 96, h: 60, text: String(v), solid: i === 1 })) }, best(-2)), ['best', 'n1'])
   ];
@@ -156,8 +157,8 @@ START_LESSON('list-loops', {
 
 // ---------- L18. Text is a row of letters ----------
 const ST18_CODE = {
-  py: ['note = "hello"', 'print(len(note))', 'print(note[0], note[-1])', 'print(note[1:4])', 'print(note[::-1])'],
-  js: ['let note = "hello";', 'console.log(note.length);', 'console.log(note[0], note[note.length - 1]);', 'console.log(note.slice(1, 4));', 'console.log(note.split("").reverse().join(""));']
+  py: ['note = "hello"', 'print(len(note))', 'print(note[0], note[-1])', 'print(note[1:4])', 'print(note[::-1])', 'print("e" in note)', 'for letter in note: print(letter)'],
+  js: ['let note = "hello";', 'console.log(note.length);', 'console.log(note[0], note[note.length - 1]);', 'console.log(note.slice(1, 4));', 'console.log(note.split("").reverse().join(""));', 'console.log(note.includes("e"));', 'for (const letter of note) console.log(letter);']
 };
 function st18Story() {
   const cast = st1Cast([['hoot', 60], ['bolt', 320], ['dot', 580]]);
@@ -165,12 +166,14 @@ function st18Story() {
   const card = (i) => st1Card('card', 60, 266, 520, [ST18_CODE.py[i]], [0]);
   return [
     stBeat('dot', 'I wrote a secret note: hello. Can Python read it letter by letter?', stScene(cast, beads('hello')), ['cast:dot']),
-    stBeat('hoot', 'Yes. A string is a row of letters, numbered from 0 just like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
+    stBeat('hoot', 'Yes. A string is a row of letters, numbered from 0, like a list.', stScene(cast, beads('hello'), card(0)), ['bi0', 'bi1', 'bi2', 'bi3', 'bi4']),
     stBeat('hoot', 'len(note) counts the letters: 5. note[0] is h and note[-1] is o.', stScene(cast, beads('hello', [0, 4]), card(2)), ['b0', 'b4'], [1, 2]),
     stBeat('bolt', 'A slice: note[1:4]. Taking letters 1, 2 and 3. Stopping before 4. Result: ell.', stScene(cast, beads('hello', [1, 2, 3]), card(3)), ['b1', 'b2', 'b3'], 3),
-    stBeat('bolt', 'Reversing: note[::-1] reads from the back. Result: olleh.', stScene(cast, beads('olleh'), card(4)), ['b0', 'b1', 'b2', 'b3', 'b4'], 4),
+    stBeat('bolt', '[::-1] means: take every letter, going backwards. So note[::-1] gives olleh.', stScene(cast, beads('olleh'), card(4)), ['b0', 'b1', 'b2', 'b3', 'b4'], 4),
     stBeat('dot', 'Can I change one letter, like note[0] = "j"?', stScene(cast, beads('hello', [0])), ['b0', 'cast:dot']),
-    stBeat('hoot', 'No. Strings never change. Build a new one instead: "j" + note[1:] gives jello.', stScene(cast, beads('jello', [0])), ['b0']),
+    stBeat('hoot', 'No. Strings never change. Build a new one: "j" + note[1:] gives jello. note[1:] means from letter 1 to the end.', stScene(cast, beads('jello', [0])), ['b0']),
+    stBeat('hoot', 'A string also works in a loop. for letter in note visits each letter, one per lap.', stScene(cast, beads('hello', [1]), card(6)), ['b1'], 6),
+    stBeat('hoot', '"e" in note asks: is "e" somewhere inside note? The answer is True or False.', stScene(cast, beads('hello', [1]), card(5)), ['b1'], 5),
     stBeat('dot', 'Count it, read a letter, slice a piece, or build a new string. Like a list of letters!', stScene(cast, beads('jello')), ['cast:dot'])
   ];
 }
@@ -195,11 +198,12 @@ function st19Story() {
   const boxes = (r, c) => ({ boxes: [stVar('row', 'row', String(r), 400, 140, { w: 120 }), stVar('col', 'col', String(c), 400, 240, { w: 120 })] });
   return [
     stBeat('bolt', 'Task: tile the treehouse floor. 3 rows, 4 tiles in each row.', stScene(cast, grid(0, 0)), ['cast:bolt']),
-    stBeat('hoot', 'One loop counts the rows. Inside it, another loop counts the tiles in that row.', stScene(cast, grid(0, 1, 0, 0), boxes(0, 0)), ['row', 'col']),
-    stBeat('bolt', 'Row 0: tile, tile, tile, tile. The inner loop ran 4 times.', stScene(cast, grid(1, 0, 0, 3), boxes(0, 3)), ['col', 'g03']),
+    stBeat('hoot', 'row counts the rows. Inside it, col (short for column) counts the tiles across that row.', stScene(cast, grid(0, 1, 0, 0), boxes(0, 0)), ['row', 'col']),
+    stBeat('bolt', 'Row 0: line starts as empty text, and each inner lap adds one "*". After 4 laps, print shows ****.', stScene(cast, grid(1, 0, 0, 3), boxes(0, 3)), ['col', 'g03']),
     stBeat('hoot', 'Only now does the outer loop take its next lap. row becomes 1 and col starts again at 0.', stScene(cast, grid(1, 1, 1, 0), boxes(1, 0)), ['row', 'col']),
     stBeat('bolt', 'Row 1 done. Row 2 done. 3 rows times 4 tiles: 12 tiles.', stScene(cast, grid(3, 0, 2, 3), boxes(2, 3)), ['g23']),
     stBeat('dot', 'So the inner loop runs all its laps for every single lap of the outer one!', stScene(cast, grid(3, 0), boxes(2, 3)), ['cast:dot']),
+    stBeat('hoot', 'The inner loop can use the outer counter. With range(row), row 3 gets 3 stars, so the rows grow: *, **, ***.', stScene(cast, grid(3, 0), boxes(2, 3)), ['row', 'col']),
     stBeat('hoot', 'Give the counters clear names, like row and col, so you never mix up which is which.', stScene(cast, grid(3, 0), boxes(2, 3)), ['row', 'col'])
   ];
 }
@@ -209,5 +213,5 @@ START_LESSON('nested-loops', {
   tryit: { py: 'for row in range(3):\n    line = ""\n    for col in range(4):\n        line = line + "*"\n    print(line)\n', js: 'for (let row = 0; row < 3; row++) {\n  let line = "";\n  for (let col = 0; col < 4; col++) {\n    line = line + "*";\n  }\n  console.log(line);\n}\n',
     goals: ['Press Run.', 'Make the floor 5 rows by 2 tiles.', 'Make row number r get r + 1 stars, to draw a triangle.'] },
   check: { q: 'An outer loop runs 3 laps and the inner loop runs 4 laps each time. How many times does the inner body run in all?',
-    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is just one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
+    choices: [['7', false, 'The laps multiply, they do not add.'], ['4', false, 'That is one row.'], ['12', true, 'Right: 3 rows times 4 each.'], ['3', false, 'That is the number of rows.']] }
 });

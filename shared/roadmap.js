@@ -55,7 +55,7 @@ const ROADMAP_NODES = [
     lessons: [['functions', 'Functions are recipes'], ['return-print', 'return versus print']], covers: ['functions'] },
   { id: 's-dicts', lane: 'start', label: 'Dictionaries', col: 5, row: 1, name: 'Dictionaries', track: 'start', go: 'dicts',
     blurb: 'Find a value by its key, like a coat by its ticket. The everyday tool for counting things.',
-    lessons: [['dicts', 'Dictionaries are coat checks']], covers: ['dictionaries and sets'] },
+    lessons: [['dicts', 'Dictionaries find by key']], covers: ['dictionaries and sets'] },
   { id: 's-debugging', lane: 'start', label: 'Debugging', col: 6, row: 1, name: 'Debugging and your first game', track: 'start', go: 'debugging',
     blurb: 'Three questions find most bugs: what did I expect, what happened, and where did they split?',
     lessons: [['debugging', 'Your debugging toolkit'], ['guess-project', 'Project: guess the number']], covers: ['testing and debugging'] },

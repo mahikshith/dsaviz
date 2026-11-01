@@ -2,29 +2,29 @@
 
 // ---------- L20. Functions are recipes ----------
 const ST20_CODE = {
-  py: ['def feed(owlet):', '    print("Feeding", owlet)', '    print(owlet, "is full")', 'feed("Fluff")', 'feed("Tuft")'],
-  js: ['function feed(owlet) {', '  console.log("Feeding", owlet);', '  console.log(owlet, "is full"); }', 'feed("Fluff");', 'feed("Tuft");']
+  py: ['def feed(bird):', '    print("Feeding", bird)', '    print(bird, "is full")', 'feed("Wren")', 'feed("Finch")'],
+  js: ['function feed(bird) {', '  console.log("Feeding", bird);', '  console.log(bird, "is full"); }', 'feed("Wren");', 'feed("Finch");']
 };
 function st20Story() {
   const cast = st1Cast([['hoot', 60], ['dot', 580]]);
   const card = (cur) => st1Card('card', 30, 124, 360, ST20_CODE.py, cur);
-  const stack = (frames, owlet) => stScene(stPlates(frames, 420, 340, { w: 190 }), owlet ? { boxes: [stVar('owlet', 'owlet', owlet, 440, 130, { w: 150 })] } : null);
+  const bird = (v) => ({ boxes: [stVar('bird', 'bird', v, 440, 130, { w: 150 })] });
   return [
-    stBeat('hoot', 'Every evening I feed my owlets. The same two steps, owlet after owlet.', stScene(cast, { tokens: [{ id: 'o1', x: 220, y: 200, text: 'Fluff' }, { id: 'o2', x: 420, y: 200, text: 'Tuft' }] }), ['o1', 'o2']),
-    stBeat('dot', 'So you write the same lines again for every owlet?', stScene(cast, { cards: [{ id: 'rep', x: 120, y: 130, w: 400, lines: ['print("Feeding", "Fluff")', 'print("Fluff", "is full")', 'print("Feeding", "Tuft")', 'print("Tuft", "is full")'], cur: [] }] }), ['rep', 'cast:dot']),
-    stBeat('hoot', 'No. I write the steps once and give them a name. def feed(owlet): starts a recipe called feed.', stScene(cast, card([0, 1, 2])), ['card'], [0, 1, 2]),
-    stBeat('hoot', 'owlet is a parameter: an empty box that is filled each time the recipe is used.', stScene(cast, card([0]), stack(['main program'])), ['card'], 0),
-    stBeat('hoot', 'feed("Fluff") calls the recipe. A new plate goes on the stack, and owlet holds "Fluff".', stScene(cast, card([3]), stack(['main program', 'feed()'], '"Fluff"')), ['plate1', 'owlet'], 3),
-    stBeat('dot', 'When the steps are done, its plate comes off. Then feed("Tuft") runs them again with "Tuft".', stScene(cast, card([4]), stack(['main program', 'feed()'], '"Tuft"')), ['owlet', 'card'], 4),
-    stBeat('hoot', 'Define before you call. Python reads from the top, so the def must come before feed(...).', stScene(cast, card([0, 3])), ['card'], [0, 3]),
-    stBeat('dot', 'Write it once, call it as often as I like. That is a function!', stScene(cast, card([0, 1, 2, 3, 4]), stack(['main program'])), ['cast:dot'], [3, 4])
+    stBeat('hoot', 'Every evening someone feeds two baby birds. The same two steps, bird after bird.', stScene(cast, { tokens: [{ id: 'o1', x: 220, y: 200, text: 'Wren' }, { id: 'o2', x: 420, y: 200, text: 'Finch' }] }), ['o1', 'o2']),
+    stBeat('dot', 'So you write the same lines again for every bird?', stScene(cast, { cards: [{ id: 'rep', x: 120, y: 130, w: 400, lines: ['print("Feeding", "Wren")', 'print("Wren", "is full")', 'print("Feeding", "Finch")', 'print("Finch", "is full")'], cur: [] }] }), ['rep', 'cast:dot']),
+    stBeat('hoot', 'No. Write the steps once and name them: def feed(bird): starts a function, a named set of steps.', stScene(cast, card([0, 1, 2])), ['card'], [0, 1, 2]),
+    stBeat('hoot', 'bird is a parameter: an empty box that is filled each time the function is used.', stScene(cast, card([0])), ['card'], 0),
+    stBeat('hoot', 'feed("Wren") calls the function. The value "Wren" is the argument. It goes into bird.', stScene(cast, card([3]), bird('"Wren"')), ['bird'], 3),
+    stBeat('dot', 'So feed("Finch") runs the same two lines again, now with "Finch" in bird?', stScene(cast, card([4]), bird('"Finch"')), ['bird', 'card'], 4),
+    stBeat('hoot', 'Define before you call. Python reads from the top, so the def must come before feed("Wren").', stScene(cast, card([0, 3])), ['card'], [0, 3]),
+    stBeat('dot', 'Write it once, call it as often as I like. That is a function!', stScene(cast, card([0, 1, 2, 3, 4])), ['cast:dot'], [3, 4])
   ];
 }
 START_LESSON('functions', {
   code: ST20_CODE, story: st20Story(),
-  watch: { code: 'def feed(owlet):\n    print("Feeding", owlet)\n    print(owlet, "is full")\n\nfeed("Fluff")\nfeed("Tuft")\n' },
-  tryit: { py: 'def feed(owlet):\n    print("Feeding", owlet)\n    print(owlet, "is full")\n\nfeed("Fluff")\nfeed("Tuft")\n', js: 'function feed(owlet) {\n  console.log("Feeding", owlet);\n  console.log(owlet, "is full");\n}\n\nfeed("Fluff");\nfeed("Tuft");\n',
-    goals: ['Press Run.', 'Feed a third owlet called Wisp.', 'Give feed a second parameter, food, and print what each owlet eats.'] },
+  watch: { code: 'def feed(bird):\n    print("Feeding", bird)\n    print(bird, "is full")\n\nfeed("Wren")\nfeed("Finch")\n' },
+  tryit: { py: 'def feed(bird):\n    print("Feeding", bird)\n    print(bird, "is full")\n\nfeed("Wren")\nfeed("Finch")\n', js: 'function feed(bird) {\n  console.log("Feeding", bird);\n  console.log(bird, "is full");\n}\n\nfeed("Wren");\nfeed("Finch");\n',
+    goals: ['Press Run.', 'Feed a third bird called Lark.', 'Give feed a second parameter, food, and print what each bird eats.'] },
   check: { q: 'What is a parameter?',
     choices: [['The name of the function', false, 'The name comes right after def. Parameters go inside the brackets.'], ['A box the function fills with the value you pass in when you call it', true, 'Right. Each call can pass a different value.'], ['A line that runs first', false, 'Parameters are not lines of code.'], ['An error message', false, 'Parameters are how a function gets its ingredients.']] }
 });
@@ -40,12 +40,12 @@ function st21Story() {
   return [
     stBeat('dot', 'I asked the computer for the area of a 3 by 4 rug, and it shouted 12. But I needed the number back!', stScene(cast, { tokens: [{ id: 'shout', x: 320, y: 200, text: 'print: 12 !', c: 'c' }] }), ['shout', 'cast:dot']),
     stBeat('hoot', 'print only shouts a value at the screen. The program around it never gets to keep it.', stScene(cast, { tokens: [{ id: 'shout', x: 220, y: 190, text: 'print(w * h)' }, { id: 'screen', x: 460, y: 190, text: 'screen', c: 'm' }] }, { arrows: [{ id: 'a', from: [300, 190], to: [410, 190], c: 'm' }] }), ['shout', 'a']),
-    stBeat('hoot', 'return hands the value back, like a parcel, to the line that called the function.', stScene(cast, card([1]), { boxes: [stVar('parcel', 'returns', '12', 420, 150, { w: 160, tc: 'c' })] }), ['parcel'], 1),
+    stBeat('hoot', 'return hands the value back, like a parcel, to the line that called the function. That line is the caller.', stScene(cast, card([1]), { boxes: [stVar('parcel', 'returns', '12', 420, 150, { w: 160, tc: 'c' })] }), ['parcel'], 1),
     stBeat('bolt', 'size = area(3, 4). Parcel received: 12. Stored in size.', stScene(cast, card([2]), { boxes: [stVar('size', 'size', '12', 420, 150, { w: 160 })] }), ['size', 'cast:bolt'], 2),
     stBeat('hoot', 'Now the program can use it: size + 1 is 13. A shouted value could never be used like that.', stScene(cast, card([3]), { boxes: [stVar('size', 'size', '12', 420, 150, { w: 160 })] }, st1Screen(400, 250, 200, ['13'], 88)), ['screen'], 3),
     stBeat('dot', 'What does a function give back if it only prints?', stScene(cast, { tokens: [{ id: 'none', x: 320, y: 210, text: 'x = shout()  →  None' }] }), ['none', 'cast:dot']),
-    stBeat('hoot', 'Nothing: None in Python, undefined in JavaScript. That is the usual reason a test says "got nothing".', stScene(cast, { tokens: [{ id: 'none', x: 320, y: 210, text: 'None', c: 'c' }] }), ['none']),
-    stBeat('dot', 'print to show a person, return to hand a value to the program. Tests check the return!', stScene(cast, card([1, 2, 3])), ['cast:dot'], [1, 2, 3])
+    stBeat('hoot', 'It gives back None. None is the Python word for no value.', stScene(cast, { tokens: [{ id: 'none', x: 320, y: 210, text: 'None', c: 'c' }] }), ['none']),
+    stBeat('dot', 'So print is for people to read, and return hands the value to the program?', stScene(cast, card([1, 2, 3])), ['cast:dot'], [1, 2, 3])
   ];
 }
 START_LESSON('return-print', {
@@ -58,7 +58,7 @@ START_LESSON('return-print', {
   first: ['running-sum-of-1d-array', 'find-the-highest-altitude', 'fizz-buzz', 'length-of-last-word', 'number-of-good-pairs', 'missing-number']
 });
 
-// ---------- L22. Dictionaries are coat checks ----------
+// ---------- L22. Dictionaries find by key ----------
 const ST22_CODE = {
   py: ['counts = {}', 'counts["oak"] = 4', 'counts["pine"] = 2', 'print(counts["oak"])', 'print(counts.get("elm", 0))'],
   js: ['let counts = {};', 'counts["oak"] = 4;', 'counts["pine"] = 2;', 'console.log(counts["oak"]);', 'console.log(counts["elm"] ?? 0);']
@@ -69,12 +69,12 @@ function st22Story() {
     arrows: rows.map((r, i) => ({ id: 'a' + i, from: [276, 158 + i * 70], to: [354, 158 + i * 70], c: 'm' })) });
   return [
     stBeat('penny', 'I count acorns per tree: oak, pine, elm. A list of numbers would not say which tree is which.', stScene(cast, { tokens: [{ id: 't1', x: 200, y: 210, text: 'oak' }, { id: 't2', x: 320, y: 210, text: 'pine' }, { id: 't3', x: 440, y: 210, text: 'elm' }] }), ['cast:penny']),
-    stBeat('hoot', 'Use a dictionary, like a coat check. Hand in a key, and get its value back.', stScene(cast, pairs([['oak', 4], ['pine', 2]])), ['k0', 'v0', 'k1', 'v1']),
-    stBeat('hoot', 'counts["oak"] = 4 stores 4 under the key "oak". Keys are the tickets.', stScene(cast, pairs([['oak', 4]], 0)), ['k0', 'v0'], 1),
+    stBeat('hoot', 'Use a dictionary. It is like handing in a coat and getting a ticket. Hand in a key, get its value back.', stScene(cast, pairs([['oak', 4], ['pine', 2]])), ['k0', 'v0', 'k1', 'v1']),
+    stBeat('hoot', 'counts = {} makes an empty dictionary. counts["oak"] = 4 stores 4 under the key "oak". Keys are the tickets.', stScene(cast, pairs([['oak', 4]], 0)), ['k0', 'v0'], 1),
     stBeat('penny', 'counts["oak"] finds 4 straight away. No need to search every tree.', stScene(cast, pairs([['oak', 4], ['pine', 2]], 0)), ['v0'], 3),
     stBeat('dot', 'What about counts["elm"]? I never added elm.', stScene(cast, pairs([['oak', 4], ['pine', 2]]), { tokens: [{ id: 'bad', x: 320, y: 320, text: 'counts["elm"] → KeyError', c: 'bad' }] }), ['bad', 'cast:dot']),
-    stBeat('hoot', 'A missing key is a KeyError. Ask safely with .get("elm", 0), which gives 0 if elm is not there.', stScene(cast, pairs([['oak', 4], ['pine', 2]]), { tokens: [{ id: 'safe', x: 320, y: 320, text: 'counts.get("elm", 0) → 0', solid: true }] }), ['safe'], 4),
-    stBeat('penny', 'To count, add 1 to whatever is there: counts[t] = counts.get(t, 0) + 1.', stScene(cast, pairs([['oak', 5], ['pine', 2], ['elm', 1]], 2)), ['k2', 'v2']),
+    stBeat('hoot', 'A missing key is a KeyError. Ask safely with counts.get("elm", 0). It gives 0 if elm is not there.', stScene(cast, pairs([['oak', 4], ['pine', 2]]), { tokens: [{ id: 'safe', x: 320, y: 320, text: 'counts.get("elm", 0) → 0', solid: true }] }), ['safe'], 4),
+    stBeat('penny', 'To count a tree: take its old count (or 0), add 1, store it back. counts[tree] = counts.get(tree, 0) + 1.', stScene(cast, pairs([['oak', 5], ['pine', 2], ['elm', 1]], 2)), ['k2', 'v2']),
     stBeat('dot', 'Key in, value out, and get() when the key might be missing!', stScene(cast, pairs([['oak', 5], ['pine', 2], ['elm', 1]])), ['cast:dot'])
   ];
 }
@@ -83,7 +83,7 @@ START_LESSON('dicts', {
   watch: { code: 'counts = {}\nfor tree in ["oak", "pine", "oak"]:\n    counts[tree] = counts.get(tree, 0) + 1\nprint(counts)\n' },
   tryit: { py: 'counts = {}\nfor letter in "banana":\n    counts[letter] = counts.get(letter, 0) + 1\nprint(counts)\nprint(counts["a"])\n', js: 'let counts = {};\nfor (const letter of "banana") {\n  counts[letter] = (counts[letter] ?? 0) + 1;\n}\nconsole.log(counts);\nconsole.log(counts["a"]);\n', differs: true,
     goals: ['Press Run.', 'Count the letters of your own name.', 'Print how many times b appears.'] },
-  check: { q: 'What happens when you read a key that is not in the dictionary with [ ]?',
+  check: { q: 'What happens when you read a key that is not in the dictionary, using square brackets?',
     choices: [['You get 0', false, 'Only .get(key, 0) gives 0 for a missing key.'], ['Python stops with a KeyError', true, 'Right. Use .get() when the key might be missing.'], ['It adds the key', false, 'Reading does not add anything.'], ['You get the last value', false, 'There is no "last value" to fall back on.']] },
   first: ['two-sum', 'contains-duplicate', 'valid-anagram', 'first-unique-character-in-a-string', 'ransom-note', 'majority-element']
 });
@@ -95,17 +95,17 @@ const ST23_CODE = {
 };
 function st23Story() {
   const cast = st1Cast([['hoot', 60], ['dot', 580]]);
-  const qs = (lit) => ({ tokens: ['1. What did I expect?', '2. What happened?', '3. Where did they split?'].map((t, i) => ({ id: 'q' + i, x: 320, y: 150 + i * 56, text: t, w: 360, mono: false, solid: lit === i })) });
+  const qs = (lit) => ({ tokens: ['1. What did I expect?', '2. What happened?', '3. Where did it first differ?'].map((t, i) => ({ id: 'q' + i, x: 320, y: 150 + i * 56, text: t, w: 360, mono: false, solid: lit === i })) });
   const card = (cur) => st1Card('card', 40, 124, 560, ST23_CODE.py, cur);
   return [
-    stBeat('dot', 'My program should add 1 to 5 and print 15. It prints 10. I have stared at it for ages.', stScene(cast, card([])), ['cast:dot']),
+    stBeat('dot', 'My program should add 1 to 5 and print 15. It prints 10. I looked at it for a long time.', stScene(cast, card([])), ['cast:dot']),
     stBeat('hoot', 'Do not stare. Ask three questions, one at a time.', stScene(cast, qs(null)), ['q0', 'q1', 'q2']),
     stBeat('hoot', 'What did you expect? 15. What happened? 10. Write both down, so the gap is clear.', stScene(cast, qs(1)), ['q0', 'q1']),
-    stBeat('hoot', 'Where did they split? Look inside: a print in the loop shows each lap.', stScene(cast, card([3])), ['card'], 3),
+    stBeat('hoot', 'Where did it first differ? Look inside: a debug print in the loop shows each lap.', stScene(cast, card([3])), ['card'], 3),
     stBeat('dot', 'It prints i: 1, 2, 3, 4. It never reaches 5! range(1, 5) stops before 5.', stScene(cast, card([1]), { tokens: [{ id: 'lap', x: 320, y: 300, text: 'i: 4  total: 10' }] }), ['lap'], 1),
     stBeat('hoot', 'Change one thing, then run it again: range(1, 6). One change at a time, so you know what fixed it.', stScene(cast, card([1])), ['card'], 1),
     stBeat('hoot', 'If it is still unclear, shrink the example: try range(1, 2) and check one lap by hand.', stScene(cast, qs(2)), ['q2']),
-    stBeat('dot', 'Expect, observe, find the split, change one thing. Then take the debug print out.', stScene(cast, qs(null)), ['cast:dot'])
+    stBeat('dot', 'Expect, observe, find where it first differs, change one thing. Then take the debug print out.', stScene(cast, qs(null)), ['cast:dot'])
   ];
 }
 START_LESSON('debugging', {
@@ -129,8 +129,11 @@ function st24Story() {
     stBeat('hoot', 'I am thinking of a number from 1 to 10. Guess, and I will say higher or lower.', stScene(cast, line(1, 10)), ['cast:hoot']),
     stBeat('dot', 'Is it 5?', stScene(cast, line(1, 10, 5)), ['n5', 'cast:dot']),
     stBeat('hoot', 'Higher. So 1 to 5 are out. Each answer cuts the choices down.', stScene(cast, line(6, 10, 5)), ['n6', 'n7', 'n8', 'n9', 'n10']),
-    stBeat('dot', 'Is it 8? Lower. Then 7? Got it, in three guesses!', stScene(cast, line(7, 7, 7)), ['n7']),
-    stBeat('hoot', 'The game is a while loop: keep asking while the guess is not the secret.', stScene(cast, st1Card('card', 30, 124, 580, ST24_CODE.py.slice(2, 6), [0])), ['card'], 2),
+    stBeat('dot', 'Is it 8?', stScene(cast, line(6, 10, 8)), ['n8', 'cast:dot']),
+    stBeat('hoot', 'Lower. So the secret is 6 or 7.', stScene(cast, line(6, 7)), ['n6', 'n7']),
+    stBeat('dot', 'Then is it 7?', stScene(cast, line(7, 7, 7)), ['n7', 'cast:dot']),
+    stBeat('hoot', 'Yes! You found it in three guesses.', stScene(cast, line(7, 7, 7)), ['n7']),
+    stBeat('hoot', 'The game is a while loop: keep asking while the guess is not the secret. We start guess at 0, so the loop runs at least once.', stScene(cast, st1Card('card', 30, 124, 580, ST24_CODE.py.slice(2, 6), [0])), ['card'], 2),
     stBeat('hoot', 'Inside the loop: read a guess, then use if and elif to answer higher or lower.', stScene(cast, st1Card('card', 30, 124, 580, ST24_CODE.py.slice(2, 8), [1, 2, 4])), ['card'], [3, 4, 6]),
     stBeat('dot', 'And when the loop ends, the guess must be right, so I print You got it!', stScene(cast, line(7, 7, 7)), ['n7', 'cast:dot'])
   ];

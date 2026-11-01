@@ -164,7 +164,7 @@ function st5Story() {
     stBeat('dot', 'Does = mean "is equal" here, like in maths?', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
     stBeat('hoot', 'No. In Python, = means: put this value in that box.', stScene(cast, card([0]), box('12')), ['box', 'card'], 0),
     stBeat('hoot', 'print(acorns) looks in the box and shows 12. No quotes, so acorns is a name, not text.', stScene(cast, card([1]), box('12'), screen(['12'])), ['box', 'screen'], 1),
-    stBeat('penny', 'I just found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
+    stBeat('penny', 'I found 5 more acorns!', stScene(cast, card([1]), box('12'), screen(['12']), { tokens: [{ id: 'more', x: 596, y: 182, text: '+ 5', c: 'c' }] }), ['more', 'cast:penny']),
     stBeat('hoot', 'acorns = acorns + 5 works out the right side first: 12 + 5 is 17. Then 17 goes in the box.', stScene(cast, card([2]), box('17'), screen(['12'])), ['box', 'card'], 2),
     stBeat('hoot', 'The old 12 is gone. A box holds one value at a time.', stScene(cast, card([3]), box('17'), screen(['12', '17'])), ['box', 'screen'], 3),
     stBeat('dot', 'And a name needs a value before I use it. Otherwise Python says NameError.', stScene(cast, card([0, 1, 2, 3]), box('17'), screen(['12', '17'])), ['cast:dot'])
@@ -213,6 +213,6 @@ START_LESSON('types', {
   check: { q: 'What type is "True", written with quotes?',
     choices: [['True or False (a bool)', false, 'The quotes make it text, even though the word inside is True.'],
       ['Text (a string)', true, 'Right. Anything in quotes is text.'],
-      ['A whole number', false, 'There is no number here, just the word True in quotes.'],
+      ['A whole number', false, 'There is no number here, only the word True in quotes.'],
       ['It is an error', false, 'Text can hold any words, including True.']] }
 });

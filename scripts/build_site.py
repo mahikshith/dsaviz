@@ -67,7 +67,7 @@ def main():
     editor = read('build', 'editor.iife.js')
     out = '<!doctype html>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>DSAMaxxing</title>\n'
     out += pwa.HEAD
-    out += '<style>html,body{margin:0;overflow-x:hidden;background:#0A0A0B}</style>\n<div id="app"></div>\n'
+    out += '<style>html,body{margin:0;overflow-x:clip;background:#0A0A0B}</style>\n<div id="app"></div>\n'
     out += '<script>' + esc(react) + '</script>\n<script>' + esc(react_dom) + '</script>\n'
     out += '<script>\nwindow.DS_SITE_INDEX = ' + esc(site_index or '{"items": [], "counts": {}}') + ';\n</script>\n'
     out += '<script>\nwindow.DS_BOARDS = {};\n' + '\n'.join(boards) + '\n</script>\n'

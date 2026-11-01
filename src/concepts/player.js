@@ -122,7 +122,7 @@ class Component extends DCLogic {
         navPad: mobile ? '12px 16px' : '16px 14px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
         lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
         mainPad: mobile ? '16px 16px 0' : '16px 40px 0', h1: mobile ? 'var(--fs36)' : 'var(--fs56)', listPad: mobile ? '16px' : '24px', listCols: mobile ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))',
-        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'calc(100vh / var(--fit, 1) - ' + PLAY_STAGE_TOP + 'px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
+        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'clamp(220px, calc(100vh - 560px), 440px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
         nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '16px' : '24px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 18 : 22,
         asidePad: mobile ? '16px 16px 32px' : '24px 40px 48px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
       },
@@ -144,10 +144,10 @@ class Component extends DCLogic {
       say: st.say, sayKey: lesson.id + ':' + this.state.sayKey, stepNo: this.state.step + 1, stepCount: n,
       atFirst: this.state.step === 0, atLast: atEnd,
       dots: steps.map((s, i) => ({ label: 'Step ' + (i + 1) + ' of ' + n, cur: i === this.state.step ? 'step' : 'false', bg: i === this.state.step ? t.accent : i < this.state.step ? t.text2 : t.line2, go: () => { this.stop(); this.go(i); } })),
-      // Phones scroll the 720px picture sideways: start each lesson with its middle in view.
+      // Phones scroll the 720px picture sideways (the text in it would shrink under 14px if it were fitted): it opens at the left, where the content starts.
       canvasRef: (el) => {
         if (!el || !mobile || el.getAttribute('data-cs') === lesson.id) return;
-        try { el.setAttribute('data-cs', lesson.id); setTimeout(() => { el.scrollLeft = Math.max(0, (el.scrollWidth - el.clientWidth) / 2); }, 0); } catch (e) {}
+        try { el.setAttribute('data-cs', lesson.id); el.scrollLeft = 0; } catch (e) {}
       },
       readRef: (el) => {
         if (!el || mobile) return;

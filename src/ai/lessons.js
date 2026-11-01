@@ -1585,7 +1585,7 @@ function aiGraphs(p) {
     { id: id + 'v', pts: [[m.sx(x), m.sy(0)], [m.sx(x), m.sy(H(x))]], c: 't', w: 2, dash: true }];
   const fixed = aiBLine(m, 2, b, 'line', 'b', 4);
   const s = [];
-  s.push(aiStep('A graph shows two numbers at once. Here x is the day and y is the height of a plant in centimetres (cm).', ['xt', 'yt'], aiScene(chart)));
+  s.push(aiStep('A graph shows two numbers at once. Here x is the day and y is the height of a plant in centimetres (cm).', ['xt', 'yt', 'd2'], aiScene(chart, { points: [dot(2)] })));
   s.push(aiStep('One point is a pair of numbers, written (2, 7). Go across 2 days, then up 7 cm.', ['d2'], aiScene(chart, { points: [dot(2, 'a', { label: '(2, 7)', ly: -16 })], paths: guide(2, 'g2') })));
   s.push(aiStep('Measure the plant every day and you get a row of points. Each point is one reading.', all.map((q) => q.id), aiScene(chart, { points: all })));
   s.push(aiStep('To read the chart, pick a day and go up to its point. Then look across to the height. On day 4 the height is 11 cm.', ['d4'], aiScene(chart, { points: all.map((q) => (q.id === 'd4' ? Object.assign({}, q, { c: 't', label: '(4, 11)', ly: -16 }) : q)), paths: guide(4, 'g4') })));
@@ -1732,7 +1732,7 @@ function aiGradMap(p) {
     return { paths: [{ id: 'trail', pts: trail.length > 1 ? trail : [trail[0], trail[0]], c: 'a', w: 3 }], points: pts };
   };
   const s = [];
-  s.push(aiStep('A model has numbers it can change, like radio knobs. Here are two, a and b. They set one score, the loss. A high loss means more wrong.', ['ka', 'kb'], aiScene(frame)));
+  s.push(aiStep('A model has numbers it can change, like radio knobs. Here are two, a and b. They set one score, the loss. A high loss means more wrong.', ['ka', 'kb', 'P'], aiScene(frame, { points: [pt(P[0], P[1], 'P', 't')] })));
   s.push(aiStep('Look at the loss from straight above, like looking down into a bowl. Each ring joins points with the same loss. The centre is lowest.', ['rg2', 'cen'], map));
   s.push(aiStep('Say the knobs sit at a = 3 and b = 7. That point P has a loss of 18. We want to walk toward the centre.', ['P'], withP({ labels: [{ id: 'Pl', x: sx(3) + 14, y: sy(7) - 12, text: 'P: loss 18', c: 't', size: 15, weight: 700 }] })));
   s.push(aiStep('Nudge knob a right by 0.1, leaving b. The loss falls from 18 to 17.41, about 0.6, which is 6 times the nudge. The slope along a is −6.', ['arA', 'pn0'], withP({ arrows: [{ id: 'arA', from: { x: sx(3), y: sy(7) }, to: { x: sx(4.2), y: sy(7) }, c: 'a', w: 4 }] }, panel([['slope along a = −6', 'a', 16, 700], ['loss falls to the right', 'm', 14]]))));

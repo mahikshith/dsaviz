@@ -252,5 +252,59 @@
   document.addEventListener('mouseover', placeTip); document.addEventListener('focusin', placeTip);
   fit(); window.addEventListener('resize', fit); window.addEventListener('ds-text', fit); setInterval(paint, 400);
   try { new MutationObserver(fit).observe(document.getElementById('app'), { childList: true }); } catch (e) {}
+
+  // ---------- back to top (every page) ----------
+  // A round button at the bottom right. Hidden at the top; fades in once the learner is past one screen. It moves up out of the way of
+  // anything pinned to the bottom edge (the lesson step card, the phone Run bar, the pager and Lessons button) and hides while the
+  // search, the menu or a dialog is open. Colours come from the page's --sh-* variables (or its own colours on the older pages).
+  (function backToTop() {
+    const st = document.createElement('style');
+    st.textContent = '[data-totop]{position:fixed;right:16px;bottom:16px;width:44px;height:44px;box-sizing:border-box;padding:0;border-radius:50%;border:1px solid var(--tt-line,#34343C);background:var(--tt-surface,#151518);color:var(--tt-text,#F5F5F7);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:45;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s,border-color .15s,color .15s}' +
+      '[data-totop][data-on="true"]{opacity:1;visibility:visible;pointer-events:auto}' +
+      '[data-totop]:hover,[data-totop]:focus-visible{border-color:var(--tt-accent,#C5F04A);color:var(--tt-accent,#C5F04A)}' +
+      '[data-totop]:focus-visible{outline:2px solid var(--tt-accent,#C5F04A);outline-offset:2px}' +
+      '@media (prefers-reduced-motion:reduce){[data-totop]{transition:none}}';
+    document.head.appendChild(st);
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('data-totop', ''); b.setAttribute('aria-label', 'Back to top'); b.title = 'Back to top'; b.setAttribute('data-on', 'false');
+    b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg>';
+    const reduced = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+    b.addEventListener('click', () => {
+      try { window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+      const h = document.querySelector('#app h1') || document.querySelector('#app > div');
+      if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
+    });
+    document.body.appendChild(b);
+    const PINNED = '[data-code-bar],.sh-pic>.sh-panel,.sh-pager,.sh-side-btn';
+    const blocking = '[data-pn-panel],[data-drawer],[data-daily],[role="dialog"]';
+    let queued = 0;
+    const update = () => {
+      queued = 0;
+      const root = document.querySelector('#app > div');
+      const vw = window.innerWidth, vh = window.innerHeight, y = window.scrollY || 0;
+      if (root) {
+        const cs = getComputedStyle(root), v = (n) => cs.getPropertyValue(n).trim();
+        b.style.setProperty('--tt-surface', v('--sh-surface') || cs.backgroundColor);
+        b.style.setProperty('--tt-line', v('--sh-line') || 'rgba(127,127,127,.4)');
+        b.style.setProperty('--tt-text', v('--sh-text') || cs.color);
+        b.style.setProperty('--tt-accent', v('--sh-accent') || '#C5F04A');
+      }
+      const on = y > vh && !document.querySelector(blocking);
+      if (b.getAttribute('data-on') !== String(on)) b.setAttribute('data-on', String(on));
+      if (!on) return;
+      // Move above anything pinned to the bottom edge that sits where the button would be.
+      let bottom = 16;
+      for (let pass = 0; pass < 3; pass++) {
+        document.querySelectorAll(PINNED).forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (!r.width || !r.height || r.right < vw - 16 - 44 || r.left > vw - 16) return;
+          if (r.top < vh - bottom && r.bottom > vh - bottom - 44) bottom = Math.max(bottom, vh - r.top + 16);
+        });
+      }
+      b.style.bottom = bottom + 'px';
+    };
+    const queue = () => { if (!queued) queued = requestAnimationFrame(update); };
+    window.addEventListener('scroll', queue, { passive: true }); window.addEventListener('resize', queue); setInterval(update, 400);
+  })();
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));
 })();

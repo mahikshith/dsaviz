@@ -4,6 +4,37 @@
 // spec: { label: 'DSA concept lessons', parent: { page: 'Concepts.dc.html', label: 'DSA concepts' },
 //         sections: [{ title, items: [{ title, done, cur, href?, go? }] }], prev: item | null, next: item | null }
 // An item with an href is a link to another page (the runtime opens it); one with only go() changes the lesson in place.
+// The "On this page" rail (wide screens only, see .sh-rail in shell.html): lists the elements of the lesson page marked data-rail="Label"
+// (Steps, About, Key words, The math, Cheat sheet; only those that exist) and highlights the one being read. It fills a nav with no React
+// children of its own, so the list is plain DOM, rebuilt only when the set of sections changes.
+function lessonRail(el) {
+  try {
+    const main = document.querySelector('main.sh-lesson');
+    if (!el || !main) return;
+    const marks = [...main.querySelectorAll('[data-rail]')];
+    const sig = marks.map((m) => m.getAttribute('data-rail')).join('|');
+    if (el.__sig !== sig) {
+      el.__sig = sig; el.textContent = '';
+      if (marks.length >= 2) {
+        const h = document.createElement('div'); h.className = 'sh-label'; h.textContent = 'On this page'; el.appendChild(h);
+        marks.forEach((m, i) => {
+          const a = document.createElement('a'); a.href = '#' + i; a.textContent = m.getAttribute('data-rail'); a.setAttribute('data-i', i);
+          a.addEventListener('click', (ev) => { ev.preventDefault(); const t = main.querySelectorAll('[data-rail]')[i]; if (t) t.scrollIntoView({ behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); });
+          el.appendChild(a);
+        });
+      }
+    }
+    const mark = () => {
+      if (!document.contains(el)) { window.removeEventListener('scroll', el.__on); return; }
+      const all = [...document.querySelectorAll('main.sh-lesson [data-rail]')]; let at = 0;
+      all.forEach((m, i) => { if (m.getBoundingClientRect().top <= 120) at = i; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) at = all.length - 1;
+      el.querySelectorAll('a').forEach((a) => { if (Number(a.getAttribute('data-i')) === at) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    };
+    if (!el.__on) { let q = 0; el.__on = () => { if (!q) q = requestAnimationFrame(() => { q = 0; mark(); }); }; window.addEventListener('scroll', el.__on, { passive: true }); }
+    mark();
+  } catch (x) {}
+}
 function lessonFrame(cmp, spec) {
   const open = !!cmp.state.sideOpen;
   const link = (it) => {
@@ -35,6 +66,7 @@ function lessonFrame(cmp, spec) {
       },
       sections: spec.sections.map((sec) => ({ title: sec.title, items: sec.items.map(link) }))
     },
+    rail: { ref: lessonRail },
     back: lessonBack(spec.parent),
     prev: end(spec.prev), next: end(spec.next)
   };

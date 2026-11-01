@@ -219,7 +219,7 @@ def main():
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
     ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html'),
                                                       ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html'), ('ABOUT TAB', 'about.html'), ('WHY', 'why.html'),
-                                                      ('LESSON SIDE', 'lesson_side.html'), ('LESSON BACK', 'lesson_back.html'), ('LESSON PAGER', 'lesson_pager.html')]}
+                                                      ('LESSON SIDE', 'lesson_side.html'), ('LESSON BACK', 'lesson_back.html'), ('LESSON PAGER', 'lesson_pager.html'), ('LESSON RAIL', 'lesson_rail.html')]}
     # The problem page blocks: facts, approaches and their pane, placed after the code pane on the Code and Story pages.
     approach_js = [('// @@FACTS@@', '// @@END-FACTS@@', read('shared', 'facts.js')),
                    ('// @@APPROACHES@@', '// @@END-APPROACHES@@', read('shared', 'approaches.js')),

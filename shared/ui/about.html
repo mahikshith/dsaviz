@@ -1,6 +1,6 @@
 <!-- ABOUT TAB -->
 <sc-if value="{{ab.about}}" hint-placeholder-val="{{ true }}">
-<div data-about aria-label="About this lesson" style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<div data-about data-rail="About" aria-label="About this lesson" style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
 <h2>About this lesson</h2>
 <section class="sh-sec" aria-label="What it is">
 <h3>What it is</h3>
@@ -20,12 +20,12 @@
 <h3>How it works</h3>
 <ol><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
 </section>
-<section class="sh-sec" aria-label="Key words">
+<section class="sh-sec sh-wide" data-rail="Key words" aria-label="Key words">
 <h3>Key words</h3>
-<dl><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div><dt style="font-weight: 600">{{abw.term}}</dt><dd class="sh-muted">{{abw.mean}}</dd></div></sc-for></dl>
+<dl class="sh-words"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div><dt style="font-weight: 600">{{abw.term}}</dt><dd class="sh-muted">{{abw.mean}}</dd></div></sc-for></dl>
 </section>
 <sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
-<section class="sh-sec" aria-label="The math">
+<section class="sh-sec" data-rail="The math" aria-label="The math">
 <h3>The math</h3>
 <div class="ab-math sh-panel sh-scroll"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
 <h3>What each symbol means</h3>
@@ -44,7 +44,7 @@
 <h3>Common mistakes</h3>
 <ul><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
 </section>
-<section class="sh-sec" aria-label="Cheat sheet">
+<section class="sh-sec" data-rail="Cheat sheet" aria-label="Cheat sheet">
 <h3>Cheat sheet</h3>
 <ul><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
 </section>

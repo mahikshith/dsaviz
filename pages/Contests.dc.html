@@ -158,7 +158,7 @@ a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
 .sh-foot{padding:16px 24px;border-top:1px solid var(--sh-line);display:flex;flex-wrap:wrap;align-items:center;gap:16px;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1))}
 .sh-foot button{border:0;padding:0;background:transparent;color:inherit;font:inherit;cursor:pointer}
 /* Lesson pages: sidebar list, Back link, picture, sections, controls, Previous and Next. */
-.sh-lesson{max-width:1168px;gap:24px}
+.sh-lesson{max-width:1168px;gap:16px}
 .sh-lesson>*{min-width:0}
 .sh-lesson h1{max-width:72ch}
 .sh-side-btn{display:none;width:100%;min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:600;cursor:pointer;align-items:center;justify-content:space-between}
@@ -173,7 +173,7 @@ a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
 .sh-side a:not([aria-current="page"]) .sh-tick{color:var(--sh-accent)}
 .sh-back{display:inline-flex;align-items:center;min-height:40px}
 .sh-back:hover{color:var(--sh-text)}
-.sh-sec{display:flex;flex-direction:column;gap:12px;max-width:72ch}
+.sh-sec{display:flex;flex-direction:column;gap:8px;max-width:72ch}
 .sh-sec>h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
 .sh-sec ul,.sh-sec ol{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:8px}
 .sh-sec dl{margin:0;display:flex;flex-direction:column;gap:12px}
@@ -197,7 +197,28 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .sh-split{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px}
 .sh-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
 .sh-story{display:grid;grid-template-columns:minmax(0,var(--stage-max)) minmax(0,1fr);gap:24px}
-@media (max-width:1279px){.sh-split,.sh-two,.sh-story{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1439px){.sh-split,.sh-two,.sh-story{grid-template-columns:minmax(0,1fr)}}
+[data-rail]{scroll-margin-top:72px}
+.sh-rail{display:none}
+.sh-sec dl.sh-words{display:grid;grid-template-columns:minmax(0,1fr);gap:12px 24px}
+.sh-sec.sh-wide{max-width:900px}
+@media (min-width:1024px){.sh-sec dl.sh-words{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1280px){
+.sh-layout:has(.sh-rail:not(:empty)){grid-template-columns:240px minmax(0,1fr) 200px}
+.sh-rail:not(:empty){display:flex;flex-direction:column;gap:4px;position:sticky;top:52px;align-self:start;padding:24px 16px 16px 0}
+.sh-rail a{display:block;padding:4px 12px;border-left:2px solid var(--sh-line);color:var(--sh-muted);font-size:calc(16px * var(--ts, 1));line-height:1.4}
+.sh-rail a:hover{color:var(--sh-text)}
+.sh-rail a[aria-current]{border-left-color:var(--sh-accent);color:var(--sh-text);font-weight:600}
+.sh-rail .sh-label{padding:0 12px 4px}
+}
+/* The shared code pane inside a lesson: the plan's one radius. */
+[data-shell] [data-st-pane] :where(button,div,span,section,pre,textarea,input){border-radius:6px!important}
+/* The step card of a player stays on screen: Play and Next are never below the fold (it pins to the bottom of the screen while its picture is in view). */
+.sh-pic>.sh-panel{position:sticky;bottom:0;z-index:5}
+@media (max-width:759px){.sh-tabrow{flex-wrap:nowrap!important;overflow-x:auto;max-width:100%}.sh-tabrow>*{flex-shrink:0}}
+/* Maths in About: MathML shrinks scripts and limits to about 13px; here they stop at 14px and everything else is body size. */
+[data-shell] math,[data-shell] math *{font-size:calc(18px * var(--ts, 1))!important;math-depth:0!important}
+[data-shell] math :is(msup,msub,msubsup,munder,mover,munderover)>:not(:first-child){font-size:calc(14px * var(--ts, 1))!important}
 [data-shell] a:focus-visible,[data-shell] button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:2px}
 @media (max-width:1023px){.sh-layout{grid-template-columns:minmax(0,1fr)}.sh-side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--sh-line);padding:8px 16px}.sh-side-btn{display:flex}.sh-side-list[data-open="false"]{display:none}.sh-side-list[data-open="true"]{padding-top:8px}}
 @media (max-width:639px){.sh-main{padding:16px}.sh-foot{padding:16px}}
@@ -1679,7 +1700,7 @@ function dailyVals(cmp, t) {
   };
 }
 // The Back link names the page it returns to. The runtime keeps the trail (scripts/site-runtime.js).
-const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
+const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'DSA concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
 const BACK_PAGES = ['Code', 'Story', 'Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
@@ -1689,19 +1710,20 @@ function navBack(page) {
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   return { show: !!to, label: BACK_LABELS[name] || 'Back', aria: 'Back to ' + (BACK_LABELS[name] || 'the last page'), go: () => { try { window.__dsBack(); } catch (e) {} } };
 }
-// The Back link at the top of a lesson page: "Back to <the page the learner came from>". The trail (window.__dsTrail)
-// holds that page; with no trail (a bookmark, a reload) it goes to the lesson's own track page instead.
-// parent: { page: 'Concepts.dc.html', label: 'DSA concepts' }.
+// The Back link at the top of a lesson page: "Back to <a real list page>". The trail (window.__dsTrail) is used only when the
+// learner came from a list page (LIST_BACK below); from another lesson, the front page or anywhere else it goes to the lesson's
+// own track page instead (Previous and Next move between lessons). parent: { page: 'Concepts.dc.html', label: 'DSA concepts' }.
+const LIST_BACK = { Patterns: 'Roadmap', Sheet: 'Problems', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML', Complexity: 'Complexity', Snapshot: 'Quick Bytes', Glossary: 'Glossary', Profile: 'Profile' };
 function lessonBack(parent) {
   let to = null;
   try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
-  const label = to ? (BACK_LABELS[name] || 'the last page') : parent.label;
+  const use = !!(to && LIST_BACK[name]);
   return {
-    label: 'Back to ' + label, href: '#back',
+    label: 'Back to ' + (use ? LIST_BACK[name] : parent.label), href: '#back',
     go: (e) => {
       try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {}
-      try { if (to) window.__dsBack(); else window.__dsNav(parent.page); } catch (x) {}
+      try { if (use) window.__dsBack(); else window.__dsNav(parent.page, '', true); } catch (x) {}
     }
   };
 }

@@ -91,7 +91,7 @@ function canCopyImage() { try { return !!(navigator.clipboard && navigator.clipb
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, month: 0, nudged: [], del: 0, share: null, shareMsg: '' };
+    this.state = { theme: loadTheme(), prefs: loadPrefs(), savedAt: false, cert: Math.max(0, certRows().findIndex((c) => c.when)), day: null, month: 0, nudged: [], del: 0, share: null, shareMsg: '', tab: 'progress', foldRemind: false, foldBuddy: false, foldPlan: false };
     // Medals earned since the last visit shine once; then they are marked seen.
     const medals = DS.medals(PROBLEMS, PATTERNS);
     this.fresh = {};
@@ -217,7 +217,11 @@ class Component extends DCLogic {
         cta: me.name ? 'Change my goals' : 'Set your name and goals'
       },
       chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
-      pageH: 2080 + (this.state.share ? 392 : 0),
+      tabs: [['progress', 'Progress'], ['medals', 'Medals and certificates'], ['settings', 'Settings']].map(([k, label]) => ({ label, on: this.state.tab === k, line: this.state.tab === k ? t.accent : 'transparent', fg: this.state.tab === k ? t.text : t.muted, pick: () => this.setState({ tab: k }) })),
+      isProgress: this.state.tab === 'progress', isMedals: this.state.tab === 'medals', isSettings: this.state.tab === 'settings',
+      foldRemind: !!this.state.foldRemind, chevR: this.state.foldRemind ? 'rotate(180deg)' : 'rotate(0deg)', toggleRemind: () => this.setState({ foldRemind: !this.state.foldRemind }),
+      foldBuddy: !!this.state.foldBuddy, chevB: this.state.foldBuddy ? 'rotate(180deg)' : 'rotate(0deg)', toggleBuddy: () => this.setState({ foldBuddy: !this.state.foldBuddy }),
+      foldPlan: !!this.state.foldPlan, chevL: this.state.foldPlan ? 'rotate(180deg)' : 'rotate(0deg)', togglePlan: () => this.setState({ foldPlan: !this.state.foldPlan }),
       shareProfile: () => this.shareProgress(),
       shareOpen: !!this.state.share, shareUrl: this.state.share ? this.state.share.url : '', shareAlt: this.state.share ? this.state.share.alt : '',
       shareMsg: this.state.shareMsg, canCopy: canCopyImage(),
@@ -270,11 +274,11 @@ class Component extends DCLogic {
         help: earned ? 'Recruiters can check the ID. It lists the stories you walked and your exam score.' : 'Certificates list exactly what you practised, so they mean something on a CV.'
       },
       savedNote: this.state.savedAt ? 'Saved ✓' : '',
-      prefGroups: PREF_GROUPS.map(([key, title, sub, opts]) => ({
+      prefGroups: PREF_GROUPS.filter(([key]) => key === 'goal' || key === 'lang').map(([key, title, sub, opts]) => ({
         title, sub,
         opts: opts.map(([v, label]) => {
           const on = prefs[key] === v;
-          return { label, on, bg: on ? t.text : 'transparent', fg: on ? t.bg : t.text, border: on ? t.text : t.line2, pick: () => this.setPref(key, v) };
+          return { label, on, bg: on ? t.text : t.sunk, fg: on ? t.bg : t.text, border: on ? t.text : t.line2, pick: () => this.setPref(key, v) };
         })
       })),
       buddies: buddyData.list.map((bd, i) => {

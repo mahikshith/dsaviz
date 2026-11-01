@@ -24,7 +24,7 @@
 
 ## Stories (2026-11-01)
 
-Plain-English pass, then a beginner review of all 44 scene stories: 1 passed unchanged (climbing-stairs), 43 fixed. Per-story logs: workspace notes/story-review-a.md and story-review-b.md. Left: the "your own input" run text, and quiz feedback that still uses O(n²) unexplained in some stories.
+Plain-English pass, then a beginner review of all 47 animated stories (the site count, SCENE_ORDER). climbing-stairs is the only one logged as passing unchanged in the first round; all 47 had a scripted readability pass in the second, and their "your own input" text and quiz notation are done too. The other 15 of the 62 catalog problems have a text summary only, no story. Per-story logs and the id-by-id reconciliation: workspace notes/story-review-a.md, -b.md, -c.md. Left: story roles such as "the ripple" appear in story statements; changing that needs a cast redesign.
 
 ## Not finished
 
@@ -32,9 +32,8 @@ Plain-English pass, then a beginner review of all 44 scene stories: 1 passed unc
 
 ## Remaining queue, in order
 
-1. Start here review fixes for lessons 13–50 (see above).
-2. Stories: plain-English rewrite, then a beginner review and its fixes.
-3. Guided animated tour of the pages.
+1. Complexity reference page (research, page, links).
+2. Guided animated tour of the pages.
 4. Start here Levels 4–5.
 5. AI & ML batch 4 (~20 lessons) and the unsupervised batch (~10).
 6. Problems 562 → 800 through the registry.

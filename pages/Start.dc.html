@@ -351,7 +351,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{fl.isRow}}" hint-placeholder-val="{{ true }}"><li style="list-style: none">
 <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat({{fl.cols}}, minmax(0, 1fr)); gap: 24px">
 <sc-for list="{{fl.cells}}" as="cl" hint-placeholder-count="4">
-<li data-path-node data-state="{{cl.state}}" class="ds-hit" style="position: relative; grid-column: {{cl.col}}; box-sizing: border-box; border-radius: 16px; background: {{t.surface}}; box-shadow: {{cl.shadow}}">
+<li data-path-node data-state="{{cl.state}}" class="ds-hit" style="position: relative; grid-row: 1; grid-column: {{cl.col}}; box-sizing: border-box; border-radius: 16px; background: {{t.surface}}; box-shadow: {{cl.shadow}}">
 <button data-m="keep" onClick="{{cl.pick}}" aria-expanded="{{cl.open}}" style="width: 100%; min-height: 80px; box-sizing: border-box; padding: 16px; border: 0; border-radius: 16px; background: transparent; color: {{t.text}}; cursor: pointer; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left">
 <span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 24px; background: {{cl.dotBg}}; color: {{cl.dotFg}}; border: 2px {{cl.ringStyle}} {{cl.ring}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs18); font-weight: 800">{{cl.mark}}</span>
 <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: var(--fs18); line-height: 24px; font-weight: 600">{{cl.title}}</span><span style="font-size: var(--fs15); line-height: 20px; font-weight: 500; color: {{cl.subFg}}">{{cl.sub}}</span></span>

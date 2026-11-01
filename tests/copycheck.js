@@ -119,6 +119,13 @@ fs.readdirSync(pagesDir).filter((f) => f.endsWith('.dc.html')).forEach((f) => {
   ids.filter((id, i) => ids.indexOf(id) !== i).forEach((id) => fail(f, 'duplicate tip id ' + id));
 });
 
+// Prices stay off the site until pricing is decided.
+{
+  const built = fs.readFileSync(path.join(__dirname, '..', 'dist', 'index.html'), 'utf8');
+  if (/₹|\u20b9/.test(built)) fail('dist/index.html', 'a rupee sign: prices stay hidden until pricing is decided');
+  if (/free trial/i.test(built)) fail('dist/index.html', '"free trial": say "Free while in early access"');
+}
+
 console.log('copy: ' + scanned + ' files scanned');
 console.log(problems ? problems + ' copy problem(s)' : 'copy clean');
 if (problems) process.exitCode = 1;

@@ -572,32 +572,17 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </details>
 <details id="trial" style="border-radius: 16px; background: {{t.surface}}">
 <summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
-<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Early access and questions</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Plans come later, with a 3-day free trial. Six short answers.</span></span>
+<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Early access and questions</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Free while in early access. Six short answers.</span></span>
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
 </summary>
 <div style="padding: 8px 24px 32px; display: flex; flex-direction: column; gap: 32px">
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 32px">
 <div style="display: flex; flex-direction: column; gap: 18px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">Free in early access.<br>Plans come later.</h2>
-<p style="margin: 0; font-size: var(--fs20); color: {{t.text2}}; line-height: 1.55">Everything is open now, with no account, no card and no trial clock. Your progress is saved in this browser. When accounts launch, each plan will start with a 3-day free trial, at the prices below.</p>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">Free while in early access.</h2>
+<p style="margin: 0; font-size: var(--fs20); color: {{t.text2}}; line-height: 1.55">Everything is open now, with no account and no card. Your progress is saved in this browser.</p>
 <a href="Auth.dc.html" style="align-self: flex-start; height: 52px; padding: 0 26px; display: flex; align-items: center; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs18); font-weight: 600">Make a free profile</a>
 </div>
-<div style="display: flex; flex-direction: column; gap: 0">
-<span style="padding-bottom: 8px; font-size: var(--fs16); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">How the trial will work</span>
-<div style="display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid {{t.line}}"><span style="width: 72px; flex-shrink: 0; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700; color: {{t.accent}}">Day 1</span><span style="font-size: var(--fs18); line-height: 1.5">Pick where you start and play your first story. Every lesson and language is open.</span></div>
-<div style="display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid {{t.line}}"><span style="width: 72px; flex-shrink: 0; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700; color: {{t.accent}}">Day 2</span><span style="font-size: var(--fs18); line-height: 1.5">Finish a pattern and try a timed run against the typical solve time.</span></div>
-<div style="display: flex; gap: 20px; padding: 20px 0"><span style="width: 72px; flex-shrink: 0; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 700; color: {{t.accent}}">Day 3</span><span style="font-size: var(--fs18); line-height: 1.5">We remind you before the trial ends. Your progress stays either way.</span></div>
-</div>
-<div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px">
-<sc-for list="{{plans}}" as="pl" hint-placeholder-count="3">
-<div style="position: relative; padding: 26px; border-radius: 22px; background: {{t.surface}}; border: 2px solid {{pl.border}}; display: flex; flex-direction: column; gap: 10px">
-<span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{pl.kickColor}}">{{pl.kick}}</span>
-<span style="display: flex; align-items: baseline; gap: 6px"><span style="font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600">{{pl.price}}</span><span style="font-size: var(--fs18); color: {{t.muted}}">{{pl.per}}</span></span>
-<span style="font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; flex-grow: 1">{{pl.line}}</span>
-<a href="Auth.dc.html" aria-label="{{pl.aria}}" style="height: 48px; border-radius: 999px; background: {{pl.btnBg}}; color: {{pl.btnFg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs18); font-weight: 700">{{pl.cta}}</a>
-</div>
-</sc-for>
-</div>
+
 </div>
 <div id="faq" style="display: flex; flex-direction: column; gap: 16px">
 <h3 style="margin: 0; font-size: var(--fs20); line-height: 28px; font-weight: 600">Questions, answered</h3>
@@ -2219,7 +2204,7 @@ const FAQS = [
   ['I\u2019ve never written code. Is this for me?', 'Yes. Start with Language basics, then the Strings stage. Every story explains the idea with characters and pictures before you see a line of code.'],
   ['How is this different from a plain problem bank?', 'A problem bank gives you reps. DSAMaxxing makes the idea click, then gives you the reps here too: every sheet problem has its own page with tests. We teach the pattern behind each problem as a story you can step through, so you recognise it the next time it shows up in a new costume.'],
   ['Which languages do you support?', 'Stories show the code in Python, Java, C++, JavaScript and Go, and you can switch at any step. Your own code runs in the browser in Python and JavaScript. Java, C++ and Go are edit-only for now.'],
-  ['Is it free?', 'Yes, while we are in early access. Every story, lesson and language is open, with no account and no card. When accounts launch, plans will start with a 3-day free trial: \u20b9299 a month, \u20b91,999 a year, or \u20b9149 a month for students with a college email.'],
+  ['Is it free?', 'Yes. It is free while in early access. Every story, lesson and language is open, with no account and no card.'],
   ['Where is my progress saved?', 'In this browser. Streaks, XP, sheet ticks and medals are counted from what you do here, and nothing is sent anywhere. The Sheet page can export your ticks to a file. Leagues and buddies are demo data until accounts launch.'],
   ['Who makes DSAMaxxing?', 'One developer in India who struggled with DSA for years and built the tool they wished they\u2019d had. Read the full story on our About page.']
 ];
@@ -2288,11 +2273,6 @@ class Component extends DCLogic {
       faqs: FAQS.map(([q, a], i) => ({ q, a, open: this.state.faq === i, rot: this.state.faq === i ? 'rotate(45deg)' : 'none', toggle: () => this.setState({ faq: this.state.faq === i ? -1 : i }) })),
       toPlans: () => { try { window.localStorage.setItem('dsaviz-interview-tab', 'plans'); } catch (e) {} },
       toFine: () => { try { window.localStorage.setItem('dsaviz-about-jump', 'fine'); } catch (e) {} },
-      plans: [
-        ['Monthly · planned', '₹299', '/ month', 'Every story, lesson and language. Cancel any time.', 'Start free today', false],
-        ['Yearly · planned', '₹1,999', '/ year', 'About ₹167 a month. Covers a whole placement season and the interview loop after it.', 'Start free today', true],
-        ['Students · planned', '₹149', '/ month', 'Half price with a college email address, for as long as you’re enrolled.', 'Start free today', false]
-      ].map(([kick, price, per, line, cta, hot]) => ({ kick, price, per, line, cta, aria: cta + ': ' + kick + ' plan, free during early access', border: hot ? t.accent : t.line, kickColor: hot ? t.accent : t.muted, btnBg: hot ? t.accent : t.sunk, btnFg: hot ? t.onAccent : t.text })),
       sticks: STICKS.map(([tag, title, line, href, id]) => ({ tag, title, line, href, go: () => { if (id) saveProblem(id); } })),
       toResources: () => { try { window.localStorage.setItem('dsaviz-interview-tab', 'resources'); } catch (e) {} },
       hero: {

@@ -931,7 +931,7 @@ const SD_ABOUT_HLD = {
         'That volume is easy. Correctness is the hard part.',
         'Each payment writes 2 rows of 200 bytes.',
         'Ledger growth: 10,000,000 × 2 × 200 B = 4 GB a day.',
-        'A ₹900 sale writes -900 on the shopper side and +900 on the shop side. The sum is 0.'
+        'A Rs 900 sale writes -900 on the shopper side and +900 on the shop side. The sum is 0.'
       ]
     },
     steps: [

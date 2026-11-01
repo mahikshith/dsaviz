@@ -51,6 +51,6 @@ class Component extends DCLogic {
       resume: { text: (doneAll > 0 ? 'Continue: ' : 'Start with: ') + nextL.title, pick: nextL.go },
       tracks: trk.map((x, k) => ({ ...x, open: k === openIdx, lessons: k === openIdx ? x.lessons : [], chev: k === openIdx ? 'rotate(180deg)' : 'rotate(0deg)',
         toggle: () => this.setState({ open: k === openIdx ? -2 : k }) }))
-    }, navVals(this, t, themeKey, 'Concepts'));
+    }, { why: whyVals(whyHub('concepts')) }, navVals(this, t, themeKey, 'Concepts'));
   }
 }

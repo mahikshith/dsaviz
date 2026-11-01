@@ -699,7 +699,7 @@ class Component extends DCLogic {
       }) : [],
       solOpen: this.state.solOpen, solX: this.state.solOpen ? 'true' : 'false',
       solLabel: this.state.solOpen ? 'Hide solution' : 'Show solution', toggleSol: () => this.setState({ solOpen: !this.state.solOpen }),
-      diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2], patternName: S.pattern,
+      diffBg: t.diff[P.diff][1], diffFg: t.diff[P.diff][2], patternName: S.pattern, why: whyVals(whyPattern(S.pattern)),
       clock: cr.clock, clockLabel: cr.clockLabel,
       // the problem
       task: STORY_TASKS[S.id] || S.quest.join(' '),

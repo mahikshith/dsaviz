@@ -343,7 +343,7 @@ function roadsScene() {
     clues: ['a tree plus one extra edge', 'the edge that closes a loop', 'the answer is the last such edge in the list'],
     kit: { right: 2, spot: 'Why heads, not a fresh search per road?', ask: 'How should the checker find the extra road?',
       quiz: [['Search the map for every road', 'Before each road, walk the map to see if its towns already meet'], ['Count roads per town', 'A town with three roads must be on the loop'], ['Keep groups with a head each', 'Two towns are joined when they report to the same head'], ['Drop the longest road', 'The extra road is the one that looks out of place']] },
-    quizFb: ['“That works, but each walk costs O(n), so all of them cost O(n²).”', '“A town can have many roads without being on a loop. Counting can’t tell.”', '“Yes! Same head means already joined, so that road closes a loop.”', '“Roads have no length here. Only how they join the towns matters.”']
+    quizFb: ['“That works, but each walk costs O(n): the work grows in step with n, the number of towns. All the walks together cost O(n²). The work grows with the square of n, so doubling the towns makes it about 4 times slower.”', '“A town can have many roads without being on a loop. Counting can’t tell.”', '“Yes! Same head means already joined, so that road closes a loop.”', '“Roads have no length here. Only how they join the towns matters.”']
   }, run.over, { steps: run.steps });
 }
 // a tree on n towns plus one extra road, shuffled
@@ -407,7 +407,7 @@ function delayBuild(v) {
       steps.push(runStep('stale', snap({ u, t }), [say('checker', 'Town ' + u + ' at time ' + t + '? I already settled it at ' + best[u] + '.'), say('narr', 'An old note. Cross it off.')],
         'This note says town ' + u + ' at time ' + t + ', but the checker already reached it at time ' + best[u] + '. It is an old note, so the checker skips it.',
         'u = ' + u + ' is in done → continue.',
-        'Instead of changing a time inside the heap, the method adds a new note and skips old ones later. Each road adds at most one note.'));
+        'The method does not change a time inside the heap. It adds a new note and skips old ones later. Each road adds at most one note.'));
       continue;
     }
     done.add(u); cur = u;
@@ -444,7 +444,7 @@ function delayBuild(v) {
     steps.push(runStep('done', snap({ u: '—', t: '—', done: true }), [say('checker', 'My list is empty. Every town got the message.'), say('narr', 'The last one was town ' + lateTown + ', at time ' + last + '. That is the answer.')],
       'Every town got the message. The last one was town ' + lateTown + ', at time ' + last + ', so the answer is ' + last + '.',
       'All ' + n + ' towns settled → return max(best) = ' + last + '.',
-      'Each road is relaxed once and each note is pushed and popped once: O(E log E) time with a heap, O(V + E) space. E is the number of roads and V is the number of towns.'));
+      'Each road is relaxed once and each note is pushed and popped once. That is O(E log E) time with a heap, and O(V + E) space. E is the number of roads and V is the number of towns.'));
   } else {
     const st = snap({ u: '—', t: '—', done: true });
     missing.forEach((id) => { st.nodes[id] = 'hit'; });

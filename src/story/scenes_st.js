@@ -76,7 +76,7 @@ function platesScene() {
     example: ['s = "([{}])()"', 'answer = True'],
     hints: ['“Which opener should a closer be matched with? The first one you saw, or the latest one still open?”', '“The latest one still open sounds like the top of a pile of plates.”', '“Opener: put a plate on. Closer: the top plate must match, then lift it off. An empty pile at the end means True.”'],
     clues: ['brackets must nest', 'the latest open one closes first', 'one pass through the slip'],
-    quizFb: ['“Matching every bracket against every other is O(n²), and it still can’t tell “([)]” from “([])”.”', '“Yes! The newest open bracket must close first, and that is the top of the stack’s pile.”', '“From both ends works for “(())”, but “()()” has its partners side by side, not mirrored.”', '“Counting opens and closes misses the order. “)(” has one of each and is still wrong.”'],
+    quizFb: ['“Matching every bracket against every other is O(n²): the work grows with the square of n, the number of brackets. Doubling n makes it about 4 times slower. It still can’t tell “([)]” from “([])”.”', '“Yes! The newest open bracket must close first, and that is the top of the stack’s pile.”', '“From both ends works for “(())”, but “()()” has its partners side by side, not mirrored.”', '“Counting opens and closes misses the order. “)(” has one of each and is still wrong.”'],
     steps
   };
 }
@@ -93,7 +93,7 @@ function weatherScene() {
   const snap = (o) => Object.assign({ board: pileRows(o.fresh), pileText: pileText(), size: pile.length, answer: answer.slice(), answered: answered.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1, j: -1,
     dialog: [say('narr', 'Seven days of weather: 73, 70, 68, 71, 69, 75, 72. For each day, how long until a warmer one?'), say('stack', 'Each day waits on my pile until a warmer day shows up.'), say('narr', 'And when one does?'), say('stack', 'Every colder day on top gets its answer and comes off.')],
-    nar: { kid: 'The stack writes each day on a plate and puts it on the pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n makes n zeros, and pile = [] is the pile. For each day i: while the top day is colder than today, pop it (lift it off) and set answer[top] = i − top. That is how long it waited. Then push i (put today on).', expert: 'The pile keeps days with falling temperatures from bottom to top. Each plate is at least as warm (≥) as the one above it. Each day goes on once and comes off at most once. So the pass takes O(n) steps for n days.' } }));
+    nar: { kid: 'The stack writes each day on a plate and puts it on the pile. When a warmer day comes, the colder days on top finally know how long they waited.', builder: 'answer = [0] * n makes n zeros, and pile = [] is the pile. For each day i: while the top day is colder than today, pop it (lift it off). Then set answer[top] = i − top. That is how long it waited. Then push i (put today on).', expert: 'The pile keeps days with falling temperatures from bottom to top. Each plate is at least as warm (≥) as the one above it. Each day goes on once and comes off at most once. So the pass takes O(n) steps for n days.' } }));
   for (let i = 0; i < temps.length; i++) {
     while (pile.length && temps[pile[pile.length - 1]] < temps[i]) {
       const j = pile.pop();
@@ -148,7 +148,7 @@ function weatherScene() {
     example: ['temps = [73, 70, 68, 71, 69, 75, 72]', 'answer = [5, 2, 1, 2, 1, 0, 0]'],
     hints: ['“A day can’t know its answer until a warmer day arrives. Where should it wait?”', '“When a warm day comes, which waiting days does it answer? The newest ones, from the top down, while they are colder.”', '“Lift plates off while the top is colder, and write i − top (today’s number minus that day’s number). Then put today on. Whatever is left at the end gets 0.”'],
     clues: ['the next warmer day, for every day', 'days wait until they are answered', 'the newest waiting day is answered first'],
-    quizFb: ['“Scanning ahead from every day is O(n²). A whole cold month makes that slow.”', '“Yes! Waiting days sit on the pile, and a warm day clears colder ones from the top.”', '“Two friends from both ends compare far-apart days. Each day needs its nearest warmer day to the right.”', '“A running count says how many days passed, but not which day is still waiting. The pile remembers that.”'],
+    quizFb: ['“Scanning ahead from every day is O(n²): the work grows with the square of n, the number of days. Doubling the days makes it about 4 times slower. A whole cold month makes that slow.”', '“Yes! Waiting days sit on the pile, and a warm day clears colder ones from the top.”', '“Two friends from both ends compare far-apart days. Each day needs its nearest warmer day to the right.”', '“A running count says how many days passed, but not which day is still waiting. The pile remembers that.”'],
     steps
   };
 }

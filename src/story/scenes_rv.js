@@ -11,7 +11,7 @@ function rvTrainScene() {
   let prev = -1, curr = 0;
   steps.push({ L: 0, kind: 'intro', prev, curr, nxt: 1, flipped: 0, board: sheet(-1),
     dialog: [say('narr', 'The train has five carriages: 2, 7, 4, 9, 5. Each hook points to the next carriage. Turn the train around.'), say('conductor', 'I will not move any carriage. I will turn each hook to point backward.'), say('narr', 'What do you hold while you work?'), say('conductor', 'Three things: the carriage behind me, the carriage I am on, and the carriage ahead.')],
-    nar: { kid: 'The conductor walks from the front of the train. At each carriage, the conductor unhooks it from the carriage ahead and hooks it to the carriage behind.', builder: 'Start with prev = None (nothing behind) and curr = head (the first carriage). The hook of a carriage is its .next. Each turn, save nxt = curr.next (the carriage ahead), set curr.next = prev (turn the hook back), then move prev and curr one step on.', expert: 'Three references (names that point at carriages) are enough. Each carriage’s hook is rewritten once, which takes O(n) time and O(1) extra space, meaning only a fixed bit of memory.' } });
+    nar: { kid: 'The conductor walks from the front of the train. At each carriage, the conductor unhooks it from the carriage ahead and hooks it to the carriage behind.', builder: 'Start with prev = None (nothing behind) and curr = head (the first carriage). The hook of a carriage is its .next. Each turn, save nxt = curr.next (the carriage ahead). Then set curr.next = prev (turn the hook back). Then move prev and curr one step ahead.', expert: 'Three references (names that point at carriages) are enough. Each carriage’s hook is rewritten once. That takes O(n) time and O(1) extra space, meaning only a fixed bit of memory.' } });
   while (curr >= 0 && curr < n) {
     const nxt = hook[curr];
     hook[curr] = prev;
@@ -60,7 +60,7 @@ function rvTrainScene() {
     example: ['head = 2 → 7 → 4 → 9 → 5', 'answer = 5 → 9 → 4 → 7 → 2'],
     hints: ['“You cannot pick up the carriages. What can you change about each one?”', '“If you turn a hook to point backward, how do you still reach the rest of the train?”', '“Hold three things: the carriage behind, the carriage you are on, and the carriage ahead. Save the one ahead before you turn the hook.”'],
     clues: ['each carriage only knows the next one', 'no spare train allowed', 'every hook must point the other way'],
-    quizFb: ['“Building a second train works, but it needs a whole spare train. The conductor has no spare track.”', '“A stack works too, but the stack holds every carriage. That needs O(n) extra memory.”', '“Yes! Walk once from the front and turn each hook as you go. Save the next carriage first.”', '“To swap from both ends you must walk backward, and these carriages only point forward.”'],
+    quizFb: ['“Building a second train works, but it needs a whole spare train. The conductor has no spare track.”', '“A stack works too, but the stack holds every carriage. That needs O(n) extra memory: space that grows in step with n, the number of carriages.”', '“Yes! Walk once from the front and turn each hook as you go. Save the next carriage first.”', '“To swap from both ends you must walk backward, and these carriages only point forward.”'],
     steps
   };
 }

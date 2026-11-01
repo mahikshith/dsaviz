@@ -29,7 +29,7 @@ function stonesScene() {
     steps.push(grew
       ? { L: i, kind: 'grow', reach, prev,
         dialog: [say('jumper', 'Stone ' + i + ' says ' + nums[i] + '. From here I could land on stone ' + (i + nums[i]) + '.'), say('narr', 'That beats the old mark of ' + prev + '. The farthest stone is now ' + reach + '.')],
-        nar: { kid: 'A leap of ' + nums[i] + ' from stone ' + i + ' reaches stone ' + (i + nums[i]) + '. That is farther than before, so the jumper moves the mark to ' + reach + '.', builder: 'i + nums[i] = ' + i + ' + ' + nums[i] + ' = ' + (i + nums[i]) + ' is more than ' + prev + ', so reach = ' + reach + '.', expert: 'reach is the biggest value of j + nums[j] among all stones j up to i, where nums[j] is the number on stone j. It only ever grows, so one pass is enough.' } }
+        nar: { kid: 'A leap of ' + nums[i] + ' from stone ' + i + ' reaches stone ' + (i + nums[i]) + '. That is farther than before, so the jumper moves the mark to ' + reach + '.', builder: 'i + nums[i] = ' + i + ' + ' + nums[i] + ' = ' + (i + nums[i]) + ' is more than ' + prev + ', so reach = ' + reach + '.', expert: 'reach is the biggest value of j + nums[j] among all stones j up to i. Here nums[j] is the number on stone j. It only ever grows, so one pass is enough.' } }
       : { L: i, kind: 'hold', reach, prev,
         dialog: [say('jumper', 'Stone ' + i + ' says ' + nums[i] + '. ' + (nums[i] === 0 ? 'I cannot leap at all from here.' : 'That only gets me to stone ' + (i + nums[i]) + '.')), say('narr', 'That is fine. We already know we can reach stone ' + reach + '. Keep the old mark.')],
         nar: { kid: 'Stone ' + i + ' does not help the jumper go any farther. The mark stays at stone ' + reach + ', and the jumper keeps hopping.', builder: 'i + nums[i] = ' + (i + nums[i]) + ', which is at most ' + prev + ', so reach stays ' + reach + '.', expert: 'A short leap does no harm while i is at most reach. Only a stone past reach would end the walk.' } });
@@ -66,7 +66,7 @@ function stonesScene() {
     example: ['nums = [1, 2, 0, 1, 3, 0, 2]', 'answer = True   (0 → 1 → 3 → 4 → 6)'],
     hints: ['“You do not need the exact route. Which single fact tells you if a stone can be reached?”', '“Keep the farthest stone you could reach so far. Any stone before that mark is reachable.”', '“At each stone: if you are past the mark, you are stuck. If not, move the mark to i + nums[i] when that is farther.”'],
     clues: ['yes or no, not the route', 'a leap may be shorter than the number', 'one pass would be best'],
-    quizFb: ['“Trying every route splits into more choices at every stone. With 10,000 stones that would never finish.”', '“A note for every stone works, but it can take about n × n leaps. One number is enough here.”', '“Yes! Keep only the farthest mark. If it ever covers the last stone, the jumper can cross.”', '“Walking in from both ends helps with sorted pairs. The jumper must cross from left to right.”'],
+    quizFb: ['“Trying every route splits into more choices at every stone. With 10,000 stones that would never finish.”', '“A note for every stone works, but it can take about n × n leaps. Here n is the number of stones, so doubling n makes it about 4 times slower. One number is enough here.”', '“Yes! Keep only the farthest mark. If it ever covers the last stone, the jumper can cross.”', '“Walking in from both ends helps with sorted pairs. The jumper must cross from left to right.”'],
     steps
   };
 }

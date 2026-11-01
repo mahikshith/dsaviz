@@ -12,7 +12,7 @@ function photoScene() {
   });
   steps.push({ L: 0, kind: 'intro', left: 1, right: 1, board: notes(-1, 'intro'),
     dialog: [say('narr', 'Six friends hold number cards. A friend’s score is all the other cards multiplied.'), say('tally', 'I may not divide.'), say('narr', 'Then walk the row twice: left to right, then back.'), say('tally', 'Every note starts at 1. I carry one number: the product so far.')],
-    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, the tally keeper multiplies in the cards on their right.', builder: 'answer = [1] * n makes n notes, all 1. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'A seat’s score is prefix × suffix. The prefix is the product of all cards to its left. The suffix is the product of all cards to its right. It takes two passes over the row, no division, and a fixed amount of extra memory (O(1)) besides the answer.' } });
+    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, the tally keeper multiplies in the cards on their right.', builder: 'answer = [1] * n makes n notes, all 1. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'A seat’s score is prefix × suffix. The prefix is the product of all cards to its left. The suffix is the product of all cards to its right. It takes two passes over the row and no division. It also needs only a fixed amount of extra memory (O(1)) besides the answer.' } });
   let left = 1;
   for (let i = 0; i < n; i++) {
     const before = left;

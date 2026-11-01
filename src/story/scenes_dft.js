@@ -145,7 +145,7 @@ function mirrorGardenScene() {
     lines: tagLines(code), code,
     rules: [['Start with the head gardener', 'intro'], ['Swap this gardener’s two beds, then visit them', 'swap'], ['No beds below → nothing to swap', 'leaf'], ['Everyone visited → the garden is mirrored', 'done']],
     complexity: [['O(n)', 'every gardener is visited once'], ['O(h)', 'the trail is as long as the tree is tall']],
-    quest: ['The Mirror Garden has seven gardeners. Each one looks after a left bed and a right bed, and each bed has its own gardener below.', 'The queen wants the garden to look exactly as it does in the queen’s mirror. Every left must become right, all the way down.'],
+    quest: ['The Mirror Garden has seven gardeners. Each one looks after a left bed and a right bed. Each bed has its own gardener below.', 'The queen wants the garden to look exactly as it does in the queen’s mirror. Every left must become right, all the way down.'],
     example: ['root = [4, 2, 7, 1, 3, 6, 9]', '[4, 7, 2, 9, 6, 3, 1]'],
     hints: ['“What changes for the head gardener alone, if the garden is mirrored?”', '“The two beds trade places. Then the same is true for every gardener below.”', '“At each gardener: swap left and right, then do the same for both children. An empty spot needs nothing.”'],
     clues: ['every node, left and right', 'the same small job everywhere', 'the shape is mirrored'],
@@ -252,7 +252,7 @@ function tallestRun(input) {
     return Object.assign({ nodes, edge: mossTrail(trail, list), tags: Object.assign({}, tags), actorAt: at, depthNow: trail.length, best, finished: done }, extra);
   };
   steps.push(runStep('intro', snap(list[0].id, { node: '—', l: '—', r: '—', ans: '—' }), [say('narr', 'How tall is this tree of ' + list.length + (list.length === 1 ? ' branch?' : ' branches?')), say('explorer', 'I’ll ask each branch how deep it goes.')],
-    'The explorer starts at the top branch, ' + val(list[0].id) + '. Each branch answers after its children do.', 'maxDepth(node) = 1 + max(maxDepth(left), maxDepth(right)). Empty answers 0.', 'Children first, then the parent: every branch answers once.'));
+    'The explorer starts at the top branch, ' + val(list[0].id) + '. Each branch answers after its children do.', 'maxDepth(node) is how deep the tree is from this branch down. It equals 1 + max(maxDepth(left), maxDepth(right)), where max means the bigger of the two. An empty spot answers 0.', 'Children first, then the parent: every branch answers once.'));
   const visit = (id) => {
     trail.push(id);
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
@@ -264,7 +264,7 @@ function tallestRun(input) {
       return 1;
     }
     steps.push(runStep('ask', snap(id, { node: val(id), l: '?', r: '?', ans: '?' }), [say('explorer', 'Branch ' + val(id) + ', how deep do you go?'), say('narr', 'It asks ' + (L && R ? 'its two children' : 'its one child') + ' first.')],
-      'Branch ' + val(id) + ' does not know yet, so it asks the branches below it first.', 'maxDepth(' + val(id) + ') calls its children and waits.', 'This call waits. Open calls: ' + trail.length + '.'));
+      'Branch ' + val(id) + ' does not know yet, so it asks the branches below it first.', 'maxDepth(' + val(id) + ') calls its children and waits.', 'This call waits for its children. Open calls (questions not answered yet): ' + trail.length + '.'));
     const a = L ? visit(L) : 0, b = R ? visit(R) : 0, ans = 1 + Math.max(a, b);
     const isRoot = trail.length === 1;
     fate[id] = isRoot ? 'ok' : 'stored'; tags[id] = '↑' + ans; done++;
@@ -275,7 +275,7 @@ function tallestRun(input) {
   };
   const height = visit(list[0].id);
   steps.push(runStep('done', snap(list[0].id, { node: val(list[0].id), l: '—', r: '—', ans: height, done: true }), [say('explorer', 'The top branch says ' + height + '.')],
-    'The answer reached the top. The tree is ' + height + (height === 1 ? ' branch' : ' branches') + ' deep.', 'maxDepth(root) returns ' + height + '.', 'Every branch answered once: O(n) time, O(h) for the trail.'));
+    'The answer reached the top. The tree is ' + height + (height === 1 ? ' branch' : ' branches') + ' deep.', 'maxDepth(root) returns ' + height + '.', 'Every branch answered once, so the time is O(n), where n is the number of branches. The trail of open calls is as long as the tree is tall, h, so the memory is O(h).'));
   runFinish(steps, { intro: ['How deep is the tree?', 'plain'], ask: ['Not sure yet → ask the children', 'cool'], leaf: ['A tip → answer 1', 'warn'], report: ['Answer = 1 + the deeper child', 'warn'], done: ['The tree is ' + height + ' deep', 'ok'] }, (st) => {
     st.meter = { text: 'branches answered: ' + st.finished + ' / ' + list.length, pct: (st.finished / list.length) * 100, mark: 100, markLabel: 'all ' + list.length + ' branches' };
     st.watch = [['node', st.node, 'left'], ['left answer', st.l, 'right'], ['right answer', st.r, 'right'], ['answer', st.ans, st.done ? 'ok' : 'text'], ['deepest tip', st.best, 'text'], ['open calls', st.done ? 0 : st.depthNow, 'text']];

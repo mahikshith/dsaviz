@@ -75,7 +75,7 @@ function diaryScene() {
     example: ['intervals = [[6,8], [1,3], [14,16], [2,5], [9,12], [10,11]]', 'answer = [[1,5], [6,8], [9,12], [14,16]]'],
     hints: ['“Meetings in a muddle are hard to compare. What order would make overlaps sit next to each other?”', '“Once they are sorted by start, a meeting can only overlap the last block you wrote.”', '“Starts after the last block ends: new block. Otherwise stretch the end, but only if this meeting ends later.”'],
     clues: ['overlapping meetings join up', 'the input is not in order', 'one sweep after sorting'],
-    quizFb: ['“Comparing every pair finds the overlaps, but joining chains of them gets messy, and it costs O(n²).”', '“A pile helps with nesting brackets. Here the latest block is all the scheduler needs, and the diary already keeps it.”', '“Marking every hour works for small days, but a booking can run to hour 10,000. Sort and sweep instead.”', '“Yes! Sorted by start, each meeting only needs to look at the last block in the diary.”'],
+    quizFb: ['“Comparing every pair finds the overlaps, but joining chains of them gets messy, and it costs O(n²). That means the work grows with the square of n, the number of meetings. Doubling n makes it about 4 times slower.”', '“A pile helps with nesting brackets. Here the latest block is all the scheduler needs, and the diary already keeps it.”', '“Marking every hour works for small days, but a booking can run to hour 10,000. Sort and sweep instead.”', '“Yes! Sorted by start, each meeting only needs to look at the last block in the diary.”'],
     steps
   };
 }

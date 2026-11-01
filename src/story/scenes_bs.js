@@ -12,7 +12,7 @@ function guessScene() {
   const steps = [];
   steps.push({ L: (n - 1) >> 1, lo: 0, hi: n - 1, mid: null, kind: 'intro',
     dialog: [say('narr', 'Eight cards lie in a row, smallest to biggest. One of them is 11.'), say('guesser', 'I will look at the middle card first.'), say('guesser', 'If it is too small, 11 must be to the right. If it is too big, 11 must be to the left.')],
-    nar: { kid: 'The cards are in order. The guesser always looks at the middle card. Each guess rules out half of the cards that are left.', builder: 'lo and hi mark the first and last places still possible: lo = 0 and hi = n − 1 (n is how many cards there are). While lo is at most hi, set mid to the middle place. If the card is equal, you are done. If it is too small, lo = mid + 1. If it is too big, hi = mid − 1.', expert: 'If the target exists, its place is always between lo and hi. Each look at least halves that range, so there are at most ⌊log₂ n⌋ + 1 looks. Here log₂ n means how many times n can be halved, and ⌊ ⌋ rounds down.' } });
+    nar: { kid: 'The cards are in order. The guesser always looks at the middle card. Each guess rules out half of the cards that are left.', builder: 'lo and hi mark the first and last places still possible. Here lo = 0 and hi = n − 1 (n is how many cards there are). While lo is at most hi, set mid to the middle place. If the card is equal, you are done. If it is too small, lo = mid + 1. If it is too big, hi = mid − 1.', expert: 'If the target exists, its place is always between lo and hi. Each look at least halves that range, so there are at most ⌊log₂ n⌋ + 1 looks. Here log₂ n means how many times n can be halved, and ⌊ ⌋ rounds down.' } });
   let lo = 0, hi = n - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1, v = nums[mid];
@@ -25,12 +25,12 @@ function guessScene() {
     if (v < target) {
       steps.push({ L: mid, lo, hi, mid, kind: 'up',
         dialog: [say('guesser', 'Card ' + mid + ' shows ' + v + '. That is too small.'), say('guesser', 'Every card to its left is even smaller. I drop them all.')],
-        nar: { kid: v + ' is smaller than ' + target + '. So ' + target + ' must be to the right. The guesser drops this card and everything to its left.', builder: 'nums[' + mid + '] = ' + v + ' < ' + target + ', so lo = mid + 1 = ' + (mid + 1) + '.', expert: 'The list is sorted, so every card from place 0 to place ' + mid + ' is at most ' + v + ', which is less than the target. Dropping the left half takes O(1).' } });
+        nar: { kid: v + ' is smaller than ' + target + '. So ' + target + ' must be to the right. The guesser drops this card and everything to its left.', builder: 'nums[' + mid + '] = ' + v + ' < ' + target + ', so lo = mid + 1 = ' + (mid + 1) + '.', expert: 'The list is sorted. So every card from place 0 to place ' + mid + ' is at most ' + v + ', which is less than the target. Dropping the left half takes O(1).' } });
       lo = mid + 1;
     } else {
       steps.push({ L: mid, lo, hi, mid, kind: 'down',
         dialog: [say('guesser', 'Card ' + mid + ' shows ' + v + '. That is too big.'), say('guesser', 'Every card to its right is even bigger. I drop them all.')],
-        nar: { kid: v + ' is bigger than ' + target + '. So ' + target + ' must be to the left. The guesser drops this card and everything to its right.', builder: 'nums[' + mid + '] = ' + v + ' > ' + target + ', so hi = mid − 1 = ' + (mid - 1) + '.', expert: 'The list is sorted, so every card from place ' + mid + ' to place ' + (n - 1) + ' is at least ' + v + ', which is more than the target. Dropping the right half takes O(1).' } });
+        nar: { kid: v + ' is bigger than ' + target + '. So ' + target + ' must be to the left. The guesser drops this card and everything to its right.', builder: 'nums[' + mid + '] = ' + v + ' > ' + target + ', so hi = mid − 1 = ' + (mid - 1) + '.', expert: 'The list is sorted. So every card from place ' + mid + ' to place ' + (n - 1) + ' is at least ' + v + ', which is more than the target. Dropping the right half takes O(1).' } });
       hi = mid - 1;
     }
   }
@@ -74,7 +74,7 @@ function shelfScene() {
   const steps = [];
   steps.push({ L: (n - 1) >> 1, lo: 0, hi: n - 1, mid: null, kind: 'intro',
     dialog: [say('narr', 'These books were in order by number. Then someone moved the first three books to the end.'), say('guesser', 'So the shelf has two runs. Each run is still in order.'), say('narr', 'Find book 6.'), say('guesser', 'I will check the middle. One side of it is always in order.')],
-    nar: { kid: 'The books go up, drop once, then go up again. The guesser looks at the middle book. One side of it has no drop. The guesser checks if book 6 fits on that side.', builder: 'lo and hi mark the first and last places still possible: lo = 0 and hi = n − 1. Set mid to the middle place. If nums[lo] is at most nums[mid], the left half is in order. If not, the right half is in order. Check if the target fits inside the ordered half.', expert: 'The drop (where the numbers fall) can only be in one half, so the other half is always in order. Check if the target fits in the ordered half, and cross out one half each look. Halving each time gives O(log n).' } });
+    nar: { kid: 'The books go up, drop once, then go up again. The guesser looks at the middle book. One side of it has no drop. The guesser checks if book 6 fits on that side.', builder: 'lo and hi mark the first and last places still possible: lo = 0 and hi = n − 1. Set mid to the middle place. If nums[lo] is at most nums[mid], the left half is in order. If not, the right half is in order. Check if the target fits inside the ordered half.', expert: 'The drop (where the numbers fall) can only be in one half. So the other half is always in order. Check if the target fits in the ordered half, and cross out one half each look. Halving each time gives O(log n).' } });
   let lo = 0, hi = n - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1, v = nums[mid];
@@ -99,7 +99,7 @@ function shelfScene() {
     const range = leftSorted ? nums[lo] + ' to ' + v : v + ' to ' + nums[hi];
     steps.push({ L: mid, lo, hi, mid, kind,
       dialog: [say('guesser', 'The middle book is ' + v + '. ' + side), say('guesser', fits ? '6 fits inside ' + range + '. I keep that side.' : '6 does not fit inside ' + range + '. I cross out that side.'), say('narr', 'So the guesser searches the ' + (goLeft ? 'left' : 'right') + ' part.')],
-      nar: { kid: 'The middle book is ' + v + '. The ' + (leftSorted ? 'left' : 'right') + ' side goes ' + range + ' with no drop. ' + (fits ? 'Book 6 fits in there, so the guesser keeps it.' : 'Book 6 cannot be in there, so the guesser crosses it out.'), builder: (leftSorted ? 'nums[lo] = ' + nums[lo] + ' ≤ nums[mid] = ' + v + ': the left half is in order. ' : 'nums[lo] = ' + nums[lo] + ' > nums[mid] = ' + v + ': the right half is in order. ') + (fits ? 'The target is inside, so ' : 'The target is outside, so ') + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', expert: 'The ordered half (places ' + (leftSorted ? lo + ' to ' + mid : mid + ' to ' + hi) + ') runs ' + range + '. One check shows if the target fits, so one half is crossed out in O(1), a fixed amount of work.' } });
+      nar: { kid: 'The middle book is ' + v + '. The ' + (leftSorted ? 'left' : 'right') + ' side goes ' + range + ' with no drop. ' + (fits ? 'Book 6 fits in there, so the guesser keeps it.' : 'Book 6 cannot be in there, so the guesser crosses it out.'), builder: (leftSorted ? 'nums[lo] = ' + nums[lo] + ' ≤ nums[mid] = ' + v + ': the left half is in order. ' : 'nums[lo] = ' + nums[lo] + ' > nums[mid] = ' + v + ': the right half is in order. ') + (fits ? 'The target is inside, so ' : 'The target is outside, so ') + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', expert: 'The ordered half (places ' + (leftSorted ? lo + ' to ' + mid : mid + ' to ' + hi) + ') runs ' + range + '. One check shows if the target fits. So one half is crossed out in O(1), a fixed amount of work.' } });
     if (goLeft) hi = mid - 1; else lo = mid + 1;
   }
   const ans = steps[steps.length - 1].mid;
@@ -211,7 +211,7 @@ function bsRun(id, input) {
   let lo = 0, hi = n - 1, ans = -1;
   steps.push(runStep('intro', { L: (n - 1) >> 1, lo, hi, mid: null }, [say('narr', n + ' ' + what + 's. Find the one that shows ' + T + '.'), say('guesser', rotated ? 'One side of the middle is always in order. I will use that side.' : 'I will look at the middle ' + what + ' first.')],
     rotated ? 'The shelf goes up, drops once, then goes up again. The guesser checks the middle book and the side of it that is in order.' : 'The cards are in order. The guesser looks at the middle card, and each look rules out half of the rest.',
-    'lo = 0 and hi = ' + (n - 1) + '. While lo is at most hi, set mid to the middle place.', 'Each look halves what is left: O(log n).'));
+    'lo and hi mark the first and last places still possible: lo = 0 and hi = ' + (n - 1) + '. While lo is at most hi, set mid to the middle place.', 'Each look halves what is left. That is O(log n): doubling n, the number of ' + what + 's, adds only one more look.'));
   while (lo <= hi) {
     const mid = (lo + hi) >> 1, x = nums[mid];
     if (x === T) {
@@ -233,14 +233,14 @@ function bsRun(id, input) {
     const kind = leftSorted ? (fits ? 'leftIn' : 'leftOut') : (fits ? 'rightIn' : 'rightOut');
     const range = leftSorted ? nums[lo] + ' to ' + x : x + ' to ' + nums[hi];
     const goLeft = kind === 'leftIn' || kind === 'rightOut';
-    steps.push(runStep(kind, { L: mid, lo, hi, mid }, [say('guesser', 'The middle book is ' + x + '. Books ' + range + ' are in order.'), say('guesser', T + (fits ? ' fits in there. I keep that side.' : ' does not fit there. I drop that side.'))],
+    steps.push(runStep(kind, { L: mid, lo, hi, mid }, [say('guesser', 'The middle book is ' + x + '. Books ' + range + ' are in order.'), say('guesser', T + (fits ? ' fits there. I keep that side.' : ' does not fit there. I cross out that side.'))],
       'The ' + (leftSorted ? 'left' : 'right') + ' side runs ' + range + ' with no drop. ' + (fits ? T + ' fits in there, so the guesser keeps it.' : T + ' cannot be in there, so the guesser searches the other side.'),
-      (leftSorted ? 'nums[lo] is at most nums[mid]' : 'nums[lo] is more than nums[mid]') + ', so ' + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', 'The side that is in order shows for sure if the target can be there.'));
+      (leftSorted ? 'nums[lo] is at most nums[mid], so the left half is in order. Then ' : 'nums[lo] is more than nums[mid], so the right half is in order. Then ') + (goLeft ? 'hi = ' + (mid - 1) : 'lo = ' + (mid + 1)) + '.', 'The side that is in order shows for sure if the target can be there.'));
     if (goLeft) hi = mid - 1; else lo = mid + 1;
   }
   if (ans < 0) {
     steps.push(runStep('missing', { L: Math.min(Math.max(lo, 0), n - 1), lo, hi, mid: null, done: true }, [say('guesser', 'Nothing is left to look at.'), say('narr', T + ' is not here. The answer is −1.')],
-      'Every ' + what + ' that could hold ' + T + ' has been ruled out. It is not there.', 'lo is more than hi, so return -1.', (steps.length - 1) + ' looks to prove it is missing.'));
+      'Every ' + what + ' that could hold ' + T + ' has been ruled out. It is not there.', 'lo is more than hi, so no place is left. Return -1.', (steps.length - 1) + ' looks to prove it is missing.'));
   }
   const T5 = rotated
     ? { intro: ['All ' + n + ' books are still possible', 'plain'], leftIn: ['Left side in order and it fits → keep left', 'warn'], leftOut: ['Left side in order, it does not fit → go right', 'warn'], rightIn: ['Right side in order and it fits → keep right', 'cool'], rightOut: ['Right side in order, it does not fit → go left', 'cool'], found: ['Found ' + T + ' at position ' + ans, 'ok'], missing: [T + ' is not on the shelf → −1', 'ok'] }
@@ -267,7 +267,7 @@ function randSortedSearch(rot) {
   return { nums: list, target: Math.random() < 0.75 ? rpick(list) : rint(0, 61) };
 }
 SCENE_INPUT['binary-search'] = {
-  hint: 'a sorted list in brackets, then the target', example: '[3, 7, 11, 15, 19, 24, 30, 36], 11',
+  hint: 'a list in brackets from smallest to biggest, then the number to find', example: '[3, 7, 11, 15, 19, 24, 30, 36], 11',
   default: { nums: [3, 7, 11, 15, 19, 24, 30, 36], target: 11 },
   presets: [['Story example', () => ({ nums: [3, 7, 11, 15, 19, 24, 30, 36], target: 11 })], ['Random', () => randSortedSearch(false)], ['Not there', () => ({ nums: [2, 4, 6, 8, 10], target: 7 })], ['Last card', () => ({ nums: [1, 5, 9, 13, 17, 21, 25, 29, 33], target: 33 })]],
   random: () => randSortedSearch(false),
@@ -276,7 +276,7 @@ SCENE_INPUT['binary-search'] = {
   make: (v) => bsRun('binary-search', v)
 };
 SCENE_INPUT['search-rotated'] = {
-  hint: 'a sorted list cut once and swapped, then the target', example: '[12, 15, 18, 20, 25, 3, 6, 9], 6',
+  hint: 'a list that goes up, is cut once and swapped (like 5, 7, 9, 1, 3), then the number to find', example: '[12, 15, 18, 20, 25, 3, 6, 9], 6',
   default: { nums: [12, 15, 18, 20, 25, 3, 6, 9], target: 6 },
   presets: [['Story example', () => ({ nums: [12, 15, 18, 20, 25, 3, 6, 9], target: 6 })], ['Random', () => randSortedSearch(true)], ['Not cut', () => ({ nums: [1, 3, 5, 7, 9], target: 7 })], ['Not there', () => ({ nums: [8, 9, 2, 4, 6], target: 5 })]],
   random: () => randSortedSearch(true),
@@ -290,7 +290,7 @@ function lowestRun(input) {
   const steps = [];
   let lo = 0, hi = n - 1;
   steps.push(runStep('intro', { L: 0, lo, hi, mid: null }, [say('narr', n + ' steps climb, may drop once, then climb again. Find the lowest.'), say('guesser', 'I will compare the middle step with the last one.')],
-    'The lowest step comes right after the drop. The guesser compares the middle step with the last step to see which side the drop is on.', 'lo = 0 and hi = ' + (n - 1) + '. While lo is less than hi, set mid to the middle place.', 'Each look halves what is left: O(log n).'));
+    'The lowest step comes right after the drop. The guesser compares the middle step with the last step to see which side the drop is on.', 'lo and hi mark the first and last places still possible. Here lo = 0 and hi = ' + (n - 1) + '. h[i] is the height of step i. While lo is less than hi, set mid to the middle place.', 'Each look halves what is left. That is O(log n): doubling n, the number of steps, adds only one more look.'));
   while (lo < hi) {
     const mid = (lo + hi) >> 1;
     if (h[mid] > h[hi]) {
@@ -318,7 +318,7 @@ function lowestRun(input) {
   }), steps);
 }
 SCENE_INPUT['find-min-rotated'] = {
-  hint: 'step heights from 1 to 30, sorted then cut once', example: '14, 16, 18, 20, 22, 8, 10, 12',
+  hint: 'step heights from 1 to 30: a list that goes up, is cut once and swapped', example: '14, 16, 18, 20, 22, 8, 10, 12',
   default: { nums: [14, 16, 18, 20, 22, 8, 10, 12] },
   presets: [['Story example', () => ({ nums: [14, 16, 18, 20, 22, 8, 10, 12] })], ['Random', () => SCENE_INPUT['find-min-rotated'].random()], ['Not cut', () => ({ nums: [2, 4, 6, 8, 10] })], ['Drop at the end', () => ({ nums: [5, 9, 12, 20, 1] })]],
   random: () => { const a = rdistinct(rint(3, 9), 1, 30).sort((x, y) => x - y), c = rint(0, a.length - 1); return { nums: a.slice(c).concat(a.slice(0, c)) }; },

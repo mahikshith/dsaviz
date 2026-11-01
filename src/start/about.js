@@ -447,11 +447,11 @@ const START_ABOUT = {
       ['call', 'Using a function by writing its name and brackets.']
     ],
     math: null,
-    steps: ['Write def, the name, brackets with parameters, and a colon.', 'Indent the lines of the function body.', 'The function does nothing yet. It is only written down.', 'Call it by name, such as feed("Fluff").', 'Python runs the body with the argument in the parameter.'],
+    steps: ['Write def, the name, brackets with parameters, and a colon.', 'Indent the lines of the function body.', 'The function does nothing yet. It is only written down.', 'Call it by name, such as feed("Wren").', 'Python runs the body with the argument in the parameter.'],
     use: ['You repeat the same lines in many places.', 'You want to give a group of steps a clear name.'],
     avoid: ['Functions that do many unrelated jobs.', 'Copying lines around instead of writing a function.'],
-    mistakes: ['Calling a function before it is defined. Fix: put the def above the call.', 'Forgetting the brackets when calling. Fix: write feed(), not feed.', 'Forgetting the colon on the def line. Fix: add a : at the end.'],
-    cheat: ['def feed(owlet):', 'indent the body', 'feed("Fluff") calls it', 'define first, call after', 'parameters in, work done'],
+    mistakes: ['Calling a function before it is defined. Fix: put the def above the call.', 'Forgetting the brackets and the value when calling. Fix: write feed("Wren"), not feed.', 'Forgetting the colon on the def line. Fix: add a : at the end.'],
+    cheat: ['def feed(bird):', 'indent the body', 'feed("Wren") calls it', 'define first, call after', 'parameters in, work done'],
     next: ['return-print', 'calls'],
     sources: [PY_TUT + 'controlflow.html#defining-functions', PY_REF + 'compound_stmts.html#function-definitions']
   },
@@ -478,7 +478,7 @@ const START_ABOUT = {
   },
   dicts: {
     what: 'A dictionary stores values under names called keys. You find a value by its key, not by its place. It works well for counting things.',
-    analogy: 'A coat check. You hand in a coat and get a ticket. Later, the ticket finds your coat.',
+    analogy: 'You hand in a coat and get a ticket. Later, the ticket finds your coat.',
     uses: ['A game that stores each player\'s score under their name', 'A phone book app that finds a number from a name', 'A website that stores your settings by setting name'],
     before: ['list-loops'],
     words: [
@@ -498,7 +498,7 @@ const START_ABOUT = {
     sources: [PY_TUT + 'datastructures.html#dictionaries', PY_LIB + 'stdtypes.html#mapping-types-dict']
   },
   debugging: {
-    what: 'Debugging means finding and fixing a mistake in a program. Ask three questions: what did I expect, what happened, and where did the two split apart? Then change one thing at a time.',
+    what: 'Debugging means finding and fixing a mistake in a program. Ask three questions: what did I expect, what happened, and where did the two first differ? Then change one thing at a time.',
     analogy: 'A detective walks back through the day to find the exact minute things went wrong.',
     uses: ['A game team finds why a character walks through a wall', 'A website team finds why a button does nothing', 'A phone app team finds why a total comes out wrong'],
     before: ['first-error', 'return-print'],
@@ -506,7 +506,7 @@ const START_ABOUT = {
       ['bug', 'A mistake in a program.'],
       ['debugging', 'Finding and fixing bugs.'],
       ['trace', 'Following a program step by step, writing down each value.'],
-      ['print check', 'A print line added to see a value while the program runs.'],
+      ['debug print', 'A print line added to see a value while the program runs.'],
       ['expected', 'The answer you think the program should give.']
     ],
     math: null,
@@ -514,13 +514,13 @@ const START_ABOUT = {
     use: ['Your program gives a wrong answer without an error.', 'Your program stops and you do not know why.'],
     avoid: ['Changing many things at once.', 'Guessing without looking at real values.'],
     mistakes: ['Changing many things at once. Fix: change one thing, then run again, so you know what helped.', 'Staring at the code without running it. Fix: add print lines and look at the real values.', 'Forgetting to remove print lines later. Fix: delete them when the bug is fixed.'],
-    cheat: ['what did I expect?', 'what happened?', 'where did they split?', 'print to see values', 'change one thing at a time'],
+    cheat: ['what did I expect?', 'what happened?', 'where did it first differ?', 'print to see values', 'change one thing at a time'],
     next: ['guess-project', 'plan-it'],
     sources: [PY_TUT + 'errors.html', PY_LIB + 'functions.html#print']
   },
   'guess-project': {
     what: 'In this project you build a guessing game. The program holds a secret number. A while loop keeps asking until you guess it, and if tells you "Higher" or "Lower".',
-    analogy: 'It is the game "hot and cold". A friend says warmer or colder until you find the hidden thing.',
+    analogy: 'A friend hides a number and says closer or further until you find it.',
     uses: ['A number guessing game', 'A game that repeats a round until you win', 'A quiz that keeps asking until you answer correctly'],
     before: ['while', 'dicts', 'return-print'],
     words: [

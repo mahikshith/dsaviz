@@ -239,7 +239,21 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .sh-story>svg{order:1}
 .sh-story>aside{order:4}
 .sh-s-cap{order:2}
-.sh-s-ctl{order:3;position:sticky;bottom:0;z-index:5;margin:0 -24px;padding:8px 24px;background:var(--sh-surface);border-top:1px solid var(--sh-line)}
+.st-watch{padding:16px!important;gap:8px!important}
+.sh-lesson:has(.sh-s-ctl){gap:8px;padding-top:8px}
+.sh-lesson:has(.sh-s-ctl)>header{display:contents!important}
+.sh-lesson:has(.sh-s-ctl)>.sh-ctl{order:1}
+.sh-lesson:has(.sh-s-ctl)>.st-watch{order:2}
+.sh-lesson:has(.sh-s-ctl)>header>p{order:3}
+.sh-lesson:has(.sh-s-ctl)>.sh-back{min-height:32px}
+.sh-s-cap>span[aria-hidden="true"]{display:none!important}
+.sh-s-cap .st-say{min-height:0!important}
+.sh-s-ctl{order:3;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;flex-wrap:nowrap!important;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
+.sh-s-ctl>[aria-label="Back to the first step"],.sh-s-ctl>[aria-label="Jump to a step"]{display:none!important}
+.sh-s-ctl>button{flex:0 0 44px;min-width:44px!important;padding:0!important;height:44px!important;border:1px solid var(--sh-line)!important}
+.sh-s-ctl>button[aria-label="Previous step"]+button{flex:1 1 0;padding:0 12px!important}
+.sh-s-ctl>button[data-speed]{flex:0 0 56px;min-width:56px!important}
+.sh-s-ctl>button[data-next]{flex:1.4 1 0;min-width:0!important;padding:0 12px!important;border:0!important;font-size:calc(16px * var(--ts, 1))!important}
 .sh-pic .sh-panel .sh-bar{display:none}
 .sh-pic .sh-aux{display:flex;gap:8px}
 .sh-pic .sh-bar-m{display:flex;align-items:center;gap:8px;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
@@ -1904,6 +1918,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     }, hasMath: !!b.math,
     steps: items(b.steps), use: items(b.use), avoid: items(b.avoid), mistakes: items(b.mistakes), cheat: items(b.cheat),
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
+    hasGate: false, gateText: '', gateLink: '', gateHref: '', gateGo: () => {},
     watch: () => set('watch')
   };
   return { has: false, about: !!a, watch: true, tabs: [], A };

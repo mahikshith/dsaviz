@@ -37,6 +37,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     }, hasMath: !!b.math,
     steps: items(b.steps), use: items(b.use), avoid: items(b.avoid), mistakes: items(b.mistakes), cheat: items(b.cheat),
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
+    hasGate: false, gateText: '', gateLink: '', gateHref: '', gateGo: () => {},
     watch: () => set('watch')
   };
   return { has: false, about: !!a, watch: true, tabs: [], A };

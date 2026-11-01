@@ -255,7 +255,21 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .sh-story>svg{order:1}
 .sh-story>aside{order:4}
 .sh-s-cap{order:2}
-.sh-s-ctl{order:3;position:sticky;bottom:0;z-index:5;margin:0 -24px;padding:8px 24px;background:var(--sh-surface);border-top:1px solid var(--sh-line)}
+.st-watch{padding:16px!important;gap:8px!important}
+.sh-lesson:has(.sh-s-ctl){gap:8px;padding-top:8px}
+.sh-lesson:has(.sh-s-ctl)>header{display:contents!important}
+.sh-lesson:has(.sh-s-ctl)>.sh-ctl{order:1}
+.sh-lesson:has(.sh-s-ctl)>.st-watch{order:2}
+.sh-lesson:has(.sh-s-ctl)>header>p{order:3}
+.sh-lesson:has(.sh-s-ctl)>.sh-back{min-height:32px}
+.sh-s-cap>span[aria-hidden="true"]{display:none!important}
+.sh-s-cap .st-say{min-height:0!important}
+.sh-s-ctl{order:3;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;flex-wrap:nowrap!important;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
+.sh-s-ctl>[aria-label="Back to the first step"],.sh-s-ctl>[aria-label="Jump to a step"]{display:none!important}
+.sh-s-ctl>button{flex:0 0 44px;min-width:44px!important;padding:0!important;height:44px!important;border:1px solid var(--sh-line)!important}
+.sh-s-ctl>button[aria-label="Previous step"]+button{flex:1 1 0;padding:0 12px!important}
+.sh-s-ctl>button[data-speed]{flex:0 0 56px;min-width:56px!important}
+.sh-s-ctl>button[data-next]{flex:1.4 1 0;min-width:0!important;padding:0 12px!important;border:0!important;font-size:calc(16px * var(--ts, 1))!important}
 .sh-pic .sh-panel .sh-bar{display:none}
 .sh-pic .sh-aux{display:flex;gap:8px}
 .sh-pic .sh-bar-m{display:flex;align-items:center;gap:8px;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
@@ -453,9 +467,6 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 </sc-if>
 <sc-if value="{{ab.watch}}" hint-placeholder-val="{{ true }}">
-<sc-if value="{{gate.show}}" hint-placeholder-val="{{ false }}">
-<p role="note" style="margin: 0; padding: 12px 16px; border-radius: 6px; background: {{t.sunk}}; font-size: calc(16px * var(--ts, 1)); line-height: 1.5">{{gate.text}} <a href="{{gate.href}}" onClick="{{gate.go}}" style="color: {{t.link}}; font-weight: 700; text-decoration: underline">{{gate.link}}</a></p>
-</sc-if>
 <sc-if value="{{soon}}" hint-placeholder-val="{{ false }}">
 <section style="padding: 32px; border-radius: 6px; border: 1px dashed {{t.line2}}; display: flex; flex-direction: column; gap: 12px; align-items: flex-start">
 <p style="margin: 0; font-size: calc(18px * var(--ts, 1)); line-height: 1.5">This lesson is being written. It will open here when it is ready.</p>
@@ -473,7 +484,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <p class="st-say" key="{{story.key}}" style="margin: 0; min-height: 68px; font-size: calc(22px * var(--ts, 1)); line-height: 1.4">{{story.say}}</p>
 </div>
 </div>
-<div class="sh-s-ctl" data-m="wrap" style="display: flex; align-items: center; gap: 8px">
+<div class="sh-s-ctl" data-m="keep" style="display: flex; align-items: center; gap: 8px">
 <button onClick="{{story.restart}}" aria-label="Back to the first step" title="Restart" style="width: 44px; height: 44px; border-radius: 6px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg></button>
 <button onClick="{{story.prev}}" disabled="{{story.atFirst}}" aria-label="Previous step" style="width: 44px; height: 44px; border-radius: 6px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
 <button onClick="{{story.toggle}}" aria-label="{{story.playLabel}}" style="height: 44px; min-width: 96px; padding: 0 12px; box-sizing: border-box; border-radius: 6px; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: calc(16px * var(--ts, 1)); font-weight: 600"><sc-if value="{{story.playing}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if><sc-if value="{{story.paused}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></sc-if>{{story.playText}}</button><button onClick="{{spd.next}}" aria-label="{{spd.aria}}" title="Playback speed" data-speed style="height: 44px; min-width: 56px; padding: 0 12px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-family: {{t.mono}}; font-size: calc(16px * var(--ts, 1)); font-weight: 600">{{spd.label}}</button>
@@ -852,6 +863,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <h3>Know these first</h3>
 <sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div class="sh-ctl"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button class="sh-chip" onClick="{{abb.go}}">{{abb.label}}</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span class="sh-row">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
 <sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><p class="sh-muted">Nothing. This is a good place to start.</p></sc-if>
+<sc-if value="{{ab.A.hasGate}}" hint-placeholder-val="{{ false }}"><p class="sh-muted">{{ab.A.gateText}} <a href="{{ab.A.gateHref}}" onClick="{{ab.A.gateGo}}" style="color: var(--sh-text); font-weight: 600; text-decoration: underline">{{ab.A.gateLink}}</a></p></sc-if>
 </section>
 <section class="sh-sec" aria-label="Where it is used">
 <h3>Where it is used</h3>
@@ -2452,6 +2464,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     }, hasMath: !!b.math,
     steps: items(b.steps), use: items(b.use), avoid: items(b.avoid), mistakes: items(b.mistakes), cheat: items(b.cheat),
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
+    hasGate: false, gateText: '', gateLink: '', gateHref: '', gateGo: () => {},
     watch: () => set('watch')
   };
   return { has: false, about: !!a, watch: true, tabs: [], A };
@@ -19985,6 +19998,8 @@ class Component extends DCLogic {
       ab: aboutVals(this, 'start:' + c.id, typeof START_ABOUT !== 'undefined' ? START_ABOUT[c.id] : null, t, (ref) => { const L = startById(ref); return L ? { label: L.title, go: () => { if (typeof window.__dsNav === 'function') window.__dsNav('Chapter.dc.html', '?ch=' + encodeURIComponent(ref)); } } : null; }, 'Lesson'),
       is: { story: stage === 'story', watch: stage === 'watch', try: stage === 'try', practice: stage === 'practice', coding: stage === 'try' || stage === 'practice', check: stage === 'check' }
     };
+    // The "builds on" note is a line in About under "Know these first", not a note above the picture.
+    Object.assign(vals.ab.A, { hasGate: vals.gate.show, gateText: vals.gate.text, gateLink: vals.gate.link, gateHref: vals.gate.href, gateGo: vals.gate.go });
     // Lesson and About tabs: a text tab with a lime underline on the open one.
     vals.ab.tabs.forEach((tb) => { const on = tb.on === 'true'; tb.line = on ? t.accent : 'transparent'; tb.fg = on ? t.text : t.muted; if (/^About/.test(tb.label)) tb.label = 'About'; });
     if (!ready) return Object.assign(vals, this.emptyVals(t), navVals(this, t, themeKey, 'Chapter'));

@@ -11,6 +11,7 @@
 <h3>Know these first</h3>
 <sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div class="sh-ctl"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button class="sh-chip" onClick="{{abb.go}}">{{abb.label}}</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span class="sh-row">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
 <sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><p class="sh-muted">Nothing. This is a good place to start.</p></sc-if>
+<sc-if value="{{ab.A.hasGate}}" hint-placeholder-val="{{ false }}"><p class="sh-muted">{{ab.A.gateText}} <a href="{{ab.A.gateHref}}" onClick="{{ab.A.gateGo}}" style="color: var(--sh-text); font-weight: 600; text-decoration: underline">{{ab.A.gateLink}}</a></p></sc-if>
 </section>
 <section class="sh-sec" aria-label="Where it is used">
 <h3>Where it is used</h3>

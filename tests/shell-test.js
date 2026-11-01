@@ -262,7 +262,7 @@ server.listen(0, async () => {
       await pg.close();
     }
 
-    // Start here on a phone: the first line of step text of lesson 1 is above the pinned bar (lessons 2 and up carry a "builds on" note above the picture). The Watch / Your variables / Try it row fades at its
+    // Start here on a phone: the first line of step text of lesson 1 is above the pinned bar (the bar is one slim 56px row; the "builds on" note sits in About under "Know these first", not above the picture). The Watch / Your variables / Try it row fades at its
     // right edge only while it really runs past the edge. The Big-O picture draws every row from the first step. The "Swipe" note follows the real width.
     for (const [w, h] of [[390, 844], [320, 700], [1440, 900]]) {
       const pg = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
@@ -282,11 +282,20 @@ server.listen(0, async () => {
           const rg = document.createRange(); rg.selectNodeContents(say); const first = rg.getClientRects()[0];
           const cue = wrap && getComputedStyle(wrap, '::after');
           const more = row.scrollWidth - row.clientWidth > 1 && row.scrollLeft + row.clientWidth < row.scrollWidth - 1;
-          return { lineBottom: first ? Math.round(first.bottom) : -1, barTop: Math.round(bar.getBoundingClientRect().top), vh: innerHeight, cue: wrap && wrap.hasAttribute('data-fadecue'), fade: cue ? parseFloat(cue.opacity) : -1, more, over: row.scrollWidth - row.clientWidth };
+          // The first full sentence of step text, and the bar's rows (every shown button on one row), and where the "builds on" note is.
+          const tx = say.textContent, m = /^[\s\S]*?[.?!](\s|$)/.exec(tx), end = m ? m[0].trimEnd().length : tx.length; let sentBottom = -1;
+          const tw = document.createTreeWalker(say, NodeFilter.SHOW_TEXT); const tn = tw.nextNode(); if (tn) { const r2 = document.createRange(); r2.setStart(tn, 0); r2.setEnd(tn, Math.min(end, tn.length)); const rs = r2.getClientRects(); sentBottom = rs.length ? Math.round(rs[rs.length - 1].bottom) : -1; }
+          const bb = bar.getBoundingClientRect(), kids = [...bar.children].filter((x) => getComputedStyle(x).display !== 'none').map((x) => x.getBoundingClientRect());
+          const note = [...document.querySelectorAll('p')].filter((x) => /This lesson builds on/.test(x.textContent));
+          return { sentBottom, barH: Math.round(bb.height), rows: new Set(kids.map((r) => Math.round(r.top / 8))).size, kidsOut: kids.some((r) => r.top < bb.top - 1 || r.bottom > bb.bottom + 1), noteN: note.length, noteInAbout: note.every((x) => !!x.closest('section[aria-label="Know these first"]') && !!x.querySelector('a[href]')), lineBottom: first ? Math.round(first.bottom) : -1, barTop: Math.round(bar.getBoundingClientRect().top), vh: innerHeight, cue: wrap && wrap.hasAttribute('data-fadecue'), fade: cue ? parseFloat(cue.opacity) : -1, more, over: row.scrollWidth - row.clientWidth };
         });
         const id = 'Start here "' + name + '" at ' + w + 'x' + h;
         if (!f) { fail(id + ': no step text, bar or tab row'); continue; }
-        if (w === 390 && k === 0 && (f.lineBottom < 0 || f.lineBottom > f.barTop)) fail(id + ': the first line of step text ends at ' + f.lineBottom + ', under the pinned bar that starts at ' + f.barTop);
+        if (w < 760 && (f.lineBottom < 0 || f.lineBottom > f.barTop)) fail(id + ': the first line of step text ends at ' + f.lineBottom + ', under the pinned bar that starts at ' + f.barTop);
+        if (w === 390 && (f.sentBottom < 0 || f.sentBottom > f.barTop)) fail(id + ': the first full sentence of step text ends at ' + f.sentBottom + ', under the bar that starts at ' + f.barTop);
+        if (w < 760 && (f.barH !== 56 || f.rows !== 1 || f.kidsOut)) fail(id + ': the player bar is ' + f.barH + 'px tall on ' + f.rows + ' row(s); it must be one slim 56px row');
+        if (f.noteN > 0 && !f.noteInAbout) fail(id + ': the "This lesson builds on" note is outside About, "Know these first", or has no link');
+        if (k > 0 && w === 390 && f.noteN !== 1) fail(id + ': the "This lesson builds on" line is missing from About (found ' + f.noteN + ')');
         if (!f.cue) fail(id + ': the tab row has no fade wrapper');
         else if ((f.fade === 1) !== f.more) fail(id + ': the right-edge fade is ' + (f.fade === 1 ? 'showing' : 'hidden') + ' but the row ' + (f.more ? 'runs past the edge' : 'fits'));
         if (k === 0) console.log('  ' + id + ': first line ends ' + f.lineBottom + ' of bar top ' + f.barTop + ', tab row overflow ' + f.over + 'px, fade ' + f.fade);

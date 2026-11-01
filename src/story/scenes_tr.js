@@ -21,7 +21,7 @@ function trieScene() {
   };
   steps.push(snap('intro', null, '', '', {
     dialog: [say('narr', 'The filer files words in a cabinet shaped like a tree. Every step down is one letter.'), say('filer', 'Words that start the same share the same first branches.'), say('narr', 'And how do you know a whole word ends somewhere?'), say('filer', 'I put a tick on the last letter.')],
-    nar: { kid: 'The filer keeps words in a tree. Each step down the tree is one letter. A tick marks the spot where a whole word ends.', builder: 'The root is empty. Each node maps a letter to a child node and has an end-of-word flag.', expert: 'A trie stores shared beginnings once. insert, search and startsWith each cost O(length of the word), no matter how many words are stored.' } }));
+    nar: { kid: 'The filer keeps words in a tree called a trie (said “try”). Each step down the tree is one letter. A tick marks the spot where a whole word ends.', builder: 'The root is the empty top of the tree. Each node maps a letter to a child node (a dict), and has an end-of-word flag that works as the tick.', expert: 'A trie stores shared beginnings once. Each of insert, search and startsWith takes O(length of the word) steps. Only the word’s length matters, however many words are stored.' } }));
   for (const [op, w] of ops) {
     trail = ['root']; tags = {};
     if (op === 'insert') {
@@ -31,7 +31,7 @@ function trieScene() {
           made.add(p); trail.push(p);
           steps.push(snap('grow', op, w, ch, {
             dialog: [say('filer', 'There is no “' + ch + '” under ' + from + ' yet.'), say('narr', 'Then add a new branch for it.')],
-            nar: { kid: 'There is no “' + ch + '” branch under ' + from + ' yet, so the filer adds one and steps onto it.', builder: '"' + ch + '" not in node → node["' + ch + '"] = {}; node = node["' + ch + '"].', expert: 'A new node is made only for letters no earlier word shared. Inserting costs O(length), plus one node per new letter.' } }));
+            nar: { kid: 'There is no “' + ch + '” branch under ' + from + ' yet, so the filer adds one and steps onto it.', builder: '"' + ch + '" not in node → node["' + ch + '"] = {}; node = node["' + ch + '"].', expert: 'A new node is made only for letters no earlier word shared. Inserting takes about one step per letter, plus one new node for each new letter.' } }));
         } else {
           trail.push(p);
           steps.push(snap('walk', op, w, ch, {
@@ -42,7 +42,7 @@ function trieScene() {
       ends.add(w); calls++; results.push('null');
       steps.push(snap('mark', op, w, '', {
         dialog: [say('filer', 'That was the last letter of “' + w + '”.'), say('narr', 'Tick it. A whole word ends here.')],
-        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so the filer knows a whole word ends at this spot.', builder: 'node["$"] = True. insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
+        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so the filer knows a whole word ends at this spot.', builder: 'node["$"] = True (the "$" key is the tick). insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
       continue;
     }
     let missed = false;
@@ -79,7 +79,7 @@ function trieScene() {
       results.push('True');
       const st = snap('prefix', op, w, '', {
         dialog: [say('filer', 'Every letter of “' + w + '” is in the tree.'), say('narr', 'startsWith only needs the path. True.')],
-        nar: { kid: 'Every letter of “' + w + '” is in the tree, so some stored word starts with “' + w + '”. The answer is True. No tick needed.', builder: 'startsWith("' + w + '"): _walk returns a node, not None → True.', expert: 'Words below this node, here ' + listAnd(Array.from(ends).filter((x) => x.startsWith(w)).map((x) => '“' + x + '”')) + ', all share the prefix.' } });
+        nar: { kid: 'Every letter of “' + w + '” is in the tree, so some stored word starts with “' + w + '”. The answer is True. No tick needed.', builder: 'startsWith("' + w + '"): _walk returns a node, not None → True.', expert: 'Words below this node, here ' + listAnd(Array.from(ends).filter((x) => x.startsWith(w)).map((x) => '“' + x + '”')) + ', all share the same start (the prefix).' } });
       st.nodes[at] = 'best';
       steps.push(st);
     }

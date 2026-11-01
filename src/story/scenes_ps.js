@@ -12,7 +12,7 @@ function photoScene() {
   });
   steps.push({ L: 0, kind: 'intro', left: 1, right: 1, board: notes(-1, 'intro'),
     dialog: [say('narr', 'Six friends hold number cards. A friend’s score is all the other cards multiplied.'), say('tally', 'I may not divide.'), say('narr', 'Then walk the row twice: left to right, then back.'), say('tally', 'Every note starts at 1. I carry one number: the product so far.')],
-    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, the tally keeper multiplies in the cards on their right.', builder: 'answer = [1] * n. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'Score(i) = prefix(i) × suffix(i), where prefix and suffix are running products. Two linear passes, no division, O(1) extra space besides the output.' } });
+    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, the tally keeper multiplies in the cards on their right.', builder: 'answer = [1] * n makes n notes, all 1. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'A seat’s score is prefix × suffix. The prefix is the product of all cards to its left. The suffix is the product of all cards to its right. It takes two passes over the row, no division, and a fixed amount of extra memory (O(1)) besides the answer.' } });
   let left = 1;
   for (let i = 0; i < n; i++) {
     const before = left;
@@ -22,7 +22,7 @@ function photoScene() {
       dialog: i === 0
         ? [say('tally', 'Seat 0 has nobody on the left. Their note stays 1.'), say('tally', '1 × 2 = 2. Now I carry 2.')]
         : [say('tally', 'I carry ' + before + '. I write ' + before + ' on seat ' + i + '’s note.'), say('tally', before + ' × ' + nums[i] + ' = ' + left + '. Now I carry ' + left + '.')],
-      nar: { kid: 'The tally keeper writes ' + before + ' on seat ' + i + '’s note. That is all the cards on the left, multiplied. Then the tally keeper multiplies the running number by ' + nums[i] + '. It becomes ' + left + '.', builder: 'answer[' + i + '] = left = ' + before + '. Then left *= nums[' + i + '], so left = ' + left + '.', expert: 'Invariant before the write: left = ∏ nums[0..' + (i - 1) + '] (empty product = 1). One multiply and one write per seat.' } });
+      nar: { kid: 'The tally keeper writes ' + before + ' on seat ' + i + '’s note. That is all the cards on the left, multiplied. Then the tally keeper multiplies the running number by ' + nums[i] + '. It becomes ' + left + '.', builder: 'answer[' + i + '] = left = ' + before + '. Then left *= nums[' + i + '], so left = ' + left + '.', expert: 'Before the write, left is the product of all cards to the left of this seat. (∏ means multiply them all. An empty product is 1.) Each seat needs one multiply and one write.' } });
   }
   let right = 1;
   for (let i = n - 1; i >= 0; i--) {
@@ -33,12 +33,12 @@ function photoScene() {
       dialog: i === n - 1
         ? [say('tally', 'Now I walk back. I start carrying 1 again.'), say('tally', 'Seat ' + i + ' has nobody on the right. Their note stays ' + note + '.'), say('tally', '1 × ' + nums[i] + ' = ' + right + '. Now I carry ' + right + '.')]
         : [say('tally', 'I carry ' + before + '. Seat ' + i + '’s note says ' + note + '.'), say('tally', note + ' × ' + before + ' = ' + answer[i] + '. That is their score.'), say('tally', before + ' × ' + nums[i] + ' = ' + right + '. Now I carry ' + right + '.')],
-      nar: { kid: 'The note had ' + note + ' from the left side. The tally keeper multiplies it by ' + before + ', the right side. Seat ' + i + '’s score is ' + answer[i] + '. That note is done.', builder: 'answer[' + i + '] *= right, so ' + note + ' × ' + before + ' = ' + answer[i] + '. Then right *= nums[' + i + '], so right = ' + right + '.', expert: 'Invariant before the write: right = ∏ nums[' + (i + 1) + '..' + (n - 1) + ']. After it, answer[' + i + '] = prefix × suffix, final.' } });
+      nar: { kid: 'The note had ' + note + ' from the left side. The tally keeper multiplies it by ' + before + ', the right side. Seat ' + i + '’s score is ' + answer[i] + '. That note is done.', builder: 'answer[' + i + '] *= right, so ' + note + ' × ' + before + ' = ' + answer[i] + '. Then right *= nums[' + i + '], so right = ' + right + '.', expert: 'Before the write, right is the product of all cards to the right of this seat. After it, answer[' + i + '] = left part × right part, and it is final.' } });
   }
   const result = '[' + answer.join(', ') + ']';
   steps.push({ L: 0, kind: 'found', left, right, wrote: answer[0], board: notes(-1, 'found'),
     dialog: [say('tally', 'All six notes are done.'), say('narr', 'Two walks and no dividing. Well done.')],
-    nar: { kid: 'The tally keeper walked the row twice. Each note now holds all the other cards, multiplied.', builder: 'return answer = ' + result + '.', expert: '2n multiplies, O(n) time, O(1) extra space. The divide-by-self shortcut would break on any zero card.' } });
+    nar: { kid: 'The tally keeper walked the row twice. Each note now holds all the other cards, multiplied.', builder: 'return answer = ' + result + '.', expert: 'About 2n multiplies, so O(n) time, and a fixed amount of extra memory (O(1)). Dividing the total by each card would break on any zero card.' } });
   const T = { intro: ['Every note starts at 1', 'plain'], left: ['Walking right → write the left side', 'warn'], right: ['Walking back → multiply in the right side', 'cool'], found: ['All scores written', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -86,7 +86,7 @@ function coinJarScene() {
   const steps = [];
   steps.push({ L: 0, kind: 'intro', total: 0, count: 0, need: '—', got: 0, board: book(null, 0),
     dialog: [say('narr', 'Seven stops. At each stop, coins go in the jar or come out.'), say('narr', 'Count the runs of stops, side by side, that add exactly 3.'), say('tally', 'I’ll write the jar’s total after every stop.'), say('shop', 'I’ll count how often each total shows up. The jar starts at 0, so 0 is in my book once.')],
-    nar: { kid: 'The tally keeper writes the jar’s total after every stop. If the total now is 3 more than an earlier total, the stops in between added exactly 3.', builder: 'seen = {0: 1}, total = 0, count = 0. For each x: total += x; count += seen[total − k]; seen[total] += 1.', expert: 'sum(i..j) = P[j+1] − P[i]. Counting pairs with P[j+1] − P[i] = k is a Two Sum over prefix totals, done in one pass.' } });
+    nar: { kid: 'The tally keeper writes the jar’s total after every stop. If the total now is 3 more than an earlier total, the stops in between added exactly 3.', builder: 'seen = {0: 1}, total = 0, count = 0. For each x: total += x; count += seen[total − k]; seen[total] += 1.', expert: 'Let P be the jar totals, so P[m] is the total after m stops. A run from stop i to stop j adds up to P[j+1] − P[i]. Counting pairs with P[j+1] − P[i] = k is the Two Sum idea applied to the totals, done in one pass.' } });
   let total = 0, count = 0;
   for (let i = 0; i < nums.length; i++) {
     total += nums[i];
@@ -100,16 +100,16 @@ function coinJarScene() {
     if (got) {
       steps.push({ L: i, kind: 'hit', total, count, need, got, from, board: book(need, total),
         dialog: [say('tally', 'Stop ' + i + ': ' + moved + '. The jar holds ' + show(total) + '.'), say('shop', show(total) + ' − 3 = ' + show(need) + '. ' + show(need) + ' is in my book ' + times(got) + '.'), say('narr', 'So ' + got + (got === 1 ? ' run ends' : ' runs end') + ' here. The count is ' + count + '.')],
-        nar: { kid: 'The jar holds ' + show(total) + '. Earlier it held ' + show(need) + ' ' + times(got) + '. From each of those times to now, exactly 3 coins went in. The tally keeper adds ' + got + ' to the count.', builder: 'total = ' + show(total) + '. seen[' + show(need) + '] = ' + got + ', so count += ' + got + ' → ' + count + '. Then seen[' + show(total) + '] = ' + seen[total] + '.', expert: 'Every earlier index with P = ' + show(need) + ' starts a run ending at ' + i + ' with sum k. Adding the count, not 1, handles repeated totals.' } });
+        nar: { kid: 'The jar holds ' + show(total) + '. Earlier it held ' + show(need) + ' ' + times(got) + '. From each of those times to now, exactly 3 coins went in. The tally keeper adds ' + got + ' to the count.', builder: 'total = ' + show(total) + '. seen[' + show(need) + '] = ' + got + ', so count += ' + got + ' → ' + count + '. Then seen[' + show(total) + '] = ' + seen[total] + '.', expert: 'Every earlier stop where the jar held ' + show(need) + ' starts a run ending at stop ' + i + ' that adds to k. Adding the count, not 1, handles repeated totals.' } });
     } else {
       steps.push({ L: i, kind: 'miss', total, count, need, got, board: book(null, total),
         dialog: [say('tally', 'Stop ' + i + ': ' + moved + '. The jar holds ' + show(total) + '.'), say('shop', show(total) + ' − 3 = ' + show(need) + '. My book has no ' + show(need) + '.'), say('shop', 'No run ends here. I write ' + show(total) + ' down.')],
-        nar: { kid: 'The jar holds ' + show(total) + '. No earlier total was ' + show(need) + '. So no run ending here adds to 3. The shopkeeper writes ' + show(total) + ' in her book.', builder: 'total = ' + show(total) + '. seen[' + show(need) + '] = 0, so count stays ' + count + '. Then seen[' + show(total) + '] = ' + seen[total] + '.', expert: 'No prefix equals total − k, so no run ending at index ' + i + ' sums to k. The new total is stored for later stops.' } });
+        nar: { kid: 'The jar holds ' + show(total) + '. No earlier total was ' + show(need) + '. So no run ending here adds to 3. The shopkeeper writes ' + show(total) + ' in her book.', builder: 'total = ' + show(total) + '. seen[' + show(need) + '] = 0, so count stays ' + count + '. Then seen[' + show(total) + '] = ' + seen[total] + '.', expert: 'No prefix equals total − k, so no run ending at stop ' + i + ' adds to k. The new total is stored for later stops.' } });
     }
   }
   steps.push({ L: nums.length - 1, kind: 'found', total, count, need: '—', got: 0, board: book(null, null),
     dialog: [say('tally', 'That was the last stop.'), say('narr', 'Six runs add exactly 3. Nobody added up a run twice.')],
-    nar: { kid: 'The tally keeper and the shopkeeper found 6 runs of stops that add exactly 3 coins.', builder: 'return count = ' + count + '.', expert: 'O(n) time and O(n) space for the book. Summing every run would be O(n²), and two pointers fail because values can be negative.' } });
+    nar: { kid: 'The tally keeper and the shopkeeper found 6 runs of stops that add exactly 3 coins.', builder: 'return count = ' + count + '.', expert: 'With n stops, the time is O(n) and the book needs O(n) space. Adding up every run would take O(n²). Two markers sliding inward would fail because coins can come out, which makes values negative.' } });
   const T = { intro: ['The jar starts at 0', 'plain'], miss: ['Not in the book → write the total down', 'cool'], hit: ['Total − 3 is in the book → count it', 'warn'], found: ['Runs that make 3: ' + count, 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';

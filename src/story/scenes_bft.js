@@ -37,7 +37,7 @@ function treehouseScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', size: 1,
     dialog: [say('narr', 'The ripple wants a list of who lives on each floor of the treehouse, top floor first.'), say('ripple', 'I’ll keep a line of people to visit. Only the top floor is in it now.'), say('narr', 'Visit everyone in line for this floor, and send the people below them to the back.')],
-    nar: { kid: 'The treehouse has three floors. The ripple starts with a line that holds only the person at the top, 3.', builder: 'q = deque([root]). Each round of the while loop handles exactly one floor: the people in q when the round starts.', expert: 'BFS with a FIFO queue visits nodes in order of depth. Taking len(q) at the start of a round splits the queue into floors.' } }));
+    nar: { kid: 'The treehouse has three floors. The ripple starts with a line that holds only the person at the top, 3.', builder: 'q = deque([root]) makes a line you can take people from at the front. Each round of the while loop handles exactly one floor: the people in q when the round starts.', expert: 'This is BFS (breadth-first search), which finishes one floor before the next. The line is a queue where the first in is the first out. Taking len(q), the number of people in line, at the start of a round splits the line into floors.' } }));
   while (q.length) {
     const size = q.length;
     floor = [];
@@ -52,7 +52,7 @@ function treehouseScene() {
       fate[id] = 'stored';
       steps.push(snap('visit', id, { node: val(id), size, edge,
         dialog: [say('ripple', 'Hello, ' + val(id) + '! You’re on floor ' + level + '.'), say('narr', kids.length ? 'Send ' + listText(kids.map(val)) + ' to the back of the line.' : 'Nobody lives below ' + val(id) + '. Nothing to add.')],
-        nar: { kid: 'The ripple visits ' + val(id) + ' and writes it down for floor ' + level + '. ' + (kids.length ? listText(kids.map(val)) + ' live' + (kids.length === 1 ? 's' : '') + ' on the next floor down, so they join the back of the line.' : 'No one lives below, so the line gets no one new.'), builder: 'node = q.popleft() → ' + val(id) + '. floor = [' + floor.join(', ') + ']. ' + (kids.length ? 'Append ' + kids.map(val).join(', ') + '. ' : '') + 'q = ' + show(q) + '.', expert: 'Children join the back of the queue, behind everyone on this floor. So the next floor never mixes in early. Visit ' + (i + 1) + ' of ' + size + ' this round.' } }));
+        nar: { kid: 'The ripple visits ' + val(id) + ' and writes it down for floor ' + level + '. ' + (kids.length ? listText(kids.map(val)) + ' live' + (kids.length === 1 ? 's' : '') + ' on the next floor down, so ' + (kids.length === 1 ? 'that person joins' : 'they join') + ' the back of the line.' : 'No one lives below, so the line gets no one new.'), builder: 'node = q.popleft() → ' + val(id) + '. floor = [' + floor.join(', ') + ']. ' + (kids.length ? 'Append ' + kids.map(val).join(', ') + '. ' : '') + 'q = ' + show(q) + '.', expert: 'Children join the back of the queue, behind everyone on this floor. So the next floor never mixes in early. Visit ' + (i + 1) + ' of ' + size + ' this round.' } }));
     }
     floors.push(floor.slice());
     const doneFloor = floor.slice();
@@ -66,7 +66,7 @@ function treehouseScene() {
   }
   steps.push(snap('done', list[0].id, { node: '—', size: 0, done: true,
     dialog: [say('ripple', 'The line is empty. I’ve met everyone.'), say('narr', 'Three floors, top to bottom: ' + floors.map((f) => '[' + f.join(',') + ']').join(' ') + '.')],
-    nar: { kid: 'Everyone has been visited, floor by floor. The list reads: ' + floors.map((f) => f.join(' ')).join(', then ') + '.', builder: 'return out → ' + JSON.stringify(floors.map((f) => f.map(Number))) + '.', expert: 'Each node enters and leaves the queue once: O(n) time. The queue holds at most one level: O(w), the widest floor.' } }));
+    nar: { kid: 'Everyone has been visited, floor by floor. The list reads: ' + floors.map((f) => f.join(' ')).join(', then ') + '.', builder: 'return out → ' + JSON.stringify(floors.map((f) => f.map(Number))) + '.', expert: 'Each person enters and leaves the line once, so the time is O(n), where n is the number of people. The line holds at most one floor at a time: O(w) space, where w is the width of the widest floor.' } }));
   const T = { intro: ['One person in line: the top', 'plain'], visit: ['Visit, then queue who is below', 'cool'], floor: ['Floor finished → write it down', 'ok'], done: [floors.length + ' floors listed!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -117,7 +117,7 @@ function balconyScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—',
     dialog: [say('narr', 'Stand on the right-hand balcony and look in. On each floor you can only see one person.'), say('ripple', 'The last one on each floor, counting left to right. Everyone else hides behind them.'), say('narr', 'So visit floor by floor, and write down whoever comes last.')],
-    nar: { kid: 'From the right balcony, the person furthest right on each floor blocks the rest. The ripple will visit each floor and spot who comes last.', builder: 'Level-order BFS. In each round, the person with i == n − 1 (the last of the round) goes into view.', expert: 'The right side view is the last node of each BFS level. A DFS that visits right first and records the first node at each new depth gives the same answer.' } }));
+    nar: { kid: 'From the right balcony, the person furthest right on each floor blocks the rest. The ripple will visit each floor and spot who comes last.', builder: 'Go floor by floor with a line. In each round, i is the place of the person being visited. n is the number of people on the floor. The person with i == n − 1 is last, and goes into view.', expert: 'The right side view is the last person on each floor. Another way is DFS (depth-first search, going deep first). Visit the right side first and record the first person met on each new floor. It gives the same answer.' } }));
   while (q.length) {
     const n = q.length;
     sizeNow = n;
@@ -134,7 +134,7 @@ function balconyScene() {
         const hidden = n > 1 ? ' and hides the other ' + (n - 1) : '';
         steps.push(snap('seen', id, { node: val(id), edge,
           dialog: [say('ripple', val(id) + ' is the last one on floor ' + level + '. I can see ' + val(id) + ' from the balcony!'), say('narr', 'Write ' + val(id) + ' down.' + (kids.length ? ' And send ' + listText(kids.map(val)) + ' to the back of the line.' : ''))],
-          nar: { kid: val(id) + ' is furthest right on floor ' + level + hidden + '. The ripple writes ' + val(id) + ' on the view list.' + queued, builder: 'i = ' + i + ' == n − 1 = ' + (n - 1) + ' → view.append(' + val(id) + '). view = [' + view.join(', ') + '].', expert: (level === 3 ? 'Floor 3 has only ' + val(id) + ', on the left side of the tree. A “walk down the right edge” idea misses it; BFS cannot.' : 'The last pop of a round is the rightmost node of that level.') } }));
+          nar: { kid: val(id) + ' is furthest right on floor ' + level + hidden + '. The ripple writes ' + val(id) + ' on the view list.' + queued, builder: 'i = ' + i + ' == n − 1 = ' + (n - 1) + ' → view.append(' + val(id) + '). view = [' + view.join(', ') + '].', expert: (level === 3 ? 'Floor 3 has only ' + val(id) + ', on the left side of the tree. Walking down the right edge alone would miss it. Going floor by floor does not.' : 'The last pop of a round is the rightmost node of that level.') } }));
       } else {
         fate[id] = 'stored';
         steps.push(snap('visit', id, { node: val(id), edge,
@@ -146,7 +146,7 @@ function balconyScene() {
   }
   steps.push(snap('done', list[0].id, { node: '—', done: true,
     dialog: [say('ripple', 'The line is empty. Every floor checked.'), say('narr', 'From the balcony you see ' + view.join(', ') + '. Note 7: it is on the left, but nobody stands to its right.')],
-    nar: { kid: 'The ripple saw one person on each floor: ' + view.join(', ') + '. Even 7 counts, because nobody on its floor blocks it.', builder: 'return view → [' + view.join(', ') + '].', expert: 'O(n) time: each node is queued and popped once. O(w) space for the queue.' } }));
+    nar: { kid: 'The ripple saw one person on each floor: ' + view.join(', ') + '. Even 7 counts, because nobody on its floor blocks it.', builder: 'return view → [' + view.join(', ') + '].', expert: 'The time is O(n): each person joins the line and leaves it once. The line needs O(w) space, where w is the number of people on the widest floor.' } }));
   const T = { intro: ['Who can you see from the right?', 'plain'], visit: ['Not last → hidden', 'cool'], seen: ['Last on the floor → seen!', 'ok'], done: [view.length + ' people in view', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;

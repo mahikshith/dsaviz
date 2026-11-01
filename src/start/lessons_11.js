@@ -18,7 +18,7 @@ function st405Story() {
     stBeat('hoot', 'Lines inside try run as normal. If an alarm rings, Python jumps straight to the matching except lines.', stScene(cast, st1Card('code', 130, 130, 380, ST405_CODE.py.slice(1, 5), [1, 2]), alarm(320, 300)), ['code', 'alarm'], [2, 3]),
     stBeat('dot', 'So try fixes the error?', stScene(cast, l4Chip('q', 320, 200, 'try = fix?')), ['q', 'cast:dot']),
     stBeat('hoot', 'No. try only chooses what happens next. Here we hand back -1, and the program carries on.', stScene(cast, st1Screen(150, 150, 340, ['12', '-1'], 100)), ['screen'], [4, 5, 6]),
-    stBeat('hoot', 'Name the alarm you expect. A bare except answers every alarm, even a typo, and hides real bugs.', stScene(cast, l4Chip('ok', 200, 190, 'except ValueError', { solid: true }), l4Chip('no', 450, 190, 'except (anything)', { c: 'bad', dash: true }), l4Say('s1', 200, 240, 'only the one you expect'), l4Say('s2', 450, 240, 'hides real bugs')), ['ok', 'no']),
+    stBeat('hoot', 'Name the alarm you expect. An except with no kind named answers every alarm, even a typo, and hides real bugs.', stScene(cast, l4Chip('ok', 200, 190, 'except ValueError', { solid: true }), l4Chip('no', 450, 190, 'except (anything)', { c: 'bad', dash: true }), l4Say('s1', 200, 240, 'only the one you expect'), l4Say('s2', 450, 240, 'hides real bugs')), ['ok', 'no']),
     stBeat('bolt', 'If nobody answers, I stop and print the error. That is the error message you learned to read in Level 1.', stScene(cast, pile(['main program', 'read_age()']), alarm(450, 250, 'no answer')), ['alarm', 'cast:bolt'])
   ];
 }
@@ -44,7 +44,7 @@ function st406Story() {
     stBeat('hoot', 'Ring the alarm yourself with raise. Give it a kind and a message: raise ValueError("not enough money").', stScene(cast, card(ST406_CODE.py.slice(0, 4), [2])), ['code'], 2),
     stBeat('hoot', 'raise stops the function at once. The line after it never runs. The alarm travels to whoever has a matching except.', stScene(cast, card(ST406_CODE.py.slice(0, 4), [2]), l4Chip('al', 320, 290, 'ValueError: not enough money', { c: 'bad' })), ['code', 'al'], [2, 3]),
     stBeat('hoot', 'except ValueError as problem catches it. The name problem holds the alarm, so print(problem) shows its message.', stScene(cast, card(ST406_CODE.py.slice(4, 8), [2, 3]), st1Screen(100, 270, 440, ['Stopped: not enough money'], 70)), ['code', 'screen'], [6, 7]),
-    stBeat('dot', 'What if I opened a door, a file or a till first? An error might skip the lines that close it.', stScene(cast, l4Chip('d', 320, 190, 'open', { solid: true }), l4Chip('d2', 320, 250, 'close?', { dash: true }), l4Arrow('ar', [320, 208], [320, 232], { dash: true })), ['d2', 'cast:dot']),
+    stBeat('dot', 'What if I opened a door, a file or a cash box first? An error might skip the lines that close it.', stScene(cast, l4Chip('d', 320, 190, 'open', { solid: true }), l4Chip('d2', 320, 250, 'close?', { dash: true }), l4Arrow('ar', [320, 208], [320, 232], { dash: true })), ['d2', 'cast:dot']),
     stBeat('hoot', 'Add finally. Its lines run every time: after success, after a caught alarm, or when the alarm is still travelling.', stScene(cast, card(ST406_CODE.py.slice(4, 10), [4, 5], 100, 130, 440)), ['code'], [8, 9]),
     stBeat('hoot', 'Think of locking a door at closing time. It gets locked whether the day went well or badly.', stScene(cast, l4Chip('o', 150, 190, 'good day'), l4Chip('b', 320, 190, 'bad day'), l4Chip('l', 490, 190, 'door locked', { solid: true }), l4Arrow('a1', [196, 208], [450, 230]), l4Arrow('a2', [320, 212], [430, 230])), ['o', 'b', 'l'], 9),
     stBeat('hoot', 'So finally does not mean only on error. It means always. Use it for clean-up, such as closing a file.', stScene(cast, l4Chip('f', 320, 200, 'finally = always', { solid: true })), ['f']),
@@ -77,7 +77,7 @@ function st407Story() {
     stBeat('hoot', 'The third check uses -3. The answer is 9, but we wanted -6. It prints FAIL negative. Now we know where to look.', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', 'FAIL negative', false, 'bad']])), ['r3'], 9),
     stBeat('dot', 'The bug passed two checks! It only showed up on the third.', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', 'FAIL negative', false, 'bad']])), ['r1', 'r2', 'cast:dot']),
     stBeat('hoot', 'That is why one passing check proves little. Write many, and run them all after every change.', stScene(cast, l4Chip('m', 320, 200, 'many checks, run often', { solid: true })), ['m']),
-    stBeat('hoot', 'Python has a short form: assert double(-3) == -6. It stays quiet when true and raises an AssertionError when false.', stScene(cast, st1Card('as', 90, 150, 460, ['assert double(-3) == -6'], []), l4Say('s1', 320, 240, 'quiet if true, an error if false')), ['as'])
+    stBeat('hoot', 'Python has a short form: assert double(-3) == -6. It stays quiet if true, and stops with an error if false.', stScene(cast, st1Card('as', 90, 150, 460, ['assert double(-3) == -6'], []), l4Say('s1', 320, 240, 'quiet if true, an error if false')), ['as'])
   ];
 }
 START_LESSON('tests', {
@@ -86,7 +86,7 @@ START_LESSON('tests', {
   tryit: { py: 'def double(n):\n    return n * n\n\ndef check(name, got, want):\n    if got == want:\n        print("pass", name)\n    else:\n        print("FAIL", name)\n\ncheck("two", double(2), 4)\ncheck("zero", double(0), 0)\ncheck("negative", double(-3), -6)\ncheck("ten", double(10), 20)\n',
     js: 'function double(n) {\n  return n * n;\n}\n\nfunction check(name, got, want) {\n  if (got === want) {\n    console.log("pass", name);\n  } else {\n    console.log("FAIL", name);\n  }\n}\n\ncheck("two", double(2), 4);\ncheck("zero", double(0), 0);\ncheck("negative", double(-3), -6);\ncheck("ten", double(10), 20);\n',
     goals: ['Press Run and find the checks that fail.', 'Fix double so every check passes.', 'Add a check of your own with a negative number.'] },
-  check: { q: 'double(2) gives 4 and the check passes. Does that prove double is right?', choices: [['No. More checks may find a bug that this one misses', true, 'Right. One case can pass by luck. Try different inputs.'], ['Yes. A passing check means no bugs', false, 'The bug above passed two checks before it failed on the third.'], ['Yes, if the answer is a whole number', false, 'Whole numbers can still be wrong. Try more inputs.'], ['No, because checks never pass', false, 'Checks do pass. They just need to cover many cases.']] }
+  check: { q: 'double(2) gives 4 and the check passes. Does that prove double is right?', choices: [['No. More checks may find a bug that this one misses', true, 'Right. One case can pass by luck. Try different inputs.'], ['Yes. A passing check means no bugs', false, 'The bug above passed two checks before it failed on the third.'], ['Yes, if the answer is a whole number', false, 'Whole numbers can still be wrong. Try more inputs.'], ['No, because checks never pass', false, 'Checks do pass. They need to cover many cases.']] }
 });
 
 // ---------- L4.8 Awkward inputs and test-first ----------

@@ -24,7 +24,7 @@ function st401Story() {
     stBeat('dot', 'Can a name have two words? I want to write total cost.', stScene(cast, l4Chip('sp', 320, 190, 'total cost', { c: 'bad', dash: true }), l4Say('s1', 320, 240, 'A space breaks a name in two.')), ['sp', 'cast:dot']),
     stBeat('hoot', 'Join the words with an underscore: total_cost. Lower case with underscores is called snake_case.', stScene(cast, l4Chip('sn', 320, 190, 'total_cost', { solid: true }), l4Say('s1', 320, 240, 'Python writers use snake_case.')), ['sn'], [0, 2]),
     stBeat('hoot', 'A name for a yes or no value reads like a question: is_empty, has_tax. Then if is_empty: reads like English.', stScene(cast, l4Chip('q1', 200, 190, 'is_empty', { solid: true }), l4Chip('q2', 440, 190, 'has_tax', { solid: true }), l4Say('s1', 320, 250, 'The answer is True or False.')), ['q1', 'q2']),
-    stBeat('hoot', 'Never let a name lie. A list called count that holds names will mislead the next reader. That reader may be you.', stScene(cast, l4Jar('lie', 230, 150, '"Kai", "Noor"', 'count', { c: 'bad', size: 17, w: 190 }), l4Say('s1', 325, 262, 'Count of what? These are names.')), ['lie']),
+    stBeat('hoot', 'Never let a name lie. A list called count that holds names will trick the next reader. That reader may be you.', stScene(cast, l4Jar('lie', 230, 150, '"Kai", "Noor"', 'count', { c: 'bad', size: 17, w: 190 }), l4Say('s1', 325, 262, 'Count of what? These are names.')), ['lie']),
     stBeat('dot', 'Is a short name ever fine?', stScene(cast, l4Chip('i', 320, 200, 'i')), ['i', 'cast:dot']),
     stBeat('hoot', 'In a tiny loop, i is fine. Everywhere else, take a few seconds to choose a clear name. It saves minutes later.', stScene(cast, good([])), ['good']),
     stBeat('bolt', 'I run both versions in the same way. I only see steps. Names are for the people who read the code.', stScene(cast, bad), ['bad', 'cast:bolt'])
@@ -87,7 +87,7 @@ function st403Story() {
     stBeat('hoot', 'Add if at the end. Only items that pass the question go through. [n for n in numbers if n > 2] keeps 3 and 4.', stScene(cast, row('in', 150, [1, 2, 3, 4]), row('out', 280, [3, 4], { solid: true }), l4Say('s1', 320, 215, 'if n > 2: only big ones')), ['out0', 'out1'], [2, 3, 6]),
     stBeat('hoot', 'The shape never changes. First what to keep, then for and the list, then an optional if with a question.', stScene(cast, st1Card('shape', 40, 150, 560, ['[ what to keep   for item in list   if question ]'], [])), ['shape']),
     stBeat('dot', 'Then I should write everything as a comprehension!', stScene(cast, l4Chip('all', 320, 200, 'always shorter?')), ['all', 'cast:dot']),
-    stBeat('hoot', 'No. Shorter is not always clearer. If the line needs more than one breath to read, write a plain loop instead.', stScene(cast, st1Card('long', 20, 150, 600, ['[f(x) for row in rows for x in row if x and g(x)]'], []), l4Say('s1', 320, 240, 'too much in one line', { c: 'bad' })), ['long'])
+    stBeat('hoot', 'No. Shorter is not always clearer. If the line is hard to read out loud, write a plain loop instead.', stScene(cast, st1Card('long', 20, 150, 600, ['[f(x) for row in rows for x in row if x and g(x)]'], []), l4Say('s1', 320, 240, 'too much in one line', { c: 'bad' })), ['long'])
   ];
 }
 START_LESSON('comprehensions', {

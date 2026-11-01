@@ -1349,6 +1349,90 @@ const START_ABOUT = {
     cheat: ['async def makes a task', 'await = wait here, others go', 'same wait, shared time', 'turns, not threads', 'one worker takes turns'],
     next: ['gather'],
     sources: [PY_LIB + 'asyncio-task.html', 'MDN Web Docs, developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises']
+  },
+  gather: {
+    what: 'To do several waits at once, start them all first and then collect the answers. Together, the waits take as long as the slowest one. One after another, they take the sum of all the waits.',
+    analogy: 'Think of three pots on three burners. The meal is ready when the slowest pot is ready, not when the three times are added up.',
+    uses: ['A weather app that asks five cities for their forecast at the same moment', 'A shop app that loads prices and pictures together', 'A chat app that fetches many friends\' photos in one go'],
+    before: ['async-await'],
+    words: [
+      ['gather', 'Start many waits and collect all their answers.'],
+      ['one by one', 'Each wait finishes before the next one starts.'],
+      ['together', 'All the waits start at once and overlap.'],
+      ['longest', 'The slowest wait. It decides when everything is done.'],
+      ['total', 'All the waits added up.']
+    ],
+    math: null,
+    steps: ['List the waits that do not depend on each other.', 'Start every wait before collecting any answer.', 'Let the waits overlap.', 'Collect the answers, in the order you asked for them.', 'The total time is the longest wait.'],
+    use: ['Several waits do not depend on each other.', 'You want the page or program to finish sooner.'],
+    avoid: ['Waiting for each job in a loop when they could overlap.', 'Starting jobs together when one needs the answer of another.'],
+    mistakes: ['Awaiting inside a loop and expecting an overlap. Fix: start them all first, then collect.', 'Adding the waits when they overlap. Fix: use the longest wait.', 'Thinking answers come back in finishing order. Fix: they come back in the order you asked.'],
+    cheat: ['one by one = add the waits', 'together = the longest wait', 'start all, then collect', 'answers keep your order'],
+    next: ['timeouts'],
+    sources: [PY_LIB + 'asyncio-task.html#asyncio.gather', 'MDN Web Docs, developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all']
+  },
+  timeouts: {
+    what: 'A job can fail, or it can take too long. Catch the failure where you wait for the job, so the others carry on. A timeout is a time limit after which you stop waiting.',
+    analogy: 'Think of a customer with a rule: "Cancel the pizza if it is late." The limit decides when to give up.',
+    uses: ['A browser that stops waiting for a page after a while', 'A game that shows an error when the server does not answer', 'A shop app that tells you a payment failed instead of freezing'],
+    before: ['gather', 'exceptions'],
+    words: [
+      ['timeout', 'A time limit. When it passes, you stop waiting.'],
+      ['failure', 'A job that could not finish, such as an item sold out.'],
+      ['catch', 'To answer an alarm with except so the program carries on.'],
+      ['limit', 'The longest wait you accept.'],
+      ['safety net', 'A try and except that stops one failure from spoiling the rest.']
+    ],
+    math: null,
+    steps: ['Decide the longest time you will wait.', 'Raise an alarm if a job fails or takes longer.', 'Put try and except around each job inside the loop.', 'Print or store what went wrong.', 'Carry on with the next job.'],
+    use: ['Jobs run over a network or other things you do not control.', 'One bad job must not stop all the others.'],
+    avoid: ['A try around the whole loop that stops at the first failure.', 'Waiting for ever with no limit.'],
+    mistakes: ['Putting the try outside the loop. Fix: put it around each job.', 'Hiding the failure with no message. Fix: print or save the reason.', 'Setting no limit. Fix: choose a time to give up.'],
+    cheat: ['try inside the loop', 'one failure, others carry on', 'a limit decides when to give up', 'report what went wrong'],
+    next: ['retries'],
+    sources: [PY_LIB + 'asyncio-task.html#timeouts', PY_TUT + 'errors.html#handling-exceptions']
+  },
+  retries: {
+    what: 'Some failures pass quickly. You can try again a few times, waiting longer each time, and then stop. Doubling the wait is called backoff. A limit on the tries makes sure you give up in the end.',
+    analogy: 'Think of knocking on a busy door. You wait a little, knock again, then wait longer, and after a few tries you leave a note.',
+    uses: ['A phone app that tries again when the network drops', 'A game that reconnects to a busy server', 'A shop app that retries a payment check a few times'],
+    before: ['timeouts'],
+    words: [
+      ['retry', 'Trying a failed job again.'],
+      ['backoff', 'Waiting longer after each failed try, often doubling the wait.'],
+      ['attempt', 'One try. The first try is attempt 1.'],
+      ['give up', 'To stop trying and report the failure.'],
+      ['busy', 'A service that is too crowded to answer right now.']
+    ],
+    math: null,
+    steps: ['Choose the most tries you will allow.', 'Try the job.', 'If it works, return the result.', 'If it fails, wait, then double the wait.', 'After the last try, give up and report it.'],
+    use: ['A failure is likely to pass soon, such as a busy network.', 'You can safely repeat the job.'],
+    avoid: ['Trying again with no wait.', 'Trying again for ever.'],
+    mistakes: ['Retrying at once, again and again. Fix: wait, and wait longer each time.', 'Having no limit on tries. Fix: stop after a few tries.', 'Forgetting to double the wait. Fix: update wait after each failure.'],
+    cheat: ['few tries, longer waits, then stop', 'wait = wait * 2', 'success: return', 'last failure: give up and say so'],
+    next: ['threads'],
+    sources: [PY_TUT + 'errors.html#handling-exceptions', PY_TUT + 'controlflow.html#for-statements']
+  },
+  threads: {
+    what: 'Async takes turns on one worker. Threads and processes can work at the same moment. When two workers share one number, an update can be lost. That mistake is called a race.',
+    analogy: 'Think of two cashiers who both write the day\'s total on one board. If both read the old number first, one sale vanishes.',
+    uses: ['A server that uses many processes to use every core of the machine', 'A chat app that keeps a shared count safe with a lock', 'A photo app that processes several pictures at once'],
+    before: ['gather'],
+    words: [
+      ['thread', 'A second worker inside the same program. Threads share memory.'],
+      ['process', 'A separate copy of the program with its own memory.'],
+      ['race', 'A bug where the result depends on which worker is quicker.'],
+      ['lock', 'A rule that lets only one worker use shared data at a time.'],
+      ['shared', 'Used by more than one worker.']
+    ],
+    math: null,
+    steps: ['Ask: is the job waiting or calculating?', 'Mostly waiting: use async.', 'Heavy calculating: use processes.', 'If workers share data, protect it with a lock.', 'Let one worker finish its read and write before the next starts.'],
+    use: ['Many workers must do jobs at the same moment.', 'You must pick between async, threads and processes.'],
+    avoid: ['Sharing a number between threads with no lock.', 'Using threads for work that is only waiting.'],
+    mistakes: ['Thinking async runs two things at the same moment. Fix: async takes turns on one worker.', 'Letting two threads read and write a shared number. Fix: use a lock.', 'Using more workers than the job needs. Fix: pick the tool for the job.'],
+    cheat: ['async: turns, one worker', 'threads: many workers, shared memory', 'processes: many kitchens, own memory', 'shared number: use a lock', 'a race loses an update'],
+    next: [],
+    sources: [PY_LIB + 'threading.html', PY_LIB + 'multiprocessing.html']
   }
 };
 if (typeof module !== 'undefined') module.exports = { START_ABOUT };

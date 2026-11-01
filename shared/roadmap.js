@@ -148,12 +148,12 @@ const ROADMAP_NODES = [
   { id: 'k-await', lane: 'core', label: 'async / await', col: 3, row: 3, name: 'async and await', track: 'start', go: 'async-await',
     blurb: 'A task pauses at await, lets the others go, and carries on when its turn comes.',
     lessons: [['async-await', 'async and await']], covers: [] },
-  { id: 'k-tasks', lane: 'core', label: 'Tasks & timeouts', col: 4, row: 3, name: 'Tasks, errors and timeouts', track: 'start', go: '',
-    blurb: 'Start several waits at once, collect the results, and handle the one that fails or takes too long.',
-    lessons: [['gather', 'Doing several waits at once'], ['timeouts', 'Errors and timeouts']], covers: [] },
-  { id: 'k-threads', lane: 'core', label: 'Threads vs async', col: 5, row: 3, name: 'Threads, async and processes', track: 'start', go: '',
+  { id: 'k-tasks', lane: 'core', label: 'Tasks & timeouts', col: 4, row: 3, name: 'Tasks, errors and timeouts', track: 'start', go: 'gather',
+    blurb: 'Start several waits at once, collect the results, handle the one that fails or takes too long, and try again.',
+    lessons: [['gather', 'Doing several waits at once'], ['timeouts', 'Errors and timeouts'], ['retries', 'Try again, but wait longer']], covers: [] },
+  { id: 'k-threads', lane: 'core', label: 'Threads vs async', col: 5, row: 3, name: 'Threads, async and processes', track: 'start', go: 'threads',
     blurb: 'Taking turns is not the same as running at once. Pick the right tool and spot a race on a shared counter.',
-    lessons: [['threads', 'Threads vs async vs processes']], covers: ['threads and concurrency'] },
+    lessons: [['threads', 'Taking turns or working at once']], covers: ['threads and concurrency'] },
 
   // ---- DSA concepts (the dsa-concepts track) ----
   { id: 'c-bigo', lane: 'concepts', label: 'Big-O', col: 0, row: 0, name: 'Big-O and complexity', track: 'concepts', go: 'bigo',

@@ -23,7 +23,7 @@ function tallestScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', l: '—', r: '—', ans: '—',
     dialog: [say('narr', 'How tall is this tree? Count the branches on the longest way from the top down to a tip.'), say('explorer', 'I can’t see the whole tree at once. I’ll ask each branch how deep it goes.'), say('narr', 'And each branch asks its own two children first.')],
-    nar: { kid: 'The explorer stands at the top branch, 8. To learn how tall the tree is, the explorer asks each branch how far down it goes.', builder: 'maxDepth(root) asks maxDepth(left) and maxDepth(right), then returns 1 + the bigger answer. An empty child answers 0.', expert: 'Post-order DFS: a node’s answer depends only on its children’s answers, so solve the children first, then combine. The number under a branch is its answer, passed up.' } }));
+    nar: { kid: 'The explorer stands at the top branch, 8. To learn how tall the tree is, the explorer asks each branch how far down it goes.', builder: 'maxDepth(root) asks maxDepth(left) and maxDepth(right), then returns 1 + the bigger answer. An empty child answers 0.', expert: 'This is post-order DFS. DFS (depth-first search) goes as deep as it can first. Post-order means each branch finishes after its children. A branch’s answer depends only on its children’s answers, so solve the children first, then combine. The number under a branch is its answer, passed up.' } }));
   const visit = (id) => {
     trail.push(id);
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
@@ -52,7 +52,7 @@ function tallestScene() {
   const height = visit(list[0].id);
   steps.push(snap('done', list[0].id, { node: val(list[0].id), l: '—', r: '—', ans: height, done: true,
     dialog: [say('explorer', 'The top branch says ' + height + '.'), say('narr', 'The longest way down is 8 → 3 → 6 → 4. That is ' + height + ' branches.')],
-    nar: { kid: 'The answer reached the top. The tallest way down has ' + height + ' branches: 8, 3, 6 and 4.', builder: 'maxDepth(root) returns ' + height + '.', expert: 'Every node is visited once: O(n) time. The stack is as deep as the tree: O(h), which is O(n) for a tree shaped like a line.' } }));
+    nar: { kid: 'The answer reached the top. The tallest way down has ' + height + ' branches: 8, 3, 6 and 4.', builder: 'maxDepth(root) returns ' + height + '.', expert: 'Every branch is visited once, so the time is O(n), where n is the number of branches. The open calls pile up as deep as the tree: O(h), where h is the height. For a tree shaped like a line, that is as big as n, the number of branches.' } }));
   const T = { intro: ['How deep is the tree?', 'plain'], ask: ['Not sure yet → ask the children', 'cool'], leaf: ['A tip → answer 1', 'warn'], report: ['Answer = 1 + the deeper child', 'warn'], done: ['The tree is ' + height + ' deep!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -74,7 +74,7 @@ function tallestScene() {
     lines: tagLines(code), code,
     rules: [['Start at the top branch', 'intro'], ['Ask both children before answering', 'ask'], ['A tip with no children answers 1', 'leaf'], ['Answer 1 + the deeper child’s answer', 'report'], ['The top branch’s answer is the height', 'done']],
     complexity: [['O(n)', 'every branch answers exactly once'], ['O(h)', 'the trail is as long as the tree is tall']],
-    quest: ['An old tree has seven branches. Each branch splits into at most two smaller ones.', 'The gardener wants to know how tall it is. How many branches are on the longest way from the top down to a tip?'],
+    quest: ['An old tree has seven branches. Each branch splits into at most two smaller ones, called its children.', 'The gardener wants to know how tall it is. How many branches are on the longest way from the top down to a tip?'],
     example: ['root = [8, 3, 10, 1, 6, null, 14, null, null, 4]', 'answer = 4  (8 → 3 → 6 → 4)'],
     hints: ['“Say you knew how deep the left side goes and how deep the right side goes. How deep would this branch be?”', '“A branch with nothing under it is 1 deep. An empty spot is 0 deep.”', '“Ask the left child, ask the right child, then answer 1 + the bigger of the two. Start that question at the top.”'],
     clues: ['a tree, top to tips', 'the longest way down', 'each branch only knows its children'],
@@ -99,7 +99,7 @@ function mirrorGardenScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', wasL: '—', wasR: '—',
     dialog: [say('narr', 'The garden must look as if you saw it in a mirror. Every left bed goes right, and every right bed goes left.'), say('explorer', 'I’ll swap the two beds at each gardener, then visit the children.'), say('narr', 'Start with the head gardener at the top.')],
-    nar: { kid: 'Each gardener looks after a left bed and a right bed. The explorer will swap the two beds of every gardener. Then the whole garden is mirrored.', builder: 'invert(node): swap node.left and node.right, then call invert on both children. An empty spot returns at once.', expert: 'Pre-order DFS: do the work at the node, then recurse. Mirroring every node’s two children mirrors the whole tree.' } }));
+    nar: { kid: 'Each gardener looks after a left bed and a right bed. The explorer will swap the two beds of every gardener. Then the whole garden is mirrored.', builder: 'invert(node): swap node.left and node.right, then call invert on both children. An empty spot returns at once.', expert: 'This is pre-order DFS: do the work at the gardener first, then visit the children. Mirroring every node’s two children mirrors the whole tree.' } }));
   const visit = (id) => {
     trail.push(id); seen++;
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
@@ -109,12 +109,12 @@ function mirrorGardenScene() {
     if (!L && !R) {
       steps.push(snap('leaf', id, { node: val(id), wasL, wasR,
         dialog: [say('explorer', 'Gardener ' + val(id) + ' has two empty beds.'), say('narr', 'Swapping nothing with nothing changes nothing. Move on.')],
-        nar: { kid: 'Gardener ' + val(id) + ' has no beds below. Swapping two empty beds looks the same, so the explorer moves on.', builder: 'invert(' + val(id) + '): left and right are both None. The swap runs, but nothing moves.', expert: 'A leaf is its own mirror image. Its two calls on None return at once. Trail depth: ' + trail.length + '.' } }));
+        nar: { kid: 'Gardener ' + val(id) + ' has no beds below. Swapping two empty beds looks the same, so the explorer moves on.', builder: 'invert(' + val(id) + '): left and right are both None. The swap runs, but nothing moves.', expert: 'A leaf is its own mirror image. Its two calls on empty spots end at once. Trail depth: ' + trail.length + '.' } }));
     } else {
       swaps++;
       steps.push(snap('swap', id, { node: val(id), wasL, wasR,
         dialog: [say('explorer', 'Gardener ' + val(id) + ': ' + wasL + ' was on the left, ' + wasR + ' on the right. Swap!'), say('narr', 'Now go down and do the same for the new left bed.')],
-        nar: { kid: 'The explorer swaps gardener ' + val(id) + '’s beds. ' + wasR + ' moves to the left and ' + wasL + ' moves to the right. Everything below them moves too.', builder: 'invert(' + val(id) + '): left, right = right, left. Now left = ' + wasR + ' and right = ' + wasL + '. Then invert(left) and invert(right).', expert: 'The swap moves whole subtrees by changing two pointers, in O(1). Their insides get mirrored by the calls that follow.' } }));
+        nar: { kid: 'The explorer swaps gardener ' + val(id) + '’s beds. ' + wasR + ' moves to the left and ' + wasL + ' moves to the right. Everything below them moves too.', builder: 'invert(' + val(id) + '): left, right = right, left. Now left = ' + wasR + ' and right = ' + wasL + '. Then invert(left) and invert(right).', expert: 'The swap moves whole subtrees by changing two links, which takes a fixed, tiny amount of work (O(1)). Their insides get mirrored by the calls that follow.' } }));
     }
     const kids = list.filter((n) => n.parent === id).sort((a, b) => (a.side === 'R') - (b.side === 'R'));
     kids.forEach((k) => visit(k.id));
@@ -123,7 +123,7 @@ function mirrorGardenScene() {
   visit(list[0].id);
   steps.push(snap('done', list[0].id, { node: val(list[0].id), wasL: '—', wasR: '—', done: true,
     dialog: [say('explorer', 'Every gardener’s beds are swapped.'), say('narr', 'The bottom row read 1 3 6 9. Now it reads 9 6 3 1, the old row backwards.')],
-    nar: { kid: 'Every gardener has swapped beds. The bottom row used to read 1 3 6 9. Now it reads 9 6 3 1, a perfect mirror.', builder: 'invert(root) returns root. The tree in level order is now [4, 7, 2, 9, 6, 3, 1].', expert: 'Each node is visited once with O(1) work: O(n) time. Recursion depth is the height: O(h).' } }));
+    nar: { kid: 'Every gardener has swapped beds. The bottom row used to read 1 3 6 9. Now it reads 9 6 3 1, a perfect mirror.', builder: 'invert(root) returns root. The tree in level order is now [4, 7, 2, 9, 6, 3, 1].', expert: 'Each gardener is visited once with a fixed amount of work, so the time is O(n). The open calls are as deep as the tree is tall, which is O(h).' } }));
   const T = { intro: ['Mirror the whole garden', 'plain'], swap: ['Swap the two beds', 'cool'], leaf: ['No beds → nothing to swap', 'warn'], done: ['The garden is mirrored!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -171,8 +171,8 @@ function orchardScene() {
     return Object.assign({ kind, nodes, edge: mossTrail(trail, list), tags: Object.assign({}, tags), actorAt: at, depthNow: trail.length, checked }, extra);
   };
   steps.push(snap('intro', list[0].id, { node: '—', lo: '—', hi: '—', inside: '—',
-    dialog: [say('narr', 'The orchard rule: every tree on a left branch is shorter than every tree above it on that side. Every tree on a right branch is taller.'), say('explorer', 'So I’ll carry the allowed range down with me.'), say('narr', 'The top tree can be any height. Each step down makes the range tighter.')],
-    nar: { kid: 'Every tree must fit between a low limit and a high limit. The explorer starts at the top, where any height is fine.', builder: 'check(node, lo, hi) fails if node.val is not strictly between lo and hi. Going left, hi becomes node.val. Going right, lo does.', expert: 'Checking only parent and child is not enough: the rule is about every ancestor. Passing (lo, hi) down carries all of them at O(1) per step. The range shows under each tree.' } }));
+    dialog: [say('narr', 'The orchard rule: all trees on a tree’s left side are shorter than it. All trees on its right side are taller. This holds for every tree above it, not only the tree directly above.'), say('explorer', 'So I’ll carry the allowed range down with me.'), say('narr', 'The top tree can be any height. Each step down makes the range tighter.')],
+    nar: { kid: 'Every tree must fit between a low limit and a high limit. The explorer starts at the top, where any height is fine. The sign ∞ means no limit.', builder: 'check(node, lo, hi) fails if node.val is not between lo and hi (equal to a limit also fails). Going left, hi becomes node.val. Going right, lo does.', expert: 'Checking a tree against only the tree directly above is not enough. The rule covers every tree above. Passing (lo, hi), the low and high limits, down carries all of them. Each step needs a fixed amount of work. The range shows under each tree.' } }));
   const visit = (id, lo, hi) => {
     trail.push(id); checked++;
     const v = num(id);
@@ -181,7 +181,7 @@ function orchardScene() {
       fate[id] = 'hit'; broken = id;
       steps.push(snap('fail', id, { node: v, lo: show(lo), hi: show(hi), inside: 'no',
         dialog: [say('explorer', 'Tree ' + v + ' must be between ' + show(lo) + ' and ' + show(hi) + '. But ' + v + ' is taller than ' + show(hi) + '!'), say('narr', 'It is fine next to 6, but it sits on the left side of 8. The rule is broken.')],
-        nar: { kid: 'Tree ' + v + ' is taller than its parent 6, which is fine. But it is on the left of 8, so it must be shorter than 8. It is not. The rule is broken!', builder: 'check(' + v + ', ' + show(lo) + ', ' + show(hi) + '): ' + v + ' is not < ' + show(hi) + ' → return False.', expert: 'This is the case a parent-only check misses: ' + v + ' > 6 locally, but the ancestor 8 set hi = 8 when the walk went left.' } }));
+        nar: { kid: 'Tree ' + v + ' is taller than its parent 6, which is fine. But it is on the left of 8, so it must be shorter than 8. It is not. The rule is broken!', builder: 'check(' + v + ', ' + show(lo) + ', ' + show(hi) + '): ' + v + ' is not < ' + show(hi) + ' → return False.', expert: 'A check against only the tree above misses this. ' + v + ' > 6 locally, but tree 8 set the high limit hi = 8 when the walk went left.' } }));
       return false;
     }
     fate[id] = 'ok';
@@ -198,7 +198,7 @@ function orchardScene() {
   const unchecked = list.length - checked;
   steps.push(snap('done', list[0].id, { node: num(list[0].id), lo: '—', hi: '—', inside: ok ? 'yes' : 'no', done: true,
     dialog: [say('explorer', 'The “no” travels back up my trail to the top.'), say('narr', 'One broken tree is enough. The other ' + unchecked + ' never need checking.')],
-    nar: { kid: 'One tree broke the rule, so the whole orchard fails. The explorer doesn’t need to check the last ' + unchecked + ' trees.', builder: 'Each call returns False as soon as a child does. isValidBST(root) = ' + (ok ? 'True' : 'False') + '.', expert: 'Short-circuit and: the right subtree of 8 is never visited. Worst case O(n) time, O(h) stack.' } }));
+    nar: { kid: 'One tree broke the rule, so the whole orchard fails. The explorer doesn’t need to check the last ' + unchecked + ' trees.', builder: 'Each call returns False as soon as a child does. isValidBST(root) = ' + (ok ? 'True' : 'False') + '.', expert: 'The check stops as soon as one tree fails: the right side of 8 is never visited. Worst case O(n) time, and the open calls are O(h) deep.' } }));
   const T = { intro: ['Any height fits at the top', 'plain'], check: ['Inside its limits → pass them down', 'cool'], fail: ['Outside its limits → rule broken', 'warn'], done: ['Not a valid orchard', 'warn'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -220,9 +220,9 @@ function orchardScene() {
     lines: tagLines(code), code,
     rules: [['Start at the top: any height is allowed', 'intro'], ['Fits its range → go down with tighter limits', 'check'], ['Outside its range → the rule is broken', 'fail'], ['Pass the answer back up to the top', 'done']],
     complexity: [['O(n)', 'each tree is checked at most once'], ['O(h)', 'the trail is as long as the orchard is tall']],
-    quest: ['In the orchard every tree has a height. Here is the rule. Everything on a tree’s left side is shorter than it. Everything on its right side is taller.', 'That must hold for every ancestor, not only the parent. The inspector asks the explorer: does this orchard obey the rule?'],
+    quest: ['In the orchard every tree has a height. Here is the rule. Everything on a tree’s left side is shorter than it. Everything on its right side is taller.', 'That must hold for every tree above it, not only the tree directly above. The inspector asks the explorer: does this orchard obey the rule?'],
     example: ['root = [8, 3, 10, 1, 6, null, 14, null, null, 4, 9]', 'false  (9 is on the left of 8)'],
-    hints: ['“Tree 9 is taller than its parent 6. Is that enough to make it fine?”', '“Each tree has a lowest and a highest height it may be, set by every tree above it.”', '“Carry a range down. Going left, the top limit becomes this tree’s height. Going right, the bottom limit does. Fail as soon as a tree is outside its range.”'],
+    hints: ['“Tree 9 is taller than 6, the tree directly above it. Is that enough to make it fine?”', '“Each tree has a lowest and a highest height it may be, set by every tree above it.”', '“Carry a range down. Going left, the top limit becomes this tree’s height. Going right, the bottom limit does. Fail as soon as a tree is outside its range.”'],
     clues: ['left is smaller, right is bigger', 'the rule holds for every ancestor', 'one break fails the whole tree'],
     kit: { right: 2, spot: 'Why carry limits, not only compare?', ask: 'How should the explorer check the orchard?',
       quiz: [['Compare each tree with its parent', 'Left child shorter, right child taller'], ['Check the top three trees', 'If the top is right, the rest follows'], ['Carry the limits down', 'Each tree must fit a range set by all trees above it'], ['Count the trees on each side', 'Both sides should have the same number']] },

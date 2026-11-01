@@ -11,7 +11,7 @@ function hpTalentScene() {
   const board = (fresh, hit) => room.map((j, p) => [String(nums[j]), p === 0 ? 'door' : 'inside', j === hit ? 'hit' : j === fresh ? 'fresh' : '']);
   steps.push({ L: 0, kind: 'intro', at: -1, room: [], gone: [], board: [],
     dialog: [say('narr', 'Six acts will perform tonight, each with a score. The triage nurse must name the act with the 2nd highest score.'), say('triage', 'My green room has only 2 chairs. I keep the weakest act in the chair by the door.'), say('narr', 'And when a new act comes along?'), say('triage', 'I only look at the one by the door. Beat them and you get a chair.')],
-    nar: { kid: 'The triage nurse runs a small green room with 2 chairs. The room holds the best acts seen so far. The weakest of them always sits by the door.', builder: 'room = [] is a min-heap. For each x: if the room has a free chair, push x. Otherwise, if x beats room[0], replace room[0] with x.', expert: 'A min-heap of size k keeps the k largest values seen so far. Its root is the kth largest of that prefix, and each step costs O(log k).' } });
+    nar: { kid: 'The triage nurse runs a small green room with 2 chairs. The room holds the best acts seen so far. The weakest of them always sits by the door.', builder: 'room = [] is a min-heap: a list that keeps its smallest value at room[0]. For each x: if the room has a free chair, push x. Otherwise, if x beats room[0], replace room[0] with x.', expert: 'A min-heap of size k keeps the k largest values seen so far. Its first item, the smallest of them, is the kth largest so far. Each step costs O(log k), a small number of moves even for a big k.' } });
   const gone = [];
   nums.forEach((x, i) => {
     if (room.length < k) {
@@ -19,26 +19,26 @@ function hpTalentScene() {
       const v = vals();
       steps.push({ L: i, kind: 'push', at: i, room: v, gone: gone.slice(), board: board(i, -1),
         dialog: [say('triage', 'Score ' + x + '. ' + (room.length === 1 ? 'The room is empty' : 'One chair is still free') + ', so in you come.'), say('narr', 'The room holds ' + hpList(v) + '. The weakest, ' + v[0] + ', takes the chair by the door.')],
-        nar: { kid: 'Act ' + x + ' walks straight in because a chair is free. The room now holds ' + v.join(' and ') + '.', builder: 'len(room) = ' + (room.length - 1) + ' < k → heappush(room, ' + x + '). room = ' + hpList(v) + ', room[0] = ' + v[0] + '.', expert: 'Fill phase: the first k values go in unconditionally. Each push sifts up in O(log k).' } });
+        nar: { kid: 'Act ' + x + ' walks straight in because a chair is free. The room now holds ' + v.join(' and ') + '.', builder: 'len(room) = ' + (room.length - 1) + ' < k → heappush(room, ' + x + '). room = ' + hpList(v) + ', room[0] = ' + v[0] + '.', expert: 'Filling phase: the first k values go in without any test. Each push moves the new value up to its place in at most log k steps.' } });
     } else if (x > nums[room[0]]) {
       const out = room.shift(); gone.push(out);
       room.push(i); sortRoom();
       const v = vals();
       steps.push({ L: i, kind: 'replace', at: i, room: v, gone: gone.slice(), out, board: board(i, -1),
         dialog: [say('triage', 'Score ' + x + ' beats ' + nums[out] + ' by the door.'), say('triage', nums[out] + ', please leave. ' + x + ', take a chair.'), say('narr', 'The room is now ' + hpList(v) + '. ' + v[0] + ' moves to the door.')],
-        nar: { kid: x + ' is better than ' + nums[out] + ', the weakest act inside. So ' + nums[out] + ' goes home and ' + x + ' sits down. Now ' + v[0] + ' is the weakest one.', builder: x + ' > room[0] = ' + nums[out] + ' → heapreplace(room, ' + x + '). room = ' + hpList(v) + '.', expert: nums[out] + ' now has at least k larger values ahead of it, so it can never be the kth largest. Pop and push in one O(log k) sift.' } });
+        nar: { kid: x + ' is better than ' + nums[out] + ', the weakest act inside. So ' + nums[out] + ' goes home and ' + x + ' sits down. Now ' + v[0] + ' is the weakest one.', builder: x + ' > room[0] = ' + nums[out] + ' → heapreplace(room, ' + x + '). room = ' + hpList(v) + '.', expert: nums[out] + ' now has at least k larger values ahead of it, so it can never be the kth largest. Remove the old one and add the new one in a single small step.' } });
     } else {
       const v = vals();
       steps.push({ L: i, kind: 'turnaway', at: i, room: v, gone: gone.concat([i]), board: board(-1, -1),
         dialog: [say('triage', 'Score ' + x + '. That does not beat ' + v[0] + ' by the door.'), say('narr', 'Then ' + x + ' can never be in the top 2. The triage nurse sends it home and the room stays as it is.')],
-        nar: { kid: x + ' is not better than ' + v[0] + ', the weakest act inside. The room is full, so ' + x + ' goes home.', builder: x + ' ≤ room[0] = ' + v[0] + ' → skip. room stays ' + hpList(v) + '.', expert: 'k values already beat or tie ' + x + ', so it is below the kth largest. One O(1) peek, no heap work.' } });
+        nar: { kid: x + ' is not better than ' + v[0] + ', the weakest act inside. The room is full, so ' + x + ' goes home.', builder: x + ' ≤ room[0] = ' + v[0] + ' → skip. room stays ' + hpList(v) + '.', expert: 'k values already beat or tie ' + x + ', so it is below the kth largest. One look at room[0] is all it takes, so the heap does no work.' } });
       gone.push(i);
     }
   });
   const v = vals(), ans = v[0], ansAt = room[0];
   steps.push({ L: ansAt, kind: 'found', at: -1, room: v, gone: gone.slice(), board: board(-1, ansAt),
     dialog: [say('triage', 'That was the last act.'), say('narr', 'The room holds the top 2: ' + v.join(' and ') + '. The act by the door, ' + ans + ', is the 2nd best. The answer is ' + ans + '.')],
-    nar: { kid: 'The show is over. The two best acts are ' + v.join(' and ') + ', and the one by the door, ' + ans + ', is second best.', builder: 'Loop ends → return room[0] = ' + ans + '.', expert: 'n = 6, k = 2: O(n log k) time, O(k) space. Sorting everything would cost O(n log n).' } });
+    nar: { kid: 'The show is over. The two best acts are ' + v.join(' and ') + ', and the one by the door, ' + ans + ', is second best.', builder: 'Loop ends → return room[0] = ' + ans + '.', expert: 'Here n = 6 acts and k = 2 chairs. The work is O(n log k) time and O(k) space. Sorting everything would cost O(n log n).' } });
   const T = { intro: ['Empty room, 2 chairs', 'plain'], push: ['Free chair → the act walks in', 'cool'], replace: ['Beats the door → swap them', 'warn'], turnaway: ['Not better than the door → sent home', 'plain'], found: ['2nd best: ' + ans, 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -92,7 +92,7 @@ function hpSongsScene() {
   const tally = songs.map((s) => s + ' ×' + plays[s]).join(', ');
   steps.push({ L: 0, kind: 'intro', at: -1, room: [], gone: [], board: [],
     dialog: [say('narr', 'The radio got seven requests: 1, 2, 3, 2, 4, 3, 2. Which 2 songs were asked for most?'), say('shop', 'I tallied them for you: ' + tally + '.'), say('triage', 'Thanks, shopkeeper. My booth has 2 slots. The song with the fewest plays sits by the door.')],
-    nar: { kid: 'The shopkeeper counted how often each song was asked for. Now the triage nurse picks the 2 most popular, keeping a small booth with room for only 2 songs.', builder: 'plays = Counter(nums) → {' + songs.map((s) => s + ': ' + plays[s]).join(', ') + '}. room is a min-heap of (plays, song) with at most k entries.', expert: 'Counting is O(n). The heap then sweeps the m distinct songs in O(m log k), cheaper than sorting all m when k is small.' } });
+    nar: { kid: 'The shopkeeper counted how often each song was asked for. Now the triage nurse picks the 2 most popular, keeping a small booth with room for only 2 songs.', builder: 'plays = Counter(nums) counts each song → {' + songs.map((s) => s + ': ' + plays[s]).join(', ') + '}. room is a min-heap of (plays, song) pairs. A min-heap keeps its smallest item first. It holds at most k pairs.', expert: 'Counting takes O(n) steps. The heap then goes over the m different songs in O(m log k) steps. That is cheaper than sorting all m songs when k is small.' } });
   const gone = [];
   songs.forEach((s, j) => {
     const c = plays[s];
@@ -100,24 +100,24 @@ function hpSongsScene() {
       room.push(j); sortRoom();
       steps.push({ L: j, kind: 'push', at: j, room: room.slice(), gone: gone.slice(), board: board(j, false),
         dialog: [say('triage', 'Song ' + s + ', asked for ' + c + (c === 1 ? ' time' : ' times') + '. A slot is free, so it goes in.'), say('narr', 'By the door now: song ' + songs[room[0]] + ' with ' + plays[songs[room[0]]] + '.')],
-        nar: { kid: 'Song ' + s + ' gets a slot because the booth is not full yet.', builder: 'len(room) < k → heappush(room, (' + c + ', ' + s + ')). room[0] = ' + tup(room[0]) + '.', expert: 'Tuples compare by plays first, so the root is always the least-requested song in the booth.' } });
+        nar: { kid: 'Song ' + s + ' gets a slot because the booth is not full yet.', builder: 'len(room) < k → heappush(room, (' + c + ', ' + s + ')). room[0] = ' + tup(room[0]) + '.', expert: 'Pairs are compared by plays first, so the root is always the least-requested song in the booth.' } });
     } else if (c > plays[songs[room[0]]]) {
       const out = room.shift(); gone.push(out);
       room.push(j); sortRoom();
       steps.push({ L: j, kind: 'replace', at: j, room: room.slice(), gone: gone.slice(), out, board: board(j, false),
         dialog: [say('triage', 'Song ' + s + ' has ' + c + ' plays. Song ' + songs[out] + ' by the door has only ' + plays[songs[out]] + '.'), say('triage', 'Song ' + songs[out] + ' is out, song ' + s + ' is in.'), say('narr', 'Now song ' + songs[room[0]] + ' guards the door with ' + plays[songs[room[0]]] + ' plays.')],
-        nar: { kid: 'Song ' + s + ' was asked for more often than song ' + songs[out] + ', so they swap. Song ' + songs[out] + ' leaves the booth.', builder: c + ' > room[0][0] = ' + plays[songs[out]] + ' → heapreplace(room, (' + c + ', ' + s + ')).', expert: 'Two songs now beat song ' + songs[out] + ', so it can never be in the top 2. One O(log k) sift.' } });
+        nar: { kid: 'Song ' + s + ' was asked for more often than song ' + songs[out] + ', so they swap. Song ' + songs[out] + ' leaves the booth.', builder: c + ' > room[0][0] = ' + plays[songs[out]] + ' → heapreplace(room, (' + c + ', ' + s + ')).', expert: 'Two songs now beat song ' + songs[out] + ', so it can never be in the top 2. One small O(log k) step.' } });
     } else {
       steps.push({ L: j, kind: 'turnaway', at: j, room: room.slice(), gone: gone.concat([j]), board: board(-1, false),
-        dialog: [say('triage', 'Song ' + s + ', just ' + c + (c === 1 ? ' play' : ' plays') + '. That does not beat song ' + songs[room[0]] + ' by the door.'), say('narr', 'So it stays outside. The booth does not change.')],
-        nar: { kid: 'Song ' + s + ' was not asked for often enough, so it does not get into the booth.', builder: c + ' ≤ room[0][0] = ' + plays[songs[room[0]]] + ' → skip.', expert: 'A single O(1) peek rules it out; the heap is untouched.' } });
+        dialog: [say('triage', 'Song ' + s + ', only ' + c + (c === 1 ? ' play' : ' plays') + '. That does not beat song ' + songs[room[0]] + ' by the door.'), say('narr', 'So it stays outside. The booth does not change.')],
+        nar: { kid: 'Song ' + s + ' was not asked for often enough, so it does not get into the booth.', builder: c + ' ≤ room[0][0] = ' + plays[songs[room[0]]] + ' → skip.', expert: 'One look at the door rules it out. The heap does no work.' } });
       gone.push(j);
     }
   });
   const ans = room.map((j) => songs[j]);
   steps.push({ L: room[room.length - 1], kind: 'found', at: -1, room: room.slice(), gone: gone.slice(), board: board(-1, true),
     dialog: [say('triage', 'Every song has had its turn.'), say('narr', 'The booth holds song ' + ans.join(' and song ') + '. Those are the 2 most requested. The answer is ' + hpList(ans) + ', in any order.')],
-    nar: { kid: 'The two songs left in the booth, ' + ans.join(' and ') + ', are the most requested ones.', builder: 'return [song for c, song in room] = ' + hpList(ans) + '.', expert: 'O(n + m log k) time and O(m) space for the tally. A bucket list by count can reach O(n), but the heap is the general tool.' } });
+    nar: { kid: 'The two songs left in the booth, ' + ans.join(' and ') + ', are the most requested ones.', builder: 'return [song for c, song in room] = ' + hpList(ans) + '.', expert: 'O(n + m log k) time and O(m) space for the tally. Sorting songs into one slot per count can reach O(n), but the heap works in every case.' } });
   const T = { intro: ['Tally done, booth empty', 'plain'], push: ['Free slot → the song goes in', 'cool'], replace: ['More plays than the door → swap', 'warn'], turnaway: ['Fewer plays than the door → stays out', 'plain'], found: ['Top 2: songs ' + ans.join(' and '), 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -173,12 +173,12 @@ function hpYardScene() {
   const board = (fresh) => desk.map((c) => [String(c.v), 'train ' + c.name, c === fresh ? 'fresh' : '']);
   steps.push({ L: 0, kind: 'intro', sent: -1, desk: [], deskIdx: [], merged: [], board: [],
     dialog: [say('narr', 'Three sorted trains wait in the yard: A is 2, 5, 8. B is 1, 6. C is 3, 4. Make one sorted train out of them.'), say('triage', 'I only need to see the front carriage of each train. The smallest front always leaves next.'), say('narr', 'And your desk keeps the smallest one on top?'), say('triage', 'Always. That is what my desk is for.')],
-    nar: { kid: 'Three trains are already in order from small to big. The triage nurse will build one long train by always sending out the smallest front carriage.', builder: 'desk is a min-heap of front carriages, one per train. Pop the smallest, couple it to the out train, then push the next carriage of that same train.', expert: 'The heap holds at most k nodes. Every one of the N nodes is pushed and popped once, so the merge is O(N log k).' } });
+    nar: { kid: 'Three trains are already in order from small to big. The triage nurse will build one long train by always sending out the smallest front carriage.', builder: 'desk is a min-heap: a list that always keeps its smallest value first. It holds the front carriage of each train. Pop the smallest, couple it to the out train, then push the next carriage of that same train.', expert: 'The heap holds at most k nodes. Every one of the N nodes is pushed and popped once, so the merge is O(N log k). N is the number of carriages and k is the number of trains.' } });
   trains.forEach(([name]) => desk.push(carOf(name, 0)));
   sortDesk();
   steps.push({ L: desk[0].idx, kind: 'seed', sent: -1, desk: deskVals(), deskIdx: desk.map((c) => c.idx), merged: [], board: board(null),
     dialog: [say('triage', 'Fronts on my desk: ' + trains.map(([name]) => name + carOf(name, 0).v).join(', ') + '.'), say('narr', 'The smallest is on top: ' + desk[0].v + ' from train ' + desk[0].name + '.')],
-    nar: { kid: 'The triage nurse puts the first carriage of each train on the desk: ' + deskVals().join(', ') + '. Now the nurse can see that ' + desk[0].v + ' is the smallest.', builder: 'Push every non-empty head: desk = ' + hpList(deskVals()) + ', desk[0] = ' + desk[0].v + '.', expert: 'Seeding costs O(k log k), or O(k) with heapify.' } });
+    nar: { kid: 'The triage nurse puts the first carriage of each train on the desk: ' + deskVals().join(', ') + '. Now the nurse can see that ' + desk[0].v + ' is the smallest.', builder: 'Push every non-empty head: desk = ' + hpList(deskVals()) + ', desk[0] = ' + desk[0].v + '.', expert: 'Putting the first k carriages on the desk costs at most O(k log k) steps.' } });
   while (desk.length) {
     const c = desk.shift();
     merged.push(c.v);
@@ -196,7 +196,7 @@ function hpYardScene() {
   }
   steps.push({ L: cars.find((c) => c.v === merged[merged.length - 1]).idx, kind: 'found', sent: -1, desk: [], deskIdx: [], merged: merged.slice(), board: [],
     dialog: [say('triage', 'The desk is empty. Every carriage has left the yard.'), say('narr', 'One sorted train: ' + merged.join(' → ') + '. Well done, triage nurse.')],
-    nar: { kid: 'All ' + total + ' carriages are in one train, smallest to biggest: ' + merged.join(', ') + '.', builder: 'desk is empty → return head.next = ' + merged.join(' → ') + '.', expert: 'N = ' + total + ', k = 3: O(N log k) time and O(k) extra space. Merging the trains one after another would cost O(N·k).' } });
+    nar: { kid: 'All ' + total + ' carriages are in one train, smallest to biggest: ' + merged.join(', ') + '.', builder: 'desk is empty → return head.next = ' + merged.join(' → ') + '.', expert: 'N = ' + total + ', k = 3: O(N log k) time and O(k) extra space. Merging the trains one after another would cost O(N·k), which is slower.' } });
   const T = { intro: ['Three sorted trains in the yard', 'plain'], seed: ['Fronts go on the desk', 'cool'], send: ['Smallest out → its train moves up', 'warn'], empty: ['Smallest out → that train is finished', 'cool'], found: ['One sorted train', 'ok'] };
   const order = cars.slice().sort((a, b) => a.v - b.v).map((c) => c.idx);
   steps.forEach((st) => {

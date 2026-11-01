@@ -46,7 +46,7 @@ function courseBuild(v) {
   steps.push(runStep('intro', snap(), [say('narr', 'The ripple wants to take all ' + n + ' classes. An arrow means “take this one first”.'), say('ripple', 'I’ll write under each class how many classes it still waits for.')],
     'The ripple plans the classes. An arrow from one class to another means “take this one first”. The number under each class says how many it still waits for.',
     'needs[c] = how many arrows point into class c. unlocks[b] lists the classes that wait for b.',
-    'This is a directed graph: its arrows point one way. Kahn’s method keeps taking a class that needs nothing more. That gives a safe order, or shows there is none.'));
+    'The arrows point one way, so this is called a directed graph. Kahn’s method keeps taking a class that waits for nothing. That gives a safe order, or shows there is none.'));
   free0.forEach((id) => { look[Number(id)] = 'buy'; line.push(Number(id)); });
   steps.push(runStep('seed', snap(), free0.length ? [say('ripple', listAnd(free0.map((x) => 'Class ' + x)) + (free0.length === 1 ? ' waits' : ' wait') + ' for nothing.'), say('narr', 'Then put ' + (free0.length === 1 ? 'it' : 'them') + ' in the line first.')] : [say('ripple', 'Every class waits for another one.'), say('narr', 'Then nobody can even start.')],
     free0.length ? listAnd(free0.map((x) => 'Class ' + x)) + (free0.length === 1 ? ' waits' : ' wait') + ' for nothing, so ' + (free0.length === 1 ? 'it joins' : 'they join') + ' the line first.' : 'No class is free to start. Every class waits for another one.',
@@ -58,8 +58,8 @@ function courseBuild(v) {
     look[c] = 'cur';
     steps.push(runStep('take', snap(), [say('ripple', 'Class ' + c + ' is at the front of the line. I take it.'), say('narr', 'That makes ' + taken + ' of ' + n + '.')],
       'The ripple takes class ' + c + ' from the front of the line. That makes ' + taken + ' of ' + n + '.',
-      'c = line.popleft() = ' + c + ', taken = ' + taken + '.',
-      'Class ' + c + ' has no unmet needs, so taking it now is always safe. Each class leaves the line once.'));
+      'c = line.popleft() = ' + c + ' (take the front of the line), taken = ' + taken + '.',
+      'Class ' + c + ' waits for nothing, so taking it now is always safe. Each class leaves the line once.'));
     for (const a of unlocks[c]) {
       nxt = a; active = c + '-' + a; needs[a]--;
       if (needs[a] === 0) {
@@ -72,7 +72,7 @@ function courseBuild(v) {
         steps.push(runStep('unlock', snap(), [say('ripple', 'Class ' + a + ' was waiting for ' + c + '.'), say('narr', 'It still waits for ' + many(needs[a], 'more class', 'more classes') + '.')],
           'Class ' + a + ' was waiting for class ' + c + '. Now it waits for ' + many(needs[a], 'more class', 'more classes') + '.',
           'needs[' + a + '] -= 1 → ' + needs[a] + '. Not zero yet, so it stays out of the line.',
-          'Each arrow is used once, when the class it starts from is taken. That is why the whole run is O(V + E).'));
+          'Each arrow is used once, when the class it starts from is taken. That is why the whole run takes O(V + E) steps. V is the number of classes and E is the number of arrows.'));
       }
       used[active] = 'out'; active = null;
     }
@@ -85,7 +85,7 @@ function courseBuild(v) {
     steps.push(runStep('done', snap({ done: true }), [say('ripple', 'The line is empty and I took all ' + n + ' classes.'), say('narr', 'So there is a good order. The answer is True.')],
       'The line is empty and every class got taken, one after another. The ripple can finish all ' + n + '. The answer is True.',
       'taken == numCourses (' + n + ') → return True.',
-      'Every class and every arrow was handled once: O(V + E) time, O(V + E) space for the lists.'));
+      'Every class and every arrow was handled once. That takes O(V + E) steps and O(V + E) memory. V is the number of classes and E is the number of arrows.'));
   } else {
     left.forEach((id) => { look[Number(id)] = 'hit'; });
     steps.push(runStep('stuck', snap({ done: true }), [say('ripple', 'The line is empty, but ' + listAnd(left.map((x) => 'class ' + x)) + ' still ' + (left.length === 1 ? 'waits' : 'wait') + '.'), say('narr', 'They wait on each other in a loop. The answer is False.')],
@@ -186,7 +186,7 @@ function cloneScene() {
   steps.push(runStep('intro', snap({ old: '—', nb: '—' }), [say('narr', 'Four friends, and each line is a friendship. Make a copy of the whole group.'), say('explorer', 'I’ll copy each friend once and write it in my notebook.'), say('narr', 'And the friendships?'), say('explorer', 'Each copy gets the copies of its friends.')],
     'The explorer must copy a group of four friends. Each line on the left is a friendship. The copies on the right must have the same friendships.',
     'copies = {}. clone(old): if old is in copies, return its copy. Else make one, write it down, then clone each neighbour and link it.',
-    'A deep copy of a graph. The notebook (a hash map from old node to copy) stops loops: 1 → 2 → 1 would never end without it.'));
+    'A deep copy builds all-new nodes instead of sharing the old ones. The notebook (a hash map, which looks up a copy by its old node) stops loops. Without it, 1 → 2 → 1 would never end.'));
   const clone = (k, from) => {
     if (made[k]) {
       (links[from] = links[from] || []).push(k); linkCount++;
@@ -194,7 +194,7 @@ function cloneScene() {
       st.edges[keyOf('c', from, k)] = 'active';
       board.forEach((r) => { r[2] = r[0] === String(k) ? 'hit' : ''; });
       st.board = board.map((r) => r.slice());
-      steps.push(runStep('reuse', st, [say('explorer', 'Friend ' + k + ' is already in my notebook.'), say('narr', 'So ' + from + '′ just links to ' + k + '′. No new copy.')],
+      steps.push(runStep('reuse', st, [say('explorer', 'Friend ' + k + ' is already in my notebook.'), say('narr', 'So ' + from + '′ links to ' + k + '′. No new copy.')],
         'Friend ' + k + ' was copied before. The explorer looks it up in the notebook, and ' + from + '′ links to ' + k + '′.',
         'clone(' + k + '): ' + k + ' in copies → return ' + k + '′. Append it to ' + from + '′.neighbors.',
         'This lookup is what stops the loop. Without it, clone(' + k + ') would copy ' + k + ' again and run forever.'));
@@ -205,7 +205,7 @@ function cloneScene() {
     board.forEach((r) => { r[2] = ''; });
     board.push([String(k), '→ ' + k + '′', 'fresh']);
     steps.push(runStep('copy', snap({ old: k, nb: '—' }), [say('explorer', 'Friend ' + k + ' has no copy yet. I make ' + k + '′.'), say('narr', 'Write it in the notebook before anything else.')],
-      'Friend ' + k + ' has no copy yet. The explorer makes ' + k + '′ and writes “' + k + ' → ' + k + '′” in his notebook.',
+      'Friend ' + k + ' has no copy yet. The explorer makes ' + k + '′ and writes “' + k + ' → ' + k + '′” in its notebook.',
       'copies[' + k + '] = Node(' + k + '). Written down before visiting the friends, so a loop back finds it.',
       'Writing the copy down first is the key order. Friends of ' + k + ' may lead straight back to ' + k + '.'));
     board.forEach((r) => { r[2] = ''; });
@@ -219,7 +219,7 @@ function cloneScene() {
         steps.push(runStep('link', st, [say('explorer', 'Back at ' + k + '. Friend ' + nb + ' is copied now.'), say('narr', 'Link ' + k + '′ to ' + nb + '′.')],
           'The explorer comes back to friend ' + k + '. The copy of ' + nb + ' is ready, so ' + k + '′ links to ' + nb + '′.',
           'clone(' + nb + ') returned ' + nb + '′. ' + k + '′.neighbors.append(' + nb + '′).',
-          'The call for ' + nb + ' finished its whole part of the graph first. That is depth-first order.'));
+          'The call for ' + nb + ' finished its whole part of the graph first. That is depth-first order: finish one path completely before starting the next.'));
       }
     }
     trail.pop();
@@ -228,7 +228,7 @@ function cloneScene() {
   steps.push(runStep('done', snap({ old: 1, nb: '—', done: true }), [say('explorer', 'Every friend has a copy, and every copy has its friends.'), say('narr', 'Hand back 1′. The whole copy hangs off it.')],
     'All four friends are copied, and every copy has both of its friends. The explorer hands back copy 1′.',
     'clone(1) returns 1′. 4 copies, 8 links (each friendship twice, once from each side).',
-    'Each node is copied once and each link is made once. Time is O(V + E). Space is O(V) for the notebook and the call stack.'));
+    'Each node is copied once and each link is made once. Time is O(V + E), where V is the number of friends and E is the number of friendships. Space is O(V) for the notebook and the call stack.'));
   runFinish(steps, { intro: ['Copy every friend and friendship', 'plain'], copy: ['Not in the notebook → make a copy', 'cool'], reuse: ['Already copied → link to it', 'warn'], link: ['Friend copied → link the copies', 'cool'], done: ['Copy complete → return 1′', 'ok'] }, (st) => {
     st.meter = { text: 'links made: ' + st.linkCount + ' / 8', pct: (st.linkCount / 8) * 100, mark: 100, markLabel: '4 friendships, both ways' };
     st.watch = [['old', st.old == null ? '—' : st.old, 'left'], ['friend', st.nb, 'right'], ['copies', st.made + ' / 4', 'text'], ['links', st.linkCount + ' / 8', 'text'], ['call depth', st.depth, 'right'], ['result', st.done ? '1′' : '…', st.done ? 'ok' : 'text']];
@@ -282,10 +282,10 @@ function roadsBuild(v) {
     return Object.assign(st, extra);
   };
   const find0 = (x) => { while (head[x] !== x) x = head[x]; return x; };
-  steps.push(runStep('intro', snap({ a: '—', b: '—', ra: '—', rb: '—' }), [say('narr', 'These ' + n + ' towns were joined by ' + (n - 1) + ' roads, no loops. Then one extra road was built.'), say('checker', 'Every town starts as its own head. I’ll read the roads in order.'), say('narr', 'Which road joins two towns that were already joined?')],
+  steps.push(runStep('intro', snap({ a: '—', b: '—', ra: '—', rb: '—' }), [say('narr', 'These ' + n + ' towns were joined by ' + (n - 1) + ' roads, no loops. Then one extra road was built.'), say('checker', 'Every town starts as the head of its own group. I’ll read the roads in order.'), say('narr', 'Which road joins two towns that were already joined?')],
     'The checker reads the roads one at a time. Each town notes which town it reports to. A town that reports to itself is the head of its group.',
     'head[x] = x for every town. For each road (a, b): find the head of a and of b. Same head → this road is extra. Else join the groups.',
-    'Union-find keeps groups as trees of parent pointers. Each “find” walks up to the head; walks are kept short by pointing towns closer to the head.'));
+    'Union-find keeps each group as a small tree. Each town points to a parent, and the head is at the top. A “find” walks up to the head. Pointing towns closer to the head keeps later walks short.'));
   for (const [a, b] of list) {
     const fa = find(a), fb = find(b), key = a + '-' + b;
     const st = snap({ a, b, ra: fa.root, rb: fb.root });
@@ -302,7 +302,7 @@ function roadsBuild(v) {
     steps.push(runStep('look', st, [say('checker', 'Road ' + a + '–' + b + '. Town ' + a + '’s head is ' + fa.root + ', town ' + b + '’s head is ' + fb.root + '.'), say('narr', 'Two different heads, so two different groups.')],
       'Road ' + a + '–' + b + '. The checker follows the arrows: town ' + a + '’s head is ' + fa.root + ' and town ' + b + '’s head is ' + fb.root + '. Different heads, so the towns are not joined yet.',
       'find(' + a + ') = ' + fa.root + ', find(' + b + ') = ' + fb.root + '. Different → union.',
-      'find walks ' + (fa.hops.length - 1) + ' and ' + (fb.hops.length - 1) + ' hops. Pointing towns closer to the head on the way keeps later walks short.'));
+      'Finding the two heads took ' + (fa.hops.length - 1) + ' and ' + (fb.hops.length - 1) + ' steps up. Pointing towns closer to the head on the way keeps later walks short.'));
     const [big, small] = size[fa.root] >= size[fb.root] ? [fa.root, fb.root] : [fb.root, fa.root];
     head[small] = big; size[big] += size[small]; joins++;
     kept[key] = 'path';
@@ -311,7 +311,7 @@ function roadsBuild(v) {
     steps.push(runStep('join', sj, [say('checker', 'Head ' + small + ' now reports to head ' + big + '.'), say('narr', 'One group of ' + size[big] + ' towns.')],
       'The checker joins the two groups. Head ' + small + ' now reports to ' + big + ', so the group has ' + many(size[big], 'town') + '. The road is kept.',
       'head[' + small + '] = ' + big + ' (the smaller group joins the bigger one).',
-      'Hanging the smaller group under the bigger one keeps every walk short. Each find costs about O(α(n)), which is almost constant.'));
+      'Hanging the smaller group under the bigger one keeps every walk short. Each find then takes almost constant time, which means it hardly grows as there are more towns.'));
   }
   runFinish(steps, { intro: ['Every town is its own head', 'plain'], look: ['Different heads → not joined yet', 'cool'], join: ['Join the two groups', 'cool'], cycle: ['Same head → extra road', 'ok'] }, (st) => {
     st.meter = { text: 'roads kept: ' + st.joins + ' / ' + (n - 1), pct: (st.joins / (n - 1)) * 100, mark: 100, markLabel: 'a tree needs ' + (n - 1) };
@@ -396,9 +396,9 @@ function delayBuild(v) {
     return Object.assign(st, extra);
   };
   steps.push(runStep('intro', snap({ u: '—', t: '—' }), [say('narr', 'A message leaves town ' + k + ' at time 0. Each arrow shows how long a road takes, one way only.'), say('checker', 'I always visit the town I can reach soonest next. My list is sorted by time.'), say('narr', 'When does the last town get the message?')],
-    'The checker carries a message out of town ' + k + '. The number on each arrow is how long that road takes. Every other town starts at “never” (∞).',
-    'best = {' + k + ': 0}, heap = [(0, ' + k + ')]. Pop the smallest time, then try every road out of that town.',
-    'Dijkstra’s method. Road times are never negative, so the smallest time on the list can never get better. That town is settled for good.'));
+    'The checker carries a message out of town ' + k + '. The number on each arrow is how long that road takes. Every other town starts at “never”, written ∞ (the sign for no time yet).',
+    'best = {' + k + ': 0}, heap = [(0, ' + k + ')]. The heap is a list that always hands back the smallest (time, town) pair first. Pop that pair, then try every road out of that town.',
+    'This is Dijkstra’s method for finding the fastest routes. Road times are never negative, so the smallest time on the list can never get better. That town is settled for good.'));
   while (heap.length) {
     heap.sort((x, y) => x[0] - y[0] || x[1] - y[1]);
     const [t, u] = heap.shift();
@@ -424,7 +424,7 @@ function delayBuild(v) {
         steps.push(runStep('improve', st, [say('checker', 'From ' + u + ' to ' + w2 + ' takes ' + w + ': time ' + t + ' + ' + w + ' = ' + nt + '.'), say('narr', old == null ? 'Town ' + w2 + ' had no time yet. Write ' + nt + '.' : 'That beats ' + old + '. Write ' + nt + '.')],
           'The road to town ' + w2 + ' takes ' + w + ', so the checker could get there at time ' + nt + '. ' + (old == null ? 'That is the first time found for town ' + w2 + '.' : 'That is sooner than ' + old + ', so the checker writes the new time.'),
           t + ' + ' + w + ' = ' + nt + ' < ' + (old == null ? '∞' : old) + ' → best[' + w2 + '] = ' + nt + ', push (' + nt + ', ' + w2 + ').',
-          'This is called relaxing a road. A town’s time only goes down, and only when a road gives a sooner arrival.'));
+          'Trying a road to see if it gives a sooner time is called relaxing the road. A town’s time only goes down, and only when a road gives a sooner arrival.'));
       } else {
         const st = snap({ u, t, v: w2, w, nt });
         st.edges[key] = 'active';
@@ -444,7 +444,7 @@ function delayBuild(v) {
     steps.push(runStep('done', snap({ u: '—', t: '—', done: true }), [say('checker', 'My list is empty. Every town got the message.'), say('narr', 'The last one was town ' + lateTown + ', at time ' + last + '. That is the answer.')],
       'Every town got the message. The last one was town ' + lateTown + ', at time ' + last + ', so the answer is ' + last + '.',
       'All ' + n + ' towns settled → return max(best) = ' + last + '.',
-      'Each road is relaxed once and each note is pushed and popped once: O(E log E) time with a heap, O(V + E) space.'));
+      'Each road is relaxed once and each note is pushed and popped once: O(E log E) time with a heap, O(V + E) space. E is the number of roads and V is the number of towns.'));
   } else {
     const st = snap({ u: '—', t: '—', done: true });
     missing.forEach((id) => { st.nodes[id] = 'hit'; });

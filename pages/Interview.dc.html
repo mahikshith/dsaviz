@@ -117,7 +117,7 @@ button:disabled{opacity:0.35;cursor:default}
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fluid="true" data-page="Interview" style="width: 1440px; height: {{pageH}}; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fluid="true" data-page="Interview" style="width: 1440px; min-height: {{pageH}}; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <style>
 [data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
@@ -274,8 +274,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <p style="margin: 0; font-size: var(--fs18); color: {{t.text2}}">{{tabLine}}</p>
 </div>
 </div>
-<div role="tablist" aria-label="Interview prep" style="display: flex; gap: 2px; padding: 4px; border-radius: 14px; background: {{t.sunk}}; align-self: flex-start">
-<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="5"><button role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="height: 42px; padding: 0 18px; border: 0; border-radius: 10px; cursor: pointer; font-size: var(--fs17); font-weight: 700; background: {{tb.bg}}; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
+<div role="tablist" aria-label="Interview prep" style="display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid {{t.line}}">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="5"><button role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="height: 48px; padding: 0; margin-bottom: -1px; border: 0; border-bottom: 2px solid {{tb.line}}; border-radius: 0; cursor: pointer; font-size: var(--fs17); font-weight: 600; background: transparent; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
 </div>
 </sc-if>
 
@@ -283,14 +283,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{isPlans}}" hint-placeholder-val="{{ true }}">
 <div style="display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; animation: rise 0.3s ease">
 <div style="display: flex; flex-direction: column; gap: 16px">
-<div style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-size: var(--fs16); font-weight: 700; color: {{t.muted}}">How long do you have?</span>
 <sc-for list="{{plans}}" as="pl" hint-placeholder-count="3"><button onClick="{{pl.pick}}" aria-pressed="{{pl.on}}" style="padding: 14px 16px; border-radius: 14px; border: 2px solid {{pl.border}}; background: {{pl.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 3px"><span style="font-size: var(--fs18); font-weight: 700">{{pl.name}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{pl.sub}}</span></button></sc-for>
 </div>
-<div style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-size: var(--fs16); font-weight: 700; color: {{t.muted}}">Where are you starting?</span>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background: {{t.sunk}}">
-<sc-for list="{{levels}}" as="lv" hint-placeholder-count="3"><button onClick="{{lv.pick}}" aria-pressed="{{lv.on}}" style="height: 40px; border: 0; border-radius: 9px; cursor: pointer; font-size: var(--fs16); font-weight: 700; background: {{lv.bg}}; color: {{lv.fg}}">{{lv.label}}</button></sc-for>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px">
+<sc-for list="{{levels}}" as="lv" hint-placeholder-count="3"><button onClick="{{lv.pick}}" aria-pressed="{{lv.on}}" style="height: 48px; border: 0; border-radius: 12px; cursor: pointer; font-size: var(--fs16); font-weight: 700; background: {{lv.bg}}; color: {{lv.fg}}">{{lv.label}}</button></sc-for>
 </div>
 <span style="font-size: var(--fs16); line-height: 1.5; color: {{t.text2}}">{{levelNote}}</span>
 </div>
@@ -299,12 +299,12 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div data-m="four" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px">
 <sc-for list="{{days}}" as="dy" hint-placeholder-count="14"><button onClick="{{dy.pick}}" aria-pressed="{{dy.on}}" style="min-height: 64px; padding: 8px; border-radius: 12px; border: 1.5px solid {{dy.border}}; background: {{dy.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 3px"><span style="font-family: {{t.mono}}; font-size: var(--fs15); color: {{t.muted}}">day {{dy.n}}</span><span style="font-size: var(--fs15); font-weight: 700; text-align: left">{{dy.label}}</span></button></sc-for>
 </div>
-<div style="padding: 22px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation: rise 0.3s ease">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: var(--fs22); font-weight: 700">Day {{day.n}} · {{day.label}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">~{{day.mins}} min</span></div>
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px; animation: rise 0.3s ease">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px"><span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs24); font-weight: 600">Day {{day.n}} · {{day.label}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">About {{day.mins}} min</span></span><a href="Briefing.dc.html" onClick="{{day.start}}" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">Start day {{day.n}}</a></div>
 <sc-for list="{{day.items}}" as="it" hint-placeholder-count="3">
 <a href="Briefing.dc.html" onClick="{{it.go}}" style="min-height: 60px; display: flex; gap: 14px; align-items: center; border-top: 1px solid {{t.line}}">
 <span style="width: 8px; height: 8px; border-radius: 999px; background: {{it.dot}}"></span>
-<span style="display: flex; flex-direction: column; flex-grow: 1"><span style="font-size: var(--fs18); font-weight: 600">{{it.title}}</span><span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs17); color: {{t.muted}}">{{it.story}} · {{it.pattern}}</span></span>
+<span style="display: flex; flex-direction: column; flex-grow: 1"><span style="font-size: var(--fs18); font-weight: 600">{{it.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{it.pattern}}</span></span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{it.diff}} · {{it.time}}</span>
 </a>
 </sc-for>
@@ -319,9 +319,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{companies}}" as="c" hint-placeholder-count="10"><button onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-size: var(--fs17); font-weight: 700; background: {{c.bg}}; color: {{c.fg}}; border: 1px solid {{c.border}}">{{c.label}}</button></sc-for></div>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
 <sc-for list="{{coPatterns}}" as="cp" hint-placeholder-count="6">
-<div style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; justify-content: space-between; gap: 10px"><span style="font-size: var(--fs19); font-weight: 700">{{cp.name}}</span><span style="font-family: {{t.mono}}; font-size: var(--fs15); color: {{t.muted}}">#{{cp.rank}}</span></div>
-<span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs17); color: {{t.muted}}">with {{cp.cast}}</span>
 <sc-for list="{{cp.rows}}" as="crw" hint-placeholder-count="2"><a href="Briefing.dc.html" onClick="{{crw.go}}" style="min-height: 44px; display: flex; gap: 10px; align-items: center; border-top: 1px solid {{t.line}}; font-size: var(--fs17)"><span style="width: 8px; height: 8px; border-radius: 999px; background: {{crw.dot}}"></span><span style="font-weight: 600; flex-grow: 1">{{crw.title}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{crw.diff}}</span></a></sc-for>
 </div>
 </sc-for>
@@ -332,17 +331,17 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- PATTERN RADAR -->
 <sc-if value="{{isRadar}}" hint-placeholder-val="{{ false }}">
 <div style="display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; animation: rise 0.3s ease">
-<div style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; overflow: hidden">
-<div data-m="hide" style="display: grid; grid-template-columns: minmax(0, 1.4fr) 190px minmax(0, 1fr); gap: 14px; padding: 12px 20px; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}"><span>If the problem says…</span><span>Think</span><span>Flagship story</span></div>
+<div style="border-radius: 16px; background: {{t.surface}}; overflow: hidden">
+<div data-m="hide" style="display: grid; grid-template-columns: minmax(0, 1.4fr) 190px minmax(0, 1fr); gap: 14px; padding: 12px 20px; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: {{t.muted}}"><span>If the problem says…</span><span>Think</span><span>Practice</span></div>
 <sc-for list="{{radar}}" as="rd" hint-placeholder-count="12">
 <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 190px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 20px; border-top: 1px solid {{t.line}}">
 <span style="font-size: var(--fs18); line-height: 1.45">{{rd.clue}}</span>
 <span style="font-size: var(--fs17); font-weight: 700; color: {{t.accent}}">{{rd.pattern}}</span>
-<a href="Briefing.dc.html" onClick="{{rd.go}}" style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18)">{{rd.story}} →</a>
+<a href="Briefing.dc.html" onClick="{{rd.go}}" style="min-height: 44px; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600; color: {{t.text2}}">Open briefing →</a>
 </div>
 </sc-for>
 </div>
-<div style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 14px; align-self: start">
+<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 14px; align-self: start">
 <span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Quick drill · {{quiz.n}} of {{quiz.total}}</span>
 <p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs22); line-height: 1.5">“{{quiz.prompt}}”</p>
 <sc-for list="{{quiz.options}}" as="qo" hint-placeholder-count="4"><button onClick="{{qo.pick}}" aria-pressed="{{qo.on}}" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1.5px solid {{qo.border}}; background: {{qo.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; font-size: var(--fs18); font-weight: 600">{{qo.label}}</button></sc-for>
@@ -419,7 +418,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <button onClick="{{mock.s.end}}" style="height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{mock.s.endBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 700">{{mock.s.endLabel}}</button>
 </div>
 <div style="display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 16px; min-height: 0">
-<aside aria-label="Problem" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<aside aria-label="Problem" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px; min-width: 0">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{mock.s.count}}</span>
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.15; font-weight: 600">{{mock.s.title}}</h2>
@@ -640,7 +639,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="padding: 14px 18px; border-radius: 14px; background: {{t.sunk}}; font-size: var(--fs17); line-height: 1.5">Affiliate disclosure: none of these links earn us anything today. If that ever changes, the link will say so.</div>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
 <sc-for list="{{resources}}" as="rs" hint-placeholder-count="9">
-<a href="{{rs.url}}" target="_blank" rel="noopener" style="padding: 20px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
+<a href="{{rs.url}}" target="_blank" rel="noopener" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 8px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs15); color: {{t.accent}}">{{rs.kind}}</span>
 <span style="font-size: var(--fs19); font-weight: 700">{{rs.name}} ↗</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{rs.why}}</span>
@@ -15132,9 +15131,9 @@ class Component extends DCLogic {
     return {
       t, ...navVals(this, t, themeKey, 'Interview'), themeBtns: themeButtons(this, themeKey, t),
       cr: this.runner.vals(t),
-      pageH: inSession ? '1240px' : isMock && mock.review ? '2180px' : isMock ? '1060px' : '1500px',
+      pageH: inSession ? '1240px' : isMock && mock.review ? '1400px' : '900px',
       chrome: !inSession,
-      tabs: TABS.map(([k, label]) => ({ label: k === 'mock' && live && !live.ended ? label + ' · live' : label, on: k === this.state.tab, bg: k === this.state.tab ? t.surface : 'transparent', fg: k === this.state.tab ? t.text : t.muted, pick: () => this.setTab(k) })),
+      tabs: TABS.map(([k, label]) => ({ label: k === 'mock' && live && !live.ended ? label + ' · live' : label, on: k === this.state.tab, line: k === this.state.tab ? t.accent : 'transparent', bg: 'transparent', fg: k === this.state.tab ? t.text : t.muted, pick: () => this.setTab(k) })),
       tabLine: TABS.find(([k]) => k === this.state.tab)[2],
       isPlans: this.state.tab === 'plans', isCompany: this.state.tab === 'company', isRadar: this.state.tab === 'radar', isMock, isResources: this.state.tab === 'resources',
       plans: PLANS.map(([k, name, sub]) => ({ name, sub, on: k === this.state.plan, border: k === this.state.plan ? t.accent : t.line, bg: k === this.state.plan ? t.sunk : 'transparent', pick: () => this.setState({ plan: k, day: 0 }) })),
@@ -15145,6 +15144,7 @@ class Component extends DCLogic {
         n: this.state.day + 1,
         label: dItems.length ? STAGES[STAGE_RANK[dItems[0].dtype]].name : 'Revision day',
         mins: dItems.reduce((a, p) => a + p.mins, 0) || 30,
+        start: () => saveProblem((dItems.length ? dItems : pool)[0].id),
         items: (dItems.length ? dItems : pool.slice(0, 2)).map((p) => ({ title: p.title, story: p.story, pattern: p.pattern, diff: p.diff, time: p.time, dot: t.diff[p.diff][0], go: () => saveProblem(p.id) }))
       },
       companies: COMPANY_TABS.map(([k]) => ({ label: k, on: k === tab[0], bg: k === tab[0] ? t.text : 'transparent', fg: k === tab[0] ? t.bg : t.text, border: k === tab[0] ? t.text : t.line2, pick: () => this.setState({ company: k }) })),

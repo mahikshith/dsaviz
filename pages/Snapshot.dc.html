@@ -261,6 +261,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
+<button onClick="{{takeTour}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; text-align: left"><span style="font-size: var(--fs18); font-weight: 600">Take the tour</span><span style="font-size: var(--fs15); color: {{t.muted}}">Five short stops around the site</span></button>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Theme</span>
 <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
@@ -280,7 +281,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <!-- /PILL NAV -->
 <main style="flex-grow: 1; box-sizing: border-box; padding: 32px 80px 48px; display: flex; flex-direction: column; gap: 32px; min-width: 0">
-<div style="display: flex; flex-direction: column; gap: 8px">
+<div data-tour="snapshot" style="display: flex; flex-direction: column; gap: 8px">
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 1.05; font-weight: 700">Snapshot</h1><a href="Complexity.dc.html" style="align-self: flex-start; font-size: var(--fs17); font-weight: 600; color: {{t.link}}">Time and space cost tables →</a>
 <p style="margin: 0; max-width: 720px; font-size: var(--fs18); line-height: 28px; color: {{t.text2}}">A quick look at every lesson. Open a row for its cheat sheet and key words.</p>
 </div>
@@ -1419,6 +1420,7 @@ function drawerVals(cmp, t, themeKey) {
     drawerOpen: !!cmp.state.drawer,
     openDrawer: () => cmp.setState({ drawer: true }),
     closeDrawer: () => cmp.setState({ drawer: false }),
+    takeTour: () => { cmp.setState({ drawer: false }); if (typeof window !== 'undefined' && window.__dsTour) window.__dsTour.start(); },
     drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
     user, guest: !user,
     signIn: () => { saveUser(true); cmp.setState({ user: true }); },

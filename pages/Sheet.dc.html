@@ -303,6 +303,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
+<button onClick="{{takeTour}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; text-align: left"><span style="font-size: var(--fs18); font-weight: 600">Take the tour</span><span style="font-size: var(--fs15); color: {{t.muted}}">Five short stops around the site</span></button>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Theme</span>
 <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
@@ -362,7 +363,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 
 <!-- filters: one row, wraps when narrow -->
-<div role="search" data-sheet-filters style="flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<div role="search" data-sheet-filters data-tour="filter" style="flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
 <div class="ds-box" style="flex: 1 1 200px; min-width: 200px; height: 40px; box-sizing: border-box; padding: 0 16px; border-radius: 10px; background: {{t.surface}}; display: flex; align-items: center; gap: 8px; color: {{t.muted}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink: 0"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" aria-label="Search problems" placeholder="Problem name or pattern" value="{{query}}" onChange="{{onQuery}}" style="flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; color: {{t.text}}; font-size: var(--fs17)"></div>
 <div role="group" aria-label="Difficulty" style="height: 40px; box-sizing: border-box; display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}; flex-shrink: 0">
 <sc-for list="{{diffBtns}}" as="db" hint-placeholder-count="4"><button onClick="{{db.pick}}" aria-pressed="{{db.on}}" style="height: 34px; padding: 0 8px; border: 0; border-radius: 8px; cursor: pointer; font-size: var(--fs16); font-weight: 700; background: {{db.bg}}; color: {{db.fg}}">{{db.label}}</button></sc-for>
@@ -2272,6 +2273,7 @@ function drawerVals(cmp, t, themeKey) {
     drawerOpen: !!cmp.state.drawer,
     openDrawer: () => cmp.setState({ drawer: true }),
     closeDrawer: () => cmp.setState({ drawer: false }),
+    takeTour: () => { cmp.setState({ drawer: false }); if (typeof window !== 'undefined' && window.__dsTour) window.__dsTour.start(); },
     drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
     user, guest: !user,
     signIn: () => { saveUser(true); cmp.setState({ user: true }); },

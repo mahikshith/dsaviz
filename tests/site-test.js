@@ -317,7 +317,7 @@ server.listen(0, async () => {
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
     page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|fonts\.g/.test(m.text())) errors.push(m.text()); });
-    await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); } catch (e) {} }, theme);
+    await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
     await page.goto(url);
     await page.waitForTimeout(600);
     for (const name of PAGES) {
@@ -348,7 +348,7 @@ server.listen(0, async () => {
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
     page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|fonts\.g/.test(m.text())) errors.push(m.text()); });
-    await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); } catch (e) {} }, theme);
+    await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
     await page.goto(url);
     await page.waitForTimeout(600);
     for (const name of PAGES) {
@@ -418,7 +418,7 @@ server.listen(0, async () => {
   for (const [w, h] of ONLY_CONTROLS || ONLY_LAYOUT ? [] : [[1440, 900], [1280, 800]]) {
     for (const [label, name, store, tabs] of READ_PAGES) {
       const page = await browser.newPage({ viewport: { width: w, height: h } });
-      await page.addInitScript((st) => { try { localStorage.setItem('dsaviz-theme', 'max'); for (const k in st) localStorage.setItem(k, st[k]); } catch (e) {} }, store);
+      await page.addInitScript((st) => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); for (const k in st) localStorage.setItem(k, st[k]); } catch (e) {} }, store);
       await page.goto(url);
       await page.waitForTimeout(500);
       await page.evaluate((n) => { window.__dsNav(n + '.dc.html'); }, name);
@@ -452,7 +452,7 @@ server.listen(0, async () => {
       const page = await browser.newPage({ viewport: { width: w, height: h }, isMobile: phone, hasTouch: phone });
       const errors = [];
       page.on('pageerror', (e) => errors.push(e.message));
-      await page.addInitScript((st) => { try { localStorage.setItem('dsaviz-theme', 'max'); for (const k in st) localStorage.setItem(k, st[k]); } catch (e) {} }, store);
+      await page.addInitScript((st) => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); for (const k in st) localStorage.setItem(k, st[k]); } catch (e) {} }, store);
       await page.goto(url);
       await page.waitForTimeout(500);
       await page.evaluate((n) => { window.__dsNav(n + '.dc.html'); }, name);
@@ -520,7 +520,7 @@ server.listen(0, async () => {
     const page = await browser.newPage({ viewport: { width: w, height: phone ? 844 : 900 }, isMobile: phone, hasTouch: phone });
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); } catch (e) {} });
+    await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
     await page.goto(url);
     await page.waitForTimeout(500);
     for (const name of LAYOUT_PAGES) {
@@ -552,6 +552,34 @@ server.listen(0, async () => {
     await page.close();
   }
   if (!ONLY_CONTROLS && !ONLY_READ) console.log(problems > controlProblems ? (problems - controlProblems) + ' problem(s) with layout (overlapping or clipped text, uneven path gaps)' : 'no overlapping or clipped text');
+
+  // ---------- tour pass: a fresh browser sees the tour once on Home; Skip closes it and it stays closed ----------
+  if (!SKIP_MAIN) {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    const fails = [];
+    await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); } catch (e) {} });
+    await page.goto(url + '#Home');
+    const shown = () => page.evaluate(() => { const c = document.querySelector('[data-tour-card]'); const r = document.querySelector('[data-tour-root]'); return !!c && !!r && !r.hidden && c.getBoundingClientRect().width > 0; });
+    try { await page.waitForFunction(() => { const r = document.querySelector('[data-tour-root]'); return r && !r.hidden; }, null, { timeout: 8000 }); } catch (e) { fails.push('the tour did not open on the first Home visit'); }
+    if (!fails.length) {
+      if (!(await shown())) fails.push('tour card not visible');
+      const info = await page.evaluate(() => ({ focus: !!document.activeElement && !!document.activeElement.closest('[data-tour-card]'), words: document.querySelector('[data-tour-text]').textContent.trim().split(/\s+/).length }));
+      if (!info.focus) fails.push('focus did not move into the tour card');
+      if (info.words > 18) fails.push('a tour sentence is over 18 words');
+      await page.click('[data-tour-skip]');
+      await page.waitForTimeout(300);
+      if (await shown()) fails.push('Skip did not close the tour');
+      await page.reload();
+      await page.waitForTimeout(2000);
+      if (await shown()) fails.push('the tour opened again after Skip');
+    }
+    if (errors.length) fails.push('errors: ' + errors.slice(0, 2).join(' | '));
+    if (fails.length) problems++;
+    console.log(fails.length ? '✗' : '✓', 'tour'.padEnd(10), fails.length ? fails.join('; ') : 'opens on the first Home visit, Skip closes it, it does not reopen');
+    await page.close();
+  }
 
   await browser.close();
   server.close();

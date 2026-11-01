@@ -13,6 +13,8 @@ across pages and live in one place; this script copies them back into every page
   shared/ui.js              -> between // @@UI@@ ... // @@END-UI@@ (every page; component view models)
   scripts/build_search.js   -> between // @@SEARCH@@ ... // @@END-SEARCH@@ (every page; SITE_INDEX: search items and counts)
   shared/search.js          -> between // @@FIND@@ ... // @@END-FIND@@ (every page; the site search scorer)
+  shared/lessonframe.js     -> between // @@LESSONFRAME@@ ... // @@END-LESSONFRAME@@ (the five lesson pages: sidebar, Back, Previous/Next)
+  shared/ui/lesson_side.html, lesson_back.html, lesson_pager.html -> <!-- LESSON SIDE -->, <!-- LESSON BACK -->, <!-- LESSON PAGER -->
   shared/nav.js             -> between // @@NAV@@ ... // @@END-NAV@@ (every page; NAV_PAGES filled from pages/)
   shared/ui/nav.html + shared/drawer.html -> between <!-- PILL NAV --> ... <!-- /PILL NAV -->
   shared/ui/tiles.html, rings.html, medals.html -> <!-- STAT TILES -->, <!-- RINGS -->, <!-- MEDALS --> blocks
@@ -119,14 +121,14 @@ def phone_pads(files):
             # The browser writes the shortest form: 'padding: 80px 80px' comes back as 'padding: 80px'.
             short = [t] if t == r == b == l else [t, r] if t == b and r == l else [t, r, b] if r == l else [t, r, b, l]
             css = 'padding: ' + ' '.join('%dpx' % x for x in short) + ';'
-            sel = '[data-page] [style*="%s"]' % css
+            sel = '[data-page]:not([data-shell]) [style*="%s"]' % css
             if sel not in rules.setdefault(key, []):
                 rules[key].append(sel)
     # Wide board gaps (40px and up) close to 24px.
     gaps = set()
     for s in files:
         gaps.update(int(g) for g in re.findall(r'[;" ]gap: (\d+)px[;"]', s))
-    big = ['[data-page] [style*="gap: %dpx;"]' % g for g in sorted(gaps) if g >= 40]
+    big = ['[data-page]:not([data-shell]) [style*="gap: %dpx;"]' % g for g in sorted(gaps) if g >= 40]
     if big:
         rules['gap:24px!important'] = big
     return '\n'.join(','.join(sel) + '{' + key + '}' for key, sel in sorted(rules.items()))
@@ -216,7 +218,8 @@ def main():
     drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
     ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html'),
-                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html'), ('ABOUT TAB', 'about.html'), ('WHY', 'why.html')]}
+                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html'), ('ABOUT TAB', 'about.html'), ('WHY', 'why.html'),
+                                                      ('LESSON SIDE', 'lesson_side.html'), ('LESSON BACK', 'lesson_back.html'), ('LESSON PAGER', 'lesson_pager.html')]}
     # The problem page blocks: facts, approaches and their pane, placed after the code pane on the Code and Story pages.
     approach_js = [('// @@FACTS@@', '// @@END-FACTS@@', read('shared', 'facts.js')),
                    ('// @@APPROACHES@@', '// @@END-APPROACHES@@', read('shared', 'approaches.js')),
@@ -297,6 +300,11 @@ def main():
         for start, end, n in SHARED_JS:
             s = block(s, start, end, shared_js[n])
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
+        if '<!-- LESSON SIDE -->' in s:  # the lesson pages: sidebar, Back and Previous/Next view model
+            if '// @@LESSONFRAME@@' not in s:
+                i = s.index('// @@END-WHY@@') + len('// @@END-WHY@@')
+                s = s[:i] + chr(10) + '// @@LESSONFRAME@@' + chr(10) + '// @@END-LESSONFRAME@@' + s[i:]
+            s = block(s, '// @@LESSONFRAME@@', '// @@END-LESSONFRAME@@', read('shared', 'lessonframe.js'))
         s = block(s, '// @@INTROS@@', '// @@END-INTROS@@', intros)
         s = block(s, '// @@TESTS-SPEC@@', '// @@END-TESTS-SPEC@@', tests_spec)
         s = block(s, '// @@PLANS@@', '// @@END-PLANS@@', read('shared', 'plans.js'))

@@ -130,15 +130,31 @@ function dailyVals(cmp, t) {
   };
 }
 // The Back link names the page it returns to. The runtime keeps the trail (scripts/site-runtime.js).
-const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Learn', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Sheet',
+const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
-const BACK_PAGES = ['Chapter', 'Code', 'Story', 'AILesson', 'ConceptLesson', 'SDLesson', 'Briefing'];
+const BACK_PAGES = ['Code', 'Story', 'Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
 function navBack(page) {
   let to = null;
   try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   return { show: !!to, label: BACK_LABELS[name] || 'Back', aria: 'Back to ' + (BACK_LABELS[name] || 'the last page'), go: () => { try { window.__dsBack(); } catch (e) {} } };
+}
+// The Back link at the top of a lesson page: "Back to <the page the learner came from>". The trail (window.__dsTrail)
+// holds that page; with no trail (a bookmark, a reload) it goes to the lesson's own track page instead.
+// parent: { page: 'Concepts.dc.html', label: 'DSA concepts' }.
+function lessonBack(parent) {
+  let to = null;
+  try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
+  const name = to ? String(to.page).replace('.dc.html', '') : '';
+  const label = to ? (BACK_LABELS[name] || 'the last page') : parent.label;
+  return {
+    label: 'Back to ' + label, href: '#back',
+    go: (e) => {
+      try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {}
+      try { if (to) window.__dsBack(); else window.__dsNav(parent.page); } catch (x) {}
+    }
+  };
 }
 function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';

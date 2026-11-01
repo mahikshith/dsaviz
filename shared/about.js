@@ -1,6 +1,5 @@
-// @@ABOUT@@ — "About this lesson" tab, shared by the lesson players (markup in shared/ui/about.html).
-// A lesson with about data gets two tabs under its title: the lesson itself, which always opens first, and About
-// this lesson, a fold of detail the learner opens when they want it.
+// @@ABOUT@@ — "About this lesson" sections, shared by the lesson players (markup in shared/ui/about.html).
+// A lesson with about data shows its sections in the page, under the lesson: no tab and no fold.
 // aboutVals(cmp, key, a, t, link): key is the lesson's id, a its about data ({ what, analogy, uses, before, words,
 // math: { lines: [mathml], symbols: [[mathml, meaning]], example }, steps, use, avoid, mistakes, cheat, next }),
 // link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name); watchLabel names
@@ -21,7 +20,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
   if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: 'watch' };
   const v = cmp.state.aboutView;
   const view = !a ? 'watch' : v && v.key === key ? v.view : cmp.aboutFirst.view;
-  if (view === 'about') markAboutSeen(key);
+  if (a) markAboutSeen(key);
   const set = (k) => cmp.setState({ aboutView: { key, view: k } });
   const tab = (k, label) => ({ label, on: view === k ? 'true' : 'false', bg: view === k ? t.text : 'transparent', fg: view === k ? t.bg : t.muted, pick: () => set(k) });
   const refs = (list) => (list || []).map((r) => { const l = link(r) || { label: r, go: null }; return { label: l.label, go: l.go || (() => {}), link: !!l.go, plain: !l.go }; });
@@ -40,7 +39,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
   };
-  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About')] : [], A };
+  return { has: false, about: !!a, watch: true, tabs: [], A };
 }
 // "Why learn this?" fold (markup: shared/ui/why.html, text for patterns and hubs: src/why.js). A lesson with About data builds it from
 // the About fields: the first sentence of `what`, then the first two `uses`. Patterns and hubs read WHY: [does, app, interview].

@@ -174,16 +174,18 @@
       const readTrail = () => { try { const v = JSON.parse(window.sessionStorage.getItem(TRAIL) || '[]'); return Array.isArray(v) ? v : []; } catch (err) { return []; } };
       const saveTrail = (v) => { try { window.sessionStorage.setItem(TRAIL, JSON.stringify(v.slice(-20))); } catch (err) {} };
       window.__dsTrail = () => { const v = readTrail(); return v.length ? v[v.length - 1] : null; };
-      window.__dsBack = () => { const v = readTrail(); const to = v.pop(); if (!to) return; saveTrail(v); window.__dsNav(to.page, to.query, true); };
-      window.__dsNav = (name, query, back) => {
+      window.__dsBack = () => { const v = readTrail(); const to = v.pop(); if (!to) return; saveTrail(v); window.__dsNav(to.page, to.query, true, to.y); };
+      window.__dsNav = (name, query, back, y) => {
         if (!window.DS_BOARDS[name]) return;
-        if (!back && name !== this.state.page) saveTrail(readTrail().concat([{ page: this.state.page, query: location.search }]));
+        if (!back && name !== this.state.page) saveTrail(readTrail().concat([{ page: this.state.page, query: location.search, y: Math.round(window.scrollY || 0) }]));
         // Set the URL first so the new page reads its query (?problem=...) when it mounts; a plain link clears it.
         try { history.pushState(null, '', location.pathname + (query || '') + '#' + name.replace('.dc.html', '')); } catch (err) { try { location.hash = name.replace('.dc.html', ''); } catch (e2) {} }
         // A visit counter in the key remounts the page even when a link (or a search result) points at the page
         // already showing, so it re-reads what to open from localStorage.
         this.setState({ page: name, visit: (this.state.visit || 0) + 1 });
         window.scrollTo(0, 0);
+        // Back keeps the scroll position the learner left the page at: the page draws after this call, so retry until it is tall enough.
+        if (back && y > 0) { let tries = 0; const put = () => { window.scrollTo(0, y); if (Math.abs((window.scrollY || 0) - y) > 2 && ++tries < 30) setTimeout(put, 50); }; setTimeout(put, 0); }
       };
       const sync = () => { const p = pageFromHash(); if (p && p !== this.state.page) { this.setState({ page: p }); window.scrollTo(0, 0); } };
       window.addEventListener('hashchange', sync);

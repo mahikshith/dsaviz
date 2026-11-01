@@ -52,83 +52,83 @@ button,input{font:inherit}
 .ds-hit:focus-visible{outline:2px solid color-mix(in srgb,#C5F04A 70%,transparent);outline-offset:2px;border-color:color-mix(in srgb,#C5F04A 50%,transparent)}
 @media (prefers-reduced-motion: reduce){.ds-hit{transition:none}}
 @media (max-width: 759px){
-[data-page]{width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
+[data-page]:not([data-shell]){width:100%!important;height:auto!important;min-height:100vh;overflow-x:clip}
 /* Pages with their own 420px phone layout (data-fit, from their L values) also show at real size. */
 [data-fit][data-fluid]{width:100%!important}
 [data-fit][data-fluid] [style*="font-size: var(--fs13)"],[data-fit][data-fluid] [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
-[data-page] *{max-width:100%}
+[data-page]:not([data-shell]) *{max-width:100%}
 /* Code page: Run and Submit stay in view, above the bottom pill nav. */
 [data-code-bar]{display:flex!important;gap:8px;position:fixed;left:0;right:0;bottom:calc(76px / var(--fit, 1));z-index:35;padding:8px 16px;box-sizing:border-box;border-top:1px solid rgba(127,127,127,.3);zoom:calc(1 / var(--fit, 1))}
 [data-code-bar]>button{flex:1 1 0}
 body:has([data-code-bar]){padding-bottom:calc(144px / var(--fit, 1))}
-[data-page] main,[data-page] [data-m~="pad"]{padding-left:16px!important;padding-right:16px!important}
-[data-page]:where([style*="grid-template-columns"]),[data-page] :where([style*="grid-template-columns"]:not([data-m~="keep"]):not([style*="gap: 2px"]):not([style*="gap: 4px"]):not([data-drawer] *):not([data-m~="two"]):not([style*="repeat(4,"]):not([style*="repeat(5,"]):not([style*="repeat(6,"]):not([style*="repeat(7,"]):not([style*="repeat(8,"]):not([style*="repeat(9,"])){grid-template-columns:minmax(0,1fr)!important}
-[data-page] [data-m~="one"]{grid-template-columns:minmax(0,1fr)!important}
-[data-page] [data-m~="four"]{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+[data-page]:not([data-shell]) main,[data-page]:not([data-shell]) [data-m~="pad"]{padding-left:16px!important;padding-right:16px!important}
+[data-page]:not([data-shell]):where([style*="grid-template-columns"]),[data-page]:not([data-shell]) :where([style*="grid-template-columns"]:not([data-m~="keep"]):not([style*="gap: 2px"]):not([style*="gap: 4px"]):not([data-drawer] *):not([data-m~="two"]):not([style*="repeat(4,"]):not([style*="repeat(5,"]):not([style*="repeat(6,"]):not([style*="repeat(7,"]):not([style*="repeat(8,"]):not([style*="repeat(9,"])){grid-template-columns:minmax(0,1fr)!important}
+[data-page]:not([data-shell]) [data-m~="one"]{grid-template-columns:minmax(0,1fr)!important}
+[data-page]:not([data-shell]) [data-m~="four"]{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 /* Sections drop their board heights; title rows with a side note or link stack. */
-[data-page] section,[data-page] main{height:auto!important}
-[data-page] [style*="justify-content: space-between"][style*="align-items: flex-end"]:not([data-m~="keep"]){flex-direction:column;align-items:flex-start!important;gap:12px!important}
-[data-page] [style*="justify-content: space-between"][style*="align-items: baseline"]{flex-wrap:wrap;column-gap:12px;row-gap:4px}
+[data-page]:not([data-shell]) section,[data-page]:not([data-shell]) main{height:auto!important}
+[data-page]:not([data-shell]) [style*="justify-content: space-between"][style*="align-items: flex-end"]:not([data-m~="keep"]){flex-direction:column;align-items:flex-start!important;gap:12px!important}
+[data-page]:not([data-shell]) [style*="justify-content: space-between"][style*="align-items: baseline"]{flex-wrap:wrap;column-gap:12px;row-gap:4px}
 /* Tab strips and code scroll sideways inside their box, never the page. */
-[data-page] [role="tablist"]{overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none;align-self:stretch!important}
-[data-page] [role="tablist"]>*{flex-shrink:0}
-[data-page] pre,[data-page] [style*="white-space: pre;"]{overflow-x:auto}
-[data-page] input,[data-page] textarea,[data-page] select{box-sizing:border-box;max-width:100%!important}
-[data-page] label:has(select){flex:1 1 100%;min-width:0}
-[data-page] label select{flex:1 1 auto;min-width:0;width:auto!important}
+[data-page]:not([data-shell]) [role="tablist"]{overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none;align-self:stretch!important}
+[data-page]:not([data-shell]) [role="tablist"]>*{flex-shrink:0}
+[data-page]:not([data-shell]) pre,[data-page]:not([data-shell]) [style*="white-space: pre;"]{overflow-x:auto}
+[data-page]:not([data-shell]) input,[data-page]:not([data-shell]) textarea,[data-page]:not([data-shell]) select{box-sizing:border-box;max-width:100%!important}
+[data-page]:not([data-shell]) label:has(select){flex:1 1 100%;min-width:0}
+[data-page]:not([data-shell]) label select{flex:1 1 auto;min-width:0;width:auto!important}
 /* Day, week and path strips (5 to 9 equal columns) keep their columns; four-up tiles go two-up. */
-[data-page] :where([style*="grid-template-columns: repeat(4,"]:not([data-m~="keep"]):not([data-drawer] *)),[data-page] [data-m~="two"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+[data-page]:not([data-shell]) :where([style*="grid-template-columns: repeat(4,"]:not([data-m~="keep"]):not([data-drawer] *)),[data-page]:not([data-shell]) [data-m~="two"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 /* Big board paddings, generated by scripts/build_pages.py from the pages' markup. */
-[data-page] [style*="gap: 40px;"],[data-page] [style*="gap: 48px;"],[data-page] [style*="gap: 56px;"],[data-page] [style*="gap: 64px;"],[data-page] [style*="gap: 72px;"]{gap:24px!important}
-[data-page] [style*="padding: 0px 48px;"],[data-page] [style*="padding: 0px 80px;"],[data-page] [style*="padding: 0px 40px;"],[data-page] [style*="padding: 16px 40px 32px;"],[data-page] [style*="padding: 24px 40px 40px;"],[data-page] [style*="padding: 24px 48px;"],[data-page] [style*="padding: 24px 48px 0px;"],[data-page] [style*="padding: 24px 48px 32px;"],[data-page] [style*="padding: 26px 36px;"],[data-page] [style*="padding: 28px 80px;"],[data-page] [style*="padding: 30px 40px;"],[data-page] [style*="padding: 36px 40px;"],[data-page] [style*="padding: 36px 48px;"],[data-page] [style*="padding: 36px 64px;"]{padding-left:16px!important;padding-right:16px!important}
-[data-page] [style*="padding: 0px 80px 72px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:0px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 24px 48px 48px;"],[data-page] [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
-[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 48px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 32px 24px 48px;"]{padding-top:32px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
-[data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
-[data-page] [style*="padding: 16px 22px;"],[data-page] [style*="padding: 16px 24px;"],[data-page] [style*="padding: 16px 24px 24px;"],[data-page] [style*="padding: 20px 22px;"],[data-page] [style*="padding: 20px 22px 28px;"],[data-page] [style*="padding: 20px 24px;"],[data-page] [style*="padding: 20px 24px 32px;"],[data-page] [style*="padding: 22px;"],[data-page] [style*="padding: 22px 22px 24px;"],[data-page] [style*="padding: 24px;"],[data-page] [style*="padding: 24px 26px;"],[data-page] [style*="padding: 24px 32px;"],[data-page] [style*="padding: 26px;"],[data-page] [style*="padding: 26px 28px;"],[data-page] [style*="padding: 28px;"],[data-page] [style*="padding: 28px 32px;"],[data-page] [style*="padding: 32px;"]{padding:16px!important}
-[data-page] [data-m~="col"]{flex-direction:column!important;align-items:stretch!important}
-[data-page] [data-m~="wrap"]{flex-wrap:wrap!important}
-[data-page] [data-m~="hide"]{display:none!important}
-[data-page] [data-m~="full"]{width:auto!important;min-width:0!important;flex-basis:auto!important}
-[data-page] [data-m~="auto"]{height:auto!important;min-height:0!important}
-[data-page] [data-m~="g16"]{gap:16px!important}
-[data-page] [data-m~="g12"]{gap:12px!important}
-[data-page] [data-m~="g8"]{gap:8px!important}
-[data-page] [data-m~="p16"]{padding:16px!important}
-[data-page] [data-m~="scroll"]{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
-[data-page] [data-m~="scroll"]>*{flex-shrink:0}
-[data-page] svg,[data-page] img,[data-page] pre,[data-page] table{max-width:100%}
+[data-page]:not([data-shell]) [style*="gap: 40px;"],[data-page]:not([data-shell]) [style*="gap: 48px;"],[data-page]:not([data-shell]) [style*="gap: 56px;"],[data-page]:not([data-shell]) [style*="gap: 64px;"],[data-page]:not([data-shell]) [style*="gap: 72px;"]{gap:24px!important}
+[data-page]:not([data-shell]) [style*="padding: 0px 48px;"],[data-page]:not([data-shell]) [style*="padding: 0px 80px;"],[data-page]:not([data-shell]) [style*="padding: 0px 40px;"],[data-page]:not([data-shell]) [style*="padding: 16px 40px 32px;"],[data-page]:not([data-shell]) [style*="padding: 24px 40px 40px;"],[data-page]:not([data-shell]) [style*="padding: 24px 48px;"],[data-page]:not([data-shell]) [style*="padding: 24px 48px 0px;"],[data-page]:not([data-shell]) [style*="padding: 24px 48px 32px;"],[data-page]:not([data-shell]) [style*="padding: 26px 36px;"],[data-page]:not([data-shell]) [style*="padding: 28px 80px;"],[data-page]:not([data-shell]) [style*="padding: 30px 40px;"],[data-page]:not([data-shell]) [style*="padding: 36px 40px;"],[data-page]:not([data-shell]) [style*="padding: 36px 48px;"],[data-page]:not([data-shell]) [style*="padding: 36px 64px;"]{padding-left:16px!important;padding-right:16px!important}
+[data-page]:not([data-shell]) [style*="padding: 0px 80px 72px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:0px!important;padding-bottom:40px!important}
+[data-page]:not([data-shell]) [style*="padding: 24px 48px 48px;"],[data-page]:not([data-shell]) [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
+[data-page]:not([data-shell]) [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
+[data-page]:not([data-shell]) [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
+[data-page]:not([data-shell]) [style*="padding: 40px 96px 48px;"],[data-page]:not([data-shell]) [style*="padding: 48px;"],[data-page]:not([data-shell]) [style*="padding: 48px 80px;"],[data-page]:not([data-shell]) [style*="padding: 56px 72px;"],[data-page]:not([data-shell]) [style*="padding: 64px 80px;"],[data-page]:not([data-shell]) [style*="padding: 72px 80px;"],[data-page]:not([data-shell]) [style*="padding: 80px;"],[data-page]:not([data-shell]) [style*="padding: 80px 80px 64px;"],[data-page]:not([data-shell]) [style*="padding: 88px 80px 72px;"],[data-page]:not([data-shell]) [style*="padding: 96px 80px 48px;"],[data-page]:not([data-shell]) [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
+[data-page]:not([data-shell]) [style*="padding: 32px 24px 48px;"]{padding-top:32px!important;padding-bottom:40px!important}
+[data-page]:not([data-shell]) [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
+[data-page]:not([data-shell]) [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
+[data-page]:not([data-shell]) [style*="padding: 16px 22px;"],[data-page]:not([data-shell]) [style*="padding: 16px 24px;"],[data-page]:not([data-shell]) [style*="padding: 16px 24px 24px;"],[data-page]:not([data-shell]) [style*="padding: 20px 22px;"],[data-page]:not([data-shell]) [style*="padding: 20px 22px 28px;"],[data-page]:not([data-shell]) [style*="padding: 20px 24px;"],[data-page]:not([data-shell]) [style*="padding: 20px 24px 32px;"],[data-page]:not([data-shell]) [style*="padding: 22px;"],[data-page]:not([data-shell]) [style*="padding: 22px 22px 24px;"],[data-page]:not([data-shell]) [style*="padding: 24px;"],[data-page]:not([data-shell]) [style*="padding: 24px 24px 32px;"],[data-page]:not([data-shell]) [style*="padding: 24px 26px;"],[data-page]:not([data-shell]) [style*="padding: 24px 32px;"],[data-page]:not([data-shell]) [style*="padding: 26px;"],[data-page]:not([data-shell]) [style*="padding: 26px 28px;"],[data-page]:not([data-shell]) [style*="padding: 28px;"],[data-page]:not([data-shell]) [style*="padding: 28px 32px;"],[data-page]:not([data-shell]) [style*="padding: 32px;"]{padding:16px!important}
+[data-page]:not([data-shell]) [data-m~="col"]{flex-direction:column!important;align-items:stretch!important}
+[data-page]:not([data-shell]) [data-m~="wrap"]{flex-wrap:wrap!important}
+[data-page]:not([data-shell]) [data-m~="hide"]{display:none!important}
+[data-page]:not([data-shell]) [data-m~="full"]{width:auto!important;min-width:0!important;flex-basis:auto!important}
+[data-page]:not([data-shell]) [data-m~="auto"]{height:auto!important;min-height:0!important}
+[data-page]:not([data-shell]) [data-m~="g16"]{gap:16px!important}
+[data-page]:not([data-shell]) [data-m~="g12"]{gap:12px!important}
+[data-page]:not([data-shell]) [data-m~="g8"]{gap:8px!important}
+[data-page]:not([data-shell]) [data-m~="p16"]{padding:16px!important}
+[data-page]:not([data-shell]) [data-m~="scroll"]{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+[data-page]:not([data-shell]) [data-m~="scroll"]>*{flex-shrink:0}
+[data-page]:not([data-shell]) svg,[data-page]:not([data-shell]) img,[data-page]:not([data-shell]) pre,[data-page]:not([data-shell]) table{max-width:100%}
 /* Display type at phone size. */
-[data-page] h1{font-size:var(--fs36)!important;line-height:1.08!important}
-[data-page] [style*="font-size: var(--fs34)"],[data-page] [style*="font-size: var(--fs36)"]{font-size:var(--fs28)!important;line-height:1.15!important}
-[data-page] [style*="font-size: 4"]:not([style*="font-size: 4px"]){font-size:var(--fs32)!important;line-height:1.1!important}
-[data-page] [style*="font-size: 5"]:not([style*="font-size: 5px"]){font-size:var(--fs36)!important;line-height:1.08!important}
-[data-page] [style*="font-size: 7"]:not([style*="font-size: 7px"]){font-size:var(--fs44)!important;line-height:1.05!important}
-[data-page] [style*="font-size: var(--fs180)"]{font-size:var(--fs96)!important;line-height:1!important}
+[data-page]:not([data-shell]) h1{font-size:var(--fs36)!important;line-height:1.08!important}
+[data-page]:not([data-shell]) [style*="font-size: var(--fs34)"],[data-page]:not([data-shell]) [style*="font-size: var(--fs36)"]{font-size:var(--fs28)!important;line-height:1.15!important}
+[data-page]:not([data-shell]) [style*="font-size: 4"]:not([style*="font-size: 4px"]){font-size:var(--fs32)!important;line-height:1.1!important}
+[data-page]:not([data-shell]) [style*="font-size: 5"]:not([style*="font-size: 5px"]){font-size:var(--fs36)!important;line-height:1.08!important}
+[data-page]:not([data-shell]) [style*="font-size: 7"]:not([style*="font-size: 7px"]){font-size:var(--fs44)!important;line-height:1.05!important}
+[data-page]:not([data-shell]) [style*="font-size: var(--fs180)"]{font-size:var(--fs96)!important;line-height:1!important}
 /* Nothing under 12px. */
-[data-page] [style*="font-size: var(--fs13)"],[data-page] [style*="font-size: var(--fs13)"],[data-page] [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
+[data-page]:not([data-shell]) [style*="font-size: var(--fs13)"],[data-page]:not([data-shell]) [style*="font-size: var(--fs13)"],[data-page]:not([data-shell]) [style*="font-size: var(--fs13)"]{font-size:var(--fs15)!important}
 /* 44px touch targets. */
-[data-page] [role="checkbox"]{position:relative}
-[data-page] [role="checkbox"]::after{content:"";position:absolute;inset:-10px}
-[data-page] button:not([data-m~="keep"]):not([role="checkbox"]),[data-page] select,[data-page] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
-[data-page] button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
-[data-page] a[style^="height:"],[data-page] a[style*="; height:"],[data-page] a[style*="min-height:"]{min-height:44px;height:auto!important}
+[data-page]:not([data-shell]) [role="checkbox"]{position:relative}
+[data-page]:not([data-shell]) [role="checkbox"]::after{content:"";position:absolute;inset:-10px}
+[data-page]:not([data-shell]) button:not([data-m~="keep"]):not([role="checkbox"]),[data-page]:not([data-shell]) select,[data-page]:not([data-shell]) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]){min-height:44px!important}
+[data-page]:not([data-shell]) button:not([data-m~="keep"]):not([role="checkbox"]){min-width:44px}
+[data-page]:not([data-shell]) a[style^="height:"],[data-page]:not([data-shell]) a[style*="; height:"],[data-page]:not([data-shell]) a[style*="min-height:"]{min-height:44px;height:auto!important}
 /* Inline links in breadcrumbs and footers: padding grows the tap area to 44px (side margins keep the text where it was);
    footer link lists drop their gap, since each link now brings its own. */
-[data-page] nav[aria-label="Breadcrumb"] a,[data-page] footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
-[data-page] footer nav[style*="flex-direction: column"]{gap:0!important}
-[data-page] nav[aria-label="Breadcrumb"]{align-items:center}
+[data-page]:not([data-shell]) nav[aria-label="Breadcrumb"] a,[data-page]:not([data-shell]) footer a{display:inline-flex;align-items:center;box-sizing:border-box;min-height:44px;padding:12px 6px;margin:0 -6px}
+[data-page]:not([data-shell]) footer nav[style*="flex-direction: column"]{gap:0!important}
+[data-page]:not([data-shell]) nav[aria-label="Breadcrumb"]{align-items:center}
 }
 </style>
 <style>
 /* The shared page frame (shared/ui/shell.html, added to every page's helmet by the build). A page opts in with
    data-shell on its root div: the runtime then shows it at real size, with no zoom. Rules: docs/design/PLAN-2026-11.md. */
 [data-shell]{width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sh-bg);color:var(--sh-text);font-size:calc(18px * var(--ts, 1));line-height:1.6}
-[data-shell] h1{margin:0;font-size:calc(32px * var(--ts, 1));line-height:1.2;font-weight:600}
+[data-shell] h1{margin:0;font-family:'Anton',Impact,sans-serif;font-size:calc(32px * var(--ts, 1));line-height:1.2;font-weight:400;text-transform:uppercase;letter-spacing:0.01em}
 [data-shell] h2{margin:0;font-size:calc(26px * var(--ts, 1));line-height:1.25;font-weight:600}
 [data-shell] h3{margin:0;font-size:calc(22px * var(--ts, 1));line-height:1.3;font-weight:600}
 [data-shell] p{margin:0}
@@ -145,7 +145,7 @@ a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
 .sh-side{box-sizing:border-box;padding:16px 8px;border-right:1px solid var(--sh-line);position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
 .sh-side a{display:block;padding:6px 8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4}
 .sh-side a:hover{background:var(--sh-sunk)}
-.sh-side a[aria-current="page"]{background:var(--sh-sunk);font-weight:600}
+.sh-side a[aria-current="page"]{background:var(--sh-accent);color:var(--sh-on);font-weight:600}
 .sh-tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--sh-line);padding-bottom:8px}
 .sh-tab{height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
 .sh-tab[aria-selected="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
@@ -157,8 +157,49 @@ a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
 .sh-table th,.sh-table td{padding:8px 12px;border-bottom:1px solid var(--sh-line)}
 .sh-foot{padding:16px 24px;border-top:1px solid var(--sh-line);display:flex;flex-wrap:wrap;align-items:center;gap:16px;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1))}
 .sh-foot button{border:0;padding:0;background:transparent;color:inherit;font:inherit;cursor:pointer}
+/* Lesson pages: sidebar list, Back link, picture, sections, controls, Previous and Next. */
+.sh-lesson{max-width:1168px;gap:24px}
+.sh-lesson>*{min-width:0}
+.sh-lesson h1{max-width:72ch}
+.sh-side-btn{display:none;width:100%;min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:600;cursor:pointer;align-items:center;justify-content:space-between}
+.sh-side-list{display:flex;flex-direction:column;gap:4px}
+.sh-side-h{padding:16px 8px 4px;font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted);line-height:1.4}
+.sh-side-h:first-child{padding-top:0}
+.sh-side a{display:flex;align-items:baseline;gap:8px}
+.sh-side-list a{white-space:normal}
+.sh-side a>span:last-child{min-width:0;overflow-wrap:anywhere}
+.sh-tick{flex-shrink:0;width:16px;text-align:center}
+.sh-side a[aria-current="page"] .sh-tick{color:inherit}
+.sh-side a:not([aria-current="page"]) .sh-tick{color:var(--sh-accent)}
+.sh-back{display:inline-flex;align-items:center;min-height:40px}
+.sh-back:hover{color:var(--sh-text)}
+.sh-sec{display:flex;flex-direction:column;gap:12px;max-width:72ch}
+.sh-sec>h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
+.sh-sec ul,.sh-sec ol{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:8px}
+.sh-sec dl{margin:0;display:flex;flex-direction:column;gap:12px}
+.sh-sec dd{margin:0}
+.sh-sec h3{font-size:calc(18px * var(--ts, 1));line-height:1.4}
+.sh-pic{width:100%;max-width:900px;box-sizing:border-box}
+.sh-panel{box-sizing:border-box;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px;min-width:0}
+.sh-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.sh-ib{min-width:44px;min-height:44px;padding:0 12px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.sh-ib:hover:not(:disabled){background:var(--sh-sunk)}
+.sh-ib:disabled{opacity:.4;cursor:default}
+.sh-chip{min-height:40px;padding:0 12px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.sh-chip:hover{background:var(--sh-sunk)}
+.sh-row{box-sizing:border-box;min-height:44px;padding:8px 12px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);display:flex;align-items:center;justify-content:space-between;gap:12px}
+a.sh-row:hover{background:var(--sh-sunk)}
+.sh-pager a,.sh-pager button{min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-align:left}
+.sh-pager a:hover,.sh-pager button:hover{background:var(--sh-sunk)}
+.sh-pager .sh-next{margin-left:auto;background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sh-pager .sh-next:hover{background:var(--sh-accent)}
+.sh-scroll{overflow-x:auto;max-width:100%}
+.sh-split{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px}
+.sh-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.sh-story{display:grid;grid-template-columns:minmax(0,var(--stage-max)) minmax(0,1fr);gap:24px}
+@media (max-width:1279px){.sh-split,.sh-two,.sh-story{grid-template-columns:minmax(0,1fr)}}
 [data-shell] a:focus-visible,[data-shell] button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:2px}
-@media (max-width:1023px){.sh-layout{grid-template-columns:minmax(0,1fr)}.sh-side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--sh-line)}}
+@media (max-width:1023px){.sh-layout{grid-template-columns:minmax(0,1fr)}.sh-side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--sh-line);padding:8px 16px}.sh-side-btn{display:flex}.sh-side-list[data-open="false"]{display:none}.sh-side-list[data-open="true"]{padding-top:8px}}
 @media (max-width:639px){.sh-main{padding:16px}.sh-foot{padding:16px}}
 @media (prefers-reduced-motion:reduce){a.sh-block,button.sh-block{transition:none}}
 </style>
@@ -536,15 +577,14 @@ const SERIF = "'Fraunces', Georgia, serif";
 const SANS = "'Instrument Sans', system-ui, sans-serif";
 const POSTER = "'Anton', Impact, sans-serif";
 const OUTFIT = "'Outfit', system-ui, sans-serif";
-const SYS = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 const THEMES = {
   // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
   // num: the face for big digits (lantern tiles, scores). Max uses Outfit; the light and dark themes keep Fraunces.
-  max: { bg: '#111318', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#F3F4F6', text2: '#D1D5DB', muted: '#9CA3AF', faint: '#6B7280', accent: '#2DD4BF', onAccent: '#0B1F1C', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
-    band: '#181B21', bandText: '#F3F4F6', bandMuted: '#9CA3AF', bandAccent: '#2DD4BF', shadow: 'rgba(0,0,0,0.5)', display: SYS, body: SYS, mono: MONO, num: SYS,
+  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
+    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO, num: OUTFIT,
     diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
   paper: { bg: '#FFFFFF', surface: '#FFFFFF', sunk: '#F3F4F6', line: '#E5E7EB', line2: '#D1D5DB', text: '#111827', text2: '#374151', muted: '#4B5563', faint: '#9CA3AF', accent: '#0F766E', onAccent: '#FFFFFF', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
-    band: '#F3F4F6', bandText: '#111827', bandMuted: '#4B5563', bandAccent: '#0F766E', shadow: 'rgba(17,24,39,0.12)', display: SYS, body: SYS, mono: MONO, num: SYS,
+    band: '#F3F4F6', bandText: '#111827', bandMuted: '#4B5563', bandAccent: '#0F766E', shadow: 'rgba(17,24,39,0.12)', display: POSTER, body: OUTFIT, mono: MONO, num: OUTFIT,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
   ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E', link: '#F5A06E',
     band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
@@ -555,7 +595,7 @@ const THEMES = {
 };
 const THEME_KEY = 'dsaviz-theme';
 const USER_KEY = 'dsaviz-user';
-function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'paper'; } catch (e) { return 'paper'; } }
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
@@ -1806,15 +1846,31 @@ function dailyVals(cmp, t) {
   };
 }
 // The Back link names the page it returns to. The runtime keeps the trail (scripts/site-runtime.js).
-const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Learn', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Sheet',
+const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
-const BACK_PAGES = ['Chapter', 'Code', 'Story', 'AILesson', 'ConceptLesson', 'SDLesson', 'Briefing'];
+const BACK_PAGES = ['Code', 'Story', 'Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
 function navBack(page) {
   let to = null;
   try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   return { show: !!to, label: BACK_LABELS[name] || 'Back', aria: 'Back to ' + (BACK_LABELS[name] || 'the last page'), go: () => { try { window.__dsBack(); } catch (e) {} } };
+}
+// The Back link at the top of a lesson page: "Back to <the page the learner came from>". The trail (window.__dsTrail)
+// holds that page; with no trail (a bookmark, a reload) it goes to the lesson's own track page instead.
+// parent: { page: 'Concepts.dc.html', label: 'DSA concepts' }.
+function lessonBack(parent) {
+  let to = null;
+  try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
+  const name = to ? String(to.page).replace('.dc.html', '') : '';
+  const label = to ? (BACK_LABELS[name] || 'the last page') : parent.label;
+  return {
+    label: 'Back to ' + label, href: '#back',
+    go: (e) => {
+      try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {}
+      try { if (to) window.__dsBack(); else window.__dsNav(parent.page); } catch (x) {}
+    }
+  };
 }
 function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
@@ -1830,7 +1886,7 @@ function navVals(cmp, t, themeKey, page) {
         const live = NAV_PAGES.includes(href);
         return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
           live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.sunk : 'transparent', fg: t.text };
+          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
       }),
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
@@ -1846,9 +1902,8 @@ const SOLVE_IDS = {"merge-two-sorted-lists":"merge-two-lists","two-sum-ii-input-
 function solveId(id) { return SOLVE_IDS[id] || id; }
 function solveHref(id) { return 'Code.dc.html?problem=' + encodeURIComponent(solveId(id)); }
 // @@END-SOLVE@@
-// @@ABOUT@@ — "About this lesson" tab, shared by the lesson players (markup in shared/ui/about.html).
-// A lesson with about data gets two tabs under its title: the lesson itself, which always opens first, and About
-// this lesson, a fold of detail the learner opens when they want it.
+// @@ABOUT@@ — "About this lesson" sections, shared by the lesson players (markup in shared/ui/about.html).
+// A lesson with about data shows its sections in the page, under the lesson: no tab and no fold.
 // aboutVals(cmp, key, a, t, link): key is the lesson's id, a its about data ({ what, analogy, uses, before, words,
 // math: { lines: [mathml], symbols: [[mathml, meaning]], example }, steps, use, avoid, mistakes, cheat, next }),
 // link(ref) turns a 'before' or 'next' entry into { label, go } (go null for a plain topic name); watchLabel names
@@ -1869,7 +1924,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
   if (!cmp.aboutFirst || cmp.aboutFirst.key !== key) cmp.aboutFirst = { key, view: 'watch' };
   const v = cmp.state.aboutView;
   const view = !a ? 'watch' : v && v.key === key ? v.view : cmp.aboutFirst.view;
-  if (view === 'about') markAboutSeen(key);
+  if (a) markAboutSeen(key);
   const set = (k) => cmp.setState({ aboutView: { key, view: k } });
   const tab = (k, label) => ({ label, on: view === k ? 'true' : 'false', bg: view === k ? t.text : 'transparent', fg: view === k ? t.bg : t.muted, pick: () => set(k) });
   const refs = (list) => (list || []).map((r) => { const l = link(r) || { label: r, go: null }; return { label: l.label, go: l.go || (() => {}), link: !!l.go, plain: !l.go }; });
@@ -1888,7 +1943,7 @@ function aboutVals(cmp, key, a, t, link, watchLabel) {
     next: refs(b.next), hasNext: !!(b.next && b.next.length),
     watch: () => set('watch')
   };
-  return { has: !!a, about: view === 'about', watch: view !== 'about', tabs: a ? [tab('watch', watchLabel || 'Watch it'), tab('about', 'About')] : [], A };
+  return { has: false, about: !!a, watch: true, tabs: [], A };
 }
 // "Why learn this?" fold (markup: shared/ui/why.html, text for patterns and hubs: src/why.js). A lesson with About data builds it from
 // the About fields: the first sentence of `what`, then the first two `uses`. Patterns and hubs read WHY: [does, app, interview].

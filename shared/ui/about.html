@@ -1,70 +1,59 @@
 <!-- ABOUT TAB -->
-<sc-if value="{{ab.about}}" hint-placeholder-val="{{ false }}">
-<section aria-label="About this lesson" data-about style="box-sizing: border-box; min-width: 0; width: 100%; max-width: 720px; flex: 1 1 auto; display: flex; flex-direction: column; gap: 32px; padding: 8px 0 24px">
-<style>
-[data-about] details>summary{list-style:none;cursor:pointer}
-[data-about] details>summary::-webkit-details-marker{display:none}
-[data-about] details>summary svg{transition:transform .16s ease-out}
-[data-about] details[open]>summary svg{transform:rotate(180deg)}
-[data-about] summary:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:8px}
-</style>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<h2 style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">What it is</h2>
-<p style="margin: 0; font-size: var(--fs20); line-height: 1.6; color: {{t.text}}">{{ab.A.what}}</p>
-<sc-if value="{{ab.A.hasAnalogy}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><b style="color: {{t.text}}; font-weight: 600">Think of it like this: </b>{{ab.A.analogy}}</p></sc-if>
-</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<h2 style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Know these first</h2>
-<sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 500">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="min-height: 44px; padding: 0 16px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: var(--fs17); color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
-<sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">Nothing. This is a good place to start.</p></sc-if>
-</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<h2 style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Where it is used</h2>
-<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.uses}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
-</div>
-<div style="display: flex; flex-direction: column; border-bottom: 1px solid {{t.line}}">
-<details style="border-top: 1px solid {{t.line}}">
-<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">How it works<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<ol style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
-</details>
-<details style="border-top: 1px solid {{t.line}}">
-<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Key words<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<dl style="margin: 0; padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px"><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 2px"><dt style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">{{abw.term}}</dt><dd style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abw.mean}}</dd></div></sc-for></dl>
-</details>
-<sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
-<details style="border-top: 1px solid {{t.line}}">
-<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">The math<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 16px">
-<div class="ab-math" style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; font-size: var(--fs22); color: {{t.text}}; overflow-x: auto"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">What each symbol means</span>
-<div data-m="keep" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px 16px; align-items: baseline"><sc-for list="{{ab.A.math.symbols}}" as="abms" hint-placeholder-count="3"><span ref="{{abms.put}}" class="ab-math" style="font-size: var(--fs19); color: {{t.text}}; text-align: center"></span><span style="font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{abms.mean}}</span></sc-for></div></div>
-<sc-if value="{{ab.A.math.hasExample}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Worked example</span>
-<ol style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.math.example}}" as="abme" hint-placeholder-count="3"><li>{{abme.text}}</li></sc-for></ol></div></sc-if>
-</div>
-</details>
-</sc-if>
-<details style="border-top: 1px solid {{t.line}}">
-<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Use it when, skip it when<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div style="padding: 0 0 24px; display: flex; flex-direction: column; gap: 24px">
-<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Use it when</span>
-<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600; color: {{t.text}}">Skip it when</span>
-<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.avoid}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul></div>
-</div>
-</details>
-<details style="border-top: 1px solid {{t.line}}">
-<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Common mistakes<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}"><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
-</details>
-<details style="border-top: 1px solid {{t.line}}">
-<summary class="ds-hit" style="min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs20); font-weight: 600">Cheat sheet<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<ul style="margin: 0; padding: 0 0 24px 24px; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}; font-weight: 500"><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
-</details>
-</div>
-<div data-m="wrap" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
-<button data-next onClick="{{ab.A.watch}}" style="height: 56px; padding: 0 32px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 600">Watch the animation →</button>
-<sc-if value="{{ab.A.hasNext}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--fs17); color: {{t.muted}}">Learn next:</span><sc-for list="{{ab.A.next}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button onClick="{{abb.go}}" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 500">{{abb.label}} →</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); color: {{t.text2}}">{{abb.label}}</span></sc-if></sc-for></sc-if>
-</div>
+<sc-if value="{{ab.about}}" hint-placeholder-val="{{ true }}">
+<div data-about aria-label="About this lesson" style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<h2>About this lesson</h2>
+<section class="sh-sec" aria-label="What it is">
+<h3>What it is</h3>
+<p>{{ab.A.what}}</p>
+<sc-if value="{{ab.A.hasAnalogy}}" hint-placeholder-val="{{ true }}"><p class="sh-muted"><b style="color: var(--sh-text); font-weight: 600">Think of it like this: </b>{{ab.A.analogy}}</p></sc-if>
 </section>
+<section class="sh-sec" aria-label="Know these first">
+<h3>Know these first</h3>
+<sc-if value="{{ab.A.hasBefore}}" hint-placeholder-val="{{ true }}"><div class="sh-ctl"><sc-for list="{{ab.A.before}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button class="sh-chip" onClick="{{abb.go}}">{{abb.label}}</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span class="sh-row">{{abb.label}}</span></sc-if></sc-for></div></sc-if>
+<sc-if value="{{ab.A.noBefore}}" hint-placeholder-val="{{ false }}"><p class="sh-muted">Nothing. This is a good place to start.</p></sc-if>
+</section>
+<section class="sh-sec" aria-label="Where it is used">
+<h3>Where it is used</h3>
+<ul><sc-for list="{{ab.A.uses}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
+</section>
+<section class="sh-sec" aria-label="How it works">
+<h3>How it works</h3>
+<ol><sc-for list="{{ab.A.steps}}" as="abs" hint-placeholder-count="4"><li>{{abs.text}}</li></sc-for></ol>
+</section>
+<section class="sh-sec" aria-label="Key words">
+<h3>Key words</h3>
+<dl><sc-for list="{{ab.A.words}}" as="abw" hint-placeholder-count="4"><div><dt style="font-weight: 600">{{abw.term}}</dt><dd class="sh-muted">{{abw.mean}}</dd></div></sc-for></dl>
+</section>
+<sc-if value="{{ab.A.hasMath}}" hint-placeholder-val="{{ true }}">
+<section class="sh-sec" aria-label="The math">
+<h3>The math</h3>
+<div class="ab-math sh-panel sh-scroll"><sc-for list="{{ab.A.math.lines}}" as="abml" hint-placeholder-count="2"><div ref="{{abml.put}}"></div></sc-for></div>
+<h3>What each symbol means</h3>
+<div data-m="keep" style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px 16px; align-items: baseline"><sc-for list="{{ab.A.math.symbols}}" as="abms" hint-placeholder-count="3"><span ref="{{abms.put}}" class="ab-math" style="text-align: center"></span><span class="sh-muted">{{abms.mean}}</span></sc-for></div>
+<sc-if value="{{ab.A.math.hasExample}}" hint-placeholder-val="{{ true }}"><h3>Worked example</h3>
+<ol><sc-for list="{{ab.A.math.example}}" as="abme" hint-placeholder-count="3"><li>{{abme.text}}</li></sc-for></ol></sc-if>
+</section>
+</sc-if>
+<section class="sh-sec" aria-label="Use it when, skip it when">
+<h3>Use it when</h3>
+<ul><sc-for list="{{ab.A.use}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
+<h3>Skip it when</h3>
+<ul><sc-for list="{{ab.A.avoid}}" as="abu" hint-placeholder-count="2"><li>{{abu.text}}</li></sc-for></ul>
+</section>
+<section class="sh-sec" aria-label="Common mistakes">
+<h3>Common mistakes</h3>
+<ul><sc-for list="{{ab.A.mistakes}}" as="abu" hint-placeholder-count="3"><li>{{abu.text}}</li></sc-for></ul>
+</section>
+<section class="sh-sec" aria-label="Cheat sheet">
+<h3>Cheat sheet</h3>
+<ul><sc-for list="{{ab.A.cheat}}" as="abu" hint-placeholder-count="4"><li>{{abu.text}}</li></sc-for></ul>
+</section>
+<sc-if value="{{ab.A.hasNext}}" hint-placeholder-val="{{ true }}">
+<section class="sh-sec" aria-label="Learn next">
+<h3>Learn next</h3>
+<div class="sh-ctl"><sc-for list="{{ab.A.next}}" as="abb" hint-placeholder-count="2"><sc-if value="{{abb.link}}" hint-placeholder-val="{{ true }}"><button class="sh-chip" onClick="{{abb.go}}">{{abb.label}}</button></sc-if><sc-if value="{{abb.plain}}" hint-placeholder-val="{{ false }}"><span class="sh-row">{{abb.label}}</span></sc-if></sc-for></div>
+</section>
+</sc-if>
+</div>
 </sc-if>
 <!-- /ABOUT TAB -->

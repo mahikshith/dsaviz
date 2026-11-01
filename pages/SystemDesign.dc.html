@@ -114,7 +114,7 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offs
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; min-height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 
 <!-- PILL NAV -->
 <style>
@@ -264,81 +264,66 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: {{L.pad}}; display: flex; flex-direction: column; gap: 20px">
+<main style="box-sizing: border-box; padding: {{L.pad}}; display: flex; flex-direction: column; gap: 24px; min-width: 0">
 
-<!-- hero -->
-<section aria-label="System design" style="display: grid; grid-template-columns: {{L.heroCols}}; gap: 20px; align-items: stretch">
-<div style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h1}}px; line-height: 0.95; font-weight: 700">System <span style="color: {{t.accent}}">design</span></h1>
-<p style="margin: 0; max-width: 720px; font-size: var(--fs20); line-height: 1.45; color: {{t.text2}}">Big systems, one picture at a time. Every lesson is a diagram you step through: requests move, boxes light up and the numbers update as the design changes.</p>
+<!-- header: title, one line, one primary button -->
+<section aria-label="System design" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05">System design</h1>
+<p style="margin: 0; font-size: var(--fs18); color: {{t.muted}}">{{total.done}} of {{total.count}} lessons finished. Each lesson is a diagram you step through.</p>
 </div>
-<div style="box-sizing: border-box; padding: 18px 20px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; justify-content: center">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><span style="font-size: var(--fs17); font-weight: 700">Your progress</span><span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}">{{total.done}} of {{total.count}} lessons finished</span></div>
-<div role="progressbar" aria-label="Lessons finished" aria-valuemin="0" aria-valuemax="{{total.count}}" aria-valuenow="{{total.done}}" style="height: 8px; border-radius: 999px; background: {{t.line}}"><div style="width: {{total.pct}}%; height: 8px; border-radius: 999px; background: {{t.accent}}; transition: width 0.4s"></div></div>
-<a href="SDLesson.dc.html" onClick="{{resume.pick}}" style="align-self: flex-start; height: 44px; padding: 0 18px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">{{resume.text}} →</a>
-</div>
+<a data-resume href="SDLesson.dc.html" onClick="{{resume.pick}}" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; gap: 12px; align-items: center; font-size: var(--fs18); font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{resume.text}}</a>
 </section>
 
-<!-- tracks + method -->
-<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: {{L.gridCols}}; gap: 20px; align-items: stretch">
-
-<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="2">
-<section aria-label="{{tr.name}}" style="box-sizing: border-box; min-width: 0; padding: 18px 18px 14px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1; font-weight: 700">{{tr.name}}</h2><span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{t.accent}}">{{tr.code}}</span></div>
-<span style="font-size: var(--fs17); line-height: 1.4; color: {{t.text2}}">{{tr.blurb}}</span>
-<div style="display: flex; align-items: center; gap: 10px"><div aria-hidden="true" style="flex-grow: 1; height: 6px; border-radius: 999px; background: {{t.line}}"><div style="width: {{tr.pct}}%; height: 6px; border-radius: 999px; background: {{t.ok}}"></div></div><span style="font-family: {{t.mono}}; font-size: var(--fs15); color: {{t.muted}}">{{tr.done}}/{{tr.count}} done</span></div>
+<!-- three groups as quiet tabs -->
+<div role="tablist" aria-label="Lesson groups" style="display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid {{t.line}}">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
+<button role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="height: 48px; padding: 0; margin-bottom: -1px; border: 0; border-bottom: 2px solid {{tb.line}}; border-radius: 0; background: transparent; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{tb.fg}}">{{tb.label}}</button>
+</sc-for>
 </div>
-<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{tr.lessons}}" as="ls" hint-placeholder-count="9">
-<li><a href="SDLesson.dc.html" onClick="{{ls.pick}}" aria-label="{{ls.aria}}" style="min-height: 46px; box-sizing: border-box; padding: 6px 10px; border-radius: 10px; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; background: {{ls.bg}}"><span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: var(--fs18); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ls.title}}</span><span style="font-family: {{t.mono}}; font-size: var(--fs13); color: {{t.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ls.tag}} · {{ls.steps}} steps</span></span><span style="height: 24px; box-sizing: border-box; padding: 0 9px; border-radius: 999px; border: 1px solid {{ls.chipBorder}}; color: {{ls.chipFg}}; display: flex; align-items: center; font-family: {{t.mono}}; font-size: var(--fs13); font-weight: 700; white-space: nowrap">{{ls.chip}}</span></a></li>
+
+<section aria-label="Lessons" style="display: flex; flex-direction: column; gap: 16px">
+<p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; max-width: 760px">{{cur.blurb}}</p>
+<ol style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
+<sc-for list="{{cur.lessons}}" as="ls" hint-placeholder-count="6">
+<li style="border-top: 1px solid {{ls.rule}}"><a href="SDLesson.dc.html" onClick="{{ls.pick}}" aria-label="{{ls.aria}}" style="min-height: 72px; box-sizing: border-box; padding: 16px 0; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 16px; align-items: center"><span style="font-size: var(--fs17); font-weight: 600; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ls.tag}} · {{ls.steps}} steps</span></span><span style="font-size: var(--fs16); font-weight: 600; color: {{ls.chipFg}}">{{ls.chip}}</span></a></li>
 </sc-for>
 </ol>
-<sc-if value="{{tr.hasSoon}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Coming next</span>
-<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{tr.soon}}" as="sn" hint-placeholder-count="4"><span style="height: 28px; padding: 0 10px; border-radius: 999px; border: 1px dashed {{t.line2}}; color: {{t.text2}}; display: flex; align-items: center; font-size: var(--fs16)">{{sn}}</span></sc-for></div>
-</div>
-</sc-if>
-<sc-if value="{{tr.hasHow}}" hint-placeholder-val="{{ false }}">
-<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">How a lesson works</span>
-<sc-for list="{{how}}" as="hw" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 10px; font-size: var(--fs16); color: {{t.text2}}"><span aria-hidden="true" style="flex-shrink: 0; width: 12px; height: 12px; border-radius: 999px; background: {{hw.color}}"></span><span>{{hw.text}}</span></div></sc-for>
-</div>
-</sc-if>
-<sc-if value="{{tr.hasFacts}}" hint-placeholder-val="{{ false }}">
-<div style="margin-top: auto; padding: 14px; border-radius: 12px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Numbers worth knowing</span>
-<div style="display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: var(--fs16)">
-<sc-for list="{{facts}}" as="fc" hint-placeholder-count="5"><span style="font-family: {{t.mono}}; font-weight: 700; color: {{t.text}}; white-space: nowrap">{{fc.a}}</span><span style="color: {{t.text2}}">{{fc.b}}</span></sc-for>
-</div>
-</div>
+<sc-if value="{{cur.hasMore}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{toggleAll}}" aria-expanded="{{showAll}}" style="align-self: flex-start; height: 48px; padding: 0; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 600">{{moreLabel}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="transform: {{moreChev}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 </sc-if>
 </section>
-</sc-for>
 
-<section aria-label="The four-step interview method" style="box-sizing: border-box; min-width: 0; padding: 18px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.accent}}; display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{t.accent}}">IN THE INTERVIEW</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1; font-weight: 700">The four-step method</h2>
-<span style="font-size: var(--fs17); line-height: 1.4; color: {{t.text2}}">Any design question, in the same order. Spend most of your time on steps 2 and 3.</span>
-</div>
-<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+<!-- the rest sits in folds -->
+<section aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
+<button onClick="{{toggleMethod}}" aria-expanded="{{foldMethod}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">The four-step interview method<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevMethod}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldMethod}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 24px 0; display: flex; flex-direction: column; gap: 24px; border-bottom: 1px solid {{t.line}}">
+<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Any design question, in the same order. Spend most of your time on steps 2 and 3.</p>
+<ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: {{L.methodCols}}; gap: 24px">
 <sc-for list="{{method}}" as="mt" hint-placeholder-count="4">
-<li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px 12px; border-radius: 12px; background: {{t.sunk}}"><span style="width: 40px; height: 40px; border-radius: 12px; background: {{mt.bg}}; color: {{mt.fg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.display}}; font-size: var(--fs24); font-weight: 700">{{mt.n}}</span><span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: var(--fs18); font-weight: 700">{{mt.name}}</span><span style="font-size: var(--fs16); line-height: 1.4; color: {{t.text2}}">{{mt.text}}</span><span style="font-family: {{t.mono}}; font-size: var(--fs13); color: {{t.muted}}">{{mt.time}}</span></span></li>
+<li style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs18); font-weight: 600">{{mt.n}}. {{mt.name}}</span><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{mt.text}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{mt.time}}</span></li>
 </sc-for>
 </ol>
-<a href="SDLesson.dc.html" onClick="{{methodGo}}" style="height: 44px; border-radius: 999px; border: 1.5px solid {{t.accent}}; color: {{t.text}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 700">Watch it on the URL shortener →</a>
-<sc-if value="{{L.desk}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 4px 4px 0; display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">How a lesson works</span>
-<sc-for list="{{how}}" as="hw" hint-placeholder-count="3"><div style="display: flex; align-items: center; gap: 10px; font-size: var(--fs16); color: {{t.text2}}"><span aria-hidden="true" style="flex-shrink: 0; width: 12px; height: 12px; border-radius: 999px; background: {{hw.color}}"></span><span>{{hw.text}}</span></div></sc-for>
+<a href="SDLesson.dc.html" onClick="{{methodGo}}" style="align-self: flex-start; min-height: 48px; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600; color: {{t.accent}}">Watch it on the URL shortener →</a>
 </div>
 </sc-if>
-<p style="margin: auto 0 0; font-size: var(--fs15); line-height: 1.5; color: {{t.muted}}">Every lesson, diagram and number here is written and drawn by us.</p>
-</section>
 
+<button onClick="{{toggleNums}}" aria-expanded="{{foldNums}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Numbers worth knowing<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevNums}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldNums}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 24px 0; display: grid; grid-template-columns: auto 1fr; gap: 16px 24px; font-size: var(--fs17); border-bottom: 1px solid {{t.line}}">
+<sc-for list="{{facts}}" as="fc" hint-placeholder-count="5"><span style="font-weight: 600; white-space: nowrap">{{fc.a}}</span><span style="color: {{t.text2}}">{{fc.b}}</span></sc-for>
 </div>
+</sc-if>
+
+<button onClick="{{toggleHow}}" aria-expanded="{{foldHow}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">How a lesson works, and what is coming<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevHow}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldHow}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
+<sc-for list="{{how}}" as="hw" hint-placeholder-count="4"><p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{hw.text}}</p></sc-for>
+<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">Coming soon, not built yet: {{soonLine}}.</p>
+</div>
+</sc-if>
+</section>
 </main>
 </div>
 </x-dc>
@@ -3574,7 +3559,7 @@ const SD_TIMES = ['about 5 minutes', 'about 10 minutes', 'about 15 minutes', 'ab
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), mobile: sdHubMobile(), progress: sdLoadProgress() };
+    this.state = { theme: loadTheme(), mobile: sdHubMobile(), progress: sdLoadProgress(), tab: 0, showAll: false, foldMethod: false, foldNums: false, foldHow: false };
   }
   componentDidMount() {
     listenTheme(this);
@@ -3607,6 +3592,15 @@ class Component extends DCLogic {
         })
       };
     });
+    const chev = (on) => (on ? 'rotate(180deg)' : 'rotate(0deg)');
+    const tabIdx = Math.min(this.state.tab || 0, tracks.length - 1);
+    const SHOWN = 6;
+    const showAll = !!this.state.showAll;
+    const curT = tracks[tabIdx];
+    const cur = { blurb: curT.blurb, hasMore: curT.lessons.length > SHOWN,
+      lessons: (showAll ? curT.lessons : curT.lessons.slice(0, SHOWN)).map((x, i) => ({ ...x, rule: i === 0 ? 'transparent' : t.line })) };
+    const tabs = tracks.map((tr, i) => ({ label: tr.name + ' (' + tr.count + ')', on: i === tabIdx, line: i === tabIdx ? t.accent : 'transparent', fg: i === tabIdx ? t.text : t.muted,
+      pick: () => this.setState({ tab: i, showAll: false }) }));
     const doneAll = SD_LESSONS.filter(isDone).length;
     const next = SD_LESSONS.find((x) => seen(x) > 0 && !isDone(x)) || SD_LESSONS.find((x) => !isDone(x)) || SD_LESSONS[0];
     const started = SD_LESSONS.some((x) => seen(x) > 0);
@@ -3614,13 +3608,18 @@ class Component extends DCLogic {
       t, ...navVals(this, t, themeKey, 'SystemDesign'), themeBtns: themeButtons(this, themeKey, t),
       L: {
         desk: !mobile, rootW: mobile ? 420 : 1440, rootH: mobile ? 'auto' : '1280px', gutter: mobile ? 16 : 32,
-        pad: mobile ? '20px 16px 28px' : '22px 32px 24px', h1: mobile ? 44 : 64,
-        heroCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 420px',
+        pad: mobile ? '24px 16px 32px' : '24px 48px 48px', h1: mobile ? 44 : 64,
+        methodCols: mobile ? 'minmax(0, 1fr)' : 'repeat(4, minmax(0, 1fr))',
         gridCols: mobile ? 'minmax(0, 1fr)' : 'repeat(4, minmax(0, 1fr))'
       },
       total: { done: doneAll, count: SD_LESSONS.length, pct: Math.round((doneAll / SD_LESSONS.length) * 100) },
       resume: { text: (started ? 'Continue: ' : 'Start with: ') + next.title, pick: () => sdPickLesson(next.id) },
-      tracks,
+      tracks, tabs, cur, showAll, moreLabel: showAll ? 'Show fewer' : 'Show all ' + curT.lessons.length + ' lessons', moreChev: chev(showAll),
+      toggleAll: () => this.setState({ showAll: !this.state.showAll }),
+      foldMethod: !!this.state.foldMethod, chevMethod: chev(this.state.foldMethod), toggleMethod: () => this.setState({ foldMethod: !this.state.foldMethod }),
+      foldNums: !!this.state.foldNums, chevNums: chev(this.state.foldNums), toggleNums: () => this.setState({ foldNums: !this.state.foldNums }),
+      foldHow: !!this.state.foldHow, chevHow: chev(this.state.foldHow), toggleHow: () => this.setState({ foldHow: !this.state.foldHow }),
+      soonLine: SD_SOON.join(', '),
       facts: SD_FACTS.map(([a, b]) => ({ a, b })),
       how: [[t.accent, 'Requests travel as dots along the arrows.'], [t.right === t.accent ? t.left : t.right, 'Replies and refusals get their own colours, shown in each lesson.'], [t.text2, 'Step with ← and →, or press Play and watch.'], [t.ok, 'The numbers strip redoes the napkin math each step.']].map(([color, text]) => ({ color, text })),
       method: SD_METHOD.map(([name, text], i) => ({ n: i + 1, name, text, time: SD_TIMES[i], bg: i === 0 ? t.accent : t.surface, fg: i === 0 ? t.onAccent : t.accent })),

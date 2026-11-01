@@ -130,10 +130,10 @@ Object.assign(START_EXERCISES, {
       starter: { py: 'def double(n):\n    return n * 2\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(double(), 5))\n', js: 'function double(n) {\n  return n * 2;\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(double(), 5));\n' },
       ref: { py: 'def double(n):\n    return n * 2\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(double, 5))\n', js: 'function double(n) {\n  return n * 2;\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(double, 5));\n' },
       cases: [{ out: '20' }], hints: ['double() runs the function right there.', 'Pass double with no brackets.'] },
-    { id: 'callbacks:5', kind: 'write', title: 'Shortest first', ask: 'Print the names sorted from shortest to longest, by handing the length function to the sort.',
-      starter: { py: 'names = ["Priya", "Joanna", "Tomas"]\nprint(names)\n', js: 'let names = ["Priya", "Joanna", "Tomas"];\nconsole.log(names);\n' },
-      ref: { py: 'names = ["Priya", "Joanna", "Tomas"]\nprint(sorted(names, key=len))\n', js: 'let names = ["Priya", "Joanna", "Tomas"];\nconsole.log(names.sort((a, b) => a.length - b.length));\n' },
-      cases: [{ out: { py: "['Priya', 'Tomas', 'Joanna']", js: '["Priya","Tomas","Joanna"]' } }], hints: [{ py: 'sorted takes a key: the function that scores each name.', js: 'sort takes a function that compares two names.' }, { py: 'sorted(names, key=len)', js: 'names.sort((a, b) => a.length - b.length)' }] }
+    { id: 'callbacks:5', kind: 'write', title: 'Hand it over', ask: 'Use twice to add 1 two times to 5. Print the result. add_one and twice are written for you.',
+      starter: { py: 'def add_one(n):\n    return n + 1\n\ndef twice(f, x):\n    return f(f(x))\n', js: 'function add_one(n) {\n  return n + 1;\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n' },
+      ref: { py: 'def add_one(n):\n    return n + 1\n\ndef twice(f, x):\n    return f(f(x))\n\nprint(twice(add_one, 5))\n', js: 'function add_one(n) {\n  return n + 1;\n}\n\nfunction twice(f, x) {\n  return f(f(x));\n}\n\nconsole.log(twice(add_one, 5));\n' },
+      cases: [{ out: '7' }], hints: ['twice needs a function and a number.', 'print(twice(add_one, 5)), with no brackets after add_one.'] }
   ],
   'closures': [
     { id: 'closures:1', kind: 'predict', title: 'Plus three', ask: 'What does this print?',
@@ -164,13 +164,13 @@ Object.assign(START_EXERCISES, {
     { id: 'recursion:3', kind: 'choose', title: 'Count the plates', ask: 'count_down(3) has called down to count_down(1), which is running now. How many count_down plates are on the stack?',
       choices: ['3', '1', '4', '2'], answer: 0, why: 'count_down(3) and count_down(2) are waiting, and count_down(1) is on top: three plates.',
       hints: ['Which calls have started but not finished?', 'Count 3, 2 and 1.'] },
-    { id: 'recursion:4', kind: 'write', title: 'Factorial', fn: 'factorial', params: ['n'], ask: 'Write factorial(n): 1 when n is 0, otherwise n times factorial(n - 1).',
+    { id: 'recursion:4', kind: 'write', title: 'Factorial', fn: 'factorial', params: ['n'], ask: 'Write factorial(n): 1 when n is 0, otherwise n times factorial(n - 1). For example, factorial(4) is 4 * 3 * 2 * 1.',
       starter: { py: 'def factorial(n):\n    return 0\n', js: 'function factorial(n) {\n}\n' },
       ref: { py: 'def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n', js: 'function factorial(n) {\n  if (n === 0) {\n    return 1;\n  }\n  return n * factorial(n - 1);\n}\n' },
       cases: [[[0], 1], [[1], 1], [[4], 24], [[5], 120]], hints: ['Write the base case first: n == 0 gives 1.', 'Then return n * factorial(n - 1).'] },
-    { id: 'recursion:5', kind: 'fix', title: 'It never stops', fn: 'power', params: ['b', 'e'], ask: 'power(b, e) should return b to the power e, but it never stops calling itself. Add the base case.',
+    { id: 'recursion:5', kind: 'fix', title: 'It never stops', fn: 'power', params: ['b', 'e'], ask: 'power(b, e) should multiply b by itself e times, so power(2, 3) is 2 * 2 * 2 = 8. It never stops calling itself. Add the base case.',
       starter: { py: 'def power(b, e):\n    return b * power(b, e - 1)\n', js: 'function power(b, e) {\n  return b * power(b, e - 1);\n}\n' },
       ref: { py: 'def power(b, e):\n    if e == 0:\n        return 1\n    return b * power(b, e - 1)\n', js: 'function power(b, e) {\n  if (e === 0) {\n    return 1;\n  }\n  return b * power(b, e - 1);\n}\n' },
-      cases: [[[2, 3], 8], [[5, 0], 1], [[3, 2], 9], [[10, 1], 10]], hints: ['When should it stop? Any number to the power 0 is 1.', 'Before the return line, add: if e == 0, return 1.'] }
+      cases: [[[2, 3], 8], [[5, 0], 1], [[3, 2], 9], [[10, 1], 10]], hints: ['When should it stop? If e is 0, the answer is 1.', 'Before the return line, add: if e == 0, return 1.'] }
   ]
 });

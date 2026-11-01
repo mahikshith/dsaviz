@@ -735,7 +735,7 @@ const START_ABOUT = {
     math: null,
     steps: ['You make a list and store it: mine = ["nut"].', 'You call add_acorn(mine).', 'The parameter bag points at the same list, not a copy.', 'bag.append("acorn") changes that one list.', 'mine shows the change after the call.'],
     use: ['You want a function to change a list in place.', 'You want to know why a list changed unexpectedly.'],
-    avoid: ['Changing a list the caller did not expect you to touch.', 'Using a list as a default parameter value.'],
+    avoid: ['Changing a list the caller did not expect you to touch.', 'Passing a list when you meant to pass a copy.'],
     mistakes: ['Thinking the function got its own copy of the list. Fix: it is the same list. Use bag.copy() to work on a copy.', 'Being surprised that numbers do not change. Fix: numbers cannot change in place, so the caller keeps the old one.', 'Changing a list while looping over it. Fix: loop over a copy.'],
     cheat: ['lists are shared when passed', 'append changes the one list', 'bag.copy() makes a copy', 'numbers and strings do not change in place', 'return a new list to be safe'],
     next: ['callbacks', 'references'],

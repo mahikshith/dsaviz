@@ -227,6 +227,35 @@ a.sh-row:hover{background:var(--sh-sunk)}
 /* Maths in About: MathML shrinks scripts and limits to about 13px; here they stop at 14px and everything else is body size. */
 [data-shell] math,[data-shell] math *{font-size:calc(18px * var(--ts, 1))!important;math-depth:0!important}
 [data-shell] math :is(msup,msub,msubsup,munder,mover,munderover)>:not(:first-child){font-size:calc(14px * var(--ts, 1))!important}
+.sh-aux,.sh-bar{display:contents}
+.sh-bar-m{display:none}
+.sh-pager{flex-wrap:wrap}
+.sh-pager a{white-space:normal}
+@media (max-width:759px){
+/* Phones: picture, step text, then one slim bar (Previous, Play, Next) pinned to the bottom of the screen while the picture is in view. */
+.sh-lesson>*{order:3}
+.sh-lesson>.sh-back,.sh-lesson>header{order:0}
+.sh-lesson>.sh-pic{order:1}
+.sh-lesson>.sh-idea{order:2}
+.sh-pic>.sh-panel{position:static}
+.sh-pic .sh-panel>div[aria-live]>.sh-label{order:-2}
+.sh-pic .sh-panel>div[aria-live]>p{order:-1}
+.sh-pic>section[aria-label^="Diagram"]{padding:8px!important}
+.sh-story{display:contents}
+.sh-story>svg{order:1}
+.sh-story>aside{order:4}
+.sh-s-cap{order:2}
+.sh-s-ctl{order:3;position:sticky;bottom:0;z-index:5;margin:0 -24px;padding:8px 24px;background:var(--sh-surface);border-top:1px solid var(--sh-line)}
+.sh-pic .sh-panel .sh-bar{display:none}
+.sh-pic .sh-aux{display:flex;gap:8px}
+.sh-pic .sh-bar-m{display:flex;align-items:center;gap:8px;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
+.sh-pic .sh-bar-m>.sh-ib{flex:0 0 44px;min-width:44px!important}
+.sh-pic .sh-bar-m>.sh-ib+.sh-ib{flex:1 1 0}
+.sh-pic .sh-bar-m>.sh-btn{flex:1.4 1 0;margin-left:0!important}
+[data-shell] [data-m~="wrap"]{flex-wrap:wrap}
+[data-shell] [data-m~="scroll"]{flex-wrap:nowrap;overflow-x:auto}
+[data-shell] pre{overflow-x:auto}
+}
 [data-shell] a:focus-visible,[data-shell] button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:2px}
 @media (max-width:1023px){.sh-layout{grid-template-columns:minmax(0,1fr)}.sh-side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--sh-line);padding:8px 16px}.sh-side-btn{display:flex}.sh-side-list[data-open="false"]{display:none}.sh-side-list[data-open="true"]{padding-top:8px}}
 @media (max-width:639px){.sh-main{padding:16px}.sh-foot{padding:16px}}
@@ -2407,7 +2436,7 @@ const START_NEEDS_KEYS = {
   tests: 'checks that run themselves', edgetests: 'edge checks and test-first', blocking: 'blocking and waiting', eventloop: 'the event loop', later: 'call-me-back functions',
   asyncawait: 'async and await', gather: 'several waits at once', timeouts: 'errors and timeouts', retries: 'retries', threads: 'threads and shared data'
 };
-const START_STAGES = [['story', 'Story'], ['watch', 'Your variables'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
+const START_STAGES = [['story', 'Watch'], ['watch', 'Your variables'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
 const START_EASE_MS = 600;
 
 // A lessons_*.js file fills in a lesson written in chapters.js and marks it ready:

@@ -12,6 +12,13 @@ const server = http.createServer((q, r) => { r.writeHead(200, { 'Content-Type': 
 server.listen(0, async () => {
   const browser = await chromium.launch({ channel: 'msedge' });
   let bad = 0;
+  // html and body clip sideways overflow (so sticky works), which hides it from scrollWidth. So also look for what sticks out: an element
+  // whose right edge is past the screen and that no scrolling or clipping parent holds in.
+  const offenders = () => { const w = document.documentElement.clientWidth; const out = [];
+    const held = (e) => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { if (getComputedStyle(a).overflowX !== 'visible') return true; } return false; };
+    document.querySelectorAll('#app *').forEach((e) => { if (e.closest('svg,[data-drawer]')) return; const r = e.getBoundingClientRect();
+      if (r.width && r.right > w + 1 && !held(e)) out.push(e.tagName.toLowerCase() + ' ' + Math.round(r.left) + '..' + Math.round(r.right) + ' ' + (e.textContent || '').trim().slice(0, 24)); });
+    return out.slice(0, 4); };
   // Each lesson page and the page its Back link goes to when there is no trail.
   const LESSON_PAGES = [['Chapter', 'Start'], ['ConceptLesson', 'Concepts'], ['SDLesson', 'SystemDesign'], ['AILesson', 'AIML'], ['Git', 'Patterns']];
   const fail = (m) => { bad++; console.log('  ✗ ' + m); };
@@ -19,7 +26,7 @@ server.listen(0, async () => {
   // DS_ONLY=problem skips the lesson checks and runs only the Problem page checks at the end of this file.
   const ONLY_PROBLEM = process.env.DS_ONLY === 'problem';
   for (const [theme, width] of ONLY_PROBLEM ? [] : [['max', 320], ['max', 390], ['max', 1024], ['max', 1440], ['paper', 390]]) {
-    const page = await browser.newPage({ viewport: { width, height: 800 } });
+    const page = await browser.newPage({ viewport: { width, height: 800 }, isMobile: width < 760, hasTouch: width < 760 });
     await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
     const errs = []; page.on('pageerror', (e) => errs.push(e.message));
     await page.goto('http://localhost:' + server.address().port + '/');
@@ -32,6 +39,7 @@ server.listen(0, async () => {
       if (!r.shell) fail(f + ' did not open');
       if (r.zoom !== '1') fail(f + ' at ' + width + ' ' + theme + ': zoom ' + r.zoom);
       if (r.over > 0) fail(f + ' at ' + width + ' ' + theme + ': scrolls sideways by ' + r.over + 'px');
+      const off0 = await page.evaluate(offenders); if (off0.length) fail(f + ' at ' + width + ' ' + theme + ': sticks out past the screen: ' + off0.join(' | '));
       if (r.size !== '18px') fail(f + ' at ' + width + ': body text ' + r.size);
       await page.evaluate(() => document.activeElement && document.activeElement.blur());
       await page.keyboard.press('Tab');
@@ -110,6 +118,18 @@ server.listen(0, async () => {
       if (r.why) fail(id + ': shows "Why learn this?"');
       if (r.small.length) fail(id + ': text under 14px: ' + r.small.slice(0, 3).join(', '));
       if (r.over > 0) fail(id + ': scrolls sideways by ' + r.over + 'px');
+      const off1 = await page.evaluate(offenders); if (off1.length) fail(id + ': sticks out past the screen: ' + off1.join(' | '));
+      if (width < 760) { // a full-page picture of the phone is exactly as wide as the phone
+        const png = await page.screenshot({ fullPage: true }); const pw = png.readUInt32BE(16);
+        if (pw !== width) fail(id + ': the full-page picture is ' + pw + 'px wide, not ' + width);
+      }
+      if (pg === 'Chapter' && width < 760) { // every stage of a Start here lesson at phone width
+        for (const tab of ['Watch', 'Try it', 'Practice', 'Check']) {
+          await page.evaluate((t) => { const b = [...document.querySelectorAll('#app button.sh-tab')].find((x) => x.textContent.replace(/^[\d✓]\s*/, '').trim() === t); if (b) b.click(); }, tab); await page.waitForTimeout(700);
+          const o = await page.evaluate(offenders); if (o.length) fail(id + ' stage ' + tab + ': sticks out past the screen: ' + o.join(' | '));
+          const sw = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); if (sw > 0) fail(id + ' stage ' + tab + ': scrolls sideways by ' + sw + 'px');
+        }
+      }
       // Back returns to the page the learner came from, with its scroll kept.
       if (width >= 1024) {
         await page.setViewportSize({ width, height: 360 });
@@ -153,11 +173,13 @@ server.listen(0, async () => {
     for (const [pg, [st, tx]] of Object.entries(FIT)) {
       await pg2.evaluate((n) => window.__dsNav(n), pg + '.dc.html'); await pg2.waitForTimeout(1200);
       const f = await pg2.evaluate(([a, b]) => { const q = (s) => document.querySelector(s); const rc = (e) => { if (!e) return null; const r = e.getBoundingClientRect(); return [Math.round(r.top), Math.round(r.bottom)]; };
-        return { vh: innerHeight, stage: rc(q(a)), text: rc(q(b)), play: rc(q('main button[aria-label^="Play"]')), next: rc(q('main button[data-next], main button[aria-label="Next step"]')) }; }, [st, tx]);
+        const vis = (sel, re) => [...document.querySelectorAll(sel)].find((e) => e.getBoundingClientRect().height > 0 && (!re || re.test(e.getAttribute('aria-label') || '')));
+        return { vh: innerHeight, stage: rc(q(a)), text: rc(q(b)), play: rc(vis('main button[aria-label]', /^(Play|Pause)(?!back)/)), next: rc(vis('main button[data-next], main button[aria-label="Next step"]')) }; }, [st, tx]);
       const id = pg + ' at ' + w + 'x' + h;
       if (!f.stage || !f.text || !f.play || !f.next) { fail(id + ': first screen is missing ' + ['stage', 'text', 'play', 'next'].filter((k) => !f[k]).join(', ')); continue; }
       if (f.stage[0] >= f.vh - 100) fail(id + ': the picture starts at ' + f.stage[0] + ', below the first screen (' + f.vh + ')');
-      if (f.text[1] > f.vh) fail(id + ': the first step text ends at ' + f.text[1] + ', below the first screen (' + f.vh + ')');
+      // Wide: the whole first step text is in the first screen. Phone: it starts above the 56px bar (the bar pins to the bottom, covering the rest); the system design picture is taller, so there it only has to start on screen.
+      if (w >= 760 ? f.text[1] > f.vh : f.text[0] > f.vh - (pg === 'SDLesson' ? 8 : 56 + 24)) fail(id + ': the first step text ' + (w >= 760 ? 'ends at ' + f.text[1] : 'starts at ' + f.text[0]) + ', below the first screen (' + f.vh + ')');
       if (f.play[1] > f.vh) fail(id + ': Play ends at ' + f.play[1] + ', below the first screen (' + f.vh + ')');
       if (f.next[1] > f.vh) fail(id + ': Next ends at ' + f.next[1] + ', below the first screen (' + f.vh + ')');
     }

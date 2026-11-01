@@ -275,7 +275,7 @@
       if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
     });
     document.body.appendChild(b);
-    const PINNED = '[data-code-bar],[data-run-bar],.sh-pic>.sh-panel,.sh-pager,.sh-side-btn';
+    const PINNED = '[data-code-bar],[data-run-bar],.sh-pic>.sh-panel,.sh-bar-m,.sh-s-ctl,.sh-pager,.sh-side-btn';
     const blocking = '[data-pn-panel],[data-drawer],[data-daily],[role="dialog"]';
     let queued = 0;
     const update = () => {

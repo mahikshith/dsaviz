@@ -108,14 +108,15 @@ function csBigO(n) {
     ['on2', 'O(n²)', 'check every pair', n * n],
     ['o2n', 'O(2ⁿ)', 'try every group', Math.pow(2, n)]
   ];
-  const top = 56; const gapY = 56; const x0 = 230; const span = 580; const maxLog = Math.log10(Math.pow(2, 64)) + 0.5;
+  const top = 88; const gapY = 56; const x0 = 230; const span = 580; const maxLog = Math.log10(Math.pow(2, 64)) + 0.5;
   const width = (c) => csR(8 + span * Math.log10(c + 1) / maxLog);
   const row = (r, i, on) => {
     const [id, name, ex, count] = r; const y = top + i * gapY;
     return {
       labels: [csLabel(id + 'n', 40, y + 8, name, { c: on ? 't' : 'm', size: 18, weight: 700, mono: true }), csLabel(id + 'e', 40, y + 27, ex, { size: 14 }),
         csLabel(id + 'v', x0 + width(count) + 12, y + 14, on ? csBig(count) + (count === 1 ? ' step' : ' steps') : '', { c: on ? 't' : 'm', size: 15, weight: 700, mono: true })],
-      bars: [{ id: id + 'b', x: x0, y: y - 6, w: on ? width(count) : 0, h: 30, rx: 5, c: ['ok', 'ok', 'b', 'b', 'c', 'bad'][i] }]
+      // rows not reached yet show their full length as a faint outline, so every row can be compared from the first step
+      bars: [{ id: id + 'b', x: x0, y: y - 6, w: width(count), h: 30, rx: 5, c: ['ok', 'ok', 'b', 'b', 'c', 'bad'][i], hollow: !on }]
     };
   };
   const upto = (k, extra) => csScene.apply(null, rows.map((r, i) => row(r, i, i <= k)).concat([{ axes: { x0: x0 - 6, y0: top + 6 * gapY - 32, x1: x0 + span + 30, y1: top - 26 }, labels: [csLabel('nlab', x0 + 6, top - 38, 'n = ' + n, { c: 'a', size: 18, weight: 700, mono: true })] }, extra]));
@@ -1172,7 +1173,7 @@ function csRollHash() {
 }
 
 const CS_LESSONS = [
-  { id: 'bigo', view: [0, 0, 960, 390], track: 'found', title: 'Big-O by counting steps', tag: 'how work grows as the list grows', minutes: 4, make: csBigO,
+  { id: 'bigo', view: [0, 0, 960, 422], track: 'found', title: 'Big-O by counting steps', tag: 'how work grows as the list grows', minutes: 4, make: csBigO,
     idea: 'Big-O describes how the number of steps grows when the input grows. We count steps, so a faster computer changes nothing.',
     param: { label: 'Input size n', min: 1, max: 64, step: 1, value: 16, digits: 0, hint: 'Every step count is worked out for your n.' },
     groups: ['Binary Search', 'Hash Map'], tryIt: ['binary-search', 'contains-duplicate', 'two-sum'] },

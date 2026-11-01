@@ -25,9 +25,11 @@ const DEFAULTS = { fontSize: 16, tabSize: 0, wrap: false, relative: false, vim: 
 function themeFor(t) {
   const dark = !/^#F|^#E/i.test(t.codeBg || '#000');
   const view = EditorView.theme({
-    '&': { backgroundColor: t.codeBg, color: t.text, height: '100%' },
+    // The 12px of air above the first line is on the editor box, not on the content: CodeMirror sizes the line numbers from the content's top padding
+    // only once it has measured, so padding there left the numbers 12px above their lines while the editor was off screen.
+    '&': { backgroundColor: t.codeBg, color: t.text, height: '100%', boxSizing: 'border-box', paddingTop: '12px' },
     '.cm-scroller': { fontFamily: t.mono, lineHeight: '1.65', fontVariantLigatures: 'none' },
-    '.cm-content': { caretColor: t.accent, padding: '12px 0' },
+    '.cm-content': { caretColor: t.accent, padding: '0 0 12px' },
     '.cm-cursor, .cm-dropCursor': { borderLeftColor: t.accent, borderLeftWidth: '2px' },
     '&.cm-focused': { outline: 'none', boxShadow: 'inset 0 0 0 2px ' + t.accent },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': { backgroundColor: t.hl + ' !important' },
@@ -88,6 +90,10 @@ function create(parent, opts) {
   const tabOf = () => prefs.tabSize || UNITS[code] || 4;
   const unitExt = () => [indentUnit.of(' '.repeat(tabOf())), EditorState.tabSize.of(tabOf())];
   const sizeExt = () => EditorView.theme({ '&': { fontSize: 'calc(' + prefs.fontSize + 'px * var(--ts, 1))' } });
+  // Without wrapping every line is one row tall, so the line numbers take that height by CSS. (CodeMirror sizes the gutter from its own
+  // estimate until the editor has been on screen; off screen that estimate is 14px, which stacked the numbers on top of each other.)
+  const rowFix = EditorView.theme({ '.cm-lineNumbers .cm-gutterElement:not(:first-child)': { height: '1.65em !important', boxSizing: 'border-box' } });
+  const wrapExt = () => (prefs.wrap ? EditorView.lineWrapping : rowFix);
   const bracketExt = () => (prefs.brackets ? [bracketMatching(), closeBrackets(), keymap.of(closeBracketsKeymap)] : []);
   const completeExt = () => (prefs.autocomplete ? [autocompletion({ activateOnTyping: true }), EditorState.languageData.of(() => [{ autocomplete: completeAnyWord }]), keymap.of(completionKeymap)] : []);
   // Run (Ctrl/Cmd + ') and Submit (Ctrl/Cmd + Enter) win over the default keymap, which would add a blank line.
@@ -102,7 +108,7 @@ function create(parent, opts) {
       extensions: [
         modal.of(prefs.vim ? vim({ status: true }) : []),
         keys,
-        wrap.of(prefs.wrap ? EditorView.lineWrapping : []),
+        wrap.of(wrapExt()),
         nums.of(prefs.relative ? relativeNumbers : lineNumbers()),
         highlightActiveLineGutter(), highlightActiveLine(), drawSelection(),
         history(), indentOnInput(),
@@ -133,7 +139,7 @@ function create(parent, opts) {
       prefs = clean(p);
       const fx = [];
       if (was.vim !== prefs.vim) fx.push(modal.reconfigure(prefs.vim ? vim({ status: true }) : []));
-      if (was.wrap !== prefs.wrap) fx.push(wrap.reconfigure(prefs.wrap ? EditorView.lineWrapping : []));
+      if (was.wrap !== prefs.wrap) fx.push(wrap.reconfigure(wrapExt()));
       if (was.relative !== prefs.relative) fx.push(nums.reconfigure(prefs.relative ? relativeNumbers : lineNumbers()));
       if (was.brackets !== prefs.brackets) fx.push(brackets.reconfigure(bracketExt()));
       if (was.autocomplete !== prefs.autocomplete) fx.push(complete.reconfigure(completeExt()));

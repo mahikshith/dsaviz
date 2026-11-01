@@ -27,6 +27,11 @@
 <button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">Preview as a signed-in learner</button>
 </div>
 </sc-if>
+<nav aria-label="Main sections" data-dr-phone style="flex-direction: column; gap: 4px">
+<sc-for list="{{drawerNav}}" as="dn" hint-placeholder-count="2">
+<a href="{{dn.href}}" aria-current="{{dn.current}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; font-size: var(--fs18); font-weight: 600; background: {{dn.bg}}; color: {{dn.fg}}">{{dn.label}}</a>
+</sc-for>
+</nav>
 <nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>

@@ -133,7 +133,7 @@ function dailyVals(cmp, t) {
 const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'DSA concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
-const BACK_PAGES = ['Code', 'Story', 'Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
+const BACK_PAGES = ['Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
 function navBack(page) {
   let to = null;
   try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
@@ -161,18 +161,21 @@ function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();
   const dv = drawerVals(cmp, t, themeKey);
+  const navItems = NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+    const on = key === section;
+    const live = NAV_PAGES.includes(href);
+    return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+      live, soon: !live, title: live ? label : label + ' · coming soon',
+      bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
+  });
   return Object.assign(dv, {
+    // On phones the top bar holds only the menu, logo, search and profile; Roadmap and Problems sit at the top of the menu.
+    drawerNav: navItems,
     // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
     tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       back: navBack(page),
-      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
-        const on = key === section;
-        const live = NAV_PAGES.includes(href);
-        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
-          live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
-      }),
+      items: navItems,
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
       avatarBg: t.sunk, avatarFg: t.text,

@@ -23,6 +23,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @keyframes stSay{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes stPop{0%{transform:scale(0.92);box-shadow:0 0 0 0 var(--st-glow)}55%{transform:scale(1.04)}100%{transform:scale(1);box-shadow:0 0 0 6px transparent}}
 @keyframes stFrameIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media (max-width:759px){.st-watch{padding:16px 24px!important;gap:8px!important}}
 @keyframes stHalo{0%,100%{opacity:0.85}50%{opacity:0.35}}
 .st-say{animation:stSay 0.36s cubic-bezier(0.2,0,0,1) both}
 .st-pop{animation:stPop 0.5s cubic-bezier(0.2,0,0,1) both}
@@ -261,6 +262,8 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .sh-pic .sh-bar-m>.sh-ib{flex:0 0 44px;min-width:44px!important}
 .sh-pic .sh-bar-m>.sh-ib+.sh-ib{flex:1 1 0}
 .sh-pic .sh-bar-m>.sh-btn{flex:1.4 1 0;margin-left:0!important}
+.sh-pic .sh-bar-m>.sh-ib[data-speed]{flex:0 0 56px;min-width:56px!important}
+.sh-pic .sh-aux [data-speed]{display:none}
 [data-shell] [data-m~="wrap"]{flex-wrap:wrap}
 [data-shell] [data-m~="scroll"]{flex-wrap:nowrap;overflow-x:auto}
 [data-shell] pre{overflow-x:auto}
@@ -293,7 +296,11 @@ a.sh-row:hover{background:var(--sh-sunk)}
 [data-pn-field]:focus-within{outline:2px solid currentColor;outline-offset:2px}
 [data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-pn-panel] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media (prefers-reduced-motion: reduce){[data-pn] a,[data-pn] button{transition:none}}
+[data-dr-phone]{display:none!important}
 @media (max-width: 759px){
+[data-dr-phone]{display:flex!important}
+[data-pn-items],[data-pn-back]{display:none!important}
+[data-pn-logo]{margin-right:auto}
 [data-pn]{padding:0 8px!important}
 [data-pn-item]{padding:0 8px!important}
 @media (max-width: 359px){[data-pn]{gap:0!important;padding:0 4px!important}[data-pn-items]{gap:0!important}[data-pn-item]{padding:0 5px!important}}
@@ -309,7 +316,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <nav aria-label="Main" data-pn style="height: 52px; box-sizing: border-box; padding: 0 24px; background: {{t.surface}}; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
 <button data-pn-plain onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
 <a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 40px; padding: 0 8px 0 0; flex-shrink: 0; display: flex; align-items: center; gap: 8px; color: {{t.text}}"><svg width="24" height="24" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-pn-name style="font-size: var(--fs18); font-weight: 600; white-space: nowrap">DSAMaxxing</span></a>
-<sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button data-pn-plain onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); white-space: nowrap">{{nav.back.label}}</button></sc-if>
+<sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button data-pn-plain data-pn-back onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); white-space: nowrap">{{nav.back.label}}</button></sc-if>
 <div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
 <sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="2">
 <a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" style="height: 40px; padding: 0 12px; border-radius: 6px; display: flex; align-items: center; font-size: var(--fs16); font-weight: 500; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><span data-pn-label>{{ni.label}}</span></a>
@@ -385,6 +392,11 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">Preview as a signed-in learner</button>
 </div>
 </sc-if>
+<nav aria-label="Main sections" data-dr-phone style="flex-direction: column; gap: 4px">
+<sc-for list="{{drawerNav}}" as="dn" hint-placeholder-count="2">
+<a href="{{dn.href}}" aria-current="{{dn.current}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; font-size: var(--fs18); font-weight: 600; background: {{dn.bg}}; color: {{dn.fg}}">{{dn.label}}</a>
+</sc-for>
+</nav>
 <nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
@@ -432,9 +444,9 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </header>
 <sc-if value="{{ab.watch}}" hint-placeholder-val="{{ true }}">
 <div class="sh-ctl" data-rail="Steps" style="justify-content: space-between">
-<ol aria-label="Lesson steps" class="sh-tabrow" style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px">
+<div data-fadecue><ol aria-label="Lesson steps" class="sh-tabrow" style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px">
 <sc-for list="{{stages}}" as="sg" hint-placeholder-count="5"><li><button class="sh-tab" onClick="{{sg.pick}}" aria-current="{{sg.cur}}" aria-selected="{{sg.sel}}" style="display: flex; align-items: center; gap: 8px; white-space: nowrap"><span aria-hidden="true" style="font-size: calc(14px * var(--ts, 1)); color: {{sg.dotFg}}">{{sg.mark}}</span>{{sg.label}}</button></li></sc-for>
-</ol>
+</ol></div>
 <div role="group" aria-label="Language" class="sh-ctl">
 <sc-for list="{{langs}}" as="lg" hint-placeholder-count="2"><button class="sh-tab" onClick="{{lg.pick}}" aria-pressed="{{lg.on}}" aria-selected="{{lg.on}}">{{lg.label}}</button></sc-for>
 </div>
@@ -453,7 +465,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 
 <!-- ============ STAGE 1: STORY ============ -->
 <sc-if value="{{is.story}}" hint-placeholder-val="{{ true }}">
-<section class="ds-box" aria-label="Watch" style="min-width: 0; padding: 24px; border-radius: 6px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<section class="ds-box st-watch" aria-label="Watch" style="min-width: 0; padding: 24px; border-radius: 6px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
 <div class="sh-s-cap" data-m="keep" aria-live="polite" aria-atomic="true" style="display: flex; align-items: flex-start; gap: 16px; min-width: 0">
 <sc-if value="{{story.hasWho}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 6px; background: {{story.whoBg}}; color: {{story.whoFg}}; border: 2px solid {{story.whoRing}}; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: calc(18px * var(--ts, 1)); font-weight: 800">{{story.initial}}</span></sc-if>
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 4px">
@@ -470,8 +482,8 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 <button data-next onClick="{{story.next}}" style="height: 56px; padding: 0 32px; border-radius: 6px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: calc(18px * var(--ts, 1)); font-weight: 600; white-space: nowrap">{{story.nextText}}</button>
 </div>
-<div class="sh-story" style="--stage-max: calc({{story.stageMax}} * 16 / 9)">
-<svg data-stage="start" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{story.label}}" style="display: block; width: 100%; height: auto; aspect-ratio: 640 / 360; max-height: {{story.stageMax}}">
+<div class="sh-story" style="--stage-max: calc({{story.stageMax}} * {{story.wide}})">
+<svg data-stage="start" viewBox="{{story.view}}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{story.label}}" style="display: block; width: 100%; height: auto; aspect-ratio: {{story.ratio}}; max-height: {{story.stageMax}}">
 <sc-for list="{{S.halos}}" as="h" hint-placeholder-count="1"><rect class="st-halo" x="{{h.x}}" y="{{h.y}}" width="{{h.w}}" height="{{h.h}}" rx="{{h.rx}}" fill="none" stroke="{{t.accent}}" stroke-width="2" stroke-dasharray="5 5" opacity="{{h.op}}"></rect></sc-for>
 <sc-for list="{{S.rects}}" as="r" hint-placeholder-count="4"><rect x="{{r.x}}" y="{{r.y}}" width="{{r.w}}" height="{{r.h}}" rx="{{r.rx}}" fill="{{r.fill}}" stroke="{{r.stroke}}" stroke-width="{{r.sw}}" stroke-dasharray="{{r.dash}}" opacity="{{r.op}}"></rect></sc-for>
 <sc-for list="{{S.paths}}" as="p" hint-placeholder-count="2"><path d="{{p.d}}" fill="{{p.fill}}" stroke="{{p.stroke}}" stroke-width="{{p.sw}}" stroke-dasharray="{{p.dash}}" stroke-linecap="round" stroke-linejoin="round" opacity="{{p.op}}"></path></sc-for>
@@ -2344,7 +2356,7 @@ function dailyVals(cmp, t) {
 const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'DSA concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
-const BACK_PAGES = ['Code', 'Story', 'Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
+const BACK_PAGES = ['Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
 function navBack(page) {
   let to = null;
   try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
@@ -2372,18 +2384,21 @@ function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();
   const dv = drawerVals(cmp, t, themeKey);
+  const navItems = NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+    const on = key === section;
+    const live = NAV_PAGES.includes(href);
+    return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+      live, soon: !live, title: live ? label : label + ' · coming soon',
+      bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
+  });
   return Object.assign(dv, {
+    // On phones the top bar holds only the menu, logo, search and profile; Roadmap and Problems sit at the top of the menu.
+    drawerNav: navItems,
     // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
     tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       back: navBack(page),
-      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
-        const on = key === section;
-        const live = NAV_PAGES.includes(href);
-        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
-          live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
-      }),
+      items: navItems,
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
       avatarBg: t.sunk, avatarFg: t.text,
@@ -19587,6 +19602,23 @@ const ST_STAGE_KEYS = START_STAGES.map((s) => s[0]);
 // screen below the controls and the caption card (page px from the top of the page to the picture, plus a margin).
 const ST_PLAY_FIRST_MS = 900;
 const ST_STAGE_TOP = 550;
+// The stage is cropped, top and bottom, to what any step of the lesson draws (plus 12), so no step leaves blank space above or below the scene.
+function stStageView(beats, C) {
+  if (beats.__view) return beats.__view;
+  let y0 = 360, y1 = 0;
+  const see = (a, b) => { if (a < y0) y0 = a; if (b > y1) y1 = b; };
+  beats.forEach((b) => {
+    const f = stFlatten(b.scene, C, []);
+    f.rects.forEach((r) => see(r.y, r.y + r.h));
+    f.circles.forEach((c) => see(c.cy - c.r, c.cy + c.r));
+    f.texts.forEach((x) => see(x.y - x.size, x.y + x.size * 0.3));
+    f.paths.forEach((q) => q.pts.forEach((pt) => see(pt[1], pt[1])));
+  });
+  if (y1 <= y0) { y0 = 0; y1 = 360; }
+  y0 = Math.max(0, Math.floor(y0 - 12)); y1 = Math.min(360, Math.ceil(y1 + 12));
+  if (y1 - y0 < 160) { const m = (y0 + y1) / 2; y0 = Math.max(0, Math.round(m - 80)); y1 = Math.min(360, y0 + 160); y0 = y1 - 160; }
+  return (beats.__view = { y: y0, h: y1 - y0 });
+}
 const ST_KIND = { predict: 'Predict', choose: 'Choose', order: 'Order', fill: 'Fill in', trace: 'Trace', fix: 'Fix it', write: 'Write it' };
 const ST_KIND_LABEL = { predict: 'Predict the output', choose: 'Choose the answer', order: 'Put in order', fill: 'Fill the blank', trace: 'Fill in the table', fix: 'Fix the bug', write: 'Write the code' };
 function stReduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
@@ -19979,6 +20011,7 @@ class Component extends DCLogic {
       next: () => { this.stopAll(); if (atLastBeat) this.setStage('watch'); else this.goBeat(bi + 1); },
       nextText: atLastBeat ? 'Your variables →' : 'Next',
       toggle: () => this.playStory(), playText: this.state.playing ? 'Pause' : 'Play', playLabel: this.state.playing ? 'Pause the story' : 'Play the story',
+      view: '0 ' + stStageView(beats, C).y + ' 640 ' + stStageView(beats, C).h, ratio: '640 / ' + stStageView(beats, C).h, wide: (640 / stStageView(beats, C).h).toFixed(3),
       playing: !!this.state.playing, paused: !this.state.playing, stageMax: 'max(240px, calc(100vh / var(--fit, 1) - ' + ST_STAGE_TOP + 'px))',
       dots: beats.map((b, i) => ({ label: 'Step ' + (i + 1) + ' of ' + beats.length, cur: i === bi ? 'step' : 'false', bg: i === bi ? t.accent : i < bi ? t.text2 : t.line2, go: () => { this.stopAll(); this.goBeat(i); } })),
       code: c.code[lang].map((l, i) => { const on = lit.includes(i); return { n: i + 1, code: l, bg: on ? t.hl : 'transparent', bar: on ? t.accent : 'transparent', fg: on ? t.text : t.text2 }; })

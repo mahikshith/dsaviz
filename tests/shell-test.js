@@ -212,6 +212,142 @@ server.listen(0, async () => {
     if ((await on()) !== false) fail(id + ': the button is still showing at the top');
     await pg3.close();
   }
+  // ---- The top bar: on phones (below 760) only the menu, logo, search and profile; wider: the menu, logo, Roadmap, Problems, search and profile.
+  // No two items overlap, none is covered by another element or past the screen edge, and no old Back button is in the bar. On phones the menu holds
+  // Roadmap and Problems, with the current page marked.
+  if (!ONLY_PROBLEM) {
+    for (const width of [320, 390, 768, 1024, 1440]) {
+      const pg = await browser.newPage({ viewport: { width, height: 800 }, isMobile: width < 760, hasTouch: width < 760 });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      const WANT = width < 760 ? ['Open menu', 'DSAMaxxing home', 'Search the site', 'Your profile'] : ['Open menu', 'DSAMaxxing home', 'Roadmap', 'Problems', 'Search the site', 'Your profile'];
+      // Pages that open straight to a Problem page come with a trail, so the old Back button would show if it were still wired in.
+      for (const f of ['Home.dc.html', 'Sheet.dc.html', 'Code.dc.html', 'Story.dc.html', 'Patterns.dc.html', 'Chapter.dc.html', 'Profile.dc.html'].concat(pages.filter((p) => !/^(Home|Sheet|Code|Story|Patterns|Chapter|Profile)\./.test(p)))) {
+        await pg.evaluate((n) => window.__dsNav(n), f); await pg.waitForTimeout(350);
+        await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+        const r = await pg.evaluate(() => {
+          const nav = document.querySelector('[data-pn]'), W = document.documentElement.clientWidth;
+          const items = [...nav.querySelectorAll('a, button')].filter((e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(e).visibility !== 'hidden'; })
+            .map((e) => ({ e, name: e.getAttribute('aria-label') || e.textContent.trim(), b: e.getBoundingClientRect() }));
+          const bad = [];
+          items.forEach((a, i) => {
+            if (a.b.left < -0.5 || a.b.right > W + 0.5) bad.push(a.name + ' is past the screen edge (' + Math.round(a.b.left) + '..' + Math.round(a.b.right) + ')');
+            const top = document.elementFromPoint(a.b.left + a.b.width / 2, a.b.top + a.b.height / 2);
+            if (!top || !(top === a.e || a.e.contains(top))) bad.push(a.name + ' is covered by ' + (top ? top.tagName.toLowerCase() + ' ' + (top.getAttribute('aria-label') || top.textContent.trim().slice(0, 16)) : 'nothing'));
+            items.slice(i + 1).forEach((c) => { const w = Math.min(a.b.right, c.b.right) - Math.max(a.b.left, c.b.left), h = Math.min(a.b.bottom, c.b.bottom) - Math.max(a.b.top, c.b.top); if (w > 0.5 && h > 0.5) bad.push(a.name + ' overlaps ' + c.name); });
+          });
+          return { names: items.map((x) => x.name), bad };
+        });
+        if (r.names.join('|') !== WANT.join('|')) fail('Top bar of ' + f + ' at ' + width + ' holds "' + r.names.join(', ') + '", not "' + WANT.join(', ') + '"');
+        r.bad.forEach((m) => fail('Top bar of ' + f + ' at ' + width + ': ' + m));
+      }
+      if (width < 760) {
+        for (const [f, want] of [['Patterns.dc.html', 'Roadmap'], ['Sheet.dc.html', 'Problems']]) {
+          await pg.evaluate((n) => window.__dsNav(n), f); await pg.waitForTimeout(400);
+          await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+          await pg.click('button[aria-label="Open menu"]'); await pg.waitForTimeout(300);
+          const m = await pg.evaluate(() => [...document.querySelectorAll('nav[aria-label="Main sections"] a')].map((a) => ({ t: a.textContent.trim(), cur: a.getAttribute('aria-current'), shown: a.getBoundingClientRect().height > 0, bg: getComputedStyle(a).backgroundColor })));
+          if (m.map((x) => x.t).join() !== 'Roadmap,Problems' || m.some((x) => !x.shown)) fail('Menu at ' + width + ' on ' + f + ' lists ' + JSON.stringify(m.map((x) => x.t)) + ', not Roadmap and Problems');
+          else {
+            const on = m.filter((x) => x.cur === 'page');
+            if (on.length !== 1 || on[0].t !== want) fail('Menu at ' + width + ' on ' + f + ' marks ' + JSON.stringify(on.map((x) => x.t)) + ', not ' + want);
+            if (m.find((x) => x.t === want).bg === m.find((x) => x.t !== want).bg) fail('Menu at ' + width + ' on ' + f + ': the current page is not highlighted');
+          }
+          await pg.keyboard.press('Escape'); await pg.click('aside[aria-label="Menu"] button[aria-label="Close menu"]').catch(() => {}); await pg.waitForTimeout(200);
+        }
+      } else {
+        const hid = await pg.evaluate(() => { const n = document.querySelector('nav[aria-label="Main sections"]'); return !n || n.getBoundingClientRect().height === 0; });
+        if (!hid) fail('The phone-only menu entries show at ' + width);
+      }
+      await pg.close();
+    }
+
+    // Start here on a phone: the first line of step text of lesson 1 is above the pinned bar (lessons 2 and up carry a "builds on" note above the picture). The Watch / Your variables / Try it row fades at its
+    // right edge only while it really runs past the edge. The Big-O picture draws every row from the first step. The "Swipe" note follows the real width.
+    for (const [w, h] of [[390, 844], [320, 700], [1440, 900]]) {
+      const pg = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Chapter.dc.html')); await pg.waitForTimeout(1000);
+      await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+      if (w < 760) await pg.click('.sh-side-btn');
+      const n = Math.min(6, (await pg.$$('.sh-side-list a')).length);
+      for (let k = 0; k < n; k++) {
+        if (k > 0 && w < 760) await pg.click('.sh-side-btn').catch(() => {});
+        const links = await pg.$$('.sh-side-list a'); const name = ((await links[k].textContent()) || '').replace(/^\s*✓?\s*/, '').trim();
+        await links[k].click(); await pg.waitForTimeout(900);
+        const f = await pg.evaluate(() => {
+          const say = document.querySelector('.st-say'), bar = document.querySelector('.sh-s-ctl'), row = document.querySelector('.sh-tabrow'), wrap = row && row.parentElement;
+          if (!say || !bar || !row) return null;
+          const rg = document.createRange(); rg.selectNodeContents(say); const first = rg.getClientRects()[0];
+          const cue = wrap && getComputedStyle(wrap, '::after');
+          const more = row.scrollWidth - row.clientWidth > 1 && row.scrollLeft + row.clientWidth < row.scrollWidth - 1;
+          return { lineBottom: first ? Math.round(first.bottom) : -1, barTop: Math.round(bar.getBoundingClientRect().top), vh: innerHeight, cue: wrap && wrap.hasAttribute('data-fadecue'), fade: cue ? parseFloat(cue.opacity) : -1, more, over: row.scrollWidth - row.clientWidth };
+        });
+        const id = 'Start here "' + name + '" at ' + w + 'x' + h;
+        if (!f) { fail(id + ': no step text, bar or tab row'); continue; }
+        if (w === 390 && k === 0 && (f.lineBottom < 0 || f.lineBottom > f.barTop)) fail(id + ': the first line of step text ends at ' + f.lineBottom + ', under the pinned bar that starts at ' + f.barTop);
+        if (!f.cue) fail(id + ': the tab row has no fade wrapper');
+        else if ((f.fade === 1) !== f.more) fail(id + ': the right-edge fade is ' + (f.fade === 1 ? 'showing' : 'hidden') + ' but the row ' + (f.more ? 'runs past the edge' : 'fits'));
+        if (k === 0) console.log('  ' + id + ': first line ends ' + f.lineBottom + ' of bar top ' + f.barTop + ', tab row overflow ' + f.over + 'px, fade ' + f.fade);
+      }
+      if (w < 760) { // scrolled to the end the fade goes away
+        await pg.evaluate(() => { const r = document.querySelector('.sh-tabrow'); r.scrollLeft = r.scrollWidth; }); await pg.waitForTimeout(600);
+        const end = await pg.evaluate(() => { const r = document.querySelector('.sh-tabrow'); return r.scrollWidth - r.clientWidth > 1 ? parseFloat(getComputedStyle(r.parentElement, '::after').opacity) : -1; });
+        if (end === 1) fail('Start here at ' + w + ': the fade still shows with the tab row scrolled to its end');
+      }
+      await pg.close();
+    }
+
+    // Big-O at 1440: every row has its bar from the first step (O(1) filled, the other five as outlines) and "n = 16" sits inside the picture with padding.
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('ConceptLesson.dc.html')); await pg.waitForTimeout(1500);
+      const b = await pg.evaluate(() => {
+        const sec = document.querySelector('main section[aria-label="Animation"]'), svg = sec.querySelector('svg'), sb = sec.getBoundingClientRect();
+        const bars = [...svg.querySelectorAll('rect')].filter((r) => parseFloat(r.getAttribute('width')) > 4 && parseFloat(r.getAttribute('x')) === 230);
+        const lab = [...svg.querySelectorAll('text')].find((t) => /^n = \d+$/.test(t.textContent.trim())), lb = lab && lab.getBoundingClientRect();
+        const rows = [...svg.querySelectorAll('text')].map((t) => t.textContent.trim()).filter((t) => /^O\(/.test(t));
+        return { title: document.querySelector('h1').textContent.trim(), filled: bars.filter((r) => r.getAttribute('fill') !== 'none').length, outlined: bars.filter((r) => r.getAttribute('fill') === 'none' && r.getAttribute('stroke') !== 'none').length,
+          padTop: lb ? Math.round(lb.top - sb.top) : -1, padLeft: lb ? Math.round(lb.left - sb.left) : -1, inside: !!lb && lb.top > sb.top && lb.bottom < sb.bottom, rows };
+      });
+      if (!/Big-O/.test(b.title)) fail('Big-O check opened "' + b.title + '"');
+      if (b.filled !== 1 || b.outlined !== 5) fail('Big-O step 1 draws ' + b.filled + ' filled and ' + b.outlined + ' outlined bars, not 1 and 5');
+      if (!b.inside || b.padTop < 16) fail('Big-O "n = 16" is ' + b.padTop + 'px from the top of the picture, not at least 16px inside it');
+      if (b.rows.join() !== 'O(1),O(log n),O(n),O(n log n),O(n²),O(2ⁿ)') fail('Big-O row labels are ' + b.rows.join());
+      console.log('  Big-O at 1440: ' + b.filled + ' filled and ' + b.outlined + ' outlined bars, "n = 16" ' + b.padTop + 'px below the top edge');
+      await pg.close();
+    }
+
+    // "Swipe to see all of it" shows only while the picture is wider than its box, on load, after a resize and after the width changes by script.
+    for (const pgn of ['ConceptLesson', 'AILesson']) {
+      const pg = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate((n) => window.__dsNav(n), pgn + '.dc.html'); await pg.waitForTimeout(1200);
+      const state = () => pg.evaluate(() => {
+        const s = [...document.querySelectorAll('[data-swipe]')][0], box = document.querySelector('main section[aria-label="Animation"]');
+        return { note: !!s && getComputedStyle(s).display !== 'none' && s.getBoundingClientRect().height > 0, wide: !!box && box.scrollWidth - box.clientWidth > 1, exists: !!s };
+      });
+      const id = pgn + ' "Swipe" note';
+      let st = await state();
+      if (!st.exists) fail(id + ': not on the page at 390');
+      else if (st.note !== st.wide) fail(id + ' at 390: ' + (st.note ? 'shows' : 'is hidden') + ' but the picture ' + (st.wide ? 'is wider than its box' : 'fits'));
+      // Make the picture fit by script: the note must go away without a reload.
+      await pg.evaluate(() => { const box = document.querySelector('main section[aria-label="Animation"]'); box.__ow = box.style.overflowX; box.style.overflowX = 'hidden'; box.querySelectorAll('svg').forEach((v) => { v.__mw = v.style.minWidth; v.style.minWidth = '0'; v.style.width = '100%'; }); });
+      await pg.waitForTimeout(900); st = await state();
+      if (st.exists && !st.wide && st.note) fail(id + ': still shows after the picture was made to fit');
+      await pg.setViewportSize({ width: 320, height: 700 }); await pg.waitForTimeout(900);
+      await pg.evaluate(() => { const box = document.querySelector('main section[aria-label="Animation"]'); box.style.overflowX = ''; box.querySelectorAll('svg').forEach((v) => { v.style.minWidth = ''; v.style.width = ''; }); }); await pg.waitForTimeout(900);
+      st = await state();
+      if (st.exists && st.note !== st.wide) fail(id + ' at 320 after a resize: ' + (st.note ? 'shows' : 'is hidden') + ' but the picture ' + (st.wide ? 'is wider than its box' : 'fits'));
+      console.log('  ' + pgn + ' Swipe note: shows ' + st.note + ' while wider ' + st.wide + ' (320)');
+      await pg.close();
+    }
+  }
+
   // ---- The Problem page (Code.dc.html): statement left, editor right, tabs, Story switch, hints, solution, tests ----
   const vm = require('vm');
   const ctx = { window: {}, module: { exports: {} }, console }; vm.createContext(ctx);
@@ -386,6 +522,83 @@ server.listen(0, async () => {
       if (r.zoom !== '1') fail(id + ': zoom ' + r.zoom);
     }
     await pg.close();
+  }
+  // ---- The editor's line numbers line up with the code lines (also with the editor off screen, as at 390 before it is scrolled to), test chips use drawn
+  // cross and check icons, Back names a list or lesson (never Home), and Java, C++ and Go are hidden but their data is still in the source ----
+  for (const [w, h] of [[390, 844], [1440, 900]]) {
+    const pg = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
+    await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); localStorage.setItem('dsaviz-lang', 'py'); } catch (e) {} });
+    await pg.goto(url); await pg.waitForTimeout(500);
+    await openProblem(pg, 'two-sum-ii'); await pg.waitForTimeout(800);
+    const g = await pg.evaluate(() => {
+      const nums = [...document.querySelectorAll('.cm-lineNumbers .cm-gutterElement:not(:first-child)')].filter((e) => /^\d+$/.test(e.textContent.trim()));
+      const lines = [...document.querySelectorAll('.cm-content .cm-line')];
+      return { scrollY: Math.round(scrollY), nums: nums.map((e) => { const r = e.getBoundingClientRect(); return [e.textContent.trim(), r.top, r.height]; }), lines: lines.map((e) => { const r = e.getBoundingClientRect(); return [r.top, r.height]; }) };
+    });
+    const id = 'Problem editor at ' + w + 'x' + h + ' (not scrolled, page at ' + g.scrollY + ')';
+    if (!g.lines.length || g.nums.length !== g.lines.length) fail(id + ': ' + g.nums.length + ' line numbers for ' + g.lines.length + ' code lines');
+    else g.nums.forEach((n, i) => {
+      if (n[0] !== String(i + 1)) fail(id + ': gutter row ' + (i + 1) + ' reads "' + n[0] + '"');
+      else if (Math.abs(n[1] - g.lines[i][0]) > 1 || Math.abs(n[2] - g.lines[i][1]) > 1) fail(id + ': line ' + (i + 1) + ' number is at ' + Math.round(n[1]) + ' (' + Math.round(n[2]) + ' tall), its code line at ' + Math.round(g.lines[i][0]) + ' (' + Math.round(g.lines[i][1]) + ' tall)');
+    });
+    if (g.nums.length) console.log('  ' + id + ': ' + g.nums.length + ' numbers, first at ' + Math.round(g.nums[0][1]) + ' / ' + Math.round(g.nums[0][2]) + 'px tall, its code line at ' + Math.round(g.lines[0][0]) + ' / ' + Math.round(g.lines[0][1]));
+    await pg.close();
+  }
+  {
+    const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); localStorage.setItem('dsaviz-lang', 'py'); } catch (e) {} });
+    await pg.goto(url); await pg.waitForTimeout(500);
+    await pg.evaluate(() => { localStorage.removeItem('dsaviz-code-v1'); });
+    await openProblem(pg, 'valid-palindrome');
+    const chips = () => pg.evaluate(() => [...document.querySelectorAll('.pb-chip')].map((c) => ({ svg: !!c.querySelector('svg path'), sr: (c.querySelector('.pb-vh') || {}).textContent || '', text: [...c.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim(), stroke: (c.querySelector('svg') || { getAttribute: () => '' }).getAttribute('stroke'), d: (c.querySelector('svg path') || { getAttribute: () => '' }).getAttribute('d') })));
+    await runIt(pg);
+    let c1 = await chips();
+    if (!c1.length) fail('no test chips after a run');
+    c1.forEach((c, i) => { if (!c.svg) fail('test chip ' + (i + 1) + ' has no drawn icon'); if (/^[✓✗xX×]/.test(c.text)) fail('test chip ' + (i + 1) + ' still starts with a letter or glyph: "' + c.text + '"'); if (!/^(passed|failed): $/.test(c.sr)) fail('test chip ' + (i + 1) + ' hidden status text is "' + c.sr + '"'); });
+    const bad1 = c1.filter((c) => /^failed/.test(c.sr)), ok1 = c1.filter((c) => /^passed/.test(c.sr));
+    if (!bad1.length) fail('the empty starter gave no failed chip to check');
+    const best = data.approaches['valid-palindrome']; const code = best[best.length - 1].py;
+    await pg.evaluate(([k, src]) => { const o = {}; o[k] = { py: src }; localStorage.setItem('dsaviz-code-v1', JSON.stringify(o)); }, ['valid-palindrome', code]);
+    await openProblem(pg, 'valid-palindrome'); await runIt(pg);
+    const c2 = await chips();
+    if (!c2.length || c2.some((c) => !/^passed/.test(c.sr))) fail('with a correct answer the chips say ' + c2.map((c) => c.sr).join(''));
+    const okStroke = c2.length ? c2[0].stroke : '', okD = c2.length ? c2[0].d : '';
+    if (bad1.length && (bad1[0].stroke === okStroke || bad1[0].d === okD)) fail('failed and passed chips use the same colour or the same shape (' + bad1[0].stroke + ' / ' + okStroke + ')');
+    console.log('  Test chips: failed icon ' + (bad1[0] ? bad1[0].stroke + ' "' + bad1[0].d + '"' : '-') + ', passed icon ' + okStroke + ' "' + okD + '", hidden text "' + (c2[0] ? c2[0].sr : '') + '"');
+    await pg.close();
+  }
+  // Back on the Problem page: "Back to Problems" unless the learner came from a list or lesson; never Home or the front page.
+  {
+    const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+    await pg.goto(url); await pg.waitForTimeout(500);
+    const label = async (from, fromQuery) => {
+      await pg.evaluate(([f, q]) => { sessionStorage.clear(); window.__dsNav(f, q || ''); }, [from, fromQuery]); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Code.dc.html', '?problem=two-sum-ii')); await pg.waitForTimeout(800);
+      return (await pg.textContent('a.sh-back')).replace('←', '').trim();
+    };
+    for (const [from, want] of [['Home.dc.html', 'Back to Problems'], ['Main.dc.html', 'Back to Problems'], ['Profile.dc.html', 'Back to Problems'], ['Glossary.dc.html', 'Back to Problems'], ['Sheet.dc.html', 'Back to Problems'], ['Patterns.dc.html', 'Back to Roadmap'],
+      ['Start.dc.html', 'Back to Start here'], ['Concepts.dc.html', 'Back to DSA concepts'], ['ConceptLesson.dc.html', 'Back to the lesson']]) {
+      const got = await label(from);
+      if (got !== want) fail('Problem page opened from ' + from + ' says "' + got + '", not "' + want + '"');
+    }
+    await pg.evaluate(() => { sessionStorage.clear(); history.replaceState(null, '', location.pathname + '?problem=two-sum-ii#Code'); }); await pg.reload(); await pg.waitForTimeout(1200);
+    const direct = (await pg.textContent('a.sh-back')).replace('←', '').trim();
+    if (direct !== 'Back to Problems') fail('Problem page opened directly says "' + direct + '"');
+    await pg.close();
+  }
+  // Java, C++ and Go are hidden on the Problem page, not deleted: their starters, language list and editor modes are still in the source.
+  {
+    const spec = data.specs['two-sum-ii'];
+    const langs = vm.runInContext('CODE_LANGS.map((x) => x[0])', ctx);
+    const have = (k) => Object.keys(data.specs).filter((id) => JSON.stringify(data.specs[id]).indexOf('"' + k + '"') >= 0).length;
+    if (['java', 'cpp', 'go'].some((k) => langs.indexOf(k) < 0)) fail('CODE_LANGS no longer lists Java, C++ and Go: ' + langs.join());
+    for (const k of ['java', 'cpp', 'go']) if (have(k) < 50) fail('only ' + have(k) + ' problem specs still carry a ' + k + ' starter');
+    const ed = fs.readFileSync(path.join(__dirname, '..', 'src', 'code', 'editor.js'), 'utf8');
+    if (!/MODES = \{[^}]*java[^}]*cpp[^}]*go/.test(ed)) fail('the editor no longer has Java, C++ and Go modes');
+    const shown = await (async () => { const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } }); await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }); await pg.goto(url); await pg.waitForTimeout(500); await openProblem(pg, 'two-sum-ii'); const t = await pg.evaluate(() => document.querySelector('.pb-right').textContent); await pg.close(); return t; })();
+    if (/\b(Java|C\+\+)\b/.test(shown)) fail('Java or C++ shows in the Problem page UI');
+    console.log('  Hidden languages kept in the source: ' + ['java', 'cpp', 'go'].map((k) => k + ' in ' + have(k) + ' specs').join(', '));
   }
   await browser.close(); server.close();
   console.log(bad ? bad + ' problems' : 'shell clean: ' + pages.length + ' pages and ' + LESSON_PAGES.length + ' lesson tracks at 320, 390 (dark and light), 1024 and 1440');

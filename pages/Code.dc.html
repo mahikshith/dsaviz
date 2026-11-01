@@ -246,6 +246,8 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .sh-pic .sh-bar-m>.sh-ib{flex:0 0 44px;min-width:44px!important}
 .sh-pic .sh-bar-m>.sh-ib+.sh-ib{flex:1 1 0}
 .sh-pic .sh-bar-m>.sh-btn{flex:1.4 1 0;margin-left:0!important}
+.sh-pic .sh-bar-m>.sh-ib[data-speed]{flex:0 0 56px;min-width:56px!important}
+.sh-pic .sh-aux [data-speed]{display:none}
 [data-shell] [data-m~="wrap"]{flex-wrap:wrap}
 [data-shell] [data-m~="scroll"]{flex-wrap:nowrap;overflow-x:auto}
 [data-shell] pre{overflow-x:auto}
@@ -275,7 +277,11 @@ a.sh-row:hover{background:var(--sh-sunk)}
 [data-pn-field]:focus-within{outline:2px solid currentColor;outline-offset:2px}
 [data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-pn-panel] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media (prefers-reduced-motion: reduce){[data-pn] a,[data-pn] button{transition:none}}
+[data-dr-phone]{display:none!important}
 @media (max-width: 759px){
+[data-dr-phone]{display:flex!important}
+[data-pn-items],[data-pn-back]{display:none!important}
+[data-pn-logo]{margin-right:auto}
 [data-pn]{padding:0 8px!important}
 [data-pn-item]{padding:0 8px!important}
 @media (max-width: 359px){[data-pn]{gap:0!important;padding:0 4px!important}[data-pn-items]{gap:0!important}[data-pn-item]{padding:0 5px!important}}
@@ -291,7 +297,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <nav aria-label="Main" data-pn style="height: 52px; box-sizing: border-box; padding: 0 24px; background: {{t.surface}}; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
 <button data-pn-plain onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
 <a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 40px; padding: 0 8px 0 0; flex-shrink: 0; display: flex; align-items: center; gap: 8px; color: {{t.text}}"><svg width="24" height="24" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-pn-name style="font-size: var(--fs18); font-weight: 600; white-space: nowrap">DSAMaxxing</span></a>
-<sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button data-pn-plain onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); white-space: nowrap">{{nav.back.label}}</button></sc-if>
+<sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button data-pn-plain data-pn-back onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); white-space: nowrap">{{nav.back.label}}</button></sc-if>
 <div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
 <sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="2">
 <a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" style="height: 40px; padding: 0 12px; border-radius: 6px; display: flex; align-items: center; font-size: var(--fs16); font-weight: 500; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><span data-pn-label>{{ni.label}}</span></a>
@@ -367,6 +373,11 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <button onClick="{{signIn}}" style="height: 40px; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">Preview as a signed-in learner</button>
 </div>
 </sc-if>
+<nav aria-label="Main sections" data-dr-phone style="flex-direction: column; gap: 4px">
+<sc-for list="{{drawerNav}}" as="dn" hint-placeholder-count="2">
+<a href="{{dn.href}}" aria-current="{{dn.current}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; font-size: var(--fs18); font-weight: 600; background: {{dn.bg}}; color: {{dn.fg}}">{{dn.label}}</a>
+</sc-for>
+</nav>
 <nav aria-label="Site" style="display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{menu}}" as="mi" hint-placeholder-count="12">
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
@@ -465,8 +476,10 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .pb-fail>span{overflow-wrap:anywhere}
 .pb-fail .pb-k{font-family:'Outfit',system-ui,sans-serif}
 .pb-fail .pb-ft{grid-column:1/-1;font-family:'Outfit',system-ui,sans-serif;font-weight:600}
+.pb-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pb-chip-ic{flex-shrink:0}
 .pb-chips{display:flex;flex-wrap:wrap;gap:8px}
-.pb-chip{padding:0 8px;border:1px solid var(--sh-line);border-radius:6px;font-size:calc(14px * var(--ts, 1));line-height:1.7;white-space:nowrap}
+.pb-chip{position:relative;display:inline-flex;align-items:center;gap:4px;padding:0 8px;border:1px solid var(--sh-line);border-radius:6px;font-size:calc(14px * var(--ts, 1));line-height:1.7;white-space:nowrap}
 .pb-runbar{display:flex;align-items:center;gap:12px;padding:12px 24px;flex-shrink:0;box-sizing:border-box}
 .pb-run{min-height:44px;min-width:120px;gap:8px}
 .pb-run:disabled{opacity:.6;cursor:default}
@@ -878,7 +891,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 </sc-if>
 <sc-if value="{{pbT.hasConsole}}"><div role="log" aria-label="What the program printed" class="pb-msg"><sc-for list="{{pbT.console}}" as="cl"><div style="min-height: 1.5em; color: {{cl.fg}}">{{cl.text}}</div></sc-for></div></sc-if>
-<sc-if value="{{pbT.hasChips}}"><div class="pb-chips" aria-label="Every test"><sc-for list="{{pbT.chips}}" as="ch"><span class="pb-chip"><span aria-hidden="true" style="color: {{ch.fg}}">{{ch.mark}}</span> {{ch.title}}</span></sc-for></div></sc-if>
+<sc-if value="{{pbT.hasChips}}"><div class="pb-chips" aria-label="Every test"><sc-for list="{{pbT.chips}}" as="ch"><span class="pb-chip"><svg class="pb-chip-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ch.fg}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><sc-if value="{{ch.good}}"><path d="M5 12.5l4.5 4.5L19 7.5"></path></sc-if><sc-if value="{{ch.bad}}"><path d="M6 6l12 12M18 6L6 18"></path></sc-if></svg><span class="pb-vh">{{ch.state}}: </span>{{ch.title}}</span></sc-for></div></sc-if>
 <sc-if value="{{pbT.hasPanels}}"><sc-for list="{{pbT.panels}}" as="g"><div class="pb-sect"><span class="pb-strong">{{g.title}}</span><div class="pb-grid"><div role="table" aria-label="{{g.title}}"><div role="row"><sc-for list="{{g.cols}}" as="hc"><div role="columnheader">{{hc.c}}</div></sc-for><sc-if value="{{g.hasMark}}"><div role="columnheader">note</div></sc-if></div><sc-for list="{{g.rows}}" as="gr"><div role="row" style="background: {{gr.bg}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{g.empty}}"><div class="pb-note" style="padding: 8px 12px">{{g.emptyText}}</div></sc-if></div><sc-if value="{{g.more}}"><span class="pb-note">{{g.moreText}}</span></sc-if></div></sc-for></sc-if>
 <sc-if value="{{pbT.hasNext}}"><button class="sh-chip pb-self" onClick="{{pbNext.go}}">Next problem →</button></sc-if>
 </section>
@@ -3010,7 +3023,7 @@ function dailyVals(cmp, t) {
 const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'DSA concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
-const BACK_PAGES = ['Code', 'Story', 'Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
+const BACK_PAGES = ['Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
 function navBack(page) {
   let to = null;
   try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
@@ -3038,18 +3051,21 @@ function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();
   const dv = drawerVals(cmp, t, themeKey);
+  const navItems = NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+    const on = key === section;
+    const live = NAV_PAGES.includes(href);
+    return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+      live, soon: !live, title: live ? label : label + ' · coming soon',
+      bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
+  });
   return Object.assign(dv, {
+    // On phones the top bar holds only the menu, logo, search and profile; Roadmap and Problems sit at the top of the menu.
+    drawerNav: navItems,
     // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
     tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       back: navBack(page),
-      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
-        const on = key === section;
-        const live = NAV_PAGES.includes(href);
-        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
-          live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
-      }),
+      items: navItems,
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
       avatarBg: t.sunk, avatarFg: t.text,
@@ -38049,9 +38065,9 @@ const PB_LANGS = ['py', 'js'];
 const PB_SEEN = 'dsaviz-solution-seen:';
 const PB_STORY_KEY = 'dsaviz-problem-story';
 // "Back to ...": what the learner came from, by the page's own name.
-const PB_BACK = { Sheet: 'Problems', Patterns: 'Roadmap', Home: 'Home', Main: 'Home', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML',
-  Complexity: 'Complexity', Snapshot: 'Quick Bytes', Glossary: 'Glossary', Profile: 'Profile', Revisit: 'Revisit', Interview: 'Interview', Briefing: 'the pattern',
-  ConceptLesson: 'the lesson', Chapter: 'the lesson', SDLesson: 'the lesson', AILesson: 'the lesson', Git: 'Git' };
+const PB_BACK = { Sheet: 'Problems', Patterns: 'Roadmap', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML',
+  Complexity: 'Complexity', Git: 'Git', ConceptLesson: 'the lesson', Chapter: 'the lesson', SDLesson: 'the lesson', AILesson: 'the lesson' };
+// Only a list or a lesson is a place to go back to; from Home, the front page or anywhere else the answer is Problems.
 function pbBackVals() {
   let to = null;
   try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
@@ -38264,7 +38280,7 @@ class Component extends StoryComponent {
       o.hasHelp = cr.hasHelp; o.help = cr.help;
     }
     o.hasChips = total > 0;
-    o.chips = rows.map((x) => ({ title: x.title, mark: x.failed ? '✗' : '✓', fg: x.failed ? bad : t.ok }));
+    o.chips = rows.map((x) => ({ title: x.title, bad: !!x.failed, good: !x.failed, state: x.failed ? 'failed' : 'passed', fg: x.failed ? bad : t.ok }));
     return o;
   }
   sqlTestsVals(t, sq) {

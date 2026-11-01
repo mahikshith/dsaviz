@@ -76,8 +76,10 @@
 .pb-fail>span{overflow-wrap:anywhere}
 .pb-fail .pb-k{font-family:'Outfit',system-ui,sans-serif}
 .pb-fail .pb-ft{grid-column:1/-1;font-family:'Outfit',system-ui,sans-serif;font-weight:600}
+.pb-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pb-chip-ic{flex-shrink:0}
 .pb-chips{display:flex;flex-wrap:wrap;gap:8px}
-.pb-chip{padding:0 8px;border:1px solid var(--sh-line);border-radius:6px;font-size:calc(14px * var(--ts, 1));line-height:1.7;white-space:nowrap}
+.pb-chip{position:relative;display:inline-flex;align-items:center;gap:4px;padding:0 8px;border:1px solid var(--sh-line);border-radius:6px;font-size:calc(14px * var(--ts, 1));line-height:1.7;white-space:nowrap}
 .pb-runbar{display:flex;align-items:center;gap:12px;padding:12px 24px;flex-shrink:0;box-sizing:border-box}
 .pb-run{min-height:44px;min-width:120px;gap:8px}
 .pb-run:disabled{opacity:.6;cursor:default}
@@ -311,7 +313,7 @@
 </div>
 </sc-if>
 <sc-if value="{{pbT.hasConsole}}"><div role="log" aria-label="What the program printed" class="pb-msg"><sc-for list="{{pbT.console}}" as="cl"><div style="min-height: 1.5em; color: {{cl.fg}}">{{cl.text}}</div></sc-for></div></sc-if>
-<sc-if value="{{pbT.hasChips}}"><div class="pb-chips" aria-label="Every test"><sc-for list="{{pbT.chips}}" as="ch"><span class="pb-chip"><span aria-hidden="true" style="color: {{ch.fg}}">{{ch.mark}}</span> {{ch.title}}</span></sc-for></div></sc-if>
+<sc-if value="{{pbT.hasChips}}"><div class="pb-chips" aria-label="Every test"><sc-for list="{{pbT.chips}}" as="ch"><span class="pb-chip"><svg class="pb-chip-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ch.fg}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><sc-if value="{{ch.good}}"><path d="M5 12.5l4.5 4.5L19 7.5"></path></sc-if><sc-if value="{{ch.bad}}"><path d="M6 6l12 12M18 6L6 18"></path></sc-if></svg><span class="pb-vh">{{ch.state}}: </span>{{ch.title}}</span></sc-for></div></sc-if>
 <sc-if value="{{pbT.hasPanels}}"><sc-for list="{{pbT.panels}}" as="g"><div class="pb-sect"><span class="pb-strong">{{g.title}}</span><div class="pb-grid"><div role="table" aria-label="{{g.title}}"><div role="row"><sc-for list="{{g.cols}}" as="hc"><div role="columnheader">{{hc.c}}</div></sc-for><sc-if value="{{g.hasMark}}"><div role="columnheader">note</div></sc-if></div><sc-for list="{{g.rows}}" as="gr"><div role="row" style="background: {{gr.bg}}"><sc-for list="{{gr.cells}}" as="gc"><div role="cell" style="color: {{gc.fg}}">{{gc.v}}</div></sc-for></div></sc-for></div><sc-if value="{{g.empty}}"><div class="pb-note" style="padding: 8px 12px">{{g.emptyText}}</div></sc-if></div><sc-if value="{{g.more}}"><span class="pb-note">{{g.moreText}}</span></sc-if></div></sc-for></sc-if>
 <sc-if value="{{pbT.hasNext}}"><button class="sh-chip pb-self" onClick="{{pbNext.go}}">Next problem →</button></sc-if>
 </section>

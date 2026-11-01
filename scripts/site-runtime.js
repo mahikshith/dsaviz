@@ -306,5 +306,35 @@
     const queue = () => { if (!queued) queued = requestAnimationFrame(update); };
     window.addEventListener('scroll', queue, { passive: true }); window.addEventListener('resize', queue); setInterval(update, 400);
   })();
+  // ---------- scroll cues (every page) ----------
+  // [data-fadecue] wraps a row that scrolls sideways: a fade on its right edge shows only while there is more to the right.
+  // [data-swipe] is a "swipe" note that follows the box before it and shows only while that box is wider inside than outside.
+  // Both are checked here at run time, on every resize and scroll, so they are right at any width and text size.
+  (function scrollCues() {
+    const st = document.createElement('style');
+    st.textContent = '[data-fadecue]{position:relative;min-width:0;max-width:100%}' +
+      '[data-fadecue]::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;pointer-events:none;opacity:0;background:linear-gradient(to right,transparent,var(--sh-bg,#0B0B0D))}' +
+      '[data-fadecue][data-more="true"]::after{opacity:1}' +
+      '[data-swipe]{display:none!important}[data-swipe][data-on="true"]{display:block!important}';
+    document.head.appendChild(st);
+    let queued = 0;
+    const run = () => {
+      queued = 0;
+      document.querySelectorAll('[data-fadecue]').forEach((w) => {
+        const sc = w.firstElementChild; if (!sc) return;
+        const more = sc.scrollWidth - sc.clientWidth > 1 && sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 1;
+        if (w.getAttribute('data-more') !== String(more)) w.setAttribute('data-more', String(more));
+      });
+      document.querySelectorAll('[data-swipe]').forEach((n) => {
+        const box = n.previousElementSibling;
+        const wide = !!box && box.scrollWidth - box.clientWidth > 1 && getComputedStyle(box).overflowX !== 'visible';
+        if (n.getAttribute('data-on') !== String(wide)) n.setAttribute('data-on', String(wide));
+      });
+    };
+    const queue = () => { if (!queued) queued = requestAnimationFrame(run); };
+    window.addEventListener('resize', queue); window.addEventListener('ds-text', queue);
+    document.addEventListener('scroll', queue, true); setInterval(run, 400);
+    try { new MutationObserver(queue).observe(document.getElementById('app'), { childList: true, subtree: true }); } catch (e) {}
+  })();
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));
 })();

@@ -15,9 +15,9 @@ const PB_LANGS = ['py', 'js'];
 const PB_SEEN = 'dsaviz-solution-seen:';
 const PB_STORY_KEY = 'dsaviz-problem-story';
 // "Back to ...": what the learner came from, by the page's own name.
-const PB_BACK = { Sheet: 'Problems', Patterns: 'Roadmap', Home: 'Home', Main: 'Home', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML',
-  Complexity: 'Complexity', Snapshot: 'Quick Bytes', Glossary: 'Glossary', Profile: 'Profile', Revisit: 'Revisit', Interview: 'Interview', Briefing: 'the pattern',
-  ConceptLesson: 'the lesson', Chapter: 'the lesson', SDLesson: 'the lesson', AILesson: 'the lesson', Git: 'Git' };
+const PB_BACK = { Sheet: 'Problems', Patterns: 'Roadmap', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML',
+  Complexity: 'Complexity', Git: 'Git', ConceptLesson: 'the lesson', Chapter: 'the lesson', SDLesson: 'the lesson', AILesson: 'the lesson' };
+// Only a list or a lesson is a place to go back to; from Home, the front page or anywhere else the answer is Problems.
 function pbBackVals() {
   let to = null;
   try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
@@ -230,7 +230,7 @@ class Component extends StoryComponent {
       o.hasHelp = cr.hasHelp; o.help = cr.help;
     }
     o.hasChips = total > 0;
-    o.chips = rows.map((x) => ({ title: x.title, mark: x.failed ? '✗' : '✓', fg: x.failed ? bad : t.ok }));
+    o.chips = rows.map((x) => ({ title: x.title, bad: !!x.failed, good: !x.failed, state: x.failed ? 'failed' : 'passed', fg: x.failed ? bad : t.ok }));
     return o;
   }
   sqlTestsVals(t, sq) {

@@ -98,11 +98,11 @@ const START_CHAPTERS = [
   { id: 'no-class', level: 3, n: 14, part: 14, short: 'No class?', title: 'When not to use a class', idea: 'A class earns its place when data and behaviour belong together. Otherwise a function or a dictionary is simpler.',
     minutes: 9, teaches: ['design'], after: ['composition'], trap: 'Wrapping every little thing in a class.' },
   // ---- Level 4: Clean code and working with others (lessons_10.js and lessons_11.js). One world all the way through: the school shop. ----
-  { id: 'clean-names', level: 4, n: 1, part: 15, short: 'Good names', title: 'Names that explain themselves', idea: 'A good name says what a value means, so the code reads like a sentence. The computer does not care, but people do.',
+  { id: 'clean-names', level: 4, n: 1, part: 15, short: 'Good names', title: 'Names that explain themselves', idea: 'A good name says what a value means, so code reads like a sentence. The computer needs matching names. People need meaning.',
     minutes: 8, teaches: ['style'], after: ['functions'], trap: 'Using one-letter names like a and b that nobody can read later.' },
   { id: 'no-surprises', level: 4, n: 2, part: 15, short: 'No surprises', title: 'A function does what its name says', idea: 'Give each function one job and a name that tells the truth. A function that quietly changes your list is a surprise.',
     minutes: 10, teaches: ['onejob'], after: ['clean-names', 'mutable-args'], trap: 'A function that changes its input list when the caller never expects it.' },
-  { id: 'comprehensions', level: 4, n: 3, part: 15, short: 'One-line lists', title: 'Building a list in one line', idea: 'A comprehension builds a new list in one line: which items to use, and which to keep. Use a loop when it gets long.',
+  { id: 'comprehensions', level: 4, n: 3, part: 15, short: 'One-line lists', title: 'Building a list in one line', idea: 'A comprehension builds a new list in one line. It says what to put in the list and which items to use. Use a loop when it gets long.',
     minutes: 9, teaches: ['comprehensions'], after: ['list-loops', 'clean-names'], trap: 'Packing so much into one line that nobody can read it.' },
   { id: 'type-hints', level: 4, n: 4, part: 15, short: 'Type hints', title: 'Labels for what goes in and out', idea: 'A type hint says what kind of value a function takes and gives back. It is a note for people. Python does not enforce it.',
     minutes: 9, teaches: ['hints'], after: ['types', 'clean-names'], trap: 'Thinking Python stops a wrong value because the hint says otherwise.' },
@@ -129,6 +129,6 @@ const START_CHAPTERS = [
     minutes: 10, teaches: ['timeouts'], after: ['gather', 'exceptions'], trap: 'Letting one failed job crash all the others.' },
   { id: 'retries', level: 5, n: 7, part: 19, short: 'Try again', title: 'Try again, but wait longer', idea: 'Some failures pass quickly. Try again a few times, waiting longer each time, and stop after a set number of tries.',
     minutes: 10, teaches: ['retries'], after: ['timeouts'], trap: 'Trying again forever, or instantly, which can make a busy service worse.' },
-  { id: 'threads', level: 5, n: 8, part: 20, short: 'Threads', title: 'Taking turns or working at once', idea: 'Async takes turns on one worker. Threads and processes can work at once. Two workers on one shared number can lose an update.',
+  { id: 'threads', level: 5, n: 8, part: 20, short: 'Threads', title: 'Taking turns or working at once', idea: 'Async takes turns on one worker. Threads and processes add more workers. Two workers on one shared number can lose an update.',
     minutes: 11, teaches: ['threads'], after: ['gather'], trap: 'Thinking async code runs two things at the same moment.' }
 ];

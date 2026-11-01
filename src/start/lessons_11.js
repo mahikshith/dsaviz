@@ -11,10 +11,10 @@ function st405Story() {
   const pile = (frames, lit) => stScene(stPlates(frames, 40, 340, { w: 230 }), lit ? { boxes: [] } : null);
   const alarm = (x, y, text) => l4Chip('alarm', x, y, text || 'ValueError', { c: 'bad', solid: false });
   return [
-    stBeat('dot', 'My program asks for an age. Someone types the word twelve. The program stops with an error message!', stScene(cast, st1Screen(120, 140, 400, ['ValueError: invalid literal', 'for int(): twelve'], 100), l4Say('s1', 320, 270, 'the program crashed')), ['screen', 'cast:dot']),
-    stBeat('hoot', 'Python raised an exception. That is an alarm that says something went wrong. It stops the program unless someone answers.', stScene(cast, pile(['main program', 'read_age()']), alarm(450, 220)), ['plate1', 'alarm'], 2),
+    stBeat('dot', 'My program asks for an age. Someone types the word twelve. The program stops with an error message!', stScene(cast, st1Screen(50, 140, 540, ['ValueError: invalid literal for int()', "with base 10: 'twelve'"], 100), l4Say('s1', 320, 270, 'the program crashed')), ['screen', 'cast:dot']),
+    stBeat('hoot', 'Python raised an exception, an alarm. This one is a ValueError, since twelve is not a number. It stops the program unless someone answers.', stScene(cast, pile(['main program', 'read_age()']), alarm(450, 220)), ['plate1', 'alarm'], 2),
     stBeat('hoot', 'The alarm leaves the function that failed. Then it travels down the pile of plates, one call at a time.', stScene(cast, pile(['main program', 'show_age()', 'read_age()']), alarm(450, 210), l4Arrow('ar', [400, 238], [400, 290]), l4Say('s1', 450, 330, 'looking for an answer')), ['plate2', 'alarm']),
-    stBeat('hoot', 'A try block says: I will answer an alarm. except ValueError: names the alarm it answers.', stScene(cast, st1Card('code', 130, 130, 380, ST405_CODE.py.slice(1, 5), [0, 2])), ['code'], [1, 3]),
+    stBeat('hoot', 'The word try says: I will answer an alarm. except ValueError: names the alarm it answers.', stScene(cast, st1Card('code', 130, 130, 380, ST405_CODE.py.slice(1, 5), [0, 2])), ['code'], [1, 3]),
     stBeat('hoot', 'Lines inside try run as normal. If an alarm rings, Python jumps straight to the matching except lines.', stScene(cast, st1Card('code', 130, 130, 380, ST405_CODE.py.slice(1, 5), [1, 2]), alarm(320, 300)), ['code', 'alarm'], [2, 3]),
     stBeat('dot', 'So try fixes the error?', stScene(cast, l4Chip('q', 320, 200, 'try = fix?')), ['q', 'cast:dot']),
     stBeat('hoot', 'No. try only chooses what happens next. Here we hand back -1, and the program carries on.', stScene(cast, st1Screen(150, 150, 340, ['12', '-1'], 100)), ['screen'], [4, 5, 6]),
@@ -70,11 +70,11 @@ function st407Story() {
   const rows = (items) => ({ tokens: items.map(([id, text, solid, c], i) => ({ id, x: 320, y: 150 + i * 56, text, w: 340, solid: !!solid, c })) });
   return [
     stBeat('dot', 'I wrote double and tried it once by hand. It looked fine. How do I know it is right?', stScene(cast, st1Card('code', 150, 140, 340, ST407_CODE.py.slice(0, 2), [])), ['code', 'cast:dot'], [0, 1]),
-    stBeat('hoot', 'Write a check. A check calls your function with an input you know, and compares the answer to the one you expect.', stScene(cast, st1Card('code', 90, 140, 460, [ST407_CODE.py[7]], [0]), l4Say('s1', 320, 230, 'input 2, expect 4')), ['code'], 7),
+    stBeat('hoot', 'A check, also called a test, calls your function with an input you know. It compares the answer to the one you expect.', stScene(cast, st1Card('code', 90, 140, 460, [ST407_CODE.py[7]], [0]), l4Say('s1', 320, 230, 'input 2, expect 4')), ['code'], 7),
     stBeat('hoot', 'check compares got with want. If they match it prints pass. If not it prints FAIL and the name of the check.', stScene(cast, st1Card('code', 100, 130, 440, ST407_CODE.py.slice(2, 7), [1, 2, 4])), ['code'], [3, 4, 5, 6]),
     stBeat('hoot', 'Run the first check. double(2) gives 4. The answer matches, so it prints pass two.', stScene(cast, rows([['r1', 'pass two', true], ['r2', '...'], ['r3', '...']])), ['r1'], 7),
-    stBeat('hoot', 'The second check also passes. But look at the code: n * n. It squares, it does not double!', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', '...']])), ['r2'], 8),
-    stBeat('hoot', 'The third check uses -3. The answer is 9, but we wanted -6. It prints FAIL negative. Now we know where to look.', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', 'FAIL negative', false, 'bad']])), ['r3'], 9),
+    stBeat('hoot', 'The second check also passes. Zero doubled and zero squared are both 0, so this check cannot tell them apart.', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', '...']])), ['r2'], 8),
+    stBeat('hoot', 'The third check uses -3. The code gives 9, but we wanted -6, so it prints FAIL negative. The code squares n instead of doubling.', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', 'FAIL negative', false, 'bad']])), ['r3'], 9),
     stBeat('dot', 'The bug passed two checks! It only showed up on the third.', stScene(cast, rows([['r1', 'pass two', true], ['r2', 'pass zero', true], ['r3', 'FAIL negative', false, 'bad']])), ['r1', 'r2', 'cast:dot']),
     stBeat('hoot', 'That is why one passing check proves little. Write many, and run them all after every change.', stScene(cast, l4Chip('m', 320, 200, 'many checks, run often', { solid: true })), ['m']),
     stBeat('hoot', 'Python has a short form: assert double(-3) == -6. It stays quiet if true, and stops with an error if false.', stScene(cast, st1Card('as', 90, 150, 460, ['assert double(-3) == -6'], []), l4Say('s1', 320, 240, 'quiet if true, an error if false')), ['as'])
@@ -85,7 +85,7 @@ START_LESSON('tests', {
   watch: { code: 'def double(n):\n    return n * n\n\ndef check(name, got, want):\n    if got == want:\n        print("pass", name)\n    else:\n        print("FAIL", name)\n\ncheck("two", double(2), 4)\ncheck("zero", double(0), 0)\ncheck("negative", double(-3), -6)\n' },
   tryit: { py: 'def double(n):\n    return n * n\n\ndef check(name, got, want):\n    if got == want:\n        print("pass", name)\n    else:\n        print("FAIL", name)\n\ncheck("two", double(2), 4)\ncheck("zero", double(0), 0)\ncheck("negative", double(-3), -6)\ncheck("ten", double(10), 20)\n',
     js: 'function double(n) {\n  return n * n;\n}\n\nfunction check(name, got, want) {\n  if (got === want) {\n    console.log("pass", name);\n  } else {\n    console.log("FAIL", name);\n  }\n}\n\ncheck("two", double(2), 4);\ncheck("zero", double(0), 0);\ncheck("negative", double(-3), -6);\ncheck("ten", double(10), 20);\n',
-    goals: ['Press Run and find the checks that fail.', 'Fix double so every check passes.', 'Add a check of your own with a negative number.'] },
+    goals: ['Press Run and find the checks that fail.', 'Fix double so every check passes.', 'Add a check of your own with an input you have not tried.'] },
   check: { q: 'double(2) gives 4 and the check passes. Does that prove double is right?', choices: [['No. More checks may find a bug that this one misses', true, 'Right. One case can pass by luck. Try different inputs.'], ['Yes. A passing check means no bugs', false, 'The bug above passed two checks before it failed on the third.'], ['Yes, if the answer is a whole number', false, 'Whole numbers can still be wrong. Try more inputs.'], ['No, because checks never pass', false, 'Checks do pass. They need to cover many cases.']] }
 });
 
@@ -98,16 +98,16 @@ function st408Story() {
   const cast = st1Cast([['hoot', 60], ['bolt', 320], ['dot', 580]]);
   const list = (id, y, vals, o) => ({ tokens: vals.map((v, i) => Object.assign({ id: id + i, x: 320 + (i - (vals.length - 1) / 2) * 76, y, text: String(v), w: 60 }, o || {})) });
   return [
-    stBeat('dot', 'My biggest function passed three checks with ordinary lists. Is it finished?', stScene(cast, list('n', 170, [3, 9, 4]), l4Say('s1', 320, 220, 'a normal list')), ['n0', 'n1', 'cast:dot'], [6, 7]),
-    stBeat('hoot', 'Not yet. The bugs hide at the edges. Test the awkward inputs: an empty list, one item, negatives, and ties.', stScene(cast, l4Chip('e1', 150, 170, 'empty'), l4Chip('e2', 270, 170, 'one item'), l4Chip('e3', 400, 170, 'negatives'), l4Chip('e4', 520, 170, 'ties')), ['e1', 'e2', 'e3', 'e4']),
+    stBeat('dot', 'My biggest function passed the checks I tried with ordinary lists. Is it finished?', stScene(cast, list('n', 170, [3, 9, 4]), l4Say('s1', 320, 220, 'a normal list')), ['n0', 'n1', 'cast:dot'], [6, 7]),
+    stBeat('hoot', 'Not yet. Bugs hide at the edges: an empty list, one item, negatives and ties (two equal items). These are edge cases.', stScene(cast, l4Chip('e1', 150, 170, 'empty'), l4Chip('e2', 270, 170, 'one item'), l4Chip('e3', 400, 170, 'negatives'), l4Chip('e4', 520, 170, 'ties')), ['e1', 'e2', 'e3', 'e4']),
     stBeat('hoot', 'Picture a shop. The easy customer buys three apples. The awkward one wants nothing, or a refund.', stScene(cast, l4Chip('c1', 190, 190, 'three apples'), l4Chip('c2', 450, 190, 'a refund', { c: 'bad' })), ['c2']),
     stBeat('hoot', 'We decide that biggest of an empty list is 0. The check for the empty list passes. So does one item.', stScene(cast, list('p', 170, ['normal', 'one', 'empty'], { w: 110, solid: true }), l4Say('s1', 320, 225, 'pass pass pass')), ['p0', 'p1', 'p2'], [8]),
     stBeat('hoot', 'Now the negatives check. biggest of -5 and -2 should be -2. But best starts at 0, and nothing is above 0.', stScene(cast, list('q', 170, [-5, -2]), l4Jar('bst', 245, 230, '0', 'best', { c: 'bad' }), l4Say('s1', 480, 275, 'never beaten')), ['bst'], [1, 3]),
     stBeat('hoot', 'The check prints FAIL negatives. Without this awkward check, the bug would reach a real user.', stScene(cast, l4Chip('f', 320, 200, 'FAIL negatives', { c: 'bad' })), ['f'], 9),
-    stBeat('hoot', 'A fix: start best at the first number, numbers[0], and guard the empty list with an if.', stScene(cast, st1Card('fix', 100, 140, 440, ['if len(numbers) == 0:', '    return 0', 'best = numbers[0]'], [2])), ['fix']),
+    stBeat('hoot', 'A fix: start best at the first number, numbers[0]. Use an if to handle the empty list first.', stScene(cast, st1Card('fix', 100, 140, 440, ['if len(numbers) == 0:', '    return 0', 'best = numbers[0]'], [2])), ['fix']),
     stBeat('dot', 'Could I write the checks before the code?', stScene(cast, l4Chip('t', 320, 200, 'checks first?')), ['t', 'cast:dot']),
     stBeat('hoot', 'Yes, and it is a good habit. That is called test-first. Write a check, watch it fail, then write code until it passes.', stScene(cast, l4Chip('a', 150, 190, 'check fails'), l4Chip('b', 320, 190, 'write code'), l4Chip('c', 490, 190, 'check passes', { solid: true }), l4Arrow('x', [210, 190], [262, 190]), l4Arrow('y', [380, 190], [432, 190])), ['a', 'b', 'c']),
-    stBeat('bolt', 'I run what you wrote. Good checks tell you what to write next, and tell you when you are done.', stScene(cast, l4Chip('d', 320, 200, 'checks are your guide', { solid: true })), ['d', 'cast:bolt'])
+    stBeat('bolt', 'I only run what you wrote. I cannot tell if it is right. Your checks can, so write the awkward ones.', stScene(cast, l4Chip('d', 320, 200, 'checks are your guide', { solid: true })), ['d', 'cast:bolt'])
   ];
 }
 START_LESSON('edge-tests', {

@@ -2,6 +2,7 @@
 // Still the kitchen with one waiter, with a pretend clock counted in ticks. Every word is our own.
 
 // ---------- L5.5 Doing several waits at once ----------
+const ST505_REAL = ['async def main():', '    results = await asyncio.gather(', '        soup(), bread(), cake())', '    print(results)', 'asyncio.run(main())'];
 const ST505_CODE = {
   py: ['def one_by_one(waits):', '    total = 0', '    for w in waits:', '        total = total + w', '    return total', 'def together(waits):', '    longest = 0', '    for w in waits:', '        if w > longest:', '            longest = w', '    return longest', 'waits = [3, 2, 4]', 'print("one by one:", one_by_one(waits))', 'print("together:", together(waits))'],
   js: ['function one_by_one(waits) {', '  let total = 0;', '  for (let w of waits) {', '    total = total + w; }', '  return total; }', 'function together(waits) {', '  let longest = 0;', '  for (let w of waits) {', '    if (w > longest) {', '      longest = w; } }', '  return longest; }', 'let waits = [3, 2, 4];', 'console.log("one by one:", one_by_one(waits));', 'console.log("together:", together(waits));']
@@ -15,8 +16,10 @@ function st505Story() {
     stBeat('hoot', 'When each wait ends before the next begins, the times add up. 3 + 2 + 4 is 9 ticks.', stScene(cast, seq), ['soup', 'bread', 'cake'], [0, 1, 2, 3, 4]),
     stBeat('hoot', 'A loop that waits on each dish, one after another, does exactly this. Each wait finishes before the loop moves on.', stScene(cast, seq, l4Say('s1', 320, 335, 'one after another: 9 ticks')), ['cake']),
     stBeat('dot', 'But the oven can cook all three at the same time! Why wait in a row?', stScene(cast, seq), ['soup', 'bread', 'cake', 'cast:dot']),
-    stBeat('hoot', 'Start all the waits first, then collect the answers. Python\'s asyncio toolbox has a tool for this, called gather.', stScene(cast, st1Card('real', 90, 140, 460, ['results = await asyncio.gather(', '    soup(), bread(), cake())'], [0, 1])), ['real']),
+    stBeat('hoot', 'Start all the waits first, then collect the answers. Python\'s async toolbox, called asyncio, has a tool for this: gather.', l5Real(cast, ST505_REAL, [1, 2], 460), ['real']),
+    stBeat('hoot', 'The functions soup(), bread() and cake() wait 3, 2 and 4 real seconds. Then gather runs all three, so main takes 4.', l5Real(cast, ST505_REAL, [0, 4], 460), ['real']),
     stBeat('hoot', 'Now all three bars start at tick 0. The meal is done when the slowest dish is done: tick 4.', stScene(cast, par), ['cake'], [5, 6, 7, 8, 9, 10]),
+    stBeat('hoot', 'These sums use a pretend clock of ticks, so every step shows and it runs the same everywhere. Real gather waits real seconds.', l5Pretend(cast, 'sums with ticks', 'gather with seconds'), ['pc', 'rc']),
     stBeat('hoot', 'one_by_one adds the waits. together keeps the longest wait. 9 ticks against 4 saves 5 ticks.', stScene(cast, st1Screen(120, 140, 400, ['one by one: 9', 'together: 4'], 100)), ['screen'], [12, 13]),
     stBeat('hoot', 'gather also gives you the answers in the order you asked. It does not matter which dish finished first.', stScene(cast, l4Chip('r1', 190, 190, 'soup answer', { solid: true }), l4Chip('r2', 320, 190, 'bread answer'), l4Chip('r3', 450, 190, 'cake answer'), l4Say('s1', 320, 240, 'same order as the list')), ['r1', 'r2', 'r3']),
     stBeat('dot', 'Start all the waits, then collect. One slow dish no longer slows down the others.', stScene(cast, par), ['cake', 'cast:dot'])
@@ -32,6 +35,7 @@ START_LESSON('gather', {
 });
 
 // ---------- L5.6 Errors and timeouts ----------
+const ST506_REAL = ['try:', '    await asyncio.wait_for(cake(), timeout=4)', 'except asyncio.TimeoutError:', '    print("cake failed: took too long")'];
 const ST506_CODE = {
   py: ['def run_job(job, limit):', '    if job["fails"]:', '        raise ValueError("out of stock")', '    if job["ticks"] > limit:', '        raise ValueError("took too long")', '    return job["dish"] + " is ready"', 'def run_all(jobs, limit):', '    for job in jobs:', '        try:', '            print(run_job(job, limit))', '        except ValueError as problem:', '            print(job["dish"], "failed:", problem)', 'jobs = [{"dish": "soup", "ticks": 2, "fails": False},', '        {"dish": "fish", "ticks": 1, "fails": True},', '        {"dish": "cake", "ticks": 9, "fails": False}]', 'run_all(jobs, 4)'],
   js: ['function run_job(job, limit) {', '  if (job.fails) {', '    throw new Error("out of stock"); }', '  if (job.ticks > limit) {', '    throw new Error("took too long"); }', '  return job.dish + " is ready"; }', 'function run_all(jobs, limit) {', '  for (let job of jobs) {', '    try {', '      console.log(run_job(job, limit)); }', '    catch (problem) {', '      console.log(job.dish, "failed:", problem.message); } } }', 'let jobs = [{ dish: "soup", ticks: 2, fails: false },', '  { dish: "fish", ticks: 1, fails: true },', '  { dish: "cake", ticks: 9, fails: false }];', 'run_all(jobs, 4);']
@@ -46,7 +50,9 @@ function st506Story() {
     stBeat('hoot', 'Catch the alarm right where you wait for the job. Here the try is inside the loop, so each job gets its own try.', stScene(cast, st1Card('code', 40, 140, 560, ST506_CODE.py.slice(7, 12), [1, 2, 3, 4])), ['code'], [7, 8, 9, 10, 11]),
     stBeat('hoot', 'Soup is fine. The fish raises its alarm and the except prints it. The loop then carries on with the cake.', stScene(cast, st1Screen(120, 140, 400, ['soup is ready', 'fish failed: out of stock'], 100)), ['screen'], [10, 11]),
     stBeat('hoot', 'A timeout is a time limit. If a job needs more ticks than the limit, we stop waiting for it and call it failed.', stScene(cast, st1Card('code', 40, 150, 560, ST506_CODE.py.slice(3, 5), [0, 1])), ['code'], [3, 4]),
-    stBeat('hoot', 'The cake needs 9 ticks and the limit is 4, so it raises took too long. Real asyncio has a tool for this, called wait_for.', stScene(cast, st1Screen(120, 140, 400, ['soup is ready', 'fish failed: out of stock', 'cake failed: took too long'], 130)), ['screen'], [3, 4, 15]),
+    stBeat('hoot', 'The cake needs 9 ticks and the limit is 4, so run_job raises took too long.', stScene(cast, st1Screen(120, 140, 400, ['soup is ready', 'fish failed: out of stock', 'cake failed: took too long'], 130)), ['screen'], [3, 4, 15]),
+    stBeat('hoot', 'run_job uses a pretend clock: it compares ticks with the limit. That runs the same everywhere and shows each step.', l5Pretend(cast, 'compare ticks to the limit', 'watch a real clock'), ['pc', 'rc']),
+    stBeat('hoot', 'In real asyncio, wait_for stops waiting after 4 real seconds. It raises TimeoutError, and you catch it with except.', l5Real(cast, ST506_REAL, [1, 2], 540), ['real']),
     stBeat('dot', 'What if I put the try around the whole loop instead?', stScene(cast, l4Chip('w', 320, 200, 'try around the loop?')), ['w', 'cast:dot']),
     stBeat('hoot', 'Then the fish would end the loop at once, and the cake would never get a try. Keep the try close to the one wait.', stScene(cast, trio(['soup: done', 'ok'], ['fish: stops all', 'bad'], ['cake: never tried', ''])), ['b', 'c'])
   ];
@@ -62,6 +68,7 @@ START_LESSON('timeouts', {
 });
 
 // ---------- L5.7 Try again, but wait longer ----------
+const ST507_REAL = ['except ValueError:', '    await asyncio.sleep(wait)', '    wait = wait * 2'];
 const ST507_CODE = {
   py: ['def flaky(attempt):', '    if attempt < 3:', '        raise ValueError("busy")', '    return "ok"', 'def try_again(max_tries):', '    wait = 1', '    for attempt in range(1, max_tries + 1):', '        try:', '            print("try", attempt, flaky(attempt))', '            return attempt', '        except ValueError:', '            print("try", attempt, "busy, waiting", wait)', '            wait = wait * 2', '    return -1', 'print(try_again(4))'],
   js: ['function flaky(attempt) {', '  if (attempt < 3) {', '    throw new Error("busy"); }', '  return "ok"; }', 'function try_again(max_tries) {', '  let wait = 1;', '  for (let attempt = 1; attempt <= max_tries; attempt++) {', '    try {', '      console.log("try", attempt, flaky(attempt));', '      return attempt; }', '    catch (problem) {', '      console.log("try", attempt, "busy, waiting", wait);', '      wait = wait * 2; } }', '  return -1; }', 'console.log(try_again(4));']
@@ -74,12 +81,15 @@ function st507Story() {
   const t3 = { id: 't3', name: 'try 3', from: 5, to: 6, y: 240, text: 'ok', solid: true };
   return [
     stBeat('dot', 'I phoned the kitchen to place an order and the line was busy. Should I ring again right away?', stScene(cast, line([t1])), ['t1', 'cast:dot']),
-    stBeat('hoot', 'Some failures pass quickly, such as a busy line or a slow server. Trying again often works.', stScene(cast, line([t1])), ['t1']),
+    stBeat('hoot', 'Some failures pass quickly, such as a busy phone line. Trying again often works.', stScene(cast, line([t1])), ['t1']),
     stBeat('hoot', 'But ringing again and again at once adds to the crowd. A busy kitchen gets busier. So wait a little first.', stScene(cast, l4Chip('x', 320, 190, 'ring, ring, ring, ring', { c: 'bad' }), l4Say('s1', 320, 240, 'too fast: it makes things worse')), ['x']),
     stBeat('hoot', 'A common plan is to wait longer each time: 1 tick, then 2, then 4. Doubling the wait is called backoff.', stScene(cast, line([t1, t2])), ['t2'], [5, 12]),
     stBeat('hoot', 'In the code, wait starts at 1. After each failure it prints the wait and doubles it: wait = wait * 2.', stScene(cast, st1Card('code', 60, 150, 520, ['except ValueError:', '    print("try", attempt, "busy, waiting", wait)', '    wait = wait * 2'], [1, 2])), ['code'], [11, 12]),
+    stBeat('hoot', 'The waits are on a pretend clock. The code prints the wait but never pauses, so it runs the same everywhere and shows every step.', l5Pretend(cast, 'prints the wait', 'really pauses'), ['pc', 'rc']),
+    stBeat('hoot', 'Real code pauses with await asyncio.sleep(wait). Other tasks can run during the pause. Then the wait doubles, as before.', l5Real(cast, ST507_REAL, [1, 2], 480), ['real']),
     stBeat('hoot', 'Try 1 fails and waits 1 tick. Try 2 fails and waits 2 ticks. Try 3 works, and the function returns 3.', stScene(cast, line([t1, t2, t3])), ['t3'], [8, 9]),
     stBeat('hoot', 'Always set a limit. The loop only runs max_tries times. If every try fails, return -1 so the caller knows it gave up.', stScene(cast, st1Card('code', 60, 150, 520, ST507_CODE.py.slice(5, 7).concat([ST507_CODE.py[13]]), [1, 2])), ['code'], [6, 13]),
+    stBeat('hoot', 'With max_tries 2, both tries fail. The code still prints a wait after the last one. Real code would skip it and give up.', stScene(cast, st1Screen(100, 130, 440, ['try 1 busy, waiting 1', 'try 2 busy, waiting 2', '-1'], 140)), ['screen']),
     stBeat('dot', 'What if I never stop trying?', stScene(cast, l4Chip('q', 320, 200, 'try forever?', { c: 'bad' })), ['q', 'cast:dot']),
     stBeat('hoot', 'Then a broken service could keep one program trying all day. A few tries, a longer wait each time, then stop.', stScene(cast, l4Chip('a', 320, 200, 'few tries, longer waits, then stop', { solid: true })), ['a'])
   ];
@@ -94,6 +104,7 @@ START_LESSON('retries', {
 });
 
 // ---------- L5.8 Taking turns or working at once ----------
+const ST508_REAL = ['lock = threading.Lock()', 'def add_one():', '    with lock:', '        write_count(read_count() + 1)'];
 const ST508_CODE = {
   py: ['shared = {"count": 0}', 'def read_count():', '    return shared["count"]', 'def write_count(value):', '    shared["count"] = value', 'a = read_count()', 'b = read_count()', 'write_count(a + 1)', 'write_count(b + 1)', 'print("count is", shared["count"])'],
   js: ['let shared = { count: 0 };', 'function read_count() {', '  return shared.count; }', 'function write_count(value) {', '  shared.count = value; }', 'let a = read_count();', 'let b = read_count();', 'write_count(a + 1);', 'write_count(b + 1);', 'console.log("count is", shared.count);']
@@ -105,13 +116,15 @@ function st508Story() {
   return [
     stBeat('dot', 'Async was one waiter taking turns. Can I hire more waiters and work at the same moment?', stScene(cast, l4Chip('one', 320, 200, 'one waiter, taking turns')), ['one', 'cast:dot']),
     stBeat('hoot', 'Yes. One waiter taking turns is async. Several waiters in one kitchen are threads. Several kitchens are processes.', stScene(cast, l4Chip('t1', 150, 190, 'async'), l4Chip('t2', 320, 190, 'threads'), l4Chip('t3', 490, 190, 'processes'), l4Say('s1', 150, 240, 'one waiter'), l4Say('s2', 320, 240, 'many waiters'), l4Say('s3', 490, 240, 'many kitchens')), ['t1', 't2', 't3']),
-    stBeat('hoot', 'Taking turns is not the same as working at once. Async never does two things in the same moment. Threads and processes can.', stScene(cast, l4Chip('t1', 200, 190, 'turns'), l4Chip('t2', 440, 190, 'at once', { solid: true })), ['t1', 't2']),
+    stBeat('hoot', 'Taking turns is not working at once. Async switches only at an await. Threads switch at any moment. Processes truly work at once.', stScene(cast, l4Chip('t1', 200, 190, 'turns'), l4Chip('t2', 440, 190, 'at once', { solid: true })), ['t1', 't2']),
     stBeat('hoot', 'Choose the tool for the job. Mostly waiting: async. Heavy calculating: processes. Old code that blocks: threads.', stScene(cast, l4Chip('j1', 160, 170, 'waiting'), l4Chip('j2', 160, 230, 'calculating'), l4Chip('j3', 160, 290, 'blocking code'), l4Chip('k1', 440, 170, 'async', { solid: true }), l4Chip('k2', 440, 230, 'processes', { solid: true }), l4Chip('k3', 440, 290, 'threads', { solid: true })), ['k1', 'k2', 'k3']),
     stBeat('hoot', 'Threads share one kitchen, which means one memory. Sharing is handy, but it has a trap. Here is a board with a count.', stScene(cast, board(0)), ['board'], 0),
     stBeat('dot', 'Two waiters each add 1 to the count. It starts at 0. What is it after both finish?', stScene(cast, board(0), mine('wa', 130, 'waiter A'), mine('wb', 510, 'waiter B')), ['board', 'cast:dot']),
     stBeat('hoot', 'Both read 0 at the same time. A writes 1. B still holds the old 0, adds 1, and writes 1 too. One update is lost.', stScene(cast, board(1, true), mine('wa', 130, 'A read 0'), mine('wb', 510, 'B read 0')), ['board'], [5, 6, 7, 8]),
+    stBeat('hoot', 'This race is on a pretend clock too. We write the reads and writes in a fixed order. So it is the same every time, and it shows every step.', l5Pretend(cast, 'a fixed order', 'varies every run'), ['pc', 'rc']),
     stBeat('hoot', 'The count is 1, not 2. This is a race: the answer depends on who is quicker. Races are hard to find.', stScene(cast, board(1, true), l4Say('s1', 320, 290, 'expected 2, got 1', { c: 'bad' })), ['board'], 9),
     stBeat('hoot', 'A lock fixes it. One waiter does read, add and write all together. Then the other starts. The count ends at 2.', stScene(cast, board(2, true), l4Say('s1', 320, 290, 'one at a time: correct')), ['board']),
+    stBeat('hoot', 'In real Python, threading.Lock does this. with lock: lets one thread in at a time. The others wait outside until it leaves.', l5Real(cast, ST508_REAL, [2, 3], 480), ['real']),
     stBeat('hoot', 'Processes avoid this by having their own copy of the data. That is safe, but it costs more to share results.', stScene(cast, l4Chip('p1', 200, 190, 'copy A'), l4Chip('p2', 440, 190, 'copy B')), ['p1', 'p2'])
   ];
 }

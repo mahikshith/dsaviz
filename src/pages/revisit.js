@@ -37,7 +37,7 @@ function rvDayName(offset) { const d = new Date(); d.setHours(12, 0, 0, 0); d.se
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), queue: DS.reviewDue().map((c) => c.id), pos: 0, revealed: false, results: [], saved: loadSaved() };
+    this.state = { theme: loadTheme(), queue: DS.reviewDue().map((c) => c.id), pos: 0, revealed: false, results: [], saved: loadSaved(), foldUp: false, foldRet: false, foldSaved: false, foldWhy: false };
   }
   componentDidMount() {
     listenTheme(this);
@@ -88,7 +88,7 @@ class Component extends DCLogic {
     const retColor = ret.pct === null ? t.muted : ret.pct >= 70 ? t.ok : ret.pct >= 50 ? t.medFg : t.left;
     const m = this.mobile = rvMobile();
     const L = m ? { rootW: 420, rootH: 'auto', pad: '16px 16px 112px', cols: 'minmax(0, 1fr)', gap: '24px', h1: '34px', h2: '28px', count: '36px', countPad: '12px 16px', cardPad: '20px', ansPad: '16px', rateCols: 'repeat(2, minmax(0, 1fr))', statCols: 'minmax(0, 1fr)' }
-      : { rootW: 1440, rootH: '1320px', pad: '32px 40px', cols: 'minmax(0, 1fr) 420px', gap: '32px', h1: '48px', h2: '40px', count: '48px', countPad: '16px 24px', cardPad: '32px', ansPad: '24px', rateCols: 'repeat(4, minmax(0, 1fr))', statCols: 'repeat(3, minmax(0, 1fr))' };
+      : { rootW: 1440, rootH: 'auto', pad: '24px 48px 48px', cols: 'minmax(0, 1fr)', gap: '24px', h1: '48px', h2: '40px', count: '48px', countPad: '16px 24px', cardPad: '32px', ansPad: '24px', rateCols: 'repeat(4, minmax(0, 1fr))', statCols: 'repeat(3, minmax(0, 1fr))' };
     const blankCard = { prompt: '', name: '', story: '', hasStory: false, pattern: '', kind: '', meta: '', when: '', hasWhen: false, rule: '', hasRule: false, ruleTitle: '', note: '', hasNote: false, href: '', go: null, linkLabel: '' };
     return {
       t, L, ...navVals(this, t, themeKey, 'Revisit'),
@@ -126,6 +126,11 @@ class Component extends DCLogic {
       doneTitle: recalled + ' of ' + total + ' remembered.',
       doneStats: [[String(results.length), results.length === 1 ? 'card reviewed' : 'cards reviewed'], ['+' + results.length * DS.XP.revisit, 'XP earned'], [String(up.counts[0].n), up.counts[0].n === 1 ? 'card due tomorrow' : 'cards due tomorrow']].map(([v, k]) => ({ v, k })),
       // retention and upcoming
+      showRetention: ret.pct !== null,
+      foldUp: !!this.state.foldUp, chevUp: this.state.foldUp ? 'rotate(180deg)' : 'rotate(0deg)', toggleUp: () => this.setState({ foldUp: !this.state.foldUp }),
+      foldRet: !!this.state.foldRet, chevRet: this.state.foldRet ? 'rotate(180deg)' : 'rotate(0deg)', toggleRet: () => this.setState({ foldRet: !this.state.foldRet }),
+      foldSaved: !!this.state.foldSaved, chevSaved: this.state.foldSaved ? 'rotate(180deg)' : 'rotate(0deg)', toggleSaved: () => this.setState({ foldSaved: !this.state.foldSaved }),
+      foldWhy: !!this.state.foldWhy, chevWhy: this.state.foldWhy ? 'rotate(180deg)' : 'rotate(0deg)', toggleWhy: () => this.setState({ foldWhy: !this.state.foldWhy }),
       retPct: ret.pct === null ? '–' : ret.pct + '%', retColor,
       retAria: ret.pct === null ? 'Retention: no reviews yet' : 'Retention ' + ret.pct + ' percent',
       retLine: ret.pct === null ? 'Shows up after your first review.' : ret.recalled + ' of ' + ret.reviews + (ret.reviews === 1 ? ' review' : ' reviews') + ' recalled in the last 30 days.',
@@ -138,7 +143,7 @@ class Component extends DCLogic {
       upcomingMore: up.cards.length > 6 ? '+' + (up.cards.length - 6) + ' more later' : '',
       hasMore: up.cards.length > 6,
       queueSize: all.length + (all.length === 1 ? ' card' : ' cards') + ' in your queue',
-      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.story, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
+      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.title, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
       noSaved: s.saved.length === 0
     };
   }

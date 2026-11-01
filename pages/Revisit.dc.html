@@ -116,7 +116,7 @@ button{font:inherit}
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; height: {{L.rootH}}; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; min-height: 900px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <style>
 [data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
@@ -265,18 +265,16 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="flex-grow: 1; padding: {{L.pad}}; display: grid; grid-template-columns: {{L.cols}}; gap: {{L.gap}}; align-items: start">
+<main style="flex-grow: 1; padding: {{L.pad}}; display: flex; flex-direction: column; gap: 24px; min-width: 0">
 
-<!-- SESSION -->
 <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
 <div style="display: flex; align-items: flex-end; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-width: 0">
-<span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Revisit · {{today}}</span>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h1}}; line-height: 1.05; font-weight: 600; letter-spacing: -0.02em">{{headline}}</h1>
-<p style="margin: 0; max-width: 680px; font-size: var(--fs19); line-height: 1.55; color: {{t.text2}}">{{subline}}</p>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 1.05; font-weight: 600; letter-spacing: -0.02em">{{headline}}</h1>
+<p style="margin: 0; max-width: 680px; font-size: var(--fs18); line-height: 1.5; color: {{t.muted}}">{{today}}. {{subline}}</p>
 </div>
-<div role="status" aria-live="polite" style="flex-shrink: 0; padding: {{L.countPad}}; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
-<span style="font-family: {{t.mono}}; font-size: {{L.count}}; font-weight: 800; line-height: 1; color: {{t.accent}}">{{dueCount}}</span>
+<div role="status" aria-live="polite" style="flex-shrink: 0; padding: {{L.countPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+<span style="font-family: {{t.mono}}; font-size: {{L.count}}; font-weight: 800; line-height: 1; color: {{t.text}}">{{dueCount}}</span>
 <span style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">{{dueUnit}}</span>
 </div>
 </div>
@@ -291,7 +289,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 
 <sc-if value="{{inSession}}" hint-placeholder-val="{{ true }}">
-<section aria-label="Review card" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; box-shadow: 0 18px 50px {{t.shadow}}; display: flex; flex-direction: column; gap: 24px; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
+<section aria-label="Review card" style="padding: {{L.cardPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
 <span style="height: 28px; padding: 0 12px; border-radius: 999px; background: {{t.hl}}; color: {{t.accent}}; display: inline-flex; align-items: center; font-size: var(--fs16); font-weight: 700">{{card.pattern}}</span>
 <span style="height: 28px; padding: 0 12px; border-radius: 999px; background: {{t.sunk}}; display: inline-flex; align-items: center; font-size: var(--fs16); font-weight: 600; color: {{t.text2}}">{{card.kind}}</span>
@@ -299,28 +297,28 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: {{L.h2}}; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere">{{card.name}}</h2>
-<sc-if value="{{card.hasStory}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--fs18); color: {{t.muted}}">Story: {{card.story}}</span></sc-if>
+
 </div>
 <p style="margin: 0; font-size: var(--fs24); line-height: 1.4; font-weight: 600">{{card.prompt}}</p>
 
 <sc-if value="{{hidden}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
-<button id="rv-reveal" onClick="{{reveal}}" style="height: 52px; padding: 0 32px; border-radius: 999px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 800">Reveal</button>
+<button id="rv-reveal" onClick="{{reveal}}" style="min-height: 56px; padding: 0 32px; border-radius: 12px; border: 0; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 800">Reveal</button>
 <span style="font-size: var(--fs16); color: {{t.muted}}">Think of your answer first. Space reveals.</span>
 </div>
 </sc-if>
 
 <sc-if value="{{revealed}}" hint-placeholder-val="{{ false }}">
 <div id="rv-answer" tabindex="-1" style="padding: {{L.ansPad}}; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.26s cubic-bezier(.2,.8,.2,1)">
-<sc-if value="{{card.hasWhen}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{card.pattern}}</span><span style="font-size: var(--fs20); line-height: 1.5">{{card.when}}</span></div></sc-if>
-<sc-if value="{{card.hasRule}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{card.ruleTitle}}</span><span style="font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{card.rule}}</span></div></sc-if>
-<sc-if value="{{card.hasNote}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Your note</span><span style="font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}; white-space: pre-wrap">{{card.note}}</span></div></sc-if>
+<sc-if value="{{card.hasWhen}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs15); font-weight: 700; color: {{t.accent}}">{{card.pattern}}</span><span style="font-size: var(--fs20); line-height: 1.5">{{card.when}}</span></div></sc-if>
+<sc-if value="{{card.hasRule}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">{{card.ruleTitle}}</span><span style="font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">{{card.rule}}</span></div></sc-if>
+<sc-if value="{{card.hasNote}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid {{t.line2}}"><span style="font-size: var(--fs15); font-weight: 700; color: {{t.muted}}">Your note</span><span style="font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}; white-space: pre-wrap">{{card.note}}</span></div></sc-if>
 <a href="{{card.href}}" onClick="{{card.go}}" style="align-self: flex-start; min-height: 24px; font-size: var(--fs17); font-weight: 700; color: {{t.link}}">{{card.linkLabel}} →</a>
 </div>
 <div role="group" aria-label="How well did you remember?" style="display: flex; flex-direction: column; gap: 12px">
 <span style="font-size: var(--fs18); font-weight: 700">How well did you remember? <span style="font-weight: 500; color: {{t.muted}}">· keys 1 to 4</span></span>
 <div style="display: grid; grid-template-columns: {{L.rateCols}}; gap: 12px">
-<sc-for list="{{rates}}" as="rt" hint-placeholder-count="4"><button onClick="{{rt.pick}}" aria-label="{{rt.aria}}" style="min-height: 76px; padding: 8px; border-radius: 16px; border: 1px solid {{rt.border}}; background: {{t.surface}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px"><span style="font-size: var(--fs19); font-weight: 800">{{rt.label}}</span><span style="font-size: var(--fs15); color: {{t.text2}}">{{rt.note}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{rt.when}}</span></button></sc-for>
+<sc-for list="{{rates}}" as="rt" hint-placeholder-count="4"><button onClick="{{rt.pick}}" aria-label="{{rt.aria}}" style="min-height: 76px; padding: 8px; border-radius: 16px; border: 0; background: {{t.sunk}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px"><span style="font-size: var(--fs19); font-weight: 800">{{rt.label}}</span><span style="font-size: var(--fs15); color: {{t.text2}}">{{rt.note}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{rt.when}}</span></button></sc-for>
 </div>
 </div>
 </sc-if>
@@ -328,41 +326,33 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 
 <sc-if value="{{sessionDone}}" hint-placeholder-val="{{ false }}">
-<section id="rv-done" tabindex="-1" aria-label="Session complete" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.ok}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
-<span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}">Session complete</span>
+<section id="rv-done" tabindex="-1" aria-label="Session complete" style="padding: {{L.cardPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
+<span style="font-size: var(--fs16); font-weight: 700; color: {{t.ok}}">Session complete</span>
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600">{{doneTitle}}</h2>
 <div style="display: grid; grid-template-columns: {{L.statCols}}; gap: 12px">
 <sc-for list="{{doneStats}}" as="ds" hint-placeholder-count="3"><div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: var(--fs28); font-weight: 800">{{ds.v}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ds.k}}</span></div></sc-for>
 </div>
 <div style="display: flex; gap: 12px; flex-wrap: wrap">
-<a href="Home.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; background: {{t.text}}; color: {{t.bg}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">Back to my home</a>
-<a href="Patterns.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">Play a new story</a>
+<a href="Home.dc.html" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">Back to my home</a>
+<a href="Patterns.dc.html" style="min-height: 48px; padding: 0; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600; color: {{t.text2}}">Play a new story</a>
 </div>
 </section>
 </sc-if>
 
 <sc-if value="{{emptyDue}}" hint-placeholder-val="{{ false }}">
-<section aria-label="How the queue fills" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px dashed {{t.line2}}; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<section aria-label="How the queue fills" style="padding: {{L.cardPad}}; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
 <span style="font-size: var(--fs18); line-height: 1.55; color: {{t.text2}}">Every story you finish and every problem you tick on the sheet becomes a card. It comes back the next day, then less and less often as you remember it.</span>
 <div style="display: flex; gap: 12px; flex-wrap: wrap">
-<a href="Patterns.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 800">Find a story</a>
-<a href="Sheet.dc.html" style="height: 48px; padding: 0 24px; border-radius: 999px; border: 1px solid {{t.line2}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 700">Open the sheet</a>
+<a href="Patterns.dc.html" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs18); font-weight: 800">Find a story</a>
+<a href="Sheet.dc.html" style="min-height: 48px; padding: 0; display: flex; align-items: center; font-size: var(--fs17); font-weight: 600; color: {{t.text2}}">Open the sheet</a>
 </div>
 </section>
 </sc-if>
 </div>
-
-<!-- MEMORY -->
-<div style="display: flex; flex-direction: column; gap: 24px">
-<section aria-labelledby="rv-ret" style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="rv-ret" style="margin: 0; font-size: var(--fs20); font-weight: 700">Retention</h2><span style="font-size: var(--fs16); color: {{t.muted}}">{{queueSize}}</span></div>
-<span aria-label="{{retAria}}" style="font-family: {{t.mono}}; font-size: var(--fs48); font-weight: 800; line-height: 1; color: {{retColor}}">{{retPct}}</span>
-<span aria-hidden="true" style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{retBar}}; background: {{retColor}}; transition: width 0.4s ease"></span></span>
-<span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{retLine}} {{retAdvice}}</span>
-</section>
-
-<section aria-labelledby="rv-up" style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 id="rv-up" style="margin: 0; font-size: var(--fs20); font-weight: 700">Upcoming</h2><span style="font-size: var(--fs16); color: {{t.muted}}">{{weekTotal}}</span></div>
+<section aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
+<button onClick="{{toggleUp}}" aria-expanded="{{foldUp}}" style="width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Upcoming cards<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevUp}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldUp}}" hint-placeholder-val="{{ false }}"><div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
+<span style="font-size: var(--fs16); color: {{t.muted}}">{{weekTotal}}</span>
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 112px">
 <sc-for list="{{week}}" as="wk" hint-placeholder-count="7">
 <div role="img" aria-label="{{wk.aria}}" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; height: 112px">
@@ -379,10 +369,25 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </ul>
 <sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs16); color: {{t.muted}}">{{upcomingMore}}</span></sc-if>
 </sc-if>
-</section>
-
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<h2 style="margin: 0; font-size: var(--fs20); font-weight: 700">Why revisit?</h2>
+</div></sc-if>
+<sc-if value="{{showRetention}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{toggleRet}}" aria-expanded="{{foldRet}}" style="width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Retention<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevRet}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldRet}}" hint-placeholder-val="{{ false }}"><div style="padding: 24px 0; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid {{t.line}}">
+<span style="font-size: var(--fs16); color: {{t.muted}}">{{queueSize}}</span>
+<span aria-label="{{retAria}}" style="font-family: {{t.mono}}; font-size: var(--fs48); font-weight: 800; line-height: 1; color: {{retColor}}">{{retPct}}</span>
+<span aria-hidden="true" style="height: 8px; border-radius: 999px; background: {{t.sunk}}; display: block"><span style="display: block; height: 8px; border-radius: 999px; width: {{retBar}}; background: {{retColor}}; transition: width 0.4s ease"></span></span>
+<span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{retLine}} {{retAdvice}}</span>
+</div></sc-if>
+</sc-if>
+<button onClick="{{toggleSaved}}" aria-expanded="{{foldSaved}}" style="width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Saved by you<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevSaved}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldSaved}}" hint-placeholder-val="{{ false }}"><div style="padding: 24px 0; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid {{t.line}}">
+<sc-if value="{{noSaved}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">Nothing saved yet. Tap ☆ Save on any story and it will wait for you here.</span></sc-if>
+<sc-for list="{{saved}}" as="sv" hint-placeholder-count="2">
+<a href="{{sv.href}}" onClick="{{sv.go}}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid {{t.line}}"><span style="font-size: var(--fs18); font-weight: 600">{{sv.story}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{sv.pattern}}</span></a>
+</sc-for>
+</div></sc-if>
+<button onClick="{{toggleWhy}}" aria-expanded="{{foldWhy}}" style="width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Why revisit?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevWhy}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{foldWhy}}" hint-placeholder-val="{{ false }}"><div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
 <svg width="100%" viewBox="0 0 376 204" style="max-width: 376px; height: auto" role="img" aria-label="Memory without review falls fast; each revisit resets it and it falls more slowly">
 <line x1="40" y1="150" x2="370" y2="150" stroke="{{t.line2}}" stroke-width="1"></line>
 <line x1="40" y1="20" x2="40" y2="150" stroke="{{t.line2}}" stroke-width="1"></line>
@@ -396,16 +401,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <line x1="170" y1="194" x2="192" y2="194" stroke="{{t.accent}}" stroke-width="2.5"></line><text x="198" y="198" font-size="12" font-weight="700" fill="{{t.accent}}">with revisits</text>
 </svg>
 <span style="font-size: var(--fs17); line-height: 1.55; color: {{t.text2}}">A story you walked once fades within days. Each revisit brings it back to full strength, and it fades more slowly every time. Five cards a day keeps your whole library fresh.</span>
+</div></sc-if>
 </section>
-
-<section style="padding: 24px; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: var(--fs20); font-weight: 700">Saved by you</h2><span style="font-size: var(--fs16); color: {{t.muted}}">★ on any story</span></div>
-<sc-if value="{{noSaved}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">Nothing saved yet. Tap ☆ Save on any story and it will wait for you here.</span></sc-if>
-<sc-for list="{{saved}}" as="sv" hint-placeholder-count="2">
-<a href="{{sv.href}}" onClick="{{sv.go}}" style="min-height: 44px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid {{t.line}}"><span style="font-family: {{t.display}}; font-size: var(--fs18); font-weight: 600">{{sv.story}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{sv.pattern}}</span></a>
-</sc-for>
-</section>
-</div>
 </main>
 </div>
 </x-dc>
@@ -1981,7 +1978,7 @@ function rvDayName(offset) { const d = new Date(); d.setHours(12, 0, 0, 0); d.se
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), queue: DS.reviewDue().map((c) => c.id), pos: 0, revealed: false, results: [], saved: loadSaved() };
+    this.state = { theme: loadTheme(), queue: DS.reviewDue().map((c) => c.id), pos: 0, revealed: false, results: [], saved: loadSaved(), foldUp: false, foldRet: false, foldSaved: false, foldWhy: false };
   }
   componentDidMount() {
     listenTheme(this);
@@ -2032,7 +2029,7 @@ class Component extends DCLogic {
     const retColor = ret.pct === null ? t.muted : ret.pct >= 70 ? t.ok : ret.pct >= 50 ? t.medFg : t.left;
     const m = this.mobile = rvMobile();
     const L = m ? { rootW: 420, rootH: 'auto', pad: '16px 16px 112px', cols: 'minmax(0, 1fr)', gap: '24px', h1: '34px', h2: '28px', count: '36px', countPad: '12px 16px', cardPad: '20px', ansPad: '16px', rateCols: 'repeat(2, minmax(0, 1fr))', statCols: 'minmax(0, 1fr)' }
-      : { rootW: 1440, rootH: '1320px', pad: '32px 40px', cols: 'minmax(0, 1fr) 420px', gap: '32px', h1: '48px', h2: '40px', count: '48px', countPad: '16px 24px', cardPad: '32px', ansPad: '24px', rateCols: 'repeat(4, minmax(0, 1fr))', statCols: 'repeat(3, minmax(0, 1fr))' };
+      : { rootW: 1440, rootH: 'auto', pad: '24px 48px 48px', cols: 'minmax(0, 1fr)', gap: '24px', h1: '48px', h2: '40px', count: '48px', countPad: '16px 24px', cardPad: '32px', ansPad: '24px', rateCols: 'repeat(4, minmax(0, 1fr))', statCols: 'repeat(3, minmax(0, 1fr))' };
     const blankCard = { prompt: '', name: '', story: '', hasStory: false, pattern: '', kind: '', meta: '', when: '', hasWhen: false, rule: '', hasRule: false, ruleTitle: '', note: '', hasNote: false, href: '', go: null, linkLabel: '' };
     return {
       t, L, ...navVals(this, t, themeKey, 'Revisit'),
@@ -2070,6 +2067,11 @@ class Component extends DCLogic {
       doneTitle: recalled + ' of ' + total + ' remembered.',
       doneStats: [[String(results.length), results.length === 1 ? 'card reviewed' : 'cards reviewed'], ['+' + results.length * DS.XP.revisit, 'XP earned'], [String(up.counts[0].n), up.counts[0].n === 1 ? 'card due tomorrow' : 'cards due tomorrow']].map(([v, k]) => ({ v, k })),
       // retention and upcoming
+      showRetention: ret.pct !== null,
+      foldUp: !!this.state.foldUp, chevUp: this.state.foldUp ? 'rotate(180deg)' : 'rotate(0deg)', toggleUp: () => this.setState({ foldUp: !this.state.foldUp }),
+      foldRet: !!this.state.foldRet, chevRet: this.state.foldRet ? 'rotate(180deg)' : 'rotate(0deg)', toggleRet: () => this.setState({ foldRet: !this.state.foldRet }),
+      foldSaved: !!this.state.foldSaved, chevSaved: this.state.foldSaved ? 'rotate(180deg)' : 'rotate(0deg)', toggleSaved: () => this.setState({ foldSaved: !this.state.foldSaved }),
+      foldWhy: !!this.state.foldWhy, chevWhy: this.state.foldWhy ? 'rotate(180deg)' : 'rotate(0deg)', toggleWhy: () => this.setState({ foldWhy: !this.state.foldWhy }),
       retPct: ret.pct === null ? '–' : ret.pct + '%', retColor,
       retAria: ret.pct === null ? 'Retention: no reviews yet' : 'Retention ' + ret.pct + ' percent',
       retLine: ret.pct === null ? 'Shows up after your first review.' : ret.recalled + ' of ' + ret.reviews + (ret.reviews === 1 ? ' review' : ' reviews') + ' recalled in the last 30 days.',
@@ -2082,7 +2084,7 @@ class Component extends DCLogic {
       upcomingMore: up.cards.length > 6 ? '+' + (up.cards.length - 6) + ' more later' : '',
       hasMore: up.cards.length > 6,
       queueSize: all.length + (all.length === 1 ? ' card' : ' cards') + ' in your queue',
-      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.story, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
+      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.title, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
       noSaved: s.saved.length === 0
     };
   }

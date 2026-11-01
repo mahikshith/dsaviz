@@ -1,6 +1,6 @@
 // The Start here ladder: levels of lessons. Level 1 (Basics) is 24 lessons in four chapters, the bridge (plan it, read a
 // problem) and Counting steps after the first problems: 27 lessons. Level 2 (Functions in depth, 9 lessons) and Level 3
-// (Objects and classes, 14 lessons) follow docs/research/core-programming.md. Levels 4 and 5 list their first lesson (not ready).
+// (Objects and classes, 14 lessons) follow docs/research/core-programming.md. Levels 4 and 5 (8 lessons each) are in lessons_10.js to lessons_13.js.
 // (Internally a lesson is a "chapter" record: START_CHAPTERS, Chapter.dc.html. START_PARTS are the chapters shown to
 // learners.) The order and the arrows follow docs/research/beginners.md section 5. Every word here is our own.
 // A lesson: id, level (default 1), n (its number in the level), part, short (the map label), title, idea (one line), minutes, teaches (START_NEEDS_KEYS), after (hard prerequisites:
@@ -97,8 +97,38 @@ const START_CHAPTERS = [
     minutes: 10, teaches: ['interfaces'], after: ['polymorphism'], trap: 'Trying to build an object straight from the abstract class.' },
   { id: 'no-class', level: 3, n: 14, part: 14, short: 'No class?', title: 'When not to use a class', idea: 'A class earns its place when data and behaviour belong together. Otherwise a function or a dictionary is simpler.',
     minutes: 9, teaches: ['design'], after: ['composition'], trap: 'Wrapping every little thing in a class.' },
-  // ---- Level 4: Writing better code (coming later) ----
-  { id: 'clean-names', level: 4, n: 1, part: 15, short: 'Good names', title: 'Names that explain themselves', idea: 'A good name says what a value means, so the code reads like a sentence.', minutes: 8, teaches: ['style'], after: ['functions'] },
-  // ---- Level 5: Waiting without blocking (coming later) ----
-  { id: 'event-loop', level: 5, n: 1, part: 16, short: 'Event loop', title: 'The event loop is a queue', idea: 'Slow jobs wait in a queue. The loop takes the next ready one, so nothing freezes.', minutes: 10, teaches: ['async'], after: ['functions'] }
+  // ---- Level 4: Clean code and working with others (lessons_10.js and lessons_11.js). One world all the way through: the school shop. ----
+  { id: 'clean-names', level: 4, n: 1, part: 15, short: 'Good names', title: 'Names that explain themselves', idea: 'A good name says what a value means, so the code reads like a sentence. The computer does not care, but people do.',
+    minutes: 8, teaches: ['style'], after: ['functions'], trap: 'Using one-letter names like a and b that nobody can read later.' },
+  { id: 'no-surprises', level: 4, n: 2, part: 15, short: 'No surprises', title: 'A function does what its name says', idea: 'Give each function one job and a name that tells the truth. A function that quietly changes your list is a surprise.',
+    minutes: 10, teaches: ['onejob'], after: ['clean-names', 'mutable-args'], trap: 'A function that changes its input list when the caller never expects it.' },
+  { id: 'comprehensions', level: 4, n: 3, part: 15, short: 'One-line lists', title: 'Building a list in one line', idea: 'A comprehension builds a new list in one line: which items to use, and which to keep. Use a loop when it gets long.',
+    minutes: 9, teaches: ['comprehensions'], after: ['list-loops', 'clean-names'], trap: 'Packing so much into one line that nobody can read it.' },
+  { id: 'type-hints', level: 4, n: 4, part: 15, short: 'Type hints', title: 'Labels for what goes in and out', idea: 'A type hint says what kind of value a function takes and gives back. It is a note for people. Python does not enforce it.',
+    minutes: 9, teaches: ['hints'], after: ['types', 'clean-names'], trap: 'Thinking Python stops a wrong value because the hint says otherwise.' },
+  { id: 'exceptions', level: 4, n: 5, part: 16, short: 'Exceptions', title: 'When things go wrong', idea: 'An error is an alarm that travels up the calls. try and except choose what happens when it rings.',
+    minutes: 10, teaches: ['exceptions'], after: ['debugging', 'call-stack'], trap: 'Catching every error with a bare except, which hides real bugs.' },
+  { id: 'raise', level: 4, n: 6, part: 16, short: 'raise / finally', title: 'Raising your own errors', idea: 'raise rings the alarm yourself when a rule is broken. finally runs its lines whether or not an error happened.',
+    minutes: 10, teaches: ['raising'], after: ['exceptions'], trap: 'Thinking finally only runs when something went wrong.' },
+  { id: 'tests', level: 4, n: 7, part: 17, short: 'Checks', title: 'Checks that run themselves', idea: 'A check calls your function with a known input and compares the answer to the one you expect. Write many, not one.',
+    minutes: 10, teaches: ['tests'], after: ['raise', 'return-print'], trap: 'Trusting one passing check, when the bug hides in a case you never tried.' },
+  { id: 'edge-tests', level: 4, n: 8, part: 17, short: 'Edge checks', title: 'Awkward inputs and test-first', idea: 'Check the awkward inputs: empty, one item, negatives, ties. Write the check first, then the code that passes it.',
+    minutes: 10, teaches: ['edgetests'], after: ['tests', 'edge-cases'], trap: 'Only checking the easy, happy cases.' },
+  // ---- Level 5: Async and systems (lessons_12.js and lessons_13.js). One world all the way through: the kitchen with one waiter. ----
+  { id: 'blocking', level: 5, n: 1, part: 18, short: 'Waiting', title: 'Why waiting matters', idea: 'Some jobs are mostly waiting: for an oven, a network or a disk. Blocking means standing still while you wait.',
+    minutes: 8, teaches: ['blocking'], after: ['functions'], trap: 'Thinking a slow program is always busy calculating.' },
+  { id: 'event-loop', level: 5, n: 2, part: 18, short: 'Event loop', title: 'The event loop is a queue', idea: 'One worker keeps a list of jobs that are waiting. It takes the next job that is ready, so nothing freezes.',
+    minutes: 10, teaches: ['eventloop'], after: ['blocking'], trap: 'Thinking jobs run in the order they were added, not the order they become ready.' },
+  { id: 'later', level: 5, n: 3, part: 18, short: 'Call me back', title: 'Call me when it is done', idea: 'Hand the loop a function with your job. The loop calls it when the job is ready, and you carry on meanwhile.',
+    minutes: 10, teaches: ['later'], after: ['event-loop', 'callbacks'], trap: 'Writing f() when you meant to hand over f itself to be called later.' },
+  { id: 'async-await', level: 5, n: 4, part: 19, short: 'async / await', title: 'async and await', idea: 'await marks the place where a task waits and lets the others go. The task picks up again when its turn comes.',
+    minutes: 11, teaches: ['asyncawait'], after: ['later'], trap: 'Thinking await makes a task faster. It only lets other tasks use the waiting time.' },
+  { id: 'gather', level: 5, n: 5, part: 19, short: 'Several waits', title: 'Doing several waits at once', idea: 'Start all the waits, then collect the answers. Three waits together take as long as the longest one, not the sum.',
+    minutes: 10, teaches: ['gather'], after: ['async-await'], trap: 'Waiting for each job in a loop, one after another, and expecting them to overlap.' },
+  { id: 'timeouts', level: 5, n: 6, part: 19, short: 'Time limits', title: 'Errors and timeouts', idea: 'A job can fail or take too long. Catch the failure where you wait for it, and stop waiting after a time limit.',
+    minutes: 10, teaches: ['timeouts'], after: ['gather', 'exceptions'], trap: 'Letting one failed job crash all the others.' },
+  { id: 'retries', level: 5, n: 7, part: 19, short: 'Try again', title: 'Try again, but wait longer', idea: 'Some failures pass quickly. Try again a few times, waiting longer each time, and stop after a set number of tries.',
+    minutes: 10, teaches: ['retries'], after: ['timeouts'], trap: 'Trying again forever, or instantly, which can make a busy service worse.' },
+  { id: 'threads', level: 5, n: 8, part: 20, short: 'Threads', title: 'Taking turns or working at once', idea: 'Async takes turns on one worker. Threads and processes can work at once. Two workers on one shared number can lose an update.',
+    minutes: 11, teaches: ['threads'], after: ['gather'], trap: 'Thinking async code runs two things at the same moment.' }
 ];

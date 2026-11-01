@@ -15,6 +15,8 @@ import sys
 import json
 
 DS_MAX_STEPS = 400
+# A comprehension or generator expression runs in a hidden little frame. It is part of the line that wrote it, so it is not traced.
+DS_HIDDEN = ('<listcomp>', '<setcomp>', '<dictcomp>', '<genexpr>')
 
 
 def ds_repr(v, depth=0):
@@ -204,7 +206,7 @@ def ds_trace(src, stdin=None, heap=False):
         frames = []
         f = frame
         while f is not None:
-            if f.f_code.co_filename == '<prog>':
+            if f.f_code.co_filename == '<prog>' and f.f_code.co_name not in DS_HIDDEN:
                 frames.append(f)
             f = f.f_back
         frames.reverse()
@@ -237,7 +239,7 @@ def ds_trace(src, stdin=None, heap=False):
         pass
 
     def tracer(frame, event, arg):
-        if frame.f_code.co_filename != '<prog>':
+        if frame.f_code.co_filename != '<prog>' or frame.f_code.co_name in DS_HIDDEN:
             return None
         if event in ('line', 'call', 'return'):
             if len(steps) >= DS_MAX_STEPS:

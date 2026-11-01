@@ -1097,6 +1097,90 @@ const START_ABOUT = {
     cheat: ['data + actions together: class', 'only a result: function', 'only fixed data: dictionary', 'start simple', 'add a class when it helps'],
     next: [],
     sources: [PY_TUT + 'classes.html', PY_TUT + 'datastructures.html#dictionaries']
+  },
+  'clean-names': {
+    what: 'A good name says what a value or a function means. The computer ignores names, but people read them. Clear names make code read like a sentence.',
+    analogy: 'Think of labels on kitchen jars. A jar marked "sugar" saves you from tasting each one.',
+    uses: ['A game where score and lives_left tell the next reader what each number is', 'A shop app where total_cost says what the function works out', 'A school website where is_late reads like a question'],
+    before: ['functions'],
+    words: [
+      ['name', 'The label you give a variable or a function.'],
+      ['snake_case', 'Lower case words joined by underscores, like total_cost.'],
+      ['readable', 'Easy for a person to read and understand.'],
+      ['misleading', 'Making the reader believe something that is not true.'],
+      ['boolean', 'A value that is True or False. Its name often reads like a question.']
+    ],
+    math: null,
+    steps: ['Ask: what does this value mean?', 'Write that meaning as the name, such as price.', 'Name a function after what it does, such as total_cost.', 'Join words with underscores. A name cannot have spaces.', 'Name yes or no values like questions, such as is_empty.', 'Read the code again and check that no name lies.'],
+    use: ['Any name that other people, or you next month, will read.', 'A function whose job is not clear from its first line.'],
+    avoid: ['One-letter names, except in a tiny loop where i is common.', 'Names that lie, such as a list of names called count.'],
+    mistakes: ['Using a and b for everything. Fix: name each value for what it means.', 'Writing a space in a name. Fix: join the words with an underscore.', 'Changing a name in one place only. Fix: change every place, then run the program.'],
+    cheat: ['name = what the value means', 'function name = what it does', 'snake_case: total_cost', 'yes or no: is_empty, has_tax', 'never let a name lie'],
+    next: ['no-surprises'],
+    sources: [PY_TUT + 'controlflow.html#function-annotations', 'PEP 8, the Python style guide, peps.python.org/pep-0008/#naming-conventions']
+  },
+  'no-surprises': {
+    what: 'A function should do one job, and its name should tell the truth about it. A hidden change outside the function is a side effect. Surprises like that cause bugs.',
+    analogy: 'A vending machine that also takes coins out of your pocket would be a bad machine. A good tool does only what its label says.',
+    uses: ['A game where get_score only reads the score and never changes it', 'A shop app where total_of adds up prices and leaves the cart alone', 'A website where sorted_copy gives a new list and keeps the old one'],
+    before: ['clean-names', 'mutable-args'],
+    words: [
+      ['side effect', 'A change a function makes outside itself, such as changing a list it was given.'],
+      ['one job', 'A function that does a single clear thing.'],
+      ['in place', 'Changing the original list instead of making a new one.'],
+      ['copy', 'A new list with the same items, so the original stays safe.'],
+      ['repeat code', 'The same lines copied in many places. Put them in one function instead.']
+    ],
+    math: null,
+    steps: ['Decide the one job of the function.', 'Choose a name that says that job.', 'If it should give an answer, build a new list and return it.', 'If it must change your list, put that in the name.', 'If you copy the same lines twice, move them into a function.'],
+    use: ['You write a function other people will call.', 'You see the same lines in two places.'],
+    avoid: ['A function that does two jobs joined by "and".', 'A quiet change to a list the caller still uses.'],
+    mistakes: ['Changing the list that was passed in, with no warning in the name. Fix: build and return a new list.', 'Putting two jobs in one function. Fix: split it, one job each.', 'Copying lines instead of calling a function. Fix: write the function once.'],
+    cheat: ['one job per function', 'the name tells the truth', 'new list: return it', 'changes your list: say so in the name', 'repeated lines: make a function'],
+    next: ['comprehensions'],
+    sources: [PY_TUT + 'datastructures.html#more-on-lists', PY_TUT + 'controlflow.html#defining-functions']
+  },
+  comprehensions: {
+    what: 'A list comprehension builds a new list in one line. It says what goes in the list and which items to use. An if can keep only some. The old list is not changed.',
+    analogy: 'Think of a stamping machine. Each item goes in, the stamp changes it, and a new row comes out.',
+    uses: ['A game that makes a list of every enemy\'s position from a list of enemies', 'A shop app that makes a list of prices with tax added', 'A school website that keeps only the names that start with a letter'],
+    before: ['list-loops', 'clean-names'],
+    words: [
+      ['comprehension', 'One line that builds a new list from another list.'],
+      ['filter', 'Keeping only the items that pass a question.'],
+      ['for', 'The word that says "do this for each item".'],
+      ['new list', 'A fresh list. The list you started from stays the same.'],
+      ['readable', 'Easy to understand at a glance.']
+    ],
+    math: null,
+    steps: ['Start with a list, such as numbers = [1, 2, 3, 4].', 'Write square brackets: [ ].', 'Inside, write what to keep, such as n * n.', 'Then write for n in numbers.', 'Add if n > 2 at the end to keep only some items.', 'Read it out loud. If it is hard to say, use a loop.'],
+    use: ['You build one list from another list.', 'The idea fits on one short line.'],
+    avoid: ['Lines with loops inside loops and many questions.', 'Using a comprehension only to run a print or another action.'],
+    mistakes: ['Expecting the old list to change. Fix: a comprehension makes a new list.', 'Leaving out the if, so nothing is removed. Fix: add if and a question.', 'Cramming too much into one line. Fix: write a plain loop instead.'],
+    cheat: ['[n * n for n in numbers]', 'add if to keep some: [n for n in numbers if n > 2]', 'makes a NEW list', 'too long to read? use a loop'],
+    next: ['type-hints'],
+    sources: [PY_TUT + 'datastructures.html#list-comprehensions']
+  },
+  'type-hints': {
+    what: 'A type hint says what kind of value a function takes and gives back. It is a note for people and for checking tools. Python does not enforce it when the program runs.',
+    analogy: 'Think of a label on a shelf that says "tins only". It helps people, but it does not stop someone putting a box there.',
+    uses: ['A game function that says it takes an int for damage and gives back an int', 'A shop app where price: float shows decimals are expected', 'A school website where a name: str hint tells readers to pass text'],
+    before: ['types', 'clean-names'],
+    words: [
+      ['type hint', 'A note in the code that says what kind of value is expected.'],
+      ['int', 'A whole number, such as 3.'],
+      ['float', 'A number with a decimal part, such as 2.5.'],
+      ['str', 'Text, such as "Kai".'],
+      ['enforce', 'To force a rule to be followed. Python does not enforce hints.']
+    ],
+    math: null,
+    steps: ['After a parameter name, write a colon and a type: price: int.', 'After the brackets, write -> and the type the function gives back.', 'Read the first line to learn how to call the function.', 'Remember that Python still runs a wrong call.', 'Use a checking tool or editor to find wrong calls before you run.'],
+    use: ['Functions that other people will read or call.', 'Code where a wrong kind of value would be easy to pass.'],
+    avoid: ['Believing a hint protects you at run time.', 'Hints that do not match what the function really returns.'],
+    mistakes: ['Thinking Python stops a wrong value. Fix: it only runs; a separate tool checks.', 'A hint that says int but the function returns a decimal. Fix: make the hint match.', 'Forgetting the colon after the name. Fix: write price: int.'],
+    cheat: ['name: type', '-> type for the result', 'int, float, str, bool, list', 'a note, not a lock'],
+    next: ['exceptions'],
+    sources: [PY_TUT + 'controlflow.html#function-annotations', PY_LIB + 'typing.html']
   }
 };
 if (typeof module !== 'undefined') module.exports = { START_ABOUT };

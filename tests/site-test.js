@@ -17,6 +17,12 @@
 // (more than 24 characters) must render at 15px or more, short labels and chips at 13px, stage labels (svg[data-stage])
 // at 14px; and no pane (a bordered or filled box at least 280x240 that does not scroll) may be 40% or more empty
 // below or above its content (a box that scrolls counts only when its content does not overflow it). DS_PASS=read runs only this pass.
+// Layout pass: the main pages (Home, Start, Sheet, Chapter, Patterns) in the max theme at 1440, 1280, 1024 and 390px
+// (phone settings at 390). Fails when two visible text boxes overlap by more than 2px both ways (tight Range boxes of the
+// text nodes, top and bottom inset by a fifth of the font size, cut by every clipping box they sit in; svg text, the drawer,
+// the pill nav and aria-hidden are skipped; neither element nor box containing the other); when an element with visible text is clipped (scrollWidth
+// over clientWidth by more than 1px under overflow hidden or clip, or text-overflow ellipsis), unless it sits inside
+// [data-clip-ok]; or when [data-path-node] siblings have unequal gaps (more than 2px apart). DS_PASS=layout runs only this pass.
 // Needs Playwright:  npm install --no-save playwright && npx playwright install chromium
 // Or playwright-core with an installed browser:  npm install --no-save playwright-core
 //   then DS_BROWSER=msedge npm run test:browser   (or chrome)
@@ -35,7 +41,9 @@ const CHANNEL = process.env.DS_BROWSER || '';
 // DS_PASS=controls runs only the player controls pass.
 const ONLY_CONTROLS = process.env.DS_PASS === 'controls';
 const ONLY_READ = process.env.DS_PASS === 'read';
-const SKIP_MAIN = ONLY_CONTROLS || ONLY_READ;
+// DS_PASS=layout runs only the layout pass.
+const ONLY_LAYOUT = process.env.DS_PASS === 'layout';
+const SKIP_MAIN = ONLY_CONTROLS || ONLY_READ || ONLY_LAYOUT;
 
 const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Start', 'Chapter', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Concepts', 'ConceptLesson', 'Contests'];
 // Runs in the page: sideways overflow and text under 12px inside the page root.
@@ -123,6 +131,86 @@ const readable = () => {
     if (inner > 0 && gap / inner >= 0.4 && gap >= 96) empty.push(Math.round(r.width) + 'x' + Math.round(r.height) + ' ' + Math.round(gap / inner * 100) + '% empty: ' + (el.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 40));
   }
   return { small, stage, empty, min };
+};
+
+// Layout pass pages and widths. A phone width gets phone settings (touch, mobile emulation).
+const LAYOUT_PAGES = ['Home', 'Start', 'Sheet', 'Chapter', 'Patterns'];
+const LAYOUT_WIDTHS = [1440, 1280, 1024, 390];
+// Runs in the page: overlapping text boxes, clipped text, and unequal gaps between path nodes that share a parent.
+const layout = () => {
+  const root = document.querySelector('#app > div');
+  if (!root) return null;
+  const shown = (el) => { const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return false; const cs = getComputedStyle(el); return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05; };
+  const clean = (s) => s.replace(/\s+/g, ' ').trim().slice(0, 30);
+  const texts = [], overlaps = [], clipped = [], gaps = [];
+  for (const el of root.querySelectorAll('*')) {
+    if (el.closest('svg,[data-drawer],[data-pn-wrap],[aria-hidden="true"]')) continue;
+    const own = [...el.childNodes].filter((n) => n.nodeType === 3 && n.nodeValue.trim());
+    if (!own.length || !shown(el)) continue;
+    // Tight box: the union of the element's own text nodes, from Range rects rather than the element box.
+    const rg = document.createRange();
+    let l = Infinity, t = Infinity, rt = -Infinity, b = -Infinity;
+    for (const n of own) {
+      rg.selectNodeContents(n);
+      const q = rg.getBoundingClientRect();
+      if (!q.width && !q.height) continue;
+      l = Math.min(l, q.left); t = Math.min(t, q.top); rt = Math.max(rt, q.right); b = Math.max(b, q.bottom);
+    }
+    if (l === Infinity) continue;
+    const text = clean(own.map((n) => n.nodeValue).join(' '));
+    const cs = getComputedStyle(el);
+    const cutting = cs.overflowX === 'hidden' || cs.overflowX === 'clip' || cs.textOverflow === 'ellipsis';
+    if (cutting && cs.display !== 'inline' && !el.closest('[data-clip-ok]') && el.scrollWidth - el.clientWidth > 1) {
+      clipped.push('clipped by ' + Math.round(el.scrollWidth - el.clientWidth) + 'px: "' + text + '"');
+    }
+    // The visible part: the text box cut by its own box (when it cuts or ellipsises) and by every ancestor that clips.
+    let vl = l, vt = t, vr = rt, vb = b;
+    for (let p = el; p && p !== root.parentElement; p = p.parentElement) {
+      const pc = getComputedStyle(p);
+      const clips = p === el ? cutting : pc.overflowX !== 'visible' || pc.overflowY !== 'visible';
+      if (!clips) continue;
+      const pr = p.getBoundingClientRect();
+      vl = Math.max(vl, pr.left); vt = Math.max(vt, pr.top); vr = Math.min(vr, pr.right); vb = Math.min(vb, pr.bottom);
+    }
+    if (vr - vl <= 0 || vb - vt <= 0) continue;
+    // Line boxes of one-line text reach past the ink by about a fifth of the font size at each edge; inset them so stacked lines that only touch do not count.
+    const inset = parseFloat(cs.fontSize) * 0.2;
+    if (vb - vt > inset * 2 + 2) { vt += inset; vb -= inset; }
+    texts.push({ el, text, l: vl, t: vt, r: vr, b: vb });
+  }
+  // Two text boxes overlap when they share more than 2px both ways; a box inside the other, or an element inside the other, is not an overlap.
+  const inside = (p, q) => p.l <= q.l + 2 && p.t <= q.t + 2 && p.r >= q.r - 2 && p.b >= q.b - 2;
+  for (let i = 0; i < texts.length; i++) {
+    for (let j = i + 1; j < texts.length; j++) {
+      const a = texts[i], c = texts[j];
+      const ix = Math.min(a.r, c.r) - Math.max(a.l, c.l), iy = Math.min(a.b, c.b) - Math.max(a.t, c.t);
+      if (ix <= 2 || iy <= 2) continue;
+      if (a.el.contains(c.el) || c.el.contains(a.el) || inside(a, c) || inside(c, a)) continue;
+      overlaps.push('overlap ' + Math.round(ix) + 'x' + Math.round(iy) + 'px: "' + a.text + '" over "' + c.text + '"');
+    }
+  }
+  // Path nodes that share a parent: the gaps between them must match (±2px) along the axis they run on.
+  const groups = new Map();
+  for (const el of root.querySelectorAll('[data-path-node]')) {
+    if (!shown(el)) continue;
+    if (!groups.has(el.parentElement)) groups.set(el.parentElement, []);
+    groups.get(el.parentElement).push(el);
+  }
+  for (const nodes of groups.values()) {
+    if (nodes.length < 3) continue;
+    const rs = nodes.map((n) => n.getBoundingClientRect());
+    const spanX = Math.max(...rs.map((q) => q.left)) - Math.min(...rs.map((q) => q.left));
+    const spanY = Math.max(...rs.map((q) => q.top)) - Math.min(...rs.map((q) => q.top));
+    const vertical = spanY > spanX;
+    const order = rs.map((q, i) => i).sort((i, j) => vertical ? rs[i].top - rs[j].top : rs[i].left - rs[j].left);
+    const g = [];
+    for (let k = 1; k < order.length; k++) {
+      const a = rs[order[k - 1]], c = rs[order[k]];
+      g.push(vertical ? c.top - a.bottom : c.left - a.right);
+    }
+    if (Math.max(...g) - Math.min(...g) > 2) gaps.push((vertical ? 'vertical' : 'horizontal') + ' path gaps ' + g.map((x) => Math.round(x)).join('/') + 'px: "' + clean(nodes[0].textContent) + '"');
+  }
+  return { texts: texts.length, issues: [...overlaps, ...clipped, ...gaps] };
 };
 
 // Story ids and step counts, read from the built Story page the way tests/scenecheck.js does.
@@ -221,7 +309,7 @@ server.listen(0, async () => {
     if (errors.length) { problems += errors.length; console.log('  errors in', theme + ':', errors.slice(0, 5)); }
     await page.close();
   }
-  console.log(problems ? problems + ' problem(s) on desktop' : 'all pages render in all themes');
+  if (!SKIP_MAIN) console.log(problems ? problems + ' problem(s) on desktop' : 'all pages render in all themes');
   const desktopProblems = problems;
 
   // ---------- mobile pass ----------
@@ -293,11 +381,11 @@ server.listen(0, async () => {
     if (errors.length) { problems += errors.length; console.log('  errors in mobile', theme + ':', errors.slice(0, 5)); }
     await page.close();
   }
-  console.log(problems > desktopProblems ? (problems - desktopProblems) + ' problem(s) on phones' : 'all pages fit a 390px phone in max and paper');
+  if (!SKIP_MAIN) console.log(problems > desktopProblems ? (problems - desktopProblems) + ' problem(s) on phones' : 'all pages fit a 390px phone in max and paper');
   const phoneProblems = problems;
 
   // ---------- readability pass ----------
-  for (const [w, h] of ONLY_CONTROLS ? [] : [[1440, 900], [1280, 800]]) {
+  for (const [w, h] of ONLY_CONTROLS || ONLY_LAYOUT ? [] : [[1440, 900], [1280, 800]]) {
     for (const [label, name, store, tabs] of READ_PAGES) {
       const page = await browser.newPage({ viewport: { width: w, height: h } });
       await page.addInitScript((st) => { try { localStorage.setItem('dsaviz-theme', 'max'); for (const k in st) localStorage.setItem(k, st[k]); } catch (e) {} }, store);
@@ -323,11 +411,11 @@ server.listen(0, async () => {
       await page.close();
     }
   }
-  console.log(problems > phoneProblems ? (problems - phoneProblems) + ' problem(s) with text size or empty panes' : 'all text readable and no empty panes');
+  if (!ONLY_CONTROLS && !ONLY_LAYOUT) console.log(problems > phoneProblems ? (problems - phoneProblems) + ' problem(s) with text size or empty panes' : 'all text readable and no empty panes');
   const readProblems = problems;
 
   // ---------- player controls pass ----------
-  for (const [w, h] of ONLY_READ ? [] : [[1440, 900], [1280, 720], [390, 844]]) {
+  for (const [w, h] of ONLY_READ || ONLY_LAYOUT ? [] : [[1440, 900], [1280, 720], [390, 844]]) {
     const phone = w < 760;
     for (const [label, name, store] of PLAYERS) {
       // a fresh page per player: nothing saved from an earlier lesson, scrolled to the top
@@ -393,7 +481,36 @@ server.listen(0, async () => {
       await page.close();
     }
   }
-  console.log(problems > readProblems ? (problems - readProblems) + ' problem(s) with player controls' : 'player controls in view and working in every player');
+  if (!ONLY_READ && !ONLY_LAYOUT) console.log(problems > readProblems ? (problems - readProblems) + ' problem(s) with player controls' : 'player controls in view and working in every player');
+  const controlProblems = problems;
+
+  // ---------- layout pass ----------
+  for (const w of ONLY_CONTROLS || ONLY_READ ? [] : LAYOUT_WIDTHS) {
+    const phone = w < 760;
+    const page = await browser.newPage({ viewport: { width: w, height: phone ? 844 : 900 }, isMobile: phone, hasTouch: phone });
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); } catch (e) {} });
+    await page.goto(url);
+    await page.waitForTimeout(500);
+    for (const name of LAYOUT_PAGES) {
+      await page.evaluate((n) => window.__dsNav(n + '.dc.html'), name);
+      await page.waitForTimeout(900);
+      const r = await page.evaluate(layout);
+      const bad = !r || r.issues.length > 0;
+      if (bad) problems++;
+      const tag = ('l-' + w).padEnd(8);
+      if (!r) console.log('✗', tag, name.padEnd(10), 'no page');
+      else if (!bad) console.log('✓', tag, name.padEnd(10), 'no overlapping or clipped text');
+      else {
+        for (const s of r.issues.slice(0, 5)) console.log('✗', tag, name.padEnd(10), s);
+        if (r.issues.length > 5) console.log('  ...', r.issues.length - 5, 'more on', name, 'at', w + 'px');
+      }
+    }
+    if (errors.length) { problems += errors.length; console.log('  errors in layout at', w + 'px:', errors.slice(0, 5)); }
+    await page.close();
+  }
+  if (!ONLY_CONTROLS && !ONLY_READ) console.log(problems > controlProblems ? (problems - controlProblems) + ' problem(s) with layout (overlapping or clipped text, uneven path gaps)' : 'no overlapping or clipped text');
 
   await browser.close();
   server.close();

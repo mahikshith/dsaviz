@@ -8,7 +8,7 @@ let bad = 0;
 const fail = (where, msg) => { bad++; console.log('  ✗', where, msg); };
 
 const X = new Function(read('src', 'complexity.js') + `
-return { CX_CURVES, CX_NS, CX_DS, CX_SORTS, CX_GRAPHS, CX_PATTERNS, CX_TABS, CX_TARGETS, CX_SPACE, CX_SPACE_FACTS, CX_RANK,
+return { CX_CURVES, CX_NS, CX_DS, CX_SORTS, CX_GRAPHS, CX_PATTERNS, CX_TABS, CX_PY, CX_MISTAKES, CX_CASES, CX_CASE_NOTE, CX_TARGETS, CX_SPACE, CX_SPACE_FACTS, CX_RANK,
   cxLog10, cxSteps, cxCount, cxTime, cxReadout, cxTable, cxRules, cxTarget, cxTargetSteps, cxChart, cxLayout, cxSpaceFrame, cxStackFrame, cxLegendVal, cxCell };`)();
 
 // Curves at sample n.
@@ -46,7 +46,7 @@ for (const n of X.CX_NS) {
 }
 
 // Table row counts.
-const want = { ds: 12, sort: 9, graph: 9, patterns: 16 };
+const want = { ds: 12, sort: 9, graph: 9, py: 20, patterns: 16 };
 for (const [id, k] of Object.entries(want)) {
   const t = X.cxTable(id, {});
   if (t.rows.length !== k) fail('table ' + id, 'expected ' + k + ' rows, got ' + t.rows.length);
@@ -69,6 +69,21 @@ if (row('graph', 'Bellman-Ford')[1] !== 'O(V E)') fail('table graph', 'Bellman-F
 if (row('graph', 'Floyd-Warshall')[1] !== 'O(V³)') fail('table graph', 'Floyd-Warshall time');
 if (X.cxTable('ds', { worst: true }).rows.find((r) => r.cells[0].t === 'Hash table').cells[2].t !== 'O(n)') fail('table ds', 'hash table worst search is O(n)');
 if (X.cxTable('ds', {}).rows.find((r) => r.cells[0].t === 'Hash table').cells[2].t !== 'O(1)') fail('table ds', 'hash table average search is O(1)');
+
+// Python facts that must stay true (official page: Time complexity of built-in types).
+{
+  const py = (n) => X.cxTable('py', {}).rows.find((r) => r.cells[0].t === n).cells.map((c) => c.t);
+  const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  if (!eq(py('items.pop(0)').slice(1), ['O(n)', 'O(n)'])) fail('table py', 'list pop(0) is O(n)');
+  if (!eq(py('items.pop()').slice(1), ['O(1)', 'O(1)'])) fail('table py', 'list pop() is O(1)');
+  if (!eq(py('x in items').slice(1), ['O(n)', 'O(n)'])) fail('table py', 'x in list is O(n)');
+  if (!eq(py('x in s').slice(1), ['O(1)', 'O(n)'])) fail('table py', 'x in set is O(1) average, O(n) worst');
+  if (!eq(py('key in d').slice(1), ['O(1)', 'O(n)'])) fail('table py', 'key in dict is O(1) average, O(n) worst');
+  if (!eq(py('s & t').slice(1), ['O(min(n, m))', 'O(n m)'])) fail('table py', 'set intersection');
+  if (!eq(py('d.pop(), d.popleft()').slice(1), ['O(1)', 'O(1)'])) fail('table py', 'deque pops are O(1)');
+  if (X.CX_CASES.length !== 3 || X.CX_MISTAKES.length !== 6) fail('page', 'need 3 cases and 6 slow habits');
+  X.CX_CASES.forEach((c, i) => { if (parseInt(c.checks, 10) !== [1, 4, 8][i]) fail('cases', c.id + ' check count'); });
+}
 
 // Every pattern the site has, by exact name.
 const win = { localStorage: { getItem: () => null, setItem() {} }, matchMedia: () => ({ matches: false }) };
@@ -105,8 +120,8 @@ for (let d = 1; d <= 8; d++) { const L = X.cxLayout(X.cxStackFrame(d), 326, PAL,
 
 // Plain English: every sentence in the page text is 18 words or fewer, with no banned words.
 const strings = [];
-const walk = (v, key) => { if (typeof v === 'string') strings.push([key, v]); else if (Array.isArray(v)) v.forEach((x) => walk(x, key)); else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => { if (!['id', 'group', 'code', 'cx', 'fits', 'label', 'access', 'search', 'insert', 'del', 'space', 'best', 'avg', 'worst', 'time', 'name', 'title', 'say', 'col', 'par', 'rank', 'spaceRank', 'max', 'extra', 'grid', 's', 't'].includes(k) || k === 'say') walk(x, k); }); };
-[X.CX_CURVES, X.CX_DS, X.CX_SORTS, X.CX_GRAPHS, X.CX_PATTERNS, X.CX_TABS, X.CX_TARGETS, X.CX_SPACE, X.CX_SPACE_FACTS.map((f) => f[1])].forEach((o) => walk(o));
+const walk = (v, key) => { if (typeof v === 'string') strings.push([key, v]); else if (Array.isArray(v)) v.forEach((x) => walk(x, key)); else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => { if (!['id', 'group', 'code', 'slow', 'fast', 'big', 'avg', 'worst', 'target', 'cx', 'fits', 'label', 'access', 'search', 'insert', 'del', 'space', 'best', 'avg', 'worst', 'time', 'name', 'title', 'say', 'col', 'par', 'rank', 'spaceRank', 'max', 'extra', 'grid', 's', 't'].includes(k) || k === 'say') walk(x, k); }); };
+[X.CX_CURVES, X.CX_DS, X.CX_SORTS, X.CX_GRAPHS, X.CX_PATTERNS, X.CX_TABS, X.CX_PY, X.CX_MISTAKES, X.CX_CASES, X.CX_CASE_NOTE, X.CX_TARGETS, X.CX_SPACE, X.CX_SPACE_FACTS.map((f) => f[1])].forEach((o) => walk(o));
 rules.forEach((r) => r.frames.forEach((f) => strings.push(['rule ' + r.id, f.say])));
 const BANNED = /\b(just|simply|obviously|clearly|trivially|easy|easily)\b/i;
 const sentences = (s) => s.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+(?=[A-Z0-9])/).map((x) => x.trim()).filter(Boolean);
@@ -128,9 +143,9 @@ if (!page.includes("navVals(this, t, themeKey, 'Complexity')")) fail('page', "re
 if (!page.includes('<!-- PILL NAV -->')) fail('page', 'no pill nav marker');
 if (!page.includes('why: whyVals(whyHub(\'complexity\'))') || !page.includes('<!-- WHY -->')) fail('page', 'no Why fold');
 if (!page.includes('speedVals(this)') || !page.includes('paced(')) fail('page', 'the step player must use speedVals and paced');
-['grow', 'rules', 'space', 'target'].forEach((id) => { if (!page.includes('<section id="' + id + '"')) fail('page', 'no section with id="' + id + '"'); });
+['grow', 'rules', 'space', 'target', 'cases', 'mistakes'].forEach((id) => { if (!page.includes('<section id="' + id + '"')) fail('page', 'no section with id="' + id + '"'); });
 if (!page.includes('<section id="{{tb.id}}"')) fail('page', 'table sections need id="{{tb.id}}"');
-['ds', 'sort', 'graph', 'patterns'].forEach((id) => { if (!X.CX_TABS.some((t) => t.id === id)) fail('page', 'no table section ' + id); });
+['ds', 'sort', 'graph', 'py', 'patterns'].forEach((id) => { if (!X.CX_TABS.some((t) => t.id === id)) fail('page', 'no table section ' + id); });
 if (!/<h1[^>]*var\(--fs56\)/.test(page)) fail('page', 'H1 must use --fs56');
 const h2s = (page.match(/<h2[^>]*>/g) || []).filter((h) => h.includes('cx-h-') || h.includes('tb.hid'));
 if (h2s.length < 5 || h2s.some((h) => !h.includes('var(--fs32)'))) fail('page', 'every section heading must use --fs32');

@@ -2,32 +2,31 @@
 
 <!-- PILL NAV -->
 <!-- /PILL NAV -->
-<div role="region" aria-label="Page tools" data-m="wrap auto pad" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 18px; margin-top: 8px; border-bottom: 1px solid {{t.line}}"><nav aria-label="Breadcrumb" style="display: flex; gap: 8px; align-items: center; font-size: var(--fs17); color: {{t.muted}}; white-space: nowrap"><a href="Patterns.dc.html">Library</a><span aria-hidden="true">/</span><sc-if value="{{hasStory}}"><a href="Story.dc.html" onClick="{{keepProblem}}">{{P.pattern}}</a></sc-if><sc-if value="{{noStory}}"><span>{{P.pattern}}</span></sc-if><span aria-hidden="true">/</span><span aria-current="page" style="color: {{t.text}}; font-weight: 600">Code</span></nav>
-<div style="flex-grow: 1"></div>
-<span id="code-count" style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}; white-space: nowrap">{{testCount}}</span>
+<div role="region" aria-label="Page tools" data-m="wrap auto pad" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px">
 <label style="display: flex; align-items: center; gap: 8px; font-size: var(--fs15); font-weight: 600; color: {{t.muted}}; white-space: nowrap">Problem
-<select aria-label="Problem" aria-describedby="code-count" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 340px; padding: 0 10px; border-radius: 10px; border: 1px solid {{t.line}}; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: var(--fs17); font-weight: 600; cursor: pointer"><sc-for list="{{groups}}" as="gg" hint-placeholder-count="4"><optgroup label="{{gg.label}}"><sc-for list="{{gg.items}}" as="pp" hint-placeholder-count="3"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></optgroup></sc-for></select>
+<select aria-label="Problem" value="{{pid}}" onChange="{{pickProblem}}" style="height: 40px; max-width: 340px; padding: 0 10px; border-radius: 10px; border: 0; background: {{t.surface}}; color: {{t.text}}; font-family: {{t.body}}; font-size: var(--fs17); font-weight: 600; cursor: pointer"><sc-for list="{{groups}}" as="gg" hint-placeholder-count="4"><optgroup label="{{gg.label}}"><sc-for list="{{gg.items}}" as="pp" hint-placeholder-count="3"><option value="{{pp.id}}">{{pp.label}}</option></sc-for></optgroup></sc-for></select>
 </label>
+<div style="flex-grow: 1"></div>
+<sc-if value="{{hasStory}}"><a href="{{storyHref}}" onClick="{{keepProblem}}" style="font-size: var(--fs17); font-weight: 600; color: {{t.text2}}; text-decoration: underline; white-space: nowrap">Watch the animation</a></sc-if>
+<sc-if value="{{noStory}}"><a href="Patterns.dc.html" style="font-size: var(--fs17); font-weight: 600; color: {{t.text2}}; text-decoration: underline; white-space: nowrap">Read about {{P.pattern}}</a></sc-if>
 </div>
+
 
 <div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: 400px minmax(0, 1fr)">
 
-<aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 18px; overflow: {{asideOverflow}}">
-<div style="display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">{{kicker}}</span>
+<aside style="border-right: 1px solid {{t.line}}; padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow: {{asideOverflow}}">
+<div style="display: flex; flex-direction: column; gap: 12px">
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); line-height: 1.15; font-weight: 600">{{P.title}}</h1>
-<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
 <span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
 <sc-if value="{{hasTime}}"><span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 600; background: {{t.sunk}}">~{{P.time}}</span></sc-if>
 <span style="padding: 4px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 600; background: {{t.sunk}}">{{P.pattern}}</span>
 </div>
 </div>
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">{{ask}}</p>
-<!-- PROBLEM FACTS -->
-<!-- /PROBLEM FACTS -->
 <sc-if value="{{notSql}}">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Examples<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-examples" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-examples" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Sample inputs with the answer the code should give. Check your code against them.</span></span></span>
+<span style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">Examples</span>
 <sc-for list="{{examples}}" as="ex" hint-placeholder-count="3">
 <div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; font-variant-ligatures: none">
 <span style="overflow-wrap: anywhere"><span style="color: {{t.muted}}">in </span>{{ex.input}}</span>
@@ -36,15 +35,6 @@
 </div>
 </sc-for>
 </div>
-<sc-if value="{{hasHints}}">
-<section aria-labelledby="hint-h" style="display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: baseline; gap: 8px"><h2 id="hint-h" style="display: flex; align-items: center; gap: 6px; margin: 0; flex-grow: 1; font-size: var(--fs15); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Hints<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-code-hints" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-code-hints" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">Small nudges, one at a time. Open a hint only when you are stuck.</span></span></h2><span style="font-size: var(--fs16); color: {{t.muted}}">{{hintCount}}</span></div>
-<div aria-live="polite" style="display: flex; flex-direction: column; gap: 8px">
-<sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; border: 1px solid {{t.line}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
-</div>
-<sc-if value="{{moreHints}}"><button onClick="{{nextHint}}" style="align-self: flex-start; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600">{{nextHintLabel}}</button></sc-if>
-</section>
-</sc-if>
 </sc-if>
 <sc-if value="{{isSql}}">
 <section aria-labelledby="sql-tables" style="display: flex; flex-direction: column; gap: 10px">
@@ -62,11 +52,28 @@
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{sq.tablesNote}}</p>
 </section>
 </sc-if>
+<div style="display: flex; flex-direction: column">
+<style>.ds-fold>summary{list-style:none}.ds-fold>summary::-webkit-details-marker{display:none}.ds-fold[open]>summary .ds-chev{transform:rotate(180deg)}</style>
+<sc-if value="{{fx.has}}"><details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Input, output and limits</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 4px 0 16px">
+<!-- PROBLEM FACTS -->
+<!-- /PROBLEM FACTS -->
+</div>
+</details></sc-if>
+<sc-if value="{{notSql}}"><sc-if value="{{hasHints}}">
+<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Hints</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{hintCount}}</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 4px 0 16px">
+<div aria-live="polite" style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{hintsShown}}" as="hn" hint-placeholder-count="1"><div style="padding: 10px 12px; border-radius: 10px; background: {{t.sunk}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}; animation: rise 0.2s ease"><span style="font-weight: 700; color: {{t.text}}">{{hn.n}}. {{hn.name}}. </span>{{hn.text}}</div></sc-for>
+</div>
+<sc-if value="{{moreHints}}"><button onClick="{{nextHint}}" style="margin-top: 8px; height: 40px; padding: 0 4px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs17); font-weight: 600; text-decoration: underline">{{nextHintLabel}}</button></sc-if>
+</div>
+</details>
+</sc-if></sc-if>
 <sc-if value="{{plan.has}}">
-<section aria-labelledby="plan-h" style="flex-shrink: 0; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column">
-<h2 id="plan-h" style="margin: 0; font-size: var(--fs18)"><button onClick="{{plan.toggle}}" aria-expanded="{{plan.openX}}" style="width: 100%; min-height: 48px; padding: 0 14px; border: 0; border-radius: 12px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; font-size: var(--fs18); font-weight: 700; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M4 12h16M4 18h12"></path></svg><span style="flex-grow: 1">Plan it first</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{plan.count}}</span></button></h2>
-<sc-if value="{{plan.open}}">
-<div style="padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px">
+<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Plan it first</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{plan.count}}</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 4px 0 16px">
+<div style="padding: 4px 0 16px; display: flex; flex-direction: column; gap: 10px">
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{plan.goal}}</p>
 <sc-if value="{{plan.listing}}">
 <ol aria-label="Plan steps" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
@@ -98,15 +105,21 @@
 </sc-if>
 </div>
 </div>
-</sc-if>
-</section>
+</div>
+</details>
 </sc-if>
 <!-- APPROACH PANE -->
 <!-- /APPROACH PANE -->
-<sc-if value="{{notSql}}">
-<sc-if value="{{hasStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Still stuck? The story walks through it. <a href="{{storyHref}}" onClick="{{keepProblem}}" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Watch {{P.story}}</a></div></sc-if>
-<sc-if value="{{noStory}}"><div style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Still stuck? The library explains the {{P.pattern}} idea. <a href="Patterns.dc.html" style="color: {{t.accent}}; font-weight: 700; text-decoration: underline">Open the library</a></div></sc-if>
-</sc-if>
+<sc-if value="{{notSql}}"><sc-if value="{{cr.faq.has}}">
+<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Common questions</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 4px 0 16px">
+<dl style="margin: 0; display: flex; flex-direction: column; gap: 16px">
+<sc-for list="{{cr.faq.items}}" as="fq" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 4px"><dt style="font-size: var(--fs17); font-weight: 700; color: {{t.text}}">{{fq.q}}</dt><dd style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{fq.a}}</dd></div></sc-for>
+</dl>
+</div>
+</details>
+</sc-if></sc-if>
+</div>
 </aside>
 
 <main style="padding: 20px 24px; min-width: 0; min-height: 0">

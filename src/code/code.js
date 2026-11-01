@@ -4,9 +4,10 @@
 // The picker lists every master sheet problem, grouped and ordered as the sheet is. A row opens the problem
 // by its pid (shared/sheet.js). SQL problems (shared/sql_spec.js) swap the left side for the schema panel and
 // the code pane for the SQL pane (shared/sql_pane.*).
-// Left column, top to bottom: the statement, the facts block (Input, Output, Constraints, Aim for: shared/facts.js),
-// the examples with a one-line why, the hint ladder (shared/hints.js), "Plan it first" (shared/plans.js),
-// Approaches (shared/approaches.js, behind a spoiler fold), then "Still stuck? Watch the story".
+// Left column, top to bottom: the statement and the examples (with a one-line why), then folds, all closed:
+// Input, output and limits (shared/facts.js), Hints (shared/hints.js), Plan it first (shared/plans.js),
+// Approaches (shared/approaches.js, behind a spoiler fold) and Common questions (cr.faq, built from the same data).
+// The top bar holds the problem picker and one quiet link: "Watch the animation" (or the pattern in the library).
 function sqlInfo(id) { const q = SQL_SPECS[id]; return { id, title: q.title, diff: q.diff, pattern: 'SQL', story: null, time: null }; }
 const knownProblem = (id) => !!(id && (TEST_SPECS[id] || SQL_SPECS[id]));
 const CODE_GROUPS = SHEET_GROUPS.map(([name]) => ({ name, items: SHEET.filter((r) => r.pattern === name && knownProblem(r.pid)).map((r) => ({ id: r.pid, title: r.name })) }))
@@ -38,7 +39,7 @@ class Component extends DCLogic {
     this.approaches = new ApproachPane(this, pid, { lang: () => this.runner.s.lang });
   }
   // Per-problem view state: the plan is open until the problem is solved; hints, the solution and the order game start closed.
-  freshProblem(pid) { return { planOpen: !problemSolved(pid), solOpen: false, hintN: 0, hover: -1, ord: null, ordMsg: '', ordOk: false, dragAt: -1, inserted: false }; }
+  freshProblem(pid) { return { planOpen: false, solOpen: false, hintN: 0, hover: -1, ord: null, ordMsg: '', ordOk: false, dragAt: -1, inserted: false }; }
   componentDidMount() {
     listenTheme(this);
     this.runner.mount();
@@ -161,9 +162,8 @@ class Component extends DCLogic {
       pid: this.state.pid,
       groups: CODE_GROUPS.map((g) => ({ label: g.name + ' (' + g.items.length + ')', items: g.items.map((p) => ({ id: p.id, label: p.title })) })),
       testCount: CODE_COUNT_LINE,
-      hasStory: !!P.story, noStory: !P.story, hasTime: !!P.time,
+      hasStory: !!P.story && !isSql, noStory: !P.story && !isSql, hasTime: !!P.time,
       storyHref: 'Story.dc.html?from=code',
-      kicker: isSql ? 'SQL · SQLite' : P.pattern,
       pickProblem: (e) => this.pickProblem(e && e.target ? e.target.value : e),
       examples: isSql ? [] : spec.examples.map(([args, want], i) => ({ input: showArgs(spec, args), output: showValue(want), why: H && H.why[i] ? H.why[i] : '', hasWhy: !!(H && H.why[i]) })),
       // the hint ladder: nudge, approach, key trick, one at a time

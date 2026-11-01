@@ -296,7 +296,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<div role="region" aria-label="Page tools" class="pp-top" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px; border-bottom: 1px solid {{t.line}}"><a href="{{backHref}}" class="pp-back" style="height: 40px; padding: 0 12px 0 8px; box-sizing: border-box; border-radius: 10px; border: 1px solid {{t.line}}; display: flex; align-items: center; gap: 4px; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>{{backLabel}}</a>
+<style>.ds-fold>summary{list-style:none}.ds-fold>summary::-webkit-details-marker{display:none}.ds-fold[open]>summary .ds-chev{transform:rotate(180deg)}</style>
+<div role="region" aria-label="Page tools" class="pp-top" style="height: 56px; flex-shrink: 0; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; margin-top: 8px">
 <h1 class="pp-title" title="{{P.title}}" style="margin: 0; min-width: 0; font-family: {{t.display}}; font-size: var(--fs22); line-height: 1.2; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{P.title}}</h1>
 <div class="pp-chips" style="display: flex; gap: 8px; flex-shrink: 0">
 <span style="padding: 4px 12px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{diffBg}}; color: {{diffFg}}">{{P.diff}}</span>
@@ -310,44 +311,9 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <main class="pp-left" style="min-height: 0; overflow-y: auto; box-sizing: border-box; padding: 24px; border-right: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 24px">
 
-<sc-for list="{{leftParts}}" as="lp" hint-placeholder-count="2">
-<sc-if value="{{lp.problem}}" hint-placeholder-val="{{ true }}">
-<section aria-labelledby="pp-problem" style="display: flex; flex-direction: column; gap: 12px">
-<h2 id="pp-problem" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">The problem<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-problem" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-problem" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">What the puzzle asks, with a small example. Read it before you watch the story.</span></span></h2>
-<p style="margin: 0; max-width: 640px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}">{{task}}</p>
-<!-- PROBLEM FACTS -->
-<sc-if value="{{fx.has}}" hint-placeholder-val="{{ true }}">
-<section aria-label="Input, output and constraints" data-m="keep" style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; display: grid; grid-template-columns: {{fx.cols}}; grid-template-areas: {{fx.areas}}; column-gap: 12px; row-gap: 8px; font-size: var(--fs17); line-height: 1.5">
-<span style="grid-area: il; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 2px">Input</span>
-<span style="grid-area: iv; color: {{t.text}}">{{fx.input}}</span>
-<span style="grid-area: ol; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 2px">Output</span>
-<span style="grid-area: ov; color: {{t.text}}">{{fx.output}}</span>
-<sc-if value="{{fx.hasCons}}" hint-placeholder-val="{{ true }}">
-<span style="grid-area: cl; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 2px">Constraints</span>
-<ul aria-label="Constraints" style="grid-area: cv; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; color: {{t.text2}}; font-variant-ligatures: none">
-<sc-for list="{{fx.cons}}" as="fc" hint-placeholder-count="3"><li style="overflow-wrap: anywhere">{{fc.c}}</li></sc-for>
-</ul>
-</sc-if>
-<sc-if value="{{fx.hasAim}}" hint-placeholder-val="{{ true }}">
-<span style="grid-area: al; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 4px">Aim for</span>
-<span style="grid-area: av; display: flex; flex-direction: column; align-items: flex-start; gap: 4px">
-<span aria-label="{{fx.aimLabel}}" style="padding: 3px 10px; border-radius: 999px; border: 1px solid {{t.accent}}; background: {{t.hl}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; font-variant-ligatures: none">{{fx.aim}}</span>
-<sc-if value="{{fx.hasNote}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs16); line-height: 1.4; color: {{t.muted}}">{{fx.note}}</span></sc-if>
-</span>
-</sc-if>
-</section>
-</sc-if>
-<!-- /PROBLEM FACTS -->
-<div style="padding: 12px 16px; border-radius: 12px; background: {{t.sunk}}; display: grid; grid-template-columns: 72px minmax(0, 1fr); row-gap: 4px; column-gap: 8px; font-size: var(--fs17); line-height: 1.5">
-<span style="font-weight: 700; color: {{t.muted}}">Example</span><span style="font-family: {{t.mono}}; overflow-wrap: anywhere; font-variant-ligatures: none">{{exampleIn}}</span>
-<span style="font-weight: 700; color: {{t.muted}}">Answer</span><span style="font-family: {{t.mono}}; overflow-wrap: anywhere; font-variant-ligatures: none; color: {{t.ok}}">{{exampleOut}}</span>
-</div>
-</section>
-</sc-if>
-<sc-if value="{{lp.watch}}" hint-placeholder-val="{{ true }}">
 <section aria-labelledby="pp-watch" tabindex="0" onKeyDown="{{onKey}}" style="display: flex; flex-direction: column; gap: 12px; border-radius: 16px; outline-offset: 4px">
 <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
-<h2 id="pp-watch" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Watch it · <span style="color: {{t.text2}}; letter-spacing: 0; text-transform: none; font-size: var(--fs17)">{{storyName}}{{runTag}}</span><span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-watch" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-watch" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The story acts out the solution step by step. Press Play, or step through it yourself.</span></span></h2>
+<h2 id="pp-watch" style="margin: 0; font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">Watch it<span style="color: {{t.text2}}; font-weight: 500"> · {{storyName}}{{runTag}}</span></h2>
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.muted}}; white-space: nowrap">{{stepLabel}}</span>
 </div>
 
@@ -546,8 +512,41 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 </section>
+<section aria-labelledby="pp-problem" style="display: flex; flex-direction: column; gap: 12px">
+<h2 id="pp-problem" style="margin: 0; font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">The problem</h2>
+<p style="margin: 0; max-width: 640px; font-size: var(--fs18); line-height: 1.6; color: {{t.text}}">{{task}}</p>
+<details class="ds-fold" style="border-top: 1px solid {{t.line}}"><summary style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Input, output and example</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 4px 0 16px; display: flex; flex-direction: column; gap: 12px">
+<!-- PROBLEM FACTS -->
+<sc-if value="{{fx.has}}" hint-placeholder-val="{{ true }}">
+<section aria-label="Input, output and constraints" data-m="keep" style="flex-shrink: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.line}}; display: grid; grid-template-columns: {{fx.cols}}; grid-template-areas: {{fx.areas}}; column-gap: 12px; row-gap: 8px; font-size: var(--fs17); line-height: 1.5">
+<span style="grid-area: il; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 2px">Input</span>
+<span style="grid-area: iv; color: {{t.text}}">{{fx.input}}</span>
+<span style="grid-area: ol; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 2px">Output</span>
+<span style="grid-area: ov; color: {{t.text}}">{{fx.output}}</span>
+<sc-if value="{{fx.hasCons}}" hint-placeholder-val="{{ true }}">
+<span style="grid-area: cl; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 2px">Constraints</span>
+<ul aria-label="Constraints" style="grid-area: cv; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-family: {{t.mono}}; font-size: var(--fs16); line-height: 1.5; color: {{t.text2}}; font-variant-ligatures: none">
+<sc-for list="{{fx.cons}}" as="fc" hint-placeholder-count="3"><li style="overflow-wrap: anywhere">{{fc.c}}</li></sc-for>
+</ul>
 </sc-if>
-</sc-for>
+<sc-if value="{{fx.hasAim}}" hint-placeholder-val="{{ true }}">
+<span style="grid-area: al; font-size: var(--fs16); font-weight: 700; color: {{t.muted}}; padding-top: 4px">Aim for</span>
+<span style="grid-area: av; display: flex; flex-direction: column; align-items: flex-start; gap: 4px">
+<span aria-label="{{fx.aimLabel}}" style="padding: 3px 10px; border-radius: 999px; border: 1px solid {{t.accent}}; background: {{t.hl}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; font-variant-ligatures: none">{{fx.aim}}</span>
+<sc-if value="{{fx.hasNote}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--fs16); line-height: 1.4; color: {{t.muted}}">{{fx.note}}</span></sc-if>
+</span>
+</sc-if>
+</section>
+</sc-if>
+<!-- /PROBLEM FACTS -->
+<div style="padding: 12px 16px; border-radius: 12px; background: {{t.sunk}}; display: grid; grid-template-columns: 72px minmax(0, 1fr); row-gap: 4px; column-gap: 8px; font-size: var(--fs17); line-height: 1.5">
+<span style="font-weight: 700; color: {{t.muted}}">Example</span><span style="font-family: {{t.mono}}; overflow-wrap: anywhere; font-variant-ligatures: none">{{exampleIn}}</span>
+<span style="font-weight: 700; color: {{t.muted}}">Answer</span><span style="font-family: {{t.mono}}; overflow-wrap: anywhere; font-variant-ligatures: none; color: {{t.ok}}">{{exampleOut}}</span>
+</div>
+</div>
+</details>
+</section>
 
 <section aria-label="More help" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
 <sc-if value="{{hasCustom}}" hint-placeholder-val="{{ true }}">
@@ -597,6 +596,13 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <span role="status" style="font-size: var(--fs15); color: {{t.muted}}">{{noteStatus}}</span>
 </div>
 </sc-if>
+<sc-if value="{{cr.faq.has}}" hint-placeholder-val="{{ true }}">
+<details class="ds-fold" style="border-bottom: 1px solid {{t.line}}"><summary style="min-height: 48px; padding: 0 4px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: var(--fs18); font-weight: 700; color: {{t.text}}"><span style="flex-grow: 1">Common questions</span><svg class="ds-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<dl style="margin: 0; padding: 12px 4px 16px; display: flex; flex-direction: column; gap: 16px">
+<sc-for list="{{cr.faq.items}}" as="fq" hint-placeholder-count="4"><div style="display: flex; flex-direction: column; gap: 4px"><dt style="font-size: var(--fs17); font-weight: 700; color: {{t.text}}">{{fq.q}}</dt><dd style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{fq.a}}</dd></div></sc-for>
+</dl>
+</details>
+</sc-if>
 </section>
 
 <sc-if value="{{finished}}" hint-placeholder-val="{{ false }}">
@@ -633,15 +639,25 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <sc-if value="{{onSolution}}" hint-placeholder-val="{{ true }}">
 <div role="tabpanel" id="pp-panel-solution" aria-labelledby="pp-tab-solution" style="flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 12px">
+<div style="padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: var(--fs16); font-weight: 600; color: {{t.muted}}"><span>Values right now</span><span style="font-weight: 500">{{lineNote}}</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{watch}}" as="w" hint-placeholder-count="6"><span style="height: 32px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; border: 1px solid {{w.border}}; background: {{w.bg}}; display: flex; align-items: center; gap: 8px; font-family: {{t.mono}}; font-size: var(--fs16)"><span style="color: {{t.muted}}">{{w.k}}</span><span style="font-weight: 700; color: {{w.c}}">{{w.v}}</span></span></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: var(--fs16); line-height: 1.4; color: {{t.text2}}">
+<span><span style="font-weight: 700; color: {{t.text}}">Time <span style="font-family: {{t.mono}}">{{cx.time}}</span></span> · {{cx.timeWhy}}</span>
+<span><span style="font-weight: 700; color: {{t.text}}">Space <span style="font-family: {{t.mono}}">{{cx.space}}</span></span> · {{cx.spaceWhy}}</span>
+</div>
+</div>
+<details class="ds-fold" style="flex-shrink: 0; border-top: 1px solid {{t.line}}"><summary style="min-height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}"><span style="flex-grow: 1">Solution plan</span><span style="font-size: var(--fs16); font-weight: 500; color: {{t.muted}}">{{planNote}}</span><svg class="ds-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}"><path d="M6 9l6 6 6-6"></path></svg></summary>
+<div style="padding: 4px 0 16px; display: flex; flex-direction: column; gap: 12px">
 <sc-if value="{{hasPlan}}" hint-placeholder-val="{{ true }}">
-<section aria-labelledby="pp-plan" style="flex-shrink: 0; padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px"><h3 id="pp-plan" style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Plan it first<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-plan" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-plan" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">A plan in plain steps. Read it, then try your own before you look at the code.</span></span></h3><span style="font-size: var(--fs16); color: {{t.muted}}">{{planNote}}</span></div>
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 700; color: {{t.text}}">Goal </span>{{planGoal}}</p>
 <ol aria-label="Plan steps" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{planSteps}}" as="ps" hint-placeholder-count="5"><li aria-current="{{ps.current}}" style="padding: 4px 8px; border-radius: 8px; border-left: 3px solid {{ps.border}}; background: {{ps.bg}}; display: flex; gap: 6px; font-size: var(--fs17); line-height: 1.45; color: {{ps.fg}}; transition: background 320ms cubic-bezier(.2,.8,.2,1)"><span aria-hidden="true" style="width: 22px; flex-shrink: 0; font-family: {{t.mono}}; font-weight: 700; color: {{ps.num}}">{{ps.n}}</span><span style="min-width: 0">{{ps.text}}</span></li></sc-for>
 </ol>
-</section>
 </sc-if>
+
 <button onClick="{{toggleSol}}" aria-expanded="{{solX}}" style="align-self: flex-start; flex-shrink: 0; height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: var(--fs17); font-weight: 700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>{{solLabel}}</button>
 
 <sc-if value="{{solOpen}}" hint-placeholder-val="{{ false }}"><div style="flex: 1 1 auto; min-height: 120px; overflow: auto; border-radius: 12px; background: {{t.codeBg}}; border: 1px solid {{t.line}}; padding: 12px 0">
@@ -651,16 +667,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </div>
 </sc-if>
-<div style="padding: 12px 16px; border-radius: 12px; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; justify-content: space-between; gap: 12px; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}"><span style="display: flex; align-items: center; gap: 6px">Values right now<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-story-values" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-story-values" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">The values the code holds at this step. They change as the story moves on.</span></span></span><span style="letter-spacing: 0; text-transform: none; font-weight: 500">{{lineNote}}</span></div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px">
-<sc-for list="{{watch}}" as="w" hint-placeholder-count="6"><span style="height: 32px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; border: 1px solid {{w.border}}; background: {{w.bg}}; display: flex; align-items: center; gap: 8px; font-family: {{t.mono}}; font-size: var(--fs16)"><span style="color: {{t.muted}}">{{w.k}}</span><span style="font-weight: 700; color: {{w.c}}">{{w.v}}</span></span></sc-for>
 </div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: var(--fs16); line-height: 1.4; color: {{t.text2}}">
-<span><span style="font-weight: 700; color: {{t.text}}">Time <span style="font-family: {{t.mono}}">{{cx.time}}</span></span> · {{cx.timeWhy}}</span>
-<span><span style="font-weight: 700; color: {{t.text}}">Space <span style="font-family: {{t.mono}}">{{cx.space}}</span></span> · {{cx.spaceWhy}}</span>
-</div>
-</div>
+</details>
 </div>
 </sc-if>
 
@@ -723,7 +731,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div role="tabpanel" id="pp-panel-code" aria-labelledby="pp-tab-code" style="flex: 1 1 auto; min-height: 0; display: {{codeDisplay}}; flex-direction: column">
 <sc-if value="{{codeOpened}}" hint-placeholder-val="{{ false }}">
 <!-- CODE PANE --> <!-- generated from shared/code_pane.html: editor, Run/Submit, console. Fills its parent's height; holes under cr.* come from CodeRunner.vals(t). -->
-<section aria-label="Code" style="position: relative; height: 100%; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+<section aria-label="Code" style="position: relative; height: min(100%, calc(100vh - 172px)); min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
 <div data-m="wrap" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0">
 <sc-if value="{{cr.tabs}}" hint-placeholder-val="{{ true }}">
 <div role="tablist" aria-label="Code or submission history" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: {{t.sunk}}">
@@ -738,12 +746,12 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </sc-if>
 <div style="flex-grow: 1"></div>
 <sc-if value="{{cr.showClock}}" hint-placeholder-val="{{ true }}">
-<sc-if value="{{cr.clockIdle}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.startClock}}" aria-label="Start the timer for this problem" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600; display: flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>Start timer</button></sc-if>
+<sc-if value="{{cr.clockIdle}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.startClock}}" aria-label="Start the timer for this problem" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600; display: flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>Start timer</button></sc-if>
 <sc-if value="{{cr.clockShown}}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="Timer" style="display: flex; align-items: center; gap: 4px"><span role="timer" aria-label="{{cr.clockLabel}}" style="display: flex; align-items: center; gap: 6px; padding: 0 6px; font-family: {{t.mono}}; font-size: var(--fs16); font-weight: 700; color: {{cr.clockFg}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2M9 2h6"></path></svg>{{cr.clock}}</span><sc-if value="{{cr.canToggleClock}}" hint-placeholder-val="{{ true }}"><button onClick="{{cr.toggleClock}}" aria-label="{{cr.clockToggleAria}}" style="height: 34px; padding: 0 10px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{cr.clockToggleLabel}}</button></sc-if><button onClick="{{cr.resetClock}}" aria-label="Reset the timer to zero" style="height: 34px; padding: 0 10px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">Reset timer</button></div></sc-if>
 </sc-if>
-<button onClick="{{cr.copy}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{cr.copyLabel}}</button>
+<button onClick="{{cr.copy}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{cr.copyLabel}}</button>
 <button onClick="{{cr.reset}}" aria-label="{{cr.resetAria}}" style="height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid {{cr.resetBorder}}; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); font-weight: 600">{{cr.resetLabel}}</button>
-<button data-cp-gear onClick="{{cr.pf.gear}}" aria-label="Editor settings" aria-expanded="{{cr.pf.gearOn}}" aria-haspopup="dialog" title="Editor settings" style="width: 34px; height: 34px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg></button>
+<button data-cp-gear onClick="{{cr.pf.gear}}" aria-label="Editor settings" aria-expanded="{{cr.pf.gearOn}}" aria-haspopup="dialog" title="Editor settings" style="width: 34px; height: 34px; flex-shrink: 0; border-radius: 8px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg></button>
 </div>
 <sc-if value="{{cr.pf.open}}" hint-placeholder-val="{{ false }}">
 <div data-cp-prefs role="dialog" aria-label="Editor settings" onKeyDown="{{cr.pf.onKey}}" style="position: absolute; top: 44px; right: 0; z-index: 20; width: 340px; max-width: 100%; box-sizing: border-box; max-height: calc(100% - 52px); overflow-y: auto; padding: 16px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{t.surface}}; box-shadow: 0 12px 32px {{t.shadow}}; display: flex; flex-direction: column; gap: 12px; animation: rise 0.18s ease">
@@ -765,7 +773,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </dl>
 </div>
 </sc-if>
-<div id="cp-view" role="{{cr.viewRole}}" aria-label="{{cr.viewName}}" style="flex: 1 1 0; min-height: 260px; display: flex; flex-direction: column">
+<div id="cp-view" role="{{cr.viewRole}}" aria-label="{{cr.viewName}}" style="flex: 1 1 0; min-height: 200px; display: flex; flex-direction: column">
 <div ref="{{cr.ref}}" style="display: {{cr.editorShow}}; flex: 1 1 0; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.codeBg}}; overflow: hidden"></div>
 <sc-if value="{{cr.inHistory}}" hint-placeholder-val="{{ false }}">
 <div style="flex: 1 1 0; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
@@ -813,7 +821,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-if value="{{cr.hasTests}}" hint-placeholder-val="{{ true }}">
 <div aria-label="Output" role="region" style="flex: 0 1 auto; max-height: 48%; min-height: 0; border-radius: 12px; border: 1px solid {{t.line}}; background: {{t.surface}}; display: flex; flex-direction: column; overflow: hidden">
 <div style="height: 38px; flex-shrink: 0; padding: 0 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid {{t.line}}">
-<span style="display: flex; align-items: center; gap: 6px; font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Output<span class="ds-tip"><button onClick="{{tipTap}}" aria-label="What is this?" aria-describedby="tip-pane-output" style="width: 28px; height: 28px; padding: 0; border-radius: 999px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; cursor: help; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; line-height: 1">i</button><span role="tooltip" id="tip-pane-output" style="padding: 10px 12px; border-radius: 10px; background: {{t.text}}; color: {{t.bg}}; font-size: var(--fs17); font-weight: 500; line-height: 1.45; box-shadow: 0 6px 20px {{t.shadow}}">What your code printed when you pressed Run. Compare it with the expected answer.</span></span></span>
+<span style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">Output</span>
 <sc-if value="{{cr.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="padding: 3px 10px; border-radius: 999px; font-size: var(--fs15); font-weight: 700; background: {{cr.badgeBg}}; color: {{cr.badgeFg}}">{{cr.badge}}</span></sc-if>
 </div>
 <div style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; min-height: 0">
@@ -20383,6 +20391,45 @@ function paneCelebrate(anchor, t) {
   } catch (e) {}
 }
 
+// "Common questions": plain answers built from data every problem already has (facts, approaches, hints).
+// A question shows only when the data behind it exists; with nothing to say the fold is hidden.
+const FAQ_TIME = { 'O(1)': 'the same few steps, however big the input is', 'O(log n)': 'about as many steps as it takes to halve the input again and again', 'O(n)': 'about one look at each item', 'O(n log n)': 'about the work of sorting the input', 'O(n²)': 'a look at every pair of items' };
+const FAQ_SPACE = { 'O(1)': 'A few variables are enough. Do not copy the input.', 'O(n)': 'One extra list or table as big as the input is fine.', 'O(k)': 'A small extra list or table of size k is fine.' };
+function faqCosts(a) { return 'time ' + a.time + ', space ' + a.space; }
+function faqEdges(pid, best) {
+  const raw = typeof PROBLEM_FACTS !== 'undefined' && PROBLEM_FACTS[pid] ? PROBLEM_FACTS[pid][5] || [] : [];
+  const out = [];
+  raw.forEach((c) => {
+    if (c[0] === 'len' && c[2] === 0) out.push('The input can be empty, so test an empty one.');
+    else if (c[0] === 'len' && c[2] === 1) out.push('The smallest input has one item, so test that.');
+    else if (c[0] === 'val' && c[2] < 0) out.push('Numbers can be negative, so try some.');
+    else if (c[0] === 'val' && c[2] === 0) out.push('Zero is allowed, so try it.');
+  });
+  const uniq = out.filter((x, i) => out.indexOf(x) === i).slice(0, 3);
+  const bigger = raw.some((c) => c[0] === 'len' && c[3] >= 1000);
+  if (bigger) uniq.push('The biggest input is large, so check your code is fast enough.');
+  if (best && best.pitfalls) best.pitfalls.slice(0, 2).forEach((p) => uniq.push('Common slip: ' + p));
+  return uniq;
+}
+function faqFor(pid) {
+  const f = typeof problemFacts === 'function' ? problemFacts(pid) : null;
+  const list = (typeof APPROACHES !== 'undefined' && APPROACHES[pid]) || [];
+  const best = list.length ? list[list.length - 1] : null;
+  const slow = list.find((a) => a.slow);
+  const H = typeof hintsFor === 'function' ? hintsFor(pid) : null;
+  const items = [];
+  if (H && H.hints && H.hints[0]) items.push({ q: 'Where do I start?', a: H.hints[0] });
+  if (f && f.time) {
+    const how = FAQ_TIME[f.time] ? ' That means ' + FAQ_TIME[f.time] + '.' : '';
+    const brute = slow ? ' Trying everything (' + slow.name.toLowerCase() + ') costs ' + slow.time + ' time, which is too slow for the biggest inputs.' : '';
+    items.push({ q: 'How fast does it need to be?', a: 'Aim for ' + f.time + ' time.' + how + brute });
+  }
+  if (f && f.space) items.push({ q: 'How much extra memory is fine?', a: 'Aim for ' + f.space + ' extra space. ' + (FAQ_SPACE[f.space] || 'Anything about that size is fine.') + (f.note ? ' ' + f.note.charAt(0).toUpperCase() + f.note.slice(1) + '.' : '') });
+  const edges = faqEdges(pid, best);
+  if (edges.length) items.push({ q: 'Which edge cases should I test?', a: edges.join(' ') });
+  if (list.length > 1) items.push({ q: 'Is there more than one way to solve it?', a: 'Yes, ' + list.length + ', slowest first: ' + list.map((a) => a.name + ' (' + faqCosts(a) + ')').join('; ') + '. The Approaches section shows each one with code.' });
+  return items.length >= 2 ? items.slice(0, 5) : [];
+}
 class CodeRunner {
   constructor(host, pid, opts) {
     this.host = host;
@@ -20779,8 +20826,10 @@ class CodeRunner {
     const hv = this.opts.single ? null : this.historyVals(t), hvAll = hv || this.historyVals(t);
     const inHistory = !!hv && s.view === 'history';
     const mod = paneMac() ? '⌘' : 'Ctrl';
+    const faqItems = faqFor(this.pid);
     return {
       ref: this.ref,
+      faq: { has: faqItems.length > 0, items: faqItems },
       // Code and History tabs (History is not offered in the single-button mode)
       tabs: !!hv, hist: hvAll, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
       viewRole: hv ? 'tabpanel' : 'group', viewName: inHistory ? 'Submission history' : 'Code editor',
@@ -20801,7 +20850,7 @@ class CodeRunner {
       toggleClock: () => (s.clockOn ? this.pauseClock() : this.startClock()),
       clockToggleLabel: s.clockOn ? 'Pause' : 'Resume', clockToggleAria: s.clockOn ? 'Pause the timer' : 'Resume the timer', canToggleClock: !solved,
       copy: () => this.copy(), copyLabel: s.copied ? 'Copied' : 'Copy',
-      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset code', resetBorder: s.confirmReset ? t.accent : t.line,
+      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset code', resetBorder: s.confirmReset ? t.accent : 'transparent',
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
       runnable, notRunnable: hasTests && !runnable, busy: s.busy,
       notRunnableMsg: hasTests && spec.langs && RUNNABLE[lang] ? spec.langNote || 'This one runs in ' + spec.langs.map((k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1]).join(' and ') + ' here. Switch language to run it.' : 'Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.',

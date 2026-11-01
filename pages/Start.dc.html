@@ -5491,7 +5491,7 @@ class Component extends DCLogic {
       const before = (c.after || []).map((a) => startById(a)).filter(Boolean);
       const skip = sr_skip(r, before);
       flow.push(Object.assign({}, lk, {
-        isLink: false, isNode: true, title: c.n + '. ' + c.title, open: on, rot: on ? 'rotate(180deg)' : 'none',
+        isLink: false, isNode: true, title: c.title, open: on, rot: on ? 'rotate(180deg)' : 'none',
         shadow: on ? 'inset 0 0 0 1.5px ' + t.line2 : 'none',
         pick: toggle(c.id), idea: c.idea,
         hasAfter: before.length > 0 || r.ready, after: before.length ? before.map((b) => b.title).join(', ') + (skip ? '. You can skip ahead if you know it.' : '') : 'Nothing. This is a good place to start.',

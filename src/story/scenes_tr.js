@@ -21,7 +21,7 @@ function trieScene() {
   };
   steps.push(snap('intro', null, '', '', {
     dialog: [say('narr', 'The filer files words in a cabinet shaped like a tree. Every step down is one letter.'), say('filer', 'Words that start the same share the same first branches.'), say('narr', 'And how do you know a whole word ends somewhere?'), say('filer', 'I put a tick on the last letter.')],
-    nar: { kid: 'The filer keeps words in a tree called a trie (said “try”). Each step down the tree is one letter. A tick marks the spot where a whole word ends.', builder: 'The root is the empty top of the tree. Each node maps a letter to a child node (a dict), and has an end-of-word flag that works as the tick.', expert: 'A trie stores shared beginnings once. Each of insert, search and startsWith takes O(length of the word) steps. Only the word’s length matters, however many words are stored.' } }));
+    nar: { kid: 'The filer keeps words in a tree called a trie (said “try”). Each step down the tree is one letter. A tick marks the spot where a whole word ends.', builder: 'The root is the empty top of the tree. Each node maps a letter to a child node (a dict). It also has an end-of-word flag that works as the tick.', expert: 'A trie stores shared beginnings once. Each of insert, search and startsWith takes O(length of the word) steps. Only the word’s length matters, however many words are stored.' } }));
   for (const [op, w] of ops) {
     trail = ['root']; tags = {};
     if (op === 'insert') {
@@ -42,7 +42,7 @@ function trieScene() {
       ends.add(w); calls++; results.push('null');
       steps.push(snap('mark', op, w, '', {
         dialog: [say('filer', 'That was the last letter of “' + w + '”.'), say('narr', 'Tick it. A whole word ends here.')],
-        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so the filer knows a whole word ends at this spot.', builder: 'node["$"] = True (the "$" key is the tick). insert("' + w + '") is done.', expert: 'The tick matters: “ca” is a path in the tree, but it is not a word until something marks it.' } }));
+        nar: { kid: 'That was the last letter of “' + w + '”. The filer puts a tick here, so the filer knows a whole word ends at this spot.', builder: 'node["$"] = True (the "$" key is the tick). insert("' + w + '") is done.', expert: 'The tick matters. “ca” is a path in the tree, but it is not a word until something marks it.' } }));
       continue;
     }
     let missed = false;
@@ -113,7 +113,7 @@ function trieScene() {
     clues: ['many words that share beginnings', 'lookups by the letters typed so far', 'a whole word versus the start of one'],
     kit: { right: 1, spot: 'Why a letter tree, not a list of words?', ask: 'How should the filer file the words?',
       quiz: [['A list of words', 'Check every stored word against the question'], ['A tree of letters', 'One branch per letter, shared by words that start the same'], ['A set of whole words', 'Store each word once and look it up'], ['Sort the words', 'Keep them in order and halve the list']] },
-    quizFb: ['“That reads every word for every question. With a million words it crawls.”', '“Yes! One branch per letter. A lookup follows only the letters you ask about.”', '“A set answers search, but not startsWith: “ca” is not stored as a word.”', '“Sorting helps with prefixes, but each look still costs log n word comparisons.”'],
+    quizFb: ['“That reads every word for every question. With a million words it crawls.”', '“Yes! One branch per letter. A lookup follows only the letters you ask about.”', '“A set answers search, but not startsWith: “ca” is not stored as a word.”', '“Sorting helps with prefixes, but each look still costs about log n word comparisons. Here log n is how many times you can halve n words: about 20 for a million words.”'],
     steps
   };
 }

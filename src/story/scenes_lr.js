@@ -15,7 +15,7 @@ function lruScene() {
   };
   steps.push(snap('intro', null, 0, null, {
     dialog: [say('narr', 'The shopkeeper’s rack has three hooks. When it is full, the coat that nobody touched for the longest time goes to storage.'), say('shop', 'My ticket book finds any coat at once. The rack keeps the coats in order of use.'), say('narr', 'So you need both?'), say('shop', 'The book is fast to look up. The order shows which coat goes first.')],
-    nar: { kid: 'The shopkeeper’s rack holds three coats. The newest is on the left. The ticket book (the box on the right) finds any coat at once.', builder: 'A map (a lookup table from key to value) finds any key in O(1) time. A line kept in order of use gives the oldest key in O(1) time. O(1) means a fixed amount of work, however many coats there are.', expert: 'This is called an LRU cache (least recently used: the oldest-used item leaves first). It pairs a hash map (a fast lookup table) with a doubly linked list, which is a chain where each link points both ways. Moving a link to the front and removing the back are both O(1).' } }));
+    nar: { kid: 'The shopkeeper’s rack holds three coats. The newest is on the left. The ticket book (the box on the right) finds any coat at once.', builder: 'A map (a lookup table from key to value) finds any key in O(1) time. A line kept in order of use gives the oldest key in O(1) time. O(1) means a fixed amount of work, however many coats there are.', expert: 'This is called an LRU cache (least recently used: the oldest-used item leaves first). It pairs a hash map (a fast lookup table) with a doubly linked list. That is a chain where each link points both ways. Moving a link to the front and removing the back are both O(1).' } }));
   for (const o of ops) {
     const [op, key, val] = o;
     if (op === 'get') {
@@ -86,7 +86,7 @@ function lruScene() {
     clues: ['both calls must take O(1) time (a fixed amount of work)', 'the least recently used key leaves first', 'a get counts as a use'],
     kit: { right: 3, spot: 'Why a map and a line together?', ask: 'How should the shopkeeper run the rack?',
       quiz: [['A plain list', 'Keep coats in a list and search it on every call'], ['A map alone', 'Keys to values, nothing else'], ['A timestamp on each coat', 'Write the time of last use, and look for the oldest when full'], ['A map plus a line in order of use', 'The map finds a coat, the line knows the oldest']] },
-    quizFb: ['“Searching a list takes O(n) time per call. The problem asks for O(1).”', '“A map finds coats fast, but it cannot tell you which coat is oldest.”', '“Finding the oldest timestamp means checking every coat. That takes O(n) time on a full rack.”', '“Yes! The map finds any coat in one step. The back of the line is always the oldest coat.”'],
+    quizFb: ['“Searching a list takes O(n) time per call: the work grows in step with n, the number of coats. The problem asks for O(1): a fixed amount of work, however many coats there are.”', '“A map finds coats fast, but it cannot tell you which coat is oldest.”', '“Finding the oldest timestamp means checking every coat. That takes O(n) time on a full rack.”', '“Yes! The map finds any coat in one step. The back of the line is always the oldest coat.”'],
     steps
   };
 }

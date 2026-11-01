@@ -15,7 +15,7 @@ function tileFloorScene() {
   let moves = 0;
   steps.push({ kind: 'intro', vals: copy(), i: '—', j: '—', a: '—', b: '—', phase: 'start', moves, path: diag, actorAt: [0, 0], focus: [],
     dialog: [say('narr', 'There are sixteen painted tiles. The owner wants the floor turned a quarter-turn to the right.'), say('tiler', 'I cannot lift the whole floor. I can only swap two tiles at a time.'), say('narr', 'Then fold it first, and flip it after.')],
-    nar: { kid: 'The tiler turns the floor in two moves. First the tiler folds it along the fold line, from the top-left corner to the bottom-right. Then the tiler flips every row.', builder: 'Turn the floor in place in two passes. First swap m[i][j] with m[j][i], which means the tile in row i, column j trades places with the tile in row j, column i (this is called a transpose). Then reverse each row. The tiles on the fold line never move in the first pass.', expert: 'A quarter-turn to the right equals a transpose followed by a flip of each row. Both only swap tiles, so the turn needs O(1) extra space and no second grid.' } });
+    nar: { kid: 'The tiler turns the floor in two moves. First the tiler folds it along the fold line, from the top-left corner to the bottom-right. Then the tiler flips every row.', builder: 'Turn the floor in place in two passes. First swap m[i][j] with m[j][i]. That means the tile in row i, column j trades places with the tile in row j, column i. This is called a transpose. Then reverse each row. The tiles on the fold line never move in the first pass.', expert: 'A quarter-turn to the right equals a transpose followed by a flip of each row. Both only swap tiles, so the turn needs O(1) extra space and no second grid.' } });
   for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
     const a = m[i][j], b = m[j][i];
     m[i][j] = b; m[j][i] = a; moves++;
@@ -67,7 +67,7 @@ function tileFloorScene() {
     goal: 'Turn the floor a quarter-turn right, two tiles at a time', status: ['Floor unturned', 'Floor turned'],
     lines: tagLines(code), code,
     rules: [['Draw the fold line from corner to corner', 'intro'], ['Swap each tile with its twin across the line', 'swap'], ['Then flip every row end to end', 'mirror']],
-    complexity: [['O(n²)', 'n is the side of the square, so n² is the number of tiles; each is touched a fixed number of times'], ['O(1)', 'swaps only, no second floor']],
+    complexity: [['O(n²)', 'n is the side of the square, so n² is the number of tiles. Each tile is touched a fixed number of times'], ['O(1)', 'swaps only, no second floor']],
     quest: ['The owner of the old bathhouse wants the tiled floor turned a quarter-turn to the right. The tiles are glued in a 4 by 4 square, numbered 1 to 16.', 'The tiler has no spare floor to work on and may only swap two tiles at a time. Can the tiler still turn the floor?'],
     example: ['m = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]', 'after = [[13,9,5,1],[14,10,6,2],[15,11,7,3],[16,12,8,4]]'],
     hints: ['“After the turn, the top row is the old left column, read from bottom to top. Which easy moves get you close?”', '“Swap every tile with its twin across the corner-to-corner line. Rows become columns. Is the order right yet?”', '“Fold across the corner-to-corner line, then flip each row end to end. Two easy passes make one turn.”'],

@@ -9,7 +9,7 @@ function posterBuild(h) {
   steps.push(runStep('intro', snap('intro', 0, { area: null }), [say('narr', 'A wall has ' + n + ' planks. The stack wants the biggest poster that fits flat against them.'), say('stack', 'A poster cannot be taller than the shortest plank under it.'), say('narr', 'So for each plank, how wide can a poster of that height be?'), say('stack', 'My pile tells me. The planks in it only get taller toward the top.')],
     'The stack wants the biggest poster that fits on the planks. A poster as tall as a plank can stretch left and right until it meets a shorter plank.',
     'The pile starts empty and holds plank places (0, 1, 2 and so on), with heights rising toward the top. A shorter plank pops every taller plank off the pile and measures its poster.',
-    'This is called a monotonic stack: a pile whose heights only rise toward the top. Each plank is pushed once and popped once. Its poster is measured at the pop, so the whole pass is O(n): the work grows in step with the number of planks.'));
+    'This is called a monotonic stack: a pile whose heights only rise toward the top. Each plank is pushed once and popped once. Its poster is measured at the pop. So the whole pass is O(n): the work grows in step with the number of planks.'));
   for (let i = 0; i <= n; i++) {
     const cur = bars[i], end = i === n;
     while (pile.length && bars[pile[pile.length - 1]] >= cur) {
@@ -19,14 +19,14 @@ function posterBuild(h) {
       const span = [left, i - 1];
       const who = end ? 'The end of the wall' : 'Plank ' + i + ' (' + cur + ')';
       steps.push(runStep(isBest ? 'best' : 'pop', snap(isBest ? 'best' : 'pop', i, { area, span, top }), [say('stack', who + ' is not taller than plank ' + top + ' (' + h[top] + ').'), say('narr', 'So plank ' + top + '’s poster stops here: ' + h[top] + ' tall and ' + w + ' wide makes ' + area + (isBest ? '. The best so far.' : '. Not better than ' + best + '.'))],
-        who + ' is not taller than plank ' + top + ', so plank ' + top + '’s poster cannot reach past it. The stack lifts plank ' + top + ' off and measures: ' + h[top] + ' × ' + w + ' = ' + area + '.' + (isBest ? ' That is the biggest so far.' : ''),
-        'Pop ' + top + '. The poster starts at place ' + left + ' (just after the plank below it on the pile), so width = ' + i + ' − ' + left + ' = ' + w + ', and area = ' + h[top] + ' × ' + w + ' = ' + area + '. best = ' + best + '.',
+        who + ' is not taller than plank ' + top + '. So plank ' + top + '’s poster cannot reach past it. The stack lifts plank ' + top + ' off and measures: ' + h[top] + ' × ' + w + ' = ' + area + '.' + (isBest ? ' That is the biggest so far.' : ''),
+        'Pop ' + top + '. The poster starts at place ' + left + ', right after the plank below it on the pile. So width = ' + i + ' − ' + left + ' = ' + w + ', and area = ' + h[top] + ' × ' + w + ' = ' + area + '. best = ' + best + '.',
         'The plank below ' + top + ' on the pile is the nearest shorter plank on its left. Plank ' + (end ? n + ' (a 0 placed after the wall)' : i) + ' is the nearest shorter one on its right. Those two planks set the width.'));
     }
     if (end) break;
     pile.push(i);
     steps.push(runStep('push', snap('push', i, { area: null }), [say('stack', 'Plank ' + i + ' is ' + h[i] + ' tall. ' + (pile.length > 1 ? 'The plank under it is shorter.' : 'The pile was empty.')), say('narr', 'Its poster might still grow to the right. Put it on the pile.')],
-      'Plank ' + i + ' (' + h[i] + ') is taller than everything on the pile, so its poster might keep growing to the right. The stack puts it on top.',
+      'Plank ' + i + ' (' + h[i] + ') is taller than everything on the pile. So its poster might keep growing to the right. The stack puts it on top.',
       'Push plank ' + i + ' onto the pile. Heights on the pile, bottom to top: ' + pile.map((j) => h[j]).join(' < ') + '.',
       'The pile only rises toward the top. A plank waits there until a shorter plank shows where its poster must stop.'));
   }
@@ -78,7 +78,7 @@ function posterScene() {
     clues: ['the shortest plank limits a poster', 'the nearest shorter plank on each side', 'one pass would be best'],
     kit: { right: 1, spot: 'Why a rising pile?', ask: 'How should the stack measure the posters?',
       quiz: [['Try every left and right edge', 'Measure the poster between every pair of planks'], ['A pile that only rises', 'A shorter plank pops the taller ones and measures them'], ['Use the tallest plank', 'The biggest poster must cover the tallest plank'], ['Two markers from both ends', 'Walk inward, keeping the taller ends']] },
-    quizFb: ['“That works, but it means about n × n pairs. A long wall takes a very long time.”', '“Yes! A plank waits on the pile until a shorter plank shows where its poster ends.”', '“The tallest plank here is 5, but the best poster is 3 tall and 3 wide.”', '“Walkers from both ends fit the rain barrel story. Here the shortest plank in between matters, not only the ends.”'],
+    quizFb: ['“That works, but it means about n × n pairs. Here n is the number of planks, so doubling n makes the work about 4 times bigger. A long wall takes a very long time.”', '“Yes! A plank waits on the pile until a shorter plank shows where its poster ends.”', '“The tallest plank here is 5, but the best poster is 3 tall and 3 wide.”', '“Walkers from both ends fit the rain barrel story. Here the shortest plank in between matters, not only the ends.”'],
     steps: run.steps
   };
 }

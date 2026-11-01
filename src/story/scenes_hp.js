@@ -74,7 +74,7 @@ function hpTalentScene() {
     example: ['nums = [3, 2, 1, 5, 6, 4]   k = 2', 'answer = 5   (6 is first, 5 is second)'],
     hints: ['“You only need the top 2. Do you really have to remember all six scores?”', '“Keep the best 2 you have seen so far. Which of those two is the one in danger of losing a chair?”', '“Seat the weakest of the room by the door. A newcomer only has to beat that one act.”'],
     clues: ['the kth best, not the best', 'scores arrive in any order', 'no need to sort everything'],
-    quizFb: ['“Sorting works, but it orders all six acts when you only care about two. With a million acts that is a lot of wasted work.”', '“Rescanning every act each time is O(n·k) or worse. The triage nurse only needs one glance at the door.”', '“Yes! A small room of k, weakest by the door. Each newcomer is one comparison and maybe one swap.”', '“The scores are not sorted, so walking in from both ends tells you nothing.”'],
+    quizFb: ['“Sorting works, but it orders all six acts when you only care about two. With a million acts that is a lot of wasted work.”', '“Rescanning every act each time costs O(n·k) or worse. That means the work grows with n times k, where n is all the acts and k is how many you keep. The triage nurse only needs one glance at the door.”', '“Yes! A small room of k, weakest by the door. Each newcomer is one comparison and maybe one swap.”', '“The scores are not sorted, so walking in from both ends tells you nothing.”'],
     steps
   };
 }
@@ -227,7 +227,7 @@ function hpYardScene() {
     example: ['lists = [[2, 5, 8], [1, 6], [3, 4]]', 'answer = 1 → 2 → 3 → 4 → 5 → 6 → 8'],
     hints: ['“Each train is already sorted. Where in a train is its smallest carriage?”', '“So the next carriage of the big train must be one of the fronts. How many fronts are there?”', '“Keep the fronts on a desk that always shows the smallest. Send it out, then bring up the next carriage from the same train.”'],
     clues: ['every train is sorted', 'only the fronts can be next', 'many trains, one output'],
-    quizFb: ['“Pouring every carriage into one pile and sorting works. But it ignores the order the trains already had.”', '“Comparing all k fronts every time is O(k) per carriage. The desk gets it down to O(log k).”', '“Yes! A desk of fronts, smallest on top. Send it, bring up the next from that train, repeat.”', '“Two friends from both ends only works on one sorted row. We have three trains to weave together.”'],
+    quizFb: ['“Pouring every carriage into one pile and sorting works. But it ignores the order the trains already had.”', '“Comparing all k fronts every time is O(k) per carriage: the work grows in step with k, the number of trains. The desk gets it down to O(log k): doubling k adds only one more step.”', '“Yes! A desk of fronts, smallest on top. Send it, bring up the next from that train, repeat.”', '“Two friends from both ends only works on one sorted row. We have three trains to weave together.”'],
     steps
   };
 }

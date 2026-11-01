@@ -26,7 +26,7 @@ function facesScene() {
     if (jump) cells[seenAt] = 'dup';
     steps.push(jump ? { L, R, kind: 'jump', best, board, cells,
       dialog: [say('window', 'A second “' + c + '” boarded!'), say('narr', 'The old “' + c + '” sat at carriage ' + seenAt + '. Everything up to it must leave.'), say('window', 'The back of the window jumps to ' + L + '. Now I see “' + w + '”.')],
-      nar: { kid: 'A passenger with a “' + c + '” badge was already in the window. The window-keeper moves the back of the window past the old “' + c + '”, so every badge is different again.', builder: 'The old "' + c + '" was seen at spot ' + seenAt + ', which is inside the window (left was ' + oldL + '). So left = ' + L + '. Window "' + w + '", size ' + size + ', best = ' + best + '.', expert: 'Moving left straight to one spot past the old badge replaces a slow loop that shrinks the window one step at a time. It is safe: any window that starts earlier and keeps this badge would repeat it.' } }
+      nar: { kid: 'A passenger with a “' + c + '” badge was already in the window. The window-keeper moves the back of the window past the old “' + c + '”, so every badge is different again.', builder: 'The old "' + c + '" was seen at spot ' + seenAt + ', which is inside the window (left was ' + oldL + '). So left = ' + L + '. Window "' + w + '", size ' + size + ', best = ' + best + '.', expert: 'Moving left straight past the old badge replaces a slow loop. That loop would shrink the window one step at a time. It is safe: any window that starts earlier and keeps this badge would repeat it.' } }
       : { L, R, kind: 'grow', best, board, cells,
       dialog: [say('window', '“' + c + '” is new. Come in!'), say('narr', 'Window “' + w + '”: ' + size + (size === 1 ? ' different badge.' : ' different badges.') + (record ? ' A new record!' : ''))],
       nar: { kid: 'The “' + c + '” badge is not in the window yet, so the window stretches to let it in. It now holds ' + size + (size === 1 ? ' passenger.' : ' different passengers.') + (record ? ' That is the longest so far!' : ''), builder: '"' + c + '" is not in the window, so write down last["' + c + '"] = ' + R + ' (its spot). Now size = ' + size + ' and best = ' + best + '.', expert: 'The window never holds a repeated badge. Updating best takes O(1), which is a fixed amount of work.' } });
@@ -60,7 +60,7 @@ function facesScene() {
     example: ['s = "abcabcbb"', 'answer = 3   ("abc")'],
     hints: ['“You want the longest stretch of items side by side that follows one rule. A window fits this better than a pair.”', '“When a badge repeats, must you start over? Or can the back of the window move forward?”', '“Write down where you last saw each badge. A repeat inside the window shows where the back should jump.”'],
     clues: ['only carriages side by side', 'longest stretch with a rule', 'one pass, no restarting'],
-    quizFb: ['“Checking every stretch means about n × n windows, and each is checked for repeats. That is far too slow for 50,000 passengers.”', '“Two markers from the ends are for pairs. Here we need a whole stretch of passengers side by side.”', '“Yes! A window grows at the front and moves at the back, and never goes backward.”', '“The notebook helps, and the window-keeper keeps one. But it does not tell you which stretch is longest. Use it with a window.”'],
+    quizFb: ['“Checking every stretch means about n × n windows. Here n is the number of passengers, so doubling n makes the work about 4 times bigger. Each window is also checked for repeats. That is far too slow for 50,000 passengers.”', '“Two markers from the ends are for pairs. Here we need a whole stretch of passengers side by side.”', '“Yes! A window grows at the front and moves at the back, and never goes backward.”', '“The notebook helps, and the window-keeper keeps one. But it does not tell you which stretch is longest. Use it with a window.”'],
     steps
   };
 }
@@ -74,7 +74,7 @@ function paintScene() {
   const tally = (c) => ['A', 'B'].map((x) => [x, String(count[x] || 0), x === c ? 'fresh' : '']);
   steps.push({ L: 0, R: 0, kind: 'intro', noFrame: true, best: 0, top: 0, board: tally(''),
     dialog: [say('narr', 'A wall has seven tiles: A A B A B B A. The painter may repaint only one tile.'), say('window', 'I put a frame around part of the wall. Any tile inside that is not the most common colour needs repainting.'), say('narr', 'The frame must never need more than one repaint.')],
-    nar: { kid: 'The window-keeper frames a stretch of wall. The painter can fix one tile. How long can a one-colour stretch get?', builder: 'For each new tile at spot right, add one to the count of its colour. Set top to the biggest count in the frame. Then size − top is how many tiles need repainting. If that is more than k (the repaints we can afford), move left by one. Then best = max(best, size), which keeps the larger of the two.', expert: 'The frame is valid when its size (right − left + 1) minus the count of its most common colour is at most k. The frame never gets smaller than the best size, so best never goes down.' } });
+    nar: { kid: 'The window-keeper frames a stretch of wall. The painter can fix one tile. How long can a one-colour stretch get?', builder: 'For each new tile at spot right, add one to the count of its colour. Set top to the biggest count in the frame. Then size − top is how many tiles need repainting. If that is more than k (the repaints we can afford), move left by one. Then best = max(best, size), which keeps the larger of the two.', expert: 'The frame is valid when its size minus the count of its most common colour is at most k. Here size is right − left + 1. The frame never gets smaller than the best size, so best never goes down.' } });
   s.forEach((c, R) => {
     count[c] = (count[c] || 0) + 1;
     top = Math.max(top, count[c]);
@@ -96,7 +96,7 @@ function paintScene() {
   });
   steps.push({ L: 0, R: 3, kind: 'found', best, top, board: tally(''), cells: s.map((x, i) => (i <= 3 ? (x === 'B' ? 'paint' : 'ok') : 'out')), frameAt: [0, 3],
     dialog: [say('window', 'The wall is finished.'), say('narr', 'The longest stretch after one repaint is 4 tiles. Repaint the B in “AABA” and you get “AAAA”.')],
-    nar: { kid: 'The best stretch is 4 tiles long: A A B A. Paint the B, and all four are one colour!', builder: 'return best = 4.', expert: 'One pass, and only 26 counters (one per letter), so the memory is fixed. Each tile enters the frame once and leaves at most once, so the time is O(n): the work grows in step with the wall length.' } });
+    nar: { kid: 'The best stretch is 4 tiles long: A A B A. Paint the B, and all four are one colour!', builder: 'return best = 4.', expert: 'One pass, and only 26 counters (one per letter), so the memory is fixed. Each tile enters the frame once and leaves at most once. So the time is O(n): the work grows in step with the wall length.' } });
   const T = { intro: ['Frame ready, one repaint allowed', 'plain'], grow: ['Fits → frame grows', 'cool'], slide: ['Too many repaints → frame slides', 'warn'], found: ['Longest stretch: 4', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -192,7 +192,7 @@ function facesRun(input) {
   let L = 0, best = 0, bestL = 0, bestR = 0;
   const book = (c, flag) => Object.keys(last).sort().map((k) => [k, String(last[k]), k === c ? flag : '']);
   steps.push(runStep('intro', { L: 0, R: 0, noFrame: true, best: 0, board: [] }, [say('narr', n + ' passengers board: ' + s.join(', ') + '. Find the longest run with no repeated badge.'), say('window', 'I grow my window one passenger at a time.')],
-    'The window grows at the front. If a badge repeats, the back of the window jumps forward.', 'left = 0, best = 0, last = {}.', 'Each passenger enters and leaves the window once: O(n).'));
+    'The window grows at the front. If a badge repeats, the back of the window jumps forward.', 'left = 0, best = 0, last = {} (a notebook of where each badge was last seen).', 'Each passenger enters and leaves the window once. That is O(n): the work grows in step with the number of passengers, n.'));
   s.forEach((c, R) => {
     const seenAt = c in last ? last[c] : -1, jump = seenAt >= L;
     if (jump) L = seenAt + 1;
@@ -204,10 +204,10 @@ function facesRun(input) {
     if (jump) cells[seenAt] = 'dup';
     if (jump) {
       steps.push(runStep('jump', { L, R, best, cells, board: book(c, 'hit') }, [say('window', 'Another “' + c + '”!'), say('narr', 'The old one sat at ' + seenAt + '. The back jumps to ' + L + '.')],
-        '“' + c + '” was already in the window, so the back jumps past the old “' + c + '”. Now the window is “' + w + '”.', 'last["' + c + '"] = ' + seenAt + ' is at or after left, so left = ' + L + '. best = ' + best + '.', 'The back jumps past the repeat in one move instead of creeping one step at a time.'));
+        '“' + c + '” was already in the window, so the back jumps past the old “' + c + '”. Now the window is “' + w + '”.', 'last["' + c + '"] = ' + seenAt + ' is at or after left, so the badge is inside the window. Then left = ' + L + ' (the back moves past it). best = ' + best + '.', 'The back jumps past the repeat in one move instead of creeping one step at a time.'));
     } else {
       steps.push(runStep('grow', { L, R, best, cells, board: book(c, 'fresh') }, [say('window', '“' + c + '” is new. Come in!'), say('narr', 'Window “' + w + '”: ' + size + (size === 1 ? ' badge.' : ' different badges.') + (record ? ' A new record!' : ''))],
-        '“' + c + '” is not in the window yet, so the window grows to ' + size + '.' + (record ? ' That is the longest so far.' : ''), 'last["' + c + '"] = ' + R + '; size = ' + size + ', best = ' + best + '.', 'Every badge between left and right is different.'));
+        '“' + c + '” is not in the window yet, so the window grows to ' + size + '.' + (record ? ' That is the longest so far.' : ''), 'last["' + c + '"] = ' + R + ' (write down its spot); size = ' + size + ', best = ' + best + '.', 'Every badge between left and right is different.'));
     }
   });
   const bestW = s.slice(bestL, bestR + 1).join('');
@@ -242,24 +242,24 @@ function stockRun(input) {
   const steps = [];
   let buy = 0, best = 0, bestBuy = -1, bestSell = -1;
   steps.push(runStep('intro', { L: 0, R: 0, best: 0, profit: 0 }, [say('narr', n + ' mornings of prices. Buy once, then sell once on a later morning.'), say('window', 'The back of my window is the cheapest morning so far. The front is today.')],
-    'The back of the window is the cheapest morning so far. The front is today.', 'buy = 0, best = 0.', 'Only the cheapest morning so far matters. That takes O(n) time and O(1) space.'));
+    'The back of the window is the cheapest morning so far. The front is today.', 'buy = 0 (the spot of the cheapest day so far), best = 0 (the biggest profit so far).', 'Only the cheapest morning so far matters. The work is O(n): it grows in step with the number of days, n. O(1) space means a small fixed amount of memory.'));
   for (let d = 1; d < n; d++) {
     if (p[d] < p[buy]) {
       const old = p[buy];
       buy = d;
       steps.push(runStep('cheaper', { L: buy, R: d, best, profit: 0 }, [say('window', 'Only ' + p[d] + ' today. That is cheaper than ' + old + '!'), say('narr', 'Then buy here instead.')],
-        p[d] + ' is the cheapest so far, so the buy day moves to day ' + (d + 1) + '.', 'prices[' + d + '] = ' + p[d] + ' is less than ' + old + ', so buy = ' + d + '.', 'A cheaper buy day is better than the old one for every later sale.'));
+        p[d] + ' is the cheapest so far, so the buy day moves to day ' + (d + 1) + '.', 'prices[' + d + '] = ' + p[d] + ' is less than ' + old + ', so buy = ' + d + ' (spots count from 0, so spot ' + d + ' is day ' + (d + 1) + ').', 'A cheaper buy day is better than the old one for every later sale.'));
     } else {
       const profit = p[d] - p[buy], record = profit > best;
       if (record) { best = profit; bestBuy = buy; bestSell = d; }
       steps.push(runStep('profit', { L: buy, R: d, best, profit }, [say('window', 'Bought at ' + p[buy] + ', sold today at ' + p[d] + ': ' + profit + '.'), say('narr', record ? 'A new best!' : 'The best is still ' + best + '.')],
-        'Bought at ' + p[buy] + ' and sold today at ' + p[d] + ' makes ' + profit + '.' + (record ? ' That is the best so far.' : ' The best is still ' + best + '.'), 'profit = ' + p[d] + ' − ' + p[buy] + ' = ' + profit + '; best = ' + best + '.', 'Only one sale matters each day: today against the cheapest earlier morning.'));
+        'Bought at ' + p[buy] + ' and sold today at ' + p[d] + ' makes ' + profit + '.' + (record ? ' That is the best so far.' : ' The best is still ' + best + '.'), 'profit = ' + p[d] + ' − ' + p[buy] + ' = ' + profit + ' (today’s price minus the buy price); best = ' + best + ' (the biggest profit so far).', 'Only one sale matters each day: today against the cheapest earlier morning.'));
     }
   }
   const made = bestBuy >= 0;
   steps.push(runStep('found', { L: made ? bestBuy : buy, R: made ? bestSell : buy, best, profit: best, done: true },
     [say('window', 'The week is over.'), say('narr', made ? 'Buy at ' + p[bestBuy] + ', sell at ' + p[bestSell] + '. Best profit: ' + best + '.' : 'No later morning cost more. The best profit is 0.')],
-    made ? 'The best plan: buy at ' + p[bestBuy] + ' and sell at ' + p[bestSell] + '. That makes ' + best + '.' : 'Prices never went up after a buy, so no trade makes money. The answer is 0.', 'return best = ' + best + '.', (n - 1) + ' comparisons, O(1) space.'));
+    made ? 'The best plan: buy at ' + p[bestBuy] + ' and sell at ' + p[bestSell] + '. That makes ' + best + '.' : 'Prices never went up after a buy, so no trade makes money. The answer is 0.', 'return best = ' + best + '.', (n - 1) + ' comparisons, one for each day after the first. O(1) space means a small fixed amount of memory.'));
   runFinish(steps, { intro: ['Day 1: nothing to sell yet', 'plain'], cheaper: ['Cheaper morning → move the buy day', 'cool'], profit: ['Sell today? Check the profit', 'warn'], found: ['Best profit: ' + best, 'ok'] }, (st) => {
     st.cells = p.map((_, i) => (st.done ? (made && (i === bestBuy || i === bestSell) ? 'best' : 'out') : i < st.L ? 'out' : i > st.R ? 'future' : i === st.L ? 'buy' : i === st.R ? 'cur' : 'in'));
     st.meter = { text: st.done ? 'best = ' + best : st.kind === 'profit' ? 'sell ' + p[st.R] + ' − buy ' + p[st.L] + ' = ' + st.profit : 'buy at ' + p[st.L], pct: (st.profit / top) * 100, mark: (st.best / top) * 100, markLabel: 'best so far ' + st.best };

@@ -5,7 +5,7 @@ const CS_LESSON_KEY = 'dsaviz-concept-lesson';
 // Play: the first step comes this soon after pressing Play. The stage sits under the step card and is never
 // taller than the screen below it (page px from the top of the page to the stage, plus a bottom margin).
 const PLAY_FIRST_MS = 900;
-const PLAY_STAGE_TOP = 300;
+const PLAY_STAGE_TOP = 330;
 function csMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
 function csReduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
 function csNow() { try { return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now(); } catch (e) { return Date.now(); } }
@@ -18,7 +18,7 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     const lesson = csLoadLesson();
-    this.state = { theme: loadTheme(), user: loadUser(), lesson, step: 0, param: null, playing: false, mobile: csMobile(), tab: CS_LESSONS[lesson].track, drawer: false, sayKey: 0 };
+    this.state = { theme: loadTheme(), user: loadUser(), lesson, step: 0, param: null, playing: false, mobile: csMobile(), tab: CS_LESSONS[lesson].track, drawer: false, sayKey: 0, listOpen: false };
     this.from = null; this.t0 = 0; this.cur = null;
   }
   componentDidMount() {
@@ -68,7 +68,7 @@ class Component extends DCLogic {
     const k = Math.max(0, Math.min(n - 1, step));
     if (k === this.state.step && L === this.state.lesson && P === this.state.param) return;
     const patch = { step: k, lesson: L, param: P, sayKey: this.state.sayKey + 1 };
-    if (L !== this.state.lesson) { patch.tab = CS_LESSONS[L].track; try { window.localStorage.setItem(CS_LESSON_KEY, CS_LESSONS[L].id); } catch (e) {} }
+    if (L !== this.state.lesson) { patch.listOpen = false; patch.tab = CS_LESSONS[L].track; try { window.localStorage.setItem(CS_LESSON_KEY, CS_LESSONS[L].id); } catch (e) {} }
     // Reaching the last step finishes the lesson: progress, streak and XP all come from DS.
     if (k === n - 1) DS.finishLesson('dsa:' + CS_LESSONS[L].id);
     this.ease();
@@ -114,17 +114,17 @@ class Component extends DCLogic {
     const nextI = li + 1 < CS_LESSONS.length ? li + 1 : -1;
     const atEnd = this.state.step === n - 1;
     const done = {}; DS.lessons().ids.forEach((id) => { done[id] = 1; });
-    return Object.assign({
+    const out = Object.assign({
       t, themeBtns: themeButtons(this, themeKey, t),
       L: {
-        desk: !mobile, mob: mobile, rootW: mobile ? 420 : 1440, rootH: mobile ? 'auto' : '900px', gutter: mobile ? 12 : 20,
+        desk: !mobile, mob: mobile, rootW: mobile ? 420 : 1440, rootH: 'auto', rootMin: mobile ? '0' : '900px', gutter: mobile ? 12 : 20,
         cols: mobile ? 'minmax(0, 1fr)' : '252px minmax(0, 1fr) 292px', trackWrap: mobile ? 'nowrap' : 'wrap',
         navPad: mobile ? '12px 16px' : '16px 14px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
         lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
-        mainPad: mobile ? '14px 16px' : '16px 20px', h1: mobile ? 24 : 30, titleWrap: mobile ? 'wrap' : 'nowrap', titleWs: mobile ? 'normal' : 'nowrap',
+        mainPad: mobile ? '16px 16px 0' : '16px 40px 0', h1: mobile ? 'var(--fs36)' : 'var(--fs56)', listPad: mobile ? '16px' : '24px', listCols: mobile ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))',
         canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'calc(100vh / var(--fit, 1) - ' + PLAY_STAGE_TOP + 'px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
-        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '12px 14px' : '14px 18px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 17 : 19,
-        asidePad: mobile ? '0 16px 24px' : '16px 16px 18px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
+        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '16px' : '24px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 18 : 20,
+        asidePad: mobile ? '16px 16px 32px' : '24px 40px 48px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
       },
       tracks: CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id)).map((tr) => {
         const on = this.state.tab === tr.id;
@@ -154,10 +154,15 @@ class Component extends DCLogic {
         setTimeout(() => { try { const cur = el.querySelector('[aria-current="step"]'); if (cur) { const li = cur.parentNode; const top = li.offsetTop; if (top < el.scrollTop || top + li.offsetHeight > el.scrollTop + el.clientHeight) el.scrollTop = Math.max(0, top - 8); } } catch (e) {} }, 0);
       },
       transcript: steps.map((s, i) => { const cur = i === this.state.step; return { n: i + 1, say: s.say, cur: cur ? 'step' : 'false', bar: cur ? t.accent : 'transparent', bg: cur ? t.surface : 'transparent', fg: cur ? t.text : t.text2, numFg: cur ? t.accent : t.muted, go: () => { this.stop(); this.go(i); } }; }),
+      cardParts: (mobile ? ['side', 'canvas'] : ['canvas', 'side']).map((k) => ({ canvas: k === 'canvas', side: k === 'side' })),
+      lessonsOpen: !!this.state.listOpen, lessonsRot: this.state.listOpen ? 180 : 0, lessonsLabel: 'All lessons',
+      toggleLessons: () => this.setState({ listOpen: !this.state.listOpen }),
+      main: atEnd ? (nextI >= 0 ? { text: 'Next lesson', off: false, go: () => { this.stop(); this.go(0, nextI, null); } } : { text: 'Last step', off: true, go: () => {} })
+        : { text: 'Next step', off: false, go: () => { this.stop(); this.go(this.state.step + 1); } },
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
-      ab: aboutVals(this, 'concept:' + lesson.id, typeof CONCEPT_ABOUT !== 'undefined' ? CONCEPT_ABOUT[lesson.id] : null, t, (ref) => { const i = CS_LESSONS.findIndex((x) => x.id === ref); return i < 0 ? null : { label: CS_LESSONS[i].title, go: () => { this.stop(); this.go(0, i, null); } }; }),
+      ab: aboutVals(this, 'concept:' + lesson.id, typeof CONCEPT_ABOUT !== 'undefined' ? CONCEPT_ABOUT[lesson.id] : null, t, (ref) => { const i = CS_LESSONS.findIndex((x) => x.id === ref); return i < 0 ? null : { label: CS_LESSONS[i].title, go: () => { this.stop(); this.go(0, i, null); } }; }, 'Lesson'),
       spd: speedVals(this), togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
       // Phones put the controls above the caption, so they stay put while captions change length.
       nowParts: mobile ? [{ ctrl: true, say: false }, { ctrl: false, say: true }] : [{ say: true, ctrl: false }, { say: false, ctrl: true }],
@@ -185,5 +190,7 @@ class Component extends DCLogic {
         items: lesson.tryIt.map((id) => { const r = CONCEPT_ROWS[id] || [id, '', '']; return { title: r[0], meta: [r[1], r[2]].filter(Boolean).join(' · '), href: solveHref(id), go: () => {} }; })
       }
     }, navVals(this, t, themeKey, 'ConceptLesson'));
+    out.ab.tabs.forEach((tb) => { const on = tb.on === 'true'; tb.line = on ? t.accent : 'transparent'; tb.fg = on ? t.text : t.muted; if (/^About/.test(tb.label)) tb.label = 'About'; });
+    return out;
   }
 }

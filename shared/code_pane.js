@@ -111,6 +111,45 @@ function paneCelebrate(anchor, t) {
   } catch (e) {}
 }
 
+// "Common questions": plain answers built from data every problem already has (facts, approaches, hints).
+// A question shows only when the data behind it exists; with nothing to say the fold is hidden.
+const FAQ_TIME = { 'O(1)': 'the same few steps, however big the input is', 'O(log n)': 'about as many steps as it takes to halve the input again and again', 'O(n)': 'about one look at each item', 'O(n log n)': 'about the work of sorting the input', 'O(n²)': 'a look at every pair of items' };
+const FAQ_SPACE = { 'O(1)': 'A few variables are enough. Do not copy the input.', 'O(n)': 'One extra list or table as big as the input is fine.', 'O(k)': 'A small extra list or table of size k is fine.' };
+function faqCosts(a) { return 'time ' + a.time + ', space ' + a.space; }
+function faqEdges(pid, best) {
+  const raw = typeof PROBLEM_FACTS !== 'undefined' && PROBLEM_FACTS[pid] ? PROBLEM_FACTS[pid][5] || [] : [];
+  const out = [];
+  raw.forEach((c) => {
+    if (c[0] === 'len' && c[2] === 0) out.push('The input can be empty, so test an empty one.');
+    else if (c[0] === 'len' && c[2] === 1) out.push('The smallest input has one item, so test that.');
+    else if (c[0] === 'val' && c[2] < 0) out.push('Numbers can be negative, so try some.');
+    else if (c[0] === 'val' && c[2] === 0) out.push('Zero is allowed, so try it.');
+  });
+  const uniq = out.filter((x, i) => out.indexOf(x) === i).slice(0, 3);
+  const bigger = raw.some((c) => c[0] === 'len' && c[3] >= 1000);
+  if (bigger) uniq.push('The biggest input is large, so check your code is fast enough.');
+  if (best && best.pitfalls) best.pitfalls.slice(0, 2).forEach((p) => uniq.push('Common slip: ' + p));
+  return uniq;
+}
+function faqFor(pid) {
+  const f = typeof problemFacts === 'function' ? problemFacts(pid) : null;
+  const list = (typeof APPROACHES !== 'undefined' && APPROACHES[pid]) || [];
+  const best = list.length ? list[list.length - 1] : null;
+  const slow = list.find((a) => a.slow);
+  const H = typeof hintsFor === 'function' ? hintsFor(pid) : null;
+  const items = [];
+  if (H && H.hints && H.hints[0]) items.push({ q: 'Where do I start?', a: H.hints[0] });
+  if (f && f.time) {
+    const how = FAQ_TIME[f.time] ? ' That means ' + FAQ_TIME[f.time] + '.' : '';
+    const brute = slow ? ' Trying everything (' + slow.name.toLowerCase() + ') costs ' + slow.time + ' time, which is too slow for the biggest inputs.' : '';
+    items.push({ q: 'How fast does it need to be?', a: 'Aim for ' + f.time + ' time.' + how + brute });
+  }
+  if (f && f.space) items.push({ q: 'How much extra memory is fine?', a: 'Aim for ' + f.space + ' extra space. ' + (FAQ_SPACE[f.space] || 'Anything about that size is fine.') + (f.note ? ' ' + f.note.charAt(0).toUpperCase() + f.note.slice(1) + '.' : '') });
+  const edges = faqEdges(pid, best);
+  if (edges.length) items.push({ q: 'Which edge cases should I test?', a: edges.join(' ') });
+  if (list.length > 1) items.push({ q: 'Is there more than one way to solve it?', a: 'Yes, ' + list.length + ', slowest first: ' + list.map((a) => a.name + ' (' + faqCosts(a) + ')').join('; ') + '. The Approaches section shows each one with code.' });
+  return items.length >= 2 ? items.slice(0, 5) : [];
+}
 class CodeRunner {
   constructor(host, pid, opts) {
     this.host = host;
@@ -507,8 +546,10 @@ class CodeRunner {
     const hv = this.opts.single ? null : this.historyVals(t), hvAll = hv || this.historyVals(t);
     const inHistory = !!hv && s.view === 'history';
     const mod = paneMac() ? '⌘' : 'Ctrl';
+    const faqItems = faqFor(this.pid);
     return {
       ref: this.ref,
+      faq: { has: faqItems.length > 0, items: faqItems },
       // Code and History tabs (History is not offered in the single-button mode)
       tabs: !!hv, hist: hvAll, inHistory, inCode: !inHistory, editorShow: inHistory ? 'none' : 'block',
       viewRole: hv ? 'tabpanel' : 'group', viewName: inHistory ? 'Submission history' : 'Code editor',
@@ -529,7 +570,7 @@ class CodeRunner {
       toggleClock: () => (s.clockOn ? this.pauseClock() : this.startClock()),
       clockToggleLabel: s.clockOn ? 'Pause' : 'Resume', clockToggleAria: s.clockOn ? 'Pause the timer' : 'Resume the timer', canToggleClock: !solved,
       copy: () => this.copy(), copyLabel: s.copied ? 'Copied' : 'Copy',
-      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset code', resetBorder: s.confirmReset ? t.accent : t.line,
+      reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset code', resetBorder: s.confirmReset ? t.accent : 'transparent',
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
       runnable, notRunnable: hasTests && !runnable, busy: s.busy,
       notRunnableMsg: hasTests && spec.langs && RUNNABLE[lang] ? spec.langNote || 'This one runs in ' + spec.langs.map((k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1]).join(' and ') + ' here. Switch language to run it.' : 'Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.',

@@ -451,6 +451,49 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </section>
 </sc-for>
 
+<section id="cases" aria-labelledby="cx-h-cases" class="ds-box" style="border-radius: 16px; background: {{t.surface}}; overflow: hidden">
+<div style="position: relative; min-height: 72px; box-sizing: border-box; padding: 16px 24px; display: flex; align-items: center" data-m="pad">
+<h2 id="cx-h-cases" style="margin: 0; font-family: {{t.body}}; font-size: var(--fs32); line-height: 1.1; font-weight: 600">Best, average, worst</h2>
+<button class="ds-hit" aria-expanded="{{bw.open}}" aria-labelledby="cx-h-cases" onClick="{{bw.toggle}}" style="position: absolute; inset: 0; width: 100%; padding: 0 24px; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: flex-end"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{bw.turn}}; transition: transform 0.15s"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+<sc-if value="{{bw.open}}" hint-placeholder-val="{{ false }}">
+<div data-m="p16" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
+<p style="margin: 0; max-width: 720px; font-size: var(--fs17); line-height: 28px; color: {{t.text2}}">One search can be quick or slow. It depends on where the number hides. Look for one number in this row.</p>
+<div role="tablist" aria-label="Case" data-m="wrap" style="display: flex; flex-wrap: wrap; gap: 0 24px">
+<sc-for list="{{bw.tabs}}" as="bwt" hint-placeholder-count="3"><button role="tab" aria-selected="{{bwt.on}}" onClick="{{bwt.pick}}" style="min-height: 44px; padding: 0; background: transparent; border: 0; border-bottom: 2px solid {{bwt.line}}; color: {{bwt.fg}}; cursor: pointer; font-family: inherit; font-size: var(--fs17); font-weight: 600">{{bwt.label}}</button></sc-for>
+</div>
+<ul aria-label="The row" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; max-width: 760px">
+<sc-for list="{{bw.cells}}" as="bwc" hint-placeholder-count="8"><li class="ds-box" style="min-height: 48px; border-radius: 12px; background: {{bwc.bg}}; color: {{bwc.fg}}; display: flex; align-items: center; justify-content: center; font-family: {{t.mono}}; font-size: var(--fs17); font-weight: 600">{{bwc.t}}</li></sc-for>
+</ul>
+<p aria-live="polite" style="margin: 0; font-size: var(--fs20); line-height: 30px; font-weight: 600">{{bw.checks}}. {{bw.say}}</p>
+<p style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 700; color: {{t.accent}}">{{bw.big}}</p>
+<p style="margin: 0; max-width: 720px; font-size: var(--fs17); line-height: 28px; color: {{t.text2}}">{{bw.note}}</p>
+</div>
+</sc-if>
+</section>
+
+<section id="mistakes" aria-labelledby="cx-h-mistakes" class="ds-box" style="border-radius: 16px; background: {{t.surface}}; overflow: hidden">
+<div style="position: relative; min-height: 72px; box-sizing: border-box; padding: 16px 24px; display: flex; align-items: center" data-m="pad">
+<h2 id="cx-h-mistakes" style="margin: 0; font-family: {{t.body}}; font-size: var(--fs32); line-height: 1.1; font-weight: 600">Common slow habits</h2>
+<button class="ds-hit" aria-expanded="{{sh.open}}" aria-labelledby="cx-h-mistakes" onClick="{{sh.toggle}}" style="position: absolute; inset: 0; width: 100%; padding: 0 24px; background: transparent; color: {{t.muted}}; cursor: pointer; display: flex; align-items: center; justify-content: flex-end"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{sh.turn}}; transition: transform 0.15s"><path d="M6 9l6 6 6-6"></path></svg></button>
+</div>
+<sc-if value="{{sh.open}}" hint-placeholder-val="{{ false }}">
+<div data-m="p16" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 24px">
+<p style="margin: 0; max-width: 720px; font-size: var(--fs17); line-height: 28px; color: {{t.text2}}">These habits look harmless and cost a lot. Each one has a quick fix.</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 24px">
+<sc-for list="{{sh.items}}" as="shi" hint-placeholder-count="6"><li style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: var(--fs20); line-height: 30px; font-weight: 600">{{shi.title}}</span>
+<span style="margin: 0; max-width: 720px; font-size: var(--fs17); line-height: 28px; color: {{t.text2}}">{{shi.why}}</span>
+<div data-m="col" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 760px">
+<pre aria-label="Slow" style="margin: 0; padding: 16px; border-radius: 12px; background: {{t.codeBg}}; color: {{t.text}}; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 24px; overflow-x: auto; box-sizing: border-box">{{shi.slow}}</pre>
+<pre aria-label="Quick" style="margin: 0; padding: 16px; border-radius: 12px; background: {{t.codeBg}}; color: {{t.ok}}; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 24px; overflow-x: auto; box-sizing: border-box">{{shi.fast}}</pre>
+</div>
+</li></sc-for>
+</ul>
+</div>
+</sc-if>
+</section>
+
 <section id="target" aria-labelledby="cx-h-target" class="ds-box" data-m="p16" style="border-radius: 16px; background: {{t.surface}}; padding: 24px; display: flex; flex-direction: column; gap: 24px">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <h2 id="cx-h-target" style="margin: 0; font-family: {{t.body}}; font-size: var(--fs32); line-height: 1.1; font-weight: 600">Input size tells you the target</h2>
@@ -2234,7 +2277,7 @@ const CX_SPACE_FACTS = [
 
 // ---- d) tables. Complexity text is written without O( ); the rank orders the sorting of a column.
 const CX_RANK = {
-  '1': 0, 'α(n)': 0.5, 'log n': 1, 'k': 2, 'h': 2, 'n': 3, 'V': 3, 'V + E': 3, 'n + k': 3, 'd(n + k)': 3.5, 'n log k': 3.8, 'n log n': 4, 'E log V': 4, 'E log E': 4,
+  '1': 0, 'α(n)': 0.5, 'log n': 1, 'k': 2, 'h': 2, 'n': 3, 'n + m': 3.1, 'min(n, m)': 2.9, 'V': 3, 'V + E': 3, 'n + k': 3, 'd(n + k)': 3.5, 'n log k': 3.8, 'n log n': 4, 'E log V': 4, 'E log E': 4,
   '(V + E) log V': 4.2, 'n k': 4.5, 'n m': 5, 'n²': 5, 'V²': 5, 'V E': 5.5, 'n³': 6, 'V³': 6, '2ⁿ': 7, 'n!': 8, '—': 99
 };
 function cxCell(text, rank) {
@@ -2300,10 +2343,54 @@ const CX_PATTERNS = [
   { name: 'Backtracking', group: 'Search and choice', time: '2ⁿ to n!', space: 'n', note: 'Tries every choice. Space is the depth of the choices.', rank: 7.5 },
   { name: 'Dynamic Programming', group: 'Search and choice', time: 'n²', space: 'n to n²', note: 'Number of states times the work for each state.', spaceRank: 4.5 }
 ];
+// Everyday Python actions, [average, worst]. Checked against the official page "Time complexity of built-in types" (CPython).
+const CX_PY = [
+  { name: 'items.append(x)', group: 'List', note: 'Amortized. A rare resize copies the list, but it averages out.', avg: '1', worst: '1' },
+  { name: 'items.pop()', group: 'List', note: 'Takes the last item.', avg: '1', worst: '1' },
+  { name: 'items.pop(0)', group: 'List', note: 'Every other item slides one place left.', avg: 'n', worst: 'n' },
+  { name: 'items.insert(i, x)', group: 'List', note: 'The items after i slide one place right.', avg: 'n', worst: 'n' },
+  { name: 'items[i]', group: 'List', note: 'Read or change one slot.', avg: '1', worst: '1' },
+  { name: 'x in items', group: 'List', note: 'Looks at items one by one.', avg: 'n', worst: 'n' },
+  { name: 'items.sort()', group: 'List', note: 'Timsort. A nearly sorted list is faster.', avg: 'n log n', worst: 'n log n' },
+  { name: 'items[a:b]', group: 'List', note: 'Makes a copy. k is the length of the slice.', avg: 'k', worst: 'k' },
+  { name: 'len(items)', group: 'List', note: 'The size is stored, so nothing is counted.', avg: '1', worst: '1' },
+  { name: 'd[key]', group: 'Dict', note: 'Read or change one key. Worst case needs many keys in one slot.', avg: '1', worst: 'n' },
+  { name: 'key in d', group: 'Dict', note: 'Asks the hash table. No walk through all keys.', avg: '1', worst: 'n' },
+  { name: 'del d[key]', group: 'Dict', note: 'Removes one key.', avg: '1', worst: 'n' },
+  { name: 'for key in d', group: 'Dict', note: 'Visits every key once.', avg: 'n', worst: 'n' },
+  { name: 's.add(x)', group: 'Set', note: 'Works like a dict with keys only.', avg: '1', worst: 'n' },
+  { name: 'x in s', group: 'Set', note: 'The reason to turn a list into a set.', avg: '1', worst: 'n' },
+  { name: 's | t', group: 'Set', note: 'Union. n and m are the two set sizes.', avg: 'n + m', worst: 'n + m' },
+  { name: 's & t', group: 'Set', note: 'Intersection. It loops over the smaller set.', avg: 'min(n, m)', worst: 'n m' },
+  { name: 'd.append(x), d.appendleft(x)', group: 'Deque', note: 'Adds at either end.', avg: '1', worst: '1' },
+  { name: 'd.pop(), d.popleft()', group: 'Deque', note: 'Removes from either end. The reason to use a deque for queues.', avg: '1', worst: '1' },
+  { name: 'd[i] in the middle', group: 'Deque', note: 'Quick near the ends, slow in the middle.', avg: 'n', worst: 'n' }
+];
+
+// Slow habits that look harmless. Each has a plain reason and a fix.
+const CX_MISTAKES = [
+  { title: 'Searching a list inside a loop', slow: 'for x in a:\n    if x in b: ...', fast: 'seen = set(b)\nfor x in a:\n    if x in seen: ...', why: 'Each check walks all of b. That is n times n steps. A set answers in one step.' },
+  { title: 'Removing from the front of a list', slow: 'items.pop(0)', fast: 'queue.popleft()  # a deque', why: 'Every item slides one place left. A deque removes from the front for free.' },
+  { title: 'Sorting inside a loop', slow: 'for q in qs:\n    items.sort()', fast: 'items.sort()\nfor q in qs: ...', why: 'Sorting costs n log n each time. Sort once, then reuse the result.' },
+  { title: 'Slicing in a recursive call', slow: 'def f(a):\n    f(a[1:])', fast: 'def f(a, i):\n    f(a, i + 1)', why: 'A slice copies its items. Passing a start index copies nothing.' },
+  { title: 'Using one n for two inputs', slow: 'for x in a:\n    for y in b: ...', fast: '# cost: O(a * b)', why: 'Two inputs have two sizes. Name both, so you do not claim n squared by mistake.' },
+  { title: 'Gluing text together in a loop', slow: 's = ""\nfor w in words:\n    s += w', fast: 's = "".join(words)', why: 'Each glue may copy the whole text so far. Join builds it once.' }
+];
+
+// Best, average and worst case of one search: find a number in a row of 8.
+const CX_CASES = [
+  { id: 'best', label: 'Best case', target: 0, checks: '1 check', say: 'The number you want is first. You look once and stop.', big: 'O(1)' },
+  { id: 'avg', label: 'Average case', target: 3, checks: '4 checks', say: 'The number sits somewhere in the row. On average you look at about half the items.', big: 'O(n)' },
+  { id: 'worst', label: 'Worst case', target: -1, checks: '8 checks', say: 'The number is last, or missing. You look at every item before you know.', big: 'O(n)' }
+];
+const CX_CASE_ROW = [14, 7, 22, 3, 18, 9, 31, 12];
+const CX_CASE_NOTE = 'Pick the worst case when you need a promise. Pick the average when the worst case is rare.';
+
 const CX_TABS = [
   { id: 'ds', title: 'Data structures', intro: 'Cost of common actions with n items. Switch between the average and the worst case.' },
   { id: 'sort', title: 'Sorting algorithms', intro: 'Time to sort n items. Stable means equal items keep their order.' },
   { id: 'graph', title: 'Graph algorithms', intro: 'V is the number of nodes and E is the number of edges between them.' },
+  { id: 'py', title: 'Python built-ins', intro: 'Cost of everyday Python actions, from the official docs. n is the size of what you act on.' },
   { id: 'patterns', title: 'Our 16 patterns', intro: 'The usual cost of each pattern. Your problem may differ a little.' }
 ];
 // Table view: { cols: [{ label, kind }], rows: [{ group, hay, cells: [{ t, sub, r }] }], groups }.
@@ -2334,6 +2421,13 @@ function cxTable(id, opt) {
     t.groups = ['Search', 'Shortest path', 'Spanning tree', 'Order and sets'];
     return t;
   }
+  if (id === 'py') {
+    const t = mk(['Action', 'Average', 'Worst'].map((l, i) => ({ label: l, kind: i ? 'cx' : 'text' })), CX_PY.map((d) => ({
+      group: d.group, cells: [name(d.name, d.note), cx(d.avg), cx(d.worst)]
+    })));
+    t.groups = ['List', 'Dict', 'Set', 'Deque'];
+    return t;
+  }
   const t = mk(['Pattern', 'Typical time', 'Typical space', 'Note'].map((l, i) => ({ label: l, kind: i === 1 || i === 2 ? 'cx' : 'text' })), CX_PATTERNS.map((p) => ({
     group: p.group, cells: [name(p.name, ''), p.rank !== undefined ? cxCell(p.time, p.rank) : cx(p.time), p.spaceRank !== undefined ? cxCell(p.space, p.spaceRank) : cx(p.space), { t: p.note, r: p.note.toLowerCase() }]
   })));
@@ -2360,7 +2454,7 @@ function cxTargetSteps(i) {
 // @@END-COMPLEXITY@@
 // ---- page ----
 const CX_RULES = cxRules();
-const CX_JUMPS = [['Growth', 'grow'], ['How to work it out', 'rules'], ['Memory', 'space'], ['Data structures', 'ds'], ['Sorting', 'sort'], ['Graphs', 'graph'], ['Patterns', 'patterns'], ['Input size', 'target']];
+const CX_JUMPS = [['Growth', 'grow'], ['How to work it out', 'rules'], ['Memory', 'space'], ['Data structures', 'ds'], ['Sorting', 'sort'], ['Graphs', 'graph'], ['Python', 'py'], ['Patterns', 'patterns'], ['Best and worst', 'cases'], ['Slow habits', 'mistakes'], ['Input size', 'target']];
 const CX_DASH = { const: '2 6', log: '10 5', lin: 'none', nlog: '14 4 2 4', quad: 'none', exp: '6 4', fact: 'none' };
 function cxVw() { try { return window.innerWidth; } catch (e) { return 1440; } }
 function cxPalette(t) {
@@ -2379,7 +2473,7 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = { theme: loadTheme(), vw: cxVw(), ni: CX_N_DEFAULT, sel: 'quad', rule: 0, step: 0, playing: false, speed: loadSpeed(), spaceTab: 'mem', spaceEx: 0, depth: 4,
-      open: { ds: true }, q: {}, grp: {}, sort: {}, worst: false, tgt: '100000' };
+      open: { ds: true }, q: {}, grp: {}, sort: {}, worst: false, cse: 0, tgt: '100000' };
   }
   componentDidMount() {
     listenTheme(this);
@@ -2397,7 +2491,7 @@ class Component extends DCLogic {
     try { window.removeEventListener('resize', this.onResize); } catch (e) {}
   }
   jump(id) {
-    if (CX_TABS.some((x) => x.id === id)) this.setState({ open: Object.assign({}, this.state.open, { [id]: true }) });
+    if (CX_TABS.some((x) => x.id === id) || id === 'cases' || id === 'mistakes') this.setState({ open: Object.assign({}, this.state.open, { [id]: true }) });
     clearTimeout(this.scrollTimer);
     this.scrollTimer = setTimeout(() => {
       try {
@@ -2533,6 +2627,20 @@ class Component extends DCLogic {
       say: okN ? 'For n = ' + cxGroup(nv) + ', aim for ' + CX_TARGETS[ti].cx + (ti === CX_TARGETS.length - 1 ? '.' : ' or faster.') : 'Type a whole number to see your goal.'
     };
 
+    // f) best/average/worst and slow habits
+    const ci = S.cse || 0, cc0 = CX_CASES[ci];
+    const checked = [1, 4, 8][ci];
+    const bw = {
+      open: !!S.open.cases, turn: S.open.cases ? 'rotate(180deg)' : 'none', toggle: () => this.setState({ open: Object.assign({}, S.open, { cases: !S.open.cases }) }),
+      tabs: CX_CASES.map((c, i) => Object.assign({ label: c.label, pick: () => this.setState({ cse: i }) }, tab(i === ci))),
+      cells: CX_CASE_ROW.map((v, i) => ({ t: String(v), bg: i === cc0.target ? t.accent : (i < checked ? t.sunk : 'transparent'), fg: i === cc0.target ? t.onAccent : (i < checked ? t.text : t.muted) })),
+      checks: cc0.checks.charAt(0).toUpperCase() + cc0.checks.slice(1), say: cc0.say, big: cc0.big, note: CX_CASE_NOTE
+    };
+    const sh = {
+      open: !!S.open.mistakes, turn: S.open.mistakes ? 'rotate(180deg)' : 'none', toggle: () => this.setState({ open: Object.assign({}, S.open, { mistakes: !S.open.mistakes }) }),
+      items: CX_MISTAKES
+    };
+
     return Object.assign({
       t, themeBtns: themeButtons(this, themeKey, t),
       jumps: CX_JUMPS.map(([label, id]) => ({ label, go: () => this.jump(id) })),
@@ -2544,6 +2652,7 @@ class Component extends DCLogic {
       spaceTabs: [['mem', 'Extra memory'], ['stack', 'The call stack']].map(([k, l]) => Object.assign({ label: l, pick: () => this.setState({ spaceTab: k }) }, tab(S.spaceTab === k))),
       sv, spaceFacts: CX_SPACE_FACTS.map(([c, text]) => ({ cx: c, text })),
       tables: CX_TABS.map((d) => this.tableVM(d, t)),
+      bw, sh,
       tg, targets: CX_TARGETS.map((r, i) => ({ label: r.label, cx: r.cx, idea: r.idea, bg: i === ti ? t.sunk : 'transparent', fg: i === ti ? t.accent : t.text }))
     }, { why: whyVals(whyHub('complexity')) }, navVals(this, t, themeKey, 'Complexity'));
   }

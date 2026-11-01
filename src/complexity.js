@@ -322,7 +322,7 @@ const CX_SPACE_FACTS = [
 
 // ---- d) tables. Complexity text is written without O( ); the rank orders the sorting of a column.
 const CX_RANK = {
-  '1': 0, 'α(n)': 0.5, 'log n': 1, 'k': 2, 'h': 2, 'n': 3, 'V': 3, 'V + E': 3, 'n + k': 3, 'd(n + k)': 3.5, 'n log k': 3.8, 'n log n': 4, 'E log V': 4, 'E log E': 4,
+  '1': 0, 'α(n)': 0.5, 'log n': 1, 'k': 2, 'h': 2, 'n': 3, 'n + m': 3.1, 'min(n, m)': 2.9, 'V': 3, 'V + E': 3, 'n + k': 3, 'd(n + k)': 3.5, 'n log k': 3.8, 'n log n': 4, 'E log V': 4, 'E log E': 4,
   '(V + E) log V': 4.2, 'n k': 4.5, 'n m': 5, 'n²': 5, 'V²': 5, 'V E': 5.5, 'n³': 6, 'V³': 6, '2ⁿ': 7, 'n!': 8, '—': 99
 };
 function cxCell(text, rank) {
@@ -388,10 +388,54 @@ const CX_PATTERNS = [
   { name: 'Backtracking', group: 'Search and choice', time: '2ⁿ to n!', space: 'n', note: 'Tries every choice. Space is the depth of the choices.', rank: 7.5 },
   { name: 'Dynamic Programming', group: 'Search and choice', time: 'n²', space: 'n to n²', note: 'Number of states times the work for each state.', spaceRank: 4.5 }
 ];
+// Everyday Python actions, [average, worst]. Checked against the official page "Time complexity of built-in types" (CPython).
+const CX_PY = [
+  { name: 'items.append(x)', group: 'List', note: 'Amortized. A rare resize copies the list, but it averages out.', avg: '1', worst: '1' },
+  { name: 'items.pop()', group: 'List', note: 'Takes the last item.', avg: '1', worst: '1' },
+  { name: 'items.pop(0)', group: 'List', note: 'Every other item slides one place left.', avg: 'n', worst: 'n' },
+  { name: 'items.insert(i, x)', group: 'List', note: 'The items after i slide one place right.', avg: 'n', worst: 'n' },
+  { name: 'items[i]', group: 'List', note: 'Read or change one slot.', avg: '1', worst: '1' },
+  { name: 'x in items', group: 'List', note: 'Looks at items one by one.', avg: 'n', worst: 'n' },
+  { name: 'items.sort()', group: 'List', note: 'Timsort. A nearly sorted list is faster.', avg: 'n log n', worst: 'n log n' },
+  { name: 'items[a:b]', group: 'List', note: 'Makes a copy. k is the length of the slice.', avg: 'k', worst: 'k' },
+  { name: 'len(items)', group: 'List', note: 'The size is stored, so nothing is counted.', avg: '1', worst: '1' },
+  { name: 'd[key]', group: 'Dict', note: 'Read or change one key. Worst case needs many keys in one slot.', avg: '1', worst: 'n' },
+  { name: 'key in d', group: 'Dict', note: 'Asks the hash table. No walk through all keys.', avg: '1', worst: 'n' },
+  { name: 'del d[key]', group: 'Dict', note: 'Removes one key.', avg: '1', worst: 'n' },
+  { name: 'for key in d', group: 'Dict', note: 'Visits every key once.', avg: 'n', worst: 'n' },
+  { name: 's.add(x)', group: 'Set', note: 'Works like a dict with keys only.', avg: '1', worst: 'n' },
+  { name: 'x in s', group: 'Set', note: 'The reason to turn a list into a set.', avg: '1', worst: 'n' },
+  { name: 's | t', group: 'Set', note: 'Union. n and m are the two set sizes.', avg: 'n + m', worst: 'n + m' },
+  { name: 's & t', group: 'Set', note: 'Intersection. It loops over the smaller set.', avg: 'min(n, m)', worst: 'n m' },
+  { name: 'd.append(x), d.appendleft(x)', group: 'Deque', note: 'Adds at either end.', avg: '1', worst: '1' },
+  { name: 'd.pop(), d.popleft()', group: 'Deque', note: 'Removes from either end. The reason to use a deque for queues.', avg: '1', worst: '1' },
+  { name: 'd[i] in the middle', group: 'Deque', note: 'Quick near the ends, slow in the middle.', avg: 'n', worst: 'n' }
+];
+
+// Slow habits that look harmless. Each has a plain reason and a fix.
+const CX_MISTAKES = [
+  { title: 'Searching a list inside a loop', slow: 'for x in a:\n    if x in b: ...', fast: 'seen = set(b)\nfor x in a:\n    if x in seen: ...', why: 'Each check walks all of b. That is n times n steps. A set answers in one step.' },
+  { title: 'Removing from the front of a list', slow: 'items.pop(0)', fast: 'queue.popleft()  # a deque', why: 'Every item slides one place left. A deque removes from the front for free.' },
+  { title: 'Sorting inside a loop', slow: 'for q in qs:\n    items.sort()', fast: 'items.sort()\nfor q in qs: ...', why: 'Sorting costs n log n each time. Sort once, then reuse the result.' },
+  { title: 'Slicing in a recursive call', slow: 'def f(a):\n    f(a[1:])', fast: 'def f(a, i):\n    f(a, i + 1)', why: 'A slice copies its items. Passing a start index copies nothing.' },
+  { title: 'Using one n for two inputs', slow: 'for x in a:\n    for y in b: ...', fast: '# cost: O(a * b)', why: 'Two inputs have two sizes. Name both, so you do not claim n squared by mistake.' },
+  { title: 'Gluing text together in a loop', slow: 's = ""\nfor w in words:\n    s += w', fast: 's = "".join(words)', why: 'Each glue may copy the whole text so far. Join builds it once.' }
+];
+
+// Best, average and worst case of one search: find a number in a row of 8.
+const CX_CASES = [
+  { id: 'best', label: 'Best case', target: 0, checks: '1 check', say: 'The number you want is first. You look once and stop.', big: 'O(1)' },
+  { id: 'avg', label: 'Average case', target: 3, checks: '4 checks', say: 'The number sits somewhere in the row. On average you look at about half the items.', big: 'O(n)' },
+  { id: 'worst', label: 'Worst case', target: -1, checks: '8 checks', say: 'The number is last, or missing. You look at every item before you know.', big: 'O(n)' }
+];
+const CX_CASE_ROW = [14, 7, 22, 3, 18, 9, 31, 12];
+const CX_CASE_NOTE = 'Pick the worst case when you need a promise. Pick the average when the worst case is rare.';
+
 const CX_TABS = [
   { id: 'ds', title: 'Data structures', intro: 'Cost of common actions with n items. Switch between the average and the worst case.' },
   { id: 'sort', title: 'Sorting algorithms', intro: 'Time to sort n items. Stable means equal items keep their order.' },
   { id: 'graph', title: 'Graph algorithms', intro: 'V is the number of nodes and E is the number of edges between them.' },
+  { id: 'py', title: 'Python built-ins', intro: 'Cost of everyday Python actions, from the official docs. n is the size of what you act on.' },
   { id: 'patterns', title: 'Our 16 patterns', intro: 'The usual cost of each pattern. Your problem may differ a little.' }
 ];
 // Table view: { cols: [{ label, kind }], rows: [{ group, hay, cells: [{ t, sub, r }] }], groups }.
@@ -420,6 +464,13 @@ function cxTable(id, opt) {
       group: g.group, cells: [name(g.name, ''), cx(g.time), cx(g.space), { t: g.best, r: g.best.toLowerCase() }]
     })));
     t.groups = ['Search', 'Shortest path', 'Spanning tree', 'Order and sets'];
+    return t;
+  }
+  if (id === 'py') {
+    const t = mk(['Action', 'Average', 'Worst'].map((l, i) => ({ label: l, kind: i ? 'cx' : 'text' })), CX_PY.map((d) => ({
+      group: d.group, cells: [name(d.name, d.note), cx(d.avg), cx(d.worst)]
+    })));
+    t.groups = ['List', 'Dict', 'Set', 'Deque'];
     return t;
   }
   const t = mk(['Pattern', 'Typical time', 'Typical space', 'Note'].map((l, i) => ({ label: l, kind: i === 1 || i === 2 ? 'cx' : 'text' })), CX_PATTERNS.map((p) => ({

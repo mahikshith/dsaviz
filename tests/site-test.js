@@ -145,6 +145,9 @@ const layout = () => {
   const texts = [], overlaps = [], clipped = [], gaps = [];
   for (const el of root.querySelectorAll('*')) {
     if (el.closest('svg,[data-drawer],[data-pn-wrap],[aria-hidden="true"]')) continue;
+    // Text inside a closed fold is not on screen, though it still reports boxes.
+    const fold = el.closest('details:not([open])');
+    if (fold && !el.closest('summary')) continue;
     const own = [...el.childNodes].filter((n) => n.nodeType === 3 && n.nodeValue.trim());
     if (!own.length || !shown(el)) continue;
     // Tight box: the union of the element's own text nodes, from Range rects rather than the element box.

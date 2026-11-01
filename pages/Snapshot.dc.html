@@ -287,13 +287,13 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="display: flex; flex-direction: column; gap: 24px">
 <sc-for list="{{sections}}" as="sec" hint-placeholder-count="5">
 <section aria-labelledby="{{sec.hid}}" style="border-radius: 16px; background: {{t.surface}}; overflow: hidden">
-<h2 id="{{sec.hid}}" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.1; font-weight: 600"><button aria-expanded="{{sec.open}}" onClick="{{sec.toggle}}" data-sn="pad row" style="width: 100%; min-height: 72px; box-sizing: border-box; padding: 16px 24px; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 16px; font: inherit"><span>{{sec.title}}</span><span style="flex-shrink: 0; display: flex; align-items: center; gap: 16px; color: {{t.muted}}"><span style="font-family: {{t.body}}; font-size: var(--fs16); font-weight: 500; text-transform: none; letter-spacing: normal">{{sec.count}}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{sec.turn}}; transition: transform 0.15s"><path d="M6 9l6 6 6-6"></path></svg></span></button></h2>
+<h2 id="{{sec.hid}}" style="margin: 0; font-family: {{t.body}}; font-size: var(--fs32); line-height: 1.1; font-weight: 600"><button aria-expanded="{{sec.open}}" onClick="{{sec.toggle}}" data-sn="pad row" style="width: 100%; min-height: 72px; box-sizing: border-box; padding: 16px 24px; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 16px; font: inherit"><span>{{sec.title}}</span><span style="flex-shrink: 0; display: flex; align-items: center; gap: 16px; color: {{t.muted}}"><span style="font-family: {{t.body}}; font-size: var(--fs16); font-weight: 500; text-transform: none; letter-spacing: normal">{{sec.count}}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: {{sec.turn}}; transition: transform 0.15s"><path d="M6 9l6 6 6-6"></path></svg></span></button></h2>
 <sc-if value="{{sec.open}}" hint-placeholder-val="{{ false }}">
-<ul style="margin: 0; padding: 0; list-style: none">
+<ul data-sn="pad" style="margin: 0; padding: 0 24px 24px; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 16px">
 <sc-for list="{{sec.rows}}" as="r" hint-placeholder-count="4">
-<li style="border-top: 1px solid {{t.line}}">
-<button aria-expanded="{{r.open}}" onClick="{{r.toggle}}" data-sn="pad row" style="width: 100%; box-sizing: border-box; padding: 16px 24px; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 16px; font: inherit">
-<span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); line-height: 28px; font-weight: 600">{{r.title}}</span><span style="font-size: var(--fs16); line-height: 24px; color: {{t.text2}}">{{r.idea}}</span></span>
+<li style="grid-column: {{r.span}}; min-width: 0; border-radius: 12px; background: {{t.sunk}}; overflow: hidden">
+<button aria-expanded="{{r.open}}" onClick="{{r.toggle}}" data-sn="pad row" style="width: 100%; box-sizing: border-box; padding: 16px 20px; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 12px; font: inherit">
+<span style="min-width: 0; flex-grow: 1; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); line-height: 28px; font-weight: 600">{{r.title}}</span><span style="min-width: 0; font-size: var(--fs16); line-height: 24px; color: {{t.text2}}; {{r.ideaStyle}}">{{r.idea}}</span></span>
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.muted}}; transform: {{r.turn}}; transition: transform 0.15s"><path d="M6 9l6 6 6-6"></path></svg>
 </button>
 <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
@@ -1927,15 +1927,19 @@ class Component extends DCLogic {
     });
     const sections = groups.map((g, i) => {
       const key = track + ':' + g.title;
-      const open = this.state.sec[key] !== undefined ? this.state.sec[key] : (q !== '' || track !== 'all');
+      // On arrival the first section is open, so the page shows lessons straight away.
+      const open = this.state.sec[key] !== undefined ? this.state.sec[key] : (q !== '' || track !== 'all' || i === 0);
+      const noun = g.rows[0].type === 'pattern' ? 'pattern' : 'lesson';
       return {
-        hid: 'sn-sec-' + i, title: g.title, count: g.rows.length + (g.rows.length === 1 ? ' lesson' : ' lessons'), open, turn: open ? 'rotate(180deg)' : 'none',
+        hid: 'sn-sec-' + i, title: g.title, count: g.rows.length + (g.rows.length === 1 ? ' ' + noun : ' ' + noun + 's'), open, turn: open ? 'rotate(180deg)' : 'none',
         toggle: () => this.setState({ sec: Object.assign({}, this.state.sec, { [key]: !open }) }),
         rows: open ? g.rows.map((r) => {
           const ro = !!this.state.rows[r.key];
           const pat = r.type === 'pattern';
           return {
             title: r.title, idea: r.idea, open: ro, turn: ro ? 'rotate(180deg)' : 'none',
+            // A folded card takes one grid cell and its idea stays on one line; an open card spans the row and wraps.
+            span: ro ? '1 / -1' : 'auto', ideaStyle: ro ? 'white-space: normal' : 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis',
             toggle: () => this.setState({ rows: Object.assign({}, this.state.rows, { [r.key]: !ro }) }),
             hasCheat: r.cheat.length > 0, cheat: r.cheat, cheatLabel: pat ? 'Look for' : 'Cheat sheet',
             hasCode: !!r.code, code: r.code, hasWords: r.words.length > 0, words: r.words, hasSlips: r.slips.length > 0, slips: r.slips,

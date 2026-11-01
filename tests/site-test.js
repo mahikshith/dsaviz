@@ -45,7 +45,7 @@ const ONLY_READ = process.env.DS_PASS === 'read';
 const ONLY_LAYOUT = process.env.DS_PASS === 'layout';
 const SKIP_MAIN = ONLY_CONTROLS || ONLY_READ || ONLY_LAYOUT;
 
-const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Start', 'Chapter', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Concepts', 'ConceptLesson', 'Contests'];
+const PAGES = ['Main', 'Auth', 'Welcome', 'About', 'Home', 'Revisit', 'Profile', 'Leaderboard', 'Patterns', 'Sheet', 'Interview', 'Briefing', 'Story', 'Code', 'Glossary', 'Start', 'Chapter', 'Basics', 'Git', 'SystemDesign', 'SDLesson', 'AIML', 'AILesson', 'Concepts', 'ConceptLesson', 'Contests', 'Snapshot'];
 // Runs in the page: sideways overflow and text under 12px inside the page root.
 const measure = () => {
   const de = document.documentElement, body = document.body, W = window.innerWidth;

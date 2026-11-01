@@ -1345,6 +1345,7 @@ const MENU = [
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
   ['Concepts.dc.html', 'DSA concepts', 'Big-O, sorts, hashing, trees, graphs and math, animated', null],
   ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Snapshot.dc.html', 'Snapshot', 'Quick revision of every lesson', null],
   ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
   ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
   ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],
@@ -1607,13 +1608,14 @@ function searchTarget(it) {
 // A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
 // NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
 // whose page is not built yet shows as "Soon" instead of a dead link.
-const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Chapter.dc.html", "Code.dc.html", "ConceptLesson.dc.html", "Concepts.dc.html", "Contests.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Start.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
+const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Chapter.dc.html", "Code.dc.html", "ConceptLesson.dc.html", "Concepts.dc.html", "Contests.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Snapshot.dc.html", "Start.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
 // key, label, page, icon, hidden on phones unless active
 const NAV_ITEMS = [
   ['home', 'Home', 'Home.dc.html', 'home', false],
   ['start', 'Start here', 'Start.dc.html', 'start', false],
   ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
   ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
+  ['snapshot', 'Snapshot', 'Snapshot.dc.html', 'sheet', true],
   ['code', 'Code', 'Code.dc.html', 'code', false],
   ['git', 'Git', 'Git.dc.html', 'git', true],
   ['design', 'System design', 'SystemDesign.dc.html', 'design', true],
@@ -1622,7 +1624,7 @@ const NAV_ITEMS = [
 // Which section each page belongs to.
 const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Glossary: 'learn', Interview: 'learn',
   Start: 'start', Chapter: 'start', Basics: 'start',
-  Sheet: 'sheet', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
+  Sheet: 'sheet', Snapshot: 'snapshot', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
 // The search box: "/" anywhere (outside a text field) opens it on the page that is showing.
 function searchShow(cmp) {
   cmp.setState({ sOpen: true, sAct: 0 });

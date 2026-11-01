@@ -22,13 +22,13 @@
 - **start-fixes-2 (partial):** beginner-review fixes for Start here lessons 1–12 only (real Python error messages, type() output and the like).
 - **no-mascots:** Old Hoot, Dot, Bolt, Lumi, Roo and the rest are replaced by plain roles everywhere. copycheck and startcheck fail on the old names.
 
+## Stories (2026-11-01)
+
+Plain-English pass, then a beginner review of all 44 scene stories: 1 passed unchanged (climbing-stairs), 43 fixed. Per-story logs: workspace notes/story-review-a.md and story-review-b.md. Left: the "your own input" run text, and quiz feedback that still uses O(n²) unexplained in some stories.
+
 ## Not finished
 
-- **Start here beginner review, lessons 13–50:**
-  - The list is in the workspace notes (review-start-beginner.md and review-start-fixes.md).
-  - Known wrong fact still open: the `init` About calls `__init__` a constructor.
-  - Leftover data names to clean: bolt, nova, Ray, Kim in Level 3 code.
-- **Stories (62):** not rewritten in plain English yet, and no beginner review. Their About-style intro does not exist yet.
+- "Why learn this?" fold on every lesson, pattern and hub.
 
 ## Remaining queue, in order
 

@@ -124,76 +124,88 @@ body:has([data-code-bar]){padding-bottom:calc(144px / var(--fit, 1))}
 [data-page] nav[aria-label="Breadcrumb"]{align-items:center}
 }
 </style>
+<style>
+/* The shared page frame (shared/ui/shell.html, added to every page's helmet by the build). A page opts in with
+   data-shell on its root div: the runtime then shows it at real size, with no zoom. Rules: docs/design/PLAN-2026-11.md. */
+[data-shell]{width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sh-bg);color:var(--sh-text);font-size:calc(18px * var(--ts, 1));line-height:1.6}
+[data-shell] h1{margin:0;font-size:calc(32px * var(--ts, 1));line-height:1.2;font-weight:600}
+[data-shell] h2{margin:0;font-size:calc(26px * var(--ts, 1));line-height:1.25;font-weight:600}
+[data-shell] h3{margin:0;font-size:calc(22px * var(--ts, 1));line-height:1.3;font-weight:600}
+[data-shell] p{margin:0}
+[data-shell] code,[data-shell] pre{font-size:calc(16px * var(--ts, 1))}
+.sh-main{width:100%;max-width:1360px;margin:0 auto;padding:24px;box-sizing:border-box;flex-grow:1;display:flex;flex-direction:column;gap:24px;min-width:0}
+.sh-text{max-width:72ch}
+.sh-muted{color:var(--sh-muted)}
+.sh-label{font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted)}
+.sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:16px}
+.sh-block{box-sizing:border-box;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:8px;min-width:0}
+a.sh-block,button.sh-block{color:inherit;text-align:left;font:inherit;cursor:pointer;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
+.sh-layout{flex-grow:1;display:grid;grid-template-columns:240px minmax(0,1fr);min-width:0}
+.sh-side{box-sizing:border-box;padding:16px 8px;border-right:1px solid var(--sh-line);position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
+.sh-side a{display:block;padding:6px 8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4}
+.sh-side a:hover{background:var(--sh-sunk)}
+.sh-side a[aria-current="page"]{background:var(--sh-sunk);font-weight:600}
+.sh-tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--sh-line);padding-bottom:8px}
+.sh-tab{height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
+.sh-tab[aria-selected="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sh-btn{min-height:40px;padding:0 16px;box-sizing:border-box;border:0;border-radius:6px;background:var(--sh-accent);color:var(--sh-on);font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.sh-back{align-self:flex-start;color:var(--sh-muted);font-size:calc(16px * var(--ts, 1))}
+.sh-pager{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--sh-line);padding-top:16px}
+.sh-table{width:100%;border-collapse:collapse}
+.sh-table th{text-align:left;font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted)}
+.sh-table th,.sh-table td{padding:8px 12px;border-bottom:1px solid var(--sh-line)}
+.sh-foot{padding:16px 24px;border-top:1px solid var(--sh-line);display:flex;flex-wrap:wrap;align-items:center;gap:16px;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1))}
+.sh-foot button{border:0;padding:0;background:transparent;color:inherit;font:inherit;cursor:pointer}
+[data-shell] a:focus-visible,[data-shell] button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:2px}
+@media (max-width:1023px){.sh-layout{grid-template-columns:minmax(0,1fr)}.sh-side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--sh-line)}}
+@media (max-width:639px){.sh-main{padding:16px}.sh-foot{padding:16px}}
+@media (prefers-reduced-motion:reduce){a.sh-block,button.sh-block{transition:none}}
+</style>
 <!-- /PHONE CSS -->
 </helmet>
 <div data-fluid="true" data-page="Glossary" style="width: 1440px; min-height: 900px; box-sizing: border-box; background: {{t.bg}}; color: {{t.text}}; display: flex; flex-direction: column; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
 <!-- PILL NAV -->
 <style>
-[data-pn-wrap]{position:sticky;top:0;z-index:40;padding:8px 24px 0;box-sizing:border-box;flex-shrink:0}
-[data-pn] a,[data-pn] button{transition:transform .22s cubic-bezier(.32,.72,0,1),background-color .2s,color .2s}
-[data-pn] a:active,[data-pn] button:active{transform:scale(.95);transition-duration:.12s}
+[data-pn-wrap]{position:sticky;top:0;z-index:40;box-sizing:border-box;flex-shrink:0}
+[data-pn] a,[data-pn] button{transition:background-color .15s cubic-bezier(.23,1,.32,1)}
 [data-pn] a:hover{opacity:1}
-[data-pn-item][data-on="false"]:hover{background:rgba(127,127,127,.12)!important}
+[data-pn-item][data-on="false"]:hover,[data-pn-plain]:hover{background:rgba(127,127,127,.12)!important}
 [data-pn-field]:focus-within{outline:2px solid currentColor;outline-offset:2px}
-[data-pn-results] a{transition:background-color .12s}
 [data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-pn-panel] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-[data-ring]{animation:ds-ring .7s cubic-bezier(.33,1,.68,1) both}
-[data-rise]{animation:ds-rise .38s cubic-bezier(.33,1,.68,1) both}
-[data-fresh="true"]{animation:ds-pop .5s cubic-bezier(.34,1.56,.64,1) both}
-[data-shine]{animation:ds-shine .9s cubic-bezier(.65,0,.35,1) .35s both}
-@keyframes ds-ring{from{stroke-dashoffset:var(--len)}}
-@keyframes ds-rise{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-@keyframes ds-pop{0%{transform:scale(.6)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
-@keyframes ds-shine{from{transform:translateX(-40px) skewX(-20deg)}to{transform:translateX(90px) skewX(-20deg)}}
-@media (prefers-reduced-motion: reduce){[data-ring],[data-rise],[data-fresh="true"]{animation:none}[data-shine]{display:none}[data-pn] a,[data-pn] button{transition:none}}
+@media (prefers-reduced-motion: reduce){[data-pn] a,[data-pn] button{transition:none}}
 @media (max-width: 759px){
-[data-pn-wrap]{position:fixed;top:auto;bottom:0;left:0;right:0;padding:0 8px 8px;zoom:calc(1 / var(--fit, 1))}
-[data-pn]{gap:2px!important;padding:0 4px!important}
-[data-pn-logo],[data-pn-streak],[data-pn-soon]{display:none!important}
-[data-pn-item]{padding:0 10px!important;min-width:44px;justify-content:center;box-sizing:border-box}
-[data-pn-item][data-on="false"] [data-pn-label]{display:none}
-[data-pn-item][data-extra="true"][data-on="false"]{display:none!important}
-[data-pn-items]{justify-content:space-around}
-body{padding-bottom:calc(80px / var(--fit, 1))}
+[data-pn]{padding:0 8px!important}
+[data-pn-name],[data-pn-kbd]{display:none!important}
 [data-drawer]{zoom:calc(1 / var(--fit, 1))}
 [data-drawer] aside{width:min(360px,86vw)!important}
-[data-pn-kbd]{display:none!important}
 [data-daily]{zoom:calc(1 / var(--fit, 1))}
-[data-pn-panel]{top:auto!important;bottom:8px!important;left:8px!important;right:8px!important;width:auto!important;flex-direction:column-reverse!important}
+[data-pn-panel]{left:8px!important;right:8px!important;width:auto!important}
 [data-pn-results]{max-height:55vh!important}
 }
-/* Wide screens show text only, which keeps the bar calm; phones show icons with the current label. */
-@media (min-width: 760px){[data-pn-item] svg{display:none}}
 </style>
 <div data-pn-wrap>
-<nav aria-label="Main" data-pn style="height: 60px; box-sizing: border-box; padding: 0 8px; border-radius: 30px; background: {{nav.glass}}; border: 1px solid {{t.line}}; box-shadow: 0 8px 24px {{nav.shadow}}; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; align-items: center; gap: 4px; font-family: {{t.body}}; color: {{t.text}}">
-<button onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
-<a href="Main.dc.html" data-pn-logo aria-label="DSAMaxxing front page" style="height: 44px; padding: 0 16px 0 4px; flex-shrink: 0; display: flex; align-items: center; gap: 8px"><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="9" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-family: {{t.display}}; font-size: var(--fs22); font-weight: 700; white-space: nowrap">DSA<span style="color: {{t.accent}}">Maxxing</span></span></a>
-<sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 44px; padding: 0 12px 0 8px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: var(--fs16); font-weight: 600; white-space: nowrap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg><span data-pn-label>{{nav.back.label}}</span></button></sc-if>
+<nav aria-label="Main" data-pn style="height: 52px; box-sizing: border-box; padding: 0 24px; background: {{t.surface}}; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
+<button data-pn-plain onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 40px; padding: 0 8px 0 0; flex-shrink: 0; display: flex; align-items: center; gap: 8px; color: {{t.text}}"><svg width="24" height="24" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-pn-name style="font-size: var(--fs18); font-weight: 600; white-space: nowrap">DSAMaxxing</span></a>
+<sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button data-pn-plain onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); white-space: nowrap">{{nav.back.label}}</button></sc-if>
 <div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
-<sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="7">
-<sc-if value="{{ni.live}}" hint-placeholder-val="{{ true }}"><a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 600; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span></a></sc-if>
-<sc-if value="{{ni.soon}}" hint-placeholder-val="{{ false }}"><span aria-disabled="true" title="{{ni.title}}" data-pn-item data-pn-soon data-on="false" data-extra="{{ni.extra}}" style="height: 44px; padding: 0 12px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 600; white-space: nowrap; color: {{t.muted}}; cursor: default"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ni.d}}"></path></svg><span data-pn-label>{{ni.label}}</span><span style="padding: 0 6px; border-radius: 999px; border: 1px solid {{t.line2}}; font-size: var(--fs13); font-weight: 600; line-height: 18px">Soon</span></span></sc-if>
+<sc-for list="{{nav.items}}" as="ni" hint-placeholder-count="2">
+<a href="{{ni.href}}" aria-current="{{ni.current}}" data-pn-item data-on="{{ni.on}}" style="height: 40px; padding: 0 12px; border-radius: 6px; display: flex; align-items: center; font-size: var(--fs16); font-weight: 500; white-space: nowrap; background: {{ni.bg}}; color: {{ni.fg}}"><span data-pn-label>{{ni.label}}</span></a>
 </sc-for>
 </div>
-<button data-pn-search-btn onClick="{{nav.srch.show}}" aria-label="Search the site" aria-keyshortcuts="/" title="Search (press /)" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.srch.icon}}"></path></svg><span data-pn-kbd aria-hidden="true" style="min-width: 20px; height: 22px; padding: 0 4px; box-sizing: border-box; border-radius: 6px; border: 1px solid {{t.line2}}; font-family: {{t.mono}}; font-size: var(--fs15); line-height: 20px; text-align: center; color: {{t.muted}}">/</span></button>
-<sc-if value="{{nav.member}}" hint-placeholder-val="{{ true }}">
-<a href="Profile.dc.html" data-pn-streak aria-label="{{nav.streakLabel}}" title="{{nav.streakLabel}}" style="height: 44px; padding: 0 12px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{t.line}}; background: {{t.sunk}}; display: flex; align-items: center; gap: 8px; font-size: var(--fs18); font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{nav.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>{{nav.streak}}</a>
-<a href="Profile.dc.html" aria-label="Your profile" aria-current="{{nav.profileOn}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; background: {{nav.avatarBg}}; color: {{nav.avatarFg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 800"><sc-if value="{{nav.hasName}}" hint-placeholder-val="{{ false }}">{{nav.initials}}</sc-if><sc-if value="{{nav.noName}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.userIcon}}"></path></svg></sc-if></a>
-</sc-if>
-<sc-if value="{{nav.guest}}" hint-placeholder-val="{{ false }}">
-<a href="Auth.dc.html" style="height: 44px; padding: 0 16px; flex-shrink: 0; border-radius: 22px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; font-size: var(--fs17); font-weight: 700; white-space: nowrap">Log in</a>
-</sc-if>
+<button data-pn-plain data-pn-search-btn onClick="{{nav.srch.show}}" aria-label="Search the site" aria-keyshortcuts="/" title="Search (press /)" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.srch.icon}}"></path></svg><span data-pn-kbd style="font-size: var(--fs16)">Search</span></button>
+<a data-pn-plain href="Profile.dc.html" aria-label="Your profile" aria-current="{{nav.profileOn}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 6px; background: {{nav.avatarBg}}; color: {{nav.avatarFg}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs16); font-weight: 600"><sc-if value="{{nav.hasName}}" hint-placeholder-val="{{ false }}">{{nav.initials}}</sc-if><sc-if value="{{nav.noName}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.userIcon}}"></path></svg></sc-if></a>
 </nav>
 <sc-if value="{{nav.srch.open}}" hint-placeholder-val="{{ false }}">
 <div onClick="{{nav.srch.hide}}" aria-hidden="true" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 41"></div>
-<div data-pn-panel role="search" style="position: absolute; top: 8px; right: 24px; width: 480px; z-index: 42; display: flex; flex-direction: column; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
-<div data-pn-field style="height: 60px; box-sizing: border-box; padding: 0 8px 0 20px; border-radius: 30px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}; display: flex; align-items: center; gap: 12px">
+<div data-pn-panel role="search" style="position: absolute; top: 4px; right: 24px; width: 480px; z-index: 42; display: flex; flex-direction: column; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
+<div data-pn-field style="height: 44px; box-sizing: border-box; padding: 0 4px 0 12px; border-radius: 6px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}; display: flex; align-items: center; gap: 12px">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nav.srch.icon}}"></path></svg>
 <input data-pn-search-input type="text" role="combobox" aria-label="Search the site" aria-expanded="{{nav.srch.expanded}}" aria-controls="pn-results" aria-autocomplete="list" aria-activedescendant="{{nav.srch.active}}" autocomplete="off" spellcheck="false" placeholder="Search stories, problems and lessons" value="{{nav.srch.q}}" onChange="{{nav.srch.onInput}}" onKeyDown="{{nav.srch.onKey}}" style="flex-grow: 1; min-width: 0; height: 44px; border: 0; outline: 0; background: transparent; color: {{t.text}}; font-family: {{t.body}}; font-size: var(--fs18)">
 <button onClick="{{nav.srch.hide}}" aria-label="Close search" style="height: 32px; padding: 0 8px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.line2}}; background: transparent; color: {{t.muted}}; font-family: {{t.mono}}; font-size: var(--fs15); cursor: pointer">Esc</button>
 </div>
-<div data-pn-results style="max-height: 480px; overflow-y: auto; box-sizing: border-box; padding: 8px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}">
+<div data-pn-results style="max-height: 480px; overflow-y: auto; box-sizing: border-box; padding: 8px; border-radius: 6px; background: {{t.surface}}; border: 1px solid {{t.line2}}; box-shadow: 0 8px 24px {{t.shadow}}">
 <sc-if value="{{nav.srch.hasHint}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; padding: 8px 12px; font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">{{nav.srch.hint}}. Use the arrow keys and Enter to open one.</p></sc-if>
 <sc-if value="{{nav.srch.none}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; padding: 8px 12px; font-size: var(--fs16); line-height: 1.5; color: {{t.muted}}">No matches. Try a problem name, a pattern or a topic.</p></sc-if>
 <div id="pn-results" role="listbox" aria-label="Search results">
@@ -363,14 +375,15 @@ const SERIF = "'Fraunces', Georgia, serif";
 const SANS = "'Instrument Sans', system-ui, sans-serif";
 const POSTER = "'Anton', Impact, sans-serif";
 const OUTFIT = "'Outfit', system-ui, sans-serif";
+const SYS = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 const THEMES = {
   // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
   // num: the face for big digits (lantern tiles, scores). Max uses Outfit; the light and dark themes keep Fraunces.
-  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
-    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO, num: OUTFIT,
+  max: { bg: '#111318', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#F3F4F6', text2: '#D1D5DB', muted: '#9CA3AF', faint: '#6B7280', accent: '#2DD4BF', onAccent: '#0B1F1C', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
+    band: '#181B21', bandText: '#F3F4F6', bandMuted: '#9CA3AF', bandAccent: '#2DD4BF', shadow: 'rgba(0,0,0,0.5)', display: SYS, body: SYS, mono: MONO, num: SYS,
     diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
-  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
-    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
+  paper: { bg: '#FFFFFF', surface: '#FFFFFF', sunk: '#F3F4F6', line: '#E5E7EB', line2: '#D1D5DB', text: '#111827', text2: '#374151', muted: '#4B5563', faint: '#9CA3AF', accent: '#0F766E', onAccent: '#FFFFFF', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
+    band: '#F3F4F6', bandText: '#111827', bandMuted: '#4B5563', bandAccent: '#0F766E', shadow: 'rgba(17,24,39,0.12)', display: SYS, body: SYS, mono: MONO, num: SYS,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
   ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E', link: '#F5A06E',
     band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
@@ -381,7 +394,7 @@ const THEMES = {
 };
 const THEME_KEY = 'dsaviz-theme';
 const USER_KEY = 'dsaviz-user';
-function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'paper'; } catch (e) { return 'paper'; } }
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }
@@ -1663,7 +1676,7 @@ function searchTarget(it) {
   return page;
 }
 // @@END-FIND@@
-// @@NAV@@ — generated block (from shared/nav.js): the floating pill nav at the top of every page.
+// @@NAV@@ — generated block (from shared/nav.js): the top bar of every page.
 // Markup: shared/ui/nav.html, copied between the PILL NAV comment markers together with the menu drawer.
 // A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
 // NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
@@ -1671,20 +1684,12 @@ function searchTarget(it) {
 const NAV_PAGES = ["AILesson.dc.html", "AIML.dc.html", "About.dc.html", "Auth.dc.html", "Basics.dc.html", "Briefing.dc.html", "Chapter.dc.html", "Code.dc.html", "Complexity.dc.html", "ConceptLesson.dc.html", "Concepts.dc.html", "Contests.dc.html", "Git.dc.html", "Glossary.dc.html", "Home.dc.html", "Interview.dc.html", "Leaderboard.dc.html", "Main.dc.html", "Patterns.dc.html", "Profile.dc.html", "Revisit.dc.html", "SDLesson.dc.html", "Sheet.dc.html", "Snapshot.dc.html", "Start.dc.html", "Story.dc.html", "SystemDesign.dc.html", "Welcome.dc.html"];
 // key, label, page, icon, hidden on phones unless active
 const NAV_ITEMS = [
-  ['home', 'Home', 'Home.dc.html', 'home', false],
-  ['start', 'Start here', 'Start.dc.html', 'start', false],
-  ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
-  ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
-  ['snapshot', 'Snapshot', 'Snapshot.dc.html', 'sheet', true],
-  ['code', 'Code', 'Code.dc.html', 'code', false],
-  ['git', 'Git', 'Git.dc.html', 'git', true],
-  ['design', 'System design', 'SystemDesign.dc.html', 'design', true],
-  ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
+  ['learn', 'Roadmap', 'Patterns.dc.html', 'learn', false],
+  ['sheet', 'Problems', 'Sheet.dc.html', 'sheet', false]
 ];
 // Which section each page belongs to.
-const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Glossary: 'learn', Interview: 'learn',
-  Start: 'start', Chapter: 'start', Basics: 'start',
-  Sheet: 'sheet', Snapshot: 'snapshot', Complexity: 'learn', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
+const NAV_SECTION = { Patterns: 'learn', Briefing: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Start: 'learn', Chapter: 'learn', Basics: 'learn', Complexity: 'learn', Snapshot: 'learn', Git: 'learn', SystemDesign: 'learn', SDLesson: 'learn', AIML: 'learn', AILesson: 'learn',
+  Sheet: 'sheet', Code: 'sheet', Story: 'sheet', Interview: 'sheet', Revisit: 'sheet' };
 // The search box: "/" anywhere (outside a text field) opens it on the page that is showing.
 function searchShow(cmp) {
   cmp.setState({ sOpen: true, sAct: 0 });
@@ -1816,27 +1821,22 @@ function navBack(page) {
 function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();
-  const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
   return Object.assign(dv, {
     // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
     tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       back: navBack(page),
-      glass: tint(t.surface, 'EB'), shadow: t.shadow,
       items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
         const on = key === section;
         const live = NAV_PAGES.includes(href);
         return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
           live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text2 };
+          bg: on ? t.sunk : 'transparent', fg: t.text };
       }),
-      streak: st.current, streakLabel: st.current ? st.current + '-day streak' : 'No streak yet',
-      flame: st.current ? t.flame : t.muted,
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
-      avatarBg: page === 'Profile' ? t.accent : t.sunk, avatarFg: page === 'Profile' ? t.onAccent : t.text,
-      guest: dv.guest && page === 'Main', member: !(dv.guest && page === 'Main'),
+      avatarBg: t.sunk, avatarFg: t.text,
       srch: searchVals(cmp, t),
       daily: dailyVals(cmp, t)
     }

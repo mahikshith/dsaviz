@@ -4,14 +4,15 @@ const SERIF = "'Fraunces', Georgia, serif";
 const SANS = "'Instrument Sans', system-ui, sans-serif";
 const POSTER = "'Anton', Impact, sans-serif";
 const OUTFIT = "'Outfit', system-ui, sans-serif";
+const SYS = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 const THEMES = {
   // DSAMaxxing: near-black surfaces, one volt-lime accent, Anton headlines (uppercased by the page CSS), Outfit body.
   // num: the face for big digits (lantern tiles, scores). Max uses Outfit; the light and dark themes keep Fraunces.
-  max: { bg: '#0A0A0B', surface: '#151518', sunk: '#1F1F23', line: '#26262C', line2: '#34343C', text: '#F5F5F7', text2: '#C7C7CC', muted: '#8E8E93', faint: '#55555C', accent: '#C5F04A', onAccent: '#0A0A0A', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
-    band: '#151518', bandText: '#F5F5F7', bandMuted: '#8E8E93', bandAccent: '#C5F04A', shadow: 'rgba(0,0,0,0.5)', display: POSTER, body: OUTFIT, mono: MONO, num: OUTFIT,
+  max: { bg: '#111318', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#F3F4F6', text2: '#D1D5DB', muted: '#9CA3AF', faint: '#6B7280', accent: '#2DD4BF', onAccent: '#0B1F1C', left: '#C5F04A', right: '#5AC8FA', ok: '#30D158', okBg: '#16301E', warnBg: '#3A2414', coolBg: '#13293A', medFg: '#FF9F0A', owl: '#8E8E93', logoL: '#C5F04A', logoR: '#5AC8FA', codeBg: '#0E0E10', hl: '#2A3214', flame: '#FF8A3D', link: '#C5F04A',
+    band: '#181B21', bandText: '#F3F4F6', bandMuted: '#9CA3AF', bandAccent: '#2DD4BF', shadow: 'rgba(0,0,0,0.5)', display: SYS, body: SYS, mono: MONO, num: SYS,
     diff: { Starter: ['#5AC8FA', '#13293A', '#8ED8FB'], Easy: ['#30D158', '#16301E', '#6FE08A'], Medium: ['#FF9F0A', '#3A2A10', '#FFC061'], Hard: ['#FF453A', '#3A1614', '#FF8A82'] } },
-  paper: { bg: '#F6F2EA', surface: '#FFFDF8', sunk: '#EFE8DA', line: '#E2D9C8', line2: '#D8CDB9', text: '#1D1B18', text2: '#4A453E', muted: '#6B645A', faint: '#B9AE9A', accent: '#C2521F', onAccent: '#FFFDF8', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
-    band: '#1D1B18', bandText: '#F6F2EA', bandMuted: '#C9C3B8', bandAccent: '#E98A56', shadow: 'rgba(60,40,20,0.16)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
+  paper: { bg: '#FFFFFF', surface: '#FFFFFF', sunk: '#F3F4F6', line: '#E5E7EB', line2: '#D1D5DB', text: '#111827', text2: '#374151', muted: '#4B5563', faint: '#9CA3AF', accent: '#0F766E', onAccent: '#FFFFFF', left: '#C2521F', right: '#24478A', ok: '#2E7D4F', okBg: '#DDEFE3', warnBg: '#F7DCCB', coolBg: '#D9E3F5', medFg: '#6B4A00', owl: '#8C7B62', logoL: '#E98A56', logoR: '#8FB0EA', codeBg: '#FFFDF8', hl: '#FBE7C6', flame: '#D9622B', link: '#9E3F14',
+    band: '#F3F4F6', bandText: '#111827', bandMuted: '#4B5563', bandAccent: '#0F766E', shadow: 'rgba(17,24,39,0.12)', display: SYS, body: SYS, mono: MONO, num: SYS,
     diff: { Starter: ['#3E9C86', '#DCEFE9', '#1F5E50'], Easy: ['#2E7D4F', '#DDEFE3', '#1E5A37'], Medium: ['#C99526', '#F6E2B8', '#6B4A00'], Hard: ['#C2432A', '#F7D6CC', '#8A2C1A'] } },
   ink: { bg: '#111317', surface: '#181B21', sunk: '#20242C', line: '#2A2F38', line2: '#3A3F4A', text: '#ECE9E2', text2: '#C9CCD3', muted: '#9A9EA8', faint: '#5A5F6A', accent: '#F5A06E', onAccent: '#111317', left: '#F5A06E', right: '#6F98E6', ok: '#6FCF97', okBg: '#1F3A2A', warnBg: '#40281C', coolBg: '#1E2A44', medFg: '#F2C66D', owl: '#7D6E58', logoL: '#E98A56', logoR: '#5B86D9', codeBg: '#14161B', hl: '#2C2820', flame: '#F5A06E', link: '#F5A06E',
     band: '#1B1F26', bandText: '#ECE9E2', bandMuted: '#9A9EA8', bandAccent: '#F5A06E', shadow: 'rgba(0,0,0,0.45)', display: SERIF, body: SANS, mono: MONO, num: SERIF,
@@ -22,7 +23,7 @@ const THEMES = {
 };
 const THEME_KEY = 'dsaviz-theme';
 const USER_KEY = 'dsaviz-user';
-function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'max'; } catch (e) { return 'max'; } }
+function loadTheme() { try { const k = window.localStorage.getItem(THEME_KEY); return THEMES[k] ? k : 'paper'; } catch (e) { return 'paper'; } }
 function saveTheme(k) { try { window.localStorage.setItem(THEME_KEY, k); } catch (e) {} }
 function loadUser() { try { return window.localStorage.getItem(USER_KEY) === '1'; } catch (e) { return false; } }
 function saveUser(on) { try { if (on) window.localStorage.setItem(USER_KEY, '1'); else window.localStorage.removeItem(USER_KEY); } catch (e) {} }

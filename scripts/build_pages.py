@@ -229,6 +229,7 @@ def main():
     phone_pages = [read('pages', f) for f in built if 'data-page=' in read('pages', f)]
     phone_pages += [read(*p) for p in [('src', 'code', 'code_body.html'), ('src', 'pages', 'profile_body.html'), ('src', 'pages', 'welcome_body.html')]]
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('/*@@PADS@@*/', phone_pads(phone_pages))
+    ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('<!-- /PHONE CSS -->', read('shared', 'ui', 'shell.html') + '<!-- /PHONE CSS -->')
     # The type scale tokens (scripts/typescale.py writes font sizes as var(--fsN)) ride at the top of the same block.
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('<style>', '<style>\n' + type_tokens([read('pages', f) for f in built] + [read('shared', 'drawer.html'), read('shared', 'ui', 'nav.html')]), 1)
     tests_spec = read('shared', 'tests_spec.js')

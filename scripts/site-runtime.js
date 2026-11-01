@@ -206,8 +206,9 @@
   function fit() {
     const r = document.querySelector('#app > div');
     const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
-    const fluid = r && r.hasAttribute('data-fluid') && window.innerWidth < 760;
-    const z = fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
+    const shell = r && r.hasAttribute('data-shell');
+    const fluid = r && (shell || r.hasAttribute('data-fluid')) && window.innerWidth < 760;
+    const z = shell || fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
     // Runtime phone flag: html[data-phone] while a fluid page shows its phone layout. Pages read it
     // with dsPhone() (shared/ui.js); crossing 760px re-renders the open page.
     const de = document.documentElement;

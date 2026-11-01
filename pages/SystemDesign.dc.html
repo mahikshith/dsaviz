@@ -292,7 +292,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <section aria-label="Lessons" style="display: flex; flex-direction: column; gap: 16px">
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; max-width: 760px">{{cur.blurb}}</p>
-<ol style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
+<ol class="ds-box" style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
 <sc-for list="{{cur.lessons}}" as="ls" hint-placeholder-count="6">
 <li style="border-top: 1px solid {{ls.rule}}"><a href="SDLesson.dc.html" onClick="{{ls.pick}}" aria-label="{{ls.aria}}" style="min-height: 72px; box-sizing: border-box; padding: 16px 0; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 16px; align-items: center"><span style="font-size: var(--fs17); font-weight: 600; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ls.tag}} · {{ls.steps}} steps</span></span><span style="font-size: var(--fs16); font-weight: 600; color: {{ls.chipFg}}">{{ls.chip}}</span></a></li>
 </sc-for>
@@ -304,7 +304,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- the rest sits in folds -->
 <section aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
-<button onClick="{{toggleMethod}}" aria-expanded="{{foldMethod}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">The four-step interview method<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevMethod}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{toggleMethod}}" aria-expanded="{{foldMethod}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">The four-step interview method<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevMethod}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldMethod}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: flex; flex-direction: column; gap: 24px; border-bottom: 1px solid {{t.line}}">
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Any design question, in the same order. Spend most of your time on steps 2 and 3.</p>
@@ -317,14 +317,14 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 
-<button onClick="{{toggleNums}}" aria-expanded="{{foldNums}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Numbers worth knowing<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevNums}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{toggleNums}}" aria-expanded="{{foldNums}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Numbers worth knowing<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevNums}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldNums}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: grid; grid-template-columns: auto 1fr; gap: 16px 24px; font-size: var(--fs17); border-bottom: 1px solid {{t.line}}">
 <sc-for list="{{facts}}" as="fc" hint-placeholder-count="5"><span style="font-weight: 600; white-space: nowrap">{{fc.a}}</span><span style="color: {{t.text2}}">{{fc.b}}</span></sc-for>
 </div>
 </sc-if>
 
-<button onClick="{{toggleHow}}" aria-expanded="{{foldHow}}" style="min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">How a lesson works, and what is coming<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevHow}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{toggleHow}}" aria-expanded="{{foldHow}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">How a lesson works, and what is coming<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevHow}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldHow}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
 <sc-for list="{{how}}" as="hw" hint-placeholder-count="4"><p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{hw.text}}</p></sc-for>

@@ -162,7 +162,7 @@ button{font:inherit}
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
 <h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">First things first.</h1>
 <label style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); font-weight: 700">What should we call you?
-<input type="text" value="{{name}}" onChange="{{setName}}" maxlength="24" style="width: 360px; min-height: 56px; padding: 0 16px; border-radius: 12px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: var(--fs20); font-weight: 600"></label>
+<input class="ds-box" type="text" value="{{name}}" onChange="{{setName}}" maxlength="24" style="width: 360px; min-height: 56px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: var(--fs20); font-weight: 600"></label>
 <span style="font-size: var(--fs18); font-weight: 700">What brings you here?</span>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{reasons}}" as="rs" hint-placeholder-count="4"><button onClick="{{rs.pick}}" aria-pressed="{{rs.on}}" style="min-height: 88px; padding: 24px; border-radius: 16px; border: 2px solid {{rs.border}}; background: {{rs.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; gap: 14px; align-items: center; transition: border-color 0.2s, background 0.2s"><span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: var(--fs19); font-weight: 700">{{rs.label}}</span><span style="font-size: var(--fs17); line-height: 1.4; color: {{t.muted}}">{{rs.sub}}</span></span></button></sc-for></div>
 </div>
@@ -195,7 +195,7 @@ button{font:inherit}
 <span style="font-size: var(--fs18); font-weight: 700">Where</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{channels}}" as="ch" hint-placeholder-count="4"><button onClick="{{ch.pick}}" aria-pressed="{{ch.on}}" style="min-height: 48px; padding: 0 24px; border-radius: 12px; border: 1px solid {{ch.border}}; background: {{ch.bg}}; color: {{ch.fg}}; cursor: pointer; font-size: var(--fs18); font-weight: 700">{{ch.label}}</button></sc-for></div>
 <label style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); font-weight: 700">Got an interview or placement date? <span style="font-weight: 400; color: {{t.muted}}">Optional — we'll build a countdown plan.</span>
-<input type="date" value="{{date}}" onChange="{{setDate}}" style="width: 240px; min-height: 56px; padding: 0 16px; border-radius: 12px; border: 0; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: var(--fs18)"></label>
+<input class="ds-box" type="date" value="{{date}}" onChange="{{setDate}}" style="width: 240px; min-height: 56px; padding: 0 16px; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: var(--fs18)"></label>
 </div>
 </sc-if>
 

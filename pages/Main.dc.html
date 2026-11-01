@@ -295,7 +295,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- HOW IT WORKS -->
 <section style="padding: 48px 80px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; align-items: center">
 <!-- how it works: one picture, steps on demand -->
-<div style="background: {{t.surface}}; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div class="ds-box" style="background: {{t.surface}}; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <div style="display: flex; justify-content: space-between; align-items: center">
 <div style="display: flex; flex-direction: column; gap: 2px">
 <span style="font-size: var(--fs15); font-weight: 500; color: {{t.muted}}">Two Sum II, one step at a time</span>
@@ -341,10 +341,10 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <section aria-label="Tracks" style="padding: 48px 80px; display: flex; flex-direction: column; gap: 24px">
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em">Pick a track</h2>
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
-<a href="Start.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Start here</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">Never coded? Begin from zero.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
-<a href="Patterns.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">DSA</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">{{sheetTotal}} problems, {{storyTotal}} animated stories.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
-<a href="SystemDesign.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">System design</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">Big systems, one picture at a time.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
-<a href="AIML.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">AI &amp; ML</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">How models learn, step by step.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
+<a class="ds-hit" href="Start.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Start here</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">Never coded? Begin from zero.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
+<a class="ds-hit" href="Patterns.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">DSA</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">{{sheetTotal}} problems, {{storyTotal}} animated stories.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
+<a class="ds-hit" href="SystemDesign.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">System design</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">Big systems, one picture at a time.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
+<a class="ds-hit" href="AIML.dc.html" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; min-height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px"><span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">AI &amp; ML</span><span style="font-size: var(--fs17); line-height: 24px; color: {{t.muted}}">How models learn, step by step.</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></a>
 </div>
 </section>
 
@@ -355,8 +355,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <section aria-label="More about the site" style="padding: 48px 80px; display: flex; flex-direction: column; gap: 24px">
 <h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em">More about the site</h2>
 <div style="display: flex; flex-direction: column; gap: 16px">
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
 <span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Where to start</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Three paths, and a taste of the Start here lessons</span></span>
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
 </summary>
@@ -387,8 +387,8 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 </div>
 </details>
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
 <span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">How the stories and patterns work</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Four chapters, and eight patterns made of animated stories</span></span>
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
 </summary>
@@ -424,11 +424,11 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}; line-height: 1.55">One moment from Two Sum II: the numbers are 1 and 11, and the target is 10. Every step reads like this, and the fold under it holds the exact reason.</p>
 </div>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<div class="ds-box" style="background: {{t.surface}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
 <span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{t.accent}}; color: {{t.onAccent}}; font-size: var(--fs16); font-weight: 700">The step</span>
 <p style="margin: 0; font-size: var(--fs24); line-height: 1.5">1 + 11 = 12, which is too big. The only way to get smaller is a smaller number on the right, so the right marker steps left.</p>
 </div>
-<div style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<div class="ds-box" style="background: {{t.surface}}; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
 <span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{t.sunk}}; color: {{t.text}}; font-size: var(--fs16); font-weight: 700">Go deeper</span>
 <p style="margin: 0; font-size: var(--fs20); line-height: 1.6"><code style="font-family: {{t.mono}}; font-size: var(--fs18); background: {{t.sunk}}; padding: 2px 6px; border-radius: 6px">total = 12 &gt; target</code>. Every pair that uses 11 is at least 1 + 11, so index 5 can never be in the answer. <code style="font-family: {{t.mono}}; font-size: var(--fs18); background: {{t.sunk}}; padding: 2px 6px; border-radius: 6px">right -= 1</code> drops it in O(1), and the answer stays between the two pointers.</p>
 </div>
@@ -446,56 +446,56 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><g fill="none" stroke="{{t.line2}}" stroke-width="2"><rect x="4" y="14" width="28" height="28" rx="6"></rect><rect x="40" y="14" width="28" height="28" rx="6"></rect><rect x="76" y="14" width="28" height="28" rx="6"></rect><rect x="112" y="14" width="28" height="28" rx="6"></rect><rect x="148" y="14" width="28" height="28" rx="6"></rect><rect x="184" y="14" width="28" height="28" rx="6"></rect></g><rect x="40" y="14" width="28" height="28" rx="6" fill="{{t.accent}}"></rect><rect x="148" y="14" width="28" height="28" rx="6" fill="{{t.right}}"></rect><path d="M74 28h14M142 28h-14" stroke="{{t.text}}" stroke-width="2" stroke-linecap="round"></path></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Two Pointers</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.tp.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.tp.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><g fill="none" stroke="{{t.line2}}" stroke-width="2"><rect x="4" y="14" width="28" height="28" rx="6"></rect><rect x="40" y="14" width="28" height="28" rx="6"></rect><rect x="76" y="14" width="28" height="28" rx="6"></rect><rect x="112" y="14" width="28" height="28" rx="6"></rect><rect x="148" y="14" width="28" height="28" rx="6"></rect><rect x="184" y="14" width="28" height="28" rx="6"></rect></g><rect x="36" y="8" width="108" height="40" rx="10" fill="none" stroke="{{t.accent}}" stroke-width="2.5"></rect></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Sliding Window</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.sw.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.sw.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><g stroke="{{t.text}}" stroke-width="2" fill="none" stroke-linecap="round"><path d="M20 28h50M120 12v32M120 12h40M120 28h40M120 44h40"></path></g><circle cx="12" cy="28" r="8" fill="{{t.accent}}"></circle><rect x="170" y="6" width="44" height="12" rx="4" fill="{{t.line2}}"></rect><rect x="170" y="22" width="44" height="12" rx="4" fill="{{t.right}}"></rect><rect x="170" y="38" width="44" height="12" rx="4" fill="{{t.line2}}"></rect><path d="M72 28l12 0" stroke="{{t.text}}" stroke-width="2"></path><path d="M84 22l8 6-8 6" fill="none" stroke="{{t.text}}" stroke-width="2"></path></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Hash Map</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.hm.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.hm.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><path d="M4 44h212" stroke="{{t.line2}}" stroke-width="2"></path><path d="M110 44V14M56 44V24M164 44V24" stroke="{{t.text}}" stroke-width="2" stroke-dasharray="3 4"></path><circle cx="110" cy="12" r="7" fill="{{t.accent}}"></circle><circle cx="164" cy="22" r="6" fill="{{t.right}}"></circle><circle cx="56" cy="22" r="6" fill="{{t.line2}}"></circle></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Binary Search</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.bs.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.bs.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><ellipse cx="110" cy="28" rx="96" ry="22" fill="none" stroke="{{t.line2}}" stroke-width="2"></ellipse><circle cx="60" cy="10" r="7" fill="{{t.right}}"></circle><circle cx="192" cy="36" r="9" fill="{{t.accent}}"></circle></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Fast &amp; Slow Pointers</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.fs.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.fs.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><circle cx="110" cy="28" r="6" fill="{{t.accent}}"></circle><circle cx="110" cy="28" r="15" fill="none" stroke="{{t.accent}}" stroke-width="2"></circle><circle cx="110" cy="28" r="25" fill="none" stroke="#D8A58A" stroke-width="2"></circle><circle cx="110" cy="28" r="26" fill="none" stroke="none"></circle><ellipse cx="110" cy="28" rx="60" ry="26" fill="none" stroke="{{t.line2}}" stroke-width="2"></ellipse></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Breadth-First Search</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.bfs.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.bfs.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><path d="M20 48V8h40v20h40V8h40v40h40V20" fill="none" stroke="{{t.line2}}" stroke-width="2"></path><path d="M20 48V28h40v20h40" fill="none" stroke="{{t.accent}}" stroke-width="3" stroke-linecap="round"></path><path d="M100 48" stroke="{{t.right}}"></path><circle cx="100" cy="48" r="5" fill="{{t.right}}"></circle></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Backtracking</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.bt.tag}}</span>
 <span style="font-size: var(--fs16); color: {{t.muted}}">{{shelf.bt.line}}</span>
 </a>
 
-<a href="Patterns.dc.html" style="background: {{t.surface}}; border: 1px solid {{t.line}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<a class="ds-hit" href="Patterns.dc.html" style="background: {{t.surface}}; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
 <svg width="100%" height="56" viewBox="0 0 220 56" aria-hidden="true"><g fill="{{t.sunk}}" stroke="{{t.line2}}" stroke-width="2"><rect x="4" y="16" width="36" height="24" rx="4"></rect><rect x="46" y="16" width="36" height="24" rx="4"></rect><rect x="88" y="16" width="36" height="24" rx="4"></rect><rect x="130" y="16" width="36" height="24" rx="4"></rect></g><rect x="172" y="16" width="44" height="24" rx="4" fill="{{t.accent}}"></rect><path d="M110 10 Q150 -4 190 12" fill="none" stroke="{{t.right}}" stroke-width="2"></path><path d="M152 10 Q170 2 190 12" fill="none" stroke="{{t.right}}" stroke-width="2"></path></svg>
 <span style="font-size: var(--fs20); font-weight: 600">Dynamic Programming</span>
 <span style="font-family: {{t.display}}; font-style: italic; font-size: var(--fs18); color: {{t.text2}}">{{shelf.dp.tag}}</span>
@@ -506,8 +506,8 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 </div>
 </details>
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
 <span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Why it sticks, and more</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Revisit, streaks, interview plans, the glossary, Git, code and more</span></span>
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
 </summary>
@@ -521,7 +521,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 <div data-m="one" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px">
 <sc-for list="{{sticks}}" as="sk" hint-placeholder-count="5">
-<a href="{{sk.href}}" onClick="{{sk.go}}" style="padding: 22px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="{{sk.href}}" onClick="{{sk.go}}" style="padding: 22px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">{{sk.tag}}</span>
 <span style="font-size: var(--fs22); font-weight: 700; line-height: 1.25">{{sk.title}}</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{sk.line}}</span>
@@ -533,42 +533,42 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <h3 style="margin: 0; font-size: var(--fs20); line-height: 28px; font-weight: 600">Everything around the stories</h3>
 <div style="display: flex; flex-direction: column; gap: 32px">
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px">
-<a href="Interview.dc.html" onClick="{{toPlans}}" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="Interview.dc.html" onClick="{{toPlans}}" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Interview prep</span>
 <span style="font-size: var(--fs22); font-weight: 700">Interview in 3 weeks?</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Day-by-day plans, company tracks, a “which pattern is this?” cheat sheet and a timed mock mode with no hints.</span>
 </a>
-<a href="Glossary.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="Glossary.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Keyword glossary</span>
 <span style="font-size: var(--fs22); font-weight: 700">What does enumerate do again?</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Every keyword a DSA solution leans on, animated, with the same idea in Python, Java, C++, JavaScript and Go.</span>
 </a>
-<a href="Leaderboard.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="Leaderboard.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Leagues &amp; streaks</span>
 <span style="font-size: var(--fs22); font-weight: 700">A reason to come back tomorrow</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">Your streak and medals are real and counted in this browser. Leagues are demo data until accounts launch.</span>
 </a>
-<a href="Interview.dc.html" onClick="{{toResources}}" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="Interview.dc.html" onClick="{{toResources}}" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Resources</span>
 <span style="font-size: var(--fs22); font-weight: 700">The best of the rest</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">The books, repos and cheat sheets we recommend, and where each one fits in your prep.</span>
 </a>
-<a href="Git.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="Git.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Git</span>
 <span style="font-size: var(--fs22); font-weight: 700">See what each command does</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{more.git}}</span>
 </a>
-<a href="SystemDesign.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="SystemDesign.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">System design</span>
 <span style="font-size: var(--fs22); font-weight: 700">Big systems, one picture at a time</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{more.sd}}</span>
 </a>
-<a href="AIML.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="AIML.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">AI &amp; ML</span>
 <span style="font-size: var(--fs22); font-weight: 700">How models learn, step by step</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{more.ai}}</span>
 </a>
-<a href="Code.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
+<a class="ds-hit" href="Code.dc.html" style="padding: 24px; border-radius: 20px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: {{t.mono}}; font-size: var(--fs16); color: {{t.accent}}">Code</span>
 <span style="font-size: var(--fs22); font-weight: 700">Run your solution here</span>
 <span style="font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{more.code}}</span>
@@ -578,8 +578,8 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 </div>
 </div>
 </details>
-<details id="trial" style="border-radius: 16px; background: {{t.surface}}">
-<summary style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
+<details class="ds-box" id="trial" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" style="padding: 24px; min-height: 56px; display: flex; align-items: center; gap: 16px; cursor: pointer; list-style: none">
 <span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs24); line-height: 32px; font-weight: 600">Early access and questions</span><span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">Free while in early access. Six short answers.</span></span>
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg>
 </summary>
@@ -601,7 +601,7 @@ bag.pop()             <span style="color: #7F9C70"># take out the last thing</sp
 <div style="display: flex; flex-direction: column">
 <sc-for list="{{faqs}}" as="fq" hint-placeholder-count="5">
 <div style="border-bottom: 1px solid {{t.line}}">
-<button onClick="{{fq.toggle}}" aria-expanded="{{fq.open}}" style="width: 100%; min-height: 64px; padding: 16px 0; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 20px; text-align: left; font-size: var(--fs20); font-weight: 600">{{fq.q}}<span style="font-size: var(--fs24); color: {{t.accent}}; transform: {{fq.rot}}; transition: transform 0.25s">+</span></button>
+<button class="ds-hit" onClick="{{fq.toggle}}" aria-expanded="{{fq.open}}" style="width: 100%; min-height: 64px; padding: 16px 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 20px; text-align: left; font-size: var(--fs20); font-weight: 600">{{fq.q}}<span style="font-size: var(--fs24); color: {{t.accent}}; transform: {{fq.rot}}; transition: transform 0.25s">+</span></button>
 <sc-if value="{{fq.open}}" hint-placeholder-val="{{ false }}"><p style="margin: 0 0 18px; max-width: 760px; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}; animation: rise 0.25s ease">{{fq.a}}</p></sc-if>
 </div>
 </sc-for>

@@ -291,25 +291,25 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </section>
 
 <section style="display: flex; flex-direction: column; gap: 24px">
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<div class="ds-box" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
 <span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); font-weight: 600">Your XP</span><span style="font-size: var(--fs16); color: {{t.muted}}">Counted in this browser from what you actually do.</span></span>
 <span style="font-family: {{t.mono}}; font-size: var(--fs32); font-weight: 700">{{you.xp}}</span>
 </div>
-<div style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 8px">
+<div class="ds-box" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs18); font-weight: 600; padding-bottom: 8px">How XP works</span>
 <sc-for list="{{xpRules}}" as="xr" hint-placeholder-count="6"><div style="display: flex; justify-content: space-between; gap: 16px; font-size: var(--fs17); min-height: 40px; align-items: center"><span>{{xr.what}}</span><span style="font-family: {{t.mono}}; font-weight: 700">{{xr.xp}}</span></div></sc-for>
 </div>
 </section>
 
 <section aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
-<button onClick="{{togglePreview}}" aria-expanded="{{foldPreview}}" style="width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Preview of a league, with made-up learners (Demo)<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevP}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{togglePreview}}" aria-expanded="{{foldPreview}}" style="width: 100%; min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Preview of a league, with made-up learners (Demo)<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevP}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldPreview}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: flex; flex-direction: column; gap: 24px; border-bottom: 1px solid {{t.line}}">
 <p style="margin: 0; max-width: 760px; font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">Demo. Every name, place and number in this table is made up, to show how a league will look. Only the row marked You is real. Leagues start when accounts launch: Lantern, Ember, Flame, Beacon, Lighthouse. The top 7 move up each week.</p>
 <div role="tablist" aria-label="League views" style="display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid {{t.line}}">
 <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="4"><button role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="height: 48px; padding: 0; margin-bottom: -1px; border: 0; border-bottom: 2px solid {{tb.line}}; border-radius: 0; cursor: pointer; font-size: var(--fs17); font-weight: 600; background: transparent; color: {{tb.fg}}">{{tb.label}}</button></sc-for>
 </div>
-<div style="border-radius: 16px; background: {{t.surface}}; overflow: hidden">
+<div class="ds-box" style="border-radius: 16px; background: {{t.surface}}; overflow: hidden">
 <sc-for list="{{rows}}" as="r" hint-placeholder-count="20">
 <div data-lrow style="display: grid; grid-template-columns: 52px minmax(0, 1fr) 140px 200px 90px; gap: 16px; align-items: center; min-height: 64px; padding: 8px 24px; background: {{r.bg}}; border-top: 1px solid {{r.divider}}">
 <span style="font-family: {{t.mono}}; font-size: var(--fs18); font-weight: 700; color: {{r.rankColor}}">{{r.rank}}</span>
@@ -324,7 +324,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-if>
 
-<button onClick="{{toggleSoon}}" aria-expanded="{{foldSoon}}" style="width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Coming soon: weekly contest and pattern duels<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevS}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button class="ds-hit" onClick="{{toggleSoon}}" aria-expanded="{{foldSoon}}" style="width: 100%; min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Coming soon: weekly contest and pattern duels<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevS}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{foldSoon}}" hint-placeholder-val="{{ false }}">
 <div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; max-width: 760px; border-bottom: 1px solid {{t.line}}">
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">Not built yet. Nothing here can be joined today.</p>

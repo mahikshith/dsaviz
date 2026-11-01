@@ -22,7 +22,8 @@
 // text nodes, top and bottom inset by a fifth of the font size, cut by every clipping box they sit in; svg text, the drawer,
 // the pill nav and aria-hidden are skipped; neither element nor box containing the other); when an element with visible text is clipped (scrollWidth
 // over clientWidth by more than 1px under overflow hidden or clip, or text-overflow ellipsis), unless it sits inside
-// [data-clip-ok]; or when [data-path-node] siblings have unequal gaps (more than 2px apart). DS_PASS=layout runs only this pass.
+// [data-clip-ok]; when [data-path-node] siblings have unequal gaps (more than 2px apart); when a fold summary or .ds-hit has no hover
+// transition (unless reduced motion); or when Home or Snapshot has no .ds-hit (Snapshot gets only this box check). DS_PASS=layout runs only this pass.
 // Needs Playwright:  npm install --no-save playwright && npx playwright install chromium
 // Or playwright-core with an installed browser:  npm install --no-save playwright-core
 //   then DS_BROWSER=msedge npm run test:browser   (or chrome)
@@ -135,11 +136,24 @@ const readable = () => {
 
 // Layout pass pages and widths. A phone width gets phone settings (touch, mobile emulation).
 const LAYOUT_PAGES = ['Main', 'Home', 'Start', 'Sheet', 'Chapter', 'Patterns'];
+// Snapshot only gets the box check (.ds-hit present, hover transitions); its collapsed sections fail the text checks.
+const BOX_PAGES = ['Snapshot'];
 const LAYOUT_WIDTHS = [1440, 1280, 1024, 390];
 // Runs in the page: overlapping text boxes, clipped text, and unequal gaps between path nodes that share a parent.
-const layout = () => {
+const layout = (boxOnly) => {
   const root = document.querySelector('#app > div');
   if (!root) return null;
+  // Boxes: every fold summary and every .ds-hit eases its hover (reduced motion turns the ease off), and Home and Snapshot show at least one .ds-hit.
+  const boxes = [];
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (const el of document.querySelectorAll('details > summary, .ds-hit')) {
+      const d = getComputedStyle(el).transitionDuration.split(',').map((x) => parseFloat(x) || 0);
+      if (!d.some((x) => x > 0)) boxes.push('no hover transition on ' + el.tagName.toLowerCase() + ': "' + el.textContent.replace(/\s+/g, ' ').trim().slice(0, 30) + '"');
+    }
+  }
+  const pageName = root.getAttribute('data-page');
+  if ((pageName === 'Home' || pageName === 'Snapshot') && !root.querySelector('.ds-hit')) boxes.push('no .ds-hit on ' + pageName);
+  if (boxOnly) return { texts: 0, issues: boxes };
   const shown = (el) => { const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return false; const cs = getComputedStyle(el); return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05; };
   const clean = (s) => s.replace(/\s+/g, ' ').trim().slice(0, 30);
   const texts = [], overlaps = [], clipped = [], gaps = [];
@@ -517,6 +531,17 @@ server.listen(0, async () => {
         for (const s of r.issues.slice(0, 5)) console.log('✗', tag, name.padEnd(10), s);
         if (r.issues.length > 5) console.log('  ...', r.issues.length - 5, 'more on', name, 'at', w + 'px');
       }
+    }
+    for (const name of BOX_PAGES) {
+      await page.evaluate((n) => window.__dsNav(n + '.dc.html'), name);
+      await page.waitForTimeout(900);
+      const r = await page.evaluate(layout, true);
+      const bad = !r || r.issues.length > 0;
+      if (bad) problems++;
+      const tag = ('l-' + w).padEnd(8);
+      if (!r) console.log('✗', tag, name.padEnd(10), 'no page');
+      else if (!bad) console.log('✓', tag, name.padEnd(10), 'hover boxes and .ds-hit present');
+      else for (const s of r.issues.slice(0, 5)) console.log('✗', tag, name.padEnd(10), s);
     }
     if (errors.length) { problems += errors.length; console.log('  errors in layout at', w + 'px:', errors.slice(0, 5)); }
     await page.close();

@@ -307,7 +307,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div data-hp="grid" style="display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 24px; align-items: stretch">
 <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
 
-<section aria-labelledby="hp-plan" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<section class="ds-box" aria-labelledby="hp-plan" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap">
 <h2 id="hp-plan" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Three small steps</h2>
 <span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{plan.meta}}</span>
@@ -324,7 +324,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </ol>
 </section>
 
-<section aria-labelledby="hp-path" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
+<section class="ds-box" aria-labelledby="hp-path" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 24px">
 <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap">
 <h2 id="hp-path" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">On the path</h2>
 <a href="{{pathNow.href}}" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">{{pathNow.link}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
@@ -342,7 +342,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 </div>
 
-<section aria-labelledby="hp-streak" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
+<section class="ds-box" aria-labelledby="hp-streak" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
 <div style="display: flex; align-items: center; gap: 16px">
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.accent}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .5 1.5 1.5 2 2 2 0-3-1-5 1-8z"></path></svg>
 <h2 id="hp-streak" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">{{streak.title}}</h2>
@@ -376,8 +376,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
 <sc-for list="{{road}}" as="rw" hint-placeholder-count="5">
 <li style="display: flex; flex-direction: column">
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer">
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer">
 <span aria-hidden="true" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: {{rw.nbg}}; color: {{rw.nfg}}; box-shadow: {{rw.ring}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs17); font-weight: 600"><sc-if value="{{rw.isDone}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if><sc-if value="{{rw.isLater}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></sc-if><sc-if value="{{rw.isNext}}" hint-placeholder-val="{{ true }}"><span>{{rw.num}}</span></sc-if></span>
 <span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs20); line-height: 28px; font-weight: 600; color: {{rw.fg}}">{{rw.name}}</span><span style="font-size: var(--fs15); line-height: 20px; font-weight: 500; color: {{t.muted}}">{{rw.meta}}</span></span>
 <sc-if value="{{rw.hasBar}}" hint-placeholder-val="{{ false }}"><span data-m="hide" role="progressbar" aria-label="{{rw.name}} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{rw.pctNum}}" style="width: 120px; height: 6px; flex-shrink: 0; border-radius: 3px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 6px; border-radius: 3px; width: {{rw.pct}}; background: {{rw.bar}}"></span></span></sc-if>
@@ -414,13 +414,13 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <h2 id="hp-more" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">More about your progress</h2>
 <div style="display: flex; flex-direction: column; gap: 24px">
 
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Your numbers</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.numbersMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Your numbers</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.numbersMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
 <div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <!-- STAT TILES -->
 <div data-m="two" style="display: grid; grid-template-columns: repeat({{tiles.cols}}, minmax(0, 1fr)); gap: 12px">
 <sc-for list="{{tiles.list}}" as="ti" hint-placeholder-count="4">
-<div data-rise style="padding: 16px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 12px; animation-delay: {{ti.delay}}">
+<div class="ds-box" data-rise style="padding: 16px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 12px; animation-delay: {{ti.delay}}">
 <span style="width: 32px; height: 32px; border-radius: 10px; background: {{ti.box}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{ti.fill}}" stroke="{{ti.stroke}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ti.d}}"></path></svg></span>
 <span style="display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: baseline; gap: 4px"><span style="font-family: {{t.body}}; font-size: var(--fs28); font-weight: 700; line-height: 32px">{{ti.value}}</span><span style="font-size: var(--fs17); color: {{t.muted}}">{{ti.unit}}</span></span><span style="font-size: var(--fs17); color: {{t.muted}}">{{ti.label}}</span></span>
 <sc-if value="{{ti.bar}}" hint-placeholder-val="{{ true }}"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; border-radius: 2px; width: {{ti.pct}}; background: {{ti.fg}}; transition: width 0.7s cubic-bezier(.33,1,.68,1)"></span></span></sc-if>
@@ -432,8 +432,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </details>
 
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Patterns</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.patternsMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Patterns</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.patternsMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
 <div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <!-- RINGS -->
 <div role="img" aria-label="{{rings.aria}}" style="display: flex; align-items: center; gap: 24px">
@@ -453,8 +453,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </details>
 
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Medals</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{shelf.caption}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Medals</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{shelf.caption}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
 <div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <!-- MEDALS -->
 <div role="list" aria-label="Pattern medals" style="display: flex; flex-wrap: wrap; gap: 16px 8px">
@@ -481,24 +481,24 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </details>
 
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Problems to try</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.problemsMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">Problems to try</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.problemsMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
 <div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 16px">
 <div role="list" aria-label="Learning path" style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px">
 <sc-for list="{{path}}" as="pt" hint-placeholder-count="8"><span role="listitem" aria-label="{{pt.aria}}" style="display: flex; flex-direction: column; gap: 8px"><span style="height: 4px; border-radius: 2px; background: {{t.sunk}}; display: block; overflow: hidden"><span style="display: block; height: 4px; width: {{pt.pct}}; background: {{pt.color}}"></span></span><span style="font-size: var(--fs15); line-height: 24px; color: {{pt.fg}}">{{pt.name}}</span></span></sc-for>
 </div>
 <div style="display: flex; flex-direction: column">
-<a href="{{daily.href}}" onClick="{{daily.go}}" style="min-height: 56px; display: flex; gap: 16px; align-items: center; border-top: 1px solid {{t.line}}"><span style="display: flex; flex-direction: column; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">{{daily.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">Today's problem · {{daily.pattern}}</span></span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{daily.time}}</span></a>
+<a class="ds-hit" href="{{daily.href}}" onClick="{{daily.go}}" style="min-height: 56px; display: flex; gap: 16px; align-items: center; border-top: 1px solid {{t.line}}"><span style="display: flex; flex-direction: column; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">{{daily.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">Today's problem · {{daily.pattern}}</span></span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{daily.time}}</span></a>
 <sc-for list="{{upNext}}" as="un" hint-placeholder-count="3">
-<a href="{{un.href}}" onClick="{{un.go}}" style="min-height: 56px; display: flex; gap: 16px; align-items: center; border-top: 1px solid {{t.line}}"><span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: {{un.dot}}"></span><span style="display: flex; flex-direction: column; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">{{un.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{un.pattern}}</span></span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{un.diff}} · {{un.time}}</span></a>
+<a class="ds-hit" href="{{un.href}}" onClick="{{un.go}}" style="min-height: 56px; display: flex; gap: 16px; align-items: center; border-top: 1px solid {{t.line}}"><span style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 4px; background: {{un.dot}}"></span><span style="display: flex; flex-direction: column; flex-grow: 1; min-width: 0"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">{{un.title}}</span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{un.pattern}}</span></span><span style="font-size: var(--fs15); color: {{t.muted}}; white-space: nowrap">{{un.diff}} · {{un.time}}</span></a>
 </sc-for>
 </div>
 <a href="Patterns.dc.html" style="min-height: 44px; display: flex; align-items: center; gap: 4px; align-self: flex-start; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">Open the library<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
 </div>
 </details>
 
-<details style="border-radius: 16px; background: {{t.surface}}">
-<summary data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">League <span title="Sample learners until accounts launch. Your row is real." style="margin-left: 8px; font-size: var(--fs13); font-weight: 600; color: {{t.muted}}">Demo</span></span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.leagueMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
+<details class="ds-box" style="border-radius: 16px; background: {{t.surface}}">
+<summary class="ds-hit" data-hp="sum" style="padding: 8px 24px; min-height: 64px; display: flex; align-items: center; gap: 16px; cursor: pointer"><span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column"><span style="font-size: var(--fs17); line-height: 24px; font-weight: 600">League <span title="Sample learners until accounts launch. Your row is real." style="margin-left: 8px; font-size: var(--fs13); font-weight: 600; color: {{t.muted}}">Demo</span></span><span style="font-size: var(--fs15); line-height: 24px; color: {{t.muted}}">{{more.leagueMeta}}</span></span><svg data-hp="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 5l7 7-7 7"></path></svg></summary>
 <div data-hp="mbody" style="padding: 0 24px 24px; display: flex; flex-direction: column; gap: 8px">
 <sc-for list="{{league}}" as="lg" hint-placeholder-count="4">
 <div style="display: flex; gap: 16px; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 12px; background: {{lg.bg}}">

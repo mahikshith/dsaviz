@@ -21,7 +21,7 @@ button:disabled{opacity:0.4;cursor:default}
 </style>
 <!-- PHONE CSS -->
 <style>
-:root{--fs13:calc(13px * var(--ts, 1));--fs14:calc(14px * var(--ts, 1));--fs15:calc(15px * var(--ts, 1));--fs16:calc(16px * var(--ts, 1));--fs17:calc(17px * var(--ts, 1));--fs18:calc(18px * var(--ts, 1));--fs19:calc(19px * var(--ts, 1));--fs20:calc(20px * var(--ts, 1));--fs22:calc(22px * var(--ts, 1));--fs24:calc(24px * var(--ts, 1));--fs26:calc(26px * var(--ts, 1));--fs28:calc(28px * var(--ts, 1));--fs30:calc(30px * var(--ts, 1));--fs32:calc(32px * var(--ts, 1));--fs34:calc(34px * var(--ts, 1));--fs36:calc(36px * var(--ts, 1));--fs40:calc(40px * var(--ts, 1));--fs42:calc(42px * var(--ts, 1));--fs44:calc(44px * var(--ts, 1));--fs46:calc(46px * var(--ts, 1));--fs48:calc(48px * var(--ts, 1));--fs52:calc(52px * var(--ts, 1));--fs56:calc(56px * var(--ts, 1));--fs58:calc(58px * var(--ts, 1));--fs72:calc(72px * var(--ts, 1));--fs76:calc(76px * var(--ts, 1));--fs96:calc(96px * var(--ts, 1));--fs180:calc(180px * var(--ts, 1))}
+:root{--fs13:calc(13px * var(--ts, 1));--fs14:calc(14px * var(--ts, 1));--fs15:calc(15px * var(--ts, 1));--fs16:calc(16px * var(--ts, 1));--fs17:calc(17px * var(--ts, 1));--fs18:calc(18px * var(--ts, 1));--fs19:calc(19px * var(--ts, 1));--fs20:calc(20px * var(--ts, 1));--fs22:calc(22px * var(--ts, 1));--fs24:calc(24px * var(--ts, 1));--fs26:calc(26px * var(--ts, 1));--fs28:calc(28px * var(--ts, 1));--fs30:calc(30px * var(--ts, 1));--fs32:calc(32px * var(--ts, 1));--fs34:calc(34px * var(--ts, 1));--fs36:calc(36px * var(--ts, 1));--fs40:calc(40px * var(--ts, 1));--fs44:calc(44px * var(--ts, 1));--fs48:calc(48px * var(--ts, 1));--fs56:calc(56px * var(--ts, 1));--fs96:calc(96px * var(--ts, 1));--fs180:calc(180px * var(--ts, 1))}
 @media (max-width: 759px){:root{--fs18:calc(17px * var(--ts, 1))}}
 /* Shared phone layout (shared/ui/phone.html, copied into every page's helmet by the build).
    A page opts in with data-fluid="true" data-page="Name" on its root div. Below 760px the runtime
@@ -74,7 +74,7 @@ button:disabled{opacity:0.4;cursor:default}
 [data-page] [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
-[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 48px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 32px 24px 48px;"]{padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
 [data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
@@ -278,7 +278,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <!-- HERO -->
 <section ref="{{storyRef}}" style="padding: 96px 80px 64px; display: flex; flex-direction: column; gap: 22px; max-width: 1100px">
 <span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: {{t.accent}}">Why DSAMaxxing exists</span>
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs72); line-height: 1.04; font-weight: 600; letter-spacing: -0.03em">I built the thing I needed<br>in that exam hall.</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); line-height: 1.04; font-weight: 600; letter-spacing: -0.03em">I built the thing I needed<br>in that exam hall.</h1>
 <p style="margin: 0; font-size: var(--fs22); line-height: 1.6; color: {{t.text2}}; max-width: 760px">DSAMaxxing is made by one developer in India, nights and weekends, for everyone who has ever stared at a coding question and felt their mind go blank.</p>
 </section>
 
@@ -309,7 +309,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- TIMELINE -->
 <section style="padding: 72px 80px; background: {{t.band}}; color: {{t.bandText}}; display: flex; flex-direction: column; gap: 36px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600">How we got here</h2>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600">How we got here</h2>
 <div data-m="one" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px">
 <sc-for list="{{timeline}}" as="tl" hint-placeholder-count="5">
 <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 2px solid {{t.bandAccent}}">
@@ -323,7 +323,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <!-- PRINCIPLES -->
 <section style="padding: 80px 80px; display: flex; flex-direction: column; gap: 32px">
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600">What we promise</h2>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600">What we promise</h2>
 <div data-m="one" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px">
 <sc-for list="{{principles}}" as="pr" hint-placeholder-count="4">
 <div style="padding: 24px; border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px">
@@ -339,7 +339,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <section ref="{{contactRef}}" id="contact" style="padding: 80px 80px; border-top: 1px solid {{t.line}}; display: grid; grid-template-columns: minmax(0, 1fr) 560px; gap: 72px">
 <div style="display: flex; flex-direction: column; gap: 18px">
 <span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: {{t.accent}}">Contact us</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs48); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">A real person reads every message.</h2>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">A real person reads every message.</h2>
 <p style="margin: 0; font-size: var(--fs19); line-height: 1.6; color: {{t.text2}}">Found a bug, want a story for a problem you're stuck on, or just want to say it clicked? Write in. Story suggestions are how the library grows.</p>
 <div style="display: flex; flex-direction: column; gap: 12px; font-size: var(--fs18)">
 <span><b>Email</b> · <a href="mailto:mahikshith97@gmail.com" style="color: {{t.accent}}; font-weight: 700">mahikshith97@gmail.com</a></span>
@@ -383,7 +383,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <section ref="{{fineRef}}" style="padding: 72px 80px; border-top: 1px solid {{t.line}}; display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px">
 <div style="display: flex; flex-direction: column; gap: 12px">
 <span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: {{t.accent}}">Terms &amp; privacy</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">The fine print, in plain words.</h2>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1">The fine print, in plain words.</h2>
 <p style="margin: 0; font-size: var(--fs18); line-height: 1.6; color: {{t.text2}}">Questions about any of it? Write to mahikshith97@gmail.com.</p>
 </div>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">

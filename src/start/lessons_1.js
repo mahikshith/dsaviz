@@ -13,7 +13,7 @@ function st1Story() {
   const card = (cur) => ({ cards: [{ id: 'card', x: 120, y: 120, w: 400, lines: ST1_CODE.py, cur: cur || [] }] });
   const screen = (lines) => ({ screens: [{ id: 'screen', x: 120, y: 238, w: 400, h: 116, lines }] });
   return [
-    stBeat('hoot', 'Meet the computer, our robot. The computer does exactly what it is told, and only that.', stScene(cast(), toaster()), ['cast:bolt']),
+    stBeat('hoot', 'This is the computer. It does exactly what it is told, and only that.', stScene(cast(), toaster()), ['cast:bolt']),
     stBeat('dot', 'Computer, make toast, please!', stScene(cast(), toaster(), { tokens: [{ id: 'loaf', x: 320, y: 150, text: 'the whole loaf' }] }), ['loaf', 'cast:dot']),
     stBeat('hoot', 'The computer put the whole loaf in. We never said one slice. It does only what you say. It does not guess.', stScene(cast(), toaster('whole loaf', true)), ['toaster']),
     stBeat('dot', 'So I need to say every step, exactly, in the right order?', stScene(cast(['hoot', 'dot']), steps()), ['step0', 'step1', 'step2']),

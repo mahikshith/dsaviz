@@ -66,7 +66,7 @@
 <sc-if value="{{sessionDone}}" hint-placeholder-val="{{ false }}">
 <section id="rv-done" tabindex="-1" aria-label="Session complete" style="padding: {{L.cardPad}}; border-radius: 24px; background: {{t.surface}}; border: 1px solid {{t.ok}}; display: flex; flex-direction: column; gap: 16px; outline: none; animation: rise 0.32s cubic-bezier(.2,.8,.2,1)">
 <span style="font-size: var(--fs16); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.ok}}">Session complete</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs40); font-weight: 600">{{doneTitle}}</h2>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600">{{doneTitle}}</h2>
 <div style="display: grid; grid-template-columns: {{L.statCols}}; gap: 12px">
 <sc-for list="{{doneStats}}" as="ds" hint-placeholder-count="3"><div style="padding: 16px; border-radius: 16px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 4px"><span style="font-family: {{t.mono}}; font-size: var(--fs28); font-weight: 800">{{ds.v}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ds.k}}</span></div></sc-for>
 </div>

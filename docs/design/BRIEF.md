@@ -74,3 +74,7 @@ Mockups: `mock-a-home.html`, `mock-a-lesson.html`, `mock-b-home.html`, `mock-b-l
 ## Rule for every page
 
 Every page feels the same: simple, serene, calm. Keep all the information and the site's purpose. Never delete content to look simple: use progressive disclosure instead. One clear primary action per screen; details go in folds, tabs and filters. Check every page PR against this.
+
+## One type scale
+
+One H1 size (56px, `--fs56`) and one section-heading size (32px, `--fs32`) on every page. Headings stay on one line at 1280 and wider: shorten the words before making the type smaller. `DS_PASS=layout` in tests/site-test.js fails when a heading wraps.

@@ -134,7 +134,7 @@ const readable = () => {
 };
 
 // Layout pass pages and widths. A phone width gets phone settings (touch, mobile emulation).
-const LAYOUT_PAGES = ['Home', 'Start', 'Sheet', 'Chapter', 'Patterns'];
+const LAYOUT_PAGES = ['Main', 'Home', 'Start', 'Sheet', 'Chapter', 'Patterns'];
 const LAYOUT_WIDTHS = [1440, 1280, 1024, 390];
 // Runs in the page: overlapping text boxes, clipped text, and unequal gaps between path nodes that share a parent.
 const layout = () => {
@@ -210,7 +210,15 @@ const layout = () => {
     }
     if (Math.max(...g) - Math.min(...g) > 2) gaps.push((vertical ? 'vertical' : 'horizontal') + ' path gaps ' + g.map((x) => Math.round(x)).join('/') + 'px: "' + clean(nodes[0].textContent) + '"');
   }
-  return { texts: texts.length, issues: [...overlaps, ...clipped, ...gaps] };
+  // Headings stay on one line at 1280 and wider (docs/design/BRIEF.md).
+  const wraps = [];
+  if (window.innerWidth >= 1280) for (const h of document.querySelectorAll('#app h1, #app h2')) {
+    if (!h.getBoundingClientRect().height || h.closest('[data-drawer],details:not([open])')) continue;
+    const r = document.createRange(); r.selectNodeContents(h);
+    const lines = new Set([...r.getClientRects()].filter((q) => q.width > 1).map((q) => Math.round(q.bottom / 8)));
+    if (lines.size > 1) wraps.push('heading wraps: "' + h.textContent.trim().slice(0, 40) + '"');
+  }
+  return { texts: texts.length, issues: [...overlaps, ...clipped, ...gaps, ...wraps] };
 };
 
 // Story ids and step counts, read from the built Story page the way tests/scenecheck.js does.

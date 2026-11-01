@@ -25,7 +25,7 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offs
 </style>
 <!-- PHONE CSS -->
 <style>
-:root{--fs13:calc(13px * var(--ts, 1));--fs14:calc(14px * var(--ts, 1));--fs15:calc(15px * var(--ts, 1));--fs16:calc(16px * var(--ts, 1));--fs17:calc(17px * var(--ts, 1));--fs18:calc(18px * var(--ts, 1));--fs19:calc(19px * var(--ts, 1));--fs20:calc(20px * var(--ts, 1));--fs22:calc(22px * var(--ts, 1));--fs24:calc(24px * var(--ts, 1));--fs26:calc(26px * var(--ts, 1));--fs28:calc(28px * var(--ts, 1));--fs30:calc(30px * var(--ts, 1));--fs32:calc(32px * var(--ts, 1));--fs34:calc(34px * var(--ts, 1));--fs36:calc(36px * var(--ts, 1));--fs40:calc(40px * var(--ts, 1));--fs42:calc(42px * var(--ts, 1));--fs44:calc(44px * var(--ts, 1));--fs46:calc(46px * var(--ts, 1));--fs48:calc(48px * var(--ts, 1));--fs52:calc(52px * var(--ts, 1));--fs56:calc(56px * var(--ts, 1));--fs58:calc(58px * var(--ts, 1));--fs72:calc(72px * var(--ts, 1));--fs76:calc(76px * var(--ts, 1));--fs96:calc(96px * var(--ts, 1));--fs180:calc(180px * var(--ts, 1))}
+:root{--fs13:calc(13px * var(--ts, 1));--fs14:calc(14px * var(--ts, 1));--fs15:calc(15px * var(--ts, 1));--fs16:calc(16px * var(--ts, 1));--fs17:calc(17px * var(--ts, 1));--fs18:calc(18px * var(--ts, 1));--fs19:calc(19px * var(--ts, 1));--fs20:calc(20px * var(--ts, 1));--fs22:calc(22px * var(--ts, 1));--fs24:calc(24px * var(--ts, 1));--fs26:calc(26px * var(--ts, 1));--fs28:calc(28px * var(--ts, 1));--fs30:calc(30px * var(--ts, 1));--fs32:calc(32px * var(--ts, 1));--fs34:calc(34px * var(--ts, 1));--fs36:calc(36px * var(--ts, 1));--fs40:calc(40px * var(--ts, 1));--fs44:calc(44px * var(--ts, 1));--fs48:calc(48px * var(--ts, 1));--fs56:calc(56px * var(--ts, 1));--fs96:calc(96px * var(--ts, 1));--fs180:calc(180px * var(--ts, 1))}
 @media (max-width: 759px){:root{--fs18:calc(17px * var(--ts, 1))}}
 /* Shared phone layout (shared/ui/phone.html, copied into every page's helmet by the build).
    A page opts in with data-fluid="true" data-page="Name" on its root div. Below 760px the runtime
@@ -78,7 +78,7 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor;outline-offs
 [data-page] [style*="padding: 24px 80px 80px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 32px 80px 48px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 56px 80px 32px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:32px!important}
-[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
+[data-page] [style*="padding: 40px 96px 48px;"],[data-page] [style*="padding: 48px;"],[data-page] [style*="padding: 48px 80px;"],[data-page] [style*="padding: 56px 72px;"],[data-page] [style*="padding: 64px 80px;"],[data-page] [style*="padding: 72px 80px;"],[data-page] [style*="padding: 80px;"],[data-page] [style*="padding: 80px 80px 64px;"],[data-page] [style*="padding: 88px 80px 72px;"],[data-page] [style*="padding: 96px 80px 48px;"],[data-page] [style*="padding: 96px 80px 64px;"]{padding-left:16px!important;padding-right:16px!important;padding-top:40px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 32px 24px 48px;"]{padding-top:32px!important;padding-bottom:40px!important}
 [data-page] [style*="padding: 48px 0px 12px;"]{padding-top:40px!important;padding-bottom:12px!important}
 [data-page] [style*="padding: 80px 0px 72px;"]{padding-top:40px!important;padding-bottom:40px!important}
@@ -285,7 +285,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="2">
 <section class="ai-card" aria-labelledby="{{tr.hid}}" style="box-sizing: border-box; min-width: 0; padding: 18px 20px 14px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.line}}; display: flex; flex-direction: column; gap: 10px; animation-delay: {{tr.delay}}">
 <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
-<h2 id="{{tr.hid}}" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); line-height: 1.05; font-weight: 700">{{tr.title}}</h2>
+<h2 id="{{tr.hid}}" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); line-height: 1.05; font-weight: 700">{{tr.title}}</h2>
 <span style="flex-shrink: 0; font-family: {{t.mono}}; font-size: var(--fs15); font-weight: 700; color: {{tr.color}}">TRACK {{tr.num}} · {{tr.done}}/{{tr.count}} DONE</span>
 </div>
 <p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}">{{tr.blurb}}</p>

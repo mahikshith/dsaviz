@@ -34,7 +34,7 @@
 
 <sc-if value="{{s0}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">First things first.</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">First things first.</h1>
 <label style="display: flex; flex-direction: column; gap: 8px; font-size: var(--fs18); font-weight: 700">What should we call you?
 <input type="text" value="{{name}}" onChange="{{setName}}" maxlength="24" style="width: 360px; height: 52px; padding: 0 16px; border-radius: 14px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.text}}; font: inherit; font-size: var(--fs20); font-weight: 600"></label>
 <span style="font-size: var(--fs18); font-weight: 700">What brings you here?</span>
@@ -44,7 +44,7 @@
 
 <sc-if value="{{s1}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">How much DSA do you know, {{name}}?</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">How much DSA do you know, {{name}}?</h1>
 <p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}">No wrong answer. This only decides where your path starts.</p>
 <div style="display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 12px"><sc-for list="{{levels}}" as="lv" hint-placeholder-count="4"><button onClick="{{lv.pick}}" aria-pressed="{{lv.on}}" style="min-height: 88px; padding: 16px 18px; border-radius: 18px; border: 2px solid {{lv.border}}; background: {{lv.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; gap: 14px; align-items: center; transition: border-color 0.2s, background 0.2s"><span style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; background: {{t.sunk}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs24)">{{lv.icon}}</span><span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: var(--fs19); font-weight: 700">{{lv.label}}</span><span style="font-size: var(--fs17); line-height: 1.4; color: {{t.muted}}">{{lv.sub}}</span></span></button></sc-for></div>
 </div>
@@ -52,7 +52,7 @@
 
 <sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">Pick a pace you can keep.</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">Pick a pace you can keep.</h1>
 <p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}">Small and daily beats big and rare. You can change this any time.</p>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{goals}}" as="gl" hint-placeholder-count="4"><button onClick="{{gl.pick}}" aria-pressed="{{gl.on}}" style="min-height: 88px; padding: 16px 18px; border-radius: 18px; border: 2px solid {{gl.border}}; background: {{gl.bg}}; color: {{t.text}}; cursor: pointer; text-align: left; display: flex; gap: 14px; align-items: center; transition: border-color 0.2s, background 0.2s"><span style="flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; background: {{t.sunk}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs24)">{{gl.icon}}</span><span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: var(--fs19); font-weight: 700">{{gl.label}}</span><span style="font-size: var(--fs17); line-height: 1.4; color: {{t.muted}}">{{gl.sub}}</span></span></button></sc-for></div>
 <span style="font-size: var(--fs18); font-weight: 700">Which language will you code in?</span>
@@ -62,7 +62,7 @@
 
 <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 22px; animation: rise 0.35s ease">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">When should we nudge you?</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">When should we nudge you?</h1>
 <p style="margin: 0; font-size: var(--fs19); color: {{t.text2}}">One short reminder a day, only if you haven't learned yet. We save your choice now, and reminders start when accounts launch.</p>
 <span style="font-size: var(--fs18); font-weight: 700">Time</span>
 <div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{times}}" as="tm" hint-placeholder-count="4"><button onClick="{{tm.pick}}" aria-pressed="{{tm.on}}" style="height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid {{tm.border}}; background: {{tm.bg}}; color: {{tm.fg}}; cursor: pointer; font-size: var(--fs18); font-weight: 700">{{tm.label}}</button></sc-for></div>
@@ -75,7 +75,7 @@
 
 <sc-if value="{{s4}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 20px; animation: rise 0.35s ease">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs44); font-weight: 600; letter-spacing: -0.02em">{{name}}, here's your first week.</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">{{name}}, here's your first week.</h1>
 <p style="margin: 0; font-size: var(--fs19); line-height: 1.55; color: {{t.text2}}">{{planLine}}</p>
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px">
 <sc-for list="{{plan}}" as="pl" hint-placeholder-count="7">

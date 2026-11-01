@@ -11,7 +11,7 @@ function hpTalentScene() {
   const board = (fresh, hit) => room.map((j, p) => [String(nums[j]), p === 0 ? 'door' : 'inside', j === hit ? 'hit' : j === fresh ? 'fresh' : '']);
   steps.push({ L: 0, kind: 'intro', at: -1, room: [], gone: [], board: [],
     dialog: [say('narr', 'Six acts will perform tonight, each with a score. The triage nurse must name the act with the 2nd highest score.'), say('triage', 'My green room has only 2 chairs. I keep the weakest act in the chair by the door.'), say('narr', 'And when a new act comes along?'), say('triage', 'I only look at the one by the door. Beat them and you get a chair.')],
-    nar: { kid: 'The triage nurse runs a small green room with 2 chairs. She lets in the best acts she has seen so far, and the weakest of them always sits by the door.', builder: 'room = [] is a min-heap. For each x: if the room has a free chair, push x. Otherwise, if x beats room[0], replace room[0] with x.', expert: 'A min-heap of size k keeps the k largest values seen so far. Its root is the kth largest of that prefix, and each step costs O(log k).' } });
+    nar: { kid: 'The triage nurse runs a small green room with 2 chairs. The room holds the best acts seen so far. The weakest of them always sits by the door.', builder: 'room = [] is a min-heap. For each x: if the room has a free chair, push x. Otherwise, if x beats room[0], replace room[0] with x.', expert: 'A min-heap of size k keeps the k largest values seen so far. Its root is the kth largest of that prefix, and each step costs O(log k).' } });
   const gone = [];
   nums.forEach((x, i) => {
     if (room.length < k) {
@@ -70,7 +70,7 @@ function hpTalentScene() {
     },
     rules: [['Open an empty room with k chairs', 'intro'], ['Free chair → the act walks in', 'push'], ['Beats the one by the door → swap them', 'replace'], ['Not better than the door → sent home', 'turnaway'], ['Show over → the door holds the answer', 'found']],
     complexity: [['O(n log k)', 'each act costs one small sift'], ['O(k)', 'the room never holds more than k']],
-    quest: ['Six acts perform at the village talent show. Their scores come in one at a time: 3, 2, 1, 5, 6, 4.', 'The judges want the act with the 2nd highest score. The triage nurse has a green room with just 2 chairs, and she must decide who gets one.'],
+    quest: ['Six acts perform at the village talent show. Their scores come in one at a time: 3, 2, 1, 5, 6, 4.', 'The judges want the act with the 2nd highest score. The triage nurse has a green room with only 2 chairs. The nurse must decide who gets one.'],
     example: ['nums = [3, 2, 1, 5, 6, 4]   k = 2', 'answer = 5   (6 is first, 5 is second)'],
     hints: ['“You only need the top 2. Do you really have to remember all six scores?”', '“Keep the best 2 you have seen so far. Which of those two is the one in danger of losing a chair?”', '“Seat the weakest of the room by the door. A newcomer only has to beat that one act.”'],
     clues: ['the kth best, not the best', 'scores arrive in any order', 'no need to sort everything'],
@@ -149,7 +149,7 @@ function hpSongsScene() {
     },
     rules: [['Tally first, then open an empty booth', 'intro'], ['Free slot → the song goes in', 'push'], ['More plays than the door → swap them', 'replace'], ['Fewer plays than the door → stays out', 'turnaway'], ['Every song checked → the booth is the answer', 'found']],
     complexity: [['O(n log k)', 'one count each, one small sift per song'], ['O(n)', 'the tally can hold every song']],
-    quest: ['The village radio took seven song requests tonight: 1, 2, 3, 2, 4, 3, 2.', 'The DJ will only play the 2 songs people asked for most. The shopkeeper has counted the requests, and the triage nurse must choose which songs get a slot in her tiny booth.'],
+    quest: ['The village radio took seven song requests tonight: 1, 2, 3, 2, 4, 3, 2.', 'The DJ will play only the 2 songs people asked for most. The shopkeeper has counted the requests. The triage nurse must choose which songs get a slot in the tiny booth.'],
     example: ['nums = [1, 2, 3, 2, 4, 3, 2]   k = 2', 'answer = [2, 3]   (song 2 ×3, song 3 ×2, any order)'],
     hints: ['“Before you can pick favourites, you need to know how often each song was asked for. Who is good at counting?”', '“Once the counts are known, this is the talent show again: keep only the best k.”', '“Seat the least-requested song of the booth by the door. A new song only has to beat that one.”'],
     clues: ['how often, not how big', 'only the top k matter', 'counts first, then choose'],
@@ -178,7 +178,7 @@ function hpYardScene() {
   sortDesk();
   steps.push({ L: desk[0].idx, kind: 'seed', sent: -1, desk: deskVals(), deskIdx: desk.map((c) => c.idx), merged: [], board: board(null),
     dialog: [say('triage', 'Fronts on my desk: ' + trains.map(([name]) => name + carOf(name, 0).v).join(', ') + '.'), say('narr', 'The smallest is on top: ' + desk[0].v + ' from train ' + desk[0].name + '.')],
-    nar: { kid: 'The triage nurse puts the first carriage of each train on her desk: ' + deskVals().join(', ') + '. She can see at once that ' + desk[0].v + ' is the smallest.', builder: 'Push every non-empty head: desk = ' + hpList(deskVals()) + ', desk[0] = ' + desk[0].v + '.', expert: 'Seeding costs O(k log k), or O(k) with heapify.' } });
+    nar: { kid: 'The triage nurse puts the first carriage of each train on the desk: ' + deskVals().join(', ') + '. Now the nurse can see that ' + desk[0].v + ' is the smallest.', builder: 'Push every non-empty head: desk = ' + hpList(deskVals()) + ', desk[0] = ' + desk[0].v + '.', expert: 'Seeding costs O(k log k), or O(k) with heapify.' } });
   while (desk.length) {
     const c = desk.shift();
     merged.push(c.v);
@@ -187,11 +187,11 @@ function hpYardScene() {
       desk.push(nxt); sortDesk();
       steps.push({ L: c.idx, kind: 'send', sent: c.idx, desk: deskVals(), deskIdx: desk.map((d) => d.idx), merged: merged.slice(), board: board(nxt), from: c.name,
         dialog: [say('triage', c.v + ' from train ' + c.name + ' is the smallest. Out it goes.'), say('triage', 'Train ' + c.name + ' moves up its next carriage: ' + nxt.v + '.'), say('narr', 'Desk: ' + hpList(deskVals()) + '. Out train: ' + merged.join(' → ') + '.')],
-        nar: { kid: 'The triage nurse sends ' + c.v + ' to the out train. Train ' + c.name + ' still has carriages, so its next one, ' + nxt.v + ', comes up to the desk.', builder: 'heappop → ' + c.v + ' (train ' + c.name + '); tail.next = it; push its next, ' + nxt.v + '. desk = ' + hpList(deskVals()) + '.', expert: 'The popped node is the global minimum of every carriage not yet sent, because each train is sorted and its front is on the desk.' } });
+        nar: { kid: 'The triage nurse sends ' + c.v + ' to the out train. Train ' + c.name + ' still has carriages, so its next one, ' + nxt.v + ', comes up to the desk.', builder: 'heappop → ' + c.v + ' (train ' + c.name + '); tail.next = it; push its next, ' + nxt.v + '. desk = ' + hpList(deskVals()) + '.', expert: 'The popped node is the smallest of all carriages not yet sent. Each train is sorted, and its front is on the desk.' } });
     } else {
       steps.push({ L: c.idx, kind: 'empty', sent: c.idx, desk: deskVals(), deskIdx: desk.map((d) => d.idx), merged: merged.slice(), board: board(null), from: c.name,
         dialog: [say('triage', c.v + ' from train ' + c.name + ' is the smallest. Out it goes.'), say('narr', 'Train ' + c.name + ' has no carriages left, so nothing new comes to the desk.' + (desk.length ? ' Desk: ' + hpList(deskVals()) + '.' : ' The desk is empty.'))],
-        nar: { kid: 'The triage nurse sends ' + c.v + ' out. That was the last carriage of train ' + c.name + ', so the desk gets smaller.', builder: 'heappop → ' + c.v + '; node.next is None → push nothing. desk = ' + hpList(deskVals()) + '.', expert: 'A finished list simply drops out; the heap shrinks toward empty, which ends the loop.' } });
+        nar: { kid: 'The triage nurse sends ' + c.v + ' out. That was the last carriage of train ' + c.name + ', so the desk gets smaller.', builder: 'heappop → ' + c.v + '; node.next is None → push nothing. desk = ' + hpList(deskVals()) + '.', expert: 'A finished list drops out. The heap shrinks toward empty, which ends the loop.' } });
     }
   }
   steps.push({ L: cars.find((c) => c.v === merged[merged.length - 1]).idx, kind: 'found', sent: -1, desk: [], deskIdx: [], merged: merged.slice(), board: [],
@@ -223,11 +223,11 @@ function hpYardScene() {
     },
     rules: [['Start with an empty desk', 'intro'], ['Put every train’s front on the desk', 'seed'], ['Send the smallest, bring up its next carriage', 'send'], ['Send the smallest, its train is finished', 'empty'], ['Desk empty → the out train is done', 'found']],
     complexity: [['O(N log k)', 'each carriage passes the desk once'], ['O(k)', 'one front per train on the desk']],
-    quest: ['Three trains pull into the yard, each already sorted from small to big: A carries 2, 5, 8. B carries 1, 6. C carries 3, 4.', 'The station master wants one long train, still sorted. The triage nurse keeps the front carriage of every train on her desk and always knows which one is smallest.'],
+    quest: ['Three trains pull into the yard, each already sorted from small to big: A carries 2, 5, 8. B carries 1, 6. C carries 3, 4.', 'The station master wants one long train, still sorted. The triage nurse keeps the front carriage of every train on the desk. The nurse always knows which one is smallest.'],
     example: ['lists = [[2, 5, 8], [1, 6], [3, 4]]', 'answer = 1 → 2 → 3 → 4 → 5 → 6 → 8'],
     hints: ['“Each train is already sorted. Where in a train is its smallest carriage?”', '“So the next carriage of the big train must be one of the fronts. How many fronts are there?”', '“Keep the fronts on a desk that always shows the smallest. Send it out, then bring up the next carriage from the same train.”'],
     clues: ['every train is sorted', 'only the fronts can be next', 'many trains, one output'],
-    quizFb: ['“Pouring every carriage into one pile and sorting works, but it throws away the order the trains already had.”', '“Comparing all k fronts every time is O(k) per carriage. The desk gets it down to O(log k).”', '“Yes! A desk of fronts, smallest on top. Send it, bring up the next from that train, repeat.”', '“Two friends from both ends only works on one sorted row. We have three trains to weave together.”'],
+    quizFb: ['“Pouring every carriage into one pile and sorting works. But it ignores the order the trains already had.”', '“Comparing all k fronts every time is O(k) per carriage. The desk gets it down to O(log k).”', '“Yes! A desk of fronts, smallest on top. Send it, bring up the next from that train, repeat.”', '“Two friends from both ends only works on one sorted row. We have three trains to weave together.”'],
     steps
   };
 }

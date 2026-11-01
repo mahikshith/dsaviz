@@ -12,7 +12,7 @@ function photoScene() {
   });
   steps.push({ L: 0, kind: 'intro', left: 1, right: 1, board: notes(-1, 'intro'),
     dialog: [say('narr', 'Six friends hold number cards. A friend’s score is all the other cards multiplied.'), say('tally', 'I may not divide.'), say('narr', 'Then walk the row twice: left to right, then back.'), say('tally', 'Every note starts at 1. I carry one number: the product so far.')],
-    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, she multiplies in the cards on their right.', builder: 'answer = [1] * n. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'Score(i) = prefix(i) × suffix(i), where prefix and suffix are running products. Two linear passes, no division, O(1) extra space besides the output.' } });
+    nar: { kid: 'Each friend gets a note. Walking right, the tally keeper writes the product of the cards on their left. Walking back, the tally keeper multiplies in the cards on their right.', builder: 'answer = [1] * n. Pass 1: answer[i] = product of nums[0..i−1]. Pass 2: answer[i] *= product of nums[i+1..n−1].', expert: 'Score(i) = prefix(i) × suffix(i), where prefix and suffix are running products. Two linear passes, no division, O(1) extra space besides the output.' } });
   let left = 1;
   for (let i = 0; i < n; i++) {
     const before = left;
@@ -22,7 +22,7 @@ function photoScene() {
       dialog: i === 0
         ? [say('tally', 'Seat 0 has nobody on the left. Their note stays 1.'), say('tally', '1 × 2 = 2. Now I carry 2.')]
         : [say('tally', 'I carry ' + before + '. I write ' + before + ' on seat ' + i + '’s note.'), say('tally', before + ' × ' + nums[i] + ' = ' + left + '. Now I carry ' + left + '.')],
-      nar: { kid: 'The tally keeper writes ' + before + ' on seat ' + i + '’s note. That is all the cards on the left, multiplied. Then she multiplies her number by ' + nums[i] + '. It becomes ' + left + '.', builder: 'answer[' + i + '] = left = ' + before + '. Then left *= nums[' + i + '], so left = ' + left + '.', expert: 'Invariant before the write: left = ∏ nums[0..' + (i - 1) + '] (empty product = 1). One multiply and one write per seat.' } });
+      nar: { kid: 'The tally keeper writes ' + before + ' on seat ' + i + '’s note. That is all the cards on the left, multiplied. Then the tally keeper multiplies the running number by ' + nums[i] + '. It becomes ' + left + '.', builder: 'answer[' + i + '] = left = ' + before + '. Then left *= nums[' + i + '], so left = ' + left + '.', expert: 'Invariant before the write: left = ∏ nums[0..' + (i - 1) + '] (empty product = 1). One multiply and one write per seat.' } });
   }
   let right = 1;
   for (let i = n - 1; i >= 0; i--) {
@@ -133,7 +133,7 @@ function coinJarScene() {
       js: [['function subarraySum(nums, k) {', ''], ['  const seen = new Map([[0, 1]]);', '  // the empty jar'], ['  let total = 0, count = 0;', ''], ['  for (const x of nums) {', ''], ['    total += x;', ''], ['    count += seen.get(total - k) || 0;', ''], ['    seen.set(total, (seen.get(total) || 0) + 1);', ''], ['  }', ''], ['  return count;', ''], ['}', '']],
       go: [['func subarraySum(nums []int, k int) int {', ''], ['    seen := map[int]int{0: 1}', '  // the empty jar'], ['    total, count := 0, 0', ''], ['    for _, x := range nums {', ''], ['        total += x', ''], ['        count += seen[total-k]', ''], ['        seen[total]++', ''], ['    }', ''], ['    return count', ''], ['}', '']]
     },
-    rules: [['Start the book with 0, seen once', 'intro'], ['Total − k is in the book → add its count', 'hit'], ['Not in the book → just write the total down', 'miss'], ['Last stop → report the count', 'found']],
+    rules: [['Start the book with 0, seen once', 'intro'], ['Total − k is in the book → add its count', 'hit'], ['Not in the book → write the total down', 'miss'], ['Last stop → report the count', 'found']],
     complexity: [['O(n)', 'one look at each stop'], ['O(n)', 'the book can hold every total']],
     quest: ['A path has seven stops. At each stop, coins go into a jar or come out: +3, +1, −2, +2, +3, −1, +1.', 'How many runs of stops, side by side, add exactly 3? The tally keeper writes the total after each stop. The shopkeeper counts how often each total shows up.'],
     example: ['nums = [3, 1, −2, 2, 3, −1, 1]   k = 3', 'answer = 6'],

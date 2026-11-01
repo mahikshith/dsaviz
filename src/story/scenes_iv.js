@@ -14,7 +14,7 @@ function diaryScene() {
   const snap = (o) => Object.assign({ board: rows(o.fresh), merged: merged.map((m) => m.slice()), owner: owner.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1,
     dialog: [say('narr', 'Six meetings for one room, written in no order. Some of them overlap.'), say('sched', 'First I sort them by start time: 1-3, 2-5, 6-8, 9-12, 10-11, 14-16.'), say('narr', 'Then?'), say('sched', 'I walk through once. If a meeting starts before my last block ends, I stretch that block.')],
-    nar: { kid: 'The scheduler puts the meetings in order of when they start. Then she copies them into her diary, joining any that overlap into one long block.', builder: 'Sort by start. merged = []. For each meeting: if it starts after the last block ends, add a new block; otherwise set last.end = max(last.end, end).', expert: 'After sorting, a meeting can only overlap the most recent block, so one comparison per meeting is enough. O(n log n) for the sort, O(n) for the sweep.' } }));
+    nar: { kid: 'The scheduler puts the meetings in order of when they start. Then the scheduler copies them into the diary. Any meetings that overlap join into one long block.', builder: 'Sort by start. merged = []. For each meeting, check the last block. If the meeting starts after it ends, add a new block. If not, set last.end = max(last.end, end).', expert: 'After sorting, a meeting can only overlap the most recent block, so one comparison per meeting is enough. O(n log n) for the sort, O(n) for the sweep.' } }));
   meets.forEach((m, i) => {
     const lastB = merged[merged.length - 1];
     if (!lastB || lastB[1] < m[0]) {
@@ -71,7 +71,7 @@ function diaryScene() {
     },
     rules: [['Sort the meetings by start time', 'intro'], ['Starts after the last block ends → new block', 'add'], ['Overlaps the last block → stretch its end', 'extend'], ['Fits inside the last block → keep the end', 'inside'], ['Every meeting placed → hand over the diary', 'found']],
     complexity: [['O(n log n)', 'the sort; the sweep is one pass'], ['O(n)', 'the diary can hold every meeting']],
-    quest: ['The meeting room has been double-booked all week. The bookings are 6-8, 1-3, 14-16, 2-5, 9-12 and 10-11, written down in no order.', 'The scheduler must rewrite the diary so that overlapping meetings become one long block, and nothing overlaps any more.'],
+    quest: ['The meeting room has been double-booked all week. The bookings are 6-8, 1-3, 14-16, 2-5, 9-12 and 10-11, written down in no order.', 'The scheduler must rewrite the diary. Overlapping meetings must become one long block, so nothing overlaps any more.'],
     example: ['intervals = [[6,8], [1,3], [14,16], [2,5], [9,12], [10,11]]', 'answer = [[1,5], [6,8], [9,12], [14,16]]'],
     hints: ['“Meetings in a muddle are hard to compare. What order would make overlaps sit next to each other?”', '“Once they are sorted by start, a meeting can only overlap the last block you wrote.”', '“Starts after the last block ends: new block. Otherwise stretch the end, but only if this meeting ends later.”'],
     clues: ['overlapping meetings join up', 'the input is not in order', 'one sweep after sorting'],
@@ -92,14 +92,14 @@ function bookingScene() {
   const snap = (o) => Object.assign({ board: rows(o.fresh), late: late.slice(), outText: ivList(out), size: out.length, status: status.slice() }, o);
   steps.push(snap({ L: 0, kind: 'intro', fresh: -1,
     dialog: [say('narr', 'The diary is tidy: 1-2, 3-4, 6-8, 9-10, 13-15, 17-18. Then a late booking comes in for 5-9.'), say('sched', 'I copy every meeting that ends before 5. Then I join everything that overlaps the booking.'), say('narr', 'And the rest?'), say('sched', 'Once the booking is written, the rest are copied as they are.')],
-    nar: { kid: 'The scheduler has a neat diary and one new meeting to fit in. She copies the early meetings, joins any that clash with the new one, and copies the late ones.', builder: 'Three loops. Copy while end < late.start. Merge while start ≤ late.end, growing late. Append late. Copy the rest.', expert: 'The input is sorted and has no overlaps, so the meetings split into three runs: before, overlapping, after. One pass, O(n).' } }));
+    nar: { kid: 'The scheduler has a neat diary and one new meeting to fit in. The scheduler copies the early meetings. Any that clash with the new one join it. Then the late ones are copied.', builder: 'Three loops. Copy while end < late.start. Merge while start ≤ late.end, growing late. Append late. Copy the rest.', expert: 'The input is sorted and has no overlaps, so the meetings split into three runs: before, overlapping, after. One pass, O(n).' } }));
   let i = 0;
   const n = meets.length;
   while (i < n && meets[i][1] < late[0]) {
     out.push(meets[i].slice()); status[i] = 'copied';
     steps.push(snap({ L: i, kind: 'before', fresh: out.length - 1,
       dialog: [say('sched', 'Meeting ' + ivText(meets[i]) + ' ends at ' + meets[i][1] + ', before the booking starts at ' + late[0] + '.'), say('narr', 'No clash. Copy it across as it is.')],
-      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' is over before the new booking begins, so the scheduler copies it into the new diary.', builder: 'end = ' + meets[i][1] + ' < late.start = ' + late[0] + ' → out.append([' + meets[i][0] + ', ' + meets[i][1] + ']).', expert: 'Everything in this first run ends before the booking, so it can be copied without a check against it again.' } }));
+      nar: { kid: 'Meeting ' + ivText(meets[i]) + ' is over before the new booking begins, so the scheduler copies it into the new diary.', builder: 'end = ' + meets[i][1] + ' < late.start = ' + late[0] + ' → out.append([' + meets[i][0] + ', ' + meets[i][1] + ']).', expert: 'Everything in this first run ends before the booking. So it can be copied with no more checks.' } }));
     i++;
   }
   while (i < n && meets[i][0] <= late[1]) {
@@ -118,7 +118,7 @@ function bookingScene() {
     dialog: i < n
       ? [say('sched', 'Meeting ' + ivText(meets[i]) + ' starts at ' + meets[i][0] + ', after the booking ends at ' + late[1] + '.'), say('narr', 'So nothing else clashes. Write the booking in now: ' + ivText(late) + '.')]
       : [say('sched', 'No meetings left to check.'), say('narr', 'Write the booking in now: ' + ivText(late) + '.')],
-    nar: { kid: 'Nothing else overlaps the booking, so the scheduler writes it into the diary as one block, ' + ivText(late) + '.', builder: 'start = ' + (i < n ? meets[i][0] : '—') + ' > late.end = ' + late[1] + ' → out.append([' + late[0] + ', ' + late[1] + ']).', expert: 'The booking goes in exactly once, after every meeting that ends before it and before every meeting that starts after it. Order is kept with no sort.' } }));
+    nar: { kid: 'Nothing else overlaps the booking, so the scheduler writes it into the diary as one block, ' + ivText(late) + '.', builder: 'start = ' + (i < n ? meets[i][0] : '—') + ' > late.end = ' + late[1] + ' → out.append([' + late[0] + ', ' + late[1] + ']).', expert: 'The booking goes in once. It sits after every meeting that ends before it, and before every meeting that starts after it. The order stays right with no sort.' } }));
   while (i < n) {
     out.push(meets[i].slice()); status[i] = 'copied';
     steps.push(snap({ L: i, kind: 'after', fresh: out.length - 1,

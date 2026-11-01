@@ -23,15 +23,15 @@ function tallestScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', l: '—', r: '—', ans: '—',
     dialog: [say('narr', 'How tall is this tree? Count the branches on the longest way from the top down to a tip.'), say('explorer', 'I can’t see the whole tree at once. I’ll ask each branch how deep it goes.'), say('narr', 'And each branch asks its own two children first.')],
-    nar: { kid: 'The explorer stands at the top branch, 8. To learn how tall the tree is, he asks each branch how far down it goes.', builder: 'maxDepth(root) asks maxDepth(left) and maxDepth(right), then returns 1 + the bigger answer. An empty child answers 0.', expert: 'Post-order DFS: a node’s answer depends only on its children’s answers, so solve the children first, then combine. The number under a branch is its answer, passed up.' } }));
+    nar: { kid: 'The explorer stands at the top branch, 8. To learn how tall the tree is, the explorer asks each branch how far down it goes.', builder: 'maxDepth(root) asks maxDepth(left) and maxDepth(right), then returns 1 + the bigger answer. An empty child answers 0.', expert: 'Post-order DFS: a node’s answer depends only on its children’s answers, so solve the children first, then combine. The number under a branch is its answer, passed up.' } }));
   const visit = (id) => {
     trail.push(id);
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
     if (!L && !R) {
       fate[id] = 'stored'; tags[id] = '↑1'; done++; best = Math.max(best, trail.length);
       steps.push(snap('leaf', id, { node: val(id), l: 0, r: 0, ans: 1,
-        dialog: [say('explorer', 'Branch ' + val(id) + ' has no children at all.'), say('narr', 'So it is just itself: 1 deep. Pass that up.')],
-        nar: { kid: 'Branch ' + val(id) + ' is a tip. Nothing grows below it, so it answers 1: just itself.', builder: 'maxDepth(' + val(id) + '): both children are None and return 0. 1 + max(0, 0) = 1.', expert: 'A leaf is the smallest case. Its answer comes straight from the two empty calls, with no further work. The trail is ' + trail.length + ' calls deep.' } }));
+        dialog: [say('explorer', 'Branch ' + val(id) + ' has no children at all.'), say('narr', 'So it is only itself: 1 deep. Pass that up.')],
+        nar: { kid: 'Branch ' + val(id) + ' is a tip. Nothing grows below it, so it answers 1: only itself.', builder: 'maxDepth(' + val(id) + '): both children are None and return 0. 1 + max(0, 0) = 1.', expert: 'A leaf is the smallest case. Its answer comes straight from the two empty calls, with no further work. The trail is ' + trail.length + ' calls deep.' } }));
       trail.pop();
       return 1;
     }
@@ -74,9 +74,9 @@ function tallestScene() {
     lines: tagLines(code), code,
     rules: [['Start at the top branch', 'intro'], ['Ask both children before answering', 'ask'], ['A tip with no children answers 1', 'leaf'], ['Answer 1 + the deeper child’s answer', 'report'], ['The top branch’s answer is the height', 'done']],
     complexity: [['O(n)', 'every branch answers exactly once'], ['O(h)', 'the trail is as long as the tree is tall']],
-    quest: ['An old tree has seven branches. Each branch splits into at most two smaller ones.', 'The gardener wants to know how tall it is: how many branches are on the longest way from the top down to a tip?'],
+    quest: ['An old tree has seven branches. Each branch splits into at most two smaller ones.', 'The gardener wants to know how tall it is. How many branches are on the longest way from the top down to a tip?'],
     example: ['root = [8, 3, 10, 1, 6, null, 14, null, null, 4]', 'answer = 4  (8 → 3 → 6 → 4)'],
-    hints: ['“If you knew how deep the left side goes and how deep the right side goes, how deep would this branch be?”', '“A branch with nothing under it is 1 deep. An empty spot is 0 deep.”', '“Ask the left child, ask the right child, then answer 1 + the bigger of the two. Start that question at the top.”'],
+    hints: ['“Say you knew how deep the left side goes and how deep the right side goes. How deep would this branch be?”', '“A branch with nothing under it is 1 deep. An empty spot is 0 deep.”', '“Ask the left child, ask the right child, then answer 1 + the bigger of the two. Start that question at the top.”'],
     clues: ['a tree, top to tips', 'the longest way down', 'each branch only knows its children'],
     kit: { right: 2, spot: 'Why ask the children first?', ask: 'How should the explorer measure the tree?',
       quiz: [['Count every branch', 'The height is how many branches there are'], ['Always go left', 'Walk down the left side and count'], ['Ask the children, add one', 'Each branch answers 1 + its deeper child'], ['Measure the widest floor', 'The height is the most branches side by side']] },
@@ -99,7 +99,7 @@ function mirrorGardenScene() {
   };
   steps.push(snap('intro', list[0].id, { node: '—', wasL: '—', wasR: '—',
     dialog: [say('narr', 'The garden must look as if you saw it in a mirror. Every left bed goes right, and every right bed goes left.'), say('explorer', 'I’ll swap the two beds at each gardener, then visit the children.'), say('narr', 'Start with the head gardener at the top.')],
-    nar: { kid: 'Each gardener looks after a left bed and a right bed. The explorer will swap the two beds of every gardener. Then the whole garden is mirrored.', builder: 'invert(node): swap node.left and node.right, then call invert on both children. An empty spot just returns.', expert: 'Pre-order DFS: do the work at the node, then recurse. Mirroring every node’s two children mirrors the whole tree.' } }));
+    nar: { kid: 'Each gardener looks after a left bed and a right bed. The explorer will swap the two beds of every gardener. Then the whole garden is mirrored.', builder: 'invert(node): swap node.left and node.right, then call invert on both children. An empty spot returns at once.', expert: 'Pre-order DFS: do the work at the node, then recurse. Mirroring every node’s two children mirrors the whole tree.' } }));
   const visit = (id) => {
     trail.push(id); seen++;
     const L = sideOf(list, id, 'L'), R = sideOf(list, id, 'R');
@@ -145,13 +145,13 @@ function mirrorGardenScene() {
     lines: tagLines(code), code,
     rules: [['Start with the head gardener', 'intro'], ['Swap this gardener’s two beds, then visit them', 'swap'], ['No beds below → nothing to swap', 'leaf'], ['Everyone visited → the garden is mirrored', 'done']],
     complexity: [['O(n)', 'every gardener is visited once'], ['O(h)', 'the trail is as long as the tree is tall']],
-    quest: ['The Mirror Garden has seven gardeners. Each one looks after a left bed and a right bed, and each bed has its own gardener below.', 'The queen wants the garden to look exactly as it does in her mirror. Every left must become right, all the way down.'],
+    quest: ['The Mirror Garden has seven gardeners. Each one looks after a left bed and a right bed, and each bed has its own gardener below.', 'The queen wants the garden to look exactly as it does in the queen’s mirror. Every left must become right, all the way down.'],
     example: ['root = [4, 2, 7, 1, 3, 6, 9]', '[4, 7, 2, 9, 6, 3, 1]'],
-    hints: ['“What changes for the head gardener alone, if the garden is mirrored?”', '“Her two beds trade places. Then the same is true for every gardener below her.”', '“At each gardener: swap left and right, then do the same for both children. An empty spot needs nothing.”'],
+    hints: ['“What changes for the head gardener alone, if the garden is mirrored?”', '“The two beds trade places. Then the same is true for every gardener below.”', '“At each gardener: swap left and right, then do the same for both children. An empty spot needs nothing.”'],
     clues: ['every node, left and right', 'the same small job everywhere', 'the shape is mirrored'],
     kit: { right: 2, spot: 'Why swap at every gardener?', ask: 'How should the explorer mirror the garden?',
       quiz: [['Reverse the bottom row', 'Flip the tips and leave the rest'], ['Swap only at the top', 'Trade the two big halves and stop'], ['Swap at every gardener', 'Swap left and right, then do the same below'], ['Sort each floor backwards', 'Line every floor up from big to small']] },
-    quizFb: ['“Then 2 and 7 stay put. A mirror flips every floor, not just the bottom.”', '“The halves trade sides, but inside each half the beds are still the old way round.”', '“Yes! One swap at every gardener, top to bottom, mirrors the whole garden.”', '“Sorting changes who sits where. A mirror only flips left and right.”'],
+    quizFb: ['“Then 2 and 7 stay put. A mirror flips every floor, not only the bottom.”', '“The halves trade sides, but inside each half the beds are still the old way round.”', '“Yes! One swap at every gardener, top to bottom, mirrors the whole garden.”', '“Sorting changes who sits where. A mirror only flips left and right.”'],
     steps
   };
 }
@@ -220,11 +220,11 @@ function orchardScene() {
     lines: tagLines(code), code,
     rules: [['Start at the top: any height is allowed', 'intro'], ['Fits its range → go down with tighter limits', 'check'], ['Outside its range → the rule is broken', 'fail'], ['Pass the answer back up to the top', 'done']],
     complexity: [['O(n)', 'each tree is checked at most once'], ['O(h)', 'the trail is as long as the orchard is tall']],
-    quest: ['In the orchard every tree has a height. The rule: everything on a tree’s left side is shorter than it, and everything on its right side is taller.', 'That must hold for every ancestor, not just the parent. The inspector asks the explorer: does this orchard obey the rule?'],
+    quest: ['In the orchard every tree has a height. Here is the rule. Everything on a tree’s left side is shorter than it. Everything on its right side is taller.', 'That must hold for every ancestor, not only the parent. The inspector asks the explorer: does this orchard obey the rule?'],
     example: ['root = [8, 3, 10, 1, 6, null, 14, null, null, 4, 9]', 'false  (9 is on the left of 8)'],
     hints: ['“Tree 9 is taller than its parent 6. Is that enough to make it fine?”', '“Each tree has a lowest and a highest height it may be, set by every tree above it.”', '“Carry a range down. Going left, the top limit becomes this tree’s height. Going right, the bottom limit does. Fail as soon as a tree is outside its range.”'],
     clues: ['left is smaller, right is bigger', 'the rule holds for every ancestor', 'one break fails the whole tree'],
-    kit: { right: 2, spot: 'Why carry limits, not just compare?', ask: 'How should the explorer check the orchard?',
+    kit: { right: 2, spot: 'Why carry limits, not only compare?', ask: 'How should the explorer check the orchard?',
       quiz: [['Compare each tree with its parent', 'Left child shorter, right child taller'], ['Check the top three trees', 'If the top is right, the rest follows'], ['Carry the limits down', 'Each tree must fit a range set by all trees above it'], ['Count the trees on each side', 'Both sides should have the same number']] },
     quizFb: ['“Then 9 passes, since 9 > 6. But 9 sits on the left of 8, so it must be shorter than 8.”', '“The break here is three floors down. The top three trees look fine.”', '“Yes! Each step down tightens the range, so every ancestor’s rule travels with the explorer.”', '“The rule is about heights, not how many trees there are. Uneven sides are allowed.”'],
     steps

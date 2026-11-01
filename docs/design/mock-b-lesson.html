@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dictionaries - Lesson 22 (B: Daily habit)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B; --surface:#111315; --surface-2:#191C1F; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.22);
+  --text:#F2F3EF; --muted:#9AA0A6; --lime:#C5F04A; --lime-soft:rgba(197,240,74,.13); --ink:#0A0A0B; --str:#8FD3C1;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font:400 17px/1.65 Outfit,system-ui,sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
+[hidden]{display:none!important}
+
+.top{height:64px;display:flex;align-items:center;border-bottom:1px solid var(--line)}
+.bar{width:100%;max-width:1120px;margin:0 auto;padding:0 var(--s4);display:flex;align-items:center;gap:var(--s4)}
+.logo{font:400 24px/1 Anton,Impact,sans-serif;letter-spacing:.02em}
+.logo b{font-weight:400;color:var(--lime)}
+nav.main{display:flex;gap:var(--s1);margin-right:auto}
+nav.main a{display:flex;align-items:center;gap:var(--s1);height:40px;padding:0 var(--s2);border-radius:12px;color:var(--muted);font-weight:500;font-size:15px;transition:color .15s,background .15s}
+nav.main a:hover{color:var(--text)}
+nav.main a[aria-current]{color:var(--text);background:var(--surface-2)}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center}
+
+.page{max-width:1120px;margin:0 auto;padding:var(--s3) var(--s4) var(--s5)}
+.tl{display:inline-flex;align-items:center;gap:var(--s1);color:var(--muted);font-weight:500;font-size:15px;transition:color .15s;min-height:40px}
+.tl:hover{color:var(--text)}
+.tl .i{width:18px;height:18px}
+.head{margin:var(--s2) 0 var(--s4)}
+h1{font:400 56px/1 Anton,Impact,sans-serif;text-transform:uppercase}
+.meta{color:var(--muted);font-size:15px;line-height:24px;font-weight:500}
+.head .meta{margin-top:var(--s2)}
+h2{font:600 24px/32px Outfit,sans-serif}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:var(--s3);align-items:start}
+.stack{display:grid;gap:var(--s3)}
+.card{background:var(--surface);border-radius:16px;padding:var(--s3)}
+.card-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);margin-bottom:var(--s2)}
+
+.tabs{display:flex;gap:var(--s4);border-bottom:1px solid var(--line);margin:0 0 var(--s3)}
+.tab{height:48px;font-weight:500;font-size:17px;color:var(--muted);position:relative;transition:color .15s}
+.tab:hover,.tab[aria-selected=true]{color:var(--text)}
+.tab[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--lime);border-radius:1px}
+
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.pane{min-height:184px}
+.pane+.pane{border-left:1px solid var(--line);padding-left:var(--s3)}
+.code{font:400 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;list-style:none}
+.code li{padding:0 var(--s1);border-radius:6px;white-space:pre-wrap;word-break:break-word;transition:background .18s}
+.code li.on{background:var(--lime-soft)}
+.code .s{color:var(--str)}
+.rows{list-style:none;display:grid;gap:var(--s1)}
+.row{display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 var(--s2);border-radius:8px;background:var(--surface-2);font:400 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;transition:background .18s,color .18s}
+.row .v{color:var(--muted)}
+.row.on{background:var(--lime);color:var(--ink)}
+.row.on .v{color:var(--ink);font-weight:500}
+.row.new{animation:enter .22s ease-out}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.out{margin-top:var(--s2);color:var(--muted);font:400 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;min-height:24px}
+.out b{color:var(--text);font-weight:500}
+.cap{margin-top:var(--s3);font-size:18px;line-height:28px;min-height:28px}
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:var(--s3)}
+.dots{display:flex;gap:var(--s1)}
+.dots button{width:24px;height:24px;display:grid;place-items:center}
+.dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--surface-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:background .15s,transform .15s}
+.dots button[aria-current=true]::before{background:var(--lime);box-shadow:none;transform:scale(1.25)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s1);height:48px;padding:0 var(--s3);border-radius:12px;background:var(--lime);color:var(--ink);font-weight:600;font-size:17px;transition:transform .12s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.98)}
+.btn .i{width:20px;height:20px;stroke-width:2}
+
+/* check */
+.opts{list-style:none;display:grid;gap:var(--s1);margin-top:var(--s2)}
+.opts button{width:100%;text-align:left;height:48px;padding:0 var(--s2);border-radius:12px;background:var(--surface-2);font:500 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;transition:background .15s}
+.opts button:hover{background:#20242a}
+.opts button.ok{background:var(--lime);color:var(--ink)}
+.opts button.no{background:#2a1f1f;color:#f0b4b4}
+.verdict{margin-top:var(--s2);min-height:28px;font-size:18px;line-height:28px}
+.about ul{list-style:none;margin-top:var(--s2)}
+.about li{padding:var(--s2) 0;border-top:1px solid var(--line)}
+.about li:first-child{border-top:0;padding-top:0}
+.about .two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s3);padding-top:var(--s3);border-top:1px solid var(--line)}
+.about h3{font:600 17px/24px Outfit,sans-serif}
+
+.pn{display:flex;justify-content:space-between;gap:var(--s3);margin-top:var(--s1)}
+
+/* rail */
+.plan,.path{list-style:none}
+.plan li{display:flex;align-items:center;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--line)}
+.plan li:first-child{border-top:0;padding-top:0}
+.plan li:last-child{padding-bottom:0}
+.ico{width:48px;height:48px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--muted);flex:none}
+.plan .cur .ico{background:var(--lime-soft);color:var(--lime)}
+.plan .t{font-weight:500;line-height:24px}
+.plan .m,.path .m{color:var(--muted);font-size:15px;line-height:24px}
+.plan .locked .t{color:var(--muted)}
+.path li{position:relative;display:flex;align-items:center;gap:var(--s2);min-height:48px}
+.path li+li{margin-top:var(--s3)}
+.path li+li::before{content:"";position:absolute;left:23px;top:-24px;height:20px;width:2px;background:var(--line-2)}
+.path li+li::after{content:"";position:absolute;left:20px;top:-10px;width:7px;height:7px;border-right:2px solid var(--line-2);border-bottom:2px solid var(--line-2);transform:rotate(45deg)}
+.node{width:48px;height:48px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-weight:600;color:var(--muted);flex:none}
+.path .now .node{box-shadow:0 0 0 2px var(--lime);color:var(--text);background:var(--surface)}
+.path .t{font-weight:500;line-height:24px}
+
+.tabbar{display:none}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}}
+@media (max-width:760px){
+  nav.main,.avatar{display:none}
+  .bar{padding:0 var(--s2)}
+  .top{border-bottom:0}
+  .page{padding:var(--s1) var(--s2) 96px}
+  h1{font-size:48px}
+  .head{margin:var(--s1) 0 var(--s3)}
+  .card{padding:var(--s2)}
+  .tabs{gap:var(--s3)}
+  .panes{grid-template-columns:1fr}
+  .pane{min-height:0}
+  .pane+.pane{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:var(--s2)}
+  .ctrl{flex-direction:column-reverse;align-items:stretch}
+  .dots{justify-content:center}
+  .about .two{grid-template-columns:1fr}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;height:72px;background:var(--surface);border-top:1px solid var(--line);z-index:5}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--muted);font-size:15px;font-weight:500;line-height:20px}
+  .tabbar a[aria-current]{color:var(--lime)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-8-2v14c3 0 6 .5 8 2 2-1.5 5-2 8-2V4c-3 0-6 .5-8 2zM12 6v14"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4M4 5v4h4M4 13a8 8 0 0 0 14 4m2 2v-4h-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+</svg>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="mock-b-home.html" aria-label="DSAMaxxing front page">DSA<b>MAXXING</b></a>
+  <nav class="main" aria-label="Main">
+    <a href="mock-b-home.html">Home</a>
+    <a href="#" aria-current="page">Start here</a>
+    <a href="#">Learn</a>
+    <a href="#">Sheet</a>
+    <a href="#">More <svg class="i" style="width:16px;height:16px"><use href="#i-down"/></svg></a>
+  </nav>
+  <button class="avatar" aria-label="Your account"><svg class="i"><use href="#i-user"/></svg></button>
+</div></header>
+
+<main class="page">
+  <a class="tl" href="mock-b-home.html"><svg class="i"><use href="#i-left"/></svg>Back to Today</a>
+  <div class="head">
+    <h1>Dictionaries</h1>
+    <p class="meta">Lesson 22 of 27 &middot; about 6 minutes</p>
+  </div>
+
+  <div class="grid">
+    <div class="stack">
+      <section class="card">
+        <div class="tabs" role="tablist" aria-label="Lesson sections">
+          <button class="tab" role="tab" id="tab-w" aria-selected="true" aria-controls="p-w">Watch</button>
+          <button class="tab" role="tab" id="tab-c" aria-selected="false" aria-controls="p-c">Check</button>
+          <button class="tab" role="tab" id="tab-a" aria-selected="false" aria-controls="p-a">About</button>
+        </div>
+
+        <div id="p-w" role="tabpanel" aria-labelledby="tab-w">
+          <div class="panes">
+            <div class="pane">
+              <ol class="code" id="code" aria-label="Code"><li>prices = {<span class="s">"apple"</span>: 3, <span class="s">"pear"</span>: 5, <span class="s">"plum"</span>: 4}</li><li>print(prices[<span class="s">"pear"</span>])</li><li>prices[<span class="s">"fig"</span>] = 7</li><li>print(<span class="s">"kiwi"</span> in prices)</li></ol>
+              <p class="out" id="out" aria-live="polite"></p>
+            </div>
+            <div class="pane">
+              <ul class="rows" id="rows" aria-label="What the dictionary holds">
+                <li class="row" data-k="apple"><span>"apple"</span><span class="v">3</span></li>
+                <li class="row" data-k="pear"><span>"pear"</span><span class="v">5</span></li>
+                <li class="row" data-k="plum"><span>"plum"</span><span class="v">4</span></li>
+                <li class="row" data-k="fig" hidden><span>"fig"</span><span class="v">7</span></li>
+              </ul>
+            </div>
+          </div>
+          <p class="cap" id="cap" aria-live="polite"></p>
+          <div class="ctrl">
+            <div class="dots" id="dots" role="group" aria-label="Steps"></div>
+            <button class="btn" id="next">Next step <svg class="i"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+
+        <div id="p-c" role="tabpanel" aria-labelledby="tab-c" hidden>
+          <h2>What does prices["plum"] give back?</h2>
+          <ul class="opts" id="opts">
+            <li><button data-ok="0">3</button></li>
+            <li><button data-ok="1">4</button></li>
+            <li><button data-ok="0">"plum"</button></li>
+          </ul>
+          <p class="verdict" id="verdict" aria-live="polite"></p>
+        </div>
+
+        <div id="p-a" class="about" role="tabpanel" aria-labelledby="tab-a" hidden>
+          <h2>What you will learn</h2>
+          <ul>
+            <li>A dictionary stores pairs of a key and a value.</li>
+            <li>Looking up a key returns its value straight away.</li>
+            <li>Check with in before you look up.</li>
+          </ul>
+          <div class="two">
+            <div><h3>Before this</h3><p class="meta">Lesson 17, Loop a list</p></div>
+            <div><h3>This unlocks</h3><p class="meta">Lesson 23, Debugging</p></div>
+          </div>
+        </div>
+      </section>
+      <nav class="pn" aria-label="Lessons">
+        <a class="tl" href="#"><svg class="i"><use href="#i-left"/></svg>21 &middot; Return values</a>
+        <a class="tl" href="#">23 &middot; Debugging<svg class="i"><use href="#i-chev"/></svg></a>
+      </nav>
+    </div>
+
+    <aside class="stack" aria-label="Today and the path">
+      <section class="card" aria-labelledby="td">
+        <div class="card-head"><h2 id="td">Today</h2><p class="meta">Step 1 of 3</p></div>
+        <ol class="plan">
+          <li class="cur"><span class="ico"><svg class="i"><use href="#i-book"/></svg></span><div><p class="t">Dictionaries</p><p class="m">You are here &middot; 6 min</p></div></li>
+          <li><span class="ico"><svg class="i"><use href="#i-refresh"/></svg></span><div><p class="t">Lists</p><p class="m">Quick review &middot; 2 min</p></div></li>
+          <li class="locked"><span class="ico"><svg class="i"><use href="#i-lock"/></svg></span><div><p class="t">Contains Duplicate</p><p class="m">Opens after Dictionaries</p></div></li>
+        </ol>
+      </section>
+      <section class="card" aria-labelledby="pt">
+        <div class="card-head"><h2 id="pt">Up next</h2></div>
+        <ol class="path">
+          <li><span class="node">23</span><div><p class="t">Debugging</p><p class="m">Find what went wrong</p></div></li>
+          <li><span class="node">24</span><div><p class="t">Project: grade book</p><p class="m">Build a small program</p></div></li>
+          <li><span class="node">25</span><div><p class="t">Plan it first</p><p class="m">Think before you type</p></div></li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<nav class="tabbar" aria-label="Main">
+  <a href="mock-b-home.html"><svg class="i"><use href="#i-home"/></svg>Home</a>
+  <a href="#" aria-current="page"><svg class="i"><use href="#i-flag"/></svg>Start here</a>
+  <a href="#"><svg class="i"><use href="#i-list"/></svg>Sheet</a>
+  <a href="#"><svg class="i"><use href="#i-more"/></svg>More</a>
+</nav>
+
+<script>
+(function(){
+  var steps=[
+    {line:0,row:null,out:'',cap:'A dictionary keeps pairs. Each key points to one value.'},
+    {line:1,row:'pear',out:'<b>5</b>',cap:'Ask for a key and Python hands back its value. No searching.'},
+    {line:2,row:'fig',out:'',cap:'Give a new key a value and the pair joins the dictionary.'},
+    {line:3,row:null,out:'<b>False</b>',cap:'Check with in first, so a missing key never surprises you.'}
+  ];
+  var i=0,lines=document.querySelectorAll('#code li'),rows=document.querySelectorAll('#rows .row'),
+      out=document.getElementById('out'),cap=document.getElementById('cap'),dots=document.getElementById('dots'),next=document.getElementById('next');
+  steps.forEach(function(_,n){var b=document.createElement('button');b.setAttribute('aria-label','Step '+(n+1));b.onclick=function(){go(n)};dots.appendChild(b)});
+  function go(n){
+    i=n;var s=steps[n];
+    lines.forEach(function(l,k){l.classList.toggle('on',k===s.line)});
+    rows.forEach(function(r){
+      var k=r.dataset.k,show=k!=='fig'||n>=2,was=!r.hidden;
+      r.hidden=!show;r.classList.toggle('on',k===s.row);r.classList.toggle('new',show&&!was);
+    });
+    out.innerHTML=s.out?'Output: '+s.out:'';cap.textContent=s.cap;
+    [].forEach.call(dots.children,function(d,k){if(k===n)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
+    next.firstChild.textContent=n===steps.length-1?'Next lesson ':'Next step ';
+  }
+  next.onclick=function(){if(i<steps.length-1)go(i+1)};
+  go(0);
+  var tabs=['tab-w','tab-c','tab-a'].map(function(id){return document.getElementById(id)});
+  tabs.forEach(function(b){b.onclick=function(){
+    tabs.forEach(function(x){var on=x===b;x.setAttribute('aria-selected',on);document.getElementById(x.getAttribute('aria-controls')).hidden=!on});
+  }});
+  var v=document.getElementById('verdict');
+  document.querySelectorAll('#opts button').forEach(function(b){b.onclick=function(){
+    document.querySelectorAll('#opts button').forEach(function(x){x.classList.remove('ok','no')});
+    var ok=b.dataset.ok==='1';b.classList.add(ok?'ok':'no');
+    v.textContent=ok?'Right. The key "plum" points to 4.':'Not quite. Look at the plum row.';
+  }});
+})();
+</script>
+</body>
+</html>

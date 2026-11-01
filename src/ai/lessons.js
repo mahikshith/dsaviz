@@ -1827,6 +1827,364 @@ function aiProb(p) {
   return s;
 }
 
+// ---------- ML: hierarchical clustering, join the closest groups step by step ----------
+const AI_HC = (() => {
+  const P = [[1.4, 2.0], [2.2, 1.4], [2.7, 2.6], [6.0, 2.2], [6.9, 3.0], [6.3, 3.6], [8.4, 7.2], [9.1, 8.0], [8.0, 8.2]];
+  const n = P.length; const d = (a, b) => Math.hypot(P[a][0] - P[b][0], P[a][1] - P[b][1]);
+  let cl = P.map((_, i) => ({ id: i, m: [i], h: 0, kids: null })); const merges = [];
+  while (cl.length > 1) {
+    let best = null;
+    for (let i = 0; i < cl.length; i++) for (let j = i + 1; j < cl.length; j++) {
+      let s = 0; let c = 0; cl[i].m.forEach((a) => cl[j].m.forEach((b) => { s += d(a, b); c++; }));
+      if (!best || s / c < best.v) best = { i, j, v: s / c, c };
+    }
+    const a = cl[best.i]; const b = cl[best.j];
+    const nc = { id: n + merges.length, m: a.m.concat(b.m), h: best.v, kids: [a, b] };
+    merges.push({ a: a.id, b: b.id, h: best.v, m: nc.m, pairs: best.c, node: nc });
+    cl = cl.filter((_, k) => k !== best.i && k !== best.j).concat([nc]);
+  }
+  const order = []; const walk = (c) => { if (c.kids) c.kids.forEach(walk); else order.push(c.id); }; walk(cl[0]);
+  const maxH = merges[merges.length - 1].h;
+  // groups after the first m merges (as lists of dot numbers)
+  const groups = (m) => {
+    let g = P.map((_, i) => [i]);
+    merges.slice(0, m).forEach((mg) => { g = g.filter((x) => !(mg.m.indexOf(x[0]) >= 0)).concat([mg.m]); });
+    return g;
+  };
+  return { P, n, d, merges, order, maxH, groups };
+})();
+function aiHier(p) {
+  const k = Math.max(2, Math.min(5, Math.round(p)));
+  const D = AI_HC; const M = D.merges; const n = D.n;
+  const [sx, sy] = aiScale(70, 530, 480, 60, 0, 10);
+  const axes = { x0: 70, y0: 480, x1: 530, y1: 60, xl: 'distance from the station →', yl: '↑ average price' };
+  const COL = ['a', 'b', 'ok', 'c', 't'];
+  const pts = (gs) => ({ points: D.P.map((q, i) => {
+    const gi = gs ? gs.findIndex((g) => g.indexOf(i) >= 0) : -1;
+    return { id: 'd' + i, x: sx(q[0]), y: sy(q[1]), c: gs && gs[gi].length > 1 ? COL[gi % 5] : 'm', r: 7, label: String(i + 1), lx: 11, ly: -9, lc: 't' };
+  }) });
+  const cen = (m) => [m.reduce((s, i) => s + D.P[i][0], 0) / m.length, m.reduce((s, i) => s + D.P[i][1], 0) / m.length];
+  const rings = (gs) => ({ rings: gs.filter((g) => g.length > 1).map((g) => {
+    const c = cen(g); const r = Math.max.apply(null, g.map((i) => Math.hypot(D.P[i][0] - c[0], D.P[i][1] - c[1]))) * 46 + 16;
+    return { id: 'rg' + g.slice().sort().join('_'), x: sx(c[0]), y: sy(c[1]), r: aiR(r), c: 'a', w: 2.5 };
+  }) });
+  // dendrogram on the right: leaves along the bottom, joins drawn as U shapes
+  const base = 470; const H = (h) => aiR(base - (h / D.maxH) * 290);
+  const lx = {}; D.order.forEach((id, j) => { lx[id] = 610 + j * 38; });
+  const nx = {}; const ny = {}; D.order.forEach((id) => { nx[id] = lx[id]; ny[id] = base; });
+  M.forEach((m, i) => { nx[n + i] = (nx[m.a] + nx[m.b]) / 2; ny[n + i] = H(m.h); });
+  const dendro = (upto, hi) => ({
+    paths: [{ id: 'dxa', pts: [[596, 200], [596, base], [930, base]], c: 'l', w: 1.5 }].concat(M.slice(0, upto).map((m, i) => ({
+      id: 'dj' + i, pts: [[nx[m.a], ny[m.a]], [nx[m.a], ny[n + i]], [nx[m.b], ny[n + i]], [nx[m.b], ny[m.b]]], c: hi === i ? 'c' : 'a', w: 3 }))),
+    labels: D.order.map((id) => ({ id: 'dl' + id, text: String(id + 1), x: lx[id], y: base + 22, c: 't2', size: 13, anchor: 'middle' })).concat([{ id: 'dyl', text: '↑ distance when joined', x: 606, y: 190, c: 'm', size: 13 }])
+  });
+  const cutLn = (kk) => { const y = H((M[n - kk - 1].h + M[n - kk].h) / 2); return { paths: [{ id: 'cut', pts: [[596, y], [930, y]], c: 'c', w: 3, dash: true }] }; };
+  const cutLine = cutLn(k);
+  const full = n - 1;
+  const gsK = D.groups(n - k);
+  let bestK = 2; let bestGap = 0;
+  for (let kk = 2; kk <= 5; kk++) { const g = M[n - kk].h - M[n - kk - 1].h; if (g > bestGap) { bestGap = g; bestK = kk; } }
+  const m1 = M[0]; const m2 = M[1];
+  const mg3 = M.find((m) => m.node.kids[0].m.length > 1 && m.node.kids[1].m.length === 1 && m.m.length === 3) || M[3];
+  const s = [];
+  s.push(aiStep('Each dot is a cafe. We know how far it is from the station and its average price. Nobody has sorted the cafes into groups.', [], aiScene({ axes }, pts())));
+  s.push(aiStep('Hierarchical clustering begins with every cafe as its own group of one. It then joins groups, one pair at a time.', [], aiScene({ axes }, pts())));
+  s.push(aiStep('Join 1: find the two closest groups. Cafes ' + (m1.a + 1) + ' and ' + (m1.b + 1) + ' are closest, ' + aiFmt(m1.h, 2) + ' apart. They become one group.', ['rg' + m1.m.slice().sort().join('_')], aiScene({ axes }, pts(D.groups(1)), rings(D.groups(1)))));
+  s.push(aiStep('Join 2: cafes ' + (m2.a + 1) + ' and ' + (m2.b + 1) + ', ' + aiFmt(m2.h, 2) + ' apart. Each join lowers the number of groups by one.', [], aiScene({ axes }, pts(D.groups(2)), rings(D.groups(2)))));
+  s.push(aiStep('How far apart are two groups? Average linkage takes the mean of all distances between their cafes. Here ' + mg3.pairs + ' distances give ' + aiFmt(mg3.h, 2) + '.', [], aiScene({ axes }, pts(D.groups(4)), rings(D.groups(4)))));
+  s.push(aiStep('After 4 joins, ' + (n - 4) + ' groups are left. The rings show where the groups are.', [], aiScene({ axes }, pts(D.groups(4)), rings(D.groups(4)))));
+  s.push(aiStep('The last two joins are far longer: ' + aiFmt(M[n - 3].h, 1) + ' and ' + aiFmt(M[n - 2].h, 1) + '. After ' + full + ' joins everything is one group.', [], aiScene({ axes }, pts(D.groups(full)), rings(D.groups(full)))));
+  s.push(aiStep('A dendrogram records the joins. Each U is one join. Its height is the distance when the join happened.', ['dj' + (n - 2)], aiScene({ axes }, pts(), dendro(full, n - 2))));
+  s.push(aiStep('To get ' + k + ' groups, cut across the tree at the dashed line. Each branch below the cut is one group.', ['cut'], aiScene({ axes }, pts(), dendro(full), cutLine)));
+  s.push(aiStep('Colour the dots by branch. Your cut gives ' + k + ' groups' + (k === 3 ? ', and they match the three clumps.' : k < 3 ? ', so separate clumps are forced together.' : ', so real clumps are split.'), [], aiScene({ axes }, pts(gsK), rings(gsK), dendro(full), cutLine)));
+  s.push(aiStep('Where to cut? Look for the longest stretch with no joins. It is longest for ' + bestK + ' groups: ' + aiFmt(bestGap, 1) + ' tall. Your cut: ' + k + ' groups.', [], aiScene({ axes }, pts(D.groups(n - bestK)), dendro(full), cutLn(bestK))));
+  s.push(aiStep('Two cautions. Other linkage rules, such as nearest-pair, give other trees. And it must compare every pair of dots, so huge data is slow.', [], aiScene({ axes }, pts(), dendro(full))));
+  return s;
+}
+
+// ---------- ML: DBSCAN, clusters from crowded places ----------
+const AI_DBS = (() => {
+  const rnd = aiRng(5); const P = [];
+  for (let i = 0; i < 22; i++) { const t = (2 * Math.PI * i) / 22 + 0.1; P.push([5 + 3.3 * Math.cos(t) + (rnd() - 0.5) * 0.25, 5 + 3.3 * Math.sin(t) + (rnd() - 0.5) * 0.25]); }
+  for (let i = 0; i < 10; i++) P.push([5 + aiGauss(rnd) * 0.45, 5 + aiGauss(rnd) * 0.45]);
+  [[1, 9], [9.2, 1.2], [0.8, 0.9], [9.4, 9.3]].forEach((q) => P.push(q));
+  const MINP = 3;
+  const run = (eps) => {
+    const n = P.length;
+    const nb = P.map((p) => P.map((q, j) => j).filter((j) => Math.hypot(p[0] - P[j][0], p[1] - P[j][1]) <= eps));
+    const core = nb.map((a) => a.length >= MINP); const lab = P.map(() => -1); const depth = P.map(() => -1); let c = 0;
+    for (let i = 0; i < n; i++) {
+      if (lab[i] >= 0 || !core[i]) continue;
+      lab[i] = c; depth[i] = 0; const q = [i];
+      while (q.length) { const x = q.shift(); if (!core[x]) continue; nb[x].forEach((y) => { if (lab[y] < 0) { lab[y] = c; depth[y] = depth[x] + 1; q.push(y); } }); }
+      c++;
+    }
+    const type = P.map((_, i) => (core[i] ? 'core' : lab[i] >= 0 ? 'border' : 'noise'));
+    return { nb, core, lab, depth, type, clusters: c, noise: lab.filter((l) => l < 0).length, ncore: core.filter((x) => x).length };
+  };
+  return { P, MINP, run };
+})();
+function aiDbscan(p) {
+  const D = AI_DBS; const eps = Math.max(0.5, Math.min(2.4, p)); const R = D.run(eps);
+  const [sx, sy] = aiScale(70, 530, 480, 60, 0, 10); const px = 46;
+  const axes = { x0: 70, y0: 480, x1: 530, y1: 60, xl: 'length of a visit →', yl: '↑ spend' };
+  const COL = ['a', 'b', 'ok', 'c', 't'];
+  const dots = (mode, extra) => ({ points: D.P.map((q, i) => {
+    let c = 'm'; let hollow = false; let op = 1;
+    if (mode === 'type') { c = R.type[i] === 'core' ? 'a' : R.type[i] === 'border' ? 'b' : 'm'; hollow = R.type[i] !== 'core'; }
+    if (mode === 'lab') { c = R.lab[i] >= 0 ? COL[R.lab[i] % 5] : 'm'; hollow = R.lab[i] < 0; }
+    if (mode === 'grow') { const near = R.lab[i] === 0 && R.depth[i] >= 0 && R.depth[i] <= extra; c = near ? 'a' : 'm'; op = near ? 1 : 0.5; }
+    return { id: 'd' + i, x: sx(q[0]), y: sy(q[1]), c, r: 6, hollow, op };
+  }) });
+  const probe = 0; const pc = R.nb[probe].length;
+  const circle = { rings: [{ id: 'eps', x: sx(D.P[probe][0]), y: sy(D.P[probe][1]), r: aiR(eps * px), c: 'c', w: 2.5 }] };
+  const cnt = (t) => R.type.filter((x) => x === t).length;
+  const lo = D.run(0.5); const hi = D.run(2.4);
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 580, y: 110, text: txt, c: 't', size: 15, mono: true }] });
+  const info = (a, b, c3) => ({ labels: [{ id: 'i1', x: 580, y: 170, text: a, c: 'a', size: 15 }, { id: 'i2', x: 580, y: 200, text: b, c: 'b', size: 15 }, { id: 'i3', x: 580, y: 230, text: c3, c: 'm', size: 15 }] });
+  const s = [];
+  s.push(aiStep('Each dot is a customer: how long the visit was and how much they spent. A ring of dots surrounds a crowd, with a few strays.', [], aiScene({ axes }, dots())));
+  s.push(aiStep('k-means cannot split a ring from its middle, because it cuts with straight lines. DBSCAN works by crowding instead.', [], aiScene({ axes }, dots())));
+  s.push(aiStep('It has two settings. Eps is a radius. Min points is how many dots a circle needs. Here eps is ' + aiFmt(eps, 1) + ' and min points is ' + D.MINP + '.', ['eps'], aiScene({ axes }, dots(), circle, ro('eps = ' + aiFmt(eps, 1) + ', min points = ' + D.MINP))));
+  s.push(aiStep('This circle holds ' + pc + ' dot' + (pc === 1 ? '' : 's') + ', counting its centre. ' + (pc >= D.MINP ? 'That is ' + D.MINP + ' or more, so the centre is a core dot.' : 'That is under ' + D.MINP + ', so the centre is not a core dot.'), ['eps'], aiScene({ axes }, dots(), circle, ro(pc + ' dots inside'))));
+  s.push(aiStep('Test every dot the same way. Core dots are crowded. Border dots sit in a core dot’s circle. The rest are noise.', [], aiScene({ axes }, dots('type'), info('core: ' + cnt('core'), 'border: ' + cnt('border'), 'noise: ' + cnt('noise')))));
+  s.push(aiStep('Grow a cluster: start at a core dot and add every dot in its circle. Repeat from each new core dot.', [], aiScene({ axes }, dots('grow', 2), ro('2 hops from the start'))));
+  s.push(aiStep(R.clusters ? 'The chain keeps going until no new dot is reachable. Cluster 1 now holds ' + R.lab.filter((l) => l === 0).length + ' dots.' : 'At this eps no dot is crowded, so no cluster can start.', [], aiScene({ axes }, dots('grow', 99), ro('cluster 1'))));
+  s.push(aiStep(R.clusters >= 2 ? 'Start again from a core dot not yet used. That grows cluster 2. DBSCAN found ' + R.clusters + ' clusters in all.' : R.clusters === 1 ? (eps > 1.6 ? 'No core dot is left unused, so there is no second cluster. The ring and the middle crowd have merged.' : 'No core dot is left unused, so only this one cluster forms at this eps.') : 'Nothing to start from, so there are no clusters.', [], aiScene({ axes }, dots('lab'), ro(R.clusters + ' cluster' + (R.clusters === 1 ? '' : 's')))));
+  s.push(aiStep('Dots that no cluster reaches are noise. DBSCAN leaves them out and does not force them into a group. Noise count: ' + R.noise + '.', [], aiScene({ axes }, dots('lab'), ro(R.noise + ' noise dots (hollow)'))));
+  s.push(aiStep('Your eps is ' + aiFmt(eps, 1) + ': ' + R.clusters + ' cluster' + (R.clusters === 1 ? '' : 's') + ', ' + R.noise + ' noise. Move the slider and the answer is found again.', [], aiScene({ axes }, dots('lab'), circle, ro('eps ' + aiFmt(eps, 1) + ': ' + R.clusters + ' clusters, ' + R.noise + ' noise'))));
+  s.push(aiStep('Too small an eps makes most dots noise: at 0.5, ' + lo.noise + ' of ' + D.P.length + '. Too large merges crowds: at 2.4, ' + hi.clusters + ' cluster.', [], aiScene({ axes }, dots('lab'), ro('0.5: ' + lo.noise + ' noise   2.4: ' + hi.clusters + ' cluster'))));
+  s.push(aiStep('Limits: one eps must suit the whole map, so crowds of different density are hard. Measurements need the same size range first.', [], aiScene({ axes }, dots('lab'))));
+  return s;
+}
+
+// ---------- ML: t-SNE and UMAP in pictures ----------
+const AI_TS = (() => {
+  const rnd = aiRng(21); const C = [[1, 1, 0, 3, 2], [4, 4, 4, 1, 0], [0, 3, 5, 4, 5]];
+  const X = []; const G = [];
+  C.forEach((c, g) => { for (let i = 0; i < 6; i++) { X.push(c.map((v) => v + aiGauss(rnd) * 0.55)); G.push(g); } });
+  const n = X.length; const d2 = (a, b) => a.reduce((s, v, i) => s + (v - b[i]) * (v - b[i]), 0);
+  return { X, G, n, d2, cache: {} };
+})();
+function aiTsneRun(perp) {
+  const D = AI_TS; if (D.cache[perp]) return D.cache[perp];
+  const n = D.n; const X = D.X; const D2 = X.map((a) => X.map((b) => D.d2(a, b)));
+  const Pc = X.map((_, i) => {
+    let lo = 1e-6; let hi = 1e6; let beta = 1; let row = [];
+    for (let it = 0; it < 60; it++) {
+      let sum = 0; row = D2[i].map((v, j) => (j === i ? 0 : Math.exp(-v * beta))); row.forEach((v) => { sum += v; });
+      let H = 0; row.forEach((v, j) => { if (j !== i && v > 0) { const q = v / sum; H -= q * Math.log(q); } });
+      if (Math.exp(H) > perp) { lo = beta; beta = hi > 1e5 ? beta * 2 : (beta + hi) / 2; } else { hi = beta; beta = (beta + lo) / 2; }
+    }
+    const s = row.reduce((a, b) => a + b, 0); return row.map((v) => v / s);
+  });
+  const P = Pc.map((r, i) => r.map((v, j) => (v + Pc[j][i]) / (2 * n)));
+  const rnd = aiRng(9); const Y = X.map(() => [aiGauss(rnd), aiGauss(rnd)]); const V = Y.map(() => [0, 0]);
+  const snaps = { 0: Y.map((y) => y.slice()) }; const keep = { 15: 1, 60: 1, 250: 1 };
+  for (let it = 1; it <= 250; it++) {
+    const ex = it <= 50 ? 4 : 1; const num = Y.map((a) => Y.map((b) => 1 / (1 + (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]))));
+    let Z = 0; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) if (i !== j) Z += num[i][j];
+    const mom = it < 50 ? 0.5 : 0.8;
+    for (let i = 0; i < n; i++) {
+      let gx = 0; let gy = 0;
+      for (let j = 0; j < n; j++) { if (i === j) continue; const m = (ex * P[i][j] - num[i][j] / Z) * num[i][j]; gx += 4 * m * (Y[i][0] - Y[j][0]); gy += 4 * m * (Y[i][1] - Y[j][1]); }
+      V[i][0] = mom * V[i][0] - 60 * gx; V[i][1] = mom * V[i][1] - 60 * gy;
+    }
+    for (let i = 0; i < n; i++) { Y[i][0] += V[i][0]; Y[i][1] += V[i][1]; }
+    if (keep[it]) snaps[it] = Y.map((y) => y.slice());
+  }
+  const fin = snaps[250]; const cx = fin.reduce((s, y) => s + y[0], 0) / n; const cy = fin.reduce((s, y) => s + y[1], 0) / n;
+  let ext = 0; fin.forEach((y) => { ext = Math.max(ext, Math.abs(y[0] - cx), Math.abs(y[1] - cy)); });
+  const scale = 190 / (ext || 1);
+  const to = (S) => S.map((y) => [aiR(Math.max(80, Math.min(520, 300 + (y[0] - cx) * scale))), aiR(Math.max(75, Math.min(475, 275 + (y[1] - cy) * scale)))]);
+  const knn = (M, k) => M.map((r, i) => r.map((v, j) => [v, j]).filter((q) => q[1] !== i).sort((a, b) => a[0] - b[0]).slice(0, k).map((q) => q[1]));
+  const F = to(snaps[250]);
+  const hi = knn(D2, 3); const lo = knn(F.map((a) => F.map((b) => (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]))), 3);
+  const kept = hi.reduce((s, a, i) => s + a.filter((j) => lo[i].indexOf(j) >= 0).length, 0) / (n * 3);
+  let intra = 0; let ni = 0; let inter = 0; let ne = 0;
+  F.forEach((a, i) => F.forEach((b, j) => { if (j <= i) return; const dd = Math.hypot(a[0] - b[0], a[1] - b[1]); if (D.G[i] === D.G[j]) { intra += dd; ni++; } else { inter += dd; ne++; } }));
+  const sep = inter / ne / (intra / ni);
+  return (D.cache[perp] = { sep, snaps: { 0: to(snaps[0]), 15: to(snaps[15]), 60: to(snaps[60]), 250: F }, P, kept, lo });
+}
+function aiTsne(p) {
+  const D = AI_TS; const perp = Math.max(2, Math.min(10, Math.round(p))); const R = aiTsneRun(perp); const n = D.n;
+  const COL = ['a', 'b', 'c'];
+  const pts = (S, ghost) => ({ points: S.map((q, i) => ({ id: 'd' + i, x: q[0], y: q[1], c: ghost ? 'm' : COL[D.G[i]], r: 8 })) });
+  const axes = { x0: 60, y0: 490, x1: 540, y1: 60, xl: 'map across →', yl: '↑ map up' };
+  const probe = 0; const S0 = R.snaps[0];
+  const near = R.P[probe].map((v, j) => [v, j]).filter((q) => q[1] !== probe).sort((a, b) => b[0] - a[0]);
+  const top = near.slice(0, 5); const maxP = top[0][0];
+  const pulls = { paths: top.map((q, r) => ({ id: 'pu' + r, pts: [[S0[probe][0], S0[probe][1]], [S0[q[1]][0], S0[q[1]][1]]], c: 'ok', w: aiR(1.5 + 6 * (q[0] / maxP)), op: 0.8 })) };
+  const moves = (A, B) => ({ arrows: A.map((q, i) => ({ id: 'mv' + i, from: { x: q[0], y: q[1] }, to: { x: B[i][0], y: B[i][1] }, c: 'm', w: 1.5, op: Math.hypot(B[i][0] - q[0], B[i][1] - q[1]) > 24 ? 0.8 : 0 })) });
+  const rows = { labels: [0, 6, 12].map((i, r) => ({ id: 'row' + r, x: 120, y: 200 + r * 44, text: 'shop ' + (i + 1) + ':  ' + D.X[i].map((v) => aiFmt(v, 1)).join('  '), c: 't', size: 18, mono: true })).concat([{ id: 'rowh', x: 120, y: 150, text: 'five numbers per shop', c: 'm', size: 15 }]) };
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 590, y: 110, text: txt, c: 't', size: 15, mono: true }] });
+  const fin = R.snaps[250];
+  const graph = { paths: R.lo.reduce((acc, a, i) => acc.concat(a.map((j) => ({ id: 'g' + i + '_' + j, pts: [[fin[i][0], fin[i][1]], [fin[j][0], fin[j][1]]], c: 'l', w: 1.5, op: 0.9 }))), []) };
+  const s = [];
+  s.push(aiStep('Each of 18 shops has five numbers. We cannot draw five axes, so we want a flat map where similar shops sit close together.', [], aiScene(rows)));
+  s.push(aiStep('Step 1, using the original five numbers: for each shop, give every other shop a neighbour score. Close shops score high.', [], aiScene({ axes }, pts(S0, true), pulls)));
+  s.push(aiStep('Perplexity sets how wide “close” is: about ' + perp + ' neighbours matter to each shop. Your slider says ' + perp + '.', [], aiScene({ axes }, pts(S0, true), pulls, ro('perplexity = ' + perp))));
+  s.push(aiStep('Step 2: put the shops at random places on the flat map. Colours show the real groups, which are mixed up here.', [], aiScene({ axes }, pts(S0), ro('random start'))));
+  s.push(aiStep('Step 3: on the map, find neighbour scores again. Then nudge each shop so the map’s scores match the original ones.', [], aiScene({ axes }, pts(S0), moves(S0, R.snaps[15]), ro('nudges'))));
+  s.push(aiStep('Shops that should be neighbours pull together. Shops that should not push apart. After 15 rounds, clumps begin to form.', [], aiScene({ axes }, pts(R.snaps[15]), ro('round 15'))));
+  s.push(aiStep('After 60 rounds the clumps are clearer. Shops of one colour have moved next to each other.', [], aiScene({ axes }, pts(R.snaps[60]), ro('round 60'))));
+  s.push(aiStep('After 250 rounds the map settles. ' + (R.sep >= 2.5 ? 'The three real groups are now three clumps, found without being told the groups.' : 'The groups stay blurry, because a perplexity this large looks past each group of six.'), [], aiScene({ axes }, pts(fin), ro('round 250'))));
+  s.push(aiStep('A check: for each shop, its 3 nearest shops on the map match the original 3 nearest ' + aiPct(R.kept) + ' of the time.', [], aiScene({ axes }, pts(fin), ro('neighbours kept: ' + aiPct(R.kept)))));
+  s.push(aiStep('The name t-SNE comes from the curve it uses on the map. Its heavy tails let far-apart shops sit far apart, so clumps do not crowd.', [], aiScene({ axes }, pts(fin))));
+  s.push(aiStep('Read the map with care: gaps and clump sizes can mislead. Perplexity 3 keeps ' + aiPct(aiTsneRun(3).kept) + ' of neighbours; 10 keeps ' + aiPct(aiTsneRun(10).kept) + '.', [], aiScene({ axes }, pts(fin), ro('perplexity ' + perp))));
+  s.push(aiStep('UMAP has the same goal. It links each shop to its nearest shops in a graph, then lays the graph flat. It is often faster.', [], aiScene({ axes }, pts(fin), graph)));
+  return s;
+}
+
+// ---------- ML: Gaussian mixtures, soft groups from the EM loop ----------
+const AI_GM = (() => {
+  const rnd = aiRng(33); const P = [];
+  const comps = [{ m: [2.6, 3.2], sd: [1.0, 0.45], a: 0.6, n: 22 }, { m: [6.0, 4.0], sd: [1.0, 0.45], a: -0.5, n: 22 }, { m: [5.2, 7.6], sd: [1.0, 0.5], a: 0.1, n: 16 }];
+  comps.forEach((c) => { for (let i = 0; i < c.n; i++) { const z = [aiGauss(rnd) * c.sd[0], aiGauss(rnd) * c.sd[1]]; P.push([aiR(c.m[0] + z[0] * Math.cos(c.a) - z[1] * Math.sin(c.a)), aiR(c.m[1] + z[0] * Math.sin(c.a) + z[1] * Math.cos(c.a))]); } });
+  const n = P.length; const cache = {};
+  const pdf = (x, c) => { const dx = x[0] - c.m[0]; const dy = x[1] - c.m[1]; const det = c.s[0] * c.s[2] - c.s[1] * c.s[1]; const q = (c.s[2] * dx * dx - 2 * c.s[1] * dx * dy + c.s[0] * dy * dy) / det; return Math.exp(-q / 2) / (2 * Math.PI * Math.sqrt(det)); };
+  const em = (K) => {
+    if (cache[K]) return cache[K];
+    const idx = [0];
+    while (idx.length < K) { let best = -1; let bd = -1; P.forEach((p, i) => { const d = Math.min.apply(null, idx.map((j) => Math.hypot(p[0] - P[j][0], p[1] - P[j][1]))); if (d > bd) { bd = d; best = i; } }); idx.push(best); }
+    let C = idx.map((j) => ({ w: 1 / K, m: P[j].slice(), s: [1.5, 0, 1.5] })); const hist = []; let prev = -1e9;
+    for (let it = 0; it < 80; it++) {
+      const R = P.map((x) => { const a = C.map((c) => c.w * pdf(x, c)); const t = a.reduce((p, q) => p + q, 0); return a.map((v) => v / t); });
+      const ll = P.reduce((s, x) => s + Math.log(C.reduce((t, c) => t + c.w * pdf(x, c), 0)), 0);
+      hist.push({ C, R, ll });
+      if (Math.abs(ll - prev) < 1e-6) break; prev = ll;
+      C = C.map((c, k) => {
+        const nk = R.reduce((s, r) => s + r[k], 0);
+        const mx = P.reduce((s, x, i) => s + R[i][k] * x[0], 0) / nk; const my = P.reduce((s, x, i) => s + R[i][k] * x[1], 0) / nk;
+        let sxx = 0; let sxy = 0; let syy = 0;
+        P.forEach((x, i) => { const r = R[i][k]; sxx += r * (x[0] - mx) * (x[0] - mx); sxy += r * (x[0] - mx) * (x[1] - my); syy += r * (x[1] - my) * (x[1] - my); });
+        return { w: nk / n, m: [mx, my], s: [sxx / nk + 1e-3, sxy / nk, syy / nk + 1e-3] };
+      });
+    }
+    const ll = hist[hist.length - 1].ll; const par = 6 * K - 1;
+    return (cache[K] = { hist, ll, bic: par * Math.log(n) - 2 * ll });
+  };
+  return { P, n, em };
+})();
+function aiGmm(p) {
+  const K = Math.max(2, Math.min(5, Math.round(p))); const D = AI_GM; const run = D.em(K); const h = run.hist;
+  const [sx, sy] = aiScale(70, 530, 480, 60, 0, 10);
+  const axes = { x0: 70, y0: 480, x1: 530, y1: 60, xl: 'length of fish →', yl: '↑ weight' };
+  const COL = ['a', 'b', 'ok', 'c', 't'];
+  const hs = (i) => h[Math.min(i, h.length - 1)];
+  const dots = (R, plain) => ({ points: D.P.map((q, i) => {
+    if (plain || !R) return { id: 'd' + i, x: sx(q[0]), y: sy(q[1]), c: 'm', r: 6 };
+    const mx = Math.max.apply(null, R[i]); const k = R[i].indexOf(mx);
+    return { id: 'd' + i, x: sx(q[0]), y: sy(q[1]), c: COL[k], r: 6, hollow: mx < 0.8 };
+  }) });
+  const ell = (C) => ({ paths: C.map((c, k) => {
+    const a = c.s[0]; const b = c.s[1]; const d = c.s[2]; const th = 0.5 * Math.atan2(2 * b, a - d);
+    const l1 = (a + d) / 2 + Math.sqrt(((a - d) / 2) * ((a - d) / 2) + b * b); const l2 = Math.max(1e-6, (a + d) / 2 - Math.sqrt(((a - d) / 2) * ((a - d) / 2) + b * b));
+    const pts = []; for (let j = 0; j <= 28; j++) { const f = (2 * Math.PI * j) / 28; const u = 1.5 * Math.sqrt(l1) * Math.cos(f); const v = 1.5 * Math.sqrt(l2) * Math.sin(f); pts.push([sx(c.m[0] + u * Math.cos(th) - v * Math.sin(th)), sy(c.m[1] + u * Math.sin(th) + v * Math.cos(th))]); }
+    return { id: 'el' + k, pts, c: COL[k], w: 3 };
+  }) });
+  const mid = (C) => ({ points: C.map((c, k) => ({ id: 'mu' + k, x: sx(c.m[0]), y: sy(c.m[1]), c: COL[k], r: 5, hollow: true, ring: true })) });
+  const moves = (A, B) => ({ arrows: A.map((c, k) => ({ id: 'mv' + k, from: { x: sx(c.m[0]), y: sy(c.m[1]) }, to: { x: sx(B[k].m[0]), y: sy(B[k].m[1]) }, c: COL[k], w: 2.5, op: Math.hypot(B[k].m[0] - c.m[0], B[k].m[1] - c.m[1]) > 0.25 ? 1 : 0 })) });
+  const h0 = hs(0); const h1 = hs(1); const h3 = hs(3); const hf = h[h.length - 1];
+  // the dot whose shares are most mixed at the start
+  let amb = 0; let ambV = 2; h0.R.forEach((r, i) => { const m = Math.max.apply(null, r); if (m < ambV) { ambV = m; amb = i; } });
+  const shares = (R) => ({ bars: R.map((v, k) => ({ id: 'sh' + k, x: 640 + k * 56, y: 440 - aiR(v * 170), w: 40, h: aiR(v * 170), c: COL[k], val: aiPct(v), label: 'ABCDE'[k], ly: 462 })), labels: [{ id: 'sht', x: 630, y: 232, text: 'shares for the ringed dot', c: 'm', size: 14 }],
+    points: [{ id: 'amb', x: sx(D.P[amb][0]), y: sy(D.P[amb][1]), c: 't', r: 9, hollow: true, ring: true }] });
+  const letters = (C) => ({ points: C.map((c, k) => ({ id: 'mu' + k, x: sx(c.m[0]), y: sy(c.m[1]), c: COL[k], r: 5, hollow: true, ring: true, label: 'ABCDE'[k], lx: 10, ly: -12, lc: 't' })) });
+  const runs = [1, 2, 3, 4, 5].map((kk) => D.em(kk)); const bics = runs.map((r) => r.bic); const minB = Math.min.apply(null, bics); const maxB = Math.max.apply(null, bics);
+  const bestK = bics.indexOf(minB) + 1;
+  const bicBars = { bars: bics.map((b, i) => ({ id: 'bic' + i, x: 600 + i * 66, y: 440 - aiR(40 + ((b - minB) / (maxB - minB)) * 150), w: 44, h: aiR(40 + ((b - minB) / (maxB - minB)) * 150), c: i + 1 === bestK ? 'ok' : i + 1 === K ? 'a' : 'm', val: aiR(b) + '', label: 'K=' + (i + 1), ly: 462 })), labels: [{ id: 'bict', x: 600, y: 232, text: 'BIC by K (shorter is better)', c: 'm', size: 14 }] };
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 600, y: 110, text: txt, c: 't', size: 15, mono: true }] });
+  const s = [];
+  s.push(aiStep('Each dot is a fish from one net: its length and its weight. The net caught several kinds, but nobody noted which is which.', [], aiScene({ axes }, dots(null, true))));
+  s.push(aiStep('k-means gives each fish to one round group. Real groups are often stretched or tilted, and they overlap at the edges.', [], aiScene({ axes }, dots(null, true))));
+  s.push(aiStep('A Gaussian mixture describes each kind as a bell shape. From above it is an ellipse: a middle, a spread and a tilt.', [], aiScene({ axes }, dots(null, true), ell(h0.C), letters(h0.C))));
+  s.push(aiStep('Start with ' + K + ' rough ellipses, put on spread-out fish. Then repeat two moves, called EM. Your slider says K = ' + K + '.', [], aiScene({ axes }, dots(null, true), ell(h0.C), letters(h0.C), ro('K = ' + K + ' ellipses'))));
+  s.push(aiStep('E move: every fish asks each ellipse how likely it is to have made that fish. The answers become shares that add to 100%.', ['amb'], aiScene({ axes }, dots(null, true), ell(h0.C), letters(h0.C), shares(h0.R[amb]))));
+  s.push(aiStep('Shares are soft. A fish between two ellipses may get 50 and 50. Colours show the top share; hollow dots are unsure.', [], aiScene({ axes }, dots(h0.R), ell(h0.C), letters(h0.C))));
+  s.push(aiStep('M move: refit each ellipse as a weighted average of all fish, using that ellipse’s shares as weights. Middles move first.', [], aiScene({ axes }, dots(h0.R), ell(h1.C), letters(h1.C), moves(h0.C, h1.C))));
+  s.push(aiStep('Repeat both moves. After 3 rounds the ellipses are stretching and tilting to fit the clumps.', [], aiScene({ axes }, dots(h3.R), ell(h3.C), letters(h3.C), ro('round 3'))));
+  s.push(aiStep('Stop when the fit score stops rising. This took ' + h.length + ' rounds. The fit score is how likely the ellipses make these fish.', [], aiScene({ axes }, dots(hf.R), ell(hf.C), letters(hf.C), ro(h.length + ' rounds, fit ' + aiR(hf.ll)))));
+  s.push(aiStep('More ellipses always fit better, so how many? BIC charges for each extra number the model uses. A lower BIC is better.', [], aiScene({ axes }, dots(hf.R), ell(hf.C), letters(hf.C), bicBars)));
+  s.push(aiStep('BIC is lowest at K = ' + bestK + '. Your K is ' + K + (K === bestK ? ', the best one.' : ', so it fits ' + (K < bestK ? 'too loosely.' : 'too many groups.')), ['bic' + (bestK - 1)], aiScene({ axes }, dots(hf.R), ell(hf.C), letters(hf.C), bicBars)));
+  s.push(aiStep('Cautions: a bad start can leave EM in a poor fit. An ellipse can shrink onto one fish, so keep a small floor on its spread.', [], aiScene({ axes }, dots(hf.R), ell(hf.C), letters(hf.C))));
+  return s;
+}
+
+// ---------- ML: anomaly detection with an isolation forest ----------
+const AI_ISO = (() => {
+  const rnd = aiRng(8); const P = [];
+  for (let i = 0; i < 27; i++) P.push([aiR(Math.max(0.5, Math.min(9.5, 4.6 + aiGauss(rnd) * 0.9))), aiR(Math.max(0.5, Math.min(9.5, 4.9 + aiGauss(rnd) * 0.9)))]);
+  [[8.9, 8.6], [1.0, 8.4], [8.7, 1.1]].forEach((q) => P.push(q));
+  const n = P.length; const lim = Math.ceil(Math.log2(n));
+  const cN = (m) => (m > 2 ? 2 * (Math.log(m - 1) + 0.5772156649) - (2 * (m - 1)) / m : m === 2 ? 1 : 0);
+  const build = (idx, depth, r) => {
+    if (idx.length <= 1 || depth >= lim) return { size: idx.length };
+    const ax = r() < 0.5 ? 0 : 1; const vs = idx.map((i) => P[i][ax]); const lo = Math.min.apply(null, vs); const hi = Math.max.apply(null, vs);
+    if (lo === hi) return { size: idx.length };
+    const cut = lo + (hi - lo) * r();
+    return { ax, cut, l: build(idx.filter((i) => P[i][ax] < cut), depth + 1, r), r: build(idx.filter((i) => P[i][ax] >= cut), depth + 1, r) };
+  };
+  const plen = (t, i) => { let e = 0; while (t.ax !== undefined) { t = P[i][t.ax] < t.cut ? t.l : t.r; e++; } return e + cN(t.size); };
+  const r = aiRng(99); const trees = []; for (let t = 0; t < 100; t++) trees.push(build(P.map((_, i) => i), 0, r));
+  const avg = P.map((_, i) => trees.reduce((s, t) => s + plen(t, i), 0) / trees.length);
+  const score = avg.map((e) => Math.pow(2, -e / cN(n)));
+  // one traced tree for a target dot: random cuts until it is alone (no depth limit, so the story is clear)
+  const trace = (target, seed) => {
+    const rr = aiRng(seed); let idx = P.map((_, i) => i); let box = [0, 10, 0, 10]; const cuts = [];
+    while (idx.length > 1 && cuts.length < 14) {
+      const ax = rr() < 0.5 ? 0 : 1; const vs = idx.map((i) => P[i][ax]); const lo = Math.min.apply(null, vs); const hi = Math.max.apply(null, vs);
+      if (lo === hi) break;
+      const cut = lo + (hi - lo) * rr(); cuts.push({ ax, cut, box: box.slice() });
+      const left = P[target][ax] < cut; idx = idx.filter((i) => (P[i][ax] < cut) === left);
+      if (ax === 0) { if (left) box[1] = cut; else box[0] = cut; } else if (left) box[3] = cut; else box[2] = cut;
+    }
+    return cuts;
+  };
+  const odd = 29; let mid = 0; let md = 1e9; P.forEach((q, i) => { const d = Math.hypot(q[0] - 4.6, q[1] - 4.9); if (i < 27 && d < md) { md = d; mid = i; } });
+  let seed = 1; let tO = trace(odd, seed); let tN = trace(mid, seed);
+  for (seed = 1; seed < 400; seed++) { tO = trace(odd, seed); tN = trace(mid, seed); if (tO.length <= 3 && tN.length >= 8) break; }
+  return { P, n, score, cN, odd, mid, tO, tN, nOdd: 3 };
+})();
+function aiIsoforest(p) {
+  const D = AI_ISO; const T = Math.max(0.4, Math.min(0.8, p));
+  const [sx, sy] = aiScale(70, 530, 480, 60, 0, 10);
+  const axes = { x0: 70, y0: 480, x1: 530, y1: 60, xl: 'amount →', yl: '↑ minutes since last payment' };
+  const flagged = D.score.map((v) => v >= T); const nf = flagged.filter((x) => x).length; const hit = flagged.filter((f, i) => f && i >= 27).length;
+  const dots = (mode, focusIdx) => ({ points: D.P.map((q, i) => {
+    let c = 'm'; let hollow = false; let r = 6;
+    if (mode === 'flag') { c = flagged[i] ? 'c' : 'a'; }
+    if (mode === 'score') { c = D.score[i] > 0.65 ? 'c' : 'a'; }
+    if (focusIdx !== undefined && i === focusIdx) { c = 'c'; r = 9; }
+    return { id: 'd' + i, x: sx(q[0]), y: sy(q[1]), c, r, hollow };
+  }) });
+  const cutPaths = (cuts, upto, id) => ({ paths: cuts.slice(0, upto).map((c, i) => {
+    const b = c.box;
+    return { id: id + i, pts: c.ax === 0 ? [[sx(c.cut), sy(b[2])], [sx(c.cut), sy(b[3])]] : [[sx(b[0]), sy(c.cut)], [sx(b[1]), sy(c.cut)]], c: 'b', w: 2.5, op: 0.95 };
+  }) });
+  const ord = D.score.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]);
+  const base = 440; const sh = (v) => aiR(v * 230);
+  const bars = (thr) => ({ bars: ord.map((q, j) => ({ id: 'sb' + j, x: 590 + j * 11, y: base - sh(q[0]), w: 9, h: sh(q[0]), c: thr !== undefined && q[0] >= thr ? 'c' : 'a', rx: 2 })),
+    labels: [{ id: 'sbt', x: 590, y: 190, text: 'score of each payment, highest first', c: 'm', size: 14 }, { id: 'sbz', x: 580, y: 446, text: '0', c: 'm', size: 12, anchor: 'end' }, { id: 'sbo', x: 580, y: aiR(base - sh(1) + 6), text: '1', c: 'm', size: 12, anchor: 'end' }] });
+  const thrLine = (thr) => ({ paths: [{ id: 'thr', pts: [[586, base - sh(thr)], [930, base - sh(thr)]], c: 'c', w: 2.5, dash: true }], labels: [{ id: 'thl', x: 930, y: aiR(base - sh(thr) - 8), text: 'T = ' + aiFmt(thr, 2), c: 'c', size: 14, anchor: 'end' }] });
+  const ro = (txt) => ({ labels: [{ id: 'ro', x: 590, y: 110, text: txt, c: 't', size: 15, mono: true }] });
+  const lo = D.score.filter((v) => v >= 0.5).length;
+  const s = [];
+  s.push(aiStep('Each dot is a card payment: its amount, and the minutes since the last payment. No payment is labelled as normal or odd.', [], aiScene({ axes }, dots())));
+  s.push(aiStep('Anomaly detection finds the odd ones out. An isolation forest uses one fact: a lone dot far from the crowd is easy to cut off.', [], aiScene({ axes }, dots(undefined, D.odd))));
+  s.push(aiStep('Cut at random. Pick an axis and a random place along it, then keep the side that holds the target dot.', [], aiScene({ axes }, dots(undefined, D.odd), cutPaths(D.tO, 1, 'cu'), ro('cut 1'))));
+  s.push(aiStep('The far-out dot is alone after ' + D.tO.length + ' cut' + (D.tO.length === 1 ? '' : 's') + '. The number of cuts is its path length.', [], aiScene({ axes }, dots(undefined, D.odd), cutPaths(D.tO, D.tO.length, 'cu'), ro('path length ' + D.tO.length))));
+  s.push(aiStep('Now a dot in the middle of the crowd. It still has company after many cuts. This time it needs ' + D.tN.length + '.', [], aiScene({ axes }, dots(undefined, D.mid), cutPaths(D.tN, D.tN.length, 'cu'), ro('path length ' + D.tN.length))));
+  s.push(aiStep('So a short path means odd and a long path means ordinary. One random tree can be lucky, so we build many.', [], aiScene({ axes }, dots(undefined, D.odd), cutPaths(D.tO, D.tO.length, 'cu'), ro('short = odd'))));
+  s.push(aiStep('We grow 100 trees, each with new random cuts, and average every dot’s path length. This smooths out the luck.', [], aiScene({ axes }, dots('score'), ro('100 trees'))));
+  s.push(aiStep('The average becomes a score from 0 to 1. Near 1 is odd. Around 0.5 or below is ordinary. Bars show all ' + D.n + ' scores.', ['sb0'], aiScene({ axes }, dots('score'), bars(0.65))));
+  s.push(aiStep('You choose a cut-off T. Payments scoring at least T are flagged. With T = ' + aiFmt(T, 2) + ', ' + nf + ' payments are flagged.', ['thr'], aiScene({ axes }, dots('flag'), bars(T), thrLine(T), ro('T = ' + aiFmt(T, 2) + ': ' + nf + ' flagged'))));
+  s.push(aiStep('We planted ' + D.nOdd + ' odd payments. Your cut-off flags ' + hit + ' of them, and ' + (nf - hit) + ' ordinary ones.', [], aiScene({ axes }, dots('flag'), bars(T), thrLine(T), ro(hit + ' of ' + D.nOdd + ' found'))));
+  s.push(aiStep('A low T flags too much: at T = 0.50, ' + lo + ' payments. A high T misses real ones. Pick T by what a review costs.', [], aiScene({ axes }, dots('flag'), bars(T), thrLine(T))));
+  s.push(aiStep('A flag means look closer, not guilty. Odd payments can be fine, and fraud can look ordinary, so people check the flags.', [], aiScene({ axes }, dots('flag'))));
+  return s;
+}
+
 const AI_LESSONS = [
   { id: 'graphs', track: 'ml', title: 'Numbers on a graph', tag: 'x, y and a straight line', minutes: 3, make: aiGraphs,
     idea: 'A graph pairs two numbers as a point. A straight line follows the rule y = w × x + b.',
@@ -2015,10 +2373,25 @@ const AI_LESSONS = [
       { title: 'Training data-efficient image transformers & distillation through attention', org: 'Touvron, Cord, Douze, Massa et al.', date: '2020-12-23', link: 'https://arxiv.org/abs/2012.12877' },
       { title: 'Masked Autoencoders Are Scalable Vision Learners', org: 'He, Chen, Xie, Li et al.', date: '2021-11-11', link: 'https://arxiv.org/abs/2111.06377' },
       { title: 'Visual Instruction Tuning (LLaVA)', org: 'Liu, Li, Wu, Lee', date: '2023-04-17', link: 'https://arxiv.org/abs/2304.08485' }
-    ] }
+    ] },
+  { id: 'hier', track: 'ml', title: 'Hierarchical clustering', tag: 'joining groups into a tree', minutes: 4, make: aiHier,
+    idea: 'Join the two closest groups again and again, then cut the tree to choose how many groups.',
+    param: { label: 'Groups to cut (k)', min: 2, max: 5, step: 1, value: 3, digits: 0, hint: 'Cut the tree where it leaves this many groups.' } },
+  { id: 'dbscan', track: 'ml', title: 'DBSCAN: clusters from crowds', tag: 'groups by crowding, plus noise', minutes: 4, make: aiDbscan,
+    idea: 'A dot is crowded when enough dots sit within a radius. Crowds that touch merge into one cluster.',
+    param: { label: 'Eps, the radius', min: 0.5, max: 2.4, step: 0.1, value: 1.4, digits: 1, hint: 'DBSCAN really runs again for your radius. Watch clusters and noise change.' } },
+  { id: 'gmm', track: 'ml', title: 'Gaussian mixtures and EM', tag: 'soft groups with shapes', minutes: 4, make: aiGmm,
+    idea: 'Describe each group as a tilted ellipse, share every dot between groups, and refit until steady.',
+    param: { label: 'K, number of ellipses', min: 2, max: 5, step: 1, value: 3, digits: 0, hint: 'EM really runs for your K. BIC says which K fits best.' } },
+  { id: 'tsne', track: 'ml', title: 't-SNE and UMAP in pictures', tag: 'a flat map of many columns', minutes: 4, make: aiTsne,
+    idea: 'Put items on a flat map, then nudge them. Close items stay close and far ones drift apart.',
+    param: { label: 'Perplexity', min: 2, max: 10, step: 1, value: 5, digits: 0, hint: 'About how many neighbours each shop cares about. t-SNE really runs for your value.' } },
+  { id: 'anomaly', track: 'ml', title: 'Anomaly detection', tag: 'spotting the odd one out', minutes: 4, make: aiIsoforest,
+    idea: 'Cut the data with random lines. An odd dot is alone after a few cuts. An ordinary dot needs many.',
+    param: { label: 'Flag at score T', min: 0.4, max: 0.8, step: 0.05, value: 0.65, digits: 2, hint: 'Payments scoring at least T are flagged. Counts are recomputed.' } },
 ];
 // Track order: ML starts with the maths (graphs to chance), then a line to clusters; AI now from tokens to evals (the capstone).
-const AI_ORDER = ['graphs', 'slope', 'derivative', 'chainrule', 'gradarrow', 'vectors', 'probability', 'gradient', 'logistic', 'knn', 'tree', 'nbayes', 'svm', 'confusion', 'overfit', 'crossval', 'biasvar', 'regular', 'gboost', 'kmeans', 'pca', 'backprop', 'embeddings',
+const AI_ORDER = ['graphs', 'slope', 'derivative', 'chainrule', 'gradarrow', 'vectors', 'probability', 'gradient', 'logistic', 'knn', 'tree', 'nbayes', 'svm', 'confusion', 'overfit', 'crossval', 'biasvar', 'regular', 'gboost', 'kmeans', 'hier', 'dbscan', 'gmm', 'pca', 'tsne', 'anomaly', 'backprop', 'embeddings',
   'tokens', 'attention', 'vit', 'systems', 'agents', 'rag', 'moe', 'lora', 'prefs', 'distill', 'diffusion', 'jepa', 'evals'];
 AI_LESSONS.sort((a, b) => AI_ORDER.indexOf(a.id) - AI_ORDER.indexOf(b.id));
 const AI_STEP_CACHE = {};

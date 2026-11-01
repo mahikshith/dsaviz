@@ -1122,6 +1122,7 @@ const AI_ABOUT_ML = {
       symbols: [
         ['A, B', 'two groups of items'],
         ['a, b', 'one item from A and one item from B'],
+        ['\\sum', 'add up the pair distances, one for every a and b'],
         ['d(a, b)', 'the distance between two items'],
         ['|A|, |B|', 'how many items are in each group'],
         ['d(A, B)', 'the distance between the two groups: the average of every pair distance']
@@ -1310,7 +1311,7 @@ const AI_ABOUT_ML = {
       ['anomaly', 'An item that is very different from most of the others.'],
       ['isolate', 'Cut the data until one item sits alone.'],
       ['path length', 'The number of cuts needed to isolate an item.'],
-      ['score', 'A number from 0 to 1. Near 1 means likely odd. Around 0.5 means ordinary.'],
+      ['score', 'A number from 0 to 1. Near 1 means likely odd. Around 0.5 or below means ordinary.'],
       ['threshold', 'The score at which you start to flag an item.']
     ],
     math: {
@@ -1377,7 +1378,7 @@ const AI_ABOUT_ML = {
         'Left: p = 0.8, so G = 2 x 0.8 x 0.2 = 0.32. Right: G = 0.',
         'Weighted by size, the split scores (5 / 8) x 0.32 + (3 / 8) x 0 = 0.20. That is lower than 0.50, so the split helps.',
         'A forest then asks 5 trees. Three say ripe and two say not. The vote is 3 / 5 = 60%, so the answer is ripe.',
-        'Each tree left out about 36% of the fruit. Those fruit give the out-of-bag check.'
+        'Each tree left out about 37% of the fruit. Those fruit give the out-of-bag check.'
       ]
     },
     steps: [

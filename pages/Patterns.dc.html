@@ -310,7 +310,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <main style="padding: 24px 48px 32px; display: flex; flex-direction: column; gap: 24px; min-width: 0">
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 8px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">Library</h1>
+<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em">Learn</h1>
 <sc-if value="{{viewLine}}" hint-placeholder-val="{{ true }}"><p style="margin: 0; font-size: var(--fs18); color: {{t.muted}}">{{viewLine}}</p></sc-if>
 </div>
 <a data-resume href="{{resume.href}}" onClick="{{resume.go}}" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{resume.bg}}; color: {{resume.fg}}; display: flex; gap: 12px; align-items: center; font-size: var(--fs18); font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{resume.label}}</a>
@@ -391,7 +391,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </div>
 </sc-for>
 <sc-for list="{{rm.nodes}}" as="mn" hint-placeholder-count="30">
-<button data-map-node data-path-node="{{mn.id}}" data-rm-node="{{mn.id}}" onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: 132px; height: 62px; box-sizing: border-box; padding: 0; border-radius: 12px; border: 1.5px solid {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px">
+<button data-map-node data-rm-node="{{mn.id}}" onClick="{{mn.pick}}" aria-pressed="{{mn.sel}}" aria-label="{{mn.aria}}" style="position: absolute; left: {{mn.left}}px; top: {{mn.top}}px; width: 132px; height: 62px; box-sizing: border-box; padding: 0; border-radius: 12px; border: 1.5px solid {{mn.border}}; background: {{mn.bg}}; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px">
 <span style="position: relative; width: 34px; height: 34px; flex-shrink: 0">
 <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true" style="display: block">
 <circle cx="17" cy="17" r="16.75" fill="{{mn.labelBg}}" stroke="none"></circle>
@@ -460,7 +460,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
 <span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.accent}}">{{rm.card.eyebrow}}</span>
-<h2 id="rm-drawer-title" data-rm-title tabindex="-1" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; outline: none">{{rm.card.name}}</h2>
+<h2 id="rm-drawer-title" data-rm-title tabindex="-1" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; outline: none">{{rm.card.name}}</h2>
 <span style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="padding: 2px 10px; border-radius: 999px; border: 1.5px solid {{rm.card.statusBorder}}; font-size: var(--fs15); font-weight: 700; color: {{rm.card.statusFg}}">{{rm.card.status}}</span><sc-if value="{{rm.card.hasProgress}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--fs16); color: {{t.muted}}">{{rm.card.progress}}</span></sc-if></span>
 </div>
 <button onClick="{{rm.card.close}}" aria-label="Close" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 999px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
@@ -540,8 +540,8 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 
 <div style="border-radius: 20px; background: {{t.surface}}; border: 1px solid {{t.line}}; padding: 26px 28px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; animation: rise 0.35s ease">
 <div style="display: flex; flex-direction: column; gap: 12px">
-<span style="font-size: var(--fs15); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{t.accent}}">Stage {{stage.num}} of 8 · {{stage.state}}</span>
-<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs32); font-weight: 600; letter-spacing: -0.02em">{{stage.name}} <span style="font-style: italic; font-weight: 400; color: {{t.muted}}">— {{stage.meta}}</span></h2>
+<span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Stage {{stage.num}} of 8 · {{stage.state}}</span>
+<h2 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs34); font-weight: 600; letter-spacing: -0.02em">{{stage.name}} <span style="font-style: italic; font-weight: 400; color: {{t.muted}}">— {{stage.meta}}</span></h2>
 <p style="margin: 0; font-family: {{t.display}}; font-size: var(--fs22); line-height: 1.55">{{stage.blurb}}</p>
 <details style="color: {{t.muted}}"><summary style="min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{t.text}}">Why here in the path?</summary><p style="margin: 0; font-size: var(--fs17); line-height: 1.5">{{stage.why}}</p></details>
 </div>

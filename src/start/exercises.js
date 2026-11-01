@@ -455,24 +455,24 @@ const START_EXERCISES = {
     { id: 'plan-it:2', kind: 'choose', title: 'The missing step', ask: 'Plan to count words: 1) start a counter at 0, 2) ___, 3) return the counter. What is step 2?',
       choices: ['Print the counter', 'Add 1 for every word', 'Sort the words', 'Return 0'], answer: 1, why: 'Between starting and returning, the counter has to grow once per word.', hints: ['The counter starts at 0 and should end at the number of words.', 'What makes it grow?'] },
     { id: 'plan-it:3', kind: 'write', title: 'Average, from the plan', fn: 'average', params: ['nums'], ask: 'Follow the plan: start a total at 0, add every number, divide by how many there are. Return 0 for an empty list.',
-      starter: { py: 'def average(nums):\n    # 1. start a total at 0\n    # 2. add every number\n    # 3. divide by how many there are\n    pass\n', js: 'function average(nums) {\n  // 1. start a total at 0\n  // 2. add every number\n  // 3. divide by how many there are\n}\n' },
+      starter: { py: 'def average(nums):\n    # 1. start a total at 0\n    # 2. add every number\n    # 3. divide by how many there are\n    return 0\n', js: 'function average(nums) {\n  // 1. start a total at 0\n  // 2. add every number\n  // 3. divide by how many there are\n}\n' },
       ref: { py: 'def average(nums):\n    if len(nums) == 0:\n        return 0\n    total = 0\n    for n in nums:\n        total = total + n\n    return total / len(nums)\n', js: 'function average(nums) {\n  if (nums.length === 0) {\n    return 0;\n  }\n  let total = 0;\n  for (const n of nums) {\n    total = total + n;\n  }\n  return total / nums.length;\n}\n' },
       cmp: 'float', cases: [[[[4, 8, 6]], 6], [[[5]], 5], [[[]], 0], [[[1, 2]], 1.5]], hints: ['Turn each plan step into a line or two.', 'Check the empty list first, so you never divide by 0.'] },
     { id: 'plan-it:4', kind: 'write', title: 'Count the long words', fn: 'count_long', params: ['words'], ask: 'Plan, then write count_long(words): return how many words have more than 4 letters.',
-      starter: { py: 'def count_long(words):\n    # plan:\n    # 1.\n    # 2.\n    # 3.\n    pass\n', js: 'function count_long(words) {\n  // plan:\n  // 1.\n  // 2.\n  // 3.\n}\n' },
+      starter: { py: 'def count_long(words):\n    # plan:\n    # 1.\n    # 2.\n    # 3.\n    return 0\n', js: 'function count_long(words) {\n  // plan:\n  // 1.\n  // 2.\n  // 3.\n}\n' },
       ref: { py: 'def count_long(words):\n    count = 0\n    for w in words:\n        if len(w) > 4:\n            count = count + 1\n    return count\n', js: 'function count_long(words) {\n  let count = 0;\n  for (const w of words) {\n    if (w.length > 4) {\n      count = count + 1;\n    }\n  }\n  return count;\n}\n' },
-      cases: [[[['owl', 'acorn', 'robot', 'dot']], 2], [[[]], 0], [[['tree']], 0], [[['branch']], 1]], hints: ['1. Start a counter. 2. Look at each word. 3. Add 1 when it is long.', 'len(w) > 4 means more than 4 letters.'] }
+      cases: [[[['owl', 'acorn', 'robot', 'ant']], 2], [[[]], 0], [[['tree']], 0], [[['branch']], 1]], hints: ['1. Start a counter. 2. Look at each word. 3. Add 1 when it is long.', 'len(w) > 4 means more than 4 letters.'] }
   ],
   'read-a-problem': [
     { id: 'read-a-problem:1', kind: 'choose', title: 'What goes in?', ask: 'Problem: "Given a list of prices, return the cheapest one." What goes in?',
-      choices: ['One number', 'A list of prices', 'The cheapest price', 'Nothing'], answer: 1, why: 'The input is what the function receives: a list of prices.', hints: ['What does the problem say you are given?', '"Given ..." names the input.'] },
+      choices: ['One number', 'A list of prices', 'The cheapest price', 'Nothing'], answer: 1, why: 'The input is what the function receives: a list of prices.', hints: ['What does the problem say you are given?', 'The words "Given a list" name the input.'] },
     { id: 'read-a-problem:2', kind: 'choose', title: 'What comes out?', ask: 'Same problem: "Given a list of prices, return the cheapest one." What must come out?',
       choices: ['The whole list, sorted', 'How many prices there are', 'One number: the smallest price', 'A printed message'], answer: 2, why: 'The output is one value, returned: the smallest price.', hints: ['Look for the word return.', 'One value or many?'] },
     { id: 'read-a-problem:3', kind: 'order', title: 'Solve it in order', ask: 'Order the steps for tackling a new problem.',
       lines: { py: ['print("Find the input and the output")', 'print("Work through an example by hand")', 'print("Write the plan in plain words")', 'print("Code it, then test the example")'], js: ['console.log("Find the input and the output");', 'console.log("Work through an example by hand");', 'console.log("Write the plan in plain words");', 'console.log("Code it, then test the example");'] },
       shuffle: [2, 3, 0, 1], cases: [{ out: 'Find the input and the output\nWork through an example by hand\nWrite the plan in plain words\nCode it, then test the example' }], hints: ['Understand the job before planning.', 'Code comes last.'] },
-    { id: 'read-a-problem:4', kind: 'write', title: 'Your first judged problem', fn: 'cheapest', params: ['prices'], ask: 'Return the cheapest price in the list. The list always has at least one price.',
-      starter: { py: 'def cheapest(prices):\n    pass\n', js: 'function cheapest(prices) {\n}\n' },
+    { id: 'read-a-problem:4', kind: 'write', title: 'Your first checked problem', fn: 'cheapest', params: ['prices'], ask: 'Return the cheapest price in the list. The list always has at least one price.',
+      starter: { py: 'def cheapest(prices):\n    return 0\n', js: 'function cheapest(prices) {\n}\n' },
       ref: { py: 'def cheapest(prices):\n    best = prices[0]\n    for p in prices:\n        if p < best:\n            best = p\n    return best\n', js: 'function cheapest(prices) {\n  let best = prices[0];\n  for (const p of prices) {\n    if (p < best) {\n      best = p;\n    }\n  }\n  return best;\n}\n' },
       cases: [[[[5, 3, 8]], 3], [[[7]], 7], [[[2, 2, 9]], 2], [[[10, -1, 4]], -1], [[[6, 5, 4, 3]], 3]], hints: ['Start with the first price as the best so far.', 'Visit each price; keep it if it is smaller.'] },
     { id: 'read-a-problem:5', kind: 'choose', title: 'The odd case', ask: 'Problem: "Return how many numbers in the list are below zero." Which test is the best odd case to try first?',
@@ -484,12 +484,12 @@ const START_EXERCISES = {
       why: 'range(8) hands out 8 numbers, so the body runs 8 times.', hints: ['How many numbers does range(8) give?', '0 up to 7.'] },
     { id: 'counting-steps:2', kind: 'predict', title: 'Loop in a loop', ask: 'How many laps now?',
       code: { py: 'laps = 0\nfor i in range(4):\n    for j in range(4):\n        laps = laps + 1\nprint(laps)', js: 'let laps = 0;\nfor (let i = 0; i < 4; i++) {\n  for (let j = 0; j < 4; j++) {\n    laps = laps + 1;\n  }\n}\nconsole.log(laps);' }, choices: stSame(['8', '4', '16', '12']), answer: 2,
-      why: '4 outer laps, each with 4 inner laps: 4 x 4 = 16.', hints: ['The inner loop runs fully for every outer lap.', 'Multiply.'] },
+      why: '4 outer laps, each with 4 inner laps: 4 * 4 = 16.', hints: ['The inner loop runs fully for every outer lap.', 'Multiply.'] },
     { id: 'counting-steps:3', kind: 'trace', title: 'Watch the counter', ask: 'Write the value of steps each time it changes.',
       code: 'steps = 0\nn = 3\nwhile n > 0:\n    n = n - 1\n    steps = steps + 1', var: 'steps', answer: ['0', '1', '2', '3'], hints: ['One step per lap.', 'The loop runs while n > 0, starting at 3.'] },
     { id: 'counting-steps:4', kind: 'choose', title: 'Double the list', ask: 'A function looks at each item once. The list grows from 1,000 to 2,000 items. Roughly how much more work?',
       choices: ['The same', 'About twice as much', 'About four times as much', 'A thousand times as much'], answer: 1, why: 'One look per item means the work grows in step with the list: O(n).', hints: ['How many looks for 1,000 items?', 'And for 2,000?'] },
     { id: 'counting-steps:5', kind: 'choose', title: 'Compare every pair', ask: 'A function compares every item with every other item. The list doubles. Roughly how much more work?',
-      choices: ['The same', 'About twice as much', 'About four times as much', 'About half'], answer: 2, why: 'Twice the items, each compared with twice as many: about 4 times the work, O(n²).', hints: ['It is a loop inside a loop.', '2 x 2 = ?'] }
+      choices: ['The same', 'About twice as much', 'About four times as much', 'About half'], answer: 2, why: 'Twice the items, each compared with twice as many: about 4 times the work, O(n²).', hints: ['It is a loop inside a loop.', '2 * 2 = ?'] }
   ]
 };

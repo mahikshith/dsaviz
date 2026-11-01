@@ -555,13 +555,13 @@ const START_ABOUT = {
     steps: ['Write what goes in and what must come out.', 'Write the steps in plain words, in order.', 'Turn each step into one or two lines of code.', 'Run it with a small example.', 'Check the answer, and fix the plan if needed.'],
     use: ['The job has more than two or three steps.', 'You feel unsure where to start.'],
     avoid: ['Typing code before you know the steps.', 'Plans so long they take longer than the code.'],
-    mistakes: ['Typing code before you know the steps. Fix: write the steps first, even as comments.', 'Steps that are too big. Fix: split any step that needs more than a few lines.', 'Never checking the plan on an example. Fix: walk a small example through your steps by hand.'],
+    mistakes: ['Typing code before you know the steps. Fix: write the steps first, as comments. A comment is a line that starts with #.', 'Steps that are too big. Fix: split any step that needs more than a few lines.', 'Never checking the plan on an example. Fix: walk a small example through your steps by hand.'],
     cheat: ['what goes in?', 'what comes out?', 'steps in plain words', 'one or two lines per step', 'try a small example'],
     next: ['read-a-problem'],
     sources: [PY_TUT + 'controlflow.html#defining-functions', PY_TUT + 'introduction.html#using-python-as-a-calculator']
   },
   'read-a-problem': {
-    what: 'A coding problem always has an input, an output and examples. Read all three before you write anything. Plan in words, try the slow idea first, then test it.',
+    what: 'A coding problem always has an input, an output and examples. Read all three before you write anything. Plan in words, try the simple way first, then test it.',
     analogy: 'It is like a puzzle box with instructions. Read what you are given, what you must produce, and the sample.',
     uses: ['A coding class exercise', 'A game feature request from a designer', 'A bug report from a user'],
     before: ['plan-it', 'debugging'],
@@ -573,17 +573,17 @@ const START_ABOUT = {
       ['test', 'Running your code on chosen inputs to check the answers.']
     ],
     math: null,
-    steps: ['Read the problem twice.', 'Write the input and the output in your own words.', 'Work through the example by hand.', 'Plan the slow, plain idea in words.', 'Code it, then test it on the example and the edge cases.'],
+    steps: ['Read the problem twice.', 'Write the input and the output in your own words.', 'Work through the example by hand.', 'Plan the simple, plain idea in words.', 'Code it, then test it on the example and the edge cases.'],
     use: ['You face a new problem and are unsure how to start.', 'You want to avoid solving the wrong problem.'],
     avoid: ['Skipping the examples.', 'Hunting for a clever idea before a working one.'],
     mistakes: ['Coding before you know what the answer looks like. Fix: write one example answer by hand first.', 'Missing a small word like "below" or "at least". Fix: underline the rule words.', 'Skipping the edge cases. Fix: try an empty list, zero and negatives.'],
-    cheat: ['find the input', 'find the output', 'work an example by hand', 'plan the slow idea first', 'test, then improve'],
+    cheat: ['find the input', 'find the output', 'work an example by hand', 'try the simple way first', 'test, then improve'],
     next: ['counting-steps'],
     sources: [PY_TUT + 'controlflow.html#defining-functions', PY_TUT + 'datastructures.html#more-on-lists']
   },
   'counting-steps': {
     what: 'To compare two solutions, count the laps your loop makes. Then ask what happens when the input doubles. If the work doubles too, the cost grows in step with the input.',
-    analogy: 'Reading every page of a phone book takes twice as long when the book is twice as thick.',
+    analogy: 'Checking every exam paper in a pile takes twice as long when the pile is twice as tall.',
     uses: ['A game that must stay fast with a thousand enemies', 'A search box that must answer quickly on a big website', 'A music app that sorts a long playlist'],
     before: ['read-a-problem'],
     words: [
@@ -603,15 +603,15 @@ const START_ABOUT = {
       example: [
         'A list has n = 10 items. In the worst case, one loop runs 10 laps.',
         'With 20 items, it runs 20 laps. Doubling the input doubled the work.',
-        'Now a loop inside a loop over 10 items runs 10 × 10 = 100 laps.',
-        'With 20 items, it runs 20 × 20 = 400 laps. Doubling the input made the work four times bigger.'
+        'Now a loop inside a loop over 10 items runs 10 * 10 = 100 laps.',
+        'With 20 items, it runs 20 * 20 = 400 laps. Doubling the input made the work four times bigger.'
       ]
     },
     steps: ['Find the loops in your code.', 'Count how many laps each makes for an input of size n.', 'For a loop inside a loop, multiply the laps.', 'Think about the worst case, such as a value not being in the list.', 'Double n in your head and see how the laps change.'],
     use: ['You want to know if a solution will stay fast on big inputs.', 'You are choosing between two ways to solve a problem.'],
     avoid: ['Counting lines of code instead of laps.', 'Worrying about speed before the solution works.'],
     mistakes: ['Counting lines of code instead of laps. Fix: count how many times the loop runs, not how many lines it has.', 'Only checking the lucky case. Fix: ask what happens if the answer is not found.', 'Forgetting that a loop inside a loop multiplies. Fix: multiply the laps of the two loops.'],
-    cheat: ['count laps, not lines', 'n = size of the input', 'one loop: n laps', 'loop in a loop: n × n laps', 'think of the worst case', 'double n: what happens?'],
+    cheat: ['count laps, not lines', 'n = size of the input', 'one loop: n laps', 'loop in a loop: n * n laps', 'think of the worst case', 'double n: what happens?'],
     next: ['calls'],
     sources: [PY_TUT + 'controlflow.html#for-statements', 'Python Wiki, TimeComplexity, wiki.python.org/moin/TimeComplexity']
   },

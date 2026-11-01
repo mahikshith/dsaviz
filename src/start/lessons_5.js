@@ -8,14 +8,15 @@ const ST25_CODE = {
 function st25Story() {
   const cast = st1Cast([['hoot', 60], ['penny', 320], ['dot', 580]]);
   const plan = (lit, done) => ({ tokens: ['1. Start a total at 0', '2. Add every number to it', '3. Divide by how many there are'].map((t, i) => ({ id: 's' + i, x: 200, y: 150 + i * 60, text: t, w: 320, mono: false, solid: lit === i, dash: done !== undefined && i > done })) });
-  const code = (i) => ({ cards: [{ id: 'cl', x: 380, y: 130 + i * 60, w: 240, lines: [[ST25_CODE.py[1], 'for n in nums: ...', 'total / len(nums)'][i].trim()], cur: [0] }] });
+  const code = (i) => ({ cards: [{ id: 'cl', x: 380, y: 130 + i * 60, w: 240, lines: [[ST25_CODE.py[1], 'for n in nums:', 'total / len(nums)'][i].trim()], cur: [0] }] });
   return [
-    stBeat('penny', 'I need the average of my acorn counts. I opened the editor, and my mind went blank.', stScene(cast, { tokens: [{ id: 'blank', x: 320, y: 210, text: '?', w: 80 }] }), ['blank', 'cast:penny']),
-    stBeat('hoot', 'Close the editor for a moment. First write the steps in plain words, like a recipe.', stScene(cast, plan(null)), ['s0', 's1', 's2']),
+    stBeat('penny', 'I need the average of my acorn counts. I opened the code window, and I did not know what to type.', stScene(cast, { tokens: [{ id: 'blank', x: 320, y: 210, text: '?', w: 80 }] }), ['blank', 'cast:penny']),
+    stBeat('hoot', 'Step away from the code window. First write the steps in plain words, like a recipe.', stScene(cast, plan(null)), ['s0', 's1', 's2']),
+    stBeat('hoot', 'You can keep the plan inside the program. A line that starts with # is a comment. Python ignores it.', stScene(cast, { cards: [{ id: 'cm', x: 120, y: 150, w: 400, lines: ['# 1. Start a total at 0', '# 2. Add every number', '# 3. Divide by how many'], cur: [] }] }), ['cm']),
     stBeat('dot', 'Step one: start a total at 0. I know how to write that!', stScene(cast, plan(0, 0), code(0)), ['s0', 'cl'], 1),
     stBeat('hoot', 'Step two: add every number. That is a loop with an accumulator, from chapter 3.', stScene(cast, plan(1, 1), code(1)), ['s1', 'cl'], [2, 3]),
     stBeat('penny', 'Step three: divide by how many there are. len(nums) counts them.', stScene(cast, plan(2, 2), code(2)), ['s2', 'cl'], 4),
-    stBeat('hoot', 'Each plain step became one or two lines. The plan did the hard thinking.', stScene(cast, st1Card('card', 60, 130, 520, ST25_CODE.py, [0, 1, 2, 3, 4])), ['card'], [0, 1, 2, 3, 4]),
+    stBeat('hoot', 'Each plain step became one or two lines of code. The plan told us what to type.', stScene(cast, st1Card('card', 60, 130, 520, ST25_CODE.py, [0, 1, 2, 3, 4])), ['card'], [0, 1, 2, 3, 4]),
     stBeat('dot', 'And the plan shows the odd case too: an empty list would divide by zero!', stScene(cast, plan(2), { tokens: [{ id: 'zero', x: 320, y: 330, text: 'len([]) is 0', c: 'bad' }] }), ['zero', 'cast:dot'])
   ];
 }
@@ -31,21 +32,22 @@ START_LESSON('plan-it', {
 
 // ---------- L26. How to read a problem ----------
 const ST26_CODE = {
-  py: ['# In:  a list of whole numbers', '# Out: how many are below zero', '# Example: [3, -1, -7, 2] gives 2', 'def count_negatives(nums):', '    count = 0', '    for n in nums:', '        if n < 0:', '            count = count + 1', '    return count'],
-  js: ['// In:  a list of whole numbers', '// Out: how many are below zero', '// Example: [3, -1, -7, 2] gives 2', 'function countNegatives(nums) {', '  let count = 0;', '  for (const n of nums) {', '    if (n < 0) {', '      count = count + 1; } }', '  return count; }']
+  py: ['# Receives: a list of whole numbers', '# Gives back: how many are below zero', '# Example: [3, -1, -7, 2] gives 2', 'def count_negatives(nums):', '    count = 0', '    for n in nums:', '        if n < 0:', '            count = count + 1', '    return count'],
+  js: ['// Receives: a list of whole numbers', '// Gives back: how many are below zero', '// Example: [3, -1, -7, 2] gives 2', 'function countNegatives(nums) {', '  let count = 0;', '  for (const n of nums) {', '    if (n < 0) {', '      count = count + 1; } }', '  return count; }']
 };
 function st26Story() {
   const cast = st1Cast([['hoot', 60], ['dot', 580]]);
-  const card = (lit) => ({ boxes: [['in', 'In', 'a list of numbers'], ['out', 'Out', 'how many are < 0'], ['ex', 'Example', '[3, -1, -7, 2] → 2'], ['edge', 'Watch out', 'empty list → 0']].map(([id, tag, t], i) => ({ id, tag, x: 80 + (i % 2) * 250, y: 140 + Math.floor(i / 2) * 104, w: 230, h: 64, text: t, size: 16, mono: true, solid: (lit || []).includes(id) })) });
+  const card = (lit) => ({ boxes: [['in', 'Receives', 'a list of numbers'], ['out', 'Gives back', 'how many are < 0'], ['ex', 'Example', '[3, -1, -7, 2] → 2'], ['edge', 'Watch out', 'empty list → 0']].map(([id, tag, t], i) => ({ id, tag, x: 80 + (i % 2) * 250, y: 140 + Math.floor(i / 2) * 104, w: 230, h: 64, text: t, size: 16, mono: true, solid: (lit || []).includes(id) })) });
   return [
     stBeat('hoot', 'Here is your first real problem: count how many numbers in a list are below zero.', stScene(cast, card([])), ['cast:hoot']),
-    stBeat('dot', 'Where do I even start?', stScene(cast, card([])), ['cast:dot']),
-    stBeat('hoot', 'Fill in a job card. In: what do you get? A list of whole numbers.', stScene(cast, card(['in'])), ['in']),
-    stBeat('hoot', 'Out: what must you give back? One number: how many are below zero. Return it, do not print it.', stScene(cast, card(['in', 'out'])), ['out']),
+    stBeat('dot', 'Where do I start?', stScene(cast, card([])), ['cast:dot']),
+    stBeat('hoot', 'Fill in a job card. Receives: what does the function get? A list of whole numbers.', stScene(cast, card(['in'])), ['in']),
+    stBeat('hoot', 'Gives back: what must the function return? One number, how many are below zero. Return it, do not print it.', stScene(cast, card(['in', 'out'])), ['out']),
     stBeat('dot', 'Example: [3, -1, -7, 2] has two numbers below zero, so the answer is 2.', stScene(cast, card(['ex'])), ['ex']),
     stBeat('hoot', 'Watch out for odd cases: an empty list gives 0. Zero itself is not below zero.', stScene(cast, card(['edge'])), ['edge']),
-    stBeat('hoot', 'Then plan in words, try the simple way first, and test with the example before you check.', stScene(cast, st1Card('card', 40, 124, 560, ST26_CODE.py.slice(3), [])), ['card'], [3, 4, 5, 6, 7, 8]),
-    stBeat('dot', 'In, out, example, odd cases, plan, test. I can do this!', stScene(cast, card(['in', 'out', 'ex', 'edge'])), ['cast:dot'])
+    stBeat('hoot', 'The lines at the top that start with # are comments. They write the job card inside the program.', stScene(cast, st1Card('card', 40, 124, 560, ST26_CODE.py.slice(0, 3), [])), ['card'], [0, 1, 2]),
+    stBeat('hoot', 'Then plan in words, try the simple way first, and test it on the example before you trust it.', stScene(cast, st1Card('card', 40, 124, 560, ST26_CODE.py.slice(3), [])), ['card'], [3, 4, 5, 6, 7, 8]),
+    stBeat('dot', 'Receives, gives back, example, odd cases, plan, test. I can do this!', stScene(cast, card(['in', 'out', 'ex', 'edge'])), ['cast:dot'])
   ];
 }
 START_LESSON('read-a-problem', {
@@ -68,13 +70,13 @@ function st27Story() {
   const bars = (vals, lit) => ({ boxes: vals.map(([label, h], i) => ({ id: 'bar' + i, x: 110 + i * 150, y: 320 - h, w: 100, h, text: '', solid: lit === i, c: 'a' })), labels: vals.map(([label, h, laps], i) => ({ id: 'bl' + i, x: 160 + i * 150, y: 340, text: label, size: 15, c: 'm' })).concat(vals.map(([label, h, laps], i) => ({ id: 'bt' + i, x: 160 + i * 150, y: 310 - h, text: laps, size: 16, mono: true }))) });
   return [
     stBeat('penny', 'My program checks a list for a 7. With 10 numbers it is instant. With a million, is it still fine?', stScene(cast, st1Card('card', 60, 130, 520, ST27_CODE.py, [1])), ['card'], 1),
-    stBeat('hoot', 'Do not time it. Count the steps. In the worst case, the loop visits every number once.', stScene(cast, st1Card('card', 60, 130, 520, ST27_CODE.py, [1, 2])), ['card'], [1, 2]),
+    stBeat('hoot', 'Do not time it. Count the steps. The worst case is the longest it can take: the loop visits every number once.', stScene(cast, st1Card('card', 60, 130, 520, ST27_CODE.py, [1, 2])), ['card'], [1, 2]),
     stBeat('hoot', '10 numbers: up to 10 laps. 20 numbers: up to 20 laps. The work grows in step with the list.', stScene(cast, bars([['10 items', 45, '10'], ['20 items', 90, '20'], ['40 items', 180, '40']])), ['bar0', 'bar1', 'bar2']),
     stBeat('dot', 'So if the list doubles, the work doubles too?', stScene(cast, bars([['10 items', 45, '10'], ['20 items', 90, '20'], ['40 items', 180, '40']], 1)), ['bar1', 'cast:dot']),
-    stBeat('hoot', 'Yes. We call that O(n): steps grow like n, the size of the input. One loop over the list is O(n).', stScene(cast, { tokens: [{ id: 'on', x: 320, y: 220, text: 'one loop → O(n)', solid: true }] }), ['on']),
+    stBeat('hoot', 'Yes. We write that O(n). n is the size of the list. One loop over the list is O(n).', stScene(cast, { tokens: [{ id: 'on', x: 320, y: 220, text: 'one loop → O(n)', solid: true }] }), ['on']),
     stBeat('hoot', 'A loop inside a loop over the same list is different: 10 items give 100 laps, 20 give 400.', stScene(cast, bars([['10 items', 11, '100'], ['20 items', 45, '400'], ['40 items', 180, '1600']])), ['bar2']),
-    stBeat('penny', 'Double the list and the work goes up four times. That is O(n²). It gets slow fast!', stScene(cast, { tokens: [{ id: 'on2', x: 320, y: 220, text: 'loop in a loop → O(n²)', c: 'c' }] }), ['on2']),
-    stBeat('dot', 'Count the laps, then ask what happens when the input doubles. That is the whole idea!', stScene(cast, { tokens: [{ id: 'on', x: 320, y: 180, text: 'one loop → O(n)', solid: true }, { id: 'on2', x: 320, y: 260, text: 'loop in a loop → O(n²)', c: 'c' }] }), ['cast:dot'])
+    stBeat('penny', 'Double the list and the work goes up four times. That is O(n²), which means n times n. It gets slow fast!', stScene(cast, { tokens: [{ id: 'on2', x: 320, y: 220, text: 'loop in a loop → O(n²)', c: 'c' }] }), ['on2']),
+    stBeat('dot', 'Count the laps, then ask what happens when the input doubles. That is the idea!', stScene(cast, { tokens: [{ id: 'on', x: 320, y: 180, text: 'one loop → O(n)', solid: true }, { id: 'on2', x: 320, y: 260, text: 'loop in a loop → O(n²)', c: 'c' }] }), ['cast:dot'])
   ];
 }
 START_LESSON('counting-steps', {

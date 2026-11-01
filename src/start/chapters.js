@@ -46,7 +46,7 @@ const START_CHAPTERS = [
   { id: 'guess-project', n: 24, part: 4, short: 'Project: guess', title: 'Project: guess the number', idea: 'A while loop, input and if make a game that says higher or lower until you win.', minutes: 14, teaches: [], after: ['while', 'dicts', 'return-print'], project: true },
   // ---- The bridge ----
   { id: 'plan-it', n: 25, part: 5, short: 'Plan it first', title: 'Plan it before you code it', idea: 'Write the steps in plain words first. Then turn each step into one or two lines of code.', minutes: 10, teaches: ['plan'], after: ['return-print'], trap: 'Typing code before you know the steps.' },
-  { id: 'read-a-problem', n: 26, part: 5, short: 'Read a problem', title: 'How to read a problem', idea: 'Find the input, the output and the examples. Plan in words, try the slow idea, then test.', minutes: 12, teaches: ['problems'], after: ['plan-it', 'debugging'], trap: 'Coding before you know what the answer looks like.' },
+  { id: 'read-a-problem', n: 26, part: 5, short: 'Read a problem', title: 'How to read a problem', idea: 'Find what goes in, what comes out, and the examples. Plan in words, try the simple way first, then test.', minutes: 12, teaches: ['problems'], after: ['plan-it', 'debugging'], trap: 'Coding before you know what the answer looks like.' },
   // ---- After your first problems ----
   { id: 'counting-steps', n: 27, part: 6, short: 'Counting steps', title: 'Counting steps', idea: 'Count the laps your loop makes. When the input doubles, does the work double too?', minutes: 10, teaches: ['bigo'], after: ['read-a-problem'], trap: 'Counting lines of code instead of laps.' },
   // ---- Level 2: Functions in depth (lessons_6.js, lessons_7.js) ----

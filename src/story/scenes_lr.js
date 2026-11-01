@@ -15,15 +15,15 @@ function lruScene() {
   };
   steps.push(snap('intro', null, 0, null, {
     dialog: [say('narr', 'The shopkeeper’s rack has three hooks. When it is full, the coat that nobody touched for the longest time goes to storage.'), say('shop', 'My ticket book finds any coat at once. The rack keeps the coats in order of use.'), say('narr', 'So you need both?'), say('shop', 'The book is fast to look up. The order shows which coat goes first.')],
-    nar: { kid: 'The shopkeeper’s rack holds three coats. The newest is on the left. The ticket book (the box on the right) finds any coat at once.', builder: 'A map from key to value finds any key in O(1) time. A line kept in order of use gives the oldest key in O(1) time.', expert: 'This is called an LRU cache (least recently used). It pairs a hash map with a doubly linked list, which is a chain where each link points both ways. Moving a link to the front and dropping the back are both O(1).' } }));
+    nar: { kid: 'The shopkeeper’s rack holds three coats. The newest is on the left. The ticket book (the box on the right) finds any coat at once.', builder: 'A map (a lookup table from key to value) finds any key in O(1) time. A line kept in order of use gives the oldest key in O(1) time. O(1) means a fixed amount of work, however many coats there are.', expert: 'This is called an LRU cache (least recently used: the oldest-used item leaves first). It pairs a hash map (a fast lookup table) with a doubly linked list, which is a chain where each link points both ways. Moving a link to the front and removing the back are both O(1).' } }));
   for (const o of ops) {
     const [op, key, val] = o;
     if (op === 'get') {
       if (!map.has(key)) {
         calls++; out.push(-1);
         steps.push(snap('miss', o, 0, null, {
-          dialog: [say('shop', 'Ticket ' + key + '? It is not in my book.'), say('narr', 'So get returns -1. Nothing moves.')],
-          nar: { kid: 'Someone asks for coat ' + key + ', but it is not in the shopkeeper’s book. The answer is -1, and the rack does not change.', builder: 'key ' + key + ' is not in the map, so return -1.', expert: 'A miss changes nothing. Only keys that are used move to the front.' } }));
+          dialog: [say('shop', 'Ticket ' + key + '? It is not in my book.'), say('narr', 'So get returns -1, which means “not found”. Nothing moves.')],
+          nar: { kid: 'Someone asks for coat ' + key + ', but it is not in the shopkeeper’s book. The answer is -1, and the rack does not change.', builder: 'key ' + key + ' is not in the map, so return -1.', expert: 'A miss (a get for a key that is not stored) changes nothing. Only keys that are used move to the front.' } }));
         continue;
       }
       const at = line.indexOf(key);
@@ -77,13 +77,13 @@ function lruScene() {
     actorLabels: ['Shopkeeper'],
     goal: 'Keep the three most recently used coats', status: ['Serving guests…', 'All calls answered'],
     lines: tagLines(code), code,
-    rules: [['Start with three empty hooks', 'intro'], ['put, new key → hang it on the newest hook', 'put'], ['put on a full rack → the oldest coat leaves first', 'evict'], ['get, key in the book → hand it back and make it newest', 'hit'], ['get, key not in the book → -1', 'miss']],
+    rules: [['Start with three empty hooks', 'intro'], ['put, new key → hang it on the newest hook', 'put'], ['put on a full rack → the oldest coat leaves first', 'evict'], ['get, key in the book → hand it back and make it newest', 'hit'], ['get, key not in the book → -1 (not found)', 'miss']],
     predictFull: true,
-    complexity: [['O(1)', 'per get or put: one map lookup and a few links'], ['O(capacity)', 'one map entry and one list node per key']],
-    quest: ['The shopkeeper’s coat rack has three hooks. A guest calls put(key, value) to hang a coat, and get(key) to ask for a coat back.', 'When the rack is full, the coat that went the longest without being used goes to storage. The calls are: put 1, put 2, put 3, get 1, put 4, get 2, get 3, put 5.'],
+    complexity: [['O(1)', 'per get or put: one map lookup and a few link changes'], ['O(capacity)', 'one map entry and one list node per key']],
+    quest: ['The shopkeeper’s coat rack has three hooks. A guest calls put(key, value) to hang a coat. The key is the coat’s number, and the value is the note kept with it. A guest calls get(key) to ask for a coat back.', 'When the rack is full, the coat that went the longest without being used goes to storage. The calls, in order, are: put 1, put 2, put 3, get 1, put 4, get 2, get 3, put 5.'],
     example: ['capacity = 3; put(1,10), put(2,20), put(3,30), get(1), put(4,40), get(2), get(3), put(5,50)', 'answer = [null, null, null, 10, null, -1, 30, null]'],
     hints: ['“Two questions keep coming: where is coat 3, and which coat is oldest? Can one tool answer both quickly?”', '“A map answers “where is it” in one step. A line in order of use answers “which is oldest” in one step.”', '“For get: if the key is in the map, move it to the front and return it. For put: if the rack is full, drop the back. Then add the key at the front.”'],
-    clues: ['both calls must take O(1) time', 'the least recently used key leaves first', 'a get counts as a use'],
+    clues: ['both calls must take O(1) time (a fixed amount of work)', 'the least recently used key leaves first', 'a get counts as a use'],
     kit: { right: 3, spot: 'Why a map and a line together?', ask: 'How should the shopkeeper run the rack?',
       quiz: [['A plain list', 'Keep coats in a list and search it on every call'], ['A map alone', 'Keys to values, nothing else'], ['A timestamp on each coat', 'Write the time of last use, and look for the oldest when full'], ['A map plus a line in order of use', 'The map finds a coat, the line knows the oldest']] },
     quizFb: ['“Searching a list takes O(n) time per call. The problem asks for O(1).”', '“A map finds coats fast, but it cannot tell you which coat is oldest.”', '“Finding the oldest timestamp means checking every coat. That takes O(n) time on a full rack.”', '“Yes! The map finds any coat in one step. The back of the line is always the oldest coat.”'],

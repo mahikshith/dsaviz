@@ -9,19 +9,19 @@ function coatScene() {
   const book = (fresh, hit) => Object.keys(seen).map((k) => [k, 'seat ' + seen[k], Number(k) === hit ? 'hit' : Number(k) === fresh ? 'fresh' : '']);
   steps.push({ L: 0, kind: 'intro', board: [], need: '—',
     dialog: [say('narr', 'Five guests will arrive, each wearing a number. Two of them add up to 12. Find them.'), say('shop', 'I will not compare every guest with every other guest. I will keep a ticket book.'), say('narr', 'And for each new guest?'), say('shop', 'I ask one question: is the partner who makes 12 already in my book?')],
-    nar: { kid: 'The shopkeeper has a ticket book. Every guest who arrives is written down, so the shopkeeper can find anyone again at once. Programmers call this kind of book a hash map: you look up a key and get its value right away.', builder: 'seen = {} (the ticket book). For each place i: need = target − nums[i]. If need is in seen, we are done. If not, store nums[i] with its place i.', expert: 'One pass with a fast lookup replaces the inner loop of the slow O(n²) method that checks every pair.' } });
+    nar: { kid: 'The shopkeeper has a ticket book. Every guest who arrives is written down, so the shopkeeper can find anyone again at once. Programmers call this kind of book a hash map: you look up a key and get its value right away.', builder: 'seen = {} (the ticket book). For each place i: need = target − nums[i], which is the number the partner must wear. If need is in seen, we are done. If not, store nums[i] with its place i.', expert: 'One pass with a fast lookup replaces the inner loop of the slow O(n²) method. That method checks every pair, so it takes about n × n steps.' } });
   for (let i = 0; i < nums.length; i++) {
     const x = nums[i], need = target - x;
     if (need in seen) {
       steps.push({ L: i, kind: 'found', need, partner: seen[need], board: book(-1, need),
-        dialog: [say('shop', 'Guest ' + x + ' needs a ' + need + '.'), say('shop', 'And a ' + need + ' is in my book, at seat ' + seen[need] + '!'), say('narr', 'Seats ' + seen[need] + ' and ' + i + '. ' + need + ' + ' + x + ' = 12. Well done, shopkeeper.')],
-        nar: { kid: 'Guest ' + x + ' needs a partner worth ' + need + '. The shopkeeper already wrote one down! The answer is seats ' + seen[need] + ' and ' + i + '.', builder: 'need = 12 − ' + x + ' = ' + need + ' is in seen, so return [' + seen[need] + ', ' + i + '].', expert: 'Found at i = ' + i + ' after ' + i + ' inserts. That is O(n) time and O(n) space. The hash map trades extra memory for speed.' } });
+        dialog: [say('shop', 'Guest ' + x + ' needs the number ' + need + '.'), say('shop', 'And ' + need + ' is in my book, at seat ' + seen[need] + '!'), say('narr', 'Seats ' + seen[need] + ' and ' + i + '. ' + need + ' + ' + x + ' = 12. Well done, shopkeeper.')],
+        nar: { kid: 'Guest ' + x + ' needs a partner worth ' + need + '. The shopkeeper already wrote one down! The answer is seats ' + seen[need] + ' and ' + i + '.', builder: 'need = 12 − ' + x + ' = ' + need + ' is in seen, so return [' + seen[need] + ', ' + i + '].', expert: 'Found at i = ' + i + ' after ' + i + ' inserts. That is O(n) time, and O(n) space because the book can hold every guest. The hash map trades extra memory for speed.' } });
       break;
     }
     seen[x] = i;
     steps.push({ L: i, kind: 'store', need, board: book(x, -1),
       dialog: [say('shop', 'Guest ' + x + '. The partner would be ' + need + '.'), say('shop', 'No ' + need + ' in my book yet, so I write down ' + x + ' with seat ' + i + '.')],
-      nar: { kid: 'Guest ' + x + ' needs a ' + need + ' to make 12. Nobody like that has arrived yet, so the shopkeeper writes ' + x + ' in the ticket book and waits.', builder: 'need = ' + need + ' is not in seen, so seen[' + x + '] = ' + i + '.', expert: 'Check first, then insert, so a guest never pairs with themselves. Each step takes O(1) time on average.' } });
+      nar: { kid: 'Guest ' + x + ' needs the number ' + need + ' to make 12. Nobody like that has arrived yet, so the shopkeeper writes ' + x + ' in the ticket book and waits.', builder: 'need = ' + need + ' is not in seen, so seen[' + x + '] = ' + i + '.', expert: 'Check first, then insert, so a guest never pairs with themselves. Each step takes O(1) time on average, which means a fixed amount of work.' } });
   }
   const T = { intro: ['Empty ticket book', 'plain'], store: ['No partner yet → write a ticket', 'cool'], found: ['Partner found → [3, 4]', 'ok'] };
   steps.forEach((st) => {
@@ -51,7 +51,7 @@ function coatScene() {
     example: ['nums = [4, 9, 2, 7, 5]   target = 12', 'answer = [3, 4]   (7 + 5 = 12)'],
     hints: ['“For each guest, you know what number the partner must wear. What would let you find that partner at once?”', '“Use a ticket book: give a number, get a seat. Looking something up in it is very fast.”', '“Check the book first, then write the guest down. Then nobody pairs with themselves.”'],
     clues: ['find a pair that hits a target', 'the line is not sorted', 'one pass would be best'],
-    quizFb: ['“Checking every pair works. It is 10 checks here, but 50 million for 10,000 guests.”', '“Two markers from the ends only work if the line is sorted. This one is not, and sorting loses the seats.”', '“A window watches guests side by side. Our two guests might be far apart.”', '“Yes! Write down every guest you pass. Each new guest asks the book for their partner.”'],
+    quizFb: ['“Checking every pair works. It is 10 checks here, but 50 million for 10,000 guests.”', '“Two markers from the ends only work if the line is sorted. This one is not, and sorting loses the seats.”', '“A window is a short stretch of guests side by side. Our two guests might be far apart.”', '“Yes! Write down every guest you pass. Each new guest asks the book for their partner.”'],
     steps
   };
 }
@@ -64,19 +64,19 @@ function guestScene() {
   const list = (fresh, hit) => seen.map((k) => [String(k), 'on list', k === hit ? 'hit' : k === fresh ? 'fresh' : '']);
   steps.push({ L: 0, kind: 'intro', board: [],
     dialog: [say('narr', 'Five guests are at the door. Did anyone come in twice?'), say('shop', 'My guest list starts empty. For each guest, I check the list first, then add the guest.')],
-    nar: { kid: 'The shopkeeper stands at the door with an empty guest list. If a guest arrives who is already on it, that guest came twice!', builder: 'seen = set() (a list that holds each value once). For each x: if x is in seen, return True. If not, add x.', expert: 'Checking a set takes O(1) time on average, so one pass is O(n). Sorting first would be slower: O(n log n).' } });
+    nar: { kid: 'The shopkeeper stands at the door with an empty guest list. If a guest arrives who is already on it, that guest came twice!', builder: 'seen = set() (a list that holds each value once). For each number x: if x is in seen, return True. If not, add x.', expert: 'Checking a set takes O(1) time on average (a fixed amount of work), so one pass is O(n). Sorting first would be slower: O(n log n), a bit more than n steps.' } });
   for (let i = 0; i < nums.length; i++) {
     const x = nums[i];
     if (seen.includes(x)) {
       steps.push({ L: i, kind: 'found', board: list(-1, x), first: seen.indexOf(x) === -1 ? 0 : nums.indexOf(x),
         dialog: [say('shop', 'Wait. Guest ' + x + ' is already on my list!'), say('narr', 'So someone came twice. The answer is True. There is no need to check the rest.')],
-        nar: { kid: 'Guest ' + x + ' is already on the list. Somebody came twice!', builder: x + ' is in seen, so return True.', expert: 'We stop at the first repeat. The worst case is still O(n).' } });
+        nar: { kid: 'Guest ' + x + ' is already on the list. Somebody came twice!', builder: x + ' is in seen, so return True.', expert: 'We stop at the first repeat. The worst case is still O(n): we may have to look at every guest.' } });
       break;
     }
     seen.push(x);
     steps.push({ L: i, kind: 'add', board: list(x, -1),
       dialog: [say('shop', 'Guest ' + x + '. Not on my list.'), say('shop', 'Added. Next guest, please!')],
-      nar: { kid: 'Guest ' + x + ' is new, so the shopkeeper writes the guest on the list.', builder: x + ' is not in seen, so seen.add(' + x + ').', expert: 'The set now holds ' + seen.length + ' different values.' } });
+      nar: { kid: 'Guest ' + x + ' is new, so the shopkeeper writes the guest on the list.', builder: x + ' is not in seen, so seen.add(' + x + ').', expert: 'The set now holds ' + seen.length + (seen.length === 1 ? ' different value.' : ' different values.') } });
   }
   const T = { intro: ['Empty guest list', 'plain'], add: ['New guest → add to the list', 'cool'], found: ['Already on the list → True', 'ok'] };
   steps.forEach((st) => {
@@ -105,7 +105,7 @@ function guestScene() {
     example: ['nums = [3, 8, 4, 6, 8]', 'answer = True   (8 appears twice)'],
     hints: ['“Comparing every guest with every other guest is slow. What could the shopkeeper hold instead?”', '“A list that can be checked at once. This is called a set.”', '“Check first, then add. The first guest who is already on the list gives you the answer.”'],
     clues: ['has anything repeated?', 'order does not matter', 'one pass would be best'],
-    quizFb: ['“Every pair is 10 checks here, but 5 billion checks for 100,000 guests.”', '“Sorting and then checking guests side by side also works, but it is slower. The list is faster.”', '“The repeats might be far apart. A window of guests side by side can miss them.”', '“Yes! A guest list you can check at once. This is a set, which is a hash map without values.”'],
+    quizFb: ['“Every pair is 10 checks here, but 5 billion checks for 100,000 guests.”', '“Sorting and then checking guests side by side also works, but it is slower. The list is faster.”', '“The repeats might be far apart. A window is a short stretch of guests side by side, so it can miss them.”', '“Yes! A guest list you can check at once. This is a set: a list that keeps each number only once.”'],
     steps
   };
 }
@@ -119,7 +119,7 @@ function scrabbleScene() {
   const tally = (a, b) => order.map((k) => [k, (count[k] > 0 ? '+' : '') + count[k], (k === a || k === b) ? (count[k] === 0 ? 'hit' : 'fresh') : count[k] === 0 ? 'zero' : '']);
   steps.push({ L: 0, kind: 'intro', board: [],
     dialog: [say('narr', 'There are two bags of Scrabble tiles. Bag one spells “listen” and bag two spells “silent”. Are the tiles the same?'), say('shop', 'I will keep a tally. Each tile from bag one is +1. Each tile from bag two is −1.'), say('narr', 'And at the end?'), say('shop', 'If every letter is back at zero, the bags hold the same tiles.')],
-    nar: { kid: 'The shopkeeper pulls one tile from each bag at a time. A tile from bag one adds 1, and a tile from bag two takes away 1. If everything cancels out, the words use the same letters.', builder: 'The lengths match. count = {} (a tally for each letter). For each place i, add 1 to count[s[i]] and take 1 from count[t[i]]. The words are anagrams (same letters, any order) when every count is 0.', expert: 'One counting pass takes O(n) time and O(1) space for a fixed alphabet. Sorting both words would be slower: O(n log n).' } });
+    nar: { kid: 'The shopkeeper pulls one tile from each bag at a time. A tile from bag one adds 1, and a tile from bag two takes away 1. If everything cancels out, the words use the same letters.', builder: 'The lengths match. count = {} (a tally for each letter). For each place i, add 1 to count[s[i]] and take 1 from count[t[i]]. The words are anagrams (same letters, any order) when every count is 0.', expert: 'One counting pass takes O(n) time (n is the word length) and O(1) space for a fixed alphabet. Sorting both words would be slower: O(n log n).' } });
   for (let i = 0; i < s.length; i++) {
     const a = s[i], b = u[i];
     [a, b].forEach((k) => { if (!(k in count)) { count[k] = 0; order.push(k); } });
@@ -130,11 +130,11 @@ function scrabbleScene() {
       dialog: kind === 'cancel'
         ? [say('shop', 'Bag one gives “' + a + '”, bag two gives “' + b + '”.'), say('narr', '“' + zeroed.join('” and “') + '” ' + (zeroed.length > 1 ? 'are' : 'is') + ' back to zero. They balance out.')]
         : [say('shop', 'Bag one gives “' + a + '” (+1), bag two gives “' + b + '” (−1).'), say('narr', a === b ? 'The same letter came from both bags, so it cancels at once.' : 'Nothing balances yet. Keep drawing tiles.')],
-      nar: { kid: 'From bag one, “' + a + '”: one more. From bag two, “' + b + '”: one less.' + (kind === 'cancel' ? ' The “' + zeroed.join('” and “') + '” count' + (zeroed.length > 1 ? 's are' : ' is') + ' back to zero!' : ''), builder: 'count["' + a + '"] = ' + count[a] + ', count["' + b + '"] = ' + count[b] + '.', expert: 'At every step, count[c] equals the times c appeared in s so far, minus the times it appeared in t. Each step takes O(1) time.' } });
+      nar: { kid: 'From bag one, “' + a + '”: one more. From bag two, “' + b + '”: one less.' + (kind === 'cancel' ? ' The “' + zeroed.join('” and “') + '” count' + (zeroed.length > 1 ? 's are' : ' is') + ' back to zero!' : ''), builder: 'Now count["' + a + '"] is ' + count[a] + (a === b ? ' (it went up 1 and down 1).' : ' and count["' + b + '"] is ' + count[b] + '.'), expert: 'At every step, the count for a letter c equals how many times c has appeared in s so far, minus how many times it has appeared in t. Each step takes O(1) time, a fixed amount of work.' } });
   }
   steps.push({ L: s.length - 1, kind: 'found', board: order.map((k) => [k, '0', 'zero']),
     dialog: [say('shop', 'Both bags are empty, and every letter in my tally is 0.'), say('narr', 'So “listen” and “silent” hold the same tiles. They are anagrams, so the answer is True.')],
-    nar: { kid: 'Every letter came out even. The two bags have exactly the same tiles!', builder: 'all counts are 0, so return True.', expert: '2n updates, then one look at no more than 26 counters. A count that is not zero would show an extra or missing letter.' } });
+    nar: { kid: 'Every letter came out even. The two bags have exactly the same tiles!', builder: 'all counts are 0, so return True.', expert: '2n updates (n tiles from each bag), then one look at no more than 26 counters. A count that is not zero would show an extra or missing letter.' } });
   const T = { intro: ['Empty tally', 'plain'], tally: ['+1 for bag one, −1 for bag two', 'cool'], cancel: ['A letter balances back to 0', 'warn'], found: ['All zero → anagram!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = st.kind === 'found';
@@ -160,11 +160,11 @@ function scrabbleScene() {
     },
     rules: [['Start with an empty tally', 'intro'], ['+1 for bag one, −1 for bag two', 'tally'], ['A letter back at 0 has balanced out', 'cancel'], ['Everything at 0 → same tiles', 'found']],
     complexity: [['O(n)', 'every tile is counted once'], ['O(1)', 'at most 26 letters in the tally']],
-    quest: ['Two players each hold a bag of Scrabble tiles. One bag spells “listen” and the other spells “silent”.', 'Can one bag spell the other bag’s word, with nothing extra and nothing missing? The shopkeeper keeps the tally.'],
+    quest: ['Two players each hold a bag of Scrabble tiles. One bag spells “listen” and the other spells “silent”. Two words that use the same letters in any order are called anagrams.', 'Can one bag spell the other bag’s word, with nothing extra and nothing missing? The shopkeeper keeps the tally.'],
     example: ['s = "listen"   t = "silent"', 'answer = True'],
     hints: ['“Order does not matter for an anagram. Only the number of each letter matters.”', '“Could one tally sheet serve both bags? Add for one bag and subtract for the other.”', '“If every letter ends at zero, nothing was extra and nothing was missing.”'],
     clues: ['same letters, any order', 'count, do not compare places', 'one pass is enough'],
-    quizFb: ['“Matching every tile against every other tile is slow, and repeated letters make it confusing.”', '“Walking in from both ends checks mirror images, not mixed-up letters.”', '“A window of letters side by side cannot see letters that moved far away.”', '“Yes! A tally of letters, +1 for one bag and −1 for the other, is a hash map of counts.”'],
+    quizFb: ['“Matching every tile against every other tile is slow, and repeated letters make it confusing.”', '“Walking in from both ends checks mirror images, not mixed-up letters.”', '“A window is a short stretch of letters side by side. It cannot see letters that moved far away.”', '“Yes! A tally of letters, +1 for one bag and −1 for the other, is a table of counts.”'],
     steps
   };
 }

@@ -11,14 +11,14 @@ function fsBridgeScene() {
   const steps = [];
   let slow = 0, fast = 0;
   steps.push({ slow, fast, kind: 'intro',
-    dialog: [say('narr', 'A train of 7 carriages. Find the middle one. You may not count them first.'), say('tortoise', 'I will walk one carriage at a time.'), say('hare', 'And I will hop two at a time. We both start at the front.')],
-    nar: { kid: 'The tortoise walks one carriage per turn. The hare hops two per turn. When the hare reaches the end, the tortoise will be in the middle.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. Stop when fast has no next carriage.', expert: 'fast covers 2t links after t turns while slow covers t, so slow sits at ⌊len/2⌋ when fast stops. One pass, O(1) space.' } });
+    dialog: [say('narr', 'A train of 7 carriages. Find the middle one. You may not count them first. The front carriage is carriage 0.'), say('tortoise', 'I will walk one carriage at a time.'), say('hare', 'And I will hop two at a time. We both start at the front.')],
+    nar: { kid: 'The tortoise walks one carriage per turn. The hare hops two per turn. When the hare reaches the end, the tortoise will be in the middle.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. Stop when fast has no next carriage.', expert: 'After t turns, fast has moved 2t links and slow has moved t. So slow is halfway (rounded down) when fast stops. That is one pass and a fixed amount of memory (O(1)).' } });
   while (fast + 1 < n) {
     slow += 1; fast += 2;
     const last = fast + 1 >= n;
     steps.push({ slow, fast, kind: 'stride',
       dialog: [say('tortoise', 'One step. I am on carriage ' + slow + ', number ' + vals[slow] + '.'), say('hare', 'Two hops. I am on carriage ' + fast + ', number ' + vals[fast] + '.'), say('narr', last ? 'Hare, is there a carriage after yours?' : 'The hare has gone twice as far as the tortoise.')],
-      nar: { kid: 'The tortoise moves one carriage to ' + vals[slow] + '. The hare moves two carriages to ' + vals[fast] + '. The hare is always twice as far along.', builder: 'slow = ' + slow + ', fast = ' + fast + '. fast.next is ' + (last ? 'None' : 'carriage ' + (fast + 1)) + '.', expert: 'Invariant: fast = 2 · slow. ' + (last ? 'fast is the tail, so the loop condition fails next.' : 'fast and fast.next exist, so another turn runs.') } });
+      nar: { kid: 'The tortoise moves one carriage, to carriage ' + slow + ' (number ' + vals[slow] + '). The hare moves two carriages, to carriage ' + fast + ' (number ' + vals[fast] + '). The hare is always twice as far along.', builder: 'slow = ' + slow + ', fast = ' + fast + '. fast.next is ' + (last ? 'None' : 'carriage ' + (fast + 1)) + '.', expert: 'The hare’s position is always twice the tortoise’s (fast = 2 · slow). ' + (last ? 'The hare is on the last carriage, so the loop stops next turn.' : 'The hare has a carriage ahead of it, so another turn runs.') } });
   }
   steps.push({ slow, fast, kind: 'found',
     dialog: [say('hare', 'No more carriages after me. I am at the end.'), say('narr', 'Then the tortoise stands in the middle. Carriage ' + slow + ', number ' + vals[slow] + '.')],
@@ -46,7 +46,7 @@ function fsBridgeScene() {
     },
     rules: [['Both start at the front', 'intro'], ['The tortoise steps one, the hare hops two', 'stride'], ['The hare is at the end → the tortoise is the middle', 'found']],
     complexity: [['O(n)', 'The hare crosses the train once'], ['O(1)', 'two walkers, no notes']],
-    quest: ['A train of 7 carriages stands on the bridge: 5, 1, 8, 3, 7, 2, 6.', 'The tortoise and the hare must find the middle carriage. Each carriage only knows the next one, and nobody may count the train first.'],
+    quest: ['A train of 7 carriages stands on the bridge: 5, 1, 8, 3, 7, 2, 6. Carriages are counted from 0 at the front, and each one has a number painted on it.', 'The tortoise and the hare must find the middle carriage. Each carriage only knows the next one, and nobody may count the train first.'],
     example: ['head = 5 → 1 → 8 → 3 → 7 → 2 → 6', 'answer = the carriage holding 3'],
     hints: ['“One walker goes twice as fast as the other. How far has the slow one gone when the fast one finishes?”', '“Start both at the front. Move the tortoise one carriage and the hare two, every turn.”', '“Stop when the hare has no carriage to hop to. The tortoise is then in the middle.”'],
     clues: ['each carriage only knows the next', 'the length is not given', 'one walk, no notes'],
@@ -64,8 +64,8 @@ function fsLoopScene() {
   let slow = 0, fast = 0;
   const gapOf = (s, f) => (s < loopStart || f < loopStart ? '—' : ((s - f) % loopLen + loopLen) % loopLen);
   steps.push({ slow, fast, kind: 'intro', gap: '—',
-    dialog: [say('narr', 'Six carriages. Does this track end, or does it loop back on itself?'), say('tortoise', 'I walk one carriage per turn.'), say('hare', 'I hop two. If there is a loop, I will catch up with the tortoise from behind.')],
-    nar: { kid: 'The tortoise is slow and the hare is fast. On a straight track, the hare reaches the end. On a loop, the hare comes round and meets the tortoise.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. If they land on the same carriage, there is a loop.', expert: 'Floyd’s cycle check. Inside a loop the gap shrinks by 1 each turn, so they meet within one lap. O(n) time, O(1) space.' } });
+    dialog: [say('narr', 'Six carriages. Does this track end, or does it loop back on itself? The front carriage is carriage 0.'), say('tortoise', 'I walk one carriage per turn.'), say('hare', 'I hop two. If there is a loop, I will catch up with the tortoise from behind.')],
+    nar: { kid: 'The tortoise is slow and the hare is fast. On a straight track, the hare reaches the end. On a loop, the hare comes round and meets the tortoise.', builder: 'slow = fast = head. Each turn: slow moves 1, fast moves 2. If they land on the same carriage, there is a loop.', expert: 'This is Floyd’s cycle check. Inside a loop the gap shrinks by 1 each turn, so they meet within one lap. It takes O(n) time for n carriages and a fixed amount of memory (O(1)).' } });
   while (true) {
     slow = next[slow];
     const mid = next[fast];
@@ -75,14 +75,14 @@ function fsLoopScene() {
     if (slow === fast) {
       steps.push({ slow, fast, kind: 'found', gap,
         dialog: [say('tortoise', 'One step to carriage ' + slow + '.'), say('hare', 'Two hops… and I land on carriage ' + fast + ' too!'), say('narr', 'You met. A straight track could never do that. The track loops: the answer is True.')],
-        nar: { kid: 'The hare caught up with the tortoise on carriage ' + slow + ' (number ' + vals[slow] + '). That can only happen if the track goes round in a loop.', builder: 'slow == fast (carriage ' + slow + ') → return True.', expert: 'Met after 4 turns. Loop length ' + loopLen + ', tail length ' + loopStart + '. Total work is O(tail + loop).' } });
+        nar: { kid: 'The hare caught up with the tortoise on carriage ' + slow + ' (number ' + vals[slow] + '). That can only happen if the track goes round in a loop.', builder: 'slow == fast (carriage ' + slow + ') → return True.', expert: 'Met after 4 turns. The loop has ' + loopLen + ' carriages and the straight part before it has ' + loopStart + '. The total work is O(tail + loop), which means about the length of the straight part plus the loop.' } });
       break;
     }
     steps.push({ slow, fast, kind: wrapped ? 'wrap' : 'stride', gap,
       dialog: wrapped
         ? [say('tortoise', 'One step to carriage ' + slow + '.'), say('hare', 'Two hops: carriage ' + mid + ', then back round to carriage ' + fast + '!'), say('narr', 'Carriage 5 hooks back to carriage 2. The hare is now behind the tortoise, ' + gap + ' carriage' + (gap === 1 ? '' : 's') + ' back.')]
         : [say('tortoise', 'One step to carriage ' + slow + '.'), say('hare', 'Two hops to carriage ' + fast + '.'), say('narr', gap === '—' ? 'Not the same carriage. Keep going.' : 'Not the same carriage. The hare is ' + gap + ' carriages behind the tortoise in the loop.')],
-      nar: { kid: wrapped ? 'the hare ran off carriage 5 and came back to carriage 2. The track is a loop! Now the hare is chasing the tortoise.' : 'The tortoise moves one carriage to ' + vals[slow] + '. The hare moves two carriages to ' + vals[fast] + '. They are not together yet.', builder: 'slow = ' + slow + ', fast = ' + fast + '. slow != fast → keep going.', expert: gap === '—' ? 'slow has not entered the loop yet; no gap to measure.' : 'Both are in the loop. Gap (fast behind slow) = ' + gap + '. It drops by exactly 1 per turn.' } });
+      nar: { kid: wrapped ? 'The hare ran off carriage 5 and came back to carriage 2. The track is a loop! Now the hare is chasing the tortoise.' : 'The tortoise moves one carriage, to carriage ' + slow + ' (number ' + vals[slow] + '). The hare moves two carriages, to carriage ' + fast + ' (number ' + vals[fast] + '). They are not together yet.', builder: 'slow = ' + slow + ', fast = ' + fast + '. slow != fast → keep going.', expert: gap === '—' ? 'The tortoise has not entered the loop yet, so there is no gap to measure.' : 'Both are in the loop. The gap (how far the hare is behind the tortoise) is ' + gap + ' carriages. It drops by exactly 1 each turn.' } });
   }
   const T = { intro: ['Both at the front', 'plain'], stride: ['The tortoise steps 1, the hare hops 2', 'cool'], wrap: ['The hare goes round the loop', 'warn'], found: ['They meet → the track loops', 'ok'] };
   steps.forEach((st) => {
@@ -95,7 +95,7 @@ function fsLoopScene() {
   return {
     id: 'linked-list-cycle', pattern: 'Fast & Slow Pointers', cast: 'fs', short: 'Loop Track', visual: 'letters', items: vals.map((v, i) => (i === 5 ? v + '↩' : String(v))), pitch: 78, tile: 60, tileH: 70, gap: 18, font: 28, width: 450,
     actorLabels: ['Tortoise', 'Hare'],
-    goal: 'Does the track loop? (6↩ hooks back to carriage 2)', status: ['Running…', 'Loop found'],
+    goal: 'Does the track loop? (the last carriage hooks back to carriage 2)', status: ['Running…', 'Loop found'],
     lines: { py: { intro: 2, stride: 5, wrap: 5, found: 7 }, java: { intro: 2, stride: 5, wrap: 5, found: 6 }, cpp: { intro: 2, stride: 5, wrap: 5, found: 6 }, js: { intro: 2, stride: 5, wrap: 5, found: 6 }, go: { intro: 2, stride: 5, wrap: 5, found: 7 } },
     code: {
       py: [['def hasCycle(head):', ''], ['    slow = fast = head', ''], ['    while fast and fast.next:', ''], ['        slow = slow.next', ''], ['        fast = fast.next.next', ''], ['        if slow is fast:', ''], ['            return True', '  # the hare caught up'], ['    return False', '']],
@@ -106,7 +106,7 @@ function fsLoopScene() {
     },
     rules: [['Both start at the front', 'intro'], ['The tortoise steps one, the hare hops two', 'stride'], ['The hare runs round the loop and comes up behind', 'wrap'], ['Same carriage → the track loops', 'found']],
     complexity: [['O(n)', 'they meet within one lap'], ['O(1)', 'two walkers, no notes']],
-    quest: ['Six carriages sit on a track: 3, 7, 1, 9, 4, 6. The last one, 6, might hook back to an earlier carriage. Nobody can see the whole track.', 'The tortoise and the hare must find out: does the track end, or go round in a loop?'],
+    quest: ['Six carriages sit on a track: 3, 7, 1, 9, 4, 6. Carriages are counted from 0 at the front, and each one has a number painted on it. The last one, 6, might hook back to an earlier carriage. Nobody can see the whole track.', 'The tortoise and the hare must find out: does the track end, or go round in a loop?'],
     example: ['head = 3 → 7 → 1 → 9 → 4 → 6 → back to 1', 'answer = True   (the track loops)'],
     hints: ['“On a straight track, a fast runner reaches the end. What happens to a fast runner on a round track?”', '“Send the tortoise one carriage per turn and the hare two. Watch whether they ever stand on the same carriage.”', '“If the hare reaches the end, there is no loop. If they meet, there is one.”'],
     clues: ['the track may loop', 'you cannot see the whole track', 'no notebook allowed'],

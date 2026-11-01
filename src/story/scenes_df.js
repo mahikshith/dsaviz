@@ -21,7 +21,7 @@ function islandsScene() {
   let islands = 0, size = 0, chalked = 0, last = null;
   steps.push({ kind: 'intro', r: '—', c: '—', vals: map.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: [], actorAt: [0, 0],
     dialog: [say('narr', 'A sea map, 5 squares by 5. A 1 is land, a 0 is water. How many islands are there?'), say('explorer', 'Land squares that touch up, down, left or right are the same island.'), say('narr', 'So when you find land, explore all of it before you count again.')],
-    nar: { kid: 'The explorer reads the map row by row. When the explorer steps on new land, that is a new island. The explorer chalks every square of it to avoid counting it twice.', builder: 'Scan every square. On an unvisited "1", add one to islands and call chalk(r, c). It marks the square and spreads to its four neighbours.', expert: 'Count connected components in a grid graph: each square is a node, with edges to its 4 neighbours. One DFS (depth-first search: follow a path as deep as it goes, then back up) per component.' } });
+    nar: { kid: 'The explorer reads the map row by row. When the explorer steps on new land, that is a new island. The explorer chalks every square of it to avoid counting it twice.', builder: 'Scan every square. On an unvisited "1", add one to islands and call chalk(r, c). It marks the square and spreads to its four neighbours.', expert: 'This counts connected groups of squares, and each island is one group. Think of each square as a dot joined to its 4 neighbours. Run one DFS (depth-first search: follow a path as deep as it goes, then back up) for each group.' } });
   const visit = (r, c) => {
     if (r < 0 || c < 0 || r >= R || c >= C || g[r][c] !== '1') return;
     g[r][c] = '#'; owner[r][c] = islands - 1; size++; chalked++;
@@ -32,13 +32,13 @@ function islandsScene() {
     const dir = parent ? dirName(parent, [r, c]) : '';
     const st = { kind: first ? 'found' : 'chalk', r, c, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: trail.map((p) => p.slice()), actorAt: [r, c] };
     if (first) {
-      st.dialog = [say('explorer', 'Land at ' + where(r, c) + ', and no chalk on it.'), say('narr', 'Then it is a new island. That makes ' + islands + '. The marker it and explore.')];
-      st.nar = { kid: 'The explorer finds land with no chalk. It must be a new island! That is island number ' + islands + '. The explorer chalks the square.', builder: 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', then chalk(' + r + ', ' + c + ') writes "#" there.', expert: 'The scan starts a DFS only on an unvisited land square. So each component is counted once, at its first square in reading order.' };
+      st.dialog = [say('explorer', 'Land at ' + where(r, c) + ', and no chalk on it.'), say('narr', 'Then it is a new island. That makes ' + islands + '. Then chalk it and explore.')];
+      st.nar = { kid: 'The explorer finds land with no chalk. It must be a new island! That is island number ' + islands + '. The explorer chalks the square.', builder: 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', then chalk(' + r + ', ' + c + ') writes "#" there.', expert: 'The scan starts a DFS only on an unvisited land square. So each island is counted once, at its first square when reading left to right, top to bottom.' };
     } else if (backed) {
       st.dialog = [say('explorer', 'Dead end. I walk back along my trail to ' + where(parent[0], parent[1]) + '.'), say('explorer', 'From there, ' + dir + ' is land. Chalked!')];
-      st.nar = { kid: 'The explorer hit water or chalk on every side, so the explorer walked back along the trail. Then the explorer found more land ' + dir + ' and chalked it.', builder: 'Some chalk() calls returned at once (water, chalk or the edge). Back in chalk(' + parent[0] + ', ' + parent[1] + '), the ' + dir + ' call lands on fresh land: grid[' + r + '][' + c + '] = "#".', expert: 'Returning from a call is the “back up” half of DFS. The drawn trail is the call stack: ' + trail.length + ' calls deep right now.' };
+      st.nar = { kid: 'The explorer hit water or chalk on every side, so the explorer walked back along the trail. Then the explorer found more land ' + dir + ' and chalked it.', builder: 'Some chalk() calls returned at once (water, chalk or the edge). Back in chalk(' + parent[0] + ', ' + parent[1] + '), the ' + dir + ' call lands on fresh land: grid[' + r + '][' + c + '] = "#".', expert: 'Returning from a call is the “back up” half of DFS. The drawn trail is the pile of calls that are still open: ' + trail.length + ' calls deep right now.' };
     } else {
-      st.dialog = [say('explorer', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('narr', 'The marker it and keep going deeper.')];
+      st.dialog = [say('explorer', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('narr', 'Chalk it and keep going deeper.')];
       st.nar = { kid: 'The explorer steps ' + dir + ' and finds more land. Same island! The explorer chalks it and keeps going.', builder: 'chalk(' + r + ', ' + c + ') from chalk(' + parent[0] + ', ' + parent[1] + '): it is "1", so mark it "#". This island has ' + size + ' squares so far.', expert: 'Each square is marked before its neighbours are tried, so no square is entered twice. Trail depth: ' + trail.length + '.' };
     }
     steps.push(st);
@@ -51,7 +51,7 @@ function islandsScene() {
   }
   steps.push({ kind: 'done', r: R - 1, c: C - 1, vals: g.map((row) => row.slice()), owner: owner.map((x) => x.slice()), islands, size, chalked, trail: [], actorAt: [R - 1, C - 1], done: true,
     dialog: [say('explorer', 'I’ve read the last square. Every bit of land has chalk on it.'), say('narr', 'You found ' + islands + ' islands, and counted each one once.')],
-    nar: { kid: 'The whole map is read and all land is chalked. There are ' + islands + ' islands!', builder: 'The scan ends → return islands = ' + islands + '.', expert: 'Every square is scanned once and chalked at most once: O(R·C) time. The trail can grow to R·C calls in the worst case, so O(R·C) space.' } });
+    nar: { kid: 'The whole map is read and all land is chalked. There are ' + islands + ' islands!', builder: 'The scan ends → return islands = ' + islands + '.', expert: 'Every square is scanned once and chalked at most once: O(R·C) time. R is the number of rows and C is the number of columns. The trail can grow to R·C open calls in the worst case, so the space is O(R·C) too.' } });
   const T = { intro: ['Ready to read the map', 'plain'], found: ['New land → new island', 'warn'], chalk: ['Land next door → chalk it', 'cool'], done: [islands + ' islands found!', 'ok'] };
   steps.forEach((st) => {
     st.verdict = T[st.kind][0]; st.tone = T[st.kind][1]; st.done = !!st.done;
@@ -80,7 +80,7 @@ function islandsScene() {
     gridLabel: 'Sea map', legend: [['in', 'land, no chalk yet'], ['cur', 'The explorer is here'], ['ok', 'chalked: this island'], ['stored', 'chalked: earlier island'], ['out', 'water'], ['path', 'The explorer’s trail']],
     goal: 'Count the islands. Each one counts once.', status: ['Reading the map…', islands + ' islands'],
     lines: tagLines(code), code,
-    rules: [['Start with zero islands', 'intro'], ['Unchalked land → a new island', 'found'], ['The marker it, then try all four neighbours', 'chalk'], ['Map read → report the count', 'done']],
+    rules: [['Start with zero islands', 'intro'], ['Unchalked land → a new island', 'found'], ['Chalk it, then try all four neighbours', 'chalk'], ['Map read → report the count', 'done']],
     complexity: [['O(R·C)', 'each square is read once and chalked at most once'], ['O(R·C)', 'the trail can wind through every square']],
     quest: ['An old sea map shows a 5 by 5 patch of ocean. Each square is either land (1) or water (0). Land squares that touch up, down, left or right belong to the same island.', 'The harbour master wants to know: how many separate islands are there? The explorer has a stick of chalk.'],
     example: ['grid = 11000 / 11011 / 00010 / 01000 / 11101', 'answer = 4'],
@@ -119,7 +119,7 @@ function islandsRun(input) {
         'The explorer finds land with no chalk. That is island number ' + islands + '. He chalks it.', 'grid[' + r + '][' + c + '] == "1" → islands = ' + islands + ', chalk(' + r + ', ' + c + ').', 'Each island is counted once, at its first square in reading order.'));
     } else {
       const dir = dirName(parent, [r, c]);
-      steps.push(runStep('chalk', snap('chalk', r, c), [say('explorer', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('narr', 'The marker it and keep going.')],
+      steps.push(runStep('chalk', snap('chalk', r, c), [say('explorer', 'Going ' + dir + ' to ' + where(r, c) + '. Land!'), say('narr', 'Chalk it and keep going.')],
         'The explorer steps ' + dir + ' and finds more land on the same island. The explorer chalks it.', 'chalk(' + r + ', ' + c + '): "1" → "#". This island has ' + size + ' squares so far.', 'Mark first, then try the neighbours, so no square is entered twice.'));
     }
     visit(r + 1, c); visit(r - 1, c); visit(r, c + 1); visit(r, c - 1);

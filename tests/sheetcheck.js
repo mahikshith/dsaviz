@@ -128,7 +128,7 @@ const sandbox = `
   const setInterval = () => 0; const clearInterval = () => {};
   class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, typeof o === 'function' ? o(this.state) : o); } forceUpdate() {} }
   ${script}
-  return { Component, todaysFive, SHEET, SHEET_GROUPS };`;
+  return { Component, todaysFive, SHEET, SHEET_GROUPS, PROBLEM_LISTS };`;
 const P = new Function('win', sandbox)(win);
 const c = new P.Component({});
 c.componentDidMount();
@@ -139,17 +139,15 @@ const check = (label) => {
   const done = SHEET.filter((r) => c.state.prog.done[r.id]).length;
   expectEq(label + ' total', v.total, SHEET.length);
   expectEq(label + ' solved', v.solved, done);
-  if (!v.subLine.includes(String(SHEET.length))) fail(label + ' subtitle does not show the derived total');
-  expectEq(label + ' difficulty tile sum', v.diffTiles.reduce((s, d) => s + d.total, 0), SHEET.length);
-  v.diffTiles.forEach((d) => {
-    expectEq(label + ' ' + d.label + ' total', d.total, SHEET.filter((r) => r.diff === d.label).length);
-    expectEq(label + ' ' + d.label + ' done', d.done, SHEET.filter((r) => r.diff === d.label && c.state.prog.done[r.id]).length);
+  // Tiles count done out of the list's size, in every state of the filters, and the page's own total follows the chosen list.
+  v.lists.forEach((tile, i) => {
+    const l = P.PROBLEM_LISTS[i];
+    const ids = new Set(l.ids || SHEET.map((r) => r.pid));
+    const rows = SHEET.filter((r) => ids.has(r.pid));
+    expectEq(label + ' tile ' + l.id, tile.count, rows.filter((r) => c.state.prog.done[r.id]).length + '/' + rows.length);
   });
-  expectEq(label + ' ring count', v.rings.length, SHEET_GROUPS.length);
-  v.rings.forEach((g) => {
-    const all = SHEET.filter((r) => r.pattern === g.name);
-    expectEq(label + ' ring ' + g.name, g.count, all.filter((r) => c.state.prog.done[r.id]).length + '/' + all.length);
-  });
+  const sel = v.lists.find((x) => x.on);
+  expectEq(label + ' solved matches its tile', v.solved + '/' + v.total, sel && sel.count);
   v.groups.forEach((g) => {
     const all = SHEET.filter((r) => r.pattern === g.name);
     expectEq(label + ' group ' + g.name + ' total', g.total, all.length);
@@ -188,6 +186,38 @@ expectEq('company Amazon rows', amazon, SHEET.filter((r) => r.story && PROBLEMS.
 c.setState({ company: 'All', query: 'rotated' });
 if (c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0) !== SHEET.filter((r) => /rotated/i.test(r.name)).length) fail('search does not match names');
 c.setState({ query: '' });
+// Lists: tile counts never move with the filters, and choosing a list starts clean.
+{
+  const starterIds = new Set(P.PROBLEM_LISTS[0].ids);
+  const first = SHEET.filter((r) => starterIds.has(r.pid))[0];
+  c.setProg({ done: { [first.id]: Date.now() }, star: {} });
+  ['all', 'done', 'todo', 'star'].forEach((st) => ['All', 'Hard'].forEach((d) => {
+    c.setState({ status: st, diff: d, faq: st === 'todo', list: 'all' });
+    check('tiles with status ' + st + ' difficulty ' + d);
+    if (c.renderVals().lists[0].count !== '1/' + starterIds.size) fail('Starter tile reads ' + c.renderVals().lists[0].count + ' with status ' + st + ' difficulty ' + d + ', want 1/' + starterIds.size);
+  }));
+  c.setState({ status: 'done', diff: 'Hard', faq: true, company: 'Amazon', pattern: 'Heap', list: 'all' });
+  P.PROBLEM_LISTS.forEach((l, i) => {
+    c.renderVals().lists[i].pick();
+    const st = c.state;
+    if (st.list !== l.id || st.status !== 'all' || st.diff !== 'All' || st.faq || st.pattern !== 'All') fail('choosing ' + l.id + ' leaves a filter on: ' + JSON.stringify({ status: st.status, diff: st.diff, faq: st.faq, pattern: st.pattern }));
+    const shown = c.renderVals().groups.reduce((n, g) => n + g.rows.length, 0);
+    if (!shown) fail('choosing ' + l.id + ' shows no problems');
+    c.setState({ status: 'done', diff: 'Hard', faq: true });
+  });
+  c.setState({ list: 'all', status: 'all', diff: 'All', faq: false, company: 'All', pattern: 'All' });
+  // Frequently asked: the problems that carry company tags in our data
+  c.setState({ faq: true });
+  const tagged = SHEET.filter((r) => r.story && PROBLEMS.find((p) => p.id === r.story).cos.length).length;
+  expectEq('frequently asked rows', c.renderVals().groups.reduce((n, g) => n + g.rows.length, 0), tagged);
+  // nothing matches: a short message and a way out
+  c.setState({ faq: false, query: 'zzzzqqq' });
+  const none = c.renderVals();
+  if (!none.noGroups) fail('a search with no match should show the empty message');
+  if (typeof none.clearFilters !== 'function') fail('the empty message needs a Clear filters button');
+  none.clearFilters();
+  if (c.state.query !== '' || c.state.status !== 'all' || c.state.faq) fail('Clear filters leaves a filter on');
+}
 // Today's 5: five distinct problems, unsolved before today, the same all day
 const noon = Date.parse('2026-10-24T12:00:00Z');
 const t1 = P.todaysFive({ done: {}, star: {} }, noon).map((r) => r.id);

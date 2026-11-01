@@ -63,7 +63,7 @@ const START_NEEDS_KEYS = {
   tests: 'checks that run themselves', edgetests: 'edge checks and test-first', blocking: 'blocking and waiting', eventloop: 'the event loop', later: 'call-me-back functions',
   asyncawait: 'async and await', gather: 'several waits at once', timeouts: 'errors and timeouts', retries: 'retries', threads: 'threads and shared data'
 };
-const START_STAGES = [['story', 'Story'], ['watch', 'Your variables'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
+const START_STAGES = [['story', 'Watch'], ['watch', 'Your variables'], ['try', 'Try it'], ['practice', 'Practice'], ['check', 'Check']];
 const START_EASE_MS = 600;
 
 // A lessons_*.js file fills in a lesson written in chapters.js and marks it ready:

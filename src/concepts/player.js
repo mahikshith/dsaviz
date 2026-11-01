@@ -122,7 +122,7 @@ class Component extends DCLogic {
         navPad: mobile ? '12px 16px' : '16px 14px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
         lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
         mainPad: mobile ? '16px 16px 0' : '16px 40px 0', h1: mobile ? 'var(--fs36)' : 'var(--fs56)', listPad: mobile ? '16px' : '24px', listCols: mobile ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))',
-        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'clamp(220px, calc(100vh - 560px), 440px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
+        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : (lesson.view ? lesson.view[2] + ' / ' + lesson.view[3] : '960 / 620'), canvasMax: mobile ? 'none' : 'clamp(220px, calc(100vh - 560px), 440px)', svgH: '100%', svgW: mobile ? 'auto' : '100%', canvasH: mobile ? '40vh' : 'auto', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
         nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '16px' : '24px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 18 : 22,
         asidePad: mobile ? '16px 16px 32px' : '24px 40px 48px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
       },
@@ -138,6 +138,7 @@ class Component extends DCLogic {
           pick: () => { this.stop(); this.go(0, i, null); }
         };
       }),
+      canvasBox: (lesson.view || [0, -40, 960, 620]).join(' '),
       lesson: { title: lesson.title, tag: lesson.tag, minutes: lesson.minutes, idea: lesson.idea },
       nextLesson: { show: atEnd && nextI >= 0, label: nextI >= 0 ? 'Next lesson: ' + CS_LESSONS[nextI].title : '', go: () => { this.stop(); if (nextI >= 0) this.go(0, nextI, null); } },
       S, canvasLabel: 'Step ' + (this.state.step + 1) + ' of ' + n + '. ' + st.say,

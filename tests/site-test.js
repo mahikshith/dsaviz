@@ -103,7 +103,9 @@ const readable = () => {
     }
     const px = parseFloat(cs.fontSize) * (el.currentCSSZoom || 1);
     min = Math.min(min, Math.round(px * 10) / 10);
-    if (px < (own.length > 24 ? 14.95 : 12.95)) small.push(px.toFixed(1) + 'px ' + own.slice(0, 30));
+    // Pages on the shared frame (data-shell, docs/design/PLAN-2026-11.md): nothing under 14px, long text or short. Other pages keep 15 and 13.
+    const floor = root.hasAttribute('data-shell') ? 13.95 : own.length > 24 ? 14.95 : 12.95;
+    if (px < floor) small.push(px.toFixed(1) + 'px ' + own.slice(0, 30));
   }
   // Panes: bordered or filled boxes that do not scroll. Content is every visible text, svg, image, control or canvas inside.
   const bg = (el) => getComputedStyle(el).backgroundColor;

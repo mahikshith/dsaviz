@@ -32,7 +32,7 @@ Plain-English pass, then a beginner review of all 47 animated stories (the site 
 
 ## Remaining queue, in order
 
-1. Complexity reference page (research, page, links).
+1. Complexity: a straight-scale toggle on the growth chart (optional).
 2. Guided animated tour of the pages.
 4. Start here Levels 4–5.
 5. AI & ML batch 4 (~20 lessons) and the unsupervised batch (~10).

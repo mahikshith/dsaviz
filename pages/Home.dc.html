@@ -278,6 +278,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
+<button onClick="{{takeTour}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; text-align: left"><span style="font-size: var(--fs18); font-weight: 600">Take the tour</span><span style="font-size: var(--fs15); color: {{t.muted}}">Five short stops around the site</span></button>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Theme</span>
 <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
@@ -307,7 +308,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <div data-hp="grid" style="display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 24px; align-items: stretch">
 <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
 
-<section class="ds-box" aria-labelledby="hp-plan" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
+<section class="ds-box" data-tour="today" aria-labelledby="hp-plan" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap">
 <h2 id="hp-plan" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">Three small steps</h2>
 <span style="font-size: var(--fs15); line-height: 24px; font-weight: 500; color: {{t.muted}}">{{plan.meta}}</span>
@@ -329,7 +330,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <h2 id="hp-path" style="margin: 0; font-size: var(--fs24); line-height: 32px; font-weight: 600">On the path</h2>
 <a href="{{pathNow.href}}" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: var(--fs15); font-weight: 500; color: {{t.text2}}">{{pathNow.link}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
 </div>
-<ol data-hp="path" aria-label="{{pathNow.aria}}" style="list-style: none; margin: 0; padding: 0; display: flex">
+<ol data-hp="path" data-tour="path" aria-label="{{pathNow.aria}}" style="list-style: none; margin: 0; padding: 0; display: flex">
 <sc-for list="{{pathNow.nodes}}" as="pn" hint-placeholder-count="5">
 <li data-hp="pli" style="position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
 <sc-if value="{{pn.arrow}}" hint-placeholder-val="{{ false }}"><span data-hp="conn" aria-hidden="true" style="position: absolute; top: 18px; left: calc(-50% + 32px); width: calc(100% - 64px); height: 12px; display: flex; align-items: center"><i style="flex: 1; height: 2px; background: {{t.line2}}"></i><svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="{{t.line2}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: -2px"><path d="M2 1l5 5-5 5"></path></svg></span></sc-if>
@@ -1593,6 +1594,7 @@ function drawerVals(cmp, t, themeKey) {
     drawerOpen: !!cmp.state.drawer,
     openDrawer: () => cmp.setState({ drawer: true }),
     closeDrawer: () => cmp.setState({ drawer: false }),
+    takeTour: () => { cmp.setState({ drawer: false }); if (typeof window !== 'undefined' && window.__dsTour) window.__dsTour.start(); },
     drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
     user, guest: !user,
     signIn: () => { saveUser(true); cmp.setState({ user: true }); },

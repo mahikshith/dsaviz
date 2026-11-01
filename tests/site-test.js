@@ -227,6 +227,11 @@ const layout = (boxOnly) => {
     }
     if (Math.max(...g) - Math.min(...g) > 2) gaps.push((vertical ? 'vertical' : 'horizontal') + ' path gaps ' + g.map((x) => Math.round(x)).join('/') + 'px: "' + clean(nodes[0].textContent) + '"');
   }
+  // Cards in one path row share a line (no staircase).
+  for (const row of document.querySelectorAll('[data-path-row]')) {
+    const tops = [...row.querySelectorAll('[data-path-node]')].map((n) => n.getBoundingClientRect().top);
+    if (tops.length > 1 && Math.max(...tops) - Math.min(...tops) > 2) gaps.push('path row not on one line: tops ' + tops.map((x) => Math.round(x)).join('/'));
+  }
   // Headings stay on one line at 1280 and wider (docs/design/BRIEF.md).
   const wraps = [];
   if (window.innerWidth >= 1280) for (const h of document.querySelectorAll('#app h1, #app h2')) {

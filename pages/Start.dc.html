@@ -349,7 +349,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 <sc-for list="{{flow}}" as="fl" hint-placeholder-count="12">
 <sc-if value="{{fl.isHead}}" hint-placeholder-val="{{ false }}"><li data-m="keep" style="margin-top: {{fl.topGap}}; font-size: var(--fs24); line-height: 32px; font-weight: 600; color: {{t.text}}">{{fl.label}}</li></sc-if>
 <sc-if value="{{fl.isRow}}" hint-placeholder-val="{{ true }}"><li style="list-style: none">
-<ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat({{fl.cols}}, minmax(0, 1fr)); gap: 24px">
+<ol data-path-row style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat({{fl.cols}}, minmax(0, 1fr)); gap: 24px">
 <sc-for list="{{fl.cells}}" as="cl" hint-placeholder-count="4">
 <li data-path-node data-state="{{cl.state}}" class="ds-hit" style="position: relative; grid-row: 1; grid-column: {{cl.col}}; box-sizing: border-box; border-radius: 16px; background: {{t.surface}}; box-shadow: {{cl.shadow}}">
 <button data-m="keep" onClick="{{cl.pick}}" aria-expanded="{{cl.open}}" style="width: 100%; min-height: 80px; box-sizing: border-box; padding: 16px; border: 0; border-radius: 16px; background: transparent; color: {{t.text}}; cursor: pointer; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left">
@@ -377,7 +377,7 @@ body{padding-bottom:calc(80px / var(--fit, 1))}
 </section>
 
 <!-- road map and first problems, folded below the path -->
-<section aria-label="More on this track" style="max-width: 760px; display: flex; flex-direction: column; gap: 16px">
+<section aria-label="More on this track" style="display: flex; flex-direction: column; gap: 16px">
 <div style="border-radius: 16px; background: {{t.surface}}">
 <button onClick="{{folds.roadToggle}}" aria-expanded="{{folds.roadOpen}}" style="width: 100%; min-height: 72px; box-sizing: border-box; padding: 16px 24px; border: 0; border-radius: 16px; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left"><span style="font-size: var(--fs22); font-weight: 700">Your road map</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; transform: {{folds.roadRot}}"><path d="M6 9l6 6 6-6"></path></svg></button>
 <sc-if value="{{folds.roadOpen}}" hint-placeholder-val="{{ false }}">

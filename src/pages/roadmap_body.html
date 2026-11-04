@@ -1,0 +1,64 @@
+<div data-shell data-page="Patterns" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; font-family: {{t.body}}">
+
+<!-- PILL NAV -->
+<!-- /PILL NAV -->
+<style>
+/* The Roadmap page (src/pages/roadmap_body.html, src/pages/roadmap.js): a title, then every track as a block in a grid.
+   A block holds its name, done out of total, a thin bar and all of its lessons, flowed into columns by the browser (column width, not a fixed count),
+   so a long track fills a wide block and a short one stays narrow. Blocks in a row are the same height because a grid row stretches them. */
+.rm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
+.rm-block{box-sizing:border-box;min-width:0;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px;scroll-margin-top:72px}
+.rm-block[data-w="1"]{grid-column:span 1}
+.rm-block[data-w="2"]{grid-column:span 2}
+.rm-block[data-w="3"]{grid-column:span 3}
+.rm-block[data-w="4"]{grid-column:span 4}
+.rm-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+.rm-block .rm-head h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
+.rm-bar{height:4px;border-radius:2px;background:var(--sh-line);overflow:hidden;flex-shrink:0}
+.rm-bar>span{display:block;height:100%;background:var(--sh-accent)}
+.rm-cols{column-width:230px;column-gap:24px}
+.rm-group[data-titled="true"]{break-inside:avoid;padding-bottom:12px}
+.rm-block .rm-chap{margin:0;padding:4px 8px;font-size:calc(16px * var(--ts, 1));line-height:1.4;font-weight:600;color:var(--sh-muted);scroll-margin-top:72px}
+.rm-list{margin:0;padding:0;list-style:none}
+.rm-list li{break-inside:avoid}
+.rm-lesson{display:flex;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.rm-lesson:hover{background:var(--sh-sunk)}
+.rm-lesson>.sh-tick{color:var(--sh-accent);font-weight:700}
+.rm-lesson>span:nth-child(2){min-width:0;overflow-wrap:anywhere;flex-grow:1}
+.rm-lesson>.rm-n{flex-grow:0;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-variant-numeric:tabular-nums}
+.rm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:1199px){
+.rm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rm-block[data-t="1"]{grid-column:span 1}
+.rm-block[data-t="2"]{grid-column:span 2}
+}
+@media (max-width:759px){
+.rm-grid{grid-template-columns:minmax(0,1fr)}
+.rm-block[data-w],.rm-block[data-t]{grid-column:span 1}
+.rm-cols{column-width:auto;columns:1}
+.rm-lesson{min-height:44px}
+}
+@media (prefers-reduced-motion:reduce){.rm-lesson{transition:none}}
+</style>
+<main class="sh-main">
+<h1>Roadmap</h1>
+<div class="rm-grid">
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7">
+<section class="rm-block" id="{{tr.id}}" data-track="{{tr.key}}" data-w="{{tr.w}}" data-t="{{tr.t}}" aria-labelledby="{{tr.hid}}">
+<div class="rm-head"><h2 id="{{tr.hid}}">{{tr.name}}</h2><span class="sh-label">{{tr.count}}</span></div>
+<div class="rm-bar" role="progressbar" aria-label="{{tr.aria}}" aria-valuemin="0" aria-valuemax="{{tr.total}}" aria-valuenow="{{tr.done}}"><span style="width: {{tr.pct}}%"></span></div>
+<div class="rm-cols">
+<sc-for list="{{tr.groups}}" as="g" hint-placeholder-count="4">
+<div class="rm-group" data-titled="{{g.titled}}">
+<sc-if value="{{g.titled}}" hint-placeholder-val="{{ false }}"><h3 class="rm-chap" id="{{g.id}}">{{g.title}}</h3></sc-if>
+<ul class="rm-list">
+<sc-for list="{{g.items}}" as="l" hint-placeholder-count="6"><li><a class="rm-lesson" href="{{l.href}}" onClick="{{l.go}}"><span class="sh-tick" aria-hidden="true">{{l.tick}}</span><span>{{l.title}}</span><span class="rm-sr">{{l.sr}}</span><span class="rm-n" aria-hidden="true">{{l.note}}</span></a></li></sc-for>
+</ul>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</div>
+</main>
+</div>

@@ -292,8 +292,11 @@ a.sh-row:hover{background:var(--sh-sunk)}
 [data-pn] a:focus-visible,[data-pn] button:focus-visible,[data-pn-panel] button:focus-visible,[data-drawer] a:focus-visible,[data-drawer] button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 @media (prefers-reduced-motion: reduce){[data-pn] a,[data-pn] button{transition:none}}
 [data-dr-phone]{display:none!important}
+/* The menu is a phone control: the Roadmap reaches every track, so wider screens have no menu button or drawer. */
+[data-pn-menu]{display:none!important}
 @media (max-width: 759px){
 [data-dr-phone]{display:flex!important}
+[data-pn-menu]{display:flex!important}
 [data-pn-items],[data-pn-back]{display:none!important}
 [data-pn-logo]{margin-right:auto}
 [data-pn]{padding:0 8px!important}
@@ -309,7 +312,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </style>
 <div data-pn-wrap>
 <nav aria-label="Main" data-pn style="height: 52px; box-sizing: border-box; padding: 0 24px; background: {{t.surface}}; border-bottom: 1px solid {{t.line}}; display: flex; align-items: center; gap: 8px; font-family: {{t.body}}; color: {{t.text}}">
-<button data-pn-plain onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+<button data-pn-plain data-pn-menu onClick="{{openDrawer}}" aria-label="Open menu" aria-expanded="{{drawerOpen}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
 <a href="Home.dc.html" data-pn-logo aria-label="DSAMaxxing home" style="height: 40px; padding: 0 8px 0 0; flex-shrink: 0; display: flex; align-items: center; gap: 8px; color: {{t.text}}"><svg width="24" height="24" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="{{t.accent}}"></rect><path d="M7.5 20.5 L11.5 10 L15 17 L18.5 10 L22.5 20.5" fill="none" stroke="{{t.onAccent}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg><span data-pn-name style="font-size: var(--fs18); font-weight: 600; white-space: nowrap">DSAMaxxing</span></a>
 <sc-if value="{{nav.back.show}}" hint-placeholder-val="{{ false }}"><button data-pn-plain data-pn-back onClick="{{nav.back.go}}" aria-label="{{nav.back.aria}}" title="{{nav.back.aria}}" style="height: 40px; padding: 0 8px; flex-shrink: 0; border-radius: 6px; border: 0; background: transparent; color: {{t.text}}; cursor: pointer; font-size: var(--fs16); white-space: nowrap">{{nav.back.label}}</button></sc-if>
 <div data-pn-items style="flex-grow: 1; display: flex; align-items: center; gap: 4px; min-width: 0">
@@ -1361,13 +1364,10 @@ const DS = (function () {
 if (typeof PROBLEMS !== 'undefined') DS.bindCatalog(PROBLEMS);
 // @@END-DATA@@
 // @@DRAWER@@ — shared menu logic (every page with the pill nav)
+// The Roadmap reaches every track and Problems is in the Main sections list, so those entries are not repeated here.
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
-  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
-  ['Concepts.dc.html', 'DSA concepts', 'Big-O, sorts, hashing, trees, graphs and math, animated', null],
-  ['Sheet.dc.html', 'Problems', 'Find a problem by name, topic or difficulty', null],
   ['Snapshot.dc.html', 'Snapshot', 'Quick revision of every lesson', null],
-  ['Complexity.dc.html', 'Complexity', 'Big-O growth, how to work it out, cost tables', null],
   ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
   ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
   ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],
@@ -1376,9 +1376,6 @@ const MENU = [
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
   ['Basics.dc.html', 'Language basics', 'Refresh Python or JavaScript', null],
-  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
-  ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
-  ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
   ['Contests.dc.html', 'Contest calendar', 'AtCoder, CodeChef and Codeforces in your time', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
@@ -1775,11 +1772,15 @@ function lessonBack(parent) {
   try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   const use = !!(to && LIST_BACK[name]);
+  // A Start here lesson reached from the Roadmap says which chapter it returns to (parent.chapter), and lands on that chapter's heading.
+  const chap = use && name === 'Patterns' && parent.chapter ? parent.chapter : 0;
   return {
-    label: 'Back to ' + (use ? LIST_BACK[name] : parent.label), href: '#back',
+    label: 'Back to ' + (chap ? 'Chapter ' + chap : use ? LIST_BACK[name] : parent.label), href: '#back',
     go: (e) => {
       try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {}
       try { if (use) window.__dsBack(); else window.__dsNav(parent.page, '', true); } catch (x) {}
+      // The Roadmap comes back at the scroll the learner left it; if that chapter's heading is not on screen (they moved on with Next), bring it there.
+      if (chap) setTimeout(() => { try { const h = document.getElementById('ch-' + chap); if (h) { const r = h.getBoundingClientRect(); if (r.bottom < 52 || r.top > window.innerHeight - 40) h.scrollIntoView({ block: 'start' }); } } catch (x) {} }, 1700);
     }
   };
 }

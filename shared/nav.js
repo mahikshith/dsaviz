@@ -148,11 +148,15 @@ function lessonBack(parent) {
   try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   const use = !!(to && LIST_BACK[name]);
+  // A Start here lesson reached from the Roadmap says which chapter it returns to (parent.chapter), and lands on that chapter's heading.
+  const chap = use && name === 'Patterns' && parent.chapter ? parent.chapter : 0;
   return {
-    label: 'Back to ' + (use ? LIST_BACK[name] : parent.label), href: '#back',
+    label: 'Back to ' + (chap ? 'Chapter ' + chap : use ? LIST_BACK[name] : parent.label), href: '#back',
     go: (e) => {
       try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {}
       try { if (use) window.__dsBack(); else window.__dsNav(parent.page, '', true); } catch (x) {}
+      // The Roadmap comes back at the scroll the learner left it; if that chapter's heading is not on screen (they moved on with Next), bring it there.
+      if (chap) setTimeout(() => { try { const h = document.getElementById('ch-' + chap); if (h) { const r = h.getBoundingClientRect(); if (r.bottom < 52 || r.top > window.innerHeight - 40) h.scrollIntoView({ block: 'start' }); } } catch (x) {} }, 1700);
     }
   };
 }

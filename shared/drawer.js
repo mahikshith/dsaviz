@@ -3,7 +3,7 @@ const MENU = [
   ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
   ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
   ['Concepts.dc.html', 'DSA concepts', 'Big-O, sorts, hashing, trees, graphs and math, animated', null],
-  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
+  ['Sheet.dc.html', 'Problems', 'Find a problem by name, topic or difficulty', null],
   ['Snapshot.dc.html', 'Snapshot', 'Quick revision of every lesson', null],
   ['Complexity.dc.html', 'Complexity', 'Big-O growth, how to work it out, cost tables', null],
   ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],

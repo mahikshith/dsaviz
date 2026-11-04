@@ -357,6 +357,186 @@ server.listen(0, async () => {
     }
   }
 
+  // ---- The Problems page (Sheet.dc.html) and the search box ----
+  // A plain table (title, topic, difficulty, done) with a search box and three filters. The filters live in the address, so Back restores them.
+  // All 562 problems are reachable (paged, 50 at a time), the filters work alone and together, an empty result is one line and Clear filters,
+  // and a problem opens with one click on its title. The search box shows no counts, finds a problem and a lesson by name, and a problem is two clicks from Home.
+  if (!ONLY_PROBLEM) {
+    const base = 'http://localhost:' + server.address().port + '/';
+    const openPage = async (w, h, theme, name) => {
+      const pg = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
+      await pg.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto(base); await pg.waitForTimeout(500);
+      await pg.evaluate((n) => window.__dsNav(n), name); await pg.waitForTimeout(900);
+      await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+      return pg;
+    };
+    const rowsOf = (pg) => pg.evaluate(() => [...document.querySelectorAll('.sp-body .sp-row')].map((r) => ({ title: r.querySelector('.sp-name').textContent.trim(), topic: r.querySelector('.sp-topic').textContent.trim(), diff: r.querySelector('.sp-diff').textContent.trim(), href: r.querySelector('.sp-name a').getAttribute('href') })));
+    const where = (pg) => pg.evaluate(() => ({ hash: location.hash, search: location.search, q: document.querySelector('input[type=search][aria-label="Search problems"]').value }));
+    const sel = (pg, label) => pg.locator('label:has(> span:text-is("' + label + '")) select');
+
+    // 1440 and 390, dark, plus 390 light: the page itself.
+    for (const [w, h, theme] of [[1440, 900, 'max'], [390, 844, 'max'], [390, 844, 'paper'], [320, 700, 'max']]) {
+      const pg = await openPage(w, h, theme, 'Sheet.dc.html');
+      const id = 'Problems at ' + w + ' (' + theme + ')';
+      const h1 = await pg.textContent('main h1');
+      if (h1.trim() !== 'Problems') fail(id + ': h1 is "' + h1 + '"');
+      const heads = await pg.evaluate(() => [...document.querySelectorAll('.sp-head [role=columnheader]')].map((x) => x.textContent.trim()));
+      if (heads.join('|') !== 'Title|Topic|Difficulty|Done') fail(id + ': columns are ' + heads.join('|'));
+      const rows = await rowsOf(pg);
+      if (rows.length !== 50) fail(id + ': ' + rows.length + ' rows on the first page, not 50');
+      const txt = await pg.evaluate(() => document.querySelector('main').innerText);
+      for (const gone of ["Today's 5", 'Random', 'Open all', 'Close all', 'Export', 'Import', 'Starter 50', 'Core 150', 'Company', 'Add a note']) if (txt.includes(gone)) fail(id + ': still shows "' + gone + '"');
+      // No story names or summaries: the row text is only title, topic, difficulty and the done tick.
+      const cells = await pg.evaluate(() => document.querySelectorAll('.sp-body .sp-row').length ? [...document.querySelector('.sp-body .sp-row').children].length : 0);
+      if (cells !== 4) fail(id + ': a row has ' + cells + ' cells, not 4');
+      const m = await pg.evaluate(() => {
+        const out = { over: document.documentElement.scrollWidth - innerWidth, small: [], bodyFont: 0 };
+        document.querySelectorAll('main *').forEach((el) => { if ([...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) { const fs = parseFloat(getComputedStyle(el).fontSize); if (fs < 14 && !el.closest('.sp-sr')) out.small.push(el.tagName + ' ' + fs + ' ' + el.textContent.trim().slice(0, 20)); } });
+        const a = document.querySelector('.sp-name a'); out.titleFont = parseFloat(getComputedStyle(a).fontSize); out.titleH = a.getBoundingClientRect().height;
+        const r0 = document.querySelector('.sp-body .sp-row'); const n = r0.querySelector('.sp-name').getBoundingClientRect(), t = r0.querySelector('.sp-topic').getBoundingClientRect(), d = r0.querySelector('.sp-diff').getBoundingClientRect();
+        out.stack = { nameBottom: Math.round(n.bottom), topicTop: Math.round(t.top), diffTop: Math.round(d.top), topicLeft: Math.round(t.left), nameLeft: Math.round(n.left) };
+        out.diffColor = getComputedStyle(r0.querySelector('.sp-diff')).color;
+        out.r = r0.getBoundingClientRect().width;
+        return out;
+      });
+      if (m.over > 0) fail(id + ': page scrolls sideways by ' + m.over + 'px');
+      if (m.small.length) fail(id + ': text under 14px: ' + m.small.slice(0, 3).join('; '));
+      if (m.titleFont < 18) fail(id + ': a title is ' + m.titleFont + 'px, not 18');
+      if (w < 760) {
+        if (m.stack.topicTop < m.stack.nameBottom - 1) fail(id + ': on a phone the topic is not under the title');
+        if (Math.abs(m.stack.topicTop - m.stack.diffTop) > 2) fail(id + ': on a phone topic and difficulty are not on one line');
+        if (m.titleH < 44) fail(id + ': a title link is ' + m.titleH + 'px tall, under 44');
+      } else if (m.titleH < 40) fail(id + ': a title link is ' + m.titleH + 'px tall, under 40');
+      if (pg.errs.length) fail(id + ': page errors: ' + pg.errs[0]);
+      console.log('  ' + id + ': ' + rows.length + ' rows, title ' + m.titleFont + 'px, no sideways scroll, difficulty colour ' + m.diffColor);
+      await pg.close();
+    }
+
+    // Filters: each alone, together, in the address, and Back restores them.
+    {
+      const pg = await openPage(1440, 900, 'max', 'Sheet.dc.html');
+      await sel(pg, 'Difficulty').selectOption('Hard'); await pg.waitForTimeout(200);
+      let rows = await rowsOf(pg);
+      if (!rows.length || rows.some((r) => r.diff !== 'Hard')) fail('Problems: difficulty Hard lets other difficulties through');
+      await sel(pg, 'Topic').selectOption('Heap'); await pg.waitForTimeout(200);
+      rows = await rowsOf(pg);
+      if (!rows.length || rows.some((r) => r.diff !== 'Hard' || r.topic !== 'Heap')) fail('Problems: topic Heap with Hard does not combine');
+      await sel(pg, 'Done').selectOption('no'); await pg.waitForTimeout(200);
+      const notDone = await rowsOf(pg);
+      if (notDone.length !== rows.length) fail('Problems: nothing is done yet, so "Not done" should keep ' + rows.length + ' rows, not ' + notDone.length);
+      await sel(pg, 'Done').selectOption('yes'); await pg.waitForTimeout(200);
+      const doneText = await pg.evaluate(() => document.querySelector('main').innerText);
+      if (!/No problems match\./.test(doneText) || !/Clear filters/.test(doneText)) fail('Problems: an empty result should say "No problems match." with Clear filters');
+      const emptyLines = await pg.evaluate(() => { const e = document.querySelector('.sp-empty'); return e ? [...e.querySelectorAll('p')].length + ' text, ' + e.querySelectorAll('button').length + ' button' : 'none'; });
+      if (emptyLines !== '1 text, 1 button') fail('Problems: the empty state is ' + emptyLines + ', not one line and one button');
+      await sel(pg, 'Done').selectOption('no'); await pg.waitForTimeout(200);
+      let at = await where(pg);
+      if (!/difficulty=Hard/.test(at.search) || !/topic=Heap/.test(at.search) || !/done=no/.test(at.search) || at.hash !== '#Sheet') fail('Problems: the filters are not in the address: ' + at.search + at.hash);
+      // One click on a title opens the problem; Back (the browser's) brings the same filters back.
+      const first = rows[0];
+      await pg.click('.sp-body .sp-row .sp-name a'); await pg.waitForTimeout(1200);
+      const opened = await pg.evaluate(() => ({ hash: location.hash, search: location.search, h: (document.querySelector('[data-page="Code"] h1, [data-page="Code"] h2') || {}).textContent }));
+      if (opened.hash !== '#Code' || !/problem=/.test(opened.search)) fail('Problems: one click on "' + first.title + '" opened ' + opened.hash + opened.search);
+      await pg.goBack(); await pg.waitForTimeout(900);
+      at = await where(pg);
+      const back = await pg.evaluate(() => ({ topic: document.querySelector('label:has(> span) select').value, selects: [...document.querySelectorAll('.sp-pick select')].map((s) => s.value) }));
+      if (at.hash !== '#Sheet' || back.selects.join('|') !== 'Heap|Hard|no') fail('Problems: Back from a problem did not restore the filters (' + at.hash + at.search + ' ' + back.selects.join('|') + ')');
+      rows = await rowsOf(pg);
+      if (!rows.length || rows.some((r) => r.diff !== 'Hard' || r.topic !== 'Heap')) fail('Problems: after Back the rows do not match the filters');
+      // The page's own Back link (the trail) restores them too.
+      await pg.click('.sp-body .sp-row .sp-name a'); await pg.waitForTimeout(1200);
+      await pg.evaluate(() => { const b = [...document.querySelectorAll('button,a')].find((x) => /^\s*(←\s*)?Back to Problems/.test(x.textContent)); if (b) b.click(); }); await pg.waitForTimeout(900);
+      const sel2 = await pg.evaluate(() => [...document.querySelectorAll('.sp-pick select')].map((s) => s.value).join('|'));
+      if (sel2 !== 'Heap|Hard|no') fail('Problems: the Back link on the problem did not restore the filters (' + sel2 + ')');
+      // Back inside the page undoes a filter change.
+      await sel(pg, 'Difficulty').selectOption('Easy'); await pg.waitForTimeout(200);
+      await pg.goBack(); await pg.waitForTimeout(500);
+      const sel3 = await pg.evaluate(() => [...document.querySelectorAll('.sp-pick select')].map((s) => s.value).join('|'));
+      if (sel3 !== 'Heap|Hard|no') fail('Problems: Back after changing a filter gave ' + sel3);
+      // Search in the page, then Clear filters.
+      await pg.fill('input[aria-label="Search problems"]', 'zzzzqqq'); await pg.waitForTimeout(200);
+      if (!(await pg.textContent('main')).includes('No problems match.')) fail('Problems: a search with no match shows no empty message');
+      await pg.click('button:has-text("Clear filters")'); await pg.waitForTimeout(300);
+      at = await where(pg);
+      rows = await rowsOf(pg);
+      if (at.search !== '' || at.q !== '' || rows.length !== 50) fail('Problems: Clear filters left ' + at.search + ' with ' + rows.length + ' rows');
+      if (pg.errs.length) fail('Problems page errors: ' + pg.errs[0]);
+      console.log('  Problems filters: combine, are in the address, Back and the Back link restore them; empty state is one line and Clear filters');
+      await pg.close();
+    }
+
+    // Every problem is reachable: page through all of them, and find a sample by typing the title.
+    {
+      const pg = await openPage(1440, 900, 'max', 'Sheet.dc.html');
+      const seen = new Set(); let pages = 0; const t0 = Date.now(); let worst = 0;
+      for (;;) {
+        (await rowsOf(pg)).forEach((r) => seen.add(r.href)); pages++;
+        const next = pg.locator('.sp-pager button:has-text("Next")');
+        if (!(await next.count()) || (await next.isDisabled())) break;
+        const s0 = Date.now(); await next.click(); await pg.waitForFunction(() => document.querySelector('.sp-body .sp-row'), null, { timeout: 5000 }); worst = Math.max(worst, Date.now() - s0);
+      }
+      const total = await pg.evaluate(() => 0);
+      if (seen.size !== 562) fail('Problems: paging reached ' + seen.size + ' problems, not 562');
+      for (const title of ['Two Sum', 'Valid Parentheses', 'LRU Cache', 'Median of Two Sorted Arrays', 'Climbing Stairs', 'Word Break']) {
+        await pg.goto(base + '?q=' + encodeURIComponent(title) + '#Sheet'); await pg.waitForTimeout(700);
+        const found = await rowsOf(pg);
+        if (!found.some((r) => r.title === title)) fail('Problems: searching "' + title + '" does not list it (' + found.slice(0, 3).map((r) => r.title).join(', ') + ')');
+      }
+      console.log('  Problems: ' + seen.size + ' problems reached over ' + pages + ' pages (50 a page, so at most 50 rows are drawn); slowest page change ' + worst + 'ms');
+      if (worst > 700) fail('Problems: a page change took ' + worst + 'ms');
+      await pg.close();
+    }
+
+    // Search: no counts, plain placeholder, a problem and a lesson by name, no story names, two clicks from Home.
+    for (const [w, h] of [[1440, 900], [390, 844]]) {
+      const pg = await openPage(w, h, 'max', 'Home.dc.html');
+      const id = 'Search at ' + w;
+      if (w < 760) await pg.click('[data-pn-search-btn]'); else await pg.keyboard.press('/');
+      await pg.waitForTimeout(300);
+      const ph = await pg.getAttribute('[data-pn-search-input]', 'placeholder');
+      if (ph !== 'Search lessons and problems') fail(id + ': placeholder is "' + ph + '"');
+      const hint = await pg.evaluate(() => document.querySelector('[data-pn-results]').innerText + ' | ' + (document.querySelector('[data-pn-panel] [role=status]') || {}).textContent);
+      if (/\d/.test(hint)) fail(id + ': the empty search shows a number: "' + hint.replace(/\s+/g, ' ') + '"');
+      await pg.fill('[data-pn-search-input]', 'two sum'); await pg.waitForTimeout(400);
+      const res = await pg.evaluate(() => ({ text: document.querySelector('[data-pn-panel]').innerText, status: document.querySelector('[data-pn-panel] [role=status]').textContent, opts: [...document.querySelectorAll('[role=option]')].map((o) => o.innerText.replace(/\s+/g, ' ')) }));
+      if (/\d+\s*(sheet |runnable )?(problems?|results?|matches)/i.test(res.text) || /\d/.test(res.status)) fail(id + ': the results show a count: "' + res.status + '" / ' + res.text.slice(0, 80));
+      if (!res.opts.some((o) => /^Two Sum\b/.test(o))) fail(id + ': "two sum" finds no problem called Two Sum: ' + res.opts.slice(0, 3).join(' / '));
+      if (res.opts.some((o) => /The [A-Z][a-z]+ [A-Z]|Lantern|Scrabble|Hallway/.test(o))) fail(id + ': a result shows a story name: ' + res.opts.find((o) => /The [A-Z]/.test(o)));
+      if (/Stories|Master sheet/.test(res.text)) fail(id + ': a result group is still called Stories or Master sheet');
+      // One click opens the problem.
+      const clicks = w < 760 ? 1 : 0; // the search button counts as the first click on a phone; on a desktop "/" opens it
+      await pg.click('[role=option]:has-text("Two Sum"):not(:has-text("II")) >> nth=0'); await pg.waitForTimeout(1200);
+      const at = await pg.evaluate(() => ({ hash: location.hash, pid: (window.localStorage.getItem('dsaviz-problem')), h1: (document.querySelector('[data-page="Code"]') || {}).innerText }));
+      if (at.hash !== '#Code') fail(id + ': a problem result opened ' + at.hash);
+      console.log('  ' + id + ': "two sum" opens its problem in ' + (clicks + 1) + ' click(s) from Home; no counts in the hint, status or results');
+      // A lesson by name.
+      await pg.evaluate(() => window.__dsNav('Home.dc.html')); await pg.waitForTimeout(700);
+      if (w < 760) await pg.click('[data-pn-search-btn]'); else await pg.keyboard.press('/');
+      await pg.waitForTimeout(300);
+      await pg.fill('[data-pn-search-input]', 'variables'); await pg.waitForTimeout(400);
+      const lessons = await pg.evaluate(() => [...document.querySelectorAll('[role=option]')].map((o) => ({ t: o.innerText.replace(/\s+/g, ' '), g: o.parentElement.querySelector('div').textContent })));
+      if (!lessons.some((o) => /Variables/i.test(o.t) && /lessons|concepts|AI|Git|System/i.test(o.g))) fail(id + ': "variables" finds no lesson: ' + lessons.slice(0, 3).map((o) => o.t).join(' / '));
+      await pg.click('[role=option]:has-text("Variables") >> nth=0'); await pg.waitForTimeout(1000);
+      const lh = await pg.evaluate(() => location.hash);
+      if (!/Chapter|ConceptLesson|AILesson|SDLesson|Git/.test(lh)) fail(id + ': a lesson result opened ' + lh);
+      if (pg.errs.length) fail(id + ' errors: ' + pg.errs[0]);
+      await pg.close();
+    }
+
+    // Two clicks at most from Home to a problem: Problems in the top bar, then the title.
+    {
+      const pg = await openPage(1440, 900, 'max', 'Home.dc.html');
+      await pg.click('a[data-pn-item]:has-text("Problems")'); await pg.waitForTimeout(900);
+      await pg.click('.sp-body .sp-row .sp-name a'); await pg.waitForTimeout(1200);
+      const hash = await pg.evaluate(() => location.hash);
+      if (hash !== '#Code') fail('Home to a problem took more than two clicks (ended on ' + hash + ')');
+      else console.log('  Home -> Problems -> a problem: two clicks');
+      await pg.close();
+    }
+  }
+
   // ---- The Problem page (Code.dc.html): statement left, editor right, tabs, Story switch, hints, solution, tests ----
   const vm = require('vm');
   const ctx = { window: {}, module: { exports: {} }, console }; vm.createContext(ctx);
@@ -493,16 +673,16 @@ server.listen(0, async () => {
     if (!(await q1('pre.pb-code'))) fail('confirming does not show the solution');
     await pg.click('[role=tab]:has-text("Problem")'); await pg.click('[role=tab]:has-text("Solution")'); await pg.waitForTimeout(300);
     if (!(await q1('pre.pb-code')) || (await q1('button:has-text("Show the solution")'))) fail('the Solution tab asks again after it was confirmed');
-    // Search: a story result lands on the Problem page with Story on.
+    // Search: a problem result (found by its title, "Two Sum II") lands on the Problem page. Stories are no longer a search group.
     await pg.evaluate(() => window.__dsNav('Home.dc.html')); await pg.waitForTimeout(600);
     await pg.keyboard.press('/'); await pg.waitForTimeout(300);
-    await pg.keyboard.type('Lantern Bridge'); await pg.waitForTimeout(500);
-    const hit = await pg.evaluate(() => { const o = [...document.querySelectorAll('[role=option]')].find((x) => /Lantern Bridge|Two Sum II/.test(x.textContent) && /story|Stories/i.test(x.parentElement.parentElement.textContent)); if (o) { o.click(); return o.textContent.slice(0, 40); } return ''; });
+    await pg.keyboard.type('Two Sum II'); await pg.waitForTimeout(500);
+    const hit = await pg.evaluate(() => { const o = [...document.querySelectorAll('[role=option]')].find((x) => /^Two Sum II/.test(x.innerText) && /Problems/i.test(x.parentElement.textContent)); if (o) { o.click(); return o.textContent.slice(0, 40); } return ''; });
     await pg.waitForTimeout(1200);
-    if (!hit) fail('search for the story found no Stories result');
+    if (!hit) fail('search for "Two Sum II" found no result in the Problems group');
     else {
-      const at = await pg.evaluate(() => ({ page: location.hash.slice(1), story: !!document.querySelector('.pb-story'), data: !!document.querySelector('[data-page="Code"]') }));
-      if (at.page !== 'Code' || !at.story) fail('a story search result landed on ' + at.page + ' (story ' + at.story + '), not the Problem page with Story on');
+      const at = await pg.evaluate(() => ({ page: location.hash.slice(1), h: !!document.querySelector('[data-page="Code"]') }));
+      if (at.page !== 'Code' || !at.h) fail('a problem search result landed on ' + at.page + ', not the Problem page');
     }
     if (perrs.length) fail('page errors on the Problem page: ' + perrs[0]);
     await pg.close();

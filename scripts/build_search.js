@@ -3,16 +3,15 @@
 // tests/searchcheck.js loads it too, so the index and the test always agree.
 //
 // Each item is [type, id, title, sub, keywords]. Types, in the order results are grouped when scores tie:
-//   story    an animated story (catalog problem with animated: true)  -> Story page
 //   start    a Start here lesson that is ready                       -> Chapter page
 //   pattern  one of the 16 patterns                                   -> Library, pattern view
-//   problem  a problem with runnable tests (TEST_SPECS and SQL_SPECS) -> Code page
+//   problem  a problem with runnable tests (TEST_SPECS and SQL_SPECS) -> Code page. Every Problems page row is one of these. A problem shows by its title only;
+//            its story name is a hidden keyword, never shown.
 //   git      a Git lesson                                             -> Git page
 //   sd       a system design lesson                                   -> SDLesson page
 //   ai       an AI & ML lesson                                        -> AILesson page
 //   dsa      a DSA concept lesson                                     -> ConceptLesson page
 //   term     a glossary keyword                                       -> Glossary page
-//   sheet    a master sheet row                                       -> Sheet page
 const fs = require('fs');
 const path = require('path');
 
@@ -47,13 +46,17 @@ function build() {
   const add = (type, id, title, sub, kw) => items.push([type, id, title, sub, [...new Set((kw || []).filter(Boolean))].join(' ')]);
   const animated = D.PROBLEMS.filter((p) => p.animated);
   // sub is the second line of a result; the group header already names the type. kw holds extra words to match.
-  animated.forEach((p) => add('story', p.id, p.title, p.story + ' · ' + p.pattern));
+  const sheetByPid = {};
+  D.SHEET.forEach((r) => { sheetByPid[r.pid] = r; });
+  const storyName = {};
+  animated.forEach((p) => { storyName[p.id] = p.story; });
   const ready = D.start.START_CHAPTERS.filter((c) => c.ready);
   ready.forEach((c) => add('start', c.id, c.title, 'Level ' + (c.level || 1) + ' · Lesson ' + c.n + ' · ' + c.short, ['beginner', 'start here', 'basics'].concat(c.teaches)));
-  D.PATTERNS.forEach(([name, tag, cast]) => add('pattern', name, name, tag, [cast]));
+  D.PATTERNS.forEach(([name, tag, cast]) => add('pattern', name, name, 'Topic'));
   Object.keys(D.TEST_SPECS).forEach((id) => {
     const P = D.specInfo(id);
-    add('problem', id, P.title, P.pattern + ' · ' + P.diff);
+    const row = sheetByPid[id];
+    add('problem', id, P.title, row ? row.pattern + ' · ' + row.diff : P.pattern + ' · ' + P.diff, [storyName[id]]);
   });
   Object.keys(D.sql).forEach((id) => add('problem', id, D.sql[id].title, 'SQL · ' + D.sql[id].diff, ['sql']));
   D.git.forEach((L) => add('git', L.id, L.title, L.tag, ['git']));
@@ -66,7 +69,6 @@ function build() {
   D.dsa.CS_LESSONS.forEach((L) => add('dsa', L.id, L.title, ctrack[L.track] + ' · ' + L.tag, L.groups.concat(['concept', 'lesson'])));
   [['grow', 'How fast steps grow', 'big o growth chart'], ['rules', 'How to work out complexity', 'big o loops recursion amortized'], ['space', 'Space complexity', 'memory call stack'], ['ds', 'Data structure costs', 'big o table array hash tree'], ['sort', 'Sorting algorithm costs', 'big o table stable'], ['graph', 'Graph algorithm costs', 'big o table dijkstra bfs'], ['patterns', 'Pattern costs', 'time space table'], ['target', 'Input size tells you the target', 'constraints n limit']].forEach(([id, title, kw]) => add('cplx', id, title, 'Complexity reference', ['time complexity', 'space complexity', 'big o'].concat(kw.split(' '))));
   D.KEYWORDS.forEach((k) => add('term', k.id, k.id, k.gist, [k.cat]));
-  D.SHEET.forEach((r) => add('sheet', r.id, r.name, r.pattern + ' · ' + r.diff));
   // only the 16 patterns count here; stories in sheet groups (Graphs, Tries) are extra
   const names = new Set(D.PATTERNS.map((p) => p[0]));
   const patterns = new Set(animated.map((p) => p.pattern).filter((x) => names.has(x)));

@@ -1,0 +1,87 @@
+<div data-shell data-page="Sheet" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; --sp-easy: {{dEasy}}; --sp-medium: {{dMedium}}; --sp-hard: {{dHard}}; font-family: {{t.body}}">
+
+<!-- PILL NAV -->
+<!-- /PILL NAV -->
+<style>
+/* The Problems page (src/pages/problems_body.html, src/pages/problems.js): a title, a search box with three filters, and a plain table.
+   The filters are one flex row that wraps, so the Timed switch and the Due for review filter (step 10) can join it. */
+.sp-tools{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 16px}
+.sp-field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sp-search{flex:1 1 280px}
+.sp-pick{flex:0 1 200px}
+.sp-in{box-sizing:border-box;width:100%;height:40px;padding:0 12px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1))}
+select.sp-in{cursor:pointer}
+.sp-in::placeholder{color:var(--sh-muted);opacity:1}
+.sp-in option{background:var(--sh-surface);color:var(--sh-text)}
+.sp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sp-table{display:block}
+.sp-row{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1.5fr) 128px 72px;align-items:center;gap:0 16px;padding:0 12px;border-bottom:1px solid var(--sh-line);min-height:48px}
+.sp-head{min-height:40px;font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted)}
+.sp-body .sp-row:hover{background:var(--sh-sunk)}
+.sp-name{min-width:0;font-size:calc(18px * var(--ts, 1))}
+.sp-name a{display:flex;align-items:center;min-height:48px;color:var(--sh-text)}
+.sp-name a:hover{text-decoration:underline}
+.sp-topic{color:var(--sh-muted);font-size:calc(16px * var(--ts, 1))}
+.sp-diff{font-weight:600;font-size:calc(16px * var(--ts, 1))}
+.sp-done{text-align:center;color:var(--sh-accent);font-size:calc(18px * var(--ts, 1));font-weight:700}
+.sp-head .sp-done{color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-weight:500}
+.sp-row [data-d="Easy"]{color:var(--sp-easy)}
+.sp-row [data-d="Medium"]{color:var(--sp-medium)}
+.sp-row [data-d="Hard"]{color:var(--sp-hard)}
+.sp-empty{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:24px 0}
+.sp-pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;border-top:1px solid var(--sh-line);padding-top:16px}
+.sp-pager button{min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
+.sp-pager button:hover:not(:disabled){background:var(--sh-sunk)}
+.sp-pager button:disabled{opacity:.4;cursor:default}
+.sp-pos{font-size:calc(16px * var(--ts, 1));color:var(--sh-muted)}
+@media (max-width:759px){
+.sp-in{height:44px}
+.sp-search,.sp-pick{flex:1 1 100%}
+.sp-pick{flex-basis:calc(50% - 8px);flex-grow:1}
+.sp-head{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);padding:0;border:0;min-height:0}
+.sp-row{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"name name name done" "topic diff . done";gap:0 16px;padding:8px 0}
+.sp-body .sp-row:hover{background:transparent}
+.sp-name{grid-area:name}
+.sp-name a{min-height:44px}
+.sp-topic{grid-area:topic}
+.sp-diff{grid-area:diff}
+.sp-done{grid-area:done;align-self:center;padding-left:8px}
+.sp-pager{justify-content:center}
+.sp-pos{flex-basis:100%;text-align:center;order:-1}
+.sp-pager button{flex:1 1 0}
+}
+</style>
+<main class="sh-main">
+<h1>Problems</h1>
+<div class="sp-tools" role="search" aria-label="Find a problem">
+<label class="sp-field sp-search"><span class="sh-label">Search</span><input class="sp-in" type="search" aria-label="Search problems" placeholder="Search problems" autocomplete="off" spellcheck="false" value="{{q}}" onChange="{{onQ}}"></label>
+<label class="sp-field sp-pick"><span class="sh-label">Topic</span><select class="sp-in" value="{{topicSel}}" onChange="{{onTopic}}"><sc-for list="{{topicOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
+<label class="sp-field sp-pick"><span class="sh-label">Difficulty</span><select class="sp-in" value="{{diffSel}}" onChange="{{onDiff}}"><sc-for list="{{diffOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
+<label class="sp-field sp-pick"><span class="sh-label">Done</span><select class="sp-in" value="{{doneSel}}" onChange="{{onDone}}"><sc-for list="{{doneOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
+</div>
+<p class="sp-sr" role="status" aria-live="polite">{{status}}</p>
+<sc-if value="{{hasRows}}" hint-placeholder-val="{{ true }}">
+<div class="sp-table" role="table" aria-label="Problems">
+<div role="rowgroup"><div class="sp-row sp-head" role="row"><span role="columnheader">Title</span><span role="columnheader">Topic</span><span role="columnheader">Difficulty</span><span role="columnheader" class="sp-done">Done</span></div></div>
+<div class="sp-body" role="rowgroup">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="12"><div class="sp-row" role="row">
+<span class="sp-name" role="cell"><a href="{{r.href}}">{{r.name}}</a></span>
+<span class="sp-topic" role="cell">{{r.topic}}</span>
+<span class="sp-diff" role="cell" data-d="{{r.diff}}">{{r.diff}}</span>
+<span class="sp-done" role="cell"><span aria-hidden="true">{{r.tick}}</span><span class="sp-sr">{{r.sr}}</span></span>
+</div></sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}">
+<div class="sp-empty"><p>No problems match.</p><button class="sh-chip" onClick="{{clearFilters}}">Clear filters</button></div>
+</sc-if>
+<sc-if value="{{hasPager}}" hint-placeholder-val="{{ true }}">
+<nav class="sp-pager" aria-label="Pages">
+<button onClick="{{prevPage}}" disabled="{{atFirst}}">Previous</button>
+<span class="sp-pos">{{pos}}</span>
+<button onClick="{{nextPage}}" disabled="{{atLast}}">Next</button>
+</nav>
+</sc-if>
+</main>
+</div>

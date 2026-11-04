@@ -53,7 +53,7 @@ across pages and live in one place; this script copies them back into every page
   shared/contests.js        -> between // @@CONTESTS@@ ... // @@END-CONTESTS@@ (Contests page)
   src/story/*               -> Story.dc.html markup and engine (the engine also goes into Code.dc.html, the Problem page, with the stage markup
                                between <!-- STORY STAGE --> markers in src/story/story_body.html)
-  src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
+  src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome; problems_body.html + problems.js -> Sheet (the Problems page)
   src/code/code_body.html + code.js       -> Code (the Problem page: statement, hints, solution, history, story switch, editor and tests)
   scripts/build_registry.js -> data/problem-registry.json and docs/problems/REGISTRY.md (the problem registry)
 
@@ -260,6 +260,9 @@ def main():
     for name in ['Revisit', 'Profile', 'Welcome']:
         bodies[name] = ('src', 'pages', name.lower() + '_body.html')
         scripts[name] = ('src', 'pages', name.lower() + '.js')
+    # Sheet is the Problems page (the file keeps its old name until step 10): src/pages/problems_body.html and problems.js.
+    bodies['Sheet'] = ('src', 'pages', 'problems_body.html')
+    scripts['Sheet'] = ('src', 'pages', 'problems.js')
     git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.\n'
                + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
     sd_lessons = ('// @@SDLESSONS@@ — generated from src/sd/engine.js and src/sd/lessons.js; edit those, then build.\n'

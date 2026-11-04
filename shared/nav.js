@@ -49,14 +49,13 @@ function searchVals(cmp, t) {
   groups.forEach((g) => g.items.forEach((it) => flat.push(it)));
   const act = Math.max(0, Math.min(flat.length - 1, st.sAct || 0));
   let i = 0;
-  const C = SITE_INDEX.counts;
   return {
     open: !!st.sOpen, closed: !st.sOpen, q, icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
     expanded: st.sOpen && flat.length ? 'true' : 'false',
     active: flat.length ? 'pn-opt-' + act : '',
-    hint: q.trim() ? '' : 'Stories, ' + C.sheet + ' sheet problems, ' + C.runnable + ' runnable problems, lessons and glossary terms',
+    hint: q.trim() ? '' : 'Type a lesson or a problem name',
     hasHint: !q.trim(), none: !!q.trim() && !flat.length,
-    status: q.trim() ? (flat.length ? flat.length + ' results' : 'No results') : '',
+    status: q.trim() ? (flat.length ? 'Results are listed below' : 'No results') : '',
     groups: groups.map((g) => ({
       label: g.label, gid: 'pn-grp-' + g.type,
       items: g.items.map((it) => {

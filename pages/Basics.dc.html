@@ -1081,7 +1081,7 @@ const DS = (function () {
   // -- submission history: dsaviz-submissions-v1 = { v: 1, subs: { pid: [{ at, lang, passed, total, code }] } }, oldest first.
   // Only the last SUB_MAX submissions per problem are kept, each up to SUB_CODE_MAX characters of code.
   const SUB_MAX = 20, SUB_CODE_MAX = 20000;
-  const SUB_LANGS = ['py', 'js', 'java', 'cpp', 'go', 'sql'];
+  const SUB_LANGS = ['py', 'js', 'sql'];
   function cleanSub(x) {
     if (!x || typeof x !== 'object') return null;
     const at = Number(x.at);
@@ -1423,7 +1423,7 @@ const MENU = [
   ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
-  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python or JavaScript', null],
   ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
   ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
@@ -1977,13 +1977,10 @@ const WHY = {
 // @@END-WHY@@
 
 
-const LANGS = [['py', 'python', 'py'], ['java', 'java', 'java'], ['cpp', 'c++', 'cpp'], ['js', 'javascript', 'js'], ['go', 'go', 'go']];
+const LANGS = [['py', 'python', 'py'], ['js', 'javascript', 'js']];
 const CODE = {
   py: [['bag = ["map", "torch", "rope"]', ''], ['bag.append("snack")', ''], ['bag[0]', '                 # "map"'], ['bag[-1]', '                # "snack"'], ['len(bag)', '               # 4'], ['bag.pop()', '              # takes out "snack"']],
-  java: [['var bag = new ArrayList<>(List.of("map", "torch", "rope"));', ''], ['bag.add("snack");', ''], ['bag.get(0);', '                  // "map"'], ['bag.get(bag.size() - 1);', '     // "snack" (no [-1] in Java)'], ['bag.size();', '                  // 4'], ['bag.remove(bag.size() - 1);', '  // takes out "snack"']],
-  cpp: [['vector<string> bag = {"map", "torch", "rope"};', ''], ['bag.push_back("snack");', ''], ['bag[0];', '                  // "map"'], ['bag.back();', '              // "snack"'], ['bag.size();', '              // 4'], ['bag.pop_back();', '          // removes it, returns nothing']],
   js: [['const bag = ["map", "torch", "rope"];', ''], ['bag.push("snack");', ''], ['bag[0];', '             // "map"'], ['bag.at(-1);', '         // "snack"'], ['bag.length;', '         // 4'], ['bag.pop();', '          // takes out "snack"']],
-  go: [['bag := []string{"map", "torch", "rope"}', ''], ['bag = append(bag, "snack")', ''], ['bag[0]', '                  // "map"'], ['bag[len(bag)-1]', '         // "snack"'], ['len(bag)', '                // 4'], ['bag = bag[:len(bag)-1]', '  // drop "snack"']]
 };
 const FRAMES = [
   { title: 'pack the bag', items: ['"map"', '"torch"', '"rope"'], lines: [1],
@@ -2015,18 +2012,18 @@ const QUIZ = [
   ['an error', false, 'No error — the backpack still holds three things.']
 ];
 const TOOLS = [
-  { names: { py: 'dict / set', java: 'HashMap / HashSet', cpp: 'unordered_map / set', js: 'Map / Set', go: 'map' }, cost: 'O(1) lookup', use: 'Hash Map, Two Sum', story: 'The coat check: find anything by its ticket in one step.' },
-  { names: { py: 'collections.deque', java: 'ArrayDeque', cpp: 'deque', js: 'array (shift is O(n)!)', go: 'container/list' }, cost: 'O(1) both ends', use: 'BFS, sliding window max', story: 'A train with doors at both ends: hop on or off either side instantly.' },
-  { names: { py: 'heapq', java: 'PriorityQueue', cpp: 'priority_queue', js: 'write your own heap', go: 'container/heap' }, cost: 'O(log n) push/pop', use: 'Top-K, merge K lists', story: 'The triage line: the most urgent patient is always at the front.' },
-  { names: { py: 'Counter', java: 'HashMap + merge()', cpp: 'unordered_map<T,int>', js: 'Map + get() ?? 0', go: 'map[T]int' }, cost: 'O(n) build', use: 'Anagrams, frequency', story: 'A tally sheet that counts every item for you.' },
-  { names: { py: 'bisect', java: 'Collections.binarySearch', cpp: 'lower_bound', js: 'hand-rolled binary search', go: 'sort.Search' }, cost: 'O(log n)', use: 'Binary search on sorted lists', story: 'Finding your seat in a sorted row by halving the search each time.' },
-  { names: { py: 'sorted(key=...)', java: 'list.sort(comparator)', cpp: 'sort(begin, end, cmp)', js: 'arr.sort((a, b) => ...)', go: 'sort.Slice' }, cost: 'O(n log n)', use: 'Intervals, greedy', story: 'Lining things up by the rule you choose.' }
+  { names: { py: 'dict / set', js: 'Map / Set' }, cost: 'O(1) lookup', use: 'Hash Map, Two Sum', story: 'The coat check: find anything by its ticket in one step.' },
+  { names: { py: 'collections.deque', js: 'array (shift is O(n)!)' }, cost: 'O(1) both ends', use: 'BFS, sliding window max', story: 'A train with doors at both ends: hop on or off either side instantly.' },
+  { names: { py: 'heapq', js: 'write your own heap' }, cost: 'O(log n) push/pop', use: 'Top-K, merge K lists', story: 'The triage line: the most urgent patient is always at the front.' },
+  { names: { py: 'Counter', js: 'Map + get() ?? 0' }, cost: 'O(n) build', use: 'Anagrams, frequency', story: 'A tally sheet that counts every item for you.' },
+  { names: { py: 'bisect', js: 'hand-rolled binary search' }, cost: 'O(log n)', use: 'Binary search on sorted lists', story: 'Finding your seat in a sorted row by halving the search each time.' },
+  { names: { py: 'sorted(key=...)', js: 'arr.sort((a, b) => ...)' }, cost: 'O(n log n)', use: 'Intervals, greedy', story: 'Lining things up by the rule you choose.' }
 ];
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), lang: 'py', compare: 'java', chapter: 2, frame: 1, playing: false, answer: null, tool: null };
+    this.state = { theme: loadTheme(), lang: 'py', compare: 'js', chapter: 2, frame: 1, playing: false, answer: null, tool: null };
   }
   componentDidMount() { listenTheme(this); }
   componentWillUnmount() { unlistenTheme(this); clearInterval(this.timer); }
@@ -2075,7 +2072,7 @@ class Component extends DCLogic {
       langs: LANGS.map(([k, label]) => ({
         label, on: this.state.lang === k,
         bg: 'transparent', line: this.state.lang === k ? t.accent : 'transparent', fg: this.state.lang === k ? t.text : t.muted,
-        pick: () => this.setState({ lang: k, compare: k === this.state.compare ? (k === 'java' ? 'py' : 'java') : this.state.compare })
+        pick: () => this.setState({ lang: k, compare: k === 'py' ? 'js' : 'py' })
       })),
       langName: lang[1], ext: lang[2],
       compareName: cmp[1],

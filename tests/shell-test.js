@@ -713,7 +713,7 @@ server.listen(0, async () => {
     await pg.close();
   }
   // ---- The editor's line numbers line up with the code lines (also with the editor off screen, as at 390 before it is scrolled to), test chips use drawn
-  // cross and check icons, Back names a list or lesson (never Home), and Java, C++ and Go are hidden but their data is still in the source ----
+  // cross and check icons, Back names a list or lesson (never Home), and Java, C++ and Go are gone from the source ----
   for (const [w, h] of [[390, 844], [1440, 900]]) {
     const pg = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
     await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); localStorage.setItem('dsaviz-lang', 'py'); } catch (e) {} });
@@ -776,18 +776,43 @@ server.listen(0, async () => {
     if (direct !== 'Back to Problems') fail('Problem page opened directly says "' + direct + '"');
     await pg.close();
   }
-  // Java, C++ and Go are hidden on the Problem page, not deleted: their starters, language list and editor modes are still in the source.
+  // Java, C++ and Go are gone for good (owner, 2026-11-04): no language list, editor mode, starter or signature in the source,
+  // and nothing in the built site offers them as a language. Only Python and JavaScript (and SQL on SQL problems) remain.
   {
-    const spec = data.specs['two-sum-ii'];
     const langs = vm.runInContext('CODE_LANGS.map((x) => x[0])', ctx);
-    const have = (k) => Object.keys(data.specs).filter((id) => JSON.stringify(data.specs[id]).indexOf('"' + k + '"') >= 0).length;
-    if (['java', 'cpp', 'go'].some((k) => langs.indexOf(k) < 0)) fail('CODE_LANGS no longer lists Java, C++ and Go: ' + langs.join());
-    for (const k of ['java', 'cpp', 'go']) if (have(k) < 50) fail('only ' + have(k) + ' problem specs still carry a ' + k + ' starter');
-    const ed = fs.readFileSync(path.join(__dirname, '..', 'src', 'code', 'editor.js'), 'utf8');
-    if (!/MODES = \{[^}]*java[^}]*cpp[^}]*go/.test(ed)) fail('the editor no longer has Java, C++ and Go modes');
-    const shown = await (async () => { const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } }); await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }); await pg.goto(url); await pg.waitForTimeout(500); await openProblem(pg, 'two-sum-ii'); const t = await pg.evaluate(() => document.querySelector('.pb-right').textContent); await pg.close(); return t; })();
-    if (/\b(Java|C\+\+)\b/.test(shown)) fail('Java or C++ shows in the Problem page UI');
-    console.log('  Hidden languages kept in the source: ' + ['java', 'cpp', 'go'].map((k) => k + ' in ' + have(k) + ' specs').join(', '));
+    if (langs.join() !== 'py,js') fail('CODE_LANGS is ' + langs.join() + ', not py,js');
+    const gone = ['java', 'cpp', 'go'];
+    for (const k of gone) {
+      const n = Object.keys(data.specs).filter((id) => { const s = data.specs[id]; return (s.sig && s.sig[k]) || (s.starter && s.starter[k]); }).length;
+      if (n) fail(n + ' problem specs still carry a ' + k + ' starter or signature');
+    }
+    const root = path.join(__dirname, '..');
+    const ed = fs.readFileSync(path.join(root, 'src', 'code', 'editor.js'), 'utf8');
+    if (/lang-(java|cpp|go)(?![a-z])|\b(java|cpp)\b\s*[,}:]|\bgo\b\s*[,}]/.test(ed.replace(/^\/\/.*$/gm, ''))) fail('the editor source still has a Java, C++ or Go mode');
+    const pkg = fs.readFileSync(path.join(root, 'package.json'), 'utf8');
+    if (/lang-(java|cpp|go)(?![a-z])/.test(pkg)) fail('package.json still depends on a Java, C++ or Go editor mode');
+    const dist = html.toString('utf8');
+    const hits = {
+      'a java or cpp starter or signature': (dist.match(/(^|[\s,{])(java|cpp)\s*:\s*['"`\[]/gm) || []).length,
+      'a go starter or signature': (dist.match(/(^|[\s,{])go\s*:\s*['"`]\s*(func |type |package )/gm) || []).length,
+      'C++ or Go boilerplate': (dist.match(/#include <bits\/stdc\+\+\.h>|package main\n|class Solution \{\npublic:/g) || []).length,
+      'a language list with Java, C++ or Go': (dist.match(/\[\s*'(java|cpp|go)'\s*,\s*'(Java|C\+\+|Go)'\s*\]/g) || []).length
+    };
+    for (const [what, n] of Object.entries(hits)) if (n) fail('dist/index.html still has ' + n + ' places with ' + what);
+    // The pages themselves: no button, tab, option or label named Java, C++ or Go on any page.
+    const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+    await pg.goto(url); await pg.waitForTimeout(500);
+    const named = [];
+    for (const f of fs.readdirSync(path.join(root, 'pages')).filter((x) => /.dc.html$/.test(x)).concat(['Code.dc.html?problem=two-sum-ii'])) {
+      const [name, query] = f.split('?');
+      await pg.evaluate(([n, q]) => window.__dsNav(n, q ? '?' + q : ''), [name, query]); await pg.waitForTimeout(500);
+      const found = await pg.evaluate(() => [...document.querySelectorAll('button, [role=tab], option, label, summary, a')].map((e) => (e.textContent || '').trim()).filter((t) => /^(Java|C\+\+|Go|Golang)$/i.test(t)));
+      if (found.length) named.push(name + ': ' + found.join(', '));
+    }
+    if (named.length) fail('a page offers Java, C++ or Go: ' + named.join(' | '));
+    await pg.close();
+    console.log('  Java, C++ and Go: none in CODE_LANGS (' + langs.join() + '), the specs, the editor, package.json or dist/index.html, and no page offers them');
   }
   await browser.close(); server.close();
   console.log(bad ? bad + ' problems' : 'shell clean: ' + pages.length + ' pages and ' + LESSON_PAGES.length + ' lesson tracks at 320, 390 (dark and light), 1024 and 1440');

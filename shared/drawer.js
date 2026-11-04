@@ -13,7 +13,7 @@ const MENU = [
   ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
-  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python or JavaScript', null],
   ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
   ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],

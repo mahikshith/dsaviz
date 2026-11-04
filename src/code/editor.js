@@ -10,15 +10,12 @@ import { indentOnInput, bracketMatching, syntaxHighlighting, HighlightStyle, ind
 import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, completeAnyWord } from '@codemirror/autocomplete';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
-import { java } from '@codemirror/lang-java';
-import { cpp } from '@codemirror/lang-cpp';
-import { go } from '@codemirror/lang-go';
 import { sql, SQLite } from '@codemirror/lang-sql';
 import { vim } from '@replit/codemirror-vim';
 import { tags } from '@lezer/highlight';
 
-const MODES = { py: python, js: javascript, java, cpp, go, sql: () => sql({ dialect: SQLite }) };
-const UNITS = { py: 4, js: 2, java: 4, cpp: 4, go: 4, sql: 2 };
+const MODES = { py: python, js: javascript, sql: () => sql({ dialect: SQLite }) };
+const UNITS = { py: 4, js: 2, sql: 2 };
 const DEFAULTS = { fontSize: 16, tabSize: 0, wrap: false, relative: false, vim: false, brackets: true, autocomplete: true };
 
 // t: theme tokens from THEMES (codeBg, line, text, muted, accent, right, medFg, ok, hl, mono)

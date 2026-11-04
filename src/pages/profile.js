@@ -5,7 +5,7 @@ const PREF_GROUPS = [
   ['goal', 'Daily goal', 'Minutes a day you promise yourself', [['5', '5 min · casual'], ['10', '10 min · regular'], ['20', '20 min · serious'], ['40', '40 min · intense']]],
   ['time', 'Reminder time', 'Saved now. Reminders start when accounts launch', [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'], ['21:30', '9:30 PM']]],
   ['channel', 'Remind me on', 'Pick the one you actually check', [['WhatsApp', 'WhatsApp'], ['Email', 'Email'], ['Push', 'App notification'], ['Off', 'No reminders']]],
-  ['lang', 'Code in', 'Every story shows this language first', [['Python', 'Python'], ['Java', 'Java'], ['C++', 'C++'], ['JS', 'JavaScript'], ['Go', 'Go']]]
+  ['lang', 'Code in', 'Every story shows this language first', [['Python', 'Python'], ['JS', 'JavaScript']]]
 ];
 // Certificates: walk a pattern's core (animated) stories, then pass its 10-minute exam.
 const CERT_PATTERNS = [['Two Pointers', 'TP'], ['Sliding Window', 'SW'], ['Hash Map', 'HM'], ['Binary Search', 'BS'], ['Stack', 'ST'], ['Breadth-First Search', 'BF']];
@@ -216,7 +216,7 @@ class Component extends DCLogic {
         line: me.isNew ? 'Nothing learned yet. Your progress shows up here as you go.' : firstDay ? 'Learning since ' + new Date(firstDay.ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Learning for a while now',
         cta: me.name ? 'Change my goals' : 'Set your name and goals'
       },
-      chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
+      chips: ['Level ' + xp.level + ' · ' + xp.total.toLocaleString('en-US') + ' XP'].concat(prefs.lang === 'Python' || prefs.lang === 'JS' ? [prefs.lang === 'JS' ? 'JavaScript' : prefs.lang] : [], ['Saved in this browser']),
       tabs: [['progress', 'Progress'], ['medals', 'Medals and certificates'], ['settings', 'Settings']].map(([k, label]) => ({ label, on: this.state.tab === k, line: this.state.tab === k ? t.accent : 'transparent', fg: this.state.tab === k ? t.text : t.muted, pick: () => this.setState({ tab: k }) })),
       isProgress: this.state.tab === 'progress', isMedals: this.state.tab === 'medals', isSettings: this.state.tab === 'settings',
       foldRemind: !!this.state.foldRemind, chevR: this.state.foldRemind ? 'rotate(180deg)' : 'rotate(0deg)', toggleRemind: () => this.setState({ foldRemind: !this.state.foldRemind }),

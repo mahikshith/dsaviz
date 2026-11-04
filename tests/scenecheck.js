@@ -61,7 +61,7 @@ for (const id of SCENE_ORDER) {
   const S = SCENES[id];
   if (!PROBLEMS.find((p) => p.id === id)) { console.log('no problem', id); bad++; }
   const kinds = new Set(S.steps.map((s) => s.kind));
-  for (const lang of ['py', 'java', 'cpp', 'js', 'go']) {
+  for (const lang of ['py', 'js']) {
     const code = S.code[lang], lines = S.lines[lang] || S.lines.py;
     for (const k of kinds) { const n = lines[k]; if (!n || !code[n - 1]) { console.log(id, lang, 'no line for', k); bad++; } }
     for (const [, k] of S.rules) { const n = lines[k]; if (!n) { console.log(id, lang, 'rule no line', k); bad++; } }
@@ -136,7 +136,7 @@ for (const id of SCENE_ORDER) {
   const c = new Component({});
   if (c.state.scene !== id) { console.log(id, 'page did not open this story'); bad++; continue; }
   let renders = 0;
-  for (const lang of ['py', 'java', 'cpp', 'js', 'go']) {
+  for (const lang of ['py', 'js']) {
     c.runner.setLang(lang);
     const lines = S.lines[lang] || S.lines.py, code = S.code[lang];
     for (let i = 0; i < S.steps.length; i++) for (const tab of ['solution', 'code']) {
@@ -257,7 +257,7 @@ for (const id of Object.keys(SCENE_INPUT)) {
       for (const lv of ['kid', 'builder', 'expert']) if (!st.nar[lv]) { console.log(where, i, 'no text at', lv); bad++; }
       if (!st.meter || st.watch.length !== 6 || !st.verdict) { console.log(where, i, 'meter, watch or verdict'); bad++; }
     });
-    const langs = label === 'random 1' || !label.startsWith('random') ? ['py', 'java', 'cpp', 'js', 'go'] : ['py'];
+    const langs = label === 'random 1' || !label.startsWith('random') ? ['py', 'js'] : ['py'];
     for (const lang of langs) {
       c.runner.setLang(lang);
       const lines = S.lines[lang] || S.lines.py;

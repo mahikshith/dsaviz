@@ -1088,7 +1088,7 @@ const DS = (function () {
   // -- submission history: dsaviz-submissions-v1 = { v: 1, subs: { pid: [{ at, lang, passed, total, code }] } }, oldest first.
   // Only the last SUB_MAX submissions per problem are kept, each up to SUB_CODE_MAX characters of code.
   const SUB_MAX = 20, SUB_CODE_MAX = 20000;
-  const SUB_LANGS = ['py', 'js', 'java', 'cpp', 'go', 'sql'];
+  const SUB_LANGS = ['py', 'js', 'sql'];
   function cleanSub(x) {
     if (!x || typeof x !== 'object') return null;
     const at = Number(x.at);
@@ -1430,7 +1430,7 @@ const MENU = [
   ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
-  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python or JavaScript', null],
   ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
   ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],

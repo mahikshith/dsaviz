@@ -13,7 +13,7 @@ const LEVELS = [
   ['ready', '', 'Interview-ready, just need a refresh', 'Revisit daily, then mock interviews and company tracks', 'Interview.dc.html', 'arrays']
 ];
 const GOALS = [['5', '', '5 minutes', 'Casual · one story step set'], ['10', '', '10 minutes', 'Regular · most people pick this'], ['20', '', '20 minutes', 'Serious · a story a day'], ['40', '', '40 minutes', 'Intense · placement season mode']];
-const WLANGS = ['Python', 'Java', 'C++', 'JavaScript', 'Go'];
+const WLANGS = ['Python', 'JavaScript'];
 const TIMES = [['07:30', '7:30 AM'], ['13:00', '1:00 PM'], ['18:30', '6:30 PM'], ['21:30', '9:30 PM']];
 const CHANNELS = [['WhatsApp', 'WhatsApp'], ['Email', 'Email'], ['Push', 'App notification']];
 const STEP_NAMES = ['About you', 'Where to start', 'Daily goal', 'Reminders', 'Your plan'];
@@ -45,7 +45,7 @@ class Component extends DCLogic {
     writeJSON(ONBOARD_KEY, { name, reason, level, goal, lang, time, channel, date });
     const prefs = readJSON('dsaviz-prefs', {});
     writeJSON('dsaviz-prefs', Object.assign({}, prefs && typeof prefs === 'object' ? prefs : {}, { goal, time, channel, lang: lang === 'JavaScript' ? 'JS' : lang }));
-    const code = { Python: 'py', Java: 'java', 'C++': 'cpp', JavaScript: 'js', Go: 'go' }[lang];
+    const code = { Python: 'py', JavaScript: 'js' }[lang];
     try { window.localStorage.setItem('dsaviz-lang', code); } catch (e) {}
   }
   renderVals() {

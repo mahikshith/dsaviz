@@ -1201,7 +1201,7 @@ const DS = (function () {
   // -- submission history: dsaviz-submissions-v1 = { v: 1, subs: { pid: [{ at, lang, passed, total, code }] } }, oldest first.
   // Only the last SUB_MAX submissions per problem are kept, each up to SUB_CODE_MAX characters of code.
   const SUB_MAX = 20, SUB_CODE_MAX = 20000;
-  const SUB_LANGS = ['py', 'js', 'java', 'cpp', 'go', 'sql'];
+  const SUB_LANGS = ['py', 'js', 'sql'];
   function cleanSub(x) {
     if (!x || typeof x !== 'object') return null;
     const at = Number(x.at);
@@ -1543,7 +1543,7 @@ const MENU = [
   ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
-  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python or JavaScript', null],
   ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
   ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
   ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
@@ -2096,7 +2096,7 @@ const WHY = {
 };
 // @@END-WHY@@
 
-const LANGS = [['py', 'python', 'Python'], ['java', 'java', 'Java'], ['cpp', 'c++', 'C++'], ['js', 'js', 'JavaScript'], ['go', 'go', 'Go']];
+const LANGS = [['py', 'python', 'Python'], ['js', 'js', 'JavaScript']];
 const CATS = ['All', 'Loops', 'Collections', 'Maps & sets', 'Strings', 'Math'];
 // id, category, gist, kid analogy, what it does, watch-out, stories, frames [cells, [[highlight idx], note]...], per-language [keyword, code, output]
 const KEYWORDS = [
@@ -2104,125 +2104,77 @@ const KEYWORDS = [
     frames: { cells: ['"ann"', '"bo"', '"cy"'], steps: [[[0], 'i = 0, name = "ann"'], [[1], 'i = 1, name = "bo"'], [[2], 'i = 2, name = "cy"']] },
     langs: {
       py: ['enumerate()', 'names = ["ann", "bo", "cy"]\nfor i, name in enumerate(names):\n    print(i, name)', '0 ann\n1 bo\n2 cy'],
-      java: ['for (int i = 0; …)', 'String[] names = {"ann", "bo", "cy"};\nfor (int i = 0; i < names.length; i++) {\n    System.out.println(i + " " + names[i]);\n}', '0 ann\n1 bo\n2 cy'],
-      cpp: ['for (size_t i = 0; …)', 'vector<string> names = {"ann", "bo", "cy"};\nfor (size_t i = 0; i < names.size(); i++) {\n    cout << i << " " << names[i] << "\\n";\n}', '0 ann\n1 bo\n2 cy'],
-      js: ['forEach((x, i) => …)', 'const names = ["ann", "bo", "cy"];\nnames.forEach((name, i) => console.log(i, name));', '0 ann\n1 bo\n2 cy'],
-      go: ['for i, x := range', 'names := []string{"ann", "bo", "cy"}\nfor i, name := range names {\n    fmt.Println(i, name)\n}', '0 ann\n1 bo\n2 cy'] } },
+      js: ['forEach((x, i) => …)', 'const names = ["ann", "bo", "cy"];\nnames.forEach((name, i) => console.log(i, name));', '0 ann\n1 bo\n2 cy'] } },
   { id: 'zip', cat: 'Loops', gist: 'walk two lists side by side', kid: 'Like zipping a jacket: one tooth from the left, one from the right, locked together in pairs.', what: 'Walks two or more collections in step and pairs up their items. It stops at the end of the shorter one.', watch: 'Python\u2019s zip silently drops the extra items of the longer list.', stories: ['merge-two-lists'],
     frames: { cells: ['"ann" + 90', '"bo" + 75', '"cy" + 82'], steps: [[[0], 'pair 1: ("ann", 90)'], [[1], 'pair 2: ("bo", 75)'], [[2], 'pair 3: ("cy", 82)']] },
     langs: {
       py: ['zip()', 'names = ["ann", "bo", "cy"]\nscores = [90, 75, 82]\nfor name, score in zip(names, scores):\n    print(name, score)', 'ann 90\nbo 75\ncy 82'],
-      java: ['one index, two arrays', 'for (int i = 0; i < Math.min(names.length, scores.length); i++) {\n    System.out.println(names[i] + " " + scores[i]);\n}', 'ann 90\nbo 75\ncy 82'],
-      cpp: ['one index, two vectors', 'for (size_t i = 0; i < min(names.size(), scores.size()); i++) {\n    cout << names[i] << " " << scores[i] << "\\n";\n}', 'ann 90\nbo 75\ncy 82'],
-      js: ['map((x, i) => [x, b[i]])', 'const pairs = names.map((n, i) => [n, scores[i]]);\npairs.forEach(([n, s]) => console.log(n, s));', 'ann 90\nbo 75\ncy 82'],
-      go: ['one index, two slices', 'for i := 0; i < len(names) && i < len(scores); i++ {\n    fmt.Println(names[i], scores[i])\n}', 'ann 90\nbo 75\ncy 82'] } },
+      js: ['map((x, i) => [x, b[i]])', 'const pairs = names.map((n, i) => [n, scores[i]]);\npairs.forEach(([n, s]) => console.log(n, s));', 'ann 90\nbo 75\ncy 82'] } },
   { id: 'range', cat: 'Loops', gist: 'count from start to stop', kid: 'A roll of numbered raffle tickets: start here, stop just before there, tear off every few.', what: 'Produces the numbers from start up to, but not including, stop \u2014 optionally jumping by a step.', watch: 'The stop number is never included: range(2, 10) ends at 9.', stories: ['climbing-stairs', 'binary-search'],
     frames: { cells: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], steps: [[[2], 'start at 2'], [[2, 5], 'step 3 \u2192 5'], [[2, 5, 8], 'step 3 \u2192 8'], [[2, 5, 8], 'next would be 11 \u2265 10, so stop']] },
     langs: {
       py: ['range(start, stop, step)', 'for i in range(2, 10, 3):\n    print(i)', '2\n5\n8'],
-      java: ['for (int i = 2; i < 10; i += 3)', 'for (int i = 2; i < 10; i += 3) {\n    System.out.println(i);\n}', '2\n5\n8'],
-      cpp: ['for (int i = 2; i < 10; i += 3)', 'for (int i = 2; i < 10; i += 3) {\n    cout << i << "\\n";\n}', '2\n5\n8'],
-      js: ['for (let i = 2; i < 10; i += 3)', 'for (let i = 2; i < 10; i += 3) {\n  console.log(i);\n}', '2\n5\n8'],
-      go: ['for i := 2; i < 10; i += 3', 'for i := 2; i < 10; i += 3 {\n    fmt.Println(i)\n}', '2\n5\n8'] } },
-  { id: 'slicing', cat: 'Strings', gist: 'take a piece of a list or string', kid: 'Cutting a slice of cake: from this candle up to, but not including, that one.', what: 'Copies a contiguous piece of a string or list, from a start index up to (not including) an end index.', watch: 'C++ substr takes a start and a LENGTH, not an end index.', stories: ['longest-palindrome', 'longest-substring'],
+      js: ['for (let i = 2; i < 10; i += 3)', 'for (let i = 2; i < 10; i += 3) {\n  console.log(i);\n}', '2\n5\n8'] } },
+  { id: 'slicing', cat: 'Strings', gist: 'take a piece of a list or string', kid: 'Cutting a slice of cake: from this candle up to, but not including, that one.', what: 'Copies a contiguous piece of a string or list, from a start index up to (not including) an end index.', watch: 'The end index is not included, so the slice 1 to 4 of "hello" is "ell".', stories: ['longest-palindrome', 'longest-substring'],
     frames: { cells: ['h', 'e', 'l', 'l', 'o'], steps: [[[1], 'start at index 1'], [[1, 2], 'keep going'], [[1, 2, 3], 'stop before index 4'], [[1, 2, 3], 'result: "ell"']] },
     langs: {
       py: ['s[start:end]', 'word = "hello"\nprint(word[1:4])\nprint(word[::-1])', 'ell\nolleh'],
-      java: ['s.substring(start, end)', 'String word = "hello";\nSystem.out.println(word.substring(1, 4));', 'ell'],
-      cpp: ['s.substr(start, length)', 'string word = "hello";\ncout << word.substr(1, 3) << "\\n";', 'ell'],
-      js: ['s.slice(start, end)', 'const word = "hello";\nconsole.log(word.slice(1, 4));', 'ell'],
-      go: ['s[start:end]', 'word := "hello"\nfmt.Println(word[1:4])', 'ell'] } },
+      js: ['s.slice(start, end)', 'const word = "hello";\nconsole.log(word.slice(1, 4));', 'ell'] } },
   { id: 'comprehension', cat: 'Collections', gist: 'build a list in one line', kid: 'A one-line recipe: for every apple in the basket, if it\u2019s red, make juice.', what: 'Builds a new list by transforming (and optionally filtering) every item of another collection.', watch: '', stories: ['move-zeroes'],
     frames: { cells: ['1', '2', '3', '4'], steps: [[[1], '2 is even \u2192 4'], [[1, 3], '4 is even \u2192 16'], [[1, 3], 'result: [4, 16]']] },
     langs: {
       py: ['[f(x) for x in xs if …]', 'nums = [1, 2, 3, 4]\nsquares = [x * x for x in nums if x % 2 == 0]\nprint(squares)', '[4, 16]'],
-      java: ['stream().filter().map()', 'List<Integer> squares = nums.stream()\n    .filter(x -> x % 2 == 0)\n    .map(x -> x * x)\n    .toList();', '[4, 16]'],
-      cpp: ['loop + push_back', 'vector<int> squares;\nfor (int x : nums)\n    if (x % 2 == 0) squares.push_back(x * x);', '4 16'],
-      js: ['filter().map()', 'const squares = nums.filter(x => x % 2 === 0).map(x => x * x);', '[ 4, 16 ]'],
-      go: ['loop + append', 'var squares []int\nfor _, x := range nums {\n    if x%2 == 0 {\n        squares = append(squares, x*x)\n    }\n}', '[4 16]'] } },
-  { id: 'get-default', cat: 'Maps & sets', gist: 'look up with a fallback', kid: 'Ask the coat-check clerk for a coat; if there isn\u2019t one, they hand you a spare instead of shouting.', what: 'Reads a key from a map, returning a default value (often 0) when the key isn\u2019t there yet. Perfect for counting.', watch: 'In C++ and Go, reading a missing key quietly creates or returns a zero value.', stories: ['valid-anagram', 'top-k-frequent'],
+      js: ['filter().map()', 'const squares = nums.filter(x => x % 2 === 0).map(x => x * x);', '[ 4, 16 ]'] } },
+  { id: 'get-default', cat: 'Maps & sets', gist: 'look up with a fallback', kid: 'Ask the coat-check clerk for a coat; if there isn\u2019t one, they hand you a spare instead of shouting.', what: 'Reads a key from a map, returning a default value (often 0) when the key isn\u2019t there yet. Perfect for counting.', watch: 'In Python, reading a missing key with [] is an error. Ask with get(key, 0) instead.', stories: ['valid-anagram', 'top-k-frequent'],
     langs: {
       py: ['dict.get(key, default)', 'count = {}\nfor w in ["a", "b", "a"]:\n    count[w] = count.get(w, 0) + 1\nprint(count)', "{'a': 2, 'b': 1}"],
-      java: ['getOrDefault(key, 0)', 'Map<String, Integer> count = new HashMap<>();\nfor (String w : words)\n    count.put(w, count.getOrDefault(w, 0) + 1);', '{a=2, b=1}'],
-      cpp: ['count[key]++', 'unordered_map<string, int> count;\nfor (auto& w : words) count[w]++;  // missing keys start at 0', 'a:2 b:1'],
-      js: ['map.get(k) ?? 0', 'const count = new Map();\nfor (const w of words) count.set(w, (count.get(w) ?? 0) + 1);', "Map(2) { 'a' => 2, 'b' => 1 }"],
-      go: ['count[key]++', 'count := map[string]int{}\nfor _, w := range words {\n    count[w]++ // zero value if missing\n}', 'map[a:2 b:1]'] } },
+      js: ['map.get(k) ?? 0', 'const count = new Map();\nfor (const w of words) count.set(w, (count.get(w) ?? 0) + 1);', "Map(2) { 'a' => 2, 'b' => 1 }"] } },
   { id: 'defaultdict', cat: 'Maps & sets', gist: 'buckets that create themselves', kid: 'Pigeonholes that build themselves the first time you post a letter to them.', what: 'A map that creates an empty value (like a list) the first time you touch a new key, so you can append straight away.', watch: '', stories: ['group-anagrams', 'clone-graph'],
     langs: {
       py: ['defaultdict(list)', 'from collections import defaultdict\ngroups = defaultdict(list)\nfor w in ["eat", "tea", "tan"]:\n    groups["".join(sorted(w))].append(w)\nprint(dict(groups))', "{'aet': ['eat', 'tea'], 'ant': ['tan']}"],
-      java: ['computeIfAbsent(k, …)', 'Map<String, List<String>> groups = new HashMap<>();\nfor (String w : words) {\n    char[] c = w.toCharArray(); Arrays.sort(c);\n    groups.computeIfAbsent(new String(c), k -> new ArrayList<>()).add(w);\n}', '{aet=[eat, tea], ant=[tan]}'],
-      cpp: ['map[key].push_back(v)', 'unordered_map<string, vector<string>> groups;\nfor (auto w : words) {\n    string key = w; sort(key.begin(), key.end());\n    groups[key].push_back(w);\n}', 'aet: eat tea | ant: tan'],
-      js: ['if (!m.has(k)) m.set(k, [])', 'const groups = new Map();\nfor (const w of words) {\n  const key = [...w].sort().join("");\n  if (!groups.has(key)) groups.set(key, []);\n  groups.get(key).push(w);\n}', "Map(2) { 'aet' => [ 'eat', 'tea' ], 'ant' => [ 'tan' ] }"],
-      go: ['m[k] = append(m[k], v)', 'groups := map[string][]string{}\nfor _, w := range words {\n    key := sortString(w)\n    groups[key] = append(groups[key], w)\n}', 'map[aet:[eat tea] ant:[tan]]'] } },
+      js: ['if (!m.has(k)) m.set(k, [])', 'const groups = new Map();\nfor (const w of words) {\n  const key = [...w].sort().join("");\n  if (!groups.has(key)) groups.set(key, []);\n  groups.get(key).push(w);\n}', "Map(2) { 'aet' => [ 'eat', 'tea' ], 'ant' => [ 'tan' ] }"] } },
   { id: 'counter', cat: 'Maps & sets', gist: 'tally everything at once', kid: 'A tally sheet that counts every sweet in the jar for you.', what: 'Counts how many times each item appears, in one line.', watch: '', stories: ['valid-anagram', 'top-k-frequent'],
     langs: {
       py: ['Counter(xs)', 'from collections import Counter\nprint(Counter("banana"))\nprint(Counter("listen") == Counter("silent"))', "Counter({'a': 3, 'n': 2, 'b': 1})\nTrue"],
-      java: ['merge(k, 1, Integer::sum)', 'Map<Character, Integer> c = new HashMap<>();\nfor (char ch : "banana".toCharArray())\n    c.merge(ch, 1, Integer::sum);', '{a=3, b=1, n=2}'],
-      cpp: ['int freq[26]', 'int freq[26] = {0};\nfor (char ch : string("banana")) freq[ch - \'a\']++;', 'a:3 b:1 n:2'],
-      js: ['Map + reduce', 'const c = new Map();\nfor (const ch of "banana") c.set(ch, (c.get(ch) ?? 0) + 1);', "Map(3) { 'b' => 1, 'a' => 3, 'n' => 2 }"],
-      go: ['map[rune]int', 'c := map[rune]int{}\nfor _, ch := range "banana" {\n    c[ch]++\n}', 'map[97:3 98:1 110:2]'] } },
+      js: ['Map + reduce', 'const c = new Map();\nfor (const ch of "banana") c.set(ch, (c.get(ch) ?? 0) + 1);', "Map(3) { 'b' => 1, 'a' => 3, 'n' => 2 }"] } },
   { id: 'set-in', cat: 'Maps & sets', gist: 'have I seen this before?', kid: 'A guest list at the door: are you on it? Yes or no, instantly.', what: 'A set stores unique items and answers \u201cis this in here?\u201d in about constant time.', watch: '\u201cx in list\u201d scans the whole list (slow); \u201cx in set\u201d is instant.', stories: ['contains-duplicate', 'longest-consecutive'],
     frames: { cells: ['3', '1', '4', '1'], steps: [[[0], 'add 3 \u2192 {3}'], [[1], 'add 1 \u2192 {3, 1}'], [[2], 'add 4 \u2192 {3, 1, 4}'], [[3], '1 is already in the set \u2192 duplicate!']] },
     langs: {
       py: ['x in seen', 'seen = set()\nfor x in [3, 1, 4, 1]:\n    if x in seen:\n        print("duplicate", x)\n    seen.add(x)', 'duplicate 1'],
-      java: ['seen.contains(x)', 'Set<Integer> seen = new HashSet<>();\nfor (int x : nums) {\n    if (!seen.add(x)) System.out.println("duplicate " + x);\n}', 'duplicate 1'],
-      cpp: ['seen.count(x)', 'unordered_set<int> seen;\nfor (int x : nums) {\n    if (seen.count(x)) cout << "duplicate " << x;\n    seen.insert(x);\n}', 'duplicate 1'],
-      js: ['seen.has(x)', 'const seen = new Set();\nfor (const x of nums) {\n  if (seen.has(x)) console.log("duplicate", x);\n  seen.add(x);\n}', 'duplicate 1'],
-      go: ['map[int]bool', 'seen := map[int]bool{}\nfor _, x := range nums {\n    if seen[x] {\n        fmt.Println("duplicate", x)\n    }\n    seen[x] = true\n}', 'duplicate 1'] } },
+      js: ['seen.has(x)', 'const seen = new Set();\nfor (const x of nums) {\n  if (seen.has(x)) console.log("duplicate", x);\n  seen.add(x);\n}', 'duplicate 1'] } },
   { id: 'deque', cat: 'Collections', gist: 'a line with two doors', kid: 'A ticket line with doors at both ends: join at the back, leave from the front, both instant.', what: 'A double-ended queue: add or remove from either end in constant time. The standard tool for BFS.', watch: 'In JavaScript, array.shift() is O(n) \u2014 keep a head index instead for big queues.', stories: ['rotting-oranges', 'level-order', 'sliding-window-max'],
     frames: { cells: ['A', 'B', 'C'], steps: [[[0, 1, 2], 'queue: A B C'], [[0], 'popleft() \u2192 A leaves from the front'], [[1, 2], 'queue: B C'], [[1, 2], 'append(D) joins at the back']] },
     langs: {
       py: ['collections.deque', 'from collections import deque\nq = deque(["A", "B", "C"])\nq.append("D")\nprint(q.popleft(), list(q))', "A ['B', 'C', 'D']"],
-      java: ['ArrayDeque', 'Deque<String> q = new ArrayDeque<>(List.of("A", "B", "C"));\nq.offer("D");\nSystem.out.println(q.poll() + " " + q);', 'A [B, C, D]'],
-      cpp: ['std::deque / queue', 'deque<string> q = {"A", "B", "C"};\nq.push_back("D");\nstring front = q.front(); q.pop_front();', 'A  (then B C D)'],
-      js: ['array + head index', 'const q = ["A", "B", "C"]; let head = 0;\nq.push("D");\nconsole.log(q[head++]);', 'A'],
-      go: ['slice as queue', 'q := []string{"A", "B", "C"}\nq = append(q, "D")\nfront := q[0]\nq = q[1:]\nfmt.Println(front, q)', 'A [B C D]'] } },
+      js: ['array + head index', 'const q = ["A", "B", "C"]; let head = 0;\nq.push("D");\nconsole.log(q[head++]);', 'A'] } },
   { id: 'heap', cat: 'Collections', gist: 'smallest always on top', kid: 'A triage desk: whoever is most urgent (the smallest number) is always seen first.', what: 'A priority queue that always gives you the smallest (or largest) item in O(log n) per push or pop.', watch: 'Python\u2019s heapq is a min-heap. For a max-heap, push negative numbers.', stories: ['kth-largest', 'top-k-frequent', 'merge-k-lists'],
     frames: { cells: ['5', '1', '8', '3'], steps: [[[0], 'push 5 \u2192 top is 5'], [[1], 'push 1 \u2192 top is 1'], [[1], 'push 8 \u2192 top is still 1'], [[1], 'push 3 \u2192 pop gives 1, then 3']] },
     langs: {
       py: ['heapq.heappush / heappop', 'import heapq\nh = []\nfor x in [5, 1, 8, 3]:\n    heapq.heappush(h, x)\nprint(heapq.heappop(h), heapq.heappop(h))', '1 3'],
-      java: ['PriorityQueue', 'PriorityQueue<Integer> h = new PriorityQueue<>();\nh.addAll(List.of(5, 1, 8, 3));\nSystem.out.println(h.poll() + " " + h.poll());', '1 3'],
-      cpp: ['priority_queue (greater<>)', 'priority_queue<int, vector<int>, greater<int>> h;\nfor (int x : {5, 1, 8, 3}) h.push(x);\ncout << h.top();', '1'],
-      js: ['no built-in: small class', '// JavaScript has no heap; write a 20-line MinHeap\n// or sort once if you only need the top k.\nconst top2 = [5, 1, 8, 3].sort((a, b) => a - b).slice(0, 2);', '[ 1, 3 ]'],
-      go: ['container/heap', 'h := &IntHeap{5, 1, 8, 3}\nheap.Init(h)\nfmt.Println(heap.Pop(h), heap.Pop(h))', '1 3'] } },
+      js: ['no built-in: small class', '// JavaScript has no heap; write a 20-line MinHeap\n// or sort once if you only need the top k.\nconst top2 = [5, 1, 8, 3].sort((a, b) => a - b).slice(0, 2);', '[ 1, 3 ]'] } },
   { id: 'sort-key', cat: 'Collections', gist: 'sort by any rule', kid: 'Line the class up by whatever rule the sticky note says: height, age, or first name.', what: 'Sorts items using a rule you provide, like \u201cby the second number\u201d. The workhorse of interval and greedy problems.', watch: 'JavaScript sorts numbers as text unless you pass (a, b) => a - b.', stories: ['merge-intervals', 'insert-interval'],
     frames: { cells: ['[1,3]', '[8,10]', '[2,6]'], steps: [[[0, 1, 2], 'unsorted meetings'], [[0, 2], 'compare by start: 1 < 2'], [[0, 2, 1], 'sorted: [1,3] [2,6] [8,10]']] },
     langs: {
       py: ['sorted(xs, key=…)', 'meetings = [[1, 3], [8, 10], [2, 6]]\nmeetings.sort(key=lambda m: m[0])\nprint(meetings)', '[[1, 3], [2, 6], [8, 10]]'],
-      java: ['Arrays.sort(a, comparator)', 'Arrays.sort(meetings, (a, b) -> Integer.compare(a[0], b[0]));', '[[1, 3], [2, 6], [8, 10]]'],
-      cpp: ['sort(begin, end, lambda)', 'sort(m.begin(), m.end(), [](auto& a, auto& b) { return a[0] < b[0]; });', '[1,3] [2,6] [8,10]'],
-      js: ['arr.sort((a, b) => …)', 'meetings.sort((a, b) => a[0] - b[0]);', '[ [ 1, 3 ], [ 2, 6 ], [ 8, 10 ] ]'],
-      go: ['sort.Slice', 'sort.Slice(m, func(i, j int) bool { return m[i][0] < m[j][0] })', '[[1 3] [2 6] [8 10]]'] } },
-  { id: 'div-mod', cat: 'Math', gist: 'share sweets fairly', kid: 'Sharing 17 sweets between 5 friends: // is how many each friend gets, % is what\u2019s left in the bag.', what: 'Integer division gives the whole-number quotient; modulo gives the remainder. Great for digits, wrapping around and halving.', watch: 'Negative numbers differ: -7 // 2 is -4 in Python, but -7 / 2 is -3 in Java, C++, JS (Math.trunc) and Go.', stories: ['binary-search', 'rotate-image'],
+      js: ['arr.sort((a, b) => …)', 'meetings.sort((a, b) => a[0] - b[0]);', '[ [ 1, 3 ], [ 2, 6 ], [ 8, 10 ] ]'] } },
+  { id: 'div-mod', cat: 'Math', gist: 'share sweets fairly', kid: 'Sharing 17 sweets between 5 friends: // is how many each friend gets, % is what\u2019s left in the bag.', what: 'Integer division gives the whole-number quotient; modulo gives the remainder. Great for digits, wrapping around and halving.', watch: 'Negative numbers differ: -7 // 2 is -4 in Python, but Math.trunc(-7 / 2) is -3 in JavaScript.', stories: ['binary-search', 'rotate-image'],
     langs: {
       py: ['// and %', 'print(17 // 5, 17 % 5)\nprint(-7 // 2)', '3 2\n-4'],
-      java: ['/ and % (ints)', 'System.out.println(17 / 5 + " " + 17 % 5);\nSystem.out.println(-7 / 2);', '3 2\n-3'],
-      cpp: ['/ and % (ints)', 'cout << 17 / 5 << " " << 17 % 5 << "\\n";\ncout << -7 / 2;', '3 2\n-3'],
-      js: ['Math.floor(a / b) and %', 'console.log(Math.floor(17 / 5), 17 % 5);\nconsole.log(Math.trunc(-7 / 2));', '3 2\n-3'],
-      go: ['/ and % (ints)', 'fmt.Println(17/5, 17%5)\nfmt.Println(-7 / 2)', '3 2\n-3'] } },
-  { id: 'infinity', cat: 'Math', gist: 'a best-so-far you will beat', kid: 'A starting score so huge that the very first real score is guaranteed to beat it.', what: 'A sentinel value bigger (or smaller) than anything in your data \u2014 the usual starting point for \u201cminimum so far\u201d.', watch: 'Adding 1 to INT_MAX overflows in Java, C++ and Go. Use a long or check first.', stories: ['best-time-stock', 'coin-change'],
+      js: ['Math.floor(a / b) and %', 'console.log(Math.floor(17 / 5), 17 % 5);\nconsole.log(Math.trunc(-7 / 2));', '3 2\n-3'] } },
+  { id: 'infinity', cat: 'Math', gist: 'a best-so-far you will beat', kid: 'A starting score so huge that the very first real score is guaranteed to beat it.', what: 'A sentinel value bigger (or smaller) than anything in your data \u2014 the usual starting point for \u201cminimum so far\u201d.', watch: 'Pick a sentinel bigger than any real value. Python has float("inf"), JavaScript has Infinity.', stories: ['best-time-stock', 'coin-change'],
     langs: {
       py: ["float('inf')", "best = float('inf')\nfor price in [7, 1, 5]:\n    best = min(best, price)\nprint(best)", '1'],
-      java: ['Integer.MAX_VALUE', 'int best = Integer.MAX_VALUE;\nfor (int p : prices) best = Math.min(best, p);', '1'],
-      cpp: ['INT_MAX', 'int best = INT_MAX;\nfor (int p : prices) best = min(best, p);', '1'],
-      js: ['Infinity', 'let best = Infinity;\nfor (const p of prices) best = Math.min(best, p);', '1'],
-      go: ['math.MaxInt', 'best := math.MaxInt\nfor _, p := range prices {\n    best = min(best, p)\n}', '1'] } },
+      js: ['Infinity', 'let best = Infinity;\nfor (const p of prices) best = Math.min(best, p);', '1'] } },
   { id: 'char-code', cat: 'Strings', gist: 'letters as locker numbers', kid: 'Every letter has a locker number. \u2018a\u2019 is locker 97, so \u2018c\u2019 minus \u2018a\u2019 is 2.', what: 'Turns a character into its number code and back. \u201cc - \u2018a\u2019\u201d maps letters to 0\u201325 for a 26-slot count array.', watch: '', stories: ['valid-anagram', 'group-anagrams'],
     frames: { cells: ['a', 'b', 'c', 'd'], steps: [[[0], "'a' \u2192 97 \u2192 slot 0"], [[2], "'c' \u2192 99 \u2192 slot 2"], [[3], "'d' \u2192 100 \u2192 slot 3"]] },
     langs: {
       py: ['ord() / chr()', "print(ord('c') - ord('a'))\nprint(chr(ord('a') + 3))", '2\nd'],
-      java: ["c - 'a'", "System.out.println('c' - 'a');\nSystem.out.println((char) ('a' + 3));", '2\nd'],
-      cpp: ["c - 'a'", "cout << ('c' - 'a') << \"\\n\";\ncout << char('a' + 3);", '2\nd'],
-      js: ['charCodeAt / fromCharCode', "console.log('c'.charCodeAt(0) - 97);\nconsole.log(String.fromCharCode(97 + 3));", '2\nd'],
-      go: ["rune math", "fmt.Println('c' - 'a')\nfmt.Println(string(rune('a' + 3)))", '2\nd'] } },
+      js: ['charCodeAt / fromCharCode', "console.log('c'.charCodeAt(0) - 97);\nconsole.log(String.fromCharCode(97 + 3));", '2\nd'] } },
   { id: 'append-pop', cat: 'Collections', gist: 'push and pop the end', kid: 'A pile of plates: put one on top, take the top one off. Nobody touches the bottom.', what: 'Adds to or removes from the end of a list in constant time \u2014 which makes a plain list a perfect stack.', watch: 'Removing from the FRONT of a list is slow; use a deque for that.', stories: ['valid-parentheses', 'daily-temperatures', 'min-stack'],
     frames: { cells: ['(', '[', '{'], steps: [[[0], "push '('"], [[0, 1], "push '['"], [[0, 1, 2], "push '{'"], [[0, 1], "'}' arrives \u2192 pop '{' \u2014 it matches"]] },
     langs: {
       py: ['append() / pop()', "stack = []\nstack.append('(')\nstack.append('[')\nprint(stack.pop(), stack)", "[ ['(']"],
-      java: ['Deque push() / pop()', 'Deque<Character> stack = new ArrayDeque<>();\nstack.push(\'(\'); stack.push(\'[\');\nSystem.out.println(stack.pop() + " " + stack);', '[ [(]'],
-      cpp: ['push_back() / pop_back()', "vector<char> st;\nst.push_back('('); st.push_back('[');\nchar top = st.back(); st.pop_back();", "[  (then '(' remains)"],
-      js: ['push() / pop()', "const stack = [];\nstack.push('('); stack.push('[');\nconsole.log(stack.pop(), stack);", "[ [ '(' ]"],
-      go: ['append / slice off the end', "st := []rune{}\nst = append(st, '(', '[')\ntop := st[len(st)-1]\nst = st[:len(st)-1]", "top = '['"] } }
+      js: ['push() / pop()', "const stack = [];\nstack.push('('); stack.push('[');\nconsole.log(stack.pop(), stack);", "[ [ '(' ]"] } }
 ];
 
 const LANG_KEY = 'dsaviz-lang';

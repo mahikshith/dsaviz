@@ -46,13 +46,10 @@ function rvTrainScene() {
     board: true, boardTitle: 'The conductor’s hook sheet',
     actorLabels: ['Conductor · curr'],
     goal: 'Turn the train around by turning every hook', status: ['Re-coupling…', 'Train turned'],
-    lines: { py: { intro: 2, tail: 5, flip: 5, found: 7 }, java: { intro: 2, tail: 5, flip: 5, found: 9 }, cpp: { intro: 2, tail: 5, flip: 5, found: 9 }, js: { intro: 2, tail: 5, flip: 5, found: 9 }, go: { intro: 2, tail: 6, flip: 6, found: 9 } },
+    lines: { py: { intro: 2, tail: 5, flip: 5, found: 7 }, js: { intro: 2, tail: 5, flip: 5, found: 9 } },
     code: {
       py: [['def reverseList(head):', ''], ['    prev, curr = None, head', ''], ['    while curr:', ''], ['        nxt = curr.next', '  # remember the next carriage'], ['        curr.next = prev', '  # turn the hook backward'], ['        prev, curr = curr, nxt', ''], ['    return prev', '']],
-      java: [['ListNode reverseList(ListNode head) {', ''], ['    ListNode prev = null, curr = head;', ''], ['    while (curr != null) {', ''], ['        ListNode nxt = curr.next;', '  // remember the next carriage'], ['        curr.next = prev;', '  // turn the hook backward'], ['        prev = curr;', ''], ['        curr = nxt;', ''], ['    }', ''], ['    return prev;', ''], ['}', '']],
-      cpp: [['ListNode* reverseList(ListNode* head) {', ''], ['    ListNode *prev = nullptr, *curr = head;', ''], ['    while (curr) {', ''], ['        ListNode* nxt = curr->next;', '  // remember the next carriage'], ['        curr->next = prev;', '  // turn the hook backward'], ['        prev = curr;', ''], ['        curr = nxt;', ''], ['    }', ''], ['    return prev;', ''], ['}', '']],
       js: [['function reverseList(head) {', ''], ['  let prev = null, curr = head;', ''], ['  while (curr) {', ''], ['    const nxt = curr.next;', '  // remember the next carriage'], ['    curr.next = prev;', '  // turn the hook backward'], ['    prev = curr;', ''], ['    curr = nxt;', ''], ['  }', ''], ['  return prev;', ''], ['}', '']],
-      go: [['func reverseList(head *ListNode) *ListNode {', ''], ['    var prev *ListNode', ''], ['    curr := head', ''], ['    for curr != nil {', ''], ['        nxt := curr.Next', '  // remember the next carriage'], ['        curr.Next = prev', '  // turn the hook backward'], ['        prev, curr = curr, nxt', ''], ['    }', ''], ['    return prev', ''], ['}', '']]
     },
     rules: [['Start at the front, nothing behind', 'intro'], ['First carriage → hook it to None', 'tail'], ['Next carriage → hook it to the one behind', 'flip'], ['Nothing ahead → the last carriage is the new front', 'found']],
     complexity: [['O(n)', 'each hook is turned once'], ['O(1)', 'three hands, no spare train']],

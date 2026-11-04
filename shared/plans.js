@@ -5862,7 +5862,7 @@ function planRefLines(id, spec) {
 }
 function planFor(id) { return PLANS[id] || null; }
 // Comment marker per editor language, for "Insert plan as comments".
-const PLAN_COMMENT = { py: '#', js: '//', java: '//', cpp: '//', go: '//', sql: '--' };
+const PLAN_COMMENT = { py: '#', js: '//', sql: '--' };
 function planCommentLines(plan, lang) {
   const c = PLAN_COMMENT[lang] || '//';
   return [c + ' Plan: ' + plan.goal].concat(plan.steps.map((s, i) => c + ' ' + (i + 1) + '. ' + s[0]));

@@ -471,7 +471,7 @@ const DS = (function () {
   // -- submission history: dsaviz-submissions-v1 = { v: 1, subs: { pid: [{ at, lang, passed, total, code }] } }, oldest first.
   // Only the last SUB_MAX submissions per problem are kept, each up to SUB_CODE_MAX characters of code.
   const SUB_MAX = 20, SUB_CODE_MAX = 20000;
-  const SUB_LANGS = ['py', 'js', 'java', 'cpp', 'go', 'sql'];
+  const SUB_LANGS = ['py', 'js', 'sql'];
   function cleanSub(x) {
     if (!x || typeof x !== 'object') return null;
     const at = Number(x.at);

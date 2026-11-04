@@ -573,7 +573,7 @@ class CodeRunner {
       reset: () => this.reset(), resetLabel: s.confirmReset ? 'Click again to reset' : 'Reset code', resetBorder: s.confirmReset ? t.accent : 'transparent',
       resetAria: s.confirmReset ? 'Click again to replace your code with the starter code' : 'Reset to the starter code',
       runnable, notRunnable: hasTests && !runnable, busy: s.busy,
-      notRunnableMsg: hasTests && spec.langs && RUNNABLE[lang] ? spec.langNote || 'This one runs in ' + spec.langs.map((k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1]).join(' and ') + ' here. Switch language to run it.' : 'Running Java, C++ and Go in the browser is coming. Copy it to your IDE for now.',
+      notRunnableMsg: hasTests && spec.langs && RUNNABLE[lang] ? spec.langNote || 'This one runs in ' + spec.langs.map((k) => (CODE_LANGS.find(([x]) => x === k) || [k, k])[1]).join(' and ') + ' here. Switch language to run it.' : 'This language does not run here.',
       run: () => this.execute('run'), submit: () => this.execute('submit'),
       runLabel: spec && spec.program && !graded ? 'Run' : this.opts.single || graded ? (this.opts.runLabel || 'Check') : 'Run', showSubmit: !this.opts.single && !(spec && spec.program), showCustom: !this.opts.single && !(spec && spec.program), noCustom: !!(this.opts.single || (spec && spec.program)),
       hasConsole: !!(spec && spec.program && !graded), console: consoleLines, consoleEmpty: !consoleLines.length,

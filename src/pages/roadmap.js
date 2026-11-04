@@ -34,7 +34,7 @@ class Component extends DCLogic {
     listenTheme(this);
     // A search result for a pattern lands here: send it to the Problems page filtered by that topic.
     try {
-      const focus = searchFocus(SEARCH_TYPES.pattern[2]);
+      const focus = searchFocus('dsaviz-pattern-focus');
       if (focus && window.__dsNav) { window.__dsNav('Sheet.dc.html', '?topic=' + encodeURIComponent(focus), true); return; }
     } catch (e) {}
     // ?at=ch-4 (or ?at=track-git): bring that chapter or track into view once the page has drawn it.

@@ -111,8 +111,10 @@ const canvas = JSON.parse(read('pages', 'canvas.json'));
 const board = canvas.boards['Sheet.dc.html'];
 if (!board) fail('Sheet.dc.html missing from pages/canvas.json');
 const drawer = read('shared', 'drawer.js');
-const menuLine = (drawer.match(/\['Sheet\.dc\.html'[^\]]*\]/) || [''])[0];
-if (!menuLine) fail('Sheet.dc.html missing from the menu drawer');
+// Step 5: Problems is in the top bar and the phone menu's Main sections (NAV_ITEMS in shared/nav.js), not repeated in the drawer's site list.
+const menuLine = (read('shared', 'nav.js').match(/\['sheet', 'Problems', 'Sheet\.dc\.html'[^\]]*\]/) || [''])[0];
+if (!menuLine) fail('Sheet.dc.html missing from the top bar items (shared/nav.js NAV_ITEMS)');
+if (/\['Sheet\.dc\.html'/.test(drawer)) fail('Sheet.dc.html is repeated in the drawer site list');
 [['canvas title', board ? board.title : ''], ['menu entry', menuLine]].forEach(([where, text]) => {
   (text.match(/\d+/g) || []).forEach((n) => { if (Number(n) !== SHEET.length) fail(where + ' says ' + n + ' but the sheet has ' + SHEET.length); });
 });

@@ -342,8 +342,8 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   const firstNode = RM.ROADMAP_NODES.find((n) => n.id === 's-programs');
   ok(RM.rmStartNodeCounts(firstNode, DS).total === firstNode.lessons.length, 'the Your first programs card counts its own lessons');
   // The pages read these counts, not their own.
-  [['Start', ['const counts = DS.startCounts(1);', "counts.done + ' of ' + counts.total + ' Level 1 lessons done'"]], ['Home', ['const startCount = DS.startCounts(1);', "startCount.done + ' of ' + startCount.total + ' Level 1 lessons done'"]],
-    ['Patterns', ['rmStartNodeCounts(n, DS)', 'rmStartLaneCounts(l.key, l.nodes, DS)']]].forEach(([p, need]) => { const src = read('pages', p + '.dc.html'); need.forEach((x) => { if (src.indexOf(x) < 0) fail(p, 'should count Start here lessons with the shared helper: ' + x); }); });
+  [['Start', ['const counts = DS.startCounts(1);', "counts.done + ' of ' + counts.total + ' Level 1 lessons done'"]], ['Home', ['const startCount = DS.startCounts(1);', "startCount.done + ' of ' + startCount.total + ' Level 1 lessons done'"]]
+    ].forEach(([p, need]) => { const src = read('pages', p + '.dc.html'); need.forEach((x) => { if (src.indexOf(x) < 0) fail(p, 'should count Start here lessons with the shared helper: ' + x); }); });
   if (read('src', 'pages', 'profile.js').indexOf('DS.startRing()') < 0) fail('Profile', 'should count Start here lessons with DS.startRing');
 }
 

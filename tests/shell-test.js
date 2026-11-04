@@ -26,7 +26,9 @@ server.listen(0, async () => {
   // DS_ONLY=problem skips the lesson checks and runs only the Problem page checks at the end of this file.
   const ONLY_PROBLEM = process.env.DS_ONLY === 'problem';
   // DS_ONLY=problems runs only the Problems page and search checks (step 4).
-  const ONLY_PAGE = process.env.DS_ONLY === 'problems';
+  const ONLY_PAGE = process.env.DS_ONLY === 'problems' || process.env.DS_ONLY === 'roadmap';
+  // DS_ONLY=roadmap runs only the Roadmap checks (step 5).
+  const ONLY_RM = process.env.DS_ONLY === 'roadmap';
   for (const [theme, width] of ONLY_PROBLEM || ONLY_PAGE ? [] : [['max', 320], ['max', 390], ['max', 1024], ['max', 1440], ['paper', 390]]) {
     const page = await browser.newPage({ viewport: { width, height: 800 }, isMobile: width < 760, hasTouch: width < 760 });
     await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
@@ -214,7 +216,131 @@ server.listen(0, async () => {
     if ((await on()) !== false) fail(id + ': the button is still showing at the top');
     await pg3.close();
   }
-  // ---- The top bar: on phones (below 760) only the menu, logo, search and profile; wider: the menu, logo, Roadmap, Problems, search and profile.
+  // ---- The Roadmap (Patterns.dc.html, step 5): one page with no tabs or folds, every track in order as a block with its lessons showing, one click opens any
+  // lesson, Back names the Roadmap (Start here lessons: "Back to Chapter N" and land on that chapter) and keeps the scroll, one "Start here", equal block heights
+  // in each grid row, one block per row on phones, no story words, no sideways scroll. DS_ONLY=roadmap runs just this.
+  if ((!ONLY_PROBLEM && !ONLY_PAGE) || ONLY_RM) {
+    const TRACKS = ['Start here', 'DSA concepts', 'Patterns', 'Complexity', 'Git', 'System design', 'AI & ML'];
+    const closeDaily = (p) => p.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+    const counts = {};
+    for (const [theme, width] of [['max', 1440], ['max', 1024], ['max', 390], ['paper', 390], ['max', 320]]) {
+      const pg = await browser.newPage({ viewport: { width, height: 900 }, isMobile: width < 760, hasTouch: width < 760 });
+      await pg.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Patterns.dc.html')); await pg.waitForTimeout(900); await closeDaily(pg);
+      const id = 'Roadmap at ' + width + (theme === 'max' ? '' : ' ' + theme);
+      const r = await pg.evaluate(() => {
+        const main = document.querySelector('main.sh-main');
+        const blocks = [...main.querySelectorAll('.rm-block')];
+        const seen = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
+        const rows = {}; blocks.forEach((b) => { const k = Math.round(b.getBoundingClientRect().top); (rows[k] = rows[k] || []).push(b); });
+        const startHere = [...document.querySelectorAll('#app *')].filter((e) => !e.children.length && e.textContent.trim() === 'Start here' && seen(e)).length;
+        const W = document.documentElement.clientWidth;
+        return {
+          h1: [...main.querySelectorAll('h1')].map((h) => h.textContent.trim()),
+          tracks: blocks.map((b) => b.querySelector('h2').textContent.trim()),
+          lessons: blocks.map((b) => [...b.querySelectorAll('a.rm-lesson')].filter(seen).length),
+          allLinks: blocks.map((b) => b.querySelectorAll('a.rm-lesson').length),
+          counts: blocks.map((b) => b.querySelector('.sh-label').textContent.trim()),
+          bars: blocks.map((b) => { const p = b.querySelector('[role=progressbar]'); return !!p && seen(p) && p.getBoundingClientRect().height <= 6; }),
+          folds: main.querySelectorAll('[role=tab],[role=tablist],details,[aria-expanded],.sh-tab').length,
+          rowHeights: Object.values(rows).map((g) => g.map((b) => Math.round(b.getBoundingClientRect().height))),
+          rowSizes: Object.values(rows).map((g) => g.length),
+          blockSpans: blocks.map((b) => [Math.round(b.getBoundingClientRect().left), Math.round(b.getBoundingClientRect().width)]),
+          chapters: [...main.querySelectorAll('h3[id^="ch-"]')].length,
+          startHere, W, over: document.documentElement.scrollWidth - W,
+          text: main.textContent,
+          small: [...main.querySelectorAll('*')].filter((e) => !e.children.length && e.textContent.trim() && parseFloat(getComputedStyle(e).fontSize) < 13.99).length
+        };
+      });
+      if (r.h1.join() !== 'Roadmap') fail(id + ': the title is "' + r.h1.join() + '", not Roadmap');
+      if (r.tracks.join('|') !== TRACKS.join('|')) fail(id + ': tracks are ' + r.tracks.join(', ') + ', not ' + TRACKS.join(', '));
+      if (r.folds) fail(id + ': ' + r.folds + ' tabs or folds on the page');
+      r.lessons.forEach((n, i) => { if (n < 8 || n !== r.allLinks[i]) fail(id + ': ' + TRACKS[i] + ' shows ' + n + ' of ' + r.allLinks[i] + ' lessons'); });
+      r.counts.forEach((c, i) => { if (!/^\d+ of \d+ (done|solved|opened)$/.test(c)) fail(id + ': ' + TRACKS[i] + ' count reads "' + c + '"'); });
+      r.bars.forEach((ok, i) => { if (!ok) fail(id + ': ' + TRACKS[i] + ' has no thin progress bar'); });
+      if (r.startHere !== 1) fail(id + ': "Start here" shows ' + r.startHere + ' times');
+      if (r.chapters !== 20) fail(id + ': ' + r.chapters + ' chapter anchors, not 20');
+      if (r.over > 0) fail(id + ': scrolls sideways by ' + r.over + 'px');
+      if (r.small) fail(id + ': ' + r.small + ' texts under 14px');
+      const words = /lantern|treehouse|canteen|tortoise|ripple|why learn this|coming soon/i.exec(r.text);
+      if (words) fail(id + ': story words or old copy on the page: ' + words[0]);
+      r.rowHeights.forEach((hs) => { if (Math.max(...hs) - Math.min(...hs) > 1) fail(id + ': blocks in one row differ in height: ' + hs.join(', ')); });
+      if (width < 760) r.blockSpans.forEach(([l, w], i) => { if (Math.abs(l - 16) > 1 || Math.abs(w - (r.W - 32)) > 1) fail(id + ': ' + TRACKS[i] + ' is not one block per row (' + l + ', ' + w + ')'); });
+      else if (width >= 1200 && r.rowSizes.join() !== '1,2,2,1,1') fail(id + ': rows hold ' + r.rowSizes.join('+') + ' blocks, not 1,2,2,1,1');
+      if (width === 1440) { counts.rows = r.rowSizes.join('+'); counts.lessons = r.allLinks.join(','); }
+      if (pg.errs.length) fail(id + ' page errors: ' + pg.errs[0]);
+      await pg.close();
+    }
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      const open = async () => { await pg.evaluate(() => window.__dsNav('Patterns.dc.html')); await pg.waitForTimeout(700); await closeDaily(pg); };
+      const state = () => pg.evaluate(() => ({ hash: location.hash, y: Math.round(window.scrollY), back: (document.querySelector('a.sh-back') || {}).textContent || '' }));
+      // One click opens a lesson of every track (Complexity: a section); Back names the Roadmap and returns with the scroll kept.
+      const WANT_HASH = { start: '#Chapter', dsa: '#ConceptLesson', git: '#Git', sd: '#SDLesson', ai: '#AILesson', cplx: '#Complexity' };
+      for (const key of ['start', 'dsa', 'git', 'sd', 'ai', 'cplx']) {
+        await open();
+        const link = pg.locator('[data-track="' + key + '"] a.rm-lesson').nth(key === 'start' ? 3 : 5);
+        const title = (await link.locator('span').nth(1).textContent()).trim();
+        await link.evaluate((e) => e.scrollIntoView({ block: 'center' })); await pg.waitForTimeout(150);
+        const y0 = await pg.evaluate(() => Math.round(window.scrollY));
+        await link.click(); await pg.waitForTimeout(900);
+        const s = await state();
+        if (s.hash !== WANT_HASH[key]) fail('Roadmap: one click on "' + title + '" (' + key + ') opened ' + s.hash + ', not ' + WANT_HASH[key]);
+        else if (key !== 'cplx') {
+          const wantBack = key === 'start' ? /^(← )?Back to Chapter \d+$/ : /^(← )?Back to Roadmap$/;
+          if (!wantBack.test(s.back.trim())) fail('Roadmap: the lesson "' + title + '" (' + key + ') says "' + s.back.trim() + '"');
+          await pg.click('a.sh-back'); await pg.waitForTimeout(2300);
+          const b = await state();
+          if (b.hash !== '#Patterns') fail('Roadmap: Back from "' + title + '" went to ' + b.hash);
+          else if (Math.abs(b.y - y0) > 3) fail('Roadmap: Back from "' + title + '" came back at scroll ' + b.y + ', not ' + y0);
+        }
+      }
+      // Back to Chapter N lands on that chapter's anchor, with the scroll kept.
+      await open();
+      await pg.locator('h3#ch-12').evaluate((e) => e.scrollIntoView({ block: 'start' })); await pg.waitForTimeout(200);
+      const y1 = await pg.evaluate(() => Math.round(window.scrollY));
+      await pg.locator('.rm-group:has(h3#ch-12) a.rm-lesson').first().click(); await pg.waitForTimeout(900);
+      const s12 = await state();
+      if (s12.back.replace(/^←\s*/, '').trim() !== 'Back to Chapter 12') fail('Roadmap: a chapter 12 lesson says "' + s12.back.trim() + '", not Back to Chapter 12');
+      await pg.click('a.sh-back'); await pg.waitForTimeout(2300);
+      const b12 = await pg.evaluate(() => { const h = document.getElementById('ch-12'); const r = h ? h.getBoundingClientRect() : null; return { hash: location.hash, y: Math.round(window.scrollY), top: r ? Math.round(r.top) : -1, bottom: r ? Math.round(r.bottom) : -1, vh: window.innerHeight }; });
+      if (b12.hash !== '#Patterns' || b12.bottom <= 52 || b12.top >= b12.vh) fail('Roadmap: Back to Chapter 12 did not land on the chapter (' + JSON.stringify(b12) + ')');
+      if (Math.abs(b12.y - y1) > 3) fail('Roadmap: Back to Chapter 12 came back at scroll ' + b12.y + ', not ' + y1);
+      // Patterns: each pattern opens the Problems page filtered by that topic, and Back returns here.
+      await open();
+      await pg.locator('[data-track="patterns"] a.rm-lesson', { hasText: 'Two Pointers' }).click(); await pg.waitForTimeout(900);
+      const pr = await pg.evaluate(() => ({ hash: location.hash, search: location.search, sel: (document.querySelector('select.sp-in') || {}).value, topics: [...document.querySelectorAll('.sp-body .sp-topic')].map((e) => e.textContent.trim()) }));
+      if (pr.hash !== '#Sheet' || pr.sel !== 'Two Pointers' || !pr.topics.length || pr.topics.some((t) => t !== 'Two Pointers') || !/topic=Two(%20|\+)Pointers/.test(pr.search)) fail('Roadmap: Two Pointers did not open Problems filtered by that topic: ' + JSON.stringify({ h: pr.hash, s: pr.search, sel: pr.sel, n: pr.topics.length }));
+      await pg.evaluate(() => window.__dsBack()); await pg.waitForTimeout(900);
+      if ((await state()).hash !== '#Patterns') fail('Roadmap: Back from the filtered Problems page did not return to the Roadmap');
+      // A pattern found by search opens the filtered Problems page too.
+      await pg.evaluate(() => { localStorage.setItem('dsaviz-pattern-focus', 'Heap'); window.__dsNav('Patterns.dc.html'); }); await pg.waitForTimeout(1000);
+      const sr = await pg.evaluate(() => ({ hash: location.hash, sel: (document.querySelector('select.sp-in') || {}).value }));
+      if (sr.hash !== '#Sheet' || sr.sel !== 'Heap') fail('Roadmap: a pattern search result did not open Problems filtered by Heap: ' + JSON.stringify(sr));
+      if (pg.errs.length) fail('Roadmap page errors: ' + pg.errs[0]);
+      await pg.close();
+    }
+    // The phone menu no longer repeats what the Roadmap reaches.
+    {
+      const pg = await browser.newPage({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Patterns.dc.html')); await pg.waitForTimeout(700); await closeDaily(pg);
+      await pg.click('button[aria-label="Open menu"]'); await pg.waitForTimeout(300);
+      const site = await pg.evaluate(() => [...document.querySelectorAll('nav[aria-label="Site"] a')].map((a) => a.textContent.trim()));
+      const dup = site.filter((t) => /^(Library|DSA concepts|Complexity|Git|System design|AI & ML|Problems)/.test(t));
+      if (dup.length) fail('Phone menu repeats what the Roadmap reaches: ' + dup.join(', '));
+      await pg.close();
+    }
+    console.log('  Roadmap: rows ' + counts.rows + ' blocks at 1440, lessons per track ' + counts.lessons + ', one Start here, no tabs or folds, equal heights per row, one per row on phones, one click opens any lesson, Back to Roadmap / Chapter N keeps the scroll and lands on the chapter, Patterns open Problems filtered');
+  }
+  if (process.env.DS_ONLY === 'roadmap') { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'roadmap clean'); process.exit(bad ? 1 : 0); }
+  // ---- The top bar: on phones (below 760) only the menu, logo, search and profile; wider: no menu, logo, Roadmap, Problems, search and profile.
   // No two items overlap, none is covered by another element or past the screen edge, and no old Back button is in the bar. On phones the menu holds
   // Roadmap and Problems, with the current page marked.
   if (!ONLY_PROBLEM && !ONLY_PAGE) {
@@ -222,7 +348,8 @@ server.listen(0, async () => {
       const pg = await browser.newPage({ viewport: { width, height: 800 }, isMobile: width < 760, hasTouch: width < 760 });
       await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
       await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
-      const WANT = width < 760 ? ['Open menu', 'DSAMaxxing home', 'Search the site', 'Your profile'] : ['Open menu', 'DSAMaxxing home', 'Roadmap', 'Problems', 'Search the site', 'Your profile'];
+      // The menu is a phone control (step 5): the Roadmap reaches every track, so wider screens have no menu button.
+      const WANT = width < 760 ? ['Open menu', 'DSAMaxxing home', 'Search the site', 'Your profile'] : ['DSAMaxxing home', 'Roadmap', 'Problems', 'Search the site', 'Your profile'];
       // Pages that open straight to a Problem page come with a trail, so the old Back button would show if it were still wired in.
       for (const f of ['Home.dc.html', 'Sheet.dc.html', 'Code.dc.html', 'Story.dc.html', 'Patterns.dc.html', 'Chapter.dc.html', 'Profile.dc.html'].concat(pages.filter((p) => !/^(Home|Sheet|Code|Story|Patterns|Chapter|Profile)\./.test(p)))) {
         await pg.evaluate((n) => window.__dsNav(n), f); await pg.waitForTimeout(350);

@@ -46,7 +46,8 @@ const ALLOWED = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsd
   const revisit = read('src', 'pages', 'revisit.js');
   if (!/solveHref\(slug\)/.test(revisit)) fail('src/pages/revisit.js', 'a sheet card does not open its problem page');
   if (!/solveHref: 'Code\.dc\.html\?problem='/.test(read('pages', 'Briefing.dc.html'))) fail('Briefing.dc.html', 'the briefing does not link its problem page');
-  if (!/href: solveHref\(id\)/.test(read('pages', 'Patterns.dc.html'))) fail('Patterns.dc.html', 'pattern cards do not open problem pages');
+  // Step 5: the Patterns page is the Roadmap; each pattern opens the Problems page filtered by that topic.
+  if (!/Sheet\.dc\.html\?topic=/.test(read('src', 'pages', 'roadmap.js'))) fail('src/pages/roadmap.js', 'a pattern does not open the Problems page filtered by its topic');
 
   // 3. No outside catalogue numbers: the data carries none, the markup prints none, the built site shows none.
   PROBLEMS.forEach((p) => { if ('n' in p) fail('catalog ' + p.id, 'carries a problem number'); });

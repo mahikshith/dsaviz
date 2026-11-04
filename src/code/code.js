@@ -21,7 +21,10 @@ const PB_MINUTES = DS.TIMED.minutes;
 function pbTimedOn() { try { return window.localStorage.getItem(PB_TIMED_KEY) === '1'; } catch (e) { return false; } }
 function pbSeconds(pid) {
   const d = SQL_SPECS[pid] ? SQL_SPECS[pid].diff : TEST_SPECS[pid] ? specInfo(pid).diff : 'Medium';
-  return (PB_MINUTES[d] || 30) * 60;
+  // The problem's own estimate (the "about N min" on the page) wins; the per-difficulty minutes are only the fallback.
+  let own = 0;
+  try { const P = PROBLEMS.find((p) => p.id === pid); own = P && P.mins > 0 ? P.mins : 0; } catch (e) {}
+  return (own || PB_MINUTES[d] || 30) * 60;
 }
 function pbClockText(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 // "Back to ...": what the learner came from, by the page's own name.

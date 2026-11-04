@@ -534,6 +534,9 @@ server.listen(0, async () => {
       const secs = (s) => { const m = /^(\d+):(\d\d)$/.exec(s || ''); return m ? +m[1] * 60 + +m[2] : -1; };
       const c1 = await clock();
       if (secs(c1) < 0) fail('Timed: no countdown on the Problem page (it reads "' + c1 + '")');
+      // The countdown starts from the problem's own "about N min", not a per-difficulty default.
+      const est = await pg.evaluate(() => { const m = /about (\d+) min/.exec((document.querySelector('.pb-meta-l') || {}).textContent || ''); return m ? +m[1] : 0; });
+      if (est && Math.abs(secs(c1) - est * 60) > 5) fail('Timed: the countdown starts at ' + c1 + ' but the page says about ' + est + ' min');
       await pg.waitForTimeout(2200);
       const c2 = await clock();
       if (!(secs(c2) >= 0 && secs(c2) < secs(c1))) fail('Timed: the countdown does not go down (' + c1 + ' then ' + c2 + ')');

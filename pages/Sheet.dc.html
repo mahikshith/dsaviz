@@ -422,6 +422,19 @@ a.sh-row:hover{background:var(--sh-sunk)}
 select.sp-in{cursor:pointer}
 .sp-in::placeholder{color:var(--sh-muted);opacity:1}
 .sp-in option{background:var(--sh-surface);color:var(--sh-text)}
+.sp-opts{display:flex;flex-wrap:wrap;align-items:center;gap:0 24px;margin-top:8px}
+.sp-opt{display:inline-flex;align-items:center;gap:4px}
+.sp-chip{min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer}
+.sp-chip:hover{background:var(--sh-sunk)}
+.sp-chip[aria-pressed="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sp-switch{min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.sp-track{position:relative;width:40px;height:24px;border-radius:12px;background:var(--sh-line);flex-shrink:0;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.sp-track[data-on="true"]{background:var(--sh-accent)}
+.sp-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--sh-text);transition:transform .15s cubic-bezier(.23,1,.32,1)}
+.sp-track[data-on="true"] .sp-knob{transform:translateX(16px);background:var(--sh-on)}
+.sp-info{min-width:44px;min-height:44px;border:0;border-radius:6px;background:transparent;color:var(--sh-muted);font:inherit;font-size:calc(18px * var(--ts, 1));cursor:pointer}
+.sp-info:hover{color:var(--sh-text);background:var(--sh-sunk)}
+.sp-tip{margin:0;padding:8px 12px;border-radius:6px;background:var(--sh-sunk);font-size:calc(16px * var(--ts, 1));color:var(--sh-text)}
 .sp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .sp-table{display:block}
 .sp-row{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1.5fr) 128px 72px;align-items:center;gap:0 16px;padding:0 12px;border-bottom:1px solid var(--sh-line);min-height:48px}
@@ -447,6 +460,8 @@ select.sp-in{cursor:pointer}
 .sp-in{height:44px}
 .sp-search,.sp-pick{flex:1 1 100%}
 .sp-pick{flex-basis:calc(50% - 8px);flex-grow:1}
+.sp-tools .sp-search+.sp-pick{flex-basis:100%}
+.sp-opts{gap:0 8px}
 .sp-head{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);padding:0;border:0;min-height:0}
 .sp-row{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"name name name done" "topic diff . done";gap:0 16px;padding:8px 0}
 .sp-body .sp-row:hover{background:transparent}
@@ -459,6 +474,7 @@ select.sp-in{cursor:pointer}
 .sp-pos{flex-basis:100%;text-align:center;order:-1}
 .sp-pager button{flex:1 1 0}
 }
+@media (prefers-reduced-motion:reduce){.sp-track,.sp-knob{transition:none}}
 </style>
 <main class="sh-main">
 <h1>Problems</h1>
@@ -468,6 +484,12 @@ select.sp-in{cursor:pointer}
 <label class="sp-field sp-pick"><span class="sh-label">Difficulty</span><select class="sp-in" value="{{diffSel}}" onChange="{{onDiff}}"><sc-for list="{{diffOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
 <label class="sp-field sp-pick"><span class="sh-label">Done</span><select class="sp-in" value="{{doneSel}}" onChange="{{onDone}}"><sc-for list="{{doneOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
 </div>
+<div class="sp-opts">
+<span class="sp-opt"><button class="sp-chip" aria-pressed="{{dueOn}}" onClick="{{onDue}}">Due for review</button><button class="sp-info" aria-label="About Due for review" aria-expanded="{{tipDue}}" onClick="{{onTipDue}}"><span aria-hidden="true">ⓘ</span></button></span>
+<span class="sp-opt"><button class="sp-switch" role="switch" aria-checked="{{timedOn}}" onClick="{{onTimed}}"><span class="sp-track" data-on="{{timedOn}}"><span class="sp-knob"></span></span>Timed</button><button class="sp-info" aria-label="About Timed" aria-expanded="{{tipTimed}}" onClick="{{onTipTimed}}"><span aria-hidden="true">ⓘ</span></button></span>
+</div>
+<sc-if value="{{tipDue}}" hint-placeholder-val="{{ false }}"><p class="sp-tip">Due for review shows problems you solved that are ready to try again.</p></sc-if>
+<sc-if value="{{tipTimed}}" hint-placeholder-val="{{ false }}"><p class="sp-tip">{{tipTimedText}}</p></sc-if>
 <p class="sp-sr" role="status" aria-live="polite">{{status}}</p>
 <sc-if value="{{hasRows}}" hint-placeholder-val="{{ true }}">
 <div class="sp-table" role="table" aria-label="Problems">
@@ -483,7 +505,7 @@ select.sp-in{cursor:pointer}
 </div>
 </sc-if>
 <sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}">
-<div class="sp-empty"><p>No problems match.</p><button class="sh-chip" onClick="{{clearFilters}}">Clear filters</button></div>
+<div class="sp-empty"><p>{{emptyText}}</p><button class="sh-chip" onClick="{{clearFilters}}">Clear filters</button></div>
 </sc-if>
 <sc-if value="{{hasPager}}" hint-placeholder-val="{{ true }}">
 <nav class="sp-pager" aria-label="Pages">
@@ -1520,8 +1542,11 @@ const DS = (function () {
     [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, KEY.subs, KEY.streak, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
+  // Timed practice (the Timed switch on the Problems page, the countdown on the Problem page): the setting's key and the minutes per difficulty.
+  const TIMED = { key: 'dsaviz-timed', minutes: { Easy: 20, Medium: 30, Hard: 45 } };
+
   return {
-    KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
+    TIMED, KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
     days, streak, FREEZE_RUN, useFreeze, daily, markDailySeen, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,
@@ -2858,16 +2883,42 @@ const WHY = {
 // ---- page ----
 // The Problems page (pages/Sheet.dc.html; the page file keeps its old name until step 10). Markup: src/pages/problems_body.html.
 // A table of every problem in the master sheet (SHEET, shared/sheet.js): title, topic, difficulty, done. A search box and three filters
-// (topic, difficulty, done). The filters live in the URL (?q=&topic=&difficulty=&done=&page=), so Back restores them.
-// Rows are paged, PR_PAGE at a time, so the page never draws all of them at once. Today's 5, Random, lists, stars, notes, export and
-// import, group folds and the company filter are gone from the page; their data and code stay in the source (shared/lists.js, shared/sheet.js).
+// (topic, difficulty, done), then two switches: "Due for review" (the problems the old Revisit page offered today, from DS.reviewDue())
+// and "Timed" (opening a problem then shows a countdown on the Problem page; remembered in dsaviz-timed). The filters live in the URL
+// (?q=&topic=&difficulty=&done=&due=1&page=), so Back restores them. Timed is a setting, not a filter, so it is not in the URL.
+// Rows are paged, PR_PAGE at a time, so the page never draws all of them at once: search and filters run over all 562 first, then the page
+// shows one slice (12 pages). Today's 5, Random, lists, stars, notes, export and import, group folds and the company filter are gone from
+// the page; their data and code stay in the source (shared/lists.js, shared/sheet.js).
 const PR_PAGE = 50;
 const PR_DIFFS = ['Easy', 'Medium', 'Hard'];
 const PR_TOPICS = SHEET_GROUPS.map(([n]) => n);
 const PR_DONE = [['yes', 'Done'], ['no', 'Not done']];
+const PR_TIMED_KEY = DS.TIMED.key;
+function prTimed() { try { return window.localStorage.getItem(PR_TIMED_KEY) === '1'; } catch (e) { return false; } }
+const PR_M = DS.TIMED.minutes;
+const PR_TIP_TIMED = 'Timed starts a countdown when you open a problem: ' + PR_M.Easy + ' minutes for Easy, ' + PR_M.Medium + ' for Medium and ' + PR_M.Hard + ' for Hard.';
+// The problems the old Revisit page offered today: sheet cards by row id, and story cards through the row that holds the story.
+function prDueRows() {
+  const out = new Set();
+  try {
+    DS.reviewDue().forEach((c) => {
+      if (c.kind === 'sheet') out.add(c.id.replace(/^sheet:/, ''));
+      else if (c.kind === 'story') SHEET.forEach((r) => { if (r.story === c.id || r.pid === c.id) out.add(r.id); });
+    });
+  } catch (e) {}
+  return out;
+}
+// Done: ticked in the old sheet, solved on the Problem page, or its story finished.
+function prDoneRows(prog) {
+  const ids = new Set();
+  try { DS.codePasses().ids.forEach((i) => ids.add(i)); DS.stories().ids.forEach((i) => ids.add(i)); } catch (e) {}
+  const out = new Set();
+  SHEET.forEach((r) => { if (prog.done[r.id] || ids.has(r.pid) || (r.story && ids.has(r.story))) out.add(r.id); });
+  return out;
+}
 // The filters from a query string; anything unknown is ignored.
 function prParse(search) {
-  const out = { q: '', topic: '', diff: '', done: '', page: 1 };
+  const out = { q: '', topic: '', diff: '', done: '', due: false, page: 1 };
   try {
     const p = new URLSearchParams(search || '');
     out.q = (p.get('q') || '').slice(0, 80);
@@ -2875,6 +2926,7 @@ function prParse(search) {
     if (PR_TOPICS.includes(topic)) out.topic = topic;
     if (PR_DIFFS.includes(diff)) out.diff = diff;
     if (PR_DONE.some(([k]) => k === done)) out.done = done;
+    out.due = p.get('due') === '1';
     const n = parseInt(p.get('page') || '1', 10);
     if (n > 1) out.page = n;
   } catch (e) {}
@@ -2887,6 +2939,7 @@ function prQuery(s) {
   if (s.topic) p.set('topic', s.topic);
   if (s.diff) p.set('difficulty', s.diff);
   if (s.done) p.set('done', s.done);
+  if (s.due) p.set('due', '1');
   if (s.page > 1) p.set('page', String(s.page));
   const str = p.toString();
   return str ? '?' + str : '';
@@ -2897,10 +2950,10 @@ function prMatches(r, words) {
   const hay = searchNorm(r.name + ' ' + r.pattern);
   return words.every((w) => hay.indexOf(w) >= 0);
 }
-function prFilter(s, prog) {
+function prFilter(s, doneSet, dueSet) {
   const words = searchNorm(s.q).split(' ').filter(Boolean);
   return SHEET.filter((r) => (!s.topic || r.pattern === s.topic) && (!s.diff || r.diff === s.diff) &&
-    (!s.done || (s.done === 'yes') === !!prog.done[r.id]) && prMatches(r, words));
+    (!s.done || (s.done === 'yes') === doneSet.has(r.id)) && (!s.due || dueSet.has(r.id)) && prMatches(r, words));
 }
 
 class Component extends DCLogic {
@@ -2908,11 +2961,12 @@ class Component extends DCLogic {
     super(props);
     let search = '';
     try { search = window.location.search; } catch (e) {}
-    this.state = Object.assign({ theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), status: '' }, prParse(search));
+    this.state = Object.assign({ theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), status: '', timed: prTimed(), tip: '' }, prParse(search));
   }
   componentDidMount() {
     listenTheme(this);
-    this.onSheet = (e) => { if (e.key === SHEET_KEY) this.setState({ prog: loadSheetProgress() }); };
+    // Progress from another tab: read it again (a new prog object also makes the done and due sets be worked out again).
+    this.onSheet = (e) => { if (!e.key || String(e.key).indexOf('dsaviz-') === 0) this.setState({ prog: loadSheetProgress() }); };
     // Back and Forward inside the page: read the filters from the address again.
     this.onPop = () => { try { if (window.location.hash === '#Sheet') this.setState(Object.assign(prParse(window.location.search), { status: 'List updated.' })); } catch (e) {} };
     try { window.addEventListener('storage', this.onSheet); window.addEventListener('popstate', this.onPop); } catch (e) {}
@@ -2927,7 +2981,16 @@ class Component extends DCLogic {
       if (url !== window.location.pathname + window.location.search + window.location.hash) window.history[push ? 'pushState' : 'replaceState'](null, '', url);
     } catch (e) {}
   }
-  clear() { this.set({ q: '', topic: '', diff: '', done: '' }, true); }
+  // Which rows are done and which are due: worked out once per progress object, not on every keystroke or page change.
+  sets(prog) {
+    if (!this.cache || this.cache.prog !== prog) this.cache = { prog, done: prDoneRows(prog), due: prDueRows() };
+    return this.cache;
+  }
+  clear() { this.set({ q: '', topic: '', diff: '', done: '', due: false }, true); }
+  setTimed(on) {
+    try { window.localStorage.setItem(PR_TIMED_KEY, on ? '1' : '0'); } catch (e) {}
+    this.setState({ timed: on, status: on ? 'Timed is on.' : 'Timed is off.' });
+  }
   go(page) {
     this.set({ page }, true);
     try { window.scrollTo(0, 0); } catch (e) {}
@@ -2936,11 +2999,12 @@ class Component extends DCLogic {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
     const s = this.state, prog = s.prog;
-    const all = prFilter(s, prog);
+    const { done: doneSet, due: dueSet } = this.sets(prog);
+    const all = prFilter(s, doneSet, dueSet);
     const pages = Math.max(1, Math.ceil(all.length / PR_PAGE));
     const page = Math.min(Math.max(1, s.page), pages);
     const rows = all.slice((page - 1) * PR_PAGE, page * PR_PAGE).map((r) => {
-      const done = !!prog.done[r.id];
+      const done = doneSet.has(r.id);
       return { id: r.id, name: r.name, href: r.href, topic: r.pattern, diff: r.diff, tick: done ? '✓' : '', sr: done ? 'Done' : 'Not done' };
     });
     const opt = (v, label) => ({ v, label });
@@ -2954,7 +3018,13 @@ class Component extends DCLogic {
       onDiff: (e) => { const v = (e && e.target && e.target.value) || ''; this.set({ diff: PR_DIFFS.includes(v) ? v : '' }, true); },
       doneSel: s.done, doneOpts: [opt('', 'All')].concat(PR_DONE.map(([k, l]) => opt(k, l))),
       onDone: (e) => { const v = (e && e.target && e.target.value) || ''; this.set({ done: PR_DONE.some(([k]) => k === v) ? v : '' }, true); },
+      dueOn: s.due ? 'true' : 'false', onDue: () => this.set({ due: !s.due }, true),
+      timedOn: s.timed ? 'true' : 'false', onTimed: () => this.setTimed(!s.timed),
+      tipTimedText: PR_TIP_TIMED, tipDue: s.tip === 'due', tipTimed: s.tip === 'timed',
+      onTipDue: () => this.setState({ tip: s.tip === 'due' ? '' : 'due' }),
+      onTipTimed: () => this.setState({ tip: s.tip === 'timed' ? '' : 'timed' }),
       rows, hasRows: rows.length > 0, noRows: rows.length === 0,
+      emptyText: s.due && !s.q && !s.topic && !s.diff && !s.done ? 'No problems are due for review.' : 'No problems match.',
       clearFilters: () => this.clear(),
       hasPager: pages > 1, atFirst: page <= 1, atLast: page >= pages, pos: 'Page ' + page + ' of ' + pages,
       prevPage: () => this.go(page - 1), nextPage: () => this.go(page + 1),

@@ -25,7 +25,9 @@ server.listen(0, async () => {
   // Every width in the default (dark) theme, and the phone again in the light one (paper).
   // DS_ONLY=problem skips the lesson checks and runs only the Problem page checks at the end of this file.
   const ONLY_PROBLEM = process.env.DS_ONLY === 'problem';
-  for (const [theme, width] of ONLY_PROBLEM ? [] : [['max', 320], ['max', 390], ['max', 1024], ['max', 1440], ['paper', 390]]) {
+  // DS_ONLY=problems runs only the Problems page and search checks (step 4).
+  const ONLY_PAGE = process.env.DS_ONLY === 'problems';
+  for (const [theme, width] of ONLY_PROBLEM || ONLY_PAGE ? [] : [['max', 320], ['max', 390], ['max', 1024], ['max', 1440], ['paper', 390]]) {
     const page = await browser.newPage({ viewport: { width, height: 800 }, isMobile: width < 760, hasTouch: width < 760 });
     await page.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
     const errs = []; page.on('pageerror', (e) => errs.push(e.message));
@@ -166,7 +168,7 @@ server.listen(0, async () => {
   // The first screen of a lesson holds the picture, the first step text, Play and Next (the step card pins to the bottom of the screen).
   const FIT = { Chapter: ['svg[data-stage="start"]', '.st-say'], ConceptLesson: ['section[aria-label="Animation"]', '.cs-say'], AILesson: ['section[aria-label="Animation"]', '.ai-say'],
     SDLesson: ['main [data-rail="Steps"] > section', 'main .sh-panel p'], Git: ['main section[aria-label*="raph"]', 'main section[aria-label="Current step"] p'] };
-  for (const [w, h] of ONLY_PROBLEM ? [] : [[1440, 900], [390, 844]]) {
+  for (const [w, h] of ONLY_PROBLEM || ONLY_PAGE ? [] : [[1440, 900], [390, 844]]) {
     const pg2 = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
     await pg2.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
     await pg2.goto('http://localhost:' + server.address().port + '/'); await pg2.waitForTimeout(500);
@@ -188,7 +190,7 @@ server.listen(0, async () => {
 
   // Back to top (scripts/site-runtime.js): hidden at the top, shown after a screen of scrolling, never over the pager or the step card,
   // and one click returns to the top with the focus on the page title.
-  for (const [w, h] of ONLY_PROBLEM ? [] : [[1440, 900], [390, 844]]) {
+  for (const [w, h] of ONLY_PROBLEM || ONLY_PAGE ? [] : [[1440, 900], [390, 844]]) {
     const pg3 = await browser.newPage({ viewport: { width: w, height: h }, isMobile: w < 760, hasTouch: w < 760 });
     await pg3.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
     await pg3.goto('http://localhost:' + server.address().port + '/'); await pg3.waitForTimeout(500);
@@ -215,7 +217,7 @@ server.listen(0, async () => {
   // ---- The top bar: on phones (below 760) only the menu, logo, search and profile; wider: the menu, logo, Roadmap, Problems, search and profile.
   // No two items overlap, none is covered by another element or past the screen edge, and no old Back button is in the bar. On phones the menu holds
   // Roadmap and Problems, with the current page marked.
-  if (!ONLY_PROBLEM) {
+  if (!ONLY_PROBLEM && !ONLY_PAGE) {
     for (const width of [320, 390, 768, 1024, 1440]) {
       const pg = await browser.newPage({ viewport: { width, height: 800 }, isMobile: width < 760, hasTouch: width < 760 });
       await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
@@ -372,7 +374,7 @@ server.listen(0, async () => {
       await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
       return pg;
     };
-    const rowsOf = (pg) => pg.evaluate(() => [...document.querySelectorAll('.sp-body .sp-row')].map((r) => ({ title: r.querySelector('.sp-name').textContent.trim(), topic: r.querySelector('.sp-topic').textContent.trim(), diff: r.querySelector('.sp-diff').textContent.trim(), href: r.querySelector('.sp-name a').getAttribute('href') })));
+    const rowsOf = (pg) => pg.evaluate(() => [...document.querySelectorAll('.sp-body .sp-row')].map((r) => ({ title: r.querySelector('.sp-name').textContent.trim(), topic: r.querySelector('.sp-topic').textContent.trim(), diff: r.querySelector('.sp-diff').textContent.trim(), href: r.querySelector('.sp-name a').getAttribute('href'), done: /✓/.test(r.querySelector('.sp-done').textContent) })));
     const where = (pg) => pg.evaluate(() => ({ hash: location.hash, search: location.search, q: document.querySelector('input[type=search][aria-label="Search problems"]').value }));
     const sel = (pg, label) => pg.locator('label:has(> span:text-is("' + label + '")) select');
 
@@ -467,6 +469,96 @@ server.listen(0, async () => {
       await pg.close();
     }
 
+    // Due for review: the problems the old Revisit page offered (a problem solved three days ago is due). It combines with the other filters, is
+    // in the address, Back undoes it, and with nothing due the page says so in one line. The ⓘ tip is one line.
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      const doneAgo = Date.now() - 3 * 86400000;
+      await pg.addInitScript(([ts]) => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); if (!localStorage.getItem('dsaviz-sheet-v1')) localStorage.setItem('dsaviz-sheet-v1', JSON.stringify({ v: 1, done: { 'two-sum-ii-input-array-is-sorted': ts, 'valid-palindrome': ts }, star: {} })); } catch (e) {} }, [doneAgo]);
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto(base); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Sheet.dc.html')); await pg.waitForTimeout(900);
+      await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+      const chip = pg.locator('button.sp-chip:has-text("Due for review")');
+      if ((await chip.getAttribute('aria-pressed')) !== 'false') fail('Problems: Due for review should start off');
+      await chip.click(); await pg.waitForTimeout(250);
+      let rows = await rowsOf(pg);
+      const titles = rows.map((r) => r.title).sort().join('|');
+      if (titles !== 'Two Sum II - Input Array Is Sorted|Valid Palindrome') fail('Problems: Due for review lists "' + titles + '", expected the two problems solved three days ago');
+      if (rows.some((r) => !r.done)) fail('Problems: a due problem is not ticked as done');
+      if (!/due=1/.test((await where(pg)).search)) fail('Problems: Due for review is not in the address');
+      await sel(pg, 'Difficulty').selectOption(rows[0].diff === 'Easy' ? 'Hard' : 'Easy'); await pg.waitForTimeout(200);
+      rows = await rowsOf(pg);
+      if (rows.length > 1) fail('Problems: Due for review does not combine with difficulty (' + rows.length + ' rows)');
+      await pg.goBack(); await pg.waitForTimeout(400); await pg.goBack(); await pg.waitForTimeout(400);
+      rows = await rowsOf(pg);
+      if (rows.length !== 50 || (await chip.getAttribute('aria-pressed')) !== 'false') fail('Problems: Back did not undo Due for review (' + rows.length + ' rows)');
+      await pg.click('button[aria-label="About Due for review"]'); await pg.waitForTimeout(150);
+      const tip = await pg.evaluate(() => { const t = document.querySelector('.sp-tip'); return t ? t.textContent.trim() + '|' + Math.round(t.getBoundingClientRect().height) : ''; });
+      if (!tip || tip.split('|')[0].split(/[.!?]\s/).length > 2 || +tip.split('|')[1] > 60) fail('Problems: the Due for review tip is not one line: ' + tip);
+      // Nothing due: a fresh learner sees one line and Clear filters.
+      const fresh = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await fresh.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await fresh.goto(base + '?due=1#Sheet'); await fresh.waitForTimeout(900);
+      const emptyTxt = await fresh.evaluate(() => (document.querySelector('.sp-empty') || {}).innerText || '');
+      if (!/No problems are due for review\./.test(emptyTxt) || !/Clear filters/.test(emptyTxt)) fail('Problems: with nothing due the page says "' + emptyTxt.replace(/\s+/g, ' ') + '"');
+      await fresh.close();
+      if (pg.errs.length) fail('Problems page errors: ' + pg.errs[0]);
+      console.log('  Due for review: lists the two problems solved three days ago, combines with Difficulty, is in the address, Back undoes it; the tip is one line; nothing due gives one line and Clear filters');
+      await pg.close();
+    }
+
+    // Timed: off by default, a switch that is remembered, and a countdown on the Problem page that can be paused, resumed and stopped.
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto(base); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Sheet.dc.html')); await pg.waitForTimeout(800);
+      await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+      await pg.click('.sp-body .sp-row .sp-name a'); await pg.waitForTimeout(1000);
+      if (await pg.locator('.pb-clock').count()) fail('Timed: a countdown shows on the Problem page while Timed is off');
+      await pg.evaluate(() => window.__dsNav('Sheet.dc.html')); await pg.waitForTimeout(800);
+      const sw = pg.locator('button[role=switch]:has-text("Timed")');
+      if ((await sw.getAttribute('aria-checked')) !== 'false') fail('Timed: the switch should start off');
+      await sw.click(); await pg.waitForTimeout(200);
+      if ((await sw.getAttribute('aria-checked')) !== 'true') fail('Timed: the switch does not turn on');
+      await pg.reload(); await pg.waitForTimeout(900);
+      await pg.evaluate(() => window.__dsNav('Sheet.dc.html')); await pg.waitForTimeout(800);
+      if ((await pg.locator('button[role=switch]:has-text("Timed")').getAttribute('aria-checked')) !== 'true') fail('Timed: the switch was not remembered after a reload');
+      await pg.click('button[aria-label="About Timed"]'); await pg.waitForTimeout(150);
+      const tt = await pg.evaluate(() => (document.querySelector('.sp-tip') || {}).textContent || '');
+      if (!/countdown/.test(tt) || !/\d+ minutes/.test(tt)) fail('Timed: the tip does not explain the countdown: "' + tt + '"');
+      await pg.click('.sp-body .sp-row .sp-name a'); await pg.waitForTimeout(1000);
+      const clock = () => pg.evaluate(() => { const t = document.querySelector('.pb-clock [role=timer]'); return t ? t.textContent.trim() : null; });
+      const secs = (s) => { const m = /^(\d+):(\d\d)$/.exec(s || ''); return m ? +m[1] * 60 + +m[2] : -1; };
+      const c1 = await clock();
+      if (secs(c1) < 0) fail('Timed: no countdown on the Problem page (it reads "' + c1 + '")');
+      await pg.waitForTimeout(2200);
+      const c2 = await clock();
+      if (!(secs(c2) >= 0 && secs(c2) < secs(c1))) fail('Timed: the countdown does not go down (' + c1 + ' then ' + c2 + ')');
+      const btns = await pg.evaluate(() => [...document.querySelectorAll('.pb-clock button')].map((b) => b.textContent.trim()));
+      if (btns.join('|') !== 'Pause|Stop timer') fail('Timed: the countdown has the buttons ' + btns.join('|') + ', not Pause and Stop timer');
+      await pg.click('.pb-clock button:has-text("Pause")'); await pg.waitForTimeout(300);
+      const p1 = await clock(); await pg.waitForTimeout(2200); const p2 = await clock();
+      if (p1 !== p2) fail('Timed: Pause does not stop the countdown (' + p1 + ' then ' + p2 + ')');
+      await pg.click('.pb-clock button:has-text("Resume")'); await pg.waitForTimeout(2200);
+      const r2 = await clock();
+      if (!(secs(r2) < secs(p2))) fail('Timed: Resume does not restart the countdown (' + p2 + ' then ' + r2 + ')');
+      await pg.click('.pb-clock button:has-text("Stop timer")'); await pg.waitForTimeout(300);
+      if (await pg.locator('.pb-clock').count()) fail('Timed: Stop timer leaves the countdown on screen');
+      const over = await pg.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      if (over > 0) fail('Timed: the Problem page scrolls sideways by ' + over + 'px');
+      // Off again: no countdown on the next problem.
+      await pg.evaluate(() => window.__dsNav('Sheet.dc.html')); await pg.waitForTimeout(800);
+      await pg.click('button[role=switch]:has-text("Timed")'); await pg.waitForTimeout(200);
+      await pg.click('.sp-body .sp-row .sp-name a'); await pg.waitForTimeout(1000);
+      if (await pg.locator('.pb-clock').count()) fail('Timed: a countdown shows after the switch is turned off');
+      if (pg.errs.length) fail('Timed page errors: ' + pg.errs[0]);
+      console.log('  Timed: off by default, remembered, countdown ' + c1 + ' -> ' + c2 + ' on the Problem page, Pause and Resume work, Stop timer removes it, off again shows none');
+      await pg.close();
+    }
+
     // Every problem is reachable: page through all of them, and find a sample by typing the title.
     {
       const pg = await openPage(1440, 900, 'max', 'Sheet.dc.html');
@@ -536,6 +628,8 @@ server.listen(0, async () => {
       await pg.close();
     }
   }
+
+  if (ONLY_PAGE) { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'problems page clean'); process.exit(bad ? 1 : 0); }
 
   // ---- The Problem page (Code.dc.html): statement left, editor right, tabs, Story switch, hints, solution, tests ----
   const vm = require('vm');

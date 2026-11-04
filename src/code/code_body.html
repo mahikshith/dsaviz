@@ -8,6 +8,11 @@
 .pb-sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;min-height:52px;padding:4px 24px;box-sizing:border-box;border-bottom:1px solid var(--sh-line);flex-shrink:0}
 .pb-sub .sh-back{min-height:44px}
 .pb-pager{display:flex;align-items:center;gap:8px}
+.pb-clock{display:inline-flex;align-items:center;gap:8px}
+.pb-time{min-width:64px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:calc(18px * var(--ts, 1));font-weight:600;font-variant-numeric:tabular-nums}
+.pb-time[data-up="true"]{color:var(--sh-bad)}
+.pb-clock button{min-height:44px;border:1px solid var(--sh-line)}
+.pb-clock button:disabled{opacity:.4;cursor:default}
 .pb-pager button{min-width:44px;min-height:44px;padding:0 12px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
 .pb-pager button:hover:not(:disabled){background:var(--sh-sunk)}
 .pb-pos{min-width:64px;text-align:center;font-size:calc(16px * var(--ts, 1));color:var(--sh-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -133,6 +138,11 @@
 
 <div class="pb-sub">
 <a class="sh-back" data-back href="{{pbBack.href}}" onClick="{{pbBack.go}}">← {{pbBack.label}}</a>
+<sc-if value="{{pbClock.show}}" hint-placeholder-val="{{ false }}"><div class="pb-clock" role="group" aria-label="Timer">
+<span class="pb-time" role="timer" aria-label="{{pbClock.aria}}" data-up="{{pbClock.up}}">{{pbClock.text}}</span>
+<button class="pb-link" onClick="{{pbClock.toggle}}" disabled="{{pbClock.toggleOff}}">{{pbClock.toggleLabel}}</button>
+<button class="pb-link" onClick="{{pbClock.stop}}">Stop timer</button>
+</div></sc-if>
 <nav class="pb-pager" aria-label="Previous and next problem">
 <button onClick="{{pbPrev.go}}" disabled="{{pbPrev.off}}" aria-label="{{pbPrev.aria}}"><span aria-hidden="true">←</span><span class="pb-lbl">Previous</span></button>
 <span class="pb-pos" role="status" aria-label="{{pbPos.aria}}">{{pbPos.text}}</span>

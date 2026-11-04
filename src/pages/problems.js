@@ -1,16 +1,42 @@
 // ---- page ----
 // The Problems page (pages/Sheet.dc.html; the page file keeps its old name until step 10). Markup: src/pages/problems_body.html.
 // A table of every problem in the master sheet (SHEET, shared/sheet.js): title, topic, difficulty, done. A search box and three filters
-// (topic, difficulty, done). The filters live in the URL (?q=&topic=&difficulty=&done=&page=), so Back restores them.
-// Rows are paged, PR_PAGE at a time, so the page never draws all of them at once. Today's 5, Random, lists, stars, notes, export and
-// import, group folds and the company filter are gone from the page; their data and code stay in the source (shared/lists.js, shared/sheet.js).
+// (topic, difficulty, done), then two switches: "Due for review" (the problems the old Revisit page offered today, from DS.reviewDue())
+// and "Timed" (opening a problem then shows a countdown on the Problem page; remembered in dsaviz-timed). The filters live in the URL
+// (?q=&topic=&difficulty=&done=&due=1&page=), so Back restores them. Timed is a setting, not a filter, so it is not in the URL.
+// Rows are paged, PR_PAGE at a time, so the page never draws all of them at once: search and filters run over all 562 first, then the page
+// shows one slice (12 pages). Today's 5, Random, lists, stars, notes, export and import, group folds and the company filter are gone from
+// the page; their data and code stay in the source (shared/lists.js, shared/sheet.js).
 const PR_PAGE = 50;
 const PR_DIFFS = ['Easy', 'Medium', 'Hard'];
 const PR_TOPICS = SHEET_GROUPS.map(([n]) => n);
 const PR_DONE = [['yes', 'Done'], ['no', 'Not done']];
+const PR_TIMED_KEY = DS.TIMED.key;
+function prTimed() { try { return window.localStorage.getItem(PR_TIMED_KEY) === '1'; } catch (e) { return false; } }
+const PR_M = DS.TIMED.minutes;
+const PR_TIP_TIMED = 'Timed starts a countdown when you open a problem: ' + PR_M.Easy + ' minutes for Easy, ' + PR_M.Medium + ' for Medium and ' + PR_M.Hard + ' for Hard.';
+// The problems the old Revisit page offered today: sheet cards by row id, and story cards through the row that holds the story.
+function prDueRows() {
+  const out = new Set();
+  try {
+    DS.reviewDue().forEach((c) => {
+      if (c.kind === 'sheet') out.add(c.id.replace(/^sheet:/, ''));
+      else if (c.kind === 'story') SHEET.forEach((r) => { if (r.story === c.id || r.pid === c.id) out.add(r.id); });
+    });
+  } catch (e) {}
+  return out;
+}
+// Done: ticked in the old sheet, solved on the Problem page, or its story finished.
+function prDoneRows(prog) {
+  const ids = new Set();
+  try { DS.codePasses().ids.forEach((i) => ids.add(i)); DS.stories().ids.forEach((i) => ids.add(i)); } catch (e) {}
+  const out = new Set();
+  SHEET.forEach((r) => { if (prog.done[r.id] || ids.has(r.pid) || (r.story && ids.has(r.story))) out.add(r.id); });
+  return out;
+}
 // The filters from a query string; anything unknown is ignored.
 function prParse(search) {
-  const out = { q: '', topic: '', diff: '', done: '', page: 1 };
+  const out = { q: '', topic: '', diff: '', done: '', due: false, page: 1 };
   try {
     const p = new URLSearchParams(search || '');
     out.q = (p.get('q') || '').slice(0, 80);
@@ -18,6 +44,7 @@ function prParse(search) {
     if (PR_TOPICS.includes(topic)) out.topic = topic;
     if (PR_DIFFS.includes(diff)) out.diff = diff;
     if (PR_DONE.some(([k]) => k === done)) out.done = done;
+    out.due = p.get('due') === '1';
     const n = parseInt(p.get('page') || '1', 10);
     if (n > 1) out.page = n;
   } catch (e) {}
@@ -30,6 +57,7 @@ function prQuery(s) {
   if (s.topic) p.set('topic', s.topic);
   if (s.diff) p.set('difficulty', s.diff);
   if (s.done) p.set('done', s.done);
+  if (s.due) p.set('due', '1');
   if (s.page > 1) p.set('page', String(s.page));
   const str = p.toString();
   return str ? '?' + str : '';
@@ -40,10 +68,10 @@ function prMatches(r, words) {
   const hay = searchNorm(r.name + ' ' + r.pattern);
   return words.every((w) => hay.indexOf(w) >= 0);
 }
-function prFilter(s, prog) {
+function prFilter(s, doneSet, dueSet) {
   const words = searchNorm(s.q).split(' ').filter(Boolean);
   return SHEET.filter((r) => (!s.topic || r.pattern === s.topic) && (!s.diff || r.diff === s.diff) &&
-    (!s.done || (s.done === 'yes') === !!prog.done[r.id]) && prMatches(r, words));
+    (!s.done || (s.done === 'yes') === doneSet.has(r.id)) && (!s.due || dueSet.has(r.id)) && prMatches(r, words));
 }
 
 class Component extends DCLogic {
@@ -51,11 +79,12 @@ class Component extends DCLogic {
     super(props);
     let search = '';
     try { search = window.location.search; } catch (e) {}
-    this.state = Object.assign({ theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), status: '' }, prParse(search));
+    this.state = Object.assign({ theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), status: '', timed: prTimed(), tip: '' }, prParse(search));
   }
   componentDidMount() {
     listenTheme(this);
-    this.onSheet = (e) => { if (e.key === SHEET_KEY) this.setState({ prog: loadSheetProgress() }); };
+    // Progress from another tab: read it again (a new prog object also makes the done and due sets be worked out again).
+    this.onSheet = (e) => { if (!e.key || String(e.key).indexOf('dsaviz-') === 0) this.setState({ prog: loadSheetProgress() }); };
     // Back and Forward inside the page: read the filters from the address again.
     this.onPop = () => { try { if (window.location.hash === '#Sheet') this.setState(Object.assign(prParse(window.location.search), { status: 'List updated.' })); } catch (e) {} };
     try { window.addEventListener('storage', this.onSheet); window.addEventListener('popstate', this.onPop); } catch (e) {}
@@ -70,7 +99,16 @@ class Component extends DCLogic {
       if (url !== window.location.pathname + window.location.search + window.location.hash) window.history[push ? 'pushState' : 'replaceState'](null, '', url);
     } catch (e) {}
   }
-  clear() { this.set({ q: '', topic: '', diff: '', done: '' }, true); }
+  // Which rows are done and which are due: worked out once per progress object, not on every keystroke or page change.
+  sets(prog) {
+    if (!this.cache || this.cache.prog !== prog) this.cache = { prog, done: prDoneRows(prog), due: prDueRows() };
+    return this.cache;
+  }
+  clear() { this.set({ q: '', topic: '', diff: '', done: '', due: false }, true); }
+  setTimed(on) {
+    try { window.localStorage.setItem(PR_TIMED_KEY, on ? '1' : '0'); } catch (e) {}
+    this.setState({ timed: on, status: on ? 'Timed is on.' : 'Timed is off.' });
+  }
   go(page) {
     this.set({ page }, true);
     try { window.scrollTo(0, 0); } catch (e) {}
@@ -79,11 +117,12 @@ class Component extends DCLogic {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
     const s = this.state, prog = s.prog;
-    const all = prFilter(s, prog);
+    const { done: doneSet, due: dueSet } = this.sets(prog);
+    const all = prFilter(s, doneSet, dueSet);
     const pages = Math.max(1, Math.ceil(all.length / PR_PAGE));
     const page = Math.min(Math.max(1, s.page), pages);
     const rows = all.slice((page - 1) * PR_PAGE, page * PR_PAGE).map((r) => {
-      const done = !!prog.done[r.id];
+      const done = doneSet.has(r.id);
       return { id: r.id, name: r.name, href: r.href, topic: r.pattern, diff: r.diff, tick: done ? '✓' : '', sr: done ? 'Done' : 'Not done' };
     });
     const opt = (v, label) => ({ v, label });
@@ -97,7 +136,13 @@ class Component extends DCLogic {
       onDiff: (e) => { const v = (e && e.target && e.target.value) || ''; this.set({ diff: PR_DIFFS.includes(v) ? v : '' }, true); },
       doneSel: s.done, doneOpts: [opt('', 'All')].concat(PR_DONE.map(([k, l]) => opt(k, l))),
       onDone: (e) => { const v = (e && e.target && e.target.value) || ''; this.set({ done: PR_DONE.some(([k]) => k === v) ? v : '' }, true); },
+      dueOn: s.due ? 'true' : 'false', onDue: () => this.set({ due: !s.due }, true),
+      timedOn: s.timed ? 'true' : 'false', onTimed: () => this.setTimed(!s.timed),
+      tipTimedText: PR_TIP_TIMED, tipDue: s.tip === 'due', tipTimed: s.tip === 'timed',
+      onTipDue: () => this.setState({ tip: s.tip === 'due' ? '' : 'due' }),
+      onTipTimed: () => this.setState({ tip: s.tip === 'timed' ? '' : 'timed' }),
       rows, hasRows: rows.length > 0, noRows: rows.length === 0,
+      emptyText: s.due && !s.q && !s.topic && !s.diff && !s.done ? 'No problems are due for review.' : 'No problems match.',
       clearFilters: () => this.clear(),
       hasPager: pages > 1, atFirst: page <= 1, atLast: page >= pages, pos: 'Page ' + page + ' of ' + pages,
       prevPage: () => this.go(page - 1), nextPage: () => this.go(page + 1),

@@ -1,6 +1,6 @@
 # DSAMaxxing
 
-Data structures and algorithms, taught as animated stories. Every problem has a story, a cast of characters per pattern, and code in Python, Java, C++, JavaScript and Go. Each problem opens on one page: the task in plain words, one example and the animation on the left; the solution (with the running line lit) and your own code on the right.
+Data structures and algorithms, taught as animated stories. Every problem has a story, a cast of characters per pattern, and code in Python and JavaScript (and SQL on SQL problems). Each problem opens on one page: the task in plain words, one example and the animation on the left; the solution (with the running line lit) and your own code on the right.
 
 ## See it
 
@@ -161,7 +161,7 @@ The Interview page's Mock interview tab: pick a length (30 minutes is one proble
 
 Add a spec to `TEST_SPECS` in `shared/tests_spec.js` (write the inputs yourself), then `npm run build && npm test`. A problem that is not in the catalog also needs `meta: [title, difficulty, sheet group]`. Every sheet row (SQL aside) must have a spec under its `pid` (the story id, or the row id, or the row's `{ "spec": id }`), so every problem has its own page; `tests/specs.js` checks this. Concurrency problems use a `drive` function that starts the calls itself and set `langs: ['js']`. Linked lists, trees and graphs are written as arrays (level order with `null` for trees); set `io` so the runner builds the nodes. Every animated story must have a spec, or `tests/specs.js` fails.
 
-The Code page lists every problem with a spec, grouped by pattern, and opens with `?problem=<id>` or the last problem picked anywhere on the site. Java, C++ and Go are edit-only for now.
+The Code page lists every problem with a spec, grouped by pattern, and opens with `?problem=<id>` or the last problem picked anywhere on the site. Only Python, JavaScript and (on SQL problems) SQL are offered; Java, C++ and Go were removed for good.
 
 ## Add a SQL problem
 

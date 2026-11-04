@@ -13,6 +13,19 @@
 select.sp-in{cursor:pointer}
 .sp-in::placeholder{color:var(--sh-muted);opacity:1}
 .sp-in option{background:var(--sh-surface);color:var(--sh-text)}
+.sp-opts{display:flex;flex-wrap:wrap;align-items:center;gap:0 24px;margin-top:8px}
+.sp-opt{display:inline-flex;align-items:center;gap:4px}
+.sp-chip{min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer}
+.sp-chip:hover{background:var(--sh-sunk)}
+.sp-chip[aria-pressed="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sp-switch{min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.sp-track{position:relative;width:40px;height:24px;border-radius:12px;background:var(--sh-line);flex-shrink:0;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.sp-track[data-on="true"]{background:var(--sh-accent)}
+.sp-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--sh-text);transition:transform .15s cubic-bezier(.23,1,.32,1)}
+.sp-track[data-on="true"] .sp-knob{transform:translateX(16px);background:var(--sh-on)}
+.sp-info{min-width:44px;min-height:44px;border:0;border-radius:6px;background:transparent;color:var(--sh-muted);font:inherit;font-size:calc(18px * var(--ts, 1));cursor:pointer}
+.sp-info:hover{color:var(--sh-text);background:var(--sh-sunk)}
+.sp-tip{margin:0;padding:8px 12px;border-radius:6px;background:var(--sh-sunk);font-size:calc(16px * var(--ts, 1));color:var(--sh-text)}
 .sp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .sp-table{display:block}
 .sp-row{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1.5fr) 128px 72px;align-items:center;gap:0 16px;padding:0 12px;border-bottom:1px solid var(--sh-line);min-height:48px}
@@ -38,6 +51,8 @@ select.sp-in{cursor:pointer}
 .sp-in{height:44px}
 .sp-search,.sp-pick{flex:1 1 100%}
 .sp-pick{flex-basis:calc(50% - 8px);flex-grow:1}
+.sp-tools .sp-search+.sp-pick{flex-basis:100%}
+.sp-opts{gap:0 8px}
 .sp-head{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);padding:0;border:0;min-height:0}
 .sp-row{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"name name name done" "topic diff . done";gap:0 16px;padding:8px 0}
 .sp-body .sp-row:hover{background:transparent}
@@ -50,6 +65,7 @@ select.sp-in{cursor:pointer}
 .sp-pos{flex-basis:100%;text-align:center;order:-1}
 .sp-pager button{flex:1 1 0}
 }
+@media (prefers-reduced-motion:reduce){.sp-track,.sp-knob{transition:none}}
 </style>
 <main class="sh-main">
 <h1>Problems</h1>
@@ -59,6 +75,12 @@ select.sp-in{cursor:pointer}
 <label class="sp-field sp-pick"><span class="sh-label">Difficulty</span><select class="sp-in" value="{{diffSel}}" onChange="{{onDiff}}"><sc-for list="{{diffOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
 <label class="sp-field sp-pick"><span class="sh-label">Done</span><select class="sp-in" value="{{doneSel}}" onChange="{{onDone}}"><sc-for list="{{doneOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></label>
 </div>
+<div class="sp-opts">
+<span class="sp-opt"><button class="sp-chip" aria-pressed="{{dueOn}}" onClick="{{onDue}}">Due for review</button><button class="sp-info" aria-label="About Due for review" aria-expanded="{{tipDue}}" onClick="{{onTipDue}}"><span aria-hidden="true">ⓘ</span></button></span>
+<span class="sp-opt"><button class="sp-switch" role="switch" aria-checked="{{timedOn}}" onClick="{{onTimed}}"><span class="sp-track" data-on="{{timedOn}}"><span class="sp-knob"></span></span>Timed</button><button class="sp-info" aria-label="About Timed" aria-expanded="{{tipTimed}}" onClick="{{onTipTimed}}"><span aria-hidden="true">ⓘ</span></button></span>
+</div>
+<sc-if value="{{tipDue}}" hint-placeholder-val="{{ false }}"><p class="sp-tip">Due for review shows problems you solved that are ready to try again.</p></sc-if>
+<sc-if value="{{tipTimed}}" hint-placeholder-val="{{ false }}"><p class="sp-tip">{{tipTimedText}}</p></sc-if>
 <p class="sp-sr" role="status" aria-live="polite">{{status}}</p>
 <sc-if value="{{hasRows}}" hint-placeholder-val="{{ true }}">
 <div class="sp-table" role="table" aria-label="Problems">
@@ -74,7 +96,7 @@ select.sp-in{cursor:pointer}
 </div>
 </sc-if>
 <sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}">
-<div class="sp-empty"><p>No problems match.</p><button class="sh-chip" onClick="{{clearFilters}}">Clear filters</button></div>
+<div class="sp-empty"><p>{{emptyText}}</p><button class="sh-chip" onClick="{{clearFilters}}">Clear filters</button></div>
 </sc-if>
 <sc-if value="{{hasPager}}" hint-placeholder-val="{{ true }}">
 <nav class="sp-pager" aria-label="Pages">

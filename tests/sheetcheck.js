@@ -127,8 +127,13 @@ const sandbox = `
   const setInterval = () => 0; const clearInterval = () => {};
   class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, typeof o === 'function' ? o(this.state) : o); } forceUpdate() {} }
   ${script}
-  return { Component, prParse, prQuery, PR_PAGE };`;
+  return { Component, prParse, prQuery, PR_PAGE, DS };`;
 const P = new Function('win', sandbox)(win);
+// The page reads the learner's data from DS (the real one, from shared/data.js). Here three of its readers are replaced, to say what is due for
+// review, solved on the Problem page, or finished as a story.
+const stub = { due: [], passes: [], stories: [] };
+P.DS.reviewDue = () => stub.due; P.DS.codePasses = () => ({ ids: stub.passes }); P.DS.stories = () => ({ ids: stub.stories });
+if (!P.DS.TIMED || P.DS.TIMED.key !== "dsaviz-timed") fail("DS.TIMED is missing");
 const expectEq = (what, got, want) => { if (JSON.stringify(got) !== JSON.stringify(want)) fail(what + ': page shows ' + JSON.stringify(got).slice(0, 120) + ', data says ' + JSON.stringify(want).slice(0, 120)); };
 // The rows on every page of one component, in order.
 const allRows = (c) => { const ids = []; const m = /of (\d+)$/.exec(c.renderVals().pos || 'of 1'); const n = m ? +m[1] : 1; for (let pg = 1; pg <= n; pg++) { c.setState({ page: pg }); c.renderVals().rows.forEach((r) => ids.push(r.id)); } c.setState({ page: 1 }); return ids; };
@@ -163,7 +168,37 @@ const mk = () => { const c = new P.Component({}); c.componentDidMount(); return 
   expectEq('search by topic', allRows(c), SHEET.filter((r) => ['two', 'pointers'].every((w) => (r.name + ' ' + r.pattern).toLowerCase().includes(w))).map((r) => r.id));
   // done: mark two rows done, then filter on it, and combine
   c.renderVals().clearFilters();
-  expectEq('Clear filters', [c.state.q, c.state.topic, c.state.diff, c.state.done], ['', '', '', '']);
+  expectEq('Clear filters', [c.state.q, c.state.topic, c.state.diff, c.state.done, c.state.due], ['', '', '', '', false]);
+  // Due for review: sheet cards by row id and story cards by the row that holds the story; nothing due means the one-line empty state
+  {
+    const storyRow = SHEET.find((r) => r.story), plain = SHEET.find((r) => !r.story && r.id !== SHEET[0].id);
+    stub.due = [{ kind: 'sheet', id: 'sheet:' + plain.id }, { kind: 'story', id: storyRow.story }, { kind: 'start', id: 'start:variables' }];
+    const u = mk(); u.renderVals().onDue();
+    expectEq('Due for review lists the due problems', allRows(u).sort(), [plain.id, storyRow.id].sort());
+    u.renderVals().onDiff({ target: { value: plain.diff === 'Easy' ? 'Hard' : 'Easy' } });
+    if (!u.renderVals().rows.every((r) => r.id !== plain.id)) fail('Due for review does not combine with the difficulty filter');
+    // (the page works out what is due once per progress object, so nothing due is a new page)
+    stub.due = []; const u2 = mk(); u2.renderVals().onDue();
+    const none = u2.renderVals();
+    if (!none.noRows || none.emptyText !== 'No problems are due for review.') fail('with nothing due the page should say so in one line');
+    none.clearFilters(); if (u2.state.due || !u2.renderVals().hasRows) fail('Clear filters should also switch Due for review off');
+  }
+  // Done also counts a problem solved on the Problem page or a finished story
+  {
+    stub.passes = [SHEET[3].pid]; stub.stories = [];
+    const w = mk(); w.renderVals().onDone({ target: { value: 'yes' } });
+    expectEq('solved on the Problem page counts as done', allRows(w), [SHEET[3].id]);
+    stub.passes = [];
+  }
+  // Timed: a switch that is remembered; off by default
+  {
+    delete store['dsaviz-timed'];
+    const m = mk(); if (m.renderVals().timedOn !== 'false') fail('Timed should be off by default');
+    m.renderVals().onTimed(); expectEq('Timed on is stored', store['dsaviz-timed'], '1'); if (m.renderVals().timedOn !== 'true') fail('Timed switch does not turn on');
+    expectEq('Timed is remembered', mk().renderVals().timedOn, 'true');
+    mk().renderVals().onTimed(); expectEq('Timed off is stored', store['dsaviz-timed'], '0');
+    delete store['dsaviz-timed'];
+  }
   const mine = [SHEET[0].id, SHEET[5].id];
   store[SHEET_KEY] = JSON.stringify({ v: 1, done: { [mine[0]]: Date.now(), [mine[1]]: Date.now() }, star: {} });
   const d = mk();
@@ -183,10 +218,10 @@ const mk = () => { const c = new P.Component({}); c.componentDidMount(); return 
 }
 // The address: filters round-trip, and anything unknown is dropped.
 {
-  const f = { q: 'two sum', topic: 'Heap', diff: 'Hard', done: 'no', page: 3 };
+  const f = { q: 'two sum', topic: 'Heap', diff: 'Hard', done: 'no', due: true, page: 3 };
   expectEq('query round trip', P.prParse(P.prQuery(f)), f);
-  expectEq('empty filters make an empty query', P.prQuery({ q: '', topic: '', diff: '', done: '', page: 1 }), '');
-  expectEq('unknown values are dropped', P.prParse('?topic=Nope&difficulty=Impossible&done=maybe&page=-4'), { q: '', topic: '', diff: '', done: '', page: 1 });
+  expectEq('empty filters make an empty query', P.prQuery({ q: '', topic: '', diff: '', done: '', due: false, page: 1 }), '');
+  expectEq('unknown values are dropped', P.prParse('?topic=Nope&difficulty=Impossible&done=maybe&page=-4'), { q: '', topic: '', diff: '', done: '', due: false, page: 1 });
 }
 
 const counts = {};

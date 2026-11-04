@@ -14,6 +14,16 @@ const PB_TABS = [['problem', 'Problem'], ['hints', 'Hints'], ['solution', 'Solut
 const PB_LANGS = ['py', 'js'];
 const PB_SEEN = 'dsaviz-solution-seen:';
 const PB_STORY_KEY = 'dsaviz-problem-story';
+// Timed (set with the Timed switch on the Problems page): a countdown on the Problem page (minutes per difficulty: DS.TIMED).
+// It starts when the problem opens and can be paused, resumed or stopped. Nothing else from the old Interview page.
+const PB_TIMED_KEY = DS.TIMED.key;
+const PB_MINUTES = DS.TIMED.minutes;
+function pbTimedOn() { try { return window.localStorage.getItem(PB_TIMED_KEY) === '1'; } catch (e) { return false; } }
+function pbSeconds(pid) {
+  const d = SQL_SPECS[pid] ? SQL_SPECS[pid].diff : TEST_SPECS[pid] ? specInfo(pid).diff : 'Medium';
+  return (PB_MINUTES[d] || 30) * 60;
+}
+function pbClockText(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
 // "Back to ...": what the learner came from, by the page's own name.
 const PB_BACK = { Sheet: 'Problems', Patterns: 'Roadmap', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML',
   Complexity: 'Complexity', Git: 'Git', ConceptLesson: 'the lesson', Chapter: 'the lesson', SDLesson: 'the lesson', AILesson: 'the lesson' };
@@ -62,7 +72,8 @@ class Component extends StoryComponent {
     const init = pbInitial(), pid = init.pid, hasScene = !!SCENES[pid] && PROBLEMS.some((p) => p.id === pid);
     this.navPage = 'Code';
     this.phoneStage = true;
-    this.state = Object.assign(this.state, { theme: loadTheme(), pid, pbTab: 'problem', pbStory: init.story && hasScene, pbHint: 0, pbSol: pbSolSeen(pid), pbSel: null, pbArm: false });
+    this.state = Object.assign(this.state, { theme: loadTheme(), pid, pbTab: 'problem', pbStory: init.story && hasScene, pbHint: 0, pbSol: pbSolSeen(pid), pbSel: null, pbArm: false,
+      pbLeft: pbSeconds(pid), pbPaused: false, pbClockOff: false });
     if (hasScene) this.state.scene = pid;
     this.approaches = new ApproachPane(this, pid, { lang: () => this.runner.s.lang });
     this.sql = new SqlRunner(this, pid);
@@ -90,9 +101,14 @@ class Component extends StoryComponent {
     this.pbSyncUrl();
     this.onSize = () => { if (window.innerWidth !== this.vw) { this.vw = window.innerWidth; this.stageSize(); this.setState({}); } };
     window.addEventListener('resize', this.onSize);
+    // The Timed countdown: one tick a second, only while it is on, running and above zero.
+    this.clockTimer = setInterval(() => {
+      if (pbTimedOn() && !this.state.pbPaused && !this.state.pbClockOff && this.state.pbLeft > 0) this.setState({ pbLeft: this.state.pbLeft - 1 });
+    }, 1000);
   }
   componentWillUnmount() {
     super.componentWillUnmount();
+    clearInterval(this.clockTimer);
     this.sql.unmount();
     clearTimeout(this.armTimer);
     window.removeEventListener('resize', this.onSize);
@@ -116,7 +132,7 @@ class Component extends StoryComponent {
     if (SQL_SPECS[pid]) this.sql.setProblem(pid); else this.runner.setProblem(pid);
     this.approaches.setProblem(pid);
     const hasScene = !!SCENES[pid] && PROBLEMS.some((p) => p.id === pid);
-    const patch = { pid, pbTab: 'problem', pbHint: 0, pbSol: pbSolSeen(pid), pbSel: null, pbArm: false, pbStory: this.state.pbStory && hasScene,
+    const patch = { pid, pbTab: 'problem', pbHint: 0, pbSol: pbSolSeen(pid), pbSel: null, pbArm: false, pbLeft: pbSeconds(pid), pbPaused: false, pbClockOff: false, pbStory: this.state.pbStory && hasScene,
       step: 0, played: false, playing: false, run: null, ask: null, fb: null, lastAsk: -9 };
     if (hasScene) patch.scene = pid;
     this.setState(patch);
@@ -281,6 +297,12 @@ class Component extends StoryComponent {
       t, ...navVals(this, t, themeKey, 'Code'), cr, sq, ap: apv,
       pbBad: t.diff.Hard[2],
       pbBack: pbBackVals(),
+      pbClock: (() => {
+        const left = this.state.pbLeft, paused = this.state.pbPaused;
+        return { show: pbTimedOn() && !this.state.pbClockOff, text: left > 0 ? pbClockText(left) : 'Time is up', aria: left > 0 ? pbClockText(left) + ' left' + (paused ? ', paused' : '') : 'Time is up',
+          up: left <= 0 ? 'true' : 'false', toggle: () => this.setState({ pbPaused: !paused }), toggleLabel: paused ? 'Resume' : 'Pause', toggleOff: left <= 0,
+          stop: () => this.setState({ pbClockOff: true }) };
+      })(),
       pbPos: { text: posText, aria: 'Problem ' + posText + ' in ' + g.name },
       pbPrev: { off: !prev, aria: prev ? 'Previous problem: ' + prev.title : 'No previous problem', go: () => prev && this.pickProblem(prev.id) },
       pbNext: { off: !next, aria: next ? 'Next problem: ' + next.title : 'No next problem', go: () => next && this.pickProblem(next.id) },

@@ -1511,8 +1511,11 @@ const DS = (function () {
     [KEY.log, KEY.sheet, KEY.deck, KEY.medals, KEY.predict, KEY.mock, KEY.start, KEY.subs, KEY.streak, 'dsaviz-review-v1', 'dsaviz-saved', 'dsaviz-code-v1', 'dsaviz-sd-progress'].forEach((k) => { try { if (s) s.removeItem(k); } catch (e) {} });
   }
 
+  // Timed practice (the Timed switch on the Problems page, the countdown on the Problem page): the setting's key and the minutes per difficulty.
+  const TIMED = { key: 'dsaviz-timed', minutes: { Easy: 20, Medium: 30, Hard: 45 } };
+
   return {
-    KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
+    TIMED, KEY, XP, XP_RULES, LEVEL_XP, dayKey, eraseProgress,
     logActivity, finishStory: (id) => logActivity('story', id), passCode: (id) => logActivity('code', id), finishLesson: (id) => logActivity('lesson', id), rateCard: (id) => logActivity('revisit', id),
     days, streak, FREEZE_RUN, useFreeze, daily, markDailySeen, heatmap, xp, stories, codePasses, lessons, sheet, problemStatus, bindCatalog, patterns, medals, markMedalsSeen, profile,
     GRADES, schedule, reviewCards, reviewDue, reviewUpcoming, addCard, review, reviewPreview, whenLabel, retention,

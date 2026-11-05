@@ -55,12 +55,20 @@ Object.keys(W.patterns).forEach((n) => { if (!names.has(n)) fail('pattern:' + n,
 });
 Object.keys(W.hubs).forEach((h) => { if (!['start', 'concepts', 'sd', 'ai', 'patterns', 'git', 'complexity'].includes(h)) fail('hub:' + h, 'unknown hub'); });
 
-// Every page that shows the fold has its marker and feeds it values.
-const pages = { AILesson: 'whyFromAbout', ConceptLesson: 'whyFromAbout', SDLesson: 'whyFromAbout', Chapter: 'whyFromAbout', Start: 'whyHub', Concepts: 'whyHub', SystemDesign: 'whyHub', AIML: 'whyHub', Patterns: 'whyHub', Git: 'whyHub', Complexity: 'whyHub', Briefing: 'whyPattern', Story: 'whyPattern' };
+// Every page that still shows the fold has its marker and feeds it values (Complexity, Briefing and Story until later steps). The five lesson pages (step 2 of PLAN-2026-11) no longer
+// show it: they must not carry the phrase, the block or the values.
+const pages = { Complexity: 'whyHub', Briefing: 'whyPattern', Story: 'whyPattern' };
 for (const [pg, fn] of Object.entries(pages)) {
   const s = read('pages', pg + '.dc.html');
   if (!s.includes('<!-- WHY -->') || !s.includes('{{why.does}}')) fail(pg, 'no Why block');
   if (!s.includes('why: whyVals(' + fn)) fail(pg, 'renderVals does not pass why: whyVals(' + fn + '(...))');
+}
+// The Roadmap (the Patterns page, step 5) and the four course fronts (step 6: Start, Concepts, SystemDesign, AIML) have no Why block either.
+for (const pg of ['Chapter', 'ConceptLesson', 'SDLesson', 'AILesson', 'Git', 'Patterns', 'Start', 'Concepts', 'SystemDesign', 'AIML']) {
+  const s = read('pages', pg + '.dc.html');
+  const body = s.slice(s.indexOf('</helmet>'), s.indexOf('<script type="text/x-dc"'));
+  if (/Why learn this/i.test(body)) fail(pg, '"Why learn this?" is shown on a lesson page');
+  if (body.includes('<!-- WHY -->') || body.includes('{{why.')) fail(pg, 'still has a Why block');
 }
 
 console.log('Why learn this: ' + lessons + ' lessons, ' + names.size + ' patterns, 7 hubs');

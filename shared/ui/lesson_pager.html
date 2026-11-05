@@ -1,0 +1,6 @@
+<!-- LESSON PAGER -->
+<nav class="sh-pager" aria-label="Previous and next lesson">
+<sc-if value="{{lf.prev.show}}" hint-placeholder-val="{{ true }}"><a data-prev href="{{lf.prev.href}}" onClick="{{lf.prev.go}}">← Previous: {{lf.prev.title}}</a></sc-if>
+<sc-if value="{{lf.next.show}}" hint-placeholder-val="{{ true }}"><a class="sh-next" data-next-lesson href="{{lf.next.href}}" onClick="{{lf.next.go}}">Next: {{lf.next.title}} →</a></sc-if>
+</nav>
+<!-- /LESSON PAGER -->

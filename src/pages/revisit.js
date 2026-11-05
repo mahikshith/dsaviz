@@ -25,7 +25,7 @@ function rvCard(c) {
     rule: c.kind === 'story' ? c.rule : c.hint,
     noteId: P ? P.id : c.story || slug,
     // A story card replays its story; a sheet card opens our problem page.
-    href: P ? (P.animated ? 'Story.dc.html' : 'Briefing.dc.html') : c.story ? 'Code.dc.html?problem=' + encodeURIComponent(c.story) : solveHref(slug),
+    href: P ? (P.animated ? storyHref(P.id) : 'Briefing.dc.html') : c.story ? 'Code.dc.html?problem=' + encodeURIComponent(c.story) : solveHref(slug),
     go: () => { if (P) saveProblem(P.id); },
     linkLabel: P ? (P.animated ? 'Replay the story' : 'Read the briefing') : 'Solve it again',
     due: c.due, late: c.late, inDays: c.inDays, reps: c.reps
@@ -143,7 +143,7 @@ class Component extends DCLogic {
       upcomingMore: up.cards.length > 6 ? '+' + (up.cards.length - 6) + ' more later' : '',
       hasMore: up.cards.length > 6,
       queueSize: all.length + (all.length === 1 ? ' card' : ' cards') + ' in your queue',
-      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.title, pattern: p.pattern, href: p.animated ? 'Story.dc.html' : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
+      saved: s.saved.map((id) => PROBLEMS.find((p) => p.id === id)).filter(Boolean).map((p) => ({ story: p.title, pattern: p.pattern, href: p.animated ? storyHref(p.id) : 'Briefing.dc.html', go: () => saveProblem(p.id) })),
       noSaved: s.saved.length === 0
     };
   }

@@ -1,4 +1,4 @@
-// Integrity test for the master sheet (shared/sheet.js) and the Sheet page.
+// Integrity test for the master sheet (shared/sheet.js) and the Problems page (pages/Sheet.dc.html, built from src/pages/problems_body.html and problems.js).
 // Fails on duplicate ids or titles, rows without an in-site problem page (a test spec or a SQL spec), missing fields,
 // long hints, groups whose difficulty falls as they go, and counts that are not derived from the data. Slugs that do not look like their title are listed for review.
 const fs = require('fs');
@@ -89,34 +89,35 @@ const a = page.indexOf('// @@SHEET@@'), b = page.indexOf('// @@END-SHEET@@');
 if (a < 0 || b < 0) fail('Sheet.dc.html has no @@SHEET@@ block');
 else if (lf(page.slice(a, b + '// @@END-SHEET@@'.length)) !== lf(sheetSrc)) fail('Sheet.dc.html is stale: run npm run build');
 
-// Main and Home show the sheet size from a generated SHEET_TOTAL
-['Main', 'Home'].forEach((name) => {
+// Main shows the sheet size from a generated SHEET_TOTAL (Home reads SHEET.length itself)
+['Main'].forEach((name) => {
   const m = read('pages', name + '.dc.html').match(/const SHEET_TOTAL = (\d+);/);
   if (!m) fail(name + '.dc.html has no SHEET_TOTAL: run npm run build');
   else if (Number(m[1]) !== SHEET.length) fail(name + '.dc.html says SHEET_TOTAL ' + m[1] + ' but the sheet has ' + SHEET.length + ': run npm run build');
 });
 
-// ---- 3. counts in the UI come from the data ----
+// ---- 3. the Problems page: no numbers in its markup, nothing from the old Sheet page, the data still in the source ----
 const markup = page.slice(page.indexOf('<x-dc>'), page.indexOf('</x-dc>'));
-const visibleText = markup.replace(/<!-- MENU DRAWER -->[\s\S]*?<!-- \/MENU DRAWER -->/, '').replace(/<!-- PILL NAV -->[\s\S]*?<!-- \/PILL NAV -->/, '').replace(/<helmet>[\s\S]*?<\/helmet>/, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, '\n').replace(/\{\{[^}]*\}\}/g, '');
-const ALLOWED = ["Today's 5", "today's 5"];
-visibleText.split('\n').map((x) => x.trim()).filter(Boolean).forEach((line) => {
-  let rest = line; ALLOWED.forEach((w) => { rest = rest.split(w).join(''); });
-  if (/\d/.test(rest)) fail('hard-coded number in Sheet markup: "' + line + '"');
+const visibleText = markup.replace(/<!-- MENU DRAWER -->[\s\S]*?<!-- \/MENU DRAWER -->/, '').replace(/<!-- PILL NAV -->[\s\S]*?<!-- \/PILL NAV -->/, '').replace(/<helmet>[\s\S]*?<\/helmet>/, '').replace(/<style>[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, '\n').replace(/\{\{[^}]*\}\}/g, '');
+visibleText.split('\n').map((x) => x.trim()).filter(Boolean).forEach((line) => { if (/\d/.test(line)) fail('hard-coded number in Problems markup: "' + line + '"'); });
+// The old Sheet page's features are gone from the page (their data and code stay in shared/sheet.js, shared/lists.js and the build).
+["Today's 5", 'Random', 'Open all', 'Close all', 'Export', 'Import', 'Starter', 'Core', 'Company', 'Add a note', 'Star for revision'].forEach((w) => {
+  if (visibleText.includes(w)) fail('the Problems page still shows "' + w + '"');
 });
+if (!/<h1>Problems<\/h1>/.test(markup)) fail('the Problems page has no h1 "Problems"');
+if (!/<div data-shell/.test(markup)) fail('the Problems page is not on the shared frame (data-shell)');
+if (!read('shared', 'lists.js').includes('PROBLEM_LISTS')) fail('shared/lists.js lost its data');
 const canvas = JSON.parse(read('pages', 'canvas.json'));
 const board = canvas.boards['Sheet.dc.html'];
 if (!board) fail('Sheet.dc.html missing from pages/canvas.json');
 const drawer = read('shared', 'drawer.js');
-const menuLine = (drawer.match(/\['Sheet\.dc\.html'[^\]]*\]/) || [''])[0];
-if (!menuLine) fail('Sheet.dc.html missing from the menu drawer');
+// Step 5: Problems is in the top bar and the phone menu's Main sections (NAV_ITEMS in shared/nav.js), not repeated in the drawer's site list.
+const menuLine = (read('shared', 'nav.js').match(/\['sheet', 'Problems', 'Sheet\.dc\.html'[^\]]*\]/) || [''])[0];
+if (!menuLine) fail('Sheet.dc.html missing from the top bar items (shared/nav.js NAV_ITEMS)');
+if (/\['Sheet\.dc\.html'/.test(drawer)) fail('Sheet.dc.html is repeated in the drawer site list');
 [['canvas title', board ? board.title : ''], ['menu entry', menuLine]].forEach(([where, text]) => {
-  ALLOWED.forEach((w) => { text = text.split(w).join(''); });
   (text.match(/\d+/g) || []).forEach((n) => { if (Number(n) !== SHEET.length) fail(where + ' says ' + n + ' but the sheet has ' + SHEET.length); });
 });
-const sizes = [...page.matchAll(/height: (\d+)px; box-sizing: border-box; background: \{\{t\.bg\}\}/g)].map((m) => +m[1]);
-const preview = JSON.parse(page.match(/data-props='([^']*)'/)[1]).$preview.height;
-if (!sizes.length || sizes[0] !== preview || !board || board.h !== preview) fail('root height, $preview.height and canvas h differ: ' + [sizes[0], preview, board && board.h].join(' / '));
 if (!/PAGES = \[[^\]]*'Sheet'/.test(read('tests', 'site-test.js'))) fail("Sheet missing from tests/site-test.js PAGES");
 if (!/ORDER = \[[^\]]*'Sheet'/.test(read('scripts', 'build_site.py'))) fail('Sheet missing from build_site.py ORDER');
 
@@ -128,109 +129,102 @@ const sandbox = `
   const setInterval = () => 0; const clearInterval = () => {};
   class DCLogic { constructor(p) { this.props = p || {}; } setState(o) { Object.assign(this.state, typeof o === 'function' ? o(this.state) : o); } forceUpdate() {} }
   ${script}
-  return { Component, todaysFive, SHEET, SHEET_GROUPS, PROBLEM_LISTS };`;
+  return { Component, prParse, prQuery, PR_PAGE, DS };`;
 const P = new Function('win', sandbox)(win);
-const c = new P.Component({});
-c.componentDidMount();
-let v = c.renderVals();
-const expectEq = (what, got, want) => { if (got !== want) fail(what + ': UI shows ' + got + ', data says ' + want); };
-const check = (label) => {
-  v = c.renderVals();
-  const done = SHEET.filter((r) => c.state.prog.done[r.id]).length;
-  expectEq(label + ' total', v.total, SHEET.length);
-  expectEq(label + ' solved', v.solved, done);
-  // Tiles count done out of the list's size, in every state of the filters, and the page's own total follows the chosen list.
-  v.lists.forEach((tile, i) => {
-    const l = P.PROBLEM_LISTS[i];
-    const ids = new Set(l.ids || SHEET.map((r) => r.pid));
-    const rows = SHEET.filter((r) => ids.has(r.pid));
-    expectEq(label + ' tile ' + l.id, tile.count, rows.filter((r) => c.state.prog.done[r.id]).length + '/' + rows.length);
-  });
-  const sel = v.lists.find((x) => x.on);
-  expectEq(label + ' solved matches its tile', v.solved + '/' + v.total, sel && sel.count);
-  v.groups.forEach((g) => {
-    const all = SHEET.filter((r) => r.pattern === g.name);
-    expectEq(label + ' group ' + g.name + ' total', g.total, all.length);
-    expectEq(label + ' group ' + g.name + ' done', g.done, all.filter((r) => c.state.prog.done[r.id]).length);
-  });
-};
-check('fresh');
-// tick three rows and star one, through the UI handlers
-v.groups[0].rows[0].toggle(); v = c.renderVals();
-v.groups[0].rows[2].toggle(); v = c.renderVals();
-v.groups[0].rows[1].starToggle(); v = c.renderVals();
-check('after ticks');
-const saved = JSON.parse(store[SHEET_KEY] || 'null');
-if (!saved || saved.v !== 1 || typeof saved.done !== 'object' || typeof saved.star !== 'object') fail('progress not saved as { v:1, done, star } under ' + SHEET_KEY);
-else {
-  if (Object.keys(saved.done).length !== 2 || !Object.values(saved.done).every((ts) => typeof ts === 'number' && ts > 0)) fail('done map should hold 2 timestamps');
-  if (Object.keys(saved.star).length !== 1 || Object.values(saved.star)[0] !== 1) fail('star map should hold { id: 1 }');
-}
-// filters: difficulty, status, pattern, company and search
-c.setState({ diff: 'Hard' }); check('filter Hard');
-if (!c.renderVals().groups.every((g) => g.rows.every((r) => r.diff === 'Hard'))) fail('difficulty filter lets other difficulties through');
-for (let i = 0; i < 25; i++) {
-  c.randomPick();
-  const r = SHEET.find((x) => x.id === c.state.pick);
-  if (!r || r.diff !== 'Hard' || c.state.prog.done[r.id]) { fail('random unsolved ignored the filters: ' + (r && r.id)); break; }
-}
-c.setState({ diff: 'All', status: 'done' });
-expectEq('status done rows', c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0), 2);
-c.setState({ status: 'star' });
-expectEq('status starred rows', c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0), 1);
-c.setState({ status: 'all', pattern: 'Heap' });
-if (c.renderVals().groups.some((g) => g.name !== 'Heap')) fail('pattern filter shows other groups');
-c.setState({ pattern: 'All', company: 'Amazon' });
-const amazon = c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0);
-expectEq('company Amazon rows', amazon, SHEET.filter((r) => r.story && PROBLEMS.find((p) => p.id === r.story).cos.includes('Amazon')).length);
-c.setState({ company: 'All', query: 'rotated' });
-if (c.renderVals().groups.reduce((s, g) => s + g.rows.length, 0) !== SHEET.filter((r) => /rotated/i.test(r.name)).length) fail('search does not match names');
-c.setState({ query: '' });
-// Lists: tile counts never move with the filters, and choosing a list starts clean.
+// The page reads the learner's data from DS (the real one, from shared/data.js). Here three of its readers are replaced, to say what is due for
+// review, solved on the Problem page, or finished as a story.
+const stub = { due: [], passes: [], stories: [] };
+P.DS.reviewDue = () => stub.due; P.DS.codePasses = () => ({ ids: stub.passes }); P.DS.stories = () => ({ ids: stub.stories });
+if (!P.DS.TIMED || P.DS.TIMED.key !== "dsaviz-timed") fail("DS.TIMED is missing");
+const expectEq = (what, got, want) => { if (JSON.stringify(got) !== JSON.stringify(want)) fail(what + ': page shows ' + JSON.stringify(got).slice(0, 120) + ', data says ' + JSON.stringify(want).slice(0, 120)); };
+// The rows on every page of one component, in order.
+const allRows = (c) => { const ids = []; const m = /of (\d+)$/.exec(c.renderVals().pos || 'of 1'); const n = m ? +m[1] : 1; for (let pg = 1; pg <= n; pg++) { c.setState({ page: pg }); c.renderVals().rows.forEach((r) => ids.push(r.id)); } c.setState({ page: 1 }); return ids; };
+const mk = () => { const c = new P.Component({}); c.componentDidMount(); return c; };
 {
-  const starterIds = new Set(P.PROBLEM_LISTS[0].ids);
-  const first = SHEET.filter((r) => starterIds.has(r.pid))[0];
-  c.setProg({ done: { [first.id]: Date.now() }, star: {} });
-  ['all', 'done', 'todo', 'star'].forEach((st) => ['All', 'Hard'].forEach((d) => {
-    c.setState({ status: st, diff: d, faq: st === 'todo', list: 'all' });
-    check('tiles with status ' + st + ' difficulty ' + d);
-    if (c.renderVals().lists[0].count !== '1/' + starterIds.size) fail('Starter tile reads ' + c.renderVals().lists[0].count + ' with status ' + st + ' difficulty ' + d + ', want 1/' + starterIds.size);
-  }));
-  c.setState({ status: 'done', diff: 'Hard', faq: true, company: 'Amazon', pattern: 'Heap', list: 'all' });
-  P.PROBLEM_LISTS.forEach((l, i) => {
-    c.renderVals().lists[i].pick();
-    const st = c.state;
-    if (st.list !== l.id || st.status !== 'all' || st.diff !== 'All' || st.faq || st.pattern !== 'All') fail('choosing ' + l.id + ' leaves a filter on: ' + JSON.stringify({ status: st.status, diff: st.diff, faq: st.faq, pattern: st.pattern }));
-    const shown = c.renderVals().groups.reduce((n, g) => n + g.rows.length, 0);
-    if (!shown) fail('choosing ' + l.id + ' shows no problems');
-    c.setState({ status: 'done', diff: 'Hard', faq: true });
-  });
-  c.setState({ list: 'all', status: 'all', diff: 'All', faq: false, company: 'All', pattern: 'All' });
-  // Frequently asked: the problems that carry company tags in our data
-  c.setState({ faq: true });
-  const tagged = SHEET.filter((r) => r.story && PROBLEMS.find((p) => p.id === r.story).cos.length).length;
-  expectEq('frequently asked rows', c.renderVals().groups.reduce((n, g) => n + g.rows.length, 0), tagged);
-  // nothing matches: a short message and a way out
-  c.setState({ faq: false, query: 'zzzzqqq' });
-  const none = c.renderVals();
-  if (!none.noGroups) fail('a search with no match should show the empty message');
-  if (typeof none.clearFilters !== 'function') fail('the empty message needs a Clear filters button');
-  none.clearFilters();
-  if (c.state.query !== '' || c.state.status !== 'all' || c.state.faq) fail('Clear filters leaves a filter on');
+  const c = mk(); const v = c.renderVals();
+  expectEq('first page size', v.rows.length, P.PR_PAGE);
+  if (!v.hasPager || !v.atFirst || v.atLast) fail('the first page needs a pager with Previous off and Next on');
+  // all of the sheet is reachable, each problem once, in sheet order
+  expectEq('every problem reachable by paging', allRows(c), SHEET.map((r) => r.id));
+  const row = v.rows[0];
+  expectEq('row fields (no story names or summaries)', Object.keys(row).sort(), ['diff', 'href', 'id', 'name', 'sr', 'tick', 'topic']);
+  if (!/^Code\.dc\.html\?problem=[a-z0-9-]+$/.test(row.href)) fail('a row links to ' + row.href);
+  // paging
+  v.nextPage(); expectEq('next page', c.state.page, 2);
+  const v2 = c.renderVals(); if (v2.atFirst) fail('page 2 says it is the first'); v2.prevPage(); expectEq('previous page', c.state.page, 1);
+  // each filter alone, then combined; the page returns to 1 when a filter changes
+  c.setState({ page: 3 });
+  c.renderVals().onDiff({ target: { value: 'Hard' } });
+  expectEq('page after a filter', c.state.page, 1);
+  expectEq('difficulty Hard', allRows(c), SHEET.filter((r) => r.diff === 'Hard').map((r) => r.id));
+  c.renderVals().onTopic({ target: { value: 'Heap' } });
+  expectEq('topic Heap + Hard', allRows(c), SHEET.filter((r) => r.diff === 'Hard' && r.pattern === 'Heap').map((r) => r.id));
+  c.renderVals().onDiff({ target: { value: '' } });
+  expectEq('topic Heap', allRows(c), SHEET.filter((r) => r.pattern === 'Heap').map((r) => r.id));
+  c.renderVals().onTopic({ target: { value: 'not a topic' } });
+  expectEq('an unknown topic is ignored', c.state.topic, '');
+  // search: titles and topics, every word
+  c.renderVals().onQ({ target: { value: 'rotated' } });
+  expectEq('search "rotated"', allRows(c), SHEET.filter((r) => /rotated/i.test(r.name)).map((r) => r.id));
+  c.renderVals().onQ({ target: { value: 'two pointers' } });
+  expectEq('search by topic', allRows(c), SHEET.filter((r) => ['two', 'pointers'].every((w) => (r.name + ' ' + r.pattern).toLowerCase().includes(w))).map((r) => r.id));
+  // done: mark two rows done, then filter on it, and combine
+  c.renderVals().clearFilters();
+  expectEq('Clear filters', [c.state.q, c.state.topic, c.state.diff, c.state.done, c.state.due], ['', '', '', '', false]);
+  // Due for review: sheet cards by row id and story cards by the row that holds the story; nothing due means the one-line empty state
+  {
+    const storyRow = SHEET.find((r) => r.story), plain = SHEET.find((r) => !r.story && r.id !== SHEET[0].id);
+    stub.due = [{ kind: 'sheet', id: 'sheet:' + plain.id }, { kind: 'story', id: storyRow.story }, { kind: 'start', id: 'start:variables' }];
+    const u = mk(); u.renderVals().onDue();
+    expectEq('Due for review lists the due problems', allRows(u).sort(), [plain.id, storyRow.id].sort());
+    u.renderVals().onDiff({ target: { value: plain.diff === 'Easy' ? 'Hard' : 'Easy' } });
+    if (!u.renderVals().rows.every((r) => r.id !== plain.id)) fail('Due for review does not combine with the difficulty filter');
+    // (the page works out what is due once per progress object, so nothing due is a new page)
+    stub.due = []; const u2 = mk(); u2.renderVals().onDue();
+    const none = u2.renderVals();
+    if (!none.noRows || none.emptyText !== 'No problems are due for review.') fail('with nothing due the page should say so in one line');
+    none.clearFilters(); if (u2.state.due || !u2.renderVals().hasRows) fail('Clear filters should also switch Due for review off');
+  }
+  // Done also counts a problem solved on the Problem page or a finished story
+  {
+    stub.passes = [SHEET[3].pid]; stub.stories = [];
+    const w = mk(); w.renderVals().onDone({ target: { value: 'yes' } });
+    expectEq('solved on the Problem page counts as done', allRows(w), [SHEET[3].id]);
+    stub.passes = [];
+  }
+  // Timed: a switch that is remembered; off by default
+  {
+    delete store['dsaviz-timed'];
+    const m = mk(); if (m.renderVals().timedOn !== 'false') fail('Timed should be off by default');
+    m.renderVals().onTimed(); expectEq('Timed on is stored', store['dsaviz-timed'], '1'); if (m.renderVals().timedOn !== 'true') fail('Timed switch does not turn on');
+    expectEq('Timed is remembered', mk().renderVals().timedOn, 'true');
+    mk().renderVals().onTimed(); expectEq('Timed off is stored', store['dsaviz-timed'], '0');
+    delete store['dsaviz-timed'];
+  }
+  const mine = [SHEET[0].id, SHEET[5].id];
+  store[SHEET_KEY] = JSON.stringify({ v: 1, done: { [mine[0]]: Date.now(), [mine[1]]: Date.now() }, star: {} });
+  const d = mk();
+  d.renderVals().onDone({ target: { value: 'yes' } });
+  expectEq('done filter', allRows(d), mine);
+  if (d.renderVals().rows.some((r) => r.tick !== '✓' || r.sr !== 'Done')) fail('done rows need a tick and the word Done for screen readers');
+  d.renderVals().onDone({ target: { value: 'no' } });
+  expectEq('not done filter', allRows(d).length, SHEET.length - 2);
+  d.renderVals().onDiff({ target: { value: SHEET[0].diff } }); d.renderVals().onDone({ target: { value: 'yes' } });
+  expectEq('done + difficulty', allRows(d), mine.filter((id) => SHEET.find((r) => r.id === id).diff === SHEET[0].diff));
+  // nothing matches: one line and a way out
+  d.renderVals().onQ({ target: { value: 'zzzzqqq' } });
+  const none = d.renderVals();
+  if (!none.noRows || none.hasRows || none.hasPager) fail('a search with no match should show only the empty message');
+  none.clearFilters(); if (!d.renderVals().hasRows) fail('Clear filters leaves the list empty');
+  delete store[SHEET_KEY];
 }
-// Today's 5: five distinct problems, unsolved before today, the same all day
-const noon = Date.parse('2026-10-24T12:00:00Z');
-const t1 = P.todaysFive({ done: {}, star: {} }, noon).map((r) => r.id);
-const t2 = P.todaysFive({ done: {}, star: {} }, noon + 6 * 3600e3).map((r) => r.id);
-const solvedToday = { done: { [t1[0]]: noon + 3600e3 }, star: {} };
-const t3 = P.todaysFive(solvedToday, noon + 7 * 3600e3).map((r) => r.id);
-const solvedBefore = { done: { [t1[0]]: noon - 86400e3 }, star: {} };
-const t4 = P.todaysFive(solvedBefore, noon).map((r) => r.id);
-if (t1.length !== 5 || new Set(t1).size !== 5) fail("Today's 5 is not five distinct problems");
-if (t1.join() !== t2.join()) fail("Today's 5 changes during the day");
-if (t1.join() !== t3.join()) fail("Today's 5 changes after solving one today");
-if (t4.includes(t1[0])) fail("Today's 5 includes a problem solved on an earlier day");
-if (t1.join() === P.todaysFive({ done: {}, star: {} }, noon + 86400e3).map((r) => r.id).join()) fail("Today's 5 is the same on the next day");
+// The address: filters round-trip, and anything unknown is dropped.
+{
+  const f = { q: 'two sum', topic: 'Heap', diff: 'Hard', done: 'no', due: true, page: 3 };
+  expectEq('query round trip', P.prParse(P.prQuery(f)), f);
+  expectEq('empty filters make an empty query', P.prQuery({ q: '', topic: '', diff: '', done: '', due: false, page: 1 }), '');
+  expectEq('unknown values are dropped', P.prParse('?topic=Nope&difficulty=Impossible&done=maybe&page=-4'), { q: '', topic: '', diff: '', done: '', due: false, page: 1 });
+}
 
 const counts = {};
 SHEET.forEach((r) => { counts[r.pattern] = (counts[r.pattern] || 0) + 1; });

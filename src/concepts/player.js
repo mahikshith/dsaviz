@@ -122,8 +122,8 @@ class Component extends DCLogic {
         navPad: mobile ? '12px 16px' : '16px 14px', navBorder: mobile ? '0' : '1px solid ' + t.line, navBottom: mobile ? '1px solid ' + t.line : '0',
         lessonDir: mobile ? 'row' : 'column', lessonScroll: mobile ? 'auto' : 'visible',
         mainPad: mobile ? '16px 16px 0' : '16px 40px 0', h1: mobile ? 'var(--fs36)' : 'var(--fs56)', listPad: mobile ? '16px' : '24px', listCols: mobile ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))',
-        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : '960 / 620', canvasMax: mobile ? 'none' : 'calc(100vh / var(--fit, 1) - ' + PLAY_STAGE_TOP + 'px)', svgH: mobile ? 'auto' : '100%', svgW: mobile ? '720px' : '100%', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
-        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '16px' : '24px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 18 : 20,
+        canvasFlex: mobile ? '0 0 auto' : '0 1 auto', canvasRatio: mobile ? 'auto' : (lesson.view ? lesson.view[2] + ' / ' + lesson.view[3] : '960 / 620'), canvasMax: mobile ? 'none' : 'clamp(220px, calc(100vh - 560px), 440px)', svgH: '100%', svgW: mobile ? 'auto' : '100%', canvasH: mobile ? '40vh' : 'auto', canvasScroll: mobile ? 'auto' : 'hidden', canvasJustify: mobile ? 'flex-start' : 'center',
+        nowCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) 300px', nowPad: mobile ? '16px' : '24px', ctrlJustify: mobile ? 'flex-start' : 'flex-end', saySize: mobile ? 18 : 22,
         asidePad: mobile ? '16px 16px 32px' : '24px 40px 48px', asideBorder: mobile ? '0' : '1px solid ' + t.line, asideScroll: mobile ? 'visible' : 'auto', readMin: mobile ? '0' : '160px'
       },
       tracks: CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id)).map((tr) => {
@@ -138,16 +138,17 @@ class Component extends DCLogic {
           pick: () => { this.stop(); this.go(0, i, null); }
         };
       }),
+      canvasBox: (lesson.view || [0, -40, 960, 620]).join(' '),
       lesson: { title: lesson.title, tag: lesson.tag, minutes: lesson.minutes, idea: lesson.idea },
       nextLesson: { show: atEnd && nextI >= 0, label: nextI >= 0 ? 'Next lesson: ' + CS_LESSONS[nextI].title : '', go: () => { this.stop(); if (nextI >= 0) this.go(0, nextI, null); } },
       S, canvasLabel: 'Step ' + (this.state.step + 1) + ' of ' + n + '. ' + st.say,
       say: st.say, sayKey: lesson.id + ':' + this.state.sayKey, stepNo: this.state.step + 1, stepCount: n,
       atFirst: this.state.step === 0, atLast: atEnd,
       dots: steps.map((s, i) => ({ label: 'Step ' + (i + 1) + ' of ' + n, cur: i === this.state.step ? 'step' : 'false', bg: i === this.state.step ? t.accent : i < this.state.step ? t.text2 : t.line2, go: () => { this.stop(); this.go(i); } })),
-      // Phones scroll the 720px picture sideways: start each lesson with its middle in view.
+      // Phones scroll the 720px picture sideways (the text in it would shrink under 14px if it were fitted): it opens at the left, where the content starts.
       canvasRef: (el) => {
         if (!el || !mobile || el.getAttribute('data-cs') === lesson.id) return;
-        try { el.setAttribute('data-cs', lesson.id); setTimeout(() => { el.scrollLeft = Math.max(0, (el.scrollWidth - el.clientWidth) / 2); }, 0); } catch (e) {}
+        try { el.setAttribute('data-cs', lesson.id); el.scrollLeft = 0; } catch (e) {}
       },
       readRef: (el) => {
         if (!el || mobile) return;
@@ -157,12 +158,20 @@ class Component extends DCLogic {
       cardParts: (mobile ? ['side', 'canvas'] : ['canvas', 'side']).map((k) => ({ canvas: k === 'canvas', side: k === 'side' })),
       lessonsOpen: !!this.state.listOpen, lessonsRot: this.state.listOpen ? 180 : 0, lessonsLabel: 'All lessons',
       toggleLessons: () => this.setState({ listOpen: !this.state.listOpen }),
-      main: atEnd ? (nextI >= 0 ? { text: 'Next lesson', off: false, go: () => { this.stop(); this.go(0, nextI, null); } } : { text: 'Last step', off: true, go: () => {} })
-        : { text: 'Next step', off: false, go: () => { this.stop(); this.go(this.state.step + 1); } },
+      main: atEnd ? { text: 'Last step', off: true, go: () => {} } : { text: 'Next step', off: false, go: () => { this.stop(); this.go(this.state.step + 1); } },
+      // The frame: sidebar of every lesson by section, the Back link, Previous and Next lesson (shared/lessonframe.js).
+      lf: lessonFrame(this, {
+        label: 'DSA concept lessons', parent: { page: 'Concepts.dc.html', label: 'DSA concepts' },
+        sections: CS_TRACKS.filter((tr) => CS_LESSONS.some((L) => L.track === tr.id)).map((tr) => ({
+          title: tr.title,
+          items: CS_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === tr.id).map(([L, i]) => ({ title: L.title, done: !!done['dsa:' + L.id], cur: i === li, go: () => { this.stop(); this.go(0, i, null); } }))
+        })),
+        prev: li > 0 ? { title: CS_LESSONS[li - 1].title, go: () => { this.stop(); this.go(0, li - 1, null); } } : null,
+        next: nextI >= 0 ? { title: CS_LESSONS[nextI].title, go: () => { this.stop(); this.go(0, nextI, null); } } : null
+      }),
       restart: () => { this.stop(); this.go(0); },
       prev: () => { this.stop(); this.go(this.state.step - 1); },
       next: () => { this.stop(); this.go(this.state.step + 1); },
-      why: whyVals(whyFromAbout(typeof CONCEPT_ABOUT !== 'undefined' ? CONCEPT_ABOUT[lesson.id] : null)),
       ab: aboutVals(this, 'concept:' + lesson.id, typeof CONCEPT_ABOUT !== 'undefined' ? CONCEPT_ABOUT[lesson.id] : null, t, (ref) => { const i = CS_LESSONS.findIndex((x) => x.id === ref); return i < 0 ? null : { label: CS_LESSONS[i].title, go: () => { this.stop(); this.go(0, i, null); } }; }, 'Lesson'),
       spd: speedVals(this), togglePlay: () => this.togglePlay(), isPlaying: !!this.state.playing, isPaused: !this.state.playing,
       // Phones put the controls above the caption, so they stay put while captions change length.

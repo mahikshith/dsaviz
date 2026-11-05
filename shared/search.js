@@ -3,17 +3,15 @@
 // A small scorer, no library: exact title, title prefix, word prefixes, substring, then a loose in-order letter match.
 // type: [group label, page, localStorage key the page reads to open the item, tie-break bonus]
 const SEARCH_TYPES = {
-  story: ['Stories', 'Story.dc.html', 'dsaviz-problem', 3],
   start: ['Start here lessons', 'Chapter.dc.html', 'dsaviz-start-lesson', 2.6],
   pattern: ['Patterns', 'Patterns.dc.html', 'dsaviz-pattern-focus', 2.5],
-  problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 2],
+  problem: ['Problems', 'Code.dc.html', 'dsaviz-problem', 3],
   git: ['Git', 'Git.dc.html', 'dsaviz-git-lesson', 2],
   sd: ['System design', 'SDLesson.dc.html', 'dsaviz-sd-lesson', 2],
   ai: ['AI & ML', 'AILesson.dc.html', 'dsaviz-ai-lesson', 2],
   dsa: ['DSA concepts', 'ConceptLesson.dc.html', 'dsaviz-concept-lesson', 2.2],
   cplx: ['Complexity', 'Complexity.dc.html', 'dsaviz-complexity-at', 2.4],
-  term: ['Glossary', 'Glossary.dc.html', 'dsaviz-glossary-term', 1.5],
-  sheet: ['Master sheet', 'Sheet.dc.html', 'dsaviz-sheet-focus', 1]
+  term: ['Glossary', 'Glossary.dc.html', 'dsaviz-glossary-term', 1.5]
 };
 const SEARCH_ORDER = Object.keys(SEARCH_TYPES);
 function searchNorm(s) {

@@ -125,7 +125,8 @@ Object.keys(PATTERN_WHEN || {}).forEach((k) => { if (!groupNames.includes(k)) fa
 
 // ---- 5. the Patterns page carries the generated block ----
 const page = read('pages', 'Patterns.dc.html');
-if (!/\/\/ @@INTROS@@[\s\S]*const SHEET_INDEX = [\s\S]*\/\/ @@END-INTROS@@/.test(page)) fail('pages/Patterns.dc.html is missing the built INTROS block; run npm run build');
+// The Patterns page is the Roadmap page now (step 5): it carries its own track data, not the old map and cards (those stay in shared/ for the Briefing page).
+if (!/\/\/ @@ROADMAP-DATA@@[\s\S]*const ROADMAP = \{[\s\S]*\/\/ @@END-ROADMAP-DATA@@/.test(page)) fail('pages/Patterns.dc.html is missing the built ROADMAP-DATA block; run npm run build');
 
 // ---- 6. the roadmap (shared/roadmap.js): lanes, nodes, targets, edges, coverage ----
 // Topics a learner meets, from the coverage checklist (docs/research/inbox/coverage-checklist.md on research/dsamaxxing):
@@ -266,7 +267,7 @@ laneKeys.filter((k) => k !== 'patterns').forEach((k) => {
 // Coverage: every checklist topic has a node.
 const covered = new Set(rnodes.reduce((a, n) => a.concat(n.covers || []), []));
 REQUIRED_TOPICS.forEach((topic) => { if (!covered.has(topic)) fail('roadmap: no node covers the checklist topic "' + topic + '"'); });
-if (!/\/\/ @@INTROS@@[\s\S]*const ROADMAP_NODES = [\s\S]*\/\/ @@END-INTROS@@/.test(read('pages', 'Patterns.dc.html'))) fail('pages/Patterns.dc.html is missing the roadmap in its INTROS block; run npm run build');
+
 console.log('✓ roadmap: ' + rnodes.length + ' nodes in ' + laneKeys.length + ' lanes (' + liveCount + ' live lesson nodes, ' + soonCount + ' coming soon), ' + rEdges.length + ' edges, ' + rCross + ' crossings outside the patterns, ' + REQUIRED_TOPICS.length + ' checklist topics covered');
 console.log('✓ ' + nodes.length + ' nodes, ' + E.length + ' edges, ' + crossings + ' crossings, ' + Object.keys(PATTERN_INTROS).length + ' cards');
 console.log(problems ? problems + ' problem(s)' : 'map clean');

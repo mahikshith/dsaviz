@@ -1,11 +1,8 @@
 // @@DRAWER@@ — shared menu logic (every page with the pill nav)
+// The Roadmap reaches every track and Problems is in the Main sections list, so those entries are not repeated here.
 const MENU = [
   ['Home.dc.html', 'My home', 'Streak, today’s story, progress', null],
-  ['Patterns.dc.html', 'Library', 'Learning path, patterns, companies', null],
-  ['Concepts.dc.html', 'DSA concepts', 'Big-O, sorts, hashing, trees, graphs and math, animated', null],
-  ['Sheet.dc.html', 'Master sheet', 'Every problem by pattern, with ticks and hints', null],
   ['Snapshot.dc.html', 'Snapshot', 'Quick revision of every lesson', null],
-  ['Complexity.dc.html', 'Complexity', 'Big-O growth, how to work it out, cost tables', null],
   ['Code.dc.html', 'Code', 'Write and test solutions in the browser', null],
   ['Story.dc.html', 'Continue the story', 'Pick up where you left off', null],
   ['Revisit.dc.html', 'Revisit', 'Bring stories back before they fade', null],
@@ -13,10 +10,7 @@ const MENU = [
   ['Interview.dc.html', 'Interview prep', 'Plans, company tracks, mock mode', 'plans'],
   ['Interview.dc.html', 'Resources', 'Books, repos and cheat sheets we trust', 'resources'],
   ['Glossary.dc.html', 'Keyword glossary', 'enumerate, zip, deque… in 5 languages', null],
-  ['Basics.dc.html', 'Language basics', 'Refresh Python, Java, C++, JS or Go', null],
-  ['Git.dc.html', 'Git, visually', 'Add, commit, branch, merge, push: step by step', null],
-  ['SystemDesign.dc.html', 'System design', 'HLD and LLD as diagrams you step through', null],
-  ['AIML.dc.html', 'AI & ML', 'ML foundations and AI now, animated step by step', null],
+  ['Basics.dc.html', 'Language basics', 'Refresh Python or JavaScript', null],
   ['Contests.dc.html', 'Contest calendar', 'AtCoder, CodeChef and Codeforces in your time', null],
   ['Leaderboard.dc.html', 'Leaderboard', 'This week’s league (demo until accounts launch)', null],
   ['About.dc.html', 'Our story & contact', 'Why one developer built this', null]
@@ -28,7 +22,6 @@ function drawerVals(cmp, t, themeKey) {
     drawerOpen: !!cmp.state.drawer,
     openDrawer: () => cmp.setState({ drawer: true }),
     closeDrawer: () => cmp.setState({ drawer: false }),
-    takeTour: () => { cmp.setState({ drawer: false }); if (typeof window !== 'undefined' && window.__dsTour) window.__dsTour.start(); },
     drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
     user, guest: !user,
     signIn: () => { saveUser(true); cmp.setState({ user: true }); },

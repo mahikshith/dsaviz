@@ -1,4 +1,4 @@
-// @@NAV@@ — generated block (from shared/nav.js): the floating pill nav at the top of every page.
+// @@NAV@@ — generated block (from shared/nav.js): the top bar of every page.
 // Markup: shared/ui/nav.html, copied between the PILL NAV comment markers together with the menu drawer.
 // A page adds `...navVals(this, t, themeKey, 'Home')` to its renderVals.
 // NAV_PAGES is filled in by scripts/build_pages.py with the boards that exist, so a section
@@ -6,21 +6,12 @@
 const NAV_PAGES = /*@@PAGES@@*/[];
 // key, label, page, icon, hidden on phones unless active
 const NAV_ITEMS = [
-  ['home', 'Home', 'Home.dc.html', 'home', false],
-  ['start', 'Start here', 'Start.dc.html', 'start', false],
-  ['learn', 'Learn', 'Patterns.dc.html', 'learn', false],
-  ['sheet', 'Sheet', 'Sheet.dc.html', 'sheet', false],
-  ['snapshot', 'Snapshot', 'Snapshot.dc.html', 'sheet', true],
-  ['complexity', 'Complexity', 'Complexity.dc.html', 'sheet', true],
-  ['code', 'Code', 'Code.dc.html', 'code', false],
-  ['git', 'Git', 'Git.dc.html', 'git', true],
-  ['design', 'System design', 'SystemDesign.dc.html', 'design', true],
-  ['ai', 'AI/ML', 'AIML.dc.html', 'ai', true]
+  ['learn', 'Roadmap', 'Patterns.dc.html', 'learn', false],
+  ['sheet', 'Problems', 'Sheet.dc.html', 'sheet', false]
 ];
 // Which section each page belongs to.
-const NAV_SECTION = { Home: 'home', Patterns: 'learn', Briefing: 'learn', Story: 'learn', Revisit: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Glossary: 'learn', Interview: 'learn',
-  Start: 'start', Chapter: 'start', Basics: 'start',
-  Sheet: 'sheet', Snapshot: 'snapshot', Complexity: 'complexity', Code: 'code', Git: 'git', SystemDesign: 'design', SDLesson: 'design', AIML: 'ai', AILesson: 'ai' };
+const NAV_SECTION = { Patterns: 'learn', Briefing: 'learn', Concepts: 'learn', ConceptLesson: 'learn', Start: 'learn', Chapter: 'learn', Basics: 'learn', Complexity: 'learn', Snapshot: 'learn', Git: 'learn', SystemDesign: 'learn', SDLesson: 'learn', AIML: 'learn', AILesson: 'learn',
+  Sheet: 'sheet', Code: 'sheet', Story: 'sheet', Interview: 'sheet', Revisit: 'sheet' };
 // The search box: "/" anywhere (outside a text field) opens it on the page that is showing.
 function searchShow(cmp) {
   cmp.setState({ sOpen: true, sAct: 0 });
@@ -58,14 +49,13 @@ function searchVals(cmp, t) {
   groups.forEach((g) => g.items.forEach((it) => flat.push(it)));
   const act = Math.max(0, Math.min(flat.length - 1, st.sAct || 0));
   let i = 0;
-  const C = SITE_INDEX.counts;
   return {
     open: !!st.sOpen, closed: !st.sOpen, q, icon: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
     expanded: st.sOpen && flat.length ? 'true' : 'false',
     active: flat.length ? 'pn-opt-' + act : '',
-    hint: q.trim() ? '' : 'Stories, ' + C.sheet + ' sheet problems, ' + C.runnable + ' runnable problems, lessons and glossary terms',
+    hint: q.trim() ? '' : 'Type a lesson or a problem name',
     hasHint: !q.trim(), none: !!q.trim() && !flat.length,
-    status: q.trim() ? (flat.length ? flat.length + ' results' : 'No results') : '',
+    status: q.trim() ? (flat.length ? 'Results are listed below' : 'No results') : '',
     groups: groups.map((g) => ({
       label: g.label, gid: 'pn-grp-' + g.type,
       items: g.items.map((it) => {
@@ -94,87 +84,61 @@ function searchVals(cmp, t) {
     }
   };
 }
-// The daily check-in: on the first visit of each day (once the learner has done anything), a small modal says which
-// streak day today is, with one action. When yesterday was missed and the week's freeze can save the streak, that is the action.
-// It is marked seen as soon as it shows, so it never comes back the same day.
-function dailyVals(cmp, t) {
-  if (cmp.__daily === undefined) {
-    let d = null;
-    try { d = DS.daily(); } catch (e) {}
-    cmp.__daily = d && d.show ? d : null;
-    if (cmp.__daily) { try { DS.markDailySeen(); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 60); }
-  }
-  const d = cmp.__daily || { day: 1, keeps: 0, offer: false, broken: false, activeToday: false }, open = !!cmp.__daily && !cmp.state.dailyClosed;
-  const close = () => cmp.setState({ dailyClosed: true });
-  const saved = !!cmp.state.dailySaved;
-  const offer = d.offer && !saved;
-  const day = saved ? d.keeps + 1 : d.day;
-  return {
-    open, close,
-    title: offer ? 'You missed yesterday' : d.broken ? 'Day 1. Start again' : 'Day ' + day + '. Keep it going',
-    body: offer ? 'Your ' + d.keeps + '-day streak can still live. Use this week’s freeze to cover yesterday.'
-      : saved ? 'Freeze used. Yesterday is covered, so your streak is safe. Do one thing today to make it day ' + day + '.'
-      : d.broken ? 'Your last streak ended. One problem, story or revisit card today starts a new one.'
-      : d.activeToday ? 'You have already done something today. Your streak is ' + day + (day === 1 ? ' day.' : ' days.')
-      : 'One problem, story or revisit card today keeps your ' + (day - 1) + '-day streak going.',
-    action: offer ? 'Use my freeze' : 'Pick up where you left off',
-    isFreeze: offer, isGo: !offer,
-    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 0); },
-    go: () => { close(); try { if (window.__dsNav) window.__dsNav('Code.dc.html'); } catch (e) {} },
-    // Esc closes; Tab stays inside the dialog while it is open.
-    onKey: (e) => {
-      if (!e) return;
-      if (e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); return; }
-      if (e.key !== 'Tab') return;
-      try {
-        const box = document.querySelector('[data-daily] [role="dialog"]');
-        const f = box ? [...box.querySelectorAll('button, a[href]')] : [];
-        if (!f.length) return;
-        const first = f[0], last = f[f.length - 1], at = document.activeElement;
-        if (e.shiftKey && at === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus(); }
-      } catch (x) {}
-    },
-    flame: offer ? t.muted : t.flame
-  };
-}
 // The Back link names the page it returns to. The runtime keeps the trail (scripts/site-runtime.js).
-const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Learn', Concepts: 'Concepts', ConceptLesson: 'Lesson', Sheet: 'Sheet',
+const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'DSA concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
 // Only pages you drill into show it: a top-level page is reached from the nav, which is the way back.
-const BACK_PAGES = ['Chapter', 'Code', 'Story', 'AILesson', 'ConceptLesson', 'SDLesson', 'Briefing'];
+const BACK_PAGES = ['Briefing'];  // the lesson pages have their own Back link at the top of the page (lessonBack)
 function navBack(page) {
   let to = null;
   try { to = window.__dsTrail && BACK_PAGES.includes(page) ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
   return { show: !!to, label: BACK_LABELS[name] || 'Back', aria: 'Back to ' + (BACK_LABELS[name] || 'the last page'), go: () => { try { window.__dsBack(); } catch (e) {} } };
 }
+// The Back link at the top of a lesson page: "Back to <a real list page>". The trail (window.__dsTrail) is used only when the
+// learner came from a list page (LIST_BACK below); from another lesson, the front page or anywhere else it goes to the lesson's
+// own track page instead (Previous and Next move between lessons). parent: { page: 'Concepts.dc.html', label: 'DSA concepts' }.
+const LIST_BACK = { Patterns: 'Roadmap', Sheet: 'Problems', Start: 'Start here', Concepts: 'DSA concepts', SystemDesign: 'System design', AIML: 'AI & ML', Complexity: 'Complexity', Snapshot: 'Quick Bytes', Glossary: 'Glossary', Profile: 'Profile' };
+function lessonBack(parent) {
+  let to = null;
+  try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
+  const name = to ? String(to.page).replace('.dc.html', '') : '';
+  const use = !!(to && LIST_BACK[name]);
+  // A Start here lesson reached from the Roadmap says which chapter it returns to (parent.chapter), and lands on that chapter's heading.
+  const chap = use && name === 'Patterns' && parent.chapter ? parent.chapter : 0;
+  return {
+    label: 'Back to ' + (chap ? 'Chapter ' + chap : use ? LIST_BACK[name] : parent.label), href: '#back',
+    go: (e) => {
+      try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {}
+      try { if (use) window.__dsBack(); else window.__dsNav(parent.page, '', true); } catch (x) {}
+      // The Roadmap comes back at the scroll the learner left it; if that chapter's heading is not on screen (they moved on with Next), bring it there.
+      if (chap) setTimeout(() => { try { const h = document.getElementById('ch-' + chap); if (h) { const r = h.getBoundingClientRect(); if (r.bottom < 52 || r.top > window.innerHeight - 40) h.scrollIntoView({ block: 'start' }); } } catch (x) {} }, 1700);
+    }
+  };
+}
 function navVals(cmp, t, themeKey, page) {
   const section = NAV_SECTION[page] || '';
   const me = DS.profile();
-  const st = DS.streak();
   const dv = drawerVals(cmp, t, themeKey);
+  const navItems = NAV_ITEMS.map(([key, label, href, icon, extra]) => {
+    const on = key === section;
+    const live = NAV_PAGES.includes(href);
+    return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
+      live, soon: !live, title: live ? label : label + ' · coming soon',
+      bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text };
+  });
   return Object.assign(dv, {
+    // On phones the top bar holds only the menu, logo, search and profile; Roadmap and Problems sit at the top of the menu.
+    drawerNav: navItems,
     // "i" explainer buttons (.ds-tip): a tap focuses the button, which shows its sentence.
     tipTap: (e) => { try { if (e && e.currentTarget) e.currentTarget.focus(); } catch (x) {} },
     nav: {
       back: navBack(page),
-      glass: tint(t.surface, 'EB'), shadow: t.shadow,
-      items: NAV_ITEMS.map(([key, label, href, icon, extra]) => {
-        const on = key === section;
-        const live = NAV_PAGES.includes(href);
-        return { label, href, d: ICONS[icon], on: on ? 'true' : 'false', current: on ? 'page' : 'false', extra: extra ? 'true' : 'false',
-          live, soon: !live, title: live ? label : label + ' · coming soon',
-          bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text2 };
-      }),
-      streak: st.current, streakLabel: st.current ? st.current + '-day streak' : 'No streak yet',
-      flame: st.current ? t.flame : t.muted,
+      items: navItems,
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
-      avatarBg: page === 'Profile' ? t.accent : t.sunk, avatarFg: page === 'Profile' ? t.onAccent : t.text,
-      guest: dv.guest && page === 'Main', member: !(dv.guest && page === 'Main'),
-      srch: searchVals(cmp, t),
-      daily: dailyVals(cmp, t)
+      avatarBg: t.sunk, avatarFg: t.text,
+      srch: searchVals(cmp, t)
     }
   });
 }

@@ -1,0 +1,89 @@
+<div data-shell data-page="Patterns" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; font-family: {{t.body}}">
+
+<!-- PILL NAV -->
+<!-- /PILL NAV -->
+<style>
+/* The Roadmap page (src/pages/roadmap_body.html, src/pages/roadmap.js): a title, then every track as a block in a grid.
+   A block holds its name, done out of total, a thin bar and all of its lessons, flowed into columns by the browser (column width, not a fixed count),
+   so a long track fills a wide block and a short one stays narrow. Blocks in a row are the same height because a grid row stretches them. */
+.rm-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;align-items:stretch}
+.rm-block{box-sizing:border-box;min-width:0;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px;scroll-margin-top:72px}
+.rm-block[data-w="2"]{grid-column:span 2}
+.rm-block[data-w="3"]{grid-column:span 3}
+.rm-block[data-w="4"]{grid-column:span 4}
+.rm-block[data-w="6"]{grid-column:span 6}
+@media (min-width:1200px){
+.rm-block[data-track="dsa"] .rm-cols{columns:2}
+.rm-block[data-track="patterns"] .rm-cols{columns:1;flex:1;display:flex;flex-direction:column}
+.rm-block[data-track="patterns"] .rm-group,.rm-block[data-track="patterns"] .rm-list{flex:1;display:flex;flex-direction:column}
+.rm-block[data-track="patterns"] .rm-list li{flex:1 1 auto;display:flex}
+.rm-block[data-track="patterns"] .rm-lesson{flex:1}
+}
+.rm-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+.rm-block .rm-head h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
+.rm-bar{height:4px;border-radius:2px;background:var(--sh-line);overflow:hidden;flex-shrink:0}
+.rm-bar>span{display:block;height:100%;background:var(--sh-accent)}
+.rm-cols{column-width:230px;column-gap:24px}
+.rm-group[data-titled="true"]{break-inside:avoid;padding-bottom:12px}
+.rm-block .rm-chap{margin:0;padding:4px 8px;font-size:calc(15px * var(--ts, 1));line-height:1.4;font-weight:600;color:var(--sh-text);scroll-margin-top:72px}
+.rm-list{margin:0;padding:0;list-style:none}
+.rm-list li{break-inside:avoid}
+.rm-lesson{display:flex;flex-wrap:nowrap;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.rm-lesson:hover{background:var(--sh-sunk)}
+.rm-lesson>.sh-tick{color:var(--sh-accent);font-weight:700}
+.rm-lesson>.rm-t{min-width:0;overflow-wrap:anywhere;flex:1 1 0;display:flex;flex-direction:column;align-items:flex-start;gap:0}
+.rm-lesson>.rm-n{flex:0 0 auto;margin-left:auto;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-variant-numeric:tabular-nums}
+.rm-up{display:inline-flex;align-items:center;gap:4px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
+.rm-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
+.rm-chips{position:relative;margin:0}
+.rm-jump{display:flex;flex-wrap:wrap;align-items:center;gap:0 24px}
+.rm-jl{color:var(--sh-muted);font-size:calc(16px * var(--ts, 1))}
+.rm-chip{min-height:40px;padding:0;box-sizing:border-box;border:0;background:transparent;color:var(--sh-muted);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;text-decoration:none;text-underline-offset:6px;text-decoration-thickness:2px}
+.rm-chip:hover{color:var(--sh-text)}
+.rm-chip[aria-current="true"]{color:var(--sh-text);font-weight:600;text-decoration:underline}
+.rm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:1199px){
+.rm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rm-block[data-w]{grid-column:auto}
+.rm-block[data-t="1"]{grid-column:span 1}
+.rm-block[data-t="2"]{grid-column:span 2}
+}
+@media (max-width:759px){
+.rm-chips{position:sticky;top:52px;z-index:5;margin:0 -16px;padding:0 16px;background:var(--sh-bg);border-bottom:1px solid var(--sh-line)}
+.rm-chips::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,transparent,var(--sh-bg));pointer-events:none}
+.rm-jump{flex-wrap:nowrap;overflow-x:auto;gap:0 24px;scrollbar-width:none}
+.rm-jump::-webkit-scrollbar{display:none}
+.rm-jump::after{content:"";flex:0 0 24px}
+.rm-jl,.rm-chip{flex-shrink:0;white-space:nowrap}
+.rm-chip{min-height:44px}
+.rm-block,.rm-chap{scroll-margin-top:112px}
+.rm-grid{grid-template-columns:minmax(0,1fr)}
+.rm-block[data-w],.rm-block[data-t]{grid-column:span 1}
+.rm-cols{column-width:auto;columns:1}
+.rm-lesson{min-height:44px}
+}
+@media (prefers-reduced-motion:reduce){.rm-lesson,.rm-chip{transition:none}}
+</style>
+<main class="sh-main">
+<h1>Roadmap</h1>
+<div class="rm-chips"><nav class="rm-jump" aria-label="Jump to a track"><span class="rm-jl">Jump to:</span><sc-for list="{{chips}}" as="c" hint-placeholder-count="7"><button class="rm-chip" aria-label="{{c.aria}}" aria-current="{{c.cur}}" data-chip="{{c.key}}" onClick="{{c.go}}">{{c.label}}</button></sc-for></nav></div>
+<div class="rm-grid">
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7">
+<section class="rm-block" id="{{tr.id}}" data-track="{{tr.key}}" data-w="{{tr.w}}" data-t="{{tr.t}}" aria-labelledby="{{tr.hid}}">
+<div class="rm-head"><h2 id="{{tr.hid}}">{{tr.name}}</h2><span class="sh-label">{{tr.count}}</span></div>
+<div class="rm-bar" role="progressbar" aria-label="{{tr.aria}}" aria-valuemin="0" aria-valuemax="{{tr.total}}" aria-valuenow="{{tr.done}}"><span style="width: {{tr.pct}}%"></span></div>
+<div class="rm-cols">
+<sc-for list="{{tr.groups}}" as="g" hint-placeholder-count="4">
+<div class="rm-group" data-titled="{{g.titled}}">
+<sc-if value="{{g.titled}}" hint-placeholder-val="{{ false }}"><h3 class="rm-chap" id="{{g.id}}">{{g.title}}</h3></sc-if>
+<ul class="rm-list">
+<sc-for list="{{g.items}}" as="l" hint-placeholder-count="6"><li><a class="rm-lesson" href="{{l.href}}" onClick="{{l.go}}"><span class="sh-tick" aria-hidden="true">{{l.tick}}</span><span class="rm-t"><span>{{l.title}}</span><span class="rm-sr">{{l.sr}}</span><sc-if value="{{l.up}}" hint-placeholder-val="{{ false }}"><span class="rm-up">Up next</span></sc-if></span><span class="rm-n" aria-hidden="true">{{l.note}}</span></a></li></sc-for>
+</ul>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</div>
+</main>
+</div>

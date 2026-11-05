@@ -35,10 +35,10 @@ const ALLOWED = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsd
   const markup = src.slice(src.indexOf('<x-dc>'), src.indexOf('</x-dc>'));
   for (const m of markup.matchAll(/<a\b[^>]*>/g)) if (/target="_blank"/.test(m[0]) && !/fonts\./.test(m[0])) fail(name + '.dc.html', 'a link opens a new tab, off the site: ' + m[0].slice(0, 100));
 });
-// The sheet's clickable names use the row's own problem page.
+// The Problems page's clickable titles use the row's own problem page (Today's 5 and Random are gone from the page).
 {
   const sheetPage = read('pages', 'Sheet.dc.html');
-  ['{{r.href}}', '{{td.href}}', '{{pick.href}}'].forEach((h) => { if (!sheetPage.includes('href="' + h + '"')) fail('Sheet.dc.html', 'no link to ' + h); });
+  ['{{r.href}}'].forEach((h) => { if (!sheetPage.includes('href="' + h + '"')) fail('Sheet.dc.html', 'no link to ' + h); });
   const win = { localStorage: { getItem: () => null, setItem: () => {} } };
   const { SHEET, PROBLEMS } = new Function('window', read('shared', 'catalog.js') + '\n' + read('shared', 'sheet.js') + '\nreturn { SHEET, PROBLEMS };')(win);
   SHEET.forEach((r) => { if (!/^Code\.dc\.html\?problem=[a-z0-9-]+$/.test(r.href)) fail('sheet ' + r.id, 'opens ' + r.href); });
@@ -46,7 +46,8 @@ const ALLOWED = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsd
   const revisit = read('src', 'pages', 'revisit.js');
   if (!/solveHref\(slug\)/.test(revisit)) fail('src/pages/revisit.js', 'a sheet card does not open its problem page');
   if (!/solveHref: 'Code\.dc\.html\?problem='/.test(read('pages', 'Briefing.dc.html'))) fail('Briefing.dc.html', 'the briefing does not link its problem page');
-  if (!/href: solveHref\(id\)/.test(read('pages', 'Patterns.dc.html'))) fail('Patterns.dc.html', 'pattern cards do not open problem pages');
+  // Step 5: the Patterns page is the Roadmap; each pattern opens the Problems page filtered by that topic.
+  if (!/Sheet\.dc\.html\?topic=/.test(read('src', 'pages', 'roadmap.js'))) fail('src/pages/roadmap.js', 'a pattern does not open the Problems page filtered by its topic');
 
   // 3. No outside catalogue numbers: the data carries none, the markup prints none, the built site shows none.
   PROBLEMS.forEach((p) => { if ('n' in p) fail('catalog ' + p.id, 'carries a problem number'); });

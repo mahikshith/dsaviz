@@ -36,13 +36,10 @@ function fsBridgeScene() {
     id: 'middle-of-list', pattern: 'Fast & Slow Pointers', cast: 'fs', short: 'Halfway', visual: 'letters', items: vals.map(String), pitch: 74, tile: 58, tileH: 70, gap: 16, font: 28, width: 502,
     actorLabels: ['Tortoise', 'Hare'],
     goal: 'Find the middle carriage without counting first', status: ['Walking…', 'Middle found'],
-    lines: { py: { intro: 2, stride: 5, found: 6 }, java: { intro: 2, stride: 5, found: 7 }, cpp: { intro: 2, stride: 5, found: 7 }, js: { intro: 2, stride: 5, found: 7 }, go: { intro: 2, stride: 5, found: 7 } },
+    lines: { py: { intro: 2, stride: 5, found: 6 }, js: { intro: 2, stride: 5, found: 7 } },
     code: {
       py: [['def middleNode(head):', ''], ['    slow = fast = head', ''], ['    while fast and fast.next:', ''], ['        slow = slow.next', '  # the tortoise: one carriage'], ['        fast = fast.next.next', '  # the hare: two carriages'], ['    return slow', '']],
-      java: [['ListNode middleNode(ListNode head) {', ''], ['    ListNode slow = head, fast = head;', ''], ['    while (fast != null && fast.next != null) {', ''], ['        slow = slow.next;', '  // the tortoise: one carriage'], ['        fast = fast.next.next;', '  // the hare: two carriages'], ['    }', ''], ['    return slow;', ''], ['}', '']],
-      cpp: [['ListNode* middleNode(ListNode* head) {', ''], ['    ListNode *slow = head, *fast = head;', ''], ['    while (fast && fast->next) {', ''], ['        slow = slow->next;', '  // the tortoise: one carriage'], ['        fast = fast->next->next;', '  // the hare: two carriages'], ['    }', ''], ['    return slow;', ''], ['}', '']],
       js: [['function middleNode(head) {', ''], ['  let slow = head, fast = head;', ''], ['  while (fast && fast.next) {', ''], ['    slow = slow.next;', '  // the tortoise: one carriage'], ['    fast = fast.next.next;', '  // the hare: two carriages'], ['  }', ''], ['  return slow;', ''], ['}', '']],
-      go: [['func middleNode(head *ListNode) *ListNode {', ''], ['    slow, fast := head, head', ''], ['    for fast != nil && fast.Next != nil {', ''], ['        slow = slow.Next', '  // the tortoise: one carriage'], ['        fast = fast.Next.Next', '  // the hare: two carriages'], ['    }', ''], ['    return slow', ''], ['}', '']]
     },
     rules: [['Both start at the front', 'intro'], ['The tortoise steps one, the hare hops two', 'stride'], ['The hare is at the end → the tortoise is the middle', 'found']],
     complexity: [['O(n)', 'The hare crosses the train once'], ['O(1)', 'two walkers, no notes']],
@@ -96,13 +93,10 @@ function fsLoopScene() {
     id: 'linked-list-cycle', pattern: 'Fast & Slow Pointers', cast: 'fs', short: 'Loop Track', visual: 'letters', items: vals.map((v, i) => (i === 5 ? v + '↩' : String(v))), pitch: 78, tile: 60, tileH: 70, gap: 18, font: 28, width: 450,
     actorLabels: ['Tortoise', 'Hare'],
     goal: 'Does the track loop? (the last carriage hooks back to carriage 2)', status: ['Running…', 'Loop found'],
-    lines: { py: { intro: 2, stride: 5, wrap: 5, found: 7 }, java: { intro: 2, stride: 5, wrap: 5, found: 6 }, cpp: { intro: 2, stride: 5, wrap: 5, found: 6 }, js: { intro: 2, stride: 5, wrap: 5, found: 6 }, go: { intro: 2, stride: 5, wrap: 5, found: 7 } },
+    lines: { py: { intro: 2, stride: 5, wrap: 5, found: 7 }, js: { intro: 2, stride: 5, wrap: 5, found: 6 } },
     code: {
       py: [['def hasCycle(head):', ''], ['    slow = fast = head', ''], ['    while fast and fast.next:', ''], ['        slow = slow.next', ''], ['        fast = fast.next.next', ''], ['        if slow is fast:', ''], ['            return True', '  # the hare caught up'], ['    return False', '']],
-      java: [['boolean hasCycle(ListNode head) {', ''], ['    ListNode slow = head, fast = head;', ''], ['    while (fast != null && fast.next != null) {', ''], ['        slow = slow.next;', ''], ['        fast = fast.next.next;', ''], ['        if (slow == fast) return true;', '  // the hare caught up'], ['    }', ''], ['    return false;', ''], ['}', '']],
-      cpp: [['bool hasCycle(ListNode* head) {', ''], ['    ListNode *slow = head, *fast = head;', ''], ['    while (fast && fast->next) {', ''], ['        slow = slow->next;', ''], ['        fast = fast->next->next;', ''], ['        if (slow == fast) return true;', '  // the hare caught up'], ['    }', ''], ['    return false;', ''], ['}', '']],
       js: [['function hasCycle(head) {', ''], ['  let slow = head, fast = head;', ''], ['  while (fast && fast.next) {', ''], ['    slow = slow.next;', ''], ['    fast = fast.next.next;', ''], ['    if (slow === fast) return true;', '  // the hare caught up'], ['  }', ''], ['  return false;', ''], ['}', '']],
-      go: [['func hasCycle(head *ListNode) bool {', ''], ['    slow, fast := head, head', ''], ['    for fast != nil && fast.Next != nil {', ''], ['        slow = slow.Next', ''], ['        fast = fast.Next.Next', ''], ['        if slow == fast {', ''], ['            return true', '  // the hare caught up'], ['        }', ''], ['    }', ''], ['    return false', ''], ['}', '']]
     },
     rules: [['Both start at the front', 'intro'], ['The tortoise steps one, the hare hops two', 'stride'], ['The hare runs round the loop and comes up behind', 'wrap'], ['Same carriage → the track loops', 'found']],
     complexity: [['O(n)', 'they meet within one lap'], ['O(1)', 'two walkers, no notes']],

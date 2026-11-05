@@ -174,16 +174,18 @@
       const readTrail = () => { try { const v = JSON.parse(window.sessionStorage.getItem(TRAIL) || '[]'); return Array.isArray(v) ? v : []; } catch (err) { return []; } };
       const saveTrail = (v) => { try { window.sessionStorage.setItem(TRAIL, JSON.stringify(v.slice(-20))); } catch (err) {} };
       window.__dsTrail = () => { const v = readTrail(); return v.length ? v[v.length - 1] : null; };
-      window.__dsBack = () => { const v = readTrail(); const to = v.pop(); if (!to) return; saveTrail(v); window.__dsNav(to.page, to.query, true); };
-      window.__dsNav = (name, query, back) => {
+      window.__dsBack = () => { const v = readTrail(); const to = v.pop(); if (!to) return; saveTrail(v); window.__dsNav(to.page, to.query, true, to.y); };
+      window.__dsNav = (name, query, back, y) => {
         if (!window.DS_BOARDS[name]) return;
-        if (!back && name !== this.state.page) saveTrail(readTrail().concat([{ page: this.state.page, query: location.search }]));
+        if (!back && name !== this.state.page) saveTrail(readTrail().concat([{ page: this.state.page, query: location.search, y: Math.round(window.scrollY || 0) }]));
         // Set the URL first so the new page reads its query (?problem=...) when it mounts; a plain link clears it.
         try { history.pushState(null, '', location.pathname + (query || '') + '#' + name.replace('.dc.html', '')); } catch (err) { try { location.hash = name.replace('.dc.html', ''); } catch (e2) {} }
         // A visit counter in the key remounts the page even when a link (or a search result) points at the page
         // already showing, so it re-reads what to open from localStorage.
         this.setState({ page: name, visit: (this.state.visit || 0) + 1 });
         window.scrollTo(0, 0);
+        // Back keeps the scroll position the learner left the page at: the page draws after this call, so retry until it is tall enough.
+        if (back && y > 0) { let tries = 0; const put = () => { window.scrollTo(0, y); if (Math.abs((window.scrollY || 0) - y) > 2 && ++tries < 30) setTimeout(put, 50); }; setTimeout(put, 0); }
       };
       const sync = () => { const p = pageFromHash(); if (p && p !== this.state.page) { this.setState({ page: p }); window.scrollTo(0, 0); } };
       window.addEventListener('hashchange', sync);
@@ -206,8 +208,9 @@
   function fit() {
     const r = document.querySelector('#app > div');
     const w = (r && Number(r.getAttribute('data-fit'))) || 1440;
-    const fluid = r && r.hasAttribute('data-fluid') && window.innerWidth < 760;
-    const z = fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
+    const shell = r && r.hasAttribute('data-shell');
+    const fluid = r && (shell || r.hasAttribute('data-fluid')) && window.innerWidth < 760;
+    const z = shell || fluid ? 1 : Math.max(0.25, Math.min(1.6, window.innerWidth / w));
     // Runtime phone flag: html[data-phone] while a fluid page shows its phone layout. Pages read it
     // with dsPhone() (shared/ui.js); crossing 760px re-renders the open page.
     const de = document.documentElement;
@@ -249,5 +252,89 @@
   document.addEventListener('mouseover', placeTip); document.addEventListener('focusin', placeTip);
   fit(); window.addEventListener('resize', fit); window.addEventListener('ds-text', fit); setInterval(paint, 400);
   try { new MutationObserver(fit).observe(document.getElementById('app'), { childList: true }); } catch (e) {}
+
+  // ---------- back to top (every page) ----------
+  // A round button at the bottom right. Hidden at the top; fades in once the learner is past one screen. It moves up out of the way of
+  // anything pinned to the bottom edge (the lesson step card, the phone Run bar, the pager and Lessons button) and hides while the
+  // search, the menu or a dialog is open. Colours come from the page's --sh-* variables (or its own colours on the older pages).
+  (function backToTop() {
+    const st = document.createElement('style');
+    st.textContent = '[data-totop]{position:fixed;right:16px;bottom:16px;width:44px;height:44px;box-sizing:border-box;padding:0;border-radius:50%;border:1px solid var(--tt-line,#34343C);background:var(--tt-surface,#151518);color:var(--tt-text,#F5F5F7);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:45;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,visibility .15s,border-color .15s,color .15s}' +
+      '[data-totop][data-on="true"]{opacity:1;visibility:visible;pointer-events:auto}' +
+      '[data-totop]:hover,[data-totop]:focus-visible{border-color:var(--tt-accent,#C5F04A);color:var(--tt-accent,#C5F04A)}' +
+      '[data-totop]:focus-visible{outline:2px solid var(--tt-accent,#C5F04A);outline-offset:2px}' +
+      '@media (prefers-reduced-motion:reduce){[data-totop]{transition:none}}';
+    document.head.appendChild(st);
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('data-totop', ''); b.setAttribute('aria-label', 'Back to top'); b.title = 'Back to top'; b.setAttribute('data-on', 'false');
+    b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg>';
+    const reduced = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+    b.addEventListener('click', () => {
+      try { window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+      const h = document.querySelector('#app h1') || document.querySelector('#app > div');
+      if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
+    });
+    document.body.appendChild(b);
+    const PINNED = '[data-code-bar],[data-run-bar],.sh-pic>.sh-panel,.sh-bar-m,.sh-s-ctl,.sh-pager,.sh-side-btn';
+    const blocking = '[data-pn-panel],[data-drawer],[data-daily],[role="dialog"]';
+    let queued = 0;
+    const update = () => {
+      queued = 0;
+      const root = document.querySelector('#app > div');
+      const vw = window.innerWidth, vh = window.innerHeight, y = window.scrollY || 0;
+      if (root) {
+        const cs = getComputedStyle(root), v = (n) => cs.getPropertyValue(n).trim();
+        b.style.setProperty('--tt-surface', v('--sh-surface') || cs.backgroundColor);
+        b.style.setProperty('--tt-line', v('--sh-line') || 'rgba(127,127,127,.4)');
+        b.style.setProperty('--tt-text', v('--sh-text') || cs.color);
+        b.style.setProperty('--tt-accent', v('--sh-accent') || '#C5F04A');
+      }
+      const on = y > vh && !document.querySelector(blocking);
+      if (b.getAttribute('data-on') !== String(on)) b.setAttribute('data-on', String(on));
+      if (!on) return;
+      // Move above anything pinned to the bottom edge that sits where the button would be.
+      let bottom = 16;
+      for (let pass = 0; pass < 3; pass++) {
+        document.querySelectorAll(PINNED).forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (!r.width || !r.height || r.right < vw - 16 - 44 || r.left > vw - 16) return;
+          if (r.top < vh - bottom && r.bottom > vh - bottom - 44) bottom = Math.max(bottom, vh - r.top + 16);
+        });
+      }
+      b.style.bottom = bottom + 'px';
+    };
+    const queue = () => { if (!queued) queued = requestAnimationFrame(update); };
+    window.addEventListener('scroll', queue, { passive: true }); window.addEventListener('resize', queue); setInterval(update, 400);
+  })();
+  // ---------- scroll cues (every page) ----------
+  // [data-fadecue] wraps a row that scrolls sideways: a fade on its right edge shows only while there is more to the right.
+  // [data-swipe] is a "swipe" note that follows the box before it and shows only while that box is wider inside than outside.
+  // Both are checked here at run time, on every resize and scroll, so they are right at any width and text size.
+  (function scrollCues() {
+    const st = document.createElement('style');
+    st.textContent = '[data-fadecue]{position:relative;min-width:0;max-width:100%}' +
+      '[data-fadecue]::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;pointer-events:none;opacity:0;background:linear-gradient(to right,transparent,var(--sh-bg,#0B0B0D))}' +
+      '[data-fadecue][data-more="true"]::after{opacity:1}' +
+      '[data-swipe]{display:none!important}[data-swipe][data-on="true"]{display:block!important}';
+    document.head.appendChild(st);
+    let queued = 0;
+    const run = () => {
+      queued = 0;
+      document.querySelectorAll('[data-fadecue]').forEach((w) => {
+        const sc = w.firstElementChild; if (!sc) return;
+        const more = sc.scrollWidth - sc.clientWidth > 1 && sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 1;
+        if (w.getAttribute('data-more') !== String(more)) w.setAttribute('data-more', String(more));
+      });
+      document.querySelectorAll('[data-swipe]').forEach((n) => {
+        const box = n.previousElementSibling;
+        const wide = !!box && box.scrollWidth - box.clientWidth > 1 && getComputedStyle(box).overflowX !== 'visible';
+        if (n.getAttribute('data-on') !== String(wide)) n.setAttribute('data-on', String(wide));
+      });
+    };
+    const queue = () => { if (!queued) queued = requestAnimationFrame(run); };
+    window.addEventListener('resize', queue); window.addEventListener('ds-text', queue);
+    document.addEventListener('scroll', queue, true); setInterval(run, 400);
+    try { new MutationObserver(queue).observe(document.getElementById('app'), { childList: true, subtree: true }); } catch (e) {}
+  })();
   ReactDOM.createRoot(document.getElementById('app')).render(e(App));
 })();

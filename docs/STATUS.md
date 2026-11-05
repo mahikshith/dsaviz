@@ -46,3 +46,7 @@ Already done, so not in the queue:
 ## Rule for next week
 
 One task at a time. Use Haiku or Sonnet subagents only for small, independent pieces, and never several big agents in parallel. Merge each piece, then build and run `npm test`. Run the browser test (`tools/edge-check.sh`, about an hour) only at the end of a batch.
+
+## Before launch
+
+About backstory is a placeholder; the user will rewrite it before launch.

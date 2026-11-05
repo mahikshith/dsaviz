@@ -37,13 +37,10 @@ function coatScene() {
     board: true, boardTitle: 'The shopkeeper’s ticket book',
     actorLabels: ['Shopkeeper · i'],
     goal: 'Find the two guests whose numbers make 12', status: ['Checking coats…', 'Pair found'],
-    lines: { py: { intro: 2, store: 7, found: 6 }, java: { intro: 2, found: 6, store: 7 }, cpp: { intro: 2, found: 6, store: 7 }, js: { intro: 2, found: 6, store: 7 }, go: { intro: 2, found: 6, store: 8 } },
+    lines: { py: { intro: 2, store: 7, found: 6 }, js: { intro: 2, found: 6, store: 7 } },
     code: {
       py: [['def twoSum(nums, target):', ''], ['    seen = {}', '                  # value -> seat'], ['    for i, x in enumerate(nums):', ''], ['        need = target - x', ''], ['        if need in seen:', ''], ['            return [seen[need], i]', ''], ['        seen[x] = i', '              # write the ticket'], ['    return []', '']],
-      java: [['int[] twoSum(int[] nums, int target) {', ''], ['    Map<Integer, Integer> seen = new HashMap<>();', ''], ['    for (int i = 0; i < nums.length; i++) {', ''], ['        int need = target - nums[i];', ''], ['        if (seen.containsKey(need))', ''], ['            return new int[]{seen.get(need), i};', ''], ['        seen.put(nums[i], i);', '  // write the ticket'], ['    }', ''], ['    return new int[0];', ''], ['}', '']],
-      cpp: [['vector<int> twoSum(vector<int>& nums, int target) {', ''], ['    unordered_map<int, int> seen;', ''], ['    for (int i = 0; i < nums.size(); i++) {', ''], ['        int need = target - nums[i];', ''], ['        if (seen.count(need))', ''], ['            return {seen[need], i};', ''], ['        seen[nums[i]] = i;', '  // write the ticket'], ['    }', ''], ['    return {};', ''], ['}', '']],
       js: [['function twoSum(nums, target) {', ''], ['  const seen = new Map();', ''], ['  for (let i = 0; i < nums.length; i++) {', ''], ['    const need = target - nums[i];', ''], ['    if (seen.has(need))', ''], ['      return [seen.get(need), i];', ''], ['    seen.set(nums[i], i);', '  // write the ticket'], ['  }', ''], ['  return [];', ''], ['}', '']],
-      go: [['func twoSum(nums []int, target int) []int {', ''], ['    seen := map[int]int{}', ''], ['    for i, x := range nums {', ''], ['        need := target - x', ''], ['        if j, ok := seen[need]; ok {', ''], ['            return []int{j, i}', ''], ['        }', ''], ['        seen[x] = i', '  // write the ticket'], ['    }', ''], ['    return nil', ''], ['}', '']]
     },
     rules: [['Open an empty ticket book', 'intro'], ['Partner not in the book → write a ticket', 'store'], ['Partner in the book → return both seats', 'found']],
     complexity: [['O(n)', 'each guest is checked once'], ['O(n)', 'the ticket book can hold everyone']],
@@ -91,13 +88,10 @@ function guestScene() {
     board: true, boardTitle: 'The shopkeeper’s guest list',
     actorLabels: ['Shopkeeper · i'],
     goal: 'Did any guest arrive twice?', status: ['At the door…', 'Repeat spotted'],
-    lines: { py: { intro: 2, add: 6, found: 5 }, java: { intro: 2, found: 5, add: 6 }, cpp: { intro: 2, found: 5, add: 6 }, js: { intro: 2, found: 5, add: 6 }, go: { intro: 2, found: 5, add: 7 } },
+    lines: { py: { intro: 2, add: 6, found: 5 }, js: { intro: 2, found: 5, add: 6 } },
     code: {
       py: [['def containsDuplicate(nums):', ''], ['    seen = set()', ''], ['    for x in nums:', ''], ['        if x in seen:', ''], ['            return True', '          # a guest came twice'], ['        seen.add(x)', ''], ['    return False', '']],
-      java: [['boolean containsDuplicate(int[] nums) {', ''], ['    Set<Integer> seen = new HashSet<>();', ''], ['    for (int x : nums) {', ''], ['        if (seen.contains(x))', ''], ['            return true;', '  // a guest came twice'], ['        seen.add(x);', ''], ['    }', ''], ['    return false;', ''], ['}', '']],
-      cpp: [['bool containsDuplicate(vector<int>& nums) {', ''], ['    unordered_set<int> seen;', ''], ['    for (int x : nums) {', ''], ['        if (seen.count(x))', ''], ['            return true;', '  // a guest came twice'], ['        seen.insert(x);', ''], ['    }', ''], ['    return false;', ''], ['}', '']],
       js: [['function containsDuplicate(nums) {', ''], ['  const seen = new Set();', ''], ['  for (const x of nums) {', ''], ['    if (seen.has(x))', ''], ['      return true;', '  // a guest came twice'], ['    seen.add(x);', ''], ['  }', ''], ['  return false;', ''], ['}', '']],
-      go: [['func containsDuplicate(nums []int) bool {', ''], ['    seen := map[int]bool{}', ''], ['    for _, x := range nums {', ''], ['        if seen[x] {', ''], ['            return true', '  // a guest came twice'], ['        }', ''], ['        seen[x] = true', ''], ['    }', ''], ['    return false', ''], ['}', '']]
     },
     rules: [['Start with an empty guest list', 'intro'], ['New guest → add them to the list', 'add'], ['Already on the list → someone came twice', 'found']],
     complexity: [['O(n)', 'one look per guest'], ['O(n)', 'the list can hold everyone']],
@@ -150,13 +144,10 @@ function scrabbleScene() {
     board: true, boardTitle: 'The shopkeeper’s tally',
     actorLabels: ['Shopkeeper · i'],
     goal: 'Do both bags hold exactly the same tiles?', status: ['Tallying…', 'Same tiles'],
-    lines: { py: { intro: 4, tally: 6, cancel: 7, found: 8 }, java: { intro: 3, tally: 5, cancel: 6, found: 9 }, cpp: { intro: 3, tally: 5, cancel: 6, found: 9 }, js: { intro: 3, tally: 5, cancel: 6, found: 8 }, go: { intro: 5, tally: 7, cancel: 8, found: 15 } },
+    lines: { py: { intro: 4, tally: 6, cancel: 7, found: 8 }, js: { intro: 3, tally: 5, cancel: 6, found: 8 } },
     code: {
       py: [['def isAnagram(s, t):', ''], ['    if len(s) != len(t):', ''], ['        return False', ''], ['    count = {}', ''], ['    for a, b in zip(s, t):', ''], ['        count[a] = count.get(a, 0) + 1', '  # bag one'], ['        count[b] = count.get(b, 0) - 1', '  # bag two'], ['    return all(v == 0 for v in count.values())', '']],
-      java: [['boolean isAnagram(String s, String t) {', ''], ['    if (s.length() != t.length()) return false;', ''], ['    int[] count = new int[26];', ''], ['    for (int i = 0; i < s.length(); i++) {', ''], ['        count[s.charAt(i) - \'a\']++;', '  // bag one'], ['        count[t.charAt(i) - \'a\']--;', '  // bag two'], ['    }', ''], ['    for (int c : count) if (c != 0) return false;', ''], ['    return true;', ''], ['}', '']],
-      cpp: [['bool isAnagram(string s, string t) {', ''], ['    if (s.size() != t.size()) return false;', ''], ['    int count[26] = {0};', ''], ['    for (int i = 0; i < s.size(); i++) {', ''], ['        count[s[i] - \'a\']++;', '  // bag one'], ['        count[t[i] - \'a\']--;', '  // bag two'], ['    }', ''], ['    for (int c : count) if (c != 0) return false;', ''], ['    return true;', ''], ['}', '']],
       js: [['function isAnagram(s, t) {', ''], ['  if (s.length !== t.length) return false;', ''], ['  const count = {};', ''], ['  for (let i = 0; i < s.length; i++) {', ''], ['    count[s[i]] = (count[s[i]] || 0) + 1;', '  // bag one'], ['    count[t[i]] = (count[t[i]] || 0) - 1;', '  // bag two'], ['  }', ''], ['  return Object.values(count).every((v) => v === 0);', ''], ['}', '']],
-      go: [['func isAnagram(s, t string) bool {', ''], ['    if len(s) != len(t) {', ''], ['        return false', ''], ['    }', ''], ['    count := [26]int{}', ''], ['    for i := 0; i < len(s); i++ {', ''], ['        count[s[i]-\'a\']++', '  // bag one'], ['        count[t[i]-\'a\']--', '  // bag two'], ['    }', ''], ['    for _, c := range count {', ''], ['        if c != 0 {', ''], ['            return false', ''], ['        }', ''], ['    }', ''], ['    return true', ''], ['}', '']]
     },
     rules: [['Start with an empty tally', 'intro'], ['+1 for bag one, −1 for bag two', 'tally'], ['A letter back at 0 has balanced out', 'cancel'], ['Everything at 0 → same tiles', 'found']],
     complexity: [['O(n)', 'every tile is counted once'], ['O(1)', 'at most 26 letters in the tally']],

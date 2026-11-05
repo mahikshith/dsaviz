@@ -23,7 +23,7 @@
 // the pill nav and aria-hidden are skipped; neither element nor box containing the other); when an element with visible text is clipped (scrollWidth
 // over clientWidth by more than 1px under overflow hidden or clip, or text-overflow ellipsis), unless it sits inside
 // [data-clip-ok]; when [data-path-node] siblings have unequal gaps (more than 2px apart); when a fold summary or .ds-hit has no hover
-// transition (unless reduced motion); or when Home or Snapshot has no .ds-hit (Snapshot gets only this box check). DS_PASS=layout runs only this pass.
+// transition (unless reduced motion); or when Snapshot has no .ds-hit (Home is a frame page since step 7). DS_PASS=layout runs only this pass.
 // Needs Playwright:  npm install --no-save playwright && npx playwright install chromium
 // Or playwright-core with an installed browser:  npm install --no-save playwright-core
 //   then DS_BROWSER=msedge npm run test:browser   (or chrome)
@@ -103,7 +103,9 @@ const readable = () => {
     }
     const px = parseFloat(cs.fontSize) * (el.currentCSSZoom || 1);
     min = Math.min(min, Math.round(px * 10) / 10);
-    if (px < (own.length > 24 ? 14.95 : 12.95)) small.push(px.toFixed(1) + 'px ' + own.slice(0, 30));
+    // Pages on the shared frame (data-shell, docs/design/PLAN-2026-11.md): nothing under 14px, long text or short. Other pages keep 15 and 13.
+    const floor = root.hasAttribute('data-shell') ? 13.95 : own.length > 24 ? 14.95 : 12.95;
+    if (px < floor) small.push(px.toFixed(1) + 'px ' + own.slice(0, 30));
   }
   // Panes: bordered or filled boxes that do not scroll. Content is every visible text, svg, image, control or canvas inside.
   const bg = (el) => getComputedStyle(el).backgroundColor;
@@ -135,7 +137,7 @@ const readable = () => {
 };
 
 // Layout pass pages and widths. A phone width gets phone settings (touch, mobile emulation).
-const LAYOUT_PAGES = ['Main', 'Home', 'Start', 'Sheet', 'Chapter', 'Patterns', 'Complexity'];
+const LAYOUT_PAGES = ['Main', 'Home', 'Start', 'Sheet', 'Chapter', 'Patterns', 'AILesson', 'Complexity'];
 // Snapshot only gets the box check (.ds-hit present, hover transitions); its collapsed sections fail the text checks.
 const BOX_PAGES = ['Snapshot'];
 const LAYOUT_WIDTHS = [1440, 1280, 1024, 390];
@@ -152,7 +154,7 @@ const layout = (boxOnly) => {
     }
   }
   const pageName = root.getAttribute('data-page');
-  if ((pageName === 'Home' || pageName === 'Snapshot') && !root.querySelector('.ds-hit')) boxes.push('no .ds-hit on ' + pageName);
+  if (pageName === 'Snapshot' && !root.querySelector('.ds-hit')) boxes.push('no .ds-hit on ' + pageName); // Home left the old .ds-hit boxes in step 7 (it is a frame page)
   if (boxOnly) return { texts: 0, issues: boxes };
   const shown = (el) => { const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return false; const cs = getComputedStyle(el); return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05; };
   const clean = (s) => s.replace(/\s+/g, ' ').trim().slice(0, 30);
@@ -231,6 +233,12 @@ const layout = (boxOnly) => {
   for (const row of document.querySelectorAll('[data-path-row]')) {
     const tops = [...row.querySelectorAll('[data-path-node]')].map((n) => n.getBoundingClientRect().top);
     if (tops.length > 1 && Math.max(...tops) - Math.min(...tops) > 2) gaps.push('path row not on one line: tops ' + tops.map((x) => Math.round(x)).join('/'));
+  }
+  // The pill nav: no item runs into the search button, which is what the Back link can cause.
+  const searchBtn = document.querySelector('[data-pn-search-btn]');
+  if (searchBtn && window.innerWidth >= 760) {
+    const edge = searchBtn.getBoundingClientRect().left;
+    for (const it of document.querySelectorAll('[data-pn-item]')) { const q = it.getBoundingClientRect(); if (q.width && q.right > edge) gaps.push('nav item "' + it.textContent.trim() + '" runs into search by ' + Math.round(q.right - edge) + 'px'); }
   }
   // Headings stay on one line at 1280 and wider (docs/design/BRIEF.md).
   const wraps = [];
@@ -512,7 +520,7 @@ server.listen(0, async () => {
     }
   }
   if (!ONLY_READ && !ONLY_LAYOUT) console.log(problems > readProblems ? (problems - readProblems) + ' problem(s) with player controls' : 'player controls in view and working in every player');
-  // Code page on a phone: Run and Submit in view and not covered (the bar sits above the bottom pill nav)
+  // Problem page (Code) on a phone: Run is in view, not covered, and clear of the top bar (Run bar at the bottom of the screen; the nav is at the top)
   if (!ONLY_READ && !ONLY_LAYOUT) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const errs = [];
@@ -525,14 +533,15 @@ server.listen(0, async () => {
     await page.evaluate(() => window.scrollTo(0, 0));
     const res = await page.evaluate(() => {
       const out = {};
-      for (const name of ['Run', 'Submit']) {
+      for (const name of ['Run']) {
         const b = [...document.querySelectorAll('#app button')].find((el) => el.textContent.trim().replace(/\s+/g, ' ').startsWith(name) && el.getBoundingClientRect().width > 0);
         if (!b) { out[name] = 'missing'; continue; }
         const r = b.getBoundingClientRect();
         const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
         const nav = document.querySelector('[data-pn]');
         const nr = nav ? nav.getBoundingClientRect() : null;
-        const clear = !nr || r.bottom <= nr.top + 0.5;
+        // The nav is the top bar now: Run must sit below it (an old bottom nav would have to sit above Run's bottom edge instead).
+        const clear = !nr || (nr.top < window.innerHeight / 2 ? r.top >= nr.bottom - 0.5 : r.bottom <= nr.top + 0.5);
         out[name] = r.top >= 0 && r.bottom <= window.innerHeight && hit && b.contains(hit) && clear ? 'ok' : 'bad ' + Math.round(r.top) + '..' + Math.round(r.bottom) + (hit && b.contains(hit) ? '' : ' covered') + (clear ? '' : ' over nav');
       }
       return out;
@@ -540,7 +549,7 @@ server.listen(0, async () => {
     const cf = Object.entries(res).filter(([, v]) => v !== 'ok').map(([k, v]) => k + ' ' + v);
     if (errs.length) cf.push('errors: ' + errs.slice(0, 2).join(' | '));
     if (cf.length) problems++;
-    console.log(cf.length ? '✗' : '✓', 'p-390x844'.padEnd(12), 'Code'.padEnd(10), cf.length ? cf.join('; ') : 'Run and Submit in view, not covered');
+    console.log(cf.length ? '✗' : '✓', 'p-390x844'.padEnd(12), 'Code'.padEnd(10), cf.length ? cf.join('; ') : 'Run in view, not covered, clear of the top bar');
     await page.close();
   }
   const controlProblems = problems;
@@ -584,7 +593,7 @@ server.listen(0, async () => {
   }
   if (!ONLY_CONTROLS && !ONLY_READ) console.log(problems > controlProblems ? (problems - controlProblems) + ' problem(s) with layout (overlapping or clipped text, uneven path gaps)' : 'no overlapping or clipped text');
 
-  // ---------- tour pass: a fresh browser sees the tour once on Home; Skip closes it and it stays closed ----------
+  // ---------- tour pass: step 7 removed the first-visit tour and the daily check-in popup, so a fresh browser sees neither on Home ----------
   if (!SKIP_MAIN) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const errors = [];
@@ -592,23 +601,12 @@ server.listen(0, async () => {
     const fails = [];
     await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); } catch (e) {} });
     await page.goto(url + '#Home');
-    const shown = () => page.evaluate(() => { const c = document.querySelector('[data-tour-card]'); const r = document.querySelector('[data-tour-root]'); return !!c && !!r && !r.hidden && c.getBoundingClientRect().width > 0; });
-    try { await page.waitForFunction(() => { const r = document.querySelector('[data-tour-root]'); return r && !r.hidden; }, null, { timeout: 8000 }); } catch (e) { fails.push('the tour did not open on the first Home visit'); }
-    if (!fails.length) {
-      if (!(await shown())) fails.push('tour card not visible');
-      const info = await page.evaluate(() => ({ focus: !!document.activeElement && !!document.activeElement.closest('[data-tour-card]'), words: document.querySelector('[data-tour-text]').textContent.trim().split(/\s+/).length }));
-      if (!info.focus) fails.push('focus did not move into the tour card');
-      if (info.words > 18) fails.push('a tour sentence is over 18 words');
-      await page.click('[data-tour-skip]');
-      await page.waitForTimeout(300);
-      if (await shown()) fails.push('Skip did not close the tour');
-      await page.reload();
-      await page.waitForTimeout(2000);
-      if (await shown()) fails.push('the tour opened again after Skip');
-    }
+    await page.waitForTimeout(2500);
+    const n = await page.evaluate(() => ({ tour: document.querySelectorAll('[data-tour-root],[data-tour-card]').length, daily: document.querySelectorAll('[data-daily],[role=dialog]').length, api: typeof window.__dsTour }));
+    if (n.tour || n.daily || n.api !== 'undefined') fails.push('a tour or popup is on a first Home visit: ' + JSON.stringify(n));
     if (errors.length) fails.push('errors: ' + errors.slice(0, 2).join(' | '));
     if (fails.length) problems++;
-    console.log(fails.length ? '✗' : '✓', 'tour'.padEnd(10), fails.length ? fails.join('; ') : 'opens on the first Home visit, Skip closes it, it does not reopen');
+    console.log(fails.length ? '✗' : '✓', 'tour'.padEnd(10), fails.length ? fails.join('; ') : 'no tour and no check-in popup on a first Home visit (both removed in step 7)');
     await page.close();
   }
 

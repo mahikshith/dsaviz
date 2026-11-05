@@ -1,0 +1,145 @@
+<style>
+/* The shared page frame (shared/ui/shell.html, added to every page's helmet by the build). A page opts in with
+   data-shell on its root div: the runtime then shows it at real size, with no zoom. Rules: docs/design/PLAN-2026-11.md. */
+[data-shell]{width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sh-bg);color:var(--sh-text);font-size:calc(18px * var(--ts, 1));line-height:1.6}
+[data-shell] h1{margin:0;font-family:'Anton',Impact,sans-serif;font-size:calc(32px * var(--ts, 1));line-height:1.2;font-weight:400;text-transform:uppercase;letter-spacing:0.01em}
+[data-shell] h2{margin:0;font-size:calc(26px * var(--ts, 1));line-height:1.25;font-weight:600}
+[data-shell] h3{margin:0;font-size:calc(22px * var(--ts, 1));line-height:1.3;font-weight:600}
+[data-shell] p{margin:0}
+[data-shell] code,[data-shell] pre{font-size:calc(16px * var(--ts, 1))}
+.sh-main{width:100%;max-width:1360px;margin:0 auto;padding:24px;box-sizing:border-box;flex-grow:1;display:flex;flex-direction:column;gap:24px;min-width:0}
+.sh-text{max-width:72ch}
+.sh-muted{color:var(--sh-muted)}
+.sh-label{font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted)}
+.sh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:16px}
+.sh-block{box-sizing:border-box;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:8px;min-width:0}
+a.sh-block,button.sh-block{color:inherit;text-align:left;font:inherit;cursor:pointer;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+a.sh-block:hover,button.sh-block:hover{background:var(--sh-sunk)}
+.sh-layout{flex-grow:1;display:grid;grid-template-columns:240px minmax(0,1fr);min-width:0}
+.sh-side{box-sizing:border-box;padding:16px 8px;border-right:1px solid var(--sh-line);position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
+.sh-side a{display:block;padding:6px 8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4}
+.sh-side a:hover{background:var(--sh-sunk)}
+.sh-side a[aria-current="page"]{background:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sh-tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--sh-line);padding-bottom:8px}
+.sh-tab{height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer}
+.sh-tab[aria-selected="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sh-btn{min-height:40px;padding:0 16px;box-sizing:border-box;border:0;border-radius:6px;background:var(--sh-accent);color:var(--sh-on);font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.sh-back{align-self:flex-start;color:var(--sh-muted);font-size:calc(16px * var(--ts, 1))}
+.sh-pager{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--sh-line);padding-top:16px}
+.sh-table{width:100%;border-collapse:collapse}
+.sh-table th{text-align:left;font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted)}
+.sh-table th,.sh-table td{padding:8px 12px;border-bottom:1px solid var(--sh-line)}
+.sh-foot{padding:16px 24px;border-top:1px solid var(--sh-line);display:flex;flex-wrap:wrap;align-items:center;gap:16px;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1))}
+.sh-foot button{border:0;padding:0;background:transparent;color:inherit;font:inherit;cursor:pointer}
+/* Lesson pages: sidebar list, Back link, picture, sections, controls, Previous and Next. */
+.sh-lesson{max-width:1168px;gap:16px}
+.sh-lesson>*{min-width:0}
+.sh-lesson h1{max-width:72ch}
+.sh-side-btn{display:none;width:100%;min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:600;cursor:pointer;align-items:center;justify-content:space-between}
+.sh-side-list{display:flex;flex-direction:column;gap:4px}
+.sh-side-h{padding:16px 8px 4px;font-size:calc(14px * var(--ts, 1));font-weight:500;color:var(--sh-muted);line-height:1.4}
+.sh-side-h:first-child{padding-top:0}
+.sh-side a{display:flex;align-items:baseline;gap:8px}
+.sh-side-list a{white-space:normal}
+.sh-side a>span:last-child{min-width:0;overflow-wrap:anywhere}
+.sh-tick{flex-shrink:0;width:16px;text-align:center}
+.sh-side a[aria-current="page"] .sh-tick{color:inherit}
+.sh-side a:not([aria-current="page"]) .sh-tick{color:var(--sh-accent)}
+.sh-back{display:inline-flex;align-items:center;min-height:40px}
+.sh-back:hover{color:var(--sh-text)}
+.sh-sec{display:flex;flex-direction:column;gap:8px;max-width:72ch}
+.sh-sec>h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
+.sh-sec ul,.sh-sec ol{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:8px}
+.sh-sec dl{margin:0;display:flex;flex-direction:column;gap:12px}
+.sh-sec dd{margin:0}
+.sh-sec h3{font-size:calc(18px * var(--ts, 1));line-height:1.4}
+.sh-pic{width:100%;max-width:900px;box-sizing:border-box}
+.sh-panel{box-sizing:border-box;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px;min-width:0}
+.sh-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.sh-ib{min-width:44px;min-height:44px;padding:0 12px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));font-weight:500;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.sh-ib:hover:not(:disabled){background:var(--sh-sunk)}
+.sh-ib:disabled{opacity:.4;cursor:default}
+.sh-chip{min-height:40px;padding:0 12px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.sh-chip:hover{background:var(--sh-sunk)}
+.sh-row{box-sizing:border-box;min-height:44px;padding:8px 12px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);color:var(--sh-text);display:flex;align-items:center;justify-content:space-between;gap:12px}
+a.sh-row:hover{background:var(--sh-sunk)}
+.sh-pager a,.sh-pager button{min-height:44px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-align:left}
+.sh-pager a:hover,.sh-pager button:hover{background:var(--sh-sunk)}
+.sh-pager .sh-next{margin-left:auto;background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.sh-pager .sh-next:hover{background:var(--sh-accent)}
+.sh-scroll{overflow-x:auto;max-width:100%}
+.sh-split{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px}
+.sh-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.sh-story{display:grid;grid-template-columns:minmax(0,var(--stage-max)) minmax(0,1fr);gap:24px}
+@media (max-width:1439px){.sh-split,.sh-two,.sh-story{grid-template-columns:minmax(0,1fr)}}
+[data-rail]{scroll-margin-top:72px}
+.sh-rail{display:none}
+.sh-sec dl.sh-words{display:grid;grid-template-columns:minmax(0,1fr);gap:12px 24px}
+.sh-sec.sh-wide{max-width:900px}
+@media (min-width:1024px){.sh-sec dl.sh-words{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1280px){
+.sh-layout:has(.sh-rail:not(:empty)){grid-template-columns:240px minmax(0,1fr) 200px}
+.sh-rail:not(:empty){display:flex;flex-direction:column;gap:4px;position:sticky;top:52px;align-self:start;padding:24px 16px 16px 0}
+.sh-rail a{display:block;padding:4px 12px;border-left:2px solid var(--sh-line);color:var(--sh-muted);font-size:calc(16px * var(--ts, 1));line-height:1.4}
+.sh-rail a:hover{color:var(--sh-text)}
+.sh-rail a[aria-current]{border-left-color:var(--sh-accent);color:var(--sh-text);font-weight:600}
+.sh-rail .sh-label{padding:0 12px 4px}
+}
+/* The shared code pane inside a lesson: the plan's one radius. */
+[data-shell] [data-st-pane] :where(button,div,span,section,pre,textarea,input){border-radius:6px!important}
+/* The step card of a player stays on screen: Play and Next are never below the fold (it pins to the bottom of the screen while its picture is in view). */
+.sh-pic>.sh-panel{position:sticky;bottom:0;z-index:5}
+@media (max-width:759px){.sh-tabrow{flex-wrap:nowrap!important;overflow-x:auto;max-width:100%}.sh-tabrow>*{flex-shrink:0}}
+/* Maths in About: MathML shrinks scripts and limits to about 13px; here they stop at 14px and everything else is body size. */
+[data-shell] math,[data-shell] math *{font-size:calc(18px * var(--ts, 1))!important;math-depth:0!important}
+[data-shell] math :is(msup,msub,msubsup,munder,mover,munderover)>:not(:first-child){font-size:calc(14px * var(--ts, 1))!important}
+.sh-aux,.sh-bar{display:contents}
+.sh-bar-m{display:none}
+.sh-pager{flex-wrap:wrap}
+.sh-pager a{white-space:normal}
+@media (max-width:759px){
+/* Phones: picture, step text, then one slim bar (Previous, Play, Next) pinned to the bottom of the screen while the picture is in view. */
+.sh-lesson>*{order:3}
+.sh-lesson>.sh-back,.sh-lesson>header{order:0}
+.sh-lesson>.sh-pic{order:1}
+.sh-lesson>.sh-idea{order:2}
+.sh-pic>.sh-panel{position:static}
+.sh-pic .sh-panel>div[aria-live]>.sh-label{order:-2}
+.sh-pic .sh-panel>div[aria-live]>p{order:-1}
+.sh-pic>section[aria-label^="Diagram"]{padding:8px!important}
+.sh-story{display:contents}
+.sh-story>svg{order:1}
+.sh-story>aside{order:4}
+.sh-s-cap{order:2}
+.st-watch{padding:16px!important;gap:8px!important}
+.sh-lesson:has(.sh-s-ctl){gap:8px;padding-top:8px}
+.sh-lesson:has(.sh-s-ctl)>header{display:contents!important}
+.sh-lesson:has(.sh-s-ctl)>.sh-ctl{order:1}
+.sh-lesson:has(.sh-s-ctl)>.st-watch{order:2}
+.sh-lesson:has(.sh-s-ctl)>header>p{order:3}
+.sh-lesson:has(.sh-s-ctl)>.sh-back{min-height:32px}
+.sh-s-cap>span[aria-hidden="true"]{display:none!important}
+.sh-s-cap .st-say{min-height:0!important}
+.sh-s-ctl{order:3;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;flex-wrap:nowrap!important;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
+.sh-s-ctl>[aria-label="Back to the first step"],.sh-s-ctl>[aria-label="Jump to a step"]{display:none!important}
+.sh-s-ctl>button{flex:0 0 44px;min-width:44px!important;padding:0!important;height:44px!important;border:1px solid var(--sh-line)!important}
+.sh-s-ctl>button[aria-label="Previous step"]+button{flex:1 1 0;padding:0 12px!important}
+.sh-s-ctl>button[data-speed]{flex:0 0 56px;min-width:56px!important}
+.sh-s-ctl>button[data-next]{flex:1.4 1 0;min-width:0!important;padding:0 12px!important;border:0!important;font-size:calc(16px * var(--ts, 1))!important}
+.sh-pic .sh-panel .sh-bar{display:none}
+.sh-pic .sh-aux{display:flex;gap:8px}
+.sh-pic .sh-bar-m{display:flex;align-items:center;gap:8px;position:sticky;bottom:0;z-index:5;box-sizing:border-box;height:56px;margin:0 -16px;padding:0 16px;background:var(--sh-bg);border-top:1px solid var(--sh-line)}
+.sh-pic .sh-bar-m>.sh-ib{flex:0 0 44px;min-width:44px!important}
+.sh-pic .sh-bar-m>.sh-ib+.sh-ib{flex:1 1 0}
+.sh-pic .sh-bar-m>.sh-btn{flex:1.4 1 0;margin-left:0!important}
+.sh-pic .sh-bar-m>.sh-ib[data-speed]{flex:0 0 56px;min-width:56px!important}
+.sh-pic .sh-aux [data-speed]{display:none}
+[data-shell] [data-m~="wrap"]{flex-wrap:wrap}
+[data-shell] [data-m~="scroll"]{flex-wrap:nowrap;overflow-x:auto}
+[data-shell] pre{overflow-x:auto}
+}
+[data-shell] a:focus-visible,[data-shell] button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:2px}
+@media (max-width:1023px){.sh-layout{grid-template-columns:minmax(0,1fr)}.sh-side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--sh-line);padding:8px 16px}.sh-side-btn{display:flex}.sh-side-list[data-open="false"]{display:none}.sh-side-list[data-open="true"]{padding-top:8px}}
+@media (max-width:639px){.sh-main{padding:16px}.sh-foot{padding:16px}}
+@media (prefers-reduced-motion:reduce){a.sh-block,button.sh-block{transition:none}}
+</style>

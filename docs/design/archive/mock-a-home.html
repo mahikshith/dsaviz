@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DSAMaxxing - Home (A: Calm focus)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B; --surface:#101214; --surface-2:#171A1D; --line:rgba(255,255,255,.08);
+  --text:#F2F3EF; --muted:#9AA0A6; --lime:#C5F04A; --lime-soft:rgba(197,240,74,.13); --ink:#0A0A0B;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font:400 17px/1.65 Outfit,system-ui,sans-serif;min-height:100vh;
+  background-image:radial-gradient(60% 420px at 50% 0,rgba(197,240,74,.045),transparent)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
+
+/* top bar */
+.top{height:64px;display:flex;align-items:center}
+.bar{width:100%;max-width:1120px;margin:0 auto;padding:0 var(--s4);display:flex;align-items:center;gap:var(--s4)}
+.logo{font:400 24px/1 Anton,Impact,sans-serif;letter-spacing:.02em}
+.logo b{font-weight:400;color:var(--lime)}
+nav{display:flex;gap:var(--s1);margin-right:auto}
+nav a{display:flex;align-items:center;gap:var(--s1);height:40px;padding:0 var(--s2);border-radius:12px;color:var(--muted);font-weight:500;font-size:15px;transition:color .15s,background .15s}
+nav a:hover{color:var(--text)}
+nav a[aria-current]{color:var(--text);background:var(--surface-2)}
+.right{display:flex;align-items:center;gap:var(--s2)}
+.streak{display:flex;align-items:center;gap:var(--s1);height:40px;padding:0 var(--s2);border-radius:20px;background:var(--surface);font-weight:600;font-size:15px}
+.streak .i{color:var(--lime);width:18px;height:18px}
+.avatar,.menu{width:40px;height:40px;border-radius:50%;background:var(--surface);display:grid;place-items:center}
+.menu{display:none}
+
+/* page */
+.col{max-width:688px;margin:0 auto;padding:var(--s5) var(--s3) var(--s5)}
+.hello{color:var(--muted);font-size:17px}
+.hero{padding:var(--s4) 0 var(--s5)}
+.hero .lead{color:var(--muted);margin-bottom:var(--s2)}
+h1{font:400 clamp(56px,13.5vw,96px)/1 Anton,Impact,sans-serif;letter-spacing:.005em;text-transform:uppercase;word-break:break-word}
+.meta{color:var(--muted);font-size:15px;line-height:24px;font-weight:500}
+.hero .meta{margin-top:var(--s2)}
+.prog{height:4px;border-radius:2px;background:var(--surface-2);margin:var(--s4) 0;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--lime);border-radius:2px}
+.btn{display:inline-flex;align-items:center;gap:var(--s2);height:56px;padding:0 var(--s4);border-radius:12px;background:var(--lime);color:var(--ink);font-weight:600;font-size:18px;transition:transform .12s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.98)}
+.btn .i{width:22px;height:22px;stroke-width:2}
+
+h2{font:600 24px/32px Outfit,sans-serif}
+section+section{margin-top:var(--s5)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);margin-bottom:var(--s3)}
+.link{display:inline-flex;align-items:center;gap:var(--s1);color:var(--muted);font-weight:500;font-size:15px;transition:color .15s}
+.link:hover{color:var(--text)}
+.link .i{width:16px;height:16px}
+
+/* calendar */
+.cal{background:var(--surface);border-radius:16px;padding:var(--s3)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:var(--s1)}
+.cal-grid .wd{color:var(--muted);font-size:15px;font-weight:500;text-align:center;line-height:24px;padding-bottom:var(--s1)}
+.day{height:48px;display:grid;place-items:center;font-size:17px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.day.done{background:var(--lime-soft);color:var(--text);font-weight:500}
+.day.start{border-radius:24px 0 0 24px}
+.day.end{border-radius:0 24px 24px 0}
+.day.today{background:var(--lime);color:var(--ink);font-weight:600;border-radius:0 24px 24px 0}
+.cal-note{margin-top:var(--s3);color:var(--muted);font-size:15px;font-weight:500}
+
+/* path */
+.path{list-style:none}
+.path li{position:relative;display:flex;align-items:center;gap:var(--s2);min-height:48px}
+.path li+li{margin-top:var(--s3)}
+.path li+li::before{content:"";position:absolute;left:23px;top:-24px;height:20px;width:2px;background:rgba(255,255,255,.22)}
+.path li+li::after{content:"";position:absolute;left:20px;top:-10px;width:7px;height:7px;border-right:2px solid rgba(255,255,255,.22);border-bottom:2px solid rgba(255,255,255,.22);transform:rotate(45deg)}
+.node{width:48px;height:48px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:17px;color:var(--muted);flex:none}
+.path a{display:block;font-weight:500;line-height:24px;transition:color .15s}
+.path a:hover{color:var(--lime)}
+.path p{color:var(--muted);font-size:15px;line-height:24px}
+
+footer{max-width:688px;margin:0 auto;padding:0 var(--s3) var(--s5);color:var(--muted);font-size:15px}
+
+@media (max-width:760px){
+  nav{display:none}
+  .right{margin-left:auto}
+  .menu{display:grid}
+  .bar{padding:0 var(--s2);gap:var(--s2)}
+  .col{padding:var(--s3) var(--s2) var(--s4)}
+  .hero{padding:var(--s4) 0}
+  .cal{padding:var(--s2)}
+  .btn{width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .5 1.5 1.5 2 2 2 0-3-1-5 1-8z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+</svg>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="#" aria-label="DSAMaxxing front page">DSA<b>MAXXING</b></a>
+  <nav aria-label="Main">
+    <a href="#" aria-current="page">Home</a>
+    <a href="#">Start here</a>
+    <a href="#">Learn</a>
+    <a href="#">Sheet</a>
+    <a href="#">More <svg class="i" style="width:16px;height:16px"><use href="#i-down"/></svg></a>
+  </nav>
+  <div class="right">
+    <a class="streak" href="#" aria-label="5 day streak"><svg class="i"><use href="#i-flame"/></svg>5</a>
+    <button class="avatar" aria-label="Your account"><svg class="i"><use href="#i-user"/></svg></button>
+    <button class="menu" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+  </div>
+</div></header>
+
+<main class="col">
+  <p class="hello">Good evening. Lesson 21 is done for today.</p>
+
+  <section class="hero" aria-labelledby="t">
+    <h1 id="t">Dictionaries</h1>
+    <p class="meta">Lesson 22 of 27 &middot; about 6 minutes</p>
+    <div class="prog" role="progressbar" aria-label="Level 1 progress" aria-valuenow="21" aria-valuemin="0" aria-valuemax="27"><i style="width:77.8%"></i></div>
+    <a class="btn" href="mock-a-lesson.html">Resume lesson <svg class="i"><use href="#i-arrow"/></svg></a>
+  </section>
+
+  <section aria-labelledby="c">
+    <div class="sec-head"><h2 id="c">November</h2></div>
+    <div class="cal">
+      <div class="cal-grid" id="cal"></div>
+      <p class="cal-note">Come back tomorrow to keep the chain going.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="n">
+    <div class="sec-head"><h2 id="n">After this</h2><a class="link" href="#">Full path <svg class="i"><use href="#i-chev"/></svg></a></div>
+    <ol class="path">
+      <li><span class="node">23</span><div><a href="#">Debugging</a><p>Find what went wrong, step by step</p></div></li>
+      <li><span class="node">24</span><div><a href="#">Project: grade book</a><p>Build a small program of your own</p></div></li>
+      <li><span class="node">25</span><div><a href="#">Plan it first</a><p>Think before you type</p></div></li>
+    </ol>
+  </section>
+</main>
+
+<script>
+(function(){
+  var g=document.getElementById('cal'),days='Mon Tue Wed Thu Fri Sat Sun'.split(' '),h='';
+  days.forEach(function(d){h+='<div class="wd" aria-hidden="true">'+d.charAt(0)+'</div>'});
+  for(var b=0;b<6;b++)h+='<div></div>';            /* 1 Nov 2026 is a Sunday */
+  for(var d=1;d<=30;d++){
+    var c='day',col=(6+d-1)%7;
+    if(d>=2&&d<=6){c+=' done';if(d==2)c+=' start';if(d==6)c+=' today end'}
+    h+='<div class="'+c+'"'+(d==6?' aria-label="Today, 6 November"':'')+'>'+d+'</div>';
+  }
+  g.innerHTML=h;
+})();
+</script>
+</body>
+</html>

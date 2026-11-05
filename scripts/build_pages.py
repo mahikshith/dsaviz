@@ -13,6 +13,8 @@ across pages and live in one place; this script copies them back into every page
   shared/ui.js              -> between // @@UI@@ ... // @@END-UI@@ (every page; component view models)
   scripts/build_search.js   -> between // @@SEARCH@@ ... // @@END-SEARCH@@ (every page; SITE_INDEX: search items and counts)
   shared/search.js          -> between // @@FIND@@ ... // @@END-FIND@@ (every page; the site search scorer)
+  shared/lessonframe.js     -> between // @@LESSONFRAME@@ ... // @@END-LESSONFRAME@@ (the five lesson pages: sidebar, Back, Previous/Next)
+  shared/ui/lesson_side.html, lesson_back.html, lesson_pager.html -> <!-- LESSON SIDE -->, <!-- LESSON BACK -->, <!-- LESSON PAGER -->
   shared/nav.js             -> between // @@NAV@@ ... // @@END-NAV@@ (every page; NAV_PAGES filled from pages/)
   shared/ui/nav.html + shared/drawer.html -> between <!-- PILL NAV --> ... <!-- /PILL NAV -->
   shared/ui/tiles.html, rings.html, medals.html -> <!-- STAT TILES -->, <!-- RINGS -->, <!-- MEDALS --> blocks
@@ -49,9 +51,10 @@ across pages and live in one place; this script copies them back into every page
                                and the lessons alone between // @@START-LITE@@ ... // @@END-START-LITE@@ (Home).
                                First it traces every chapter's "Watch it run" program into src/start/traces.js.
   shared/contests.js        -> between // @@CONTESTS@@ ... // @@END-CONTESTS@@ (Contests page)
-  src/story/*               -> Story.dc.html markup and engine
-  src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome
-  src/code/code_body.html + code.js       -> Code
+  src/story/*               -> Story.dc.html markup and engine (the engine also goes into Code.dc.html, the Problem page, with the stage markup
+                               between <!-- STORY STAGE --> markers in src/story/story_body.html)
+  src/pages/<name>_body.html + <name>.js -> Revisit, Profile, Welcome; problems_body.html + problems.js -> Sheet (the Problems page)
+  src/code/code_body.html + code.js       -> Code (the Problem page: statement, hints, solution, history, story switch, editor and tests)
   scripts/build_registry.js -> data/problem-registry.json and docs/problems/REGISTRY.md (the problem registry)
 
 Run from the repo root:  python3 scripts/build_pages.py
@@ -119,14 +122,14 @@ def phone_pads(files):
             # The browser writes the shortest form: 'padding: 80px 80px' comes back as 'padding: 80px'.
             short = [t] if t == r == b == l else [t, r] if t == b and r == l else [t, r, b] if r == l else [t, r, b, l]
             css = 'padding: ' + ' '.join('%dpx' % x for x in short) + ';'
-            sel = '[data-page] [style*="%s"]' % css
+            sel = '[data-page]:not([data-shell]) [style*="%s"]' % css
             if sel not in rules.setdefault(key, []):
                 rules[key].append(sel)
     # Wide board gaps (40px and up) close to 24px.
     gaps = set()
     for s in files:
         gaps.update(int(g) for g in re.findall(r'[;" ]gap: (\d+)px[;"]', s))
-    big = ['[data-page] [style*="gap: %dpx;"]' % g for g in sorted(gaps) if g >= 40]
+    big = ['[data-page]:not([data-shell]) [style*="gap: %dpx;"]' % g for g in sorted(gaps) if g >= 40]
     if big:
         rules['gap:24px!important'] = big
     return '\n'.join(','.join(sel) + '{' + key + '}' for key, sel in sorted(rules.items()))
@@ -216,7 +219,8 @@ def main():
     drawer_inner = drawer_html.replace('<!-- MENU DRAWER -->', '').replace('<!-- /MENU DRAWER -->', '').strip()
     nav_html = read('shared', 'ui', 'nav.html').replace('DRAWER_HTML', drawer_inner)
     ui_html = {m: read('shared', 'ui', f) for m, f in [('STAT TILES', 'tiles.html'), ('RINGS', 'rings.html'), ('MEDALS', 'medals.html'), ('PHONE CSS', 'phone.html'),
-                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html'), ('ABOUT TAB', 'about.html'), ('WHY', 'why.html')]}
+                                                      ('PROBLEM FACTS', 'facts.html'), ('APPROACH PANE', 'approaches.html'), ('ABOUT TAB', 'about.html'), ('WHY', 'why.html'),
+                                                      ('LESSON SIDE', 'lesson_side.html'), ('LESSON BACK', 'lesson_back.html'), ('LESSON PAGER', 'lesson_pager.html'), ('LESSON RAIL', 'lesson_rail.html')]}
     # The problem page blocks: facts, approaches and their pane, placed after the code pane on the Code and Story pages.
     approach_js = [('// @@FACTS@@', '// @@END-FACTS@@', read('shared', 'facts.js')),
                    ('// @@APPROACHES@@', '// @@END-APPROACHES@@', read('shared', 'approaches.js')),
@@ -228,7 +232,12 @@ def main():
               + json.dumps(sheet_data['index'],ensure_ascii=False, separators=(',', ':')) + ';\n' + end)
     phone_pages = [read('pages', f) for f in built if 'data-page=' in read('pages', f)]
     phone_pages += [read(*p) for p in [('src', 'code', 'code_body.html'), ('src', 'pages', 'profile_body.html'), ('src', 'pages', 'welcome_body.html')]]
+    # The story stage (picture, meter and caption) is written once, in the Story page's body, and shared with the Problem page.
+    story_body = read('src', 'story', 'story_body.html')
+    a = story_body.index('<!-- STORY STAGE -->')
+    ui_html['STORY STAGE'] = story_body[a:story_body.index('<!-- /STORY STAGE -->') + len('<!-- /STORY STAGE -->')]
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('/*@@PADS@@*/', phone_pads(phone_pages))
+    ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('<!-- /PHONE CSS -->', read('shared', 'ui', 'shell.html') + '<!-- /PHONE CSS -->')
     # The type scale tokens (scripts/typescale.py writes font sizes as var(--fsN)) ride at the top of the same block.
     ui_html['PHONE CSS'] = ui_html['PHONE CSS'].replace('<style>', '<style>\n' + type_tokens([read('pages', f) for f in built] + [read('shared', 'drawer.html'), read('shared', 'ui', 'nav.html')]), 1)
     tests_spec = read('shared', 'tests_spec.js')
@@ -248,10 +257,19 @@ def main():
     pane_html = read('shared', 'code_pane.html')
     bodies = {'Story': ('src', 'story', 'story_body.html')}
     scripts = {}
-    for name in ['Revisit', 'Profile', 'Welcome']:
+    for name in ['Revisit', 'Profile', 'Welcome', 'Home']:
         bodies[name] = ('src', 'pages', name.lower() + '_body.html')
         scripts[name] = ('src', 'pages', name.lower() + '.js')
-    git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.\n'
+    # Sheet is the Problems page (the file keeps its old name until step 10): src/pages/problems_body.html and problems.js.
+    bodies['Sheet'] = ('src', 'pages', 'problems_body.html')
+    scripts['Sheet'] = ('src', 'pages', 'problems.js')
+    # Patterns is the Roadmap page (the file keeps its old name until step 10): src/pages/roadmap_body.html and roadmap.js.
+    bodies['Patterns'] = ('src', 'pages', 'roadmap_body.html')
+    scripts['Patterns'] = ('src', 'pages', 'roadmap.js')
+    roadmap_json = subprocess.run(['node', os.path.join(ROOT, 'scripts', 'build_roadmap_page.js')], cwd=ROOT, check=True, capture_output=True).stdout.decode('utf-8')
+    roadmap_data = ('// @@ROADMAP-DATA@@ - generated by scripts/build_roadmap_page.js: every track lessons in teaching order, for the Roadmap page.' + chr(10)
+                    + 'const ROADMAP = ' + roadmap_json + ';' + chr(10) + '// @@END-ROADMAP-DATA@@')
+    git_sim = ('// @@GITSIM@@ — generated from src/git/sim.js and src/git/lessons.js; edit those, then build.' + chr(10)
                + read('src', 'git', 'sim.js') + '\n' + read('src', 'git', 'lessons.js') + '// @@END-GITSIM@@')
     sd_lessons = ('// @@SDLESSONS@@ — generated from src/sd/engine.js and src/sd/lessons.js; edit those, then build.\n'
                   + read('src', 'sd', 'engine.js') + '\n' + read('src', 'sd', 'lessons.js') + '// @@END-SDLESSONS@@')
@@ -266,7 +284,8 @@ def main():
                 + 'const CONCEPT_ROWS = ' + json.dumps(concept_data['rows'], ensure_ascii=False, separators=(',', ':')) + ';\n// @@END-CONCEPTS@@')
     concept_map = ('// @@CONCEPT-MAP@@ — generated by scripts/build_concepts.js: DSA concept lessons per sheet group, for the pattern map.\n'
                    'const CONCEPT_MAP = ' + json.dumps(concept_data['map'], ensure_ascii=False, separators=(',', ':')) + ';\n// @@END-CONCEPT-MAP@@')
-    scripts['Concepts'] = ('src', 'concepts', 'hub.js')
+    # The four course fronts share one body and one script (src/pages/hub_body.html, hub.js); each page only says which track it is.
+    HUBS = {'Start': 'start', 'Concepts': 'dsa', 'SystemDesign': 'sd', 'AIML': 'ai'}
     scripts['ConceptLesson'] = ('src', 'concepts', 'player.js')
     bodies['Code'] = ('src', 'code', 'code_body.html')
     scripts['Code'] = ('src', 'code', 'code.js')
@@ -296,6 +315,12 @@ def main():
         for start, end, n in SHARED_JS:
             s = block(s, start, end, shared_js[n])
         s = block(s, '<!-- MENU DRAWER -->', '<!-- /MENU DRAWER -->', drawer_html)
+        if '<!-- LESSON SIDE -->' in s:  # the lesson pages: sidebar, Back and Previous/Next view model
+            if '// @@LESSONFRAME@@' not in s:
+                i = s.index('// @@END-WHY@@') + len('// @@END-WHY@@')
+                s = s[:i] + chr(10) + '// @@LESSONFRAME@@' + chr(10) + '// @@END-LESSONFRAME@@' + s[i:]
+            s = block(s, '// @@LESSONFRAME@@', '// @@END-LESSONFRAME@@', read('shared', 'lessonframe.js'))
+        s = block(s, '// @@ROADMAP-DATA@@', '// @@END-ROADMAP-DATA@@', roadmap_data)
         s = block(s, '// @@INTROS@@', '// @@END-INTROS@@', intros)
         s = block(s, '// @@TESTS-SPEC@@', '// @@END-TESTS-SPEC@@', tests_spec)
         s = block(s, '// @@PLANS@@', '// @@END-PLANS@@', read('shared', 'plans.js'))
@@ -331,6 +356,17 @@ def main():
         if '// @@ROADMAP-LITE@@' in s:
             s = block(s, "// @@ROADMAP-LITE@@", "// @@END-ROADMAP-LITE@@", START_DATA['roadmap'])
         name = f[:-len('.dc.html')]
+        if name in HUBS and '// @@ROADMAP-DATA@@' not in s:
+            i = s.index('// ---- page ----')
+            s = s[:i] + '// @@ROADMAP-DATA@@' + chr(10) + '// @@END-ROADMAP-DATA@@' + chr(10) + s[i:]
+            s = block(s, '// @@ROADMAP-DATA@@', '// @@END-ROADMAP-DATA@@', roadmap_data)
+        if name in HUBS:
+            a = s.index('</helmet>\n') + len('</helmet>\n')
+            b = s.index('\n</x-dc>')
+            s = s[:a] + read('src', 'pages', 'hub_body.html').replace('@@PAGE@@', name).rstrip('\n') + s[b:]
+            a = s.index('// ---- page ----')
+            b = s.index('\n</script>')
+            s = s[:a] + '// ---- page ----' + chr(10) + "const HUB_KEY = '" + HUBS[name] + "'; const HUB_PAGE = '" + name + "';\n" + read('src', 'pages', 'hub.js').rstrip('\n') + '\n' + s[b:]
         if name in bodies:
             body = read(*bodies[name])
             a = s.index('</helmet>\n') + len('</helmet>\n')
@@ -339,8 +375,13 @@ def main():
         if name == 'Story':
             a = s.index('// ---- ')
             b = s.index('\n</script>')
-            s = s[:a] + story_engine.rstrip('\n') + '\n' + s[b:]
-        if name in scripts:
+            s = s[:a] + story_engine.rstrip('\n') + '\nclass Component extends StoryComponent {}\n' + s[b:]
+        elif name == 'Code':
+            # The Problem page carries the story engine too (the Story switch): engine first, then the page's own class.
+            a = s.index('// ---- page ----')
+            b = s.index('\n</script>')
+            s = s[:a] + '// ---- page ----\n' + story_engine.rstrip('\n') + '\n' + read('src', 'code', 'code.js').rstrip('\n') + s[b:]
+        elif name in scripts:
             a = s.index('// ---- page ----')
             b = s.index('\n</script>')
             s = s[:a] + read(*scripts[name]).rstrip('\n') + '\n' + s[b:]

@@ -1,0 +1,11 @@
+<!-- LESSON SIDE -->
+<aside class="sh-side" aria-label="Lessons">
+<button class="sh-side-btn" onClick="{{lf.side.toggle}}" aria-expanded="{{lf.side.open}}" aria-controls="sh-side-list"><span>Lessons</span><span aria-hidden="true">{{lf.side.sign}}</span></button>
+<nav id="sh-side-list" ref="{{lf.side.ref}}" class="sh-side-list" data-open="{{lf.side.open}}" aria-label="{{lf.side.label}}">
+<sc-for list="{{lf.side.sections}}" as="lfs" hint-placeholder-count="3">
+<span class="sh-side-h">{{lfs.title}}</span>
+<sc-for list="{{lfs.items}}" as="lfi" hint-placeholder-count="6"><a href="{{lfi.href}}" onClick="{{lfi.go}}" aria-current="{{lfi.cur}}" aria-label="{{lfi.aria}}"><span class="sh-tick" aria-hidden="true">{{lfi.tick}}</span><span>{{lfi.title}}</span></a></sc-for>
+</sc-for>
+</nav>
+</aside>
+<!-- /LESSON SIDE -->

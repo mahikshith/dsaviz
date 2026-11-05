@@ -1104,6 +1104,403 @@ const AI_ABOUT_ML = {
     cheat: ['widest street wins', 'support vectors set the line', 'street width = 2 / length of w', 'soft margin for overlap', 'kernel for curves'],
     next: ['logistic', 'regular', 'crossval'],
     sources: ['Cortes and Vapnik, Support-vector networks, Machine Learning, 1995', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 12.2', 'scikit-learn documentation, Support Vector Machines user guide']
+  },
+  hier: {
+    what: 'Hierarchical clustering builds groups from the bottom up. It starts with every item alone. Then it joins the two closest groups, again and again, until one group is left. The record of joins is a tree.',
+    analogy: 'Think of a family tree read backward. Cousins join into one family, families join into a clan, and clans join into a tribe.',
+    uses: ['Grouping genes that switch on and off together', 'Sorting shops into types by size, price and distance', 'Showing how close many items are in one tree picture'],
+    before: ['kmeans', 'Distance between two points'],
+    words: [
+      ['cluster', 'A group of items that sit close together.'],
+      ['linkage', 'The rule for measuring the distance between two groups. Average linkage uses the mean of all pair distances.'],
+      ['dendrogram', 'A tree picture of the joins. Its height shows the distance at which each join happened.'],
+      ['cut', 'A line drawn across the tree. The branches below it are the final groups.'],
+      ['unsupervised', 'Learning with no answers given. The model finds the groups itself.']
+    ],
+    math: {
+      lines: ['d(A, B) = \\frac{1}{|A|\\,|B|} \\sum_{a \\in A} \\sum_{b \\in B} d(a, b)'],
+      symbols: [
+        ['A, B', 'two groups of items'],
+        ['a, b', 'one item from A and one item from B'],
+        ['\\sum', 'add up the pair distances, one for every a and b'],
+        ['d(a, b)', 'the distance between two items'],
+        ['|A|, |B|', 'how many items are in each group'],
+        ['d(A, B)', 'the distance between the two groups: the average of every pair distance']
+      ],
+      example: [
+        'This is a smaller example than the animation: four dots on a line, at 1, 2, 6 and 8.',
+        'The closest pair is 1 and 2, only 1 apart. Join them at height 1.',
+        'Next, 6 and 8 are 2 apart. The group {1, 2} is 4.5 from 6 and 6.5 from 8, which is further. Join 6 and 8 at height 2.',
+        'Last, the two groups: the four pair distances are 5, 7, 4 and 6. Their average is 22 / 4 = 5.5. Join at height 5.5.',
+        'The joins happened at 1, 2 and 5.5. Cutting at height 3 leaves two groups: {1, 2} and {6, 8}.'
+      ]
+    },
+    steps: [
+      'Start with every item as its own group.',
+      'Find the two closest groups and join them.',
+      'Measure distances again, using your linkage rule.',
+      'Repeat until one group remains. Draw each join as a U in a tree.',
+      'Cut the tree at a height to get the number of groups you want.'
+    ],
+    use: ['You want groups and also the story of how they nest.', 'You have a few hundred items or fewer, and a sensible distance.'],
+    avoid: ['Huge data. Comparing every pair costs much time and memory.', 'Data where a wrong early join would hurt. Joins are never undone.'],
+    mistakes: [
+      'Choosing the linkage rule without looking. Nearest-pair linkage can chain groups into one long streak.',
+      'Mixing measurements with different size ranges. The biggest numbers then rule the distance.',
+      'Reading the left-to-right order of leaves as meaning. Only the heights carry meaning.'
+    ],
+    cheat: ['join the two closest groups', 'repeat until one group', 'tree height = distance at join', 'cut the tree to choose groups', 'long gap with no joins = natural cut'],
+    next: ['kmeans', 'dbscan', 'pca'],
+    sources: ['Ward, Hierarchical grouping to optimize an objective function, Journal of the American Statistical Association, 1963', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 14.3.12', 'scikit-learn documentation, Clustering: hierarchical clustering', 'SciPy documentation, scipy.cluster.hierarchy.linkage']
+  },
+  dbscan: {
+    what: 'DBSCAN finds clusters by looking for crowded places. A dot is in a crowd when enough other dots sit within a set radius. Crowds that touch join into one cluster. Dots in no crowd are called noise.',
+    analogy: 'Picture people at a fair. Where many stand close together, a crowd forms. Crowds that touch merge. A lone person far away belongs to no crowd.',
+    uses: ['Finding shapes such as rings or streaks that k-means misses', 'Spotting stray readings from a sensor', 'Grouping map locations, such as busy street corners'],
+    before: ['kmeans'],
+    words: [
+      ['eps', 'The radius of the circle drawn around each dot.'],
+      ['min points', 'How many dots a circle must hold, counting its centre, for the centre to be crowded.'],
+      ['core dot', 'A dot whose circle holds at least min points dots.'],
+      ['border dot', 'A dot that is not crowded itself but sits in a core dot’s circle.'],
+      ['noise', 'A dot that is neither core nor border. It belongs to no cluster.'],
+      ['cluster', 'A group of dots that sit close together.']
+    ],
+    math: {
+      lines: ['N_{\\varepsilon}(p) = \\{\\, q : \\lVert p - q \\rVert \\le \\varepsilon \\,\\}', 'p \\text{ is a core dot if } |N_{\\varepsilon}(p)| \\ge \\text{minPts}'],
+      symbols: [
+        ['p, q', 'two dots'],
+        ['\\varepsilon', 'eps, the radius of the circle'],
+        ['N_{\\varepsilon}(p)', 'every dot within eps of p, including p itself'],
+        ['\\lVert p - q \\rVert', 'the distance between p and q'],
+        ['\\text{minPts}', 'the number of dots a crowd needs']
+      ],
+      example: [
+        'This is a smaller example than the animation: six dots on a line at 1.0, 1.5, 2.0, 2.4, 5.0 and 9.0. Take eps = 0.6 and min points = 3.',
+        'Dot 1.5 has 1.0, 1.5 and 2.0 within 0.6, so 3 dots. It is a core dot. Dot 2.0 has 1.5, 2.0 and 2.4, so it is core too.',
+        'Dots 1.0 and 2.4 each have only 2 dots in their circle. They are not core, but each sits next to a core dot, so they are border dots.',
+        'Dots 5.0 and 9.0 are alone in their circles. They are noise.',
+        'The cluster is {1.0, 1.5, 2.0, 2.4}. Two dots are noise.'
+      ]
+    },
+    steps: [
+      'Pick eps and min points.',
+      'Mark each dot as core, border or noise by counting dots in its circle.',
+      'Start at a core dot not yet used and add every dot in its circle.',
+      'Repeat from each new core dot until nothing new is reachable. That is one cluster.',
+      'Start again from an unused core dot. Dots left over stay as noise.'
+    ],
+    use: ['Clusters have odd shapes or different sizes.', 'You expect stray points and want them set aside.'],
+    avoid: ['Data where crowds differ a lot in density. One eps cannot fit all.', 'Data with many columns, where distances become less useful.'],
+    mistakes: [
+      'Picking eps by guess. Plot each dot’s distance to its few nearest neighbours and look for the bend.',
+      'Forgetting to put measurements on the same size range first.',
+      'Expecting every dot in a group. Noise is a normal result, not a failure.'
+    ],
+    cheat: ['eps = circle radius', 'min points = crowd size', 'core, border, noise', 'crowds that touch merge', 'no number of clusters needed'],
+    next: ['kmeans', 'hier', 'anomaly'],
+    sources: ['Ester, Kriegel, Sander, Xu, A density-based algorithm for discovering clusters in large spatial databases with noise, KDD, 1996', 'Schubert, Sander, Ester, Kriegel, Xu, DBSCAN revisited, revisited, ACM Transactions on Database Systems, 2017', 'scikit-learn documentation, Clustering: DBSCAN']
+  },
+  tsne: {
+    what: 'A map made with t-SNE or UMAP squeezes items with many measurements onto a flat page. Items that were close stay close. The result lets you see clumps in data that has too many columns to draw.',
+    analogy: 'Imagine moving a crowd of friends onto a small stage. Good friends must stand together. Strangers can stand anywhere apart.',
+    uses: ['Drawing a map of word or image embeddings', 'Checking whether the groups you expect really exist', 'Exploring a new data set before choosing a model'],
+    before: ['pca', 'embeddings'],
+    words: [
+      ['t-SNE', 'A method that makes a 2D map by matching neighbour scores. The t is for the Student t curve it uses.'],
+      ['UMAP', 'A newer method with the same goal. It builds a graph of nearest neighbours and lays it flat.'],
+      ['perplexity', 'A setting for t-SNE. It is roughly how many neighbours each item cares about.'],
+      ['neighbour score', 'A number saying how close two items are. Higher means closer.'],
+      ['embedding', 'A list of numbers that describes an item, such as a word or a picture.'],
+      ['dimension', 'One column of measurement. Five columns means five dimensions.']
+    ],
+    math: {
+      lines: ['p_{j|i} = \\frac{e^{-\\lVert x_i - x_j \\rVert^2 / 2\\sigma_i^2}}{\\sum_{k \\ne i} e^{-\\lVert x_i - x_k \\rVert^2 / 2\\sigma_i^2}}', 'q_{ij} = \\frac{(1 + \\lVert y_i - y_j \\rVert^2)^{-1}}{\\sum_{k \\ne l} (1 + \\lVert y_k - y_l \\rVert^2)^{-1}}'],
+      symbols: [
+        ['x_i', 'item i in the original many-column space'],
+        ['y_i', 'item i on the flat map'],
+        ['p_{j|i}', 'how strongly item i treats item j as a neighbour in the original space'],
+        ['\\sigma_i', 'a width chosen for each item so its effective neighbour count equals the perplexity'],
+        ['q_{ij}', 'the neighbour score on the map, using a heavy-tailed curve'],
+        ['e', 'the number 2.718, used to turn distances into scores that fall off quickly']
+      ],
+      example: [
+        'This is a smaller example than the animation. One item has three others at distances 1, 2 and 4. The width is 1.',
+        'Gaussian scores: e^(-1/2) = 0.607, e^(-4/2) = 0.135, e^(-16/2) = 0.0003. They add to 0.743, so the shares are 0.82, 0.18 and 0.0005.',
+        'On the map, the heavy-tailed curve gives 1 / (1 + d²): 0.5, 0.2 and 0.059. They add to 0.759, so the shares are 0.66, 0.26 and 0.08.',
+        'The far item gets a share of 0.08 on the map but only 0.0005 in the original. The map lets it sit further away without a big penalty.',
+        'That room is why clumps spread out instead of crowding together.'
+      ]
+    },
+    steps: [
+      'Score how close each pair of items is in the original columns.',
+      'Place the items at random on a flat map.',
+      'Score how close each pair is on the map.',
+      'Nudge items so the map’s scores match the original scores. Repeat many times.',
+      'Colour the map by known labels, if any, to check that groups stayed together.'
+    ],
+    use: ['You want to look at the shape of high-dimensional data.', 'You want a picture to check embeddings or clusters.'],
+    avoid: ['Using distances or sizes between clumps as exact facts.', 'Using the map as the input for a model without checking.'],
+    mistakes: [
+      'Trusting the gaps between clumps. A wide gap on the map may be small in the data.',
+      'Running it once. Different random starts and perplexities give different maps.',
+      'Choosing a perplexity far larger than the real groups. The groups blur together.'
+    ],
+    cheat: ['keeps neighbours close', 'distances between clumps can mislead', 'perplexity = how many neighbours', 'run more than once', 'UMAP: same goal, graph based'],
+    next: ['pca', 'kmeans', 'embeddings'],
+    sources: ['van der Maaten and Hinton, Visualizing data using t-SNE, Journal of Machine Learning Research, 2008', 'McInnes, Healy, Melville, UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction, arXiv:1802.03426, 2018', 'scikit-learn documentation, Manifold learning: t-SNE', 'Wattenberg, Viegas, Johnson, How to use t-SNE effectively, Distill, 2016']
+  },
+  gmm: {
+    what: 'A Gaussian mixture model describes data as a blend of several bell-shaped groups. Each group has a middle, a spread and a tilt. Every item gets a share for each group, so the groups are soft and can overlap.',
+    analogy: 'Picture several lamps lighting a floor. Where two glows overlap, one spot belongs partly to each lamp.',
+    uses: ['Grouping items whose groups are stretched or tilted', 'Telling how sure the model is about each item’s group', 'Spotting items that fit no group well'],
+    before: ['kmeans', 'probability'],
+    words: [
+      ['Gaussian', 'A bell-shaped spread of values, high in the middle and low at the edges.'],
+      ['mixture', 'A blend of several groups, each with its own weight.'],
+      ['EM', 'Short for expectation and maximization. Two moves, repeated: share out each item, then refit each group.'],
+      ['share', 'How much of an item belongs to one group. All the shares of an item add to 100%.'],
+      ['fit score', 'How likely the model makes the data you saw. Statisticians call it the log-likelihood.'],
+      ['BIC', 'A score that rewards a good fit but charges for each extra number the model uses. Lower is better.']
+    ],
+    math: {
+      lines: ['r_{ik} = \\frac{w_k \\, N(x_i \\mid \\mu_k, \\Sigma_k)}{\\sum_j w_j \\, N(x_i \\mid \\mu_j, \\Sigma_j)}', '\\mu_k = \\frac{\\sum_i r_{ik}\\, x_i}{\\sum_i r_{ik}}', '\\text{BIC} = p \\ln n - 2 \\ln L'],
+      symbols: [
+        ['r_{ik}', 'the share of item i that belongs to group k'],
+        ['w_k', 'the weight of group k: how big a part of the data it is'],
+        ['N(x \\mid \\mu, \\Sigma)', 'the height of the bell for group k at item x'],
+        ['\\mu_k', 'the middle of group k'],
+        ['\\Sigma_k', 'the spread and tilt of group k'],
+        ['p', 'how many numbers the model has to learn'],
+        ['n', 'how many items there are'],
+        ['\\ln L', 'the fit score']
+      ],
+      example: [
+        'This is a smaller example than the animation: one column, two groups, and three items at 1, 3 and 6.',
+        'Group A has middle 2 and group B has middle 5. Both have spread 1 and weight one half.',
+        'For the item at 3: bell heights are 0.242 for A and 0.054 for B. The shares are 0.242 / 0.296 = 0.82 for A and 0.18 for B.',
+        'The items at 1 and 6 give A shares 1.00 and 0.00.',
+        'New middle for A = (1 x 1.00 + 3 x 0.82 + 6 x 0.00) / 1.82 = 1.90. New middle for B = 5.53.',
+        'Repeat share and refit until the fit score stops rising.'
+      ]
+    },
+    steps: [
+      'Choose how many groups, K, and place K rough bells.',
+      'E move: give each item a share for every bell.',
+      'M move: refit each bell using those shares as weights.',
+      'Repeat until the fit score stops rising.',
+      'Compare BIC for several K and keep the lowest.'
+    ],
+    use: ['Groups overlap or are stretched.', 'You need shares, not hard labels.'],
+    avoid: ['Groups that are not bell-shaped, such as rings.', 'Very small data with many groups. The fit becomes unstable.'],
+    mistakes: [
+      'Running once. EM can stop in a poor fit that depends on the start.',
+      'Letting a bell shrink onto one item. Keep a small floor on its spread.',
+      'Picking K by fit score alone. It always improves as K grows, so use BIC or a held-out check.'
+    ],
+    cheat: ['each group is a bell', 'E move: share out items', 'M move: refit the bells', 'repeat until steady', 'pick K with BIC (lower is better)'],
+    next: ['kmeans', 'anomaly', 'hier'],
+    sources: ['Dempster, Laird, Rubin, Maximum likelihood from incomplete data via the EM algorithm, Journal of the Royal Statistical Society B, 1977', 'Bishop, Pattern Recognition and Machine Learning, 2006, ch. 9.2', 'Schwarz, Estimating the dimension of a model, Annals of Statistics, 1978', 'scikit-learn documentation, Gaussian mixture models']
+  },
+  anomaly: {
+    what: 'Anomaly detection finds items that are unusual. An isolation forest does this by cutting data with random lines. Odd items are cut off alone in few cuts, while ordinary items need many.',
+    analogy: 'In a crowded hall, a person standing alone by the far wall is quick to point out. A person in the middle of the crowd takes many questions to single out.',
+    uses: ['Spotting card payments that look unusual', 'Catching a sensor that has started to fail', 'Cleaning data by finding entries that may be typing errors'],
+    before: ['tree', 'dbscan'],
+    words: [
+      ['anomaly', 'An item that is very different from most of the others.'],
+      ['isolate', 'Cut the data until one item sits alone.'],
+      ['path length', 'The number of cuts needed to isolate an item.'],
+      ['score', 'A number from 0 to 1. Near 1 means likely odd. Around 0.5 or below means ordinary.'],
+      ['threshold', 'The score at which you start to flag an item.']
+    ],
+    math: {
+      lines: ['s(x, n) = 2^{-E[h(x)] / c(n)}', 'c(n) = 2\\,(\\ln(n - 1) + 0.5772) - \\frac{2(n - 1)}{n}'],
+      symbols: [
+        ['x', 'one item'],
+        ['n', 'the number of items used to build each tree'],
+        ['h(x)', 'the path length of x in one tree'],
+        ['E[h(x)]', 'the average path length over all trees'],
+        ['c(n)', 'a typical path length for n items, used to put scores on a common scale'],
+        ['s', 'the score, between 0 and 1']
+      ],
+      example: [
+        'This is a smaller example than the animation: n = 8 items.',
+        'c(8) = 2 x (ln 7 + 0.5772) - 14 / 8 = 2 x 2.523 - 1.75 = 3.30.',
+        'An item with an average path length of 1.5 scores 2^(-1.5 / 3.30) = 0.73. It is likely odd.',
+        'An item with an average path length of 3.30 scores 2^(-1) = 0.50. It is ordinary.',
+        'An item with an average path length of 5 scores 2^(-5 / 3.30) = 0.35. It is deep in the crowd.'
+      ]
+    },
+    steps: [
+      'Build many trees. In each, cut at a random axis and a random place.',
+      'Count the cuts needed to isolate each item. That is its path length.',
+      'Average the path length for each item over all trees.',
+      'Turn the average into a score from 0 to 1.',
+      'Flag items whose score is above your threshold, then look at them.'
+    ],
+    use: ['You have no labels for what is odd.', 'You want a fast method that scales to large data.'],
+    avoid: ['When odd items cluster together. They then need many cuts too.', 'When you need a reason for each flag. The score alone does not explain it.'],
+    mistakes: [
+      'Treating a flag as proof. It only says the item is unusual.',
+      'Setting the threshold with no thought of cost. A review takes time, and a miss can cost more.',
+      'Using columns that mean nothing. They add noise to the cuts.'
+    ],
+    cheat: ['odd items are cut off in few cuts', 'short path = odd, long path = ordinary', 'score near 1 = odd, near 0.5 = ordinary', 'average over many trees', 'flag means look, not guilty'],
+    next: ['tree', 'dbscan', 'gmm'],
+    sources: ['Liu, Ting, Zhou, Isolation Forest, IEEE International Conference on Data Mining, 2008', 'Liu, Ting, Zhou, Isolation-based anomaly detection, ACM Transactions on Knowledge Discovery from Data, 2012', 'scikit-learn documentation, Novelty and outlier detection: isolation forest']
+  },
+  rforest: {
+    what: 'A random forest is many decision trees that vote. Each tree learns from a different random sample of the data. Each split looks at random measures. Their different mistakes cancel out in the vote.',
+    analogy: 'Ask one friend to guess the weight of a cake and they may be far off. Ask fifty friends and average the guesses, and the answer is usually close.',
+    uses: ['Predicting house prices or ripe fruit from a table of measures', 'A strong first model for tables of numbers', 'Finding which columns matter most to a prediction'],
+    before: ['tree', 'overfit'],
+    words: [
+      ['bootstrap', 'A new data set made by drawing items at random from the old one, with replacement. Some items repeat and some are missed.'],
+      ['replacement', 'After you draw an item, you put it back, so it can be drawn again.'],
+      ['vote', 'Each tree gives an answer. The most common answer wins.'],
+      ['out-of-bag', 'The items a tree never saw. They give a free test of that tree.'],
+      ['Gini', 'A number that says how mixed a group is. Zero means every item is the same kind.'],
+      ['overfit', 'Learning the noise in the training data, so new data goes badly.']
+    ],
+    math: {
+      lines: ['G = 2\\,p\\,(1 - p)', '\\left(1 - \\tfrac{1}{n}\\right)^{n} \\approx 0.368'],
+      symbols: [
+        ['G', 'the Gini number of a group of two kinds. Lower is purer'],
+        ['p', 'the share of items in the group that are one kind'],
+        ['n', 'how many items are in the training data'],
+        ['0.368', 'the chance that one item is never drawn in a bootstrap sample']
+      ],
+      example: [
+        'This is a smaller example than the animation: eight fruit, 4 ripe and 4 not.',
+        'The group is fully mixed: p = 4 / 8 = 0.5, so G = 2 x 0.5 x 0.5 = 0.50.',
+        'A split makes a left group with 4 ripe and 1 not, and a right group with 3 not ripe.',
+        'Left: p = 0.8, so G = 2 x 0.8 x 0.2 = 0.32. Right: G = 0.',
+        'Weighted by size, the split scores (5 / 8) x 0.32 + (3 / 8) x 0 = 0.20. That is lower than 0.50, so the split helps.',
+        'A forest then asks 5 trees. Three say ripe and two say not. The vote is 3 / 5 = 60%, so the answer is ripe.',
+        'Each tree left out about 37% of the fruit. Those fruit give the out-of-bag check.'
+      ]
+    },
+    steps: [
+      'Draw a bootstrap sample of the training data for each tree.',
+      'Grow the tree. At each split, look at only a few randomly chosen columns.',
+      'Repeat for many trees.',
+      'To predict, let every tree vote and take the most common answer. For a number, take the average.',
+      'Check each item using only the trees that never saw it. That is the out-of-bag score.'
+    ],
+    use: ['You have a table of numbers and want a strong model with little tuning.', 'You want an honest score without a separate test set.'],
+    avoid: ['Pictures, sound or text, where neural networks do better.', 'Predicting beyond the range of the training data. Trees cannot go past it.'],
+    mistakes: [
+      'Thinking more trees cause overfitting. More trees mostly settle the vote.',
+      'Using trees that all look at the same columns. They would make the same mistakes.',
+      'Reading one tree to explain the forest. Fifty trees cannot be read like one.'
+    ],
+    cheat: ['bootstrap sample for each tree', 'random columns at each split', 'many different trees vote', 'out-of-bag = free test', 'more trees = steadier vote'],
+    next: ['gboost', 'overfit', 'anomaly'],
+    sources: ['Breiman, Random forests, Machine Learning 45, 2001', 'Breiman, Bagging predictors, Machine Learning 24, 1996', 'Hastie, Tibshirani, Friedman, The Elements of Statistical Learning, 2009, ch. 15', 'scikit-learn documentation, Ensembles: random forests']
+  },
+  optim: {
+    what: 'An optimizer decides how a model changes its weights after each look at the slope. Plain gradient descent takes a step downhill. Momentum adds speed from earlier steps. Adam gives each weight its own step size.',
+    analogy: 'Walking downhill in fog, you feel the slope under your feet. Plain descent follows each feeling alone. Momentum is a rolling ball that keeps going. Adam changes the stride for each leg.',
+    uses: ['Training every neural network', 'Making training reach a good answer in fewer steps', 'Taming valleys that are steep one way and flat the other way'],
+    before: ['gradient', 'gradarrow'],
+    words: [
+      ['loss', 'One number that says how wrong the model is. Training tries to lower it.'],
+      ['gradient descent', 'Repeatedly stepping the weights in the direction that lowers the loss.'],
+      ['step size', 'How far each step moves. It is also called the learning rate.'],
+      ['slope', 'How steeply the loss rises in one direction. Another word is gradient.'],
+      ['momentum', 'A running push built from earlier slopes. It smooths bounces and builds speed.'],
+      ['Adam', 'An optimizer that gives each weight its own step size, using recent slopes.']
+    ],
+    math: {
+      lines: ['w \\leftarrow w - \\eta\\, g', 'v \\leftarrow \\beta v + g, \\quad w \\leftarrow w - \\eta\\, v', 'm \\leftarrow \\beta_1 m + (1 - \\beta_1) g, \\quad v \\leftarrow \\beta_2 v + (1 - \\beta_2) g^2', 'w \\leftarrow w - \\eta\\, \\frac{m / (1 - \\beta_1^t)}{\\sqrt{v / (1 - \\beta_2^t)} + \\varepsilon}'],
+      symbols: [
+        ['w', 'a weight'],
+        ['g', 'the slope of the loss for that weight'],
+        ['\\eta', 'the step size'],
+        ['v', 'in momentum, the velocity. In Adam, the average of the slope times itself'],
+        ['m', 'the recent average of the slope'],
+        ['\\beta, \\beta_1, \\beta_2', 'keep-rates: how much of the old average to keep. Usual values: 0.9 and 0.999'],
+        ['t', 'the step number'],
+        ['\\varepsilon', 'a tiny number such as 0.00000001, so we never divide by zero']
+      ],
+      example: [
+        'This is a smaller example than the animation: one weight, loss w x w, so the slope is 2w. Start at w = 3 with step size 0.1.',
+        'Plain descent: slope 6, so w = 3 - 0.1 x 6 = 2.4. Then slope 4.8, so w = 2.4 - 0.48 = 1.92.',
+        'Momentum (keep-rate 0.9): velocity 6, so w = 2.4. Then velocity = 0.9 x 6 + 4.8 = 10.2, so w = 2.4 - 1.02 = 1.38. It moved further.',
+        'Adam, step 1: m = 0.1 x 6 = 0.6 and v = 0.001 x 36 = 0.036. Fix the start: 0.6 / 0.1 = 6 and 0.036 / 0.001 = 36.',
+        'The step is 0.1 x 6 / sqrt(36) = 0.1. So w = 2.9. Adam’s first step is the step size, whatever the slope.',
+        'Adam, step 2: the slope is 5.8, and the step is again about 0.1, so w is about 2.80.'
+      ]
+    },
+    steps: [
+      'Measure the slope of the loss for every weight.',
+      'Plain: move each weight against its slope, by the step size.',
+      'Momentum: add the slope to a running velocity, then move along the velocity.',
+      'Adam: also track the average slope squared, and divide each step by its square root.',
+      'Repeat for many steps, and lower the step size if the loss jumps.'
+    ],
+    use: ['Adam is a good first choice when you do not know what else to pick.', 'Momentum helps when steps bounce across a narrow valley.'],
+    avoid: ['Adam’s default step size on every problem. Tune it.', 'A huge step size with any optimizer. The loss will jump or blow up.'],
+    mistakes: [
+      'Blaming the optimizer for a step size that is too big or too small.',
+      'Comparing optimizers with a step size tuned for only one of them.',
+      'Forgetting that real training uses noisy slopes from small batches, so loss curves are not smooth.'
+    ],
+    cheat: ['plain: w = w - step x slope', 'momentum: velocity = 0.9 x velocity + slope', 'Adam: step is m divided by root of v', 'Adam starts at step size 0.001', 'tune the step size first'],
+    next: ['backprop', 'regular', 'gradient'],
+    sources: ['Polyak, Some methods of speeding up the convergence of iteration methods, USSR Computational Mathematics and Mathematical Physics, 1964', 'Sutskever, Martens, Dahl, Hinton, On the importance of initialization and momentum in deep learning, ICML, 2013', 'Kingma and Ba, Adam: A method for stochastic optimization, arXiv:1412.6980, 2014', 'Goodfellow, Bengio, Courville, Deep Learning, 2016, ch. 8', 'PyTorch documentation, torch.optim.SGD and torch.optim.Adam']
+  },
+  pandas: {
+    what: 'Tables answer questions when you combine them. A join glues two tables by a shared key column. A group by sorts rows into piles. An aggregate boils each pile down to one number. SQL and pandas do these jobs the same way.',
+    analogy: 'Two lists sit on your desk: who bought what, and where each person lives. You match names, sort the slips into one pile per city, then count each pile.',
+    uses: ['Totals per city, month or product', 'Adding customer details to a list of orders', 'Preparing a table before any model sees it'],
+    before: ['probability'],
+    words: [
+      ['key', 'A column that both tables share, used to match rows.'],
+      ['join', 'Match rows of two tables that have the same key and put them side by side.'],
+      ['inner join', 'Keep only rows that have a match in both tables.'],
+      ['left join', 'Keep every row of the left table. Rows with no match get empty values.'],
+      ['group by', 'Gather rows with the same value into piles.'],
+      ['aggregate', 'Boil a pile down to one number, such as a sum, a count or an average.'],
+      ['NULL', 'An empty value in SQL. pandas shows it as a missing-value marker.'],
+      ['pandas', 'A Python library for working with tables, called data frames.']
+    ],
+    math: {
+      lines: ['\\text{total}(c) = \\sum_{o \\,:\\, \\text{city}(o) = c} \\text{amount}(o)'],
+      symbols: [
+        ['c', 'one city'],
+        ['o', 'one order'],
+        ['\\text{city}(o)', 'the city found by joining the order to its customer'],
+        ['\\text{amount}(o)', 'how much that order cost'],
+        ['\\sum', 'add up the amounts of all orders in the pile']
+      ],
+      example: [
+        'This is the same data as the animation. Orders: Ana 20, Ben 35, Ana 15, Cy 50, Ben 10, Dee 25.',
+        'Customers: Ana lives in Leeds, Ben in Hull, Cy in Leeds. Dee is not listed.',
+        'Inner join: Dee’s order has no match, so 5 orders remain. Leeds has 20, 15 and 50, which add to 85. Hull has 35 and 10, which add to 45.',
+        'Left join: Dee’s order stays with an empty city. SQL keeps that pile and shows 25 for it.',
+        'pandas drops the empty-city pile by default, so you see Leeds 85 and Hull 45 unless you pass dropna=False.',
+        'A hidden duplicate: if Ana appeared twice in customers, her 2 orders would be doubled. Leeds would show 85 + 35 = 120.'
+      ]
+    },
+    steps: [
+      'Pick the key that links the two tables.',
+      'Join them. Choose inner to keep matches only, or left to keep every row of the first table.',
+      'Group the joined rows by the column you care about.',
+      'Aggregate each group with a sum, count or average.',
+      'Check row counts before and after the join.'
+    ],
+    use: ['You need totals or averages per group.', 'The facts you need are spread over more than one table.'],
+    avoid: ['Joining on a column that is not unique in both tables, without checking.', 'Trusting totals before you compare them with the row counts.'],
+    mistakes: [
+      'Using an inner join and losing rows without noticing.',
+      'Joining on a key that repeats, so rows are copied and sums are too large.',
+      'Forgetting that pandas drops empty group keys by default, while SQL keeps them as one group.'
+    ],
+    cheat: ['join = glue by key', 'inner = matches only, left = all left rows', 'group by = piles', 'aggregate = one number per pile', 'count rows before and after'],
+    next: ['probability', 'confusion', 'crossval'],
+    sources: ['pandas documentation, pandas.merge', 'pandas documentation, pandas.DataFrame.groupby (the dropna option)', 'PostgreSQL documentation, Joined tables, and Aggregate functions', 'Codd, A relational model of data for large shared data banks, Communications of the ACM, 1970']
   }
 };
 if (typeof module !== 'undefined') module.exports = { AI_ABOUT_ML };

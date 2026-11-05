@@ -1,0 +1,54 @@
+<div data-shell data-page="Home" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; font-family: {{t.body}}">
+
+<!-- PILL NAV -->
+<!-- /PILL NAV -->
+<style>
+/* Home (src/pages/home_body.html, src/pages/home.js). A new visitor sees one plain line, one lime button and three plain links.
+   A returning learner sees the next lesson with a Continue button, then four equal tiles (lessons done, problems solved, streak, medals),
+   each a big number, a short label and a thin bar where a total exists. Tiles are not links and do not open. */
+.hm-intro{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:24px;max-width:72ch}
+.hm-line{color:var(--sh-text)}
+.hm-go{min-height:48px;padding:8px 32px;max-width:100%;box-sizing:border-box;line-height:1.3;text-decoration:none;text-align:center}
+.hm-links{display:flex;flex-wrap:wrap;gap:0 24px}
+.hm-links a{display:inline-flex;align-items:center;min-height:44px;color:var(--sh-muted);text-decoration:underline;text-underline-offset:4px}
+.hm-links a:hover{color:var(--sh-text)}
+.hm-next{display:flex;flex-direction:column;gap:16px;align-items:flex-start;padding-top:24px}
+.hm-up{display:inline-flex;align-items:center;gap:8px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
+.hm-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
+.hm-tiles{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;grid-auto-rows:1fr}
+.hm-tile{padding:24px 16px;gap:4px;justify-content:flex-start}
+.hm-num{font-family:'Anton',Impact,sans-serif;font-size:calc(48px * var(--ts, 1));line-height:1.1;font-weight:400;letter-spacing:0.01em}
+.hm-name{font-weight:600;line-height:1.3}
+.hm-note{font-size:calc(14px * var(--ts, 1));line-height:1.4;color:var(--sh-muted);overflow-wrap:anywhere}
+.hm-bar{height:4px;border-radius:2px;background:var(--sh-line);overflow:hidden;margin-top:auto}
+.hm-bar>span{display:block;height:100%;background:var(--sh-accent)}
+.hm-due{align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;color:var(--sh-text);text-decoration:underline;text-underline-offset:4px}
+@media (max-width:1023px){.hm-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:759px){
+.hm-go{width:100%}
+.hm-tile{padding:16px 12px}
+.hm-num{font-size:calc(40px * var(--ts, 1))}
+}
+</style>
+<main class="sh-main">
+<sc-if value="{{isNew}}" hint-placeholder-val="{{ true }}">
+<section class="hm-intro" aria-labelledby="hm-h">
+<h1 id="hm-h">{{intro.title}}</h1>
+<p class="hm-line">{{intro.line}}</p>
+<a class="sh-btn hm-go" data-start href="{{start.href}}" onClick="{{start.go}}">Start here</a>
+<nav class="hm-links" aria-label="More places to start"><sc-for list="{{links}}" as="k" hint-placeholder-count="3"><a href="{{k.href}}">{{k.label}}</a></sc-for></nav>
+</section>
+</sc-if>
+<sc-if value="{{isBack}}" hint-placeholder-val="{{ false }}">
+<section class="hm-next" aria-labelledby="hm-h">
+<span class="hm-up">{{next.kicker}}</span>
+<h1 id="hm-h">{{next.title}}</h1>
+<a class="sh-btn hm-go" data-continue href="{{next.href}}" onClick="{{next.go}}">{{next.button}}</a>
+</section>
+<ul class="hm-tiles" aria-label="Your progress"><sc-for list="{{tiles}}" as="ti" hint-placeholder-count="4">
+<li class="sh-block hm-tile" data-tile="{{ti.key}}"><span class="hm-num">{{ti.num}}</span><span class="hm-name">{{ti.name}}</span><span class="hm-note">{{ti.note}}</span><sc-if value="{{ti.hasBar}}" hint-placeholder-val="{{ true }}"><div class="hm-bar" role="progressbar" aria-label="{{ti.name}}" aria-valuemin="0" aria-valuemax="{{ti.total}}" aria-valuenow="{{ti.num}}"><span style="width: {{ti.pct}}%"></span></div></sc-if></li>
+</sc-for></ul>
+<sc-if value="{{due.show}}" hint-placeholder-val="{{ false }}"><a class="hm-due" data-due href="Sheet.dc.html?due=1">{{due.text}}</a></sc-if>
+</sc-if>
+</main>
+</div>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dictionaries - Lesson 22 (A: Calm focus)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B; --surface:#101214; --surface-2:#171A1D; --line:rgba(255,255,255,.08);
+  --text:#F2F3EF; --muted:#9AA0A6; --lime:#C5F04A; --lime-soft:rgba(197,240,74,.13); --ink:#0A0A0B; --str:#8FD3C1;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font:400 17px/1.65 Outfit,system-ui,sans-serif;min-height:100vh;
+  background-image:radial-gradient(60% 420px at 50% 0,rgba(197,240,74,.045),transparent)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
+
+.top{height:64px;display:flex;align-items:center}
+.bar{width:100%;max-width:1120px;margin:0 auto;padding:0 var(--s4);display:flex;align-items:center;justify-content:space-between;gap:var(--s4)}
+.logo{font:400 24px/1 Anton,Impact,sans-serif;letter-spacing:.02em}
+.logo b{font-weight:400;color:var(--lime)}
+.link{display:inline-flex;align-items:center;gap:var(--s1);color:var(--muted);font-weight:500;font-size:15px;transition:color .15s;min-height:40px}
+.link:hover{color:var(--text)}
+.link .i{width:18px;height:18px}
+
+.col{max-width:688px;margin:0 auto;padding:var(--s4) var(--s3) var(--s5)}
+h1{font:400 clamp(56px,13.5vw,88px)/1 Anton,Impact,sans-serif;text-transform:uppercase;margin-top:var(--s3)}
+.meta{color:var(--muted);font-size:15px;line-height:24px;font-weight:500;margin-top:var(--s2)}
+
+.tabs{display:flex;gap:var(--s4);margin:var(--s4) 0 var(--s3);border-bottom:1px solid var(--line)}
+.tab{height:48px;font-weight:500;font-size:17px;color:var(--muted);position:relative;transition:color .15s}
+.tab:hover{color:var(--text)}
+.tab[aria-selected=true]{color:var(--text)}
+.tab[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--lime);border-radius:1px}
+
+/* stage */
+.stage{background:var(--surface);border-radius:16px;padding:var(--s3)}
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.stage{padding:var(--s4)}
+.pane{min-height:184px}
+.pane+.pane{border-left:1px solid var(--line);padding-left:var(--s3)}
+.code{font:400 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;list-style:none;color:var(--text)}
+.code li{white-space:pre-wrap;word-break:break-word;padding:0 var(--s1);border-radius:6px;transition:background .18s}
+.code li.on{background:var(--lime-soft)}
+.code .s{color:var(--str)}
+.code .c{color:var(--muted)}
+.rows{list-style:none;display:grid;gap:var(--s1)}
+.row{display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 var(--s2);border-radius:8px;background:var(--surface-2);font:400 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;transition:background .18s,color .18s}
+.row .v{color:var(--muted)}
+.row.on{background:var(--lime);color:var(--ink)}
+.row.on .v{color:var(--ink);font-weight:500}
+.row.new{animation:enter .22s ease-out}
+.row[hidden]{display:none}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.out{margin-top:var(--s2);color:var(--muted);font:400 15px/24px "JetBrains Mono",ui-monospace,Consolas,monospace;min-height:24px}
+.out b{color:var(--text);font-weight:500}
+.cap{margin-top:var(--s3);font-size:18px;line-height:28px;min-height:28px}
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:var(--s3)}
+.dots{display:flex;gap:var(--s1);align-items:center}
+.dots button{width:24px;height:24px;display:grid;place-items:center}
+.dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--surface-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:background .15s,transform .15s}
+.dots button[aria-current=true]::before{background:var(--lime);box-shadow:none;transform:scale(1.25)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);height:56px;padding:0 var(--s4);border-radius:12px;background:var(--lime);color:var(--ink);font-weight:600;font-size:18px;transition:transform .12s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.98)}
+.btn .i{width:22px;height:22px;stroke-width:2}
+
+/* about */
+.about h2{font:600 24px/32px Outfit,sans-serif}
+.about ul{list-style:none;margin-top:var(--s2)}
+.about li{padding:var(--s2) 0;border-top:1px solid var(--line)}
+.about li:first-child{border-top:0;padding-top:0}
+.about p{color:var(--muted);font-size:15px;line-height:24px;font-weight:500}
+.about .grid{display:grid;gap:var(--s4);margin-top:var(--s4)}
+.about .grid h3{font:600 17px/24px Outfit,sans-serif;margin-bottom:var(--s1)}
+[hidden]{display:none!important}
+
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--line)}
+.pn a{display:block;transition:color .15s}
+.pn a:last-child{text-align:right}
+.pn small{display:block;color:var(--muted);font-size:15px;line-height:24px;font-weight:500}
+.pn a:hover span{color:var(--lime)}
+.pn span{font-weight:500;transition:color .15s}
+
+@media (max-width:760px){
+  .bar{padding:0 var(--s2)}
+  .col{padding:var(--s2) var(--s2) var(--s4)}
+  .panes{grid-template-columns:1fr}
+  .stage{padding:var(--s2)}
+  .pane{min-height:0}
+  .pane+.pane{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:var(--s2)}
+  .ctrl{flex-direction:column-reverse;align-items:stretch}
+  .dots{justify-content:center}
+  .btn{width:100%}
+  .tabs{gap:var(--s3)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+</svg>
+
+<header class="top"><div class="bar">
+  <a class="logo" href="mock-a-home.html" aria-label="DSAMaxxing front page">DSA<b>MAXXING</b></a>
+  <a class="link" href="mock-a-home.html"><svg class="i"><use href="#i-back"/></svg>Back to Home</a>
+</div></header>
+
+<main class="col">
+  <h1>Dictionaries</h1>
+  <p class="meta">Lesson 22 of 27 &middot; about 6 minutes</p>
+
+  <div class="tabs" role="tablist" aria-label="Lesson sections">
+    <button class="tab" role="tab" id="tab-l" aria-selected="true" aria-controls="p-l">Lesson</button>
+    <button class="tab" role="tab" id="tab-a" aria-selected="false" aria-controls="p-a">About</button>
+  </div>
+
+  <section id="p-l" role="tabpanel" aria-labelledby="tab-l">
+    <div class="stage">
+      <div class="panes">
+        <div class="pane">
+          <ol class="code" id="code" aria-label="Code">
+            <li>prices = {<span class="s">"apple"</span>: 3, <span class="s">"pear"</span>: 5, <span class="s">"plum"</span>: 4}</li>
+            <li>print(prices[<span class="s">"pear"</span>])</li>
+            <li>prices[<span class="s">"fig"</span>] = 7</li>
+            <li>print(<span class="s">"kiwi"</span> in prices)</li>
+          </ol>
+          <p class="out" id="out" aria-live="polite"></p>
+        </div>
+        <div class="pane">
+          <ul class="rows" id="rows" aria-label="What the dictionary holds">
+            <li class="row" data-k="apple"><span>"apple"</span><span class="v">3</span></li>
+            <li class="row" data-k="pear"><span>"pear"</span><span class="v">5</span></li>
+            <li class="row" data-k="plum"><span>"plum"</span><span class="v">4</span></li>
+            <li class="row" data-k="fig" hidden><span>"fig"</span><span class="v">7</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="cap" id="cap" aria-live="polite"></p>
+      <div class="ctrl">
+        <div class="dots" id="dots" role="group" aria-label="Steps"></div>
+        <button class="btn" id="next">Next step <svg class="i"><use href="#i-arrow"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="p-a" class="about" role="tabpanel" aria-labelledby="tab-a" hidden>
+    <h2>What you will learn</h2>
+    <ul>
+      <li>A dictionary stores pairs of a key and a value.</li>
+      <li>Looking up a key returns its value straight away.</li>
+      <li>Check with <code style="font-family:'JetBrains Mono',monospace;font-size:15px">in</code> before you look up.</li>
+    </ul>
+    <div class="grid">
+      <div><h3>Before this</h3><p>Lesson 17, Loop a list</p></div>
+      <div><h3>This unlocks</h3><p>Lesson 23, Debugging</p></div>
+    </div>
+  </section>
+
+  <nav class="pn" aria-label="Lessons">
+    <a href="#"><small>Previous</small><span>21 &middot; return / print</span></a>
+    <a href="#"><small>Next</small><span>23 &middot; Debugging</span></a>
+  </nav>
+</main>
+
+<script>
+(function(){
+  var steps=[
+    {line:0,row:null,out:'',cap:'A dictionary keeps pairs. Each key points to one value.'},
+    {line:1,row:'pear',out:'<b>5</b>',cap:'Ask for a key and Python hands back its value. No searching.'},
+    {line:2,row:'fig',out:'',cap:'Give a new key a value and the pair joins the dictionary.',add:true},
+    {line:3,row:null,out:'<b>False</b>',cap:'Check with in first, so a missing key never surprises you.'}
+  ];
+  var i=0,lines=document.querySelectorAll('#code li'),rows=document.querySelectorAll('#rows .row'),
+      out=document.getElementById('out'),cap=document.getElementById('cap'),dots=document.getElementById('dots'),next=document.getElementById('next');
+  steps.forEach(function(_,n){var b=document.createElement('button');b.setAttribute('aria-label','Step '+(n+1));b.onclick=function(){go(n)};dots.appendChild(b)});
+  function go(n){
+    i=n;var s=steps[n];
+    lines.forEach(function(l,k){l.classList.toggle('on',k===s.line)});
+    rows.forEach(function(r){
+      var k=r.dataset.k,show=k!=='fig'||n>=2,was=!r.hidden;
+      r.hidden=!show;r.classList.toggle('on',k===s.row);
+      r.classList.toggle('new',show&&!was);
+    });
+    out.innerHTML=s.out?'Output: '+s.out:'';cap.textContent=s.cap;
+    [].forEach.call(dots.children,function(d,k){d.toggleAttribute('aria-current',k===n);if(k===n)d.setAttribute('aria-current','true')});
+    next.firstChild.textContent=n===steps.length-1?'Next lesson ':'Next step ';
+  }
+  next.onclick=function(){if(i<steps.length-1)go(i+1)};
+  go(0);
+  var t=[document.getElementById('tab-l'),document.getElementById('tab-a')];
+  t.forEach(function(b){b.onclick=function(){
+    t.forEach(function(x){var on=x===b;x.setAttribute('aria-selected',on);document.getElementById(x.getAttribute('aria-controls')).hidden=!on});
+  }});
+})();
+</script>
+</body>
+</html>

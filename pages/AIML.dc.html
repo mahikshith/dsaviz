@@ -4867,13 +4867,14 @@ function hubSections(key) {
   }
   return AI_TRACKS.map((tr) => ({ id: tr.id, title: tr.title, items: AI_LESSONS.filter((L) => L.track === tr.id).map((L) => ({ id: L.id, title: L.title, min: L.minutes })) })).filter((s) => s.items.length);
 }
-// Back: to the page the learner came from when it is a list page (the same rule as a lesson's Back link), else to the Roadmap.
+// Back: to the Roadmap, or to Home or Problems when the learner came from there. Never to another course front or a lesson.
+const HUB_BACK = { Patterns: 'Roadmap', Home: 'Home', Sheet: 'Problems' };
 function hubBack(self) {
   let to = null;
   try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
   const name = to ? String(to.page).replace('.dc.html', '') : '';
-  const use = !!(to && LIST_BACK[name] && name !== self);
-  return { label: 'Back to ' + (use ? LIST_BACK[name] : 'Roadmap'), href: '#back',
+  const use = !!(to && HUB_BACK[name] && name !== self);
+  return { label: 'Back to ' + (use ? HUB_BACK[name] : 'Roadmap'), href: '#back',
     go: (e) => { try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {} try { if (use) window.__dsBack(); else window.__dsNav('Patterns.dc.html', '', true); } catch (x) {} } };
 }
 

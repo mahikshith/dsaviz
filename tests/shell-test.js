@@ -484,7 +484,7 @@ server.listen(0, async () => {
         if (!r.shell || r.zoom !== '1') fail(id + ': not on the shared frame, no zoom (zoom ' + r.zoom + ')');
         if (r.h1.join() !== name) fail(id + ': the title is "' + r.h1.join() + '"');
         if (r.line.length < 20 || r.line.split(' ').length > 22) fail(id + ': the one-line "what it teaches" reads "' + r.line + '"');
-        if (!/^← Back to \S/.test(r.back) || /Back to (Home|Front page|Lesson)$/.test(r.back)) fail(id + ': Back link says "' + r.back + '"');
+        if (!/^← Back to \S/.test(r.back) || /Back to (Front page|Lesson)$/.test(r.back)) fail(id + ': Back link says "' + r.back + '"');
         if (r.count !== '0 of ' + total + ' done' || !r.bar) fail(id + ': progress reads "' + r.count + '", thin bar ' + r.bar);
         if (r.stripHead !== 'How the lessons work' || r.points.length < 1 || r.points.length > 3 || r.points.some((p) => p.split(' ').length > 14)) fail(id + ': the strip is "' + r.stripHead + '" with ' + r.points.length + ' points: ' + r.points.join(' | '));
         if (r.stripTop < r.hdBottom - 1 || r.stripTop > r.secTop - 8) fail(id + ': the strip is not between the title and the lessons (strip ' + r.stripTop + ', header bottom ' + r.hdBottom + ', first section ' + r.secTop + ')');
@@ -529,6 +529,27 @@ server.listen(0, async () => {
           }
         }
       }
+      await pg.close();
+    }
+    // A front's Back link goes to the Roadmap, or to Home or Problems when the learner came from there; never to another course front or a lesson.
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      const backOf = async () => pg.evaluate(() => { const a = document.querySelector('main.sh-main a.sh-back'); return a ? a.textContent.replace(/^←\s*/, '').trim() : ''; });
+      const hop = async (page) => { await pg.evaluate((n) => window.__dsNav(n), page); await pg.waitForTimeout(800); };
+      for (const [via, want] of [['Concepts.dc.html', 'Back to Roadmap'], ['Start.dc.html', 'Back to Roadmap'], ['SystemDesign.dc.html', 'Back to Roadmap'], ['Patterns.dc.html', 'Back to Roadmap'], ['Home.dc.html', 'Back to Home'], ['Sheet.dc.html', 'Back to Problems']]) {
+        for (const front of ['AIML.dc.html', 'Concepts.dc.html', 'SystemDesign.dc.html', 'Start.dc.html']) {
+          if (front === via) continue;
+          await hop(via); await hop(front);
+          const got = await backOf();
+          if (got !== want) fail('Course front ' + front + ' opened from ' + via + ': Back says "' + got + '", not "' + want + '"');
+        }
+      }
+      // From another course front and from a lesson, never back to it. Back takes the learner to the Roadmap.
+      await hop('Concepts.dc.html'); await hop('AIML.dc.html'); await pg.click('main.sh-main a.sh-back'); await pg.waitForTimeout(1000);
+      const rm = await pg.evaluate(() => (document.querySelector('main.sh-main h1') || {}).textContent);
+      if (!/roadmap/i.test(rm || '')) fail('Course front opened from another front: Back went to "' + rm + '", not the Roadmap');
       await pg.close();
     }
     // A finished lesson: its block says Done, the counts move, Continue and Up next move on to the next lesson.

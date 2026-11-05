@@ -7,6 +7,7 @@
 //   Patterns     each pattern opens the Problems page filtered by that topic (?topic=, step 4)
 //   Complexity   each section opens on the Complexity page (rebuilt in step 8)
 // Opening a lesson writes the key the lesson page reads (SEARCH_TYPES in shared/search.js), as a search result does, then the runtime opens the page.
+// Each block marks its first lesson not done as "Up next". Chips under the title jump to a block and mark the one being read.
 // Back from a lesson returns here with the scroll kept (shared/nav.js lessonBack). ?at=ch-4 scrolls a chapter or track into view.
 const RM_SEEN_KEY = 'dsaviz-roadmap-seen';
 // key, name, width in the 4-column desktop grid, width in the 2-column tablet grid. Desktop rows: 4 / 3+1 / 2+2 / 4 / 4, chosen so the blocks
@@ -28,10 +29,13 @@ function rmOpen(type, id) { try { window.localStorage.setItem(SEARCH_TYPES[type]
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress() };
+    this.state = { theme: loadTheme(), user: loadUser(), drawer: false, prog: loadSheetProgress(), at: 'start' };
   }
   componentDidMount() {
     listenTheme(this);
+    let q = 0;
+    this.onScroll = () => { if (!q) q = requestAnimationFrame(() => { q = 0; this.mark(); }); };
+    try { window.addEventListener('scroll', this.onScroll, { passive: true }); } catch (e) {}
     // A search result for a pattern lands here: send it to the Problems page filtered by that topic.
     try {
       const focus = searchFocus('dsaviz-pattern-focus');
@@ -43,7 +47,19 @@ class Component extends DCLogic {
       if (at) searchReveal('#' + at.replace(/[^A-Za-z0-9_-]/g, ''));
     } catch (e) {}
   }
-  componentWillUnmount() { unlistenTheme(this); }
+  // The jump chip of the block being read is marked: the last block whose top has passed the top bar (and chip row on a phone).
+  mark() {
+    try {
+      const line = window.innerWidth < 760 ? 120 : 80;
+      if (this.lock && Date.now() < this.lock) return;
+      // Blocks side by side share a top: the first of them (the left one) counts, until a chip names the other.
+      let at = RM_TRACKS[0][0], best = -1e9;
+      RM_TRACKS.forEach(([k]) => { const el = document.getElementById('track-' + k); if (!el) return; const top = el.getBoundingClientRect().top; if (top <= line && top > best + 1) { at = k; best = top; } });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) at = RM_TRACKS[RM_TRACKS.length - 1][0];
+      if (at !== this.state.at) this.setState({ at });
+    } catch (e) {}
+  }
+  componentWillUnmount() { unlistenTheme(this); try { window.removeEventListener('scroll', this.onScroll); } catch (e) {} }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
@@ -56,6 +72,9 @@ class Component extends DCLogic {
     const item = (href, title, done, go, note) => ({ href, title, tick: done ? '✓' : '', sr: done ? ', done' : '', go, note: note || '' });
     const mk = (key, name, w, tw, groups, done, total, unit) => {
       const pct = total ? Math.round((done / total) * 100) : 0;
+      // The first lesson not done is marked "Up next": the one place to click.
+      let found = false;
+      groups.forEach((g) => g.items.forEach((l) => { l.up = !found && !l.tick; if (l.up) found = true; }));
       return { key, name, w: String(w), t: String(tw), id: 'track-' + key, hid: 'track-' + key + '-h', groups, done, total, pct,
         count: done + ' of ' + total + ' ' + unit, aria: name + ': ' + done + ' of ' + total + ' ' + unit };
     };
@@ -94,6 +113,9 @@ class Component extends DCLogic {
       const items = groups[0].items;
       return mk(key, name, w, tw, groups, items.filter((x) => x.tick).length, items.length, 'done');
     });
-    return { t, ...navVals(this, t, themeKey, 'Patterns'), tracks: out };
+    // Chips under the title jump to a block. The Start here chip reads "Start": the page keeps one "Start here" (the block's name).
+    const chips = RM_TRACKS.map(([key, name]) => ({ key, label: key === 'start' ? 'Start' : name, aria: 'Go to ' + name, cur: this.state.at === key ? 'true' : 'false',
+      go: () => { this.lock = Date.now() + 1500; this.setState({ at: key }); try { const el = document.getElementById('track-' + key); if (el) el.scrollIntoView({ block: 'start', behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } catch (e) {} } }));
+    return { t, ...navVals(this, t, themeKey, 'Patterns'), tracks: out, chips };
   }
 }

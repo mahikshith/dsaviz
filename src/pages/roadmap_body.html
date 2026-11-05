@@ -18,7 +18,7 @@
 .rm-bar>span{display:block;height:100%;background:var(--sh-accent)}
 .rm-cols{column-width:230px;column-gap:24px}
 .rm-group[data-titled="true"]{break-inside:avoid;padding-bottom:12px}
-.rm-block .rm-chap{margin:0;padding:4px 8px;font-size:calc(16px * var(--ts, 1));line-height:1.4;font-weight:600;color:var(--sh-muted);scroll-margin-top:72px}
+.rm-block .rm-chap{margin:0;padding:4px 8px;font-size:calc(15px * var(--ts, 1));line-height:1.4;font-weight:600;color:var(--sh-text);scroll-margin-top:72px}
 .rm-list{margin:0;padding:0;list-style:none}
 .rm-list li{break-inside:avoid}
 .rm-lesson{display:flex;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
@@ -26,6 +26,12 @@
 .rm-lesson>.sh-tick{color:var(--sh-accent);font-weight:700}
 .rm-lesson>span:nth-child(2){min-width:0;overflow-wrap:anywhere;flex-grow:1}
 .rm-lesson>.rm-n{flex-grow:0;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-variant-numeric:tabular-nums}
+.rm-up{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
+.rm-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
+.rm-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.rm-chip{min-height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.rm-chip:hover{background:var(--sh-sunk)}
+.rm-chip[aria-current="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
 .rm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:1199px){
 .rm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -33,15 +39,19 @@
 .rm-block[data-t="2"]{grid-column:span 2}
 }
 @media (max-width:759px){
+.rm-chips{position:sticky;top:52px;z-index:5;flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:8px 16px;background:var(--sh-bg);border-bottom:1px solid var(--sh-line)}
+.rm-chip{flex-shrink:0;min-height:44px}
+.rm-block,.rm-chap{scroll-margin-top:112px}
 .rm-grid{grid-template-columns:minmax(0,1fr)}
 .rm-block[data-w],.rm-block[data-t]{grid-column:span 1}
 .rm-cols{column-width:auto;columns:1}
 .rm-lesson{min-height:44px}
 }
-@media (prefers-reduced-motion:reduce){.rm-lesson{transition:none}}
+@media (prefers-reduced-motion:reduce){.rm-lesson,.rm-chip{transition:none}}
 </style>
 <main class="sh-main">
 <h1>Roadmap</h1>
+<nav class="rm-chips" aria-label="Jump to a track"><sc-for list="{{chips}}" as="c" hint-placeholder-count="7"><button class="rm-chip" aria-label="{{c.aria}}" aria-current="{{c.cur}}" data-chip="{{c.key}}" onClick="{{c.go}}">{{c.label}}</button></sc-for></nav>
 <div class="rm-grid">
 <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7">
 <section class="rm-block" id="{{tr.id}}" data-track="{{tr.key}}" data-w="{{tr.w}}" data-t="{{tr.t}}" aria-labelledby="{{tr.hid}}">
@@ -52,7 +62,7 @@
 <div class="rm-group" data-titled="{{g.titled}}">
 <sc-if value="{{g.titled}}" hint-placeholder-val="{{ false }}"><h3 class="rm-chap" id="{{g.id}}">{{g.title}}</h3></sc-if>
 <ul class="rm-list">
-<sc-for list="{{g.items}}" as="l" hint-placeholder-count="6"><li><a class="rm-lesson" href="{{l.href}}" onClick="{{l.go}}"><span class="sh-tick" aria-hidden="true">{{l.tick}}</span><span>{{l.title}}</span><span class="rm-sr">{{l.sr}}</span><span class="rm-n" aria-hidden="true">{{l.note}}</span></a></li></sc-for>
+<sc-for list="{{g.items}}" as="l" hint-placeholder-count="6"><li><a class="rm-lesson" href="{{l.href}}" onClick="{{l.go}}"><span class="sh-tick" aria-hidden="true">{{l.tick}}</span><span>{{l.title}}</span><span class="rm-sr">{{l.sr}}</span><sc-if value="{{l.up}}" hint-placeholder-val="{{ false }}"><span class="rm-up">Up next</span></sc-if><span class="rm-n" aria-hidden="true">{{l.note}}</span></a></li></sc-for>
 </ul>
 </div>
 </sc-for>

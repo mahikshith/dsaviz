@@ -325,6 +325,52 @@ server.listen(0, async () => {
       if (pg.errs.length) fail('Roadmap page errors: ' + pg.errs[0]);
       await pg.close();
     }
+    // "Up next" in every track (the first lesson not done, with a check on the ones done) and the jump chips under the title: one per track, they scroll to
+    // their block and the chip of the block in view is marked; sticky on phones, normal at 1440. Chapter headings are plain text, 14 to 15px, not links.
+    for (const [theme, width] of [['max', 1440], ['paper', 1440], ['max', 390], ['paper', 390]]) {
+      const pg = await browser.newPage({ viewport: { width, height: 844 }, isMobile: width < 760, hasTouch: width < 760 });
+      await pg.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Patterns.dc.html')); await pg.waitForTimeout(900); await closeDaily(pg);
+      const id = 'Roadmap chips at ' + width + (theme === 'max' ? '' : ' ' + theme);
+      const info = await pg.evaluate(() => {
+        const blocks = [...document.querySelectorAll('.rm-block')];
+        const ups = blocks.map((b) => { const links = [...b.querySelectorAll('a.rm-lesson')]; const ix = links.findIndex((a) => a.querySelector('.rm-up'));
+          return { n: b.querySelectorAll('.rm-up').length, ix, firstUndone: links.findIndex((a) => !a.querySelector('.sh-tick').textContent.trim()), label: ix >= 0 ? links[ix].querySelector('.rm-up').textContent.trim() : '' }; });
+        const chap = [...document.querySelectorAll('h3[id^="ch-"]')].map((h) => ({ px: parseFloat(getComputedStyle(h).fontSize), link: !!h.closest('a') || !!h.querySelector('a'), col: getComputedStyle(h).color, txt: getComputedStyle(document.querySelector('.rm-lesson')).color }));
+        const chips = [...document.querySelectorAll('.rm-chip')].map((c) => c.textContent.trim());
+        return { ups, chap, chips };
+      });
+      info.ups.forEach((u, i) => { if (u.n !== 1 || u.ix !== u.firstUndone || u.label !== 'Up next') fail(id + ': block ' + (i + 1) + ' has ' + u.n + ' "Up next" marks, at ' + u.ix + ' not on the first lesson not done (' + u.firstUndone + ')'); });
+      info.chap.forEach((c, i) => { if (c.link || c.px < 14.99 || c.px > 15.01 || c.col !== c.txt) fail(id + ': chapter heading ' + (i + 1) + ' is ' + c.px + 'px' + (c.link ? ', a link' : '') + (c.col !== c.txt ? ', not the normal text colour' : '')); });
+      if (info.chips.join('|') !== 'Start|DSA concepts|Patterns|Complexity|Git|System design|AI & ML') fail(id + ': chips are ' + info.chips.join(', '));
+      // Tap each chip: its block comes to the top and its chip is the one marked.
+      const KEYS = ['start', 'dsa', 'patterns', 'cplx', 'git', 'sd', 'ai'];
+      for (let i = 0; i < KEYS.length; i++) {
+        await pg.locator('.rm-chip').nth(i).click(); await pg.waitForTimeout(1100);
+        const r = await pg.evaluate((k) => { const b = document.getElementById('track-' + k).getBoundingClientRect(); const cur = [...document.querySelectorAll('.rm-chip[aria-current="true"]')].map((c) => c.getAttribute('data-chip'));
+          const bar = document.querySelector('.rm-chips').getBoundingClientRect(); return { top: Math.round(b.top), cur, barTop: Math.round(bar.top), barBottom: Math.round(bar.bottom), over: document.documentElement.scrollWidth - document.documentElement.clientWidth }; }, KEYS[i]);
+        const atBottom = await pg.evaluate(() => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4);
+        if (!atBottom && (r.top < 0 || r.top > 130)) fail(id + ': the ' + KEYS[i] + ' chip left its block at ' + r.top + 'px from the top');
+        if (r.cur.join() !== KEYS[i] && !(atBottom && r.cur.join() === 'ai')) fail(id + ': after the ' + KEYS[i] + ' chip the marked chip is "' + r.cur.join() + '"');
+        if (r.over > 0) fail(id + ': the chips make the page scroll sideways by ' + r.over + 'px');
+        if (width < 760 && !(r.barTop >= 50 && r.barTop <= 54)) fail(id + ': the chip row is not pinned under the top bar after the ' + KEYS[i] + ' chip (top ' + r.barTop + ')');
+        if (width >= 760 && i >= 2 && r.barBottom > 0) fail(id + ': the chip row follows the scroll at ' + width + ' (bottom ' + r.barBottom + ')');
+      }
+      if (pg.errs.length) fail(id + ' page errors: ' + pg.errs[0]);
+      await pg.close();
+    }
+    // A finished lesson gets a check and "Up next" moves to the next one.
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); localStorage.setItem('dsaviz-activity-v1', JSON.stringify({ v: 1, days: {}, stories: {}, code: {}, lessons: { 'git:first-commit': Date.now() }, start: {} })); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      await pg.evaluate(() => window.__dsNav('Patterns.dc.html')); await pg.waitForTimeout(900); await closeDaily(pg);
+      const g = await pg.evaluate(() => [...document.querySelectorAll('[data-track="git"] a.rm-lesson')].slice(0, 2).map((a) => ({ tick: a.querySelector('.sh-tick').textContent.trim(), up: !!a.querySelector('.rm-up') })));
+      if (g[0].tick !== '✓' || g[0].up || !g[1].up || g[1].tick) fail('Roadmap: after one Git lesson is done the first has a check and Up next moves on: ' + JSON.stringify(g));
+      await pg.close();
+    }
     // The phone menu no longer repeats what the Roadmap reaches.
     {
       const pg = await browser.newPage({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });

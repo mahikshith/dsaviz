@@ -178,13 +178,13 @@ Object.keys(REF).forEach((id) => { if (!ids[id]) fail('REF', 'reference for a mi
   if (a < 0 || b < 0) fail(n, 'missing the @@CONCEPTS@@ block');
   else if (page.slice(a, b).indexOf(src.trim().slice(0, 200)) < 0 || page.slice(a, b).indexOf(src.trim().slice(-200)) < 0) fail(n, 'lesson code is out of date: run python scripts/build_pages.py');
 });
-// The pattern map links every lesson from its groups' nodes.
+// The Roadmap (the Patterns page, step 5) lists every concept lesson in its DSA concepts block.
 const pat = read('pages', 'Patterns.dc.html');
-const pa = pat.indexOf('// @@CONCEPT-MAP@@'); const pb = pat.indexOf('// @@END-CONCEPT-MAP@@');
-if (pa < 0 || pb < 0) fail('Patterns', 'missing the @@CONCEPT-MAP@@ block');
+const pa = pat.indexOf('// @@ROADMAP-DATA@@'); const pb = pat.indexOf('// @@END-ROADMAP-DATA@@');
+if (pa < 0 || pb < 0) fail('Patterns', 'missing the @@ROADMAP-DATA@@ block');
 else {
-  const CM = new Function(pat.slice(pa, pb) + '\nreturn CONCEPT_MAP;')();
-  M.CS_LESSONS.forEach((L) => L.groups.filter((g) => mapNodes.indexOf(g) >= 0).forEach((g) => { if (!(CM[g] || []).some(([id]) => id === L.id)) fail('Patterns', g + ' does not link ' + L.id + ': run the build'); }));
+  const RM = new Function(pat.slice(pa, pb) + ' return ROADMAP;')();
+  M.CS_LESSONS.forEach((L) => { if (!RM.dsa.some(([id]) => id === L.id)) fail('Patterns', 'the Roadmap does not list ' + L.id + ': run the build'); });
 }
 
 // Render the lesson page for every lesson and step, at slider ends, desktop and mobile.

@@ -434,6 +434,122 @@ server.listen(0, async () => {
     await pg.close();
     console.log('  Profile settings: Light/Dark and Text size near the top, applied at once, kept after a reload');
   }
+  // ---- The four course fronts (step 6): Start.dc.html, Concepts.dc.html, SystemDesign.dc.html, AIML.dc.html share one layout. Back link, the track name, one line, done out of
+  // total with a thin bar, a short "How the lessons work" strip (3 points at most, no fold) above the lessons, one lime Continue/Start button for the Up next lesson, then every lesson
+  // as an equal block in a full-width grid under section headings: title, time if any, Done or Up next. One click opens a lesson, Continue opens the Up next one, Back works,
+  // no tabs or folds, no "Why learn this", one "Start here" on Start, one column and no sideways scroll on phones (390 and 320, dark and light). DS_ONLY=fronts runs just this.
+  if ((!ONLY_PROBLEM && !ONLY_PAGE) || process.env.DS_ONLY === 'fronts') {
+    const FRONTS = [['Start', 'Start here', 66], ['Concepts', 'DSA concepts', 37], ['SystemDesign', 'System design', 40], ['AIML', 'AI & ML', 46]];
+    const closeD = (p) => p.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); });
+    const lessonH1 = (p) => p.evaluate(() => { const m = document.querySelector('main.sh-lesson'); return m ? { h1: (m.querySelector('h1') || {}).textContent || '', back: (m.querySelector('a.sh-back') || {}).textContent || '' } : null; });
+    const info = {};
+    for (const [theme, width] of [['max', 1440], ['max', 1024], ['max', 390], ['paper', 390], ['max', 320], ['paper', 1440]]) {
+      const pg = await browser.newPage({ viewport: { width, height: 900 }, isMobile: width < 760, hasTouch: width < 760 });
+      await pg.addInitScript((t) => { try { localStorage.setItem('dsaviz-theme', t); localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} }, theme);
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      for (const [file, name, total] of FRONTS) {
+        await pg.evaluate((n) => window.__dsNav(n + '.dc.html'), file); await pg.waitForTimeout(900); await closeD(pg);
+        const id = name + ' front at ' + width + (theme === 'max' ? '' : ' ' + theme);
+        const r = await pg.evaluate(() => {
+          const root = document.querySelector('#app > div'), main = root.querySelector('main.sh-main'); const W = document.documentElement.clientWidth;
+          const seen = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0; };
+          const blocks = [...main.querySelectorAll('.hb-block')];
+          const rows = {}; blocks.forEach((b) => { const rc = b.getBoundingClientRect(); const k = Math.round(rc.top + window.scrollY); (rows[k] = rows[k] || []).push(Math.round(rc.height)); });
+          const strip = main.querySelector('.hb-strip'), firstSec = main.querySelector('.hb-sec'), btn = main.querySelector('a.sh-btn'), hd = main.querySelector('header');
+          const mr = main.getBoundingClientRect(), cs = getComputedStyle(main);
+          const innerR = mr.right - parseFloat(cs.paddingRight), innerL = mr.left + parseFloat(cs.paddingLeft);
+          const back = main.querySelector('a.sh-back');
+          const grids = [...main.querySelectorAll('.hb-grid')].map((g) => { const b = g.getBoundingClientRect(); return [Math.round(b.left - innerL), Math.round(innerR - b.right)]; });
+          const rowEnds = {}; blocks.forEach((b) => { const rc = b.getBoundingClientRect(); const k = Math.round(rc.top); rowEnds[k] = Math.max(rowEnds[k] || 0, Math.round(rc.right)); });
+          const bt = getComputedStyle(btn);
+          const up = blocks.find((b) => b.querySelector('.hb-up'));
+          const bar = main.querySelector('[role=progressbar]');
+          return { shell: root.hasAttribute('data-shell'), zoom: document.documentElement.style.zoom, W, over: document.documentElement.scrollWidth - W,
+            h1: [...main.querySelectorAll('h1')].map((h) => h.textContent.trim()), line: (main.querySelector('.hb-line') || {}).textContent || '',
+            back: back ? back.textContent.trim() : '', count: (main.querySelector('.hb-prog .sh-label') || {}).textContent || '', bar: !!bar && bar.getBoundingClientRect().height <= 6,
+            stripTop: strip ? Math.round(strip.getBoundingClientRect().top + window.scrollY) : -1, hdBottom: Math.round(hd.getBoundingClientRect().bottom + window.scrollY), secTop: Math.round(firstSec.getBoundingClientRect().top + window.scrollY),
+            stripHead: strip ? strip.querySelector('h2').textContent.trim() : '', points: strip ? [...strip.querySelectorAll('li')].map((l) => l.textContent.replace(/^\d/, '').trim()) : [],
+            btn: btn.textContent.trim(), btnBg: bt.backgroundColor, btnH: Math.round(btn.getBoundingClientRect().height),
+            nBlocks: blocks.length, nLinks: blocks.filter((b) => b.tagName === 'A' && b.getAttribute('href')).length, titles: blocks.map((b) => b.querySelector('.hb-t').textContent.trim()), times: blocks.map((b) => (b.querySelector('.hb-m>span') || { textContent: '' }).textContent.trim()),
+            ups: blocks.filter((b) => b.querySelector('.hb-up')).length, upTitle: up ? up.querySelector('.hb-t').textContent.trim() : '',
+            sections: [...main.querySelectorAll('.hb-sec h2')].map((h) => h.textContent.trim()), rowHeights: Object.values(rows),
+            blockSpans: blocks.map((b) => [Math.round(b.getBoundingClientRect().left), Math.round(b.getBoundingClientRect().width)]), gridEdges: grids, mainInner: [Math.round(innerL), Math.round(innerR)],
+            folds: main.querySelectorAll('[role=tab],[role=tablist],details,summary,[aria-expanded],.sh-tab').length, text: main.textContent,
+            startHere: [...document.querySelectorAll('#app *')].filter((e) => !e.children.length && e.textContent.trim() === 'Start here' && seen(e)).length,
+            small: [...main.querySelectorAll('*')].filter((e) => !e.children.length && e.textContent.trim() && parseFloat(getComputedStyle(e).fontSize) < 13.99).length,
+            firstRowEnd: Object.values(rowEnds)[0] };
+        });
+        const OLD = /why learn this|coming soon|lantern|treehouse|canteen/i;
+        if (!r.shell || r.zoom !== '1') fail(id + ': not on the shared frame, no zoom (zoom ' + r.zoom + ')');
+        if (r.h1.join() !== name) fail(id + ': the title is "' + r.h1.join() + '"');
+        if (r.line.length < 20 || r.line.split(' ').length > 22) fail(id + ': the one-line "what it teaches" reads "' + r.line + '"');
+        if (!/^← Back to \S/.test(r.back) || /Back to (Home|Front page|Lesson)$/.test(r.back)) fail(id + ': Back link says "' + r.back + '"');
+        if (r.count !== '0 of ' + total + ' done' || !r.bar) fail(id + ': progress reads "' + r.count + '", thin bar ' + r.bar);
+        if (r.stripHead !== 'How the lessons work' || r.points.length < 1 || r.points.length > 3 || r.points.some((p) => p.split(' ').length > 14)) fail(id + ': the strip is "' + r.stripHead + '" with ' + r.points.length + ' points: ' + r.points.join(' | '));
+        if (r.stripTop < r.hdBottom - 1 || r.stripTop > r.secTop - 8) fail(id + ': the strip is not between the title and the lessons (strip ' + r.stripTop + ', header bottom ' + r.hdBottom + ', first section ' + r.secTop + ')');
+        if (r.stripTop > 520) fail(id + ': the strip is not at the top of the page (' + r.stripTop + 'px)');
+        if (r.nBlocks !== total || r.nLinks !== total) fail(id + ': ' + r.nBlocks + ' blocks and ' + r.nLinks + ' links, not ' + total);
+        if (r.btnBg === 'rgba(0, 0, 0, 0)' || !/^Start: /.test(r.btn) || r.btnH < 44) fail(id + ': the main button reads "' + r.btn + '" (' + r.btnBg + ', ' + r.btnH + 'px high)');
+        if (r.btn.replace(/^Start: /, '') !== r.upTitle) fail(id + ': the button goes to "' + r.btn + '" but Up next is "' + r.upTitle + '"');
+        if (r.ups !== 1) fail(id + ': ' + r.ups + ' blocks say Up next');
+        if (name !== 'System design') r.times.forEach((tm, i) => { if (!/^\d+ min$/.test(tm)) fail(id + ': "' + r.titles[i] + '" shows time "' + tm + '"'); });
+        if (r.folds) fail(id + ': ' + r.folds + ' tabs or folds');
+        if (OLD.test(r.text)) fail(id + ': old copy on the page: ' + OLD.exec(r.text)[0]);
+        if (name === 'Start here' && r.startHere !== 1) fail(id + ': "Start here" shows ' + r.startHere + ' times');
+        r.rowHeights.forEach((hs) => { if (Math.max(...hs) - Math.min(...hs) > 1) fail(id + ': blocks in one row differ in height: ' + hs.join(', ')); });
+        r.gridEdges.forEach(([l, rr], i) => { if (Math.abs(l) > 1 || Math.abs(rr) > 1) fail(id + ': grid ' + (i + 1) + ' is not full width (' + l + ' left, ' + rr + ' right)'); });
+        if (width < 760) { const bad = r.blockSpans.findIndex(([l, w]) => Math.abs(l - 16) > 1 || Math.abs(w - (r.W - 32)) > 1); if (bad >= 0) fail(id + ': "' + r.titles[bad] + '" is not one block per row (' + r.blockSpans[bad] + ')'); }
+        else if (width >= 1200 && Math.abs(r.firstRowEnd - r.mainInner[1]) > 1) fail(id + ': the first row of blocks does not reach the right edge');
+        if (r.over > 0) fail(id + ': scrolls sideways by ' + r.over + 'px');
+        const off = await pg.evaluate(offenders); if (off.length) fail(id + ': sticks out past the screen: ' + off.join(' | '));
+        if (r.small) fail(id + ': ' + r.small + ' texts under 14px');
+        if (width === 1440 && theme === 'max') info[name] = r.sections.length + ' sections / ' + r.nBlocks + ' blocks';
+        if (pg.errs.length) fail(id + ' page errors: ' + pg.errs[0]);
+        // Behaviour, once per front (dark, 1440 and 390): one click opens a lesson (title matches), Back names the front and returns to it, Continue opens the Up next lesson,
+        // and the lesson's own sidebar still opens another lesson.
+        if (theme === 'max' && (width === 1440 || width === 390)) {
+          const clickAndRead = async (sel, nth) => { await pg.locator(sel).nth(nth).click(); await pg.waitForTimeout(1100); return lessonH1(pg); };
+          const pick = Math.min(2, r.nBlocks - 1);
+          const a = await clickAndRead('.hb-block', pick);
+          if (!a || a.h1.trim().toLowerCase() !== r.titles[pick].toLowerCase()) fail(id + ': one click on "' + r.titles[pick] + '" opened "' + (a && a.h1) + '"');
+          else if (a.back.replace(/^←\s*/, '').trim() !== 'Back to ' + name) fail(id + ': the lesson "' + r.titles[pick] + '" says "' + a.back.trim() + '", not Back to ' + name);
+          else {
+            await pg.click('main.sh-lesson a.sh-back'); await pg.waitForTimeout(1200);
+            const back = await pg.evaluate(() => ({ h1: (document.querySelector('main.sh-main h1') || {}).textContent, hash: location.hash }));
+            if (back.h1 !== name) fail(id + ': Back from the lesson went to "' + back.h1 + '" (' + back.hash + ')');
+          }
+          await pg.evaluate((n) => window.__dsNav(n + '.dc.html'), file); await pg.waitForTimeout(900); await closeD(pg);
+          const c = await clickAndRead('a.sh-btn[data-continue]', 0);
+          if (!c || c.h1.trim().toLowerCase() !== r.upTitle.toLowerCase()) fail(id + ': Continue opened "' + (c && c.h1) + '", not the Up next lesson "' + r.upTitle + '"');
+          if (c && width === 1440) {
+            const links = await pg.$$('.sh-side-list a');
+            if (links.length < 3) fail(id + ': the lesson sidebar lists ' + links.length + ' lessons');
+            else { const want = (await links[1].textContent()).replace(/^\s*✓?\s*/, '').trim(); await links[1].click(); await pg.waitForTimeout(800); const s2 = await lessonH1(pg); if (!s2 || s2.h1.trim().toLowerCase() !== want.toLowerCase()) fail(id + ': the sidebar lesson "' + want + '" opened "' + (s2 && s2.h1) + '"'); }
+          }
+        }
+      }
+      await pg.close();
+    }
+    // A finished lesson: its block says Done, the counts move, Continue and Up next move on to the next lesson.
+    {
+      const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await pg.addInitScript(() => { try { localStorage.setItem('dsaviz-tour-done', '1'); localStorage.setItem('dsaviz-start-v1', JSON.stringify({ v: 1, done: { 'what-is-a-program': Date.now() }, ex: {}, skip: {}, placed: 0, last: '', stage: {} }));
+        localStorage.setItem('dsaviz-activity-v1', JSON.stringify({ v: 1, days: {}, stories: {}, code: {}, lessons: { 'dsa:bigo': Date.now(), 'sd:scale': Date.now(), 'ai:graphs': Date.now() }, start: {} })); } catch (e) {} });
+      await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+      for (const [file, name] of FRONTS) {
+        await pg.evaluate((n) => window.__dsNav(n + '.dc.html'), file); await pg.waitForTimeout(900); await closeD(pg);
+        const g = await pg.evaluate(() => { const b = [...document.querySelectorAll('.hb-block')]; const t = (x) => x.querySelector('.hb-t').textContent.trim();
+          return { first: [t(b[0]), !!b[0].querySelector('.hb-ok'), !!b[0].querySelector('.hb-up')], second: [t(b[1]), !!b[1].querySelector('.hb-ok'), !!b[1].querySelector('.hb-up')], btn: document.querySelector('a.sh-btn').textContent.trim(), count: document.querySelector('.hb-prog .sh-label').textContent.trim(), sec: document.querySelector('.hb-sec .sh-label').textContent.trim() }; });
+        if (!g.first[1] || g.first[2] || !g.second[2] || g.second[1]) fail(name + ' front: after one lesson is done the first has Done and Up next moves on: ' + JSON.stringify(g));
+        if (g.btn !== 'Continue: ' + g.second[0]) fail(name + ' front: the button reads "' + g.btn + '" after one lesson, not "Continue: ' + g.second[0] + '"');
+        if (!/^1 of \d+ done$/.test(g.count) || !/^1 of \d+ done$/.test(g.sec)) fail(name + ' front: the counts read "' + g.count + '" and "' + g.sec + '" after one lesson');
+      }
+      await pg.close();
+    }
+    console.log('  Course fronts: ' + Object.entries(info).map(([k, v]) => k + ' ' + v).join('; ') + '; strip above the lessons, equal block heights per row, full-width grids, one lime button to the Up next lesson, one click opens a lesson, Back works, no tabs or folds, one column at 390 and 320');
+  }
+  if (process.env.DS_ONLY === 'fronts') { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'fronts clean'); process.exit(bad ? 1 : 0); }
   if (process.env.DS_ONLY === 'profile') { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'profile settings clean'); process.exit(bad ? 1 : 0); }
   // ---- The top bar: on phones (below 760) only the menu, logo, search and profile; wider: no menu, logo, Roadmap, Problems, search and profile.
   // No two items overlap, none is covered by another element or past the screen edge, and no old Back button is in the bar. On phones the menu holds

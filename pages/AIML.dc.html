@@ -276,7 +276,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </style>
 <!-- /PHONE CSS -->
 </helmet>
-<div data-fit="{{L.rootW}}" data-fluid="true" style="width: {{L.rootW}}px; min-height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.body}}; transition: background 0.3s, color 0.3s">
+<div data-shell data-page="AIML" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; font-family: {{t.body}}">
 
 <!-- PILL NAV -->
 <style>
@@ -415,74 +415,62 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 </sc-if>
 <!-- /PILL NAV -->
-<main style="box-sizing: border-box; padding: {{L.pad}}; display: flex; flex-direction: column; gap: 24px; min-width: 0">
-
-<!-- header: title, one line, one primary button -->
-<section aria-label="AI and ML" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 8px">
-<h1 style="margin: 0; font-family: {{t.display}}; font-size: var(--fs56); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05">AI &amp; ML</h1>
-<p style="margin: 0; font-size: var(--fs18); color: {{t.muted}}">{{total.done}} of {{total.count}} lessons finished. Press play and watch the idea move, one step at a time.</p>
-<!-- WHY -->
-<sc-if value="{{why.has}}" hint-placeholder-val="{{ true }}">
-<details data-why style="position: relative; margin: -8px 0; min-width: 0; align-self: flex-start; max-width: 100%">
 <style>
-[data-why]>summary{list-style:none;cursor:pointer}
-[data-why]>summary::-webkit-details-marker{display:none}
-[data-why]>summary:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:999px}
-[data-why] .why-chev{transition:transform .16s ease-out}
-[data-why][open] .why-chev{transform:rotate(180deg)}
-.pp-top [data-why] .why-body{position:absolute;top:100%;left:0;z-index:40;width:360px;max-width:calc(100vw - 32px);margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+/* The course front (src/pages/hub_body.html, src/pages/hub.js), shared by Start here, DSA concepts, System design and AI & ML:
+   Back link, title, one line, progress and the one main button; the "How the lessons work" strip; then every lesson as a block in a full-width
+   grid, grouped by section. A grid row stretches its blocks, so blocks in a row are the same height. */
+.hb-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 32px;align-items:end}
+.hb-id{display:flex;flex-direction:column;gap:8px;min-width:0}
+.hb-line{max-width:72ch;color:var(--sh-text)}
+.hb-prog{display:flex;flex-direction:column;gap:8px;max-width:480px}
+.hb-bar{height:4px;border-radius:2px;background:var(--sh-line);overflow:hidden}
+.hb-bar>span{display:block;height:100%;background:var(--sh-accent)}
+.hb-go{min-height:48px;padding:8px 24px;text-align:center;max-width:100%;box-sizing:border-box;line-height:1.3;text-decoration:none}
+.hb-strip{box-sizing:border-box;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px}
+[data-shell] .hb-strip h2{font-size:calc(18px * var(--ts, 1));line-height:1.4}
+.hb-how{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 24px}
+.hb-how li{display:flex;gap:12px;align-items:baseline;min-width:0}
+.hb-n{flex-shrink:0;width:24px;height:24px;border:1px solid var(--sh-line);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:calc(14px * var(--ts, 1));color:var(--sh-muted)}
+.hb-sec{display:flex;flex-direction:column;gap:12px;scroll-margin-top:72px}
+.hb-sh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;padding-bottom:8px;border-bottom:1px solid var(--sh-line)}
+[data-shell] .hb-sec h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
+.hb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:16px;align-items:stretch}
+.hb-block{justify-content:space-between;gap:12px;min-height:64px;text-decoration:none}
+.hb-t{font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+.hb-m{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px;font-size:calc(14px * var(--ts, 1));color:var(--sh-muted)}
+.hb-st{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--sh-text)}
+.hb-ok{color:var(--sh-accent);font-weight:700}
+.hb-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
+@media (max-width:1023px){.hb-how{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:759px){
+.hb-head{grid-template-columns:minmax(0,1fr)}
+.hb-go{width:100%}
+.hb-grid{grid-template-columns:minmax(0,1fr)}
+.hb-block{min-height:56px}
+}
 </style>
-<summary class="ds-hit" style="min-height: 44px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; color: {{t.muted}}; font-size: var(--fs16); font-weight: 500">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>Why learn this?<svg class="why-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary>
-<div class="why-body" style="box-sizing: border-box; max-width: 720px; padding: 16px; border-radius: 12px; background: {{t.sunk}}; display: flex; flex-direction: column; gap: 8px">
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text}}">{{why.does}}</p>
-<sc-if value="{{why.hasWhere}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs16); font-weight: 600; color: {{t.muted}}">Where it shows up</span>
-<ul style="margin: 0; padding-left: 24px; display: flex; flex-direction: column; gap: 4px; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}"><sc-for list="{{why.where}}" as="wh" hint-placeholder-count="2"><li>{{wh.text}}</li></sc-for></ul></div></sc-if>
+<main class="sh-main">
+<a class="sh-back" data-back href="{{back.href}}" onClick="{{back.go}}">← {{back.label}}</a>
+<header class="hb-head">
+<div class="hb-id">
+<h1>{{hub.name}}</h1>
+<p class="hb-line">{{hub.line}}</p>
+<div class="hb-prog"><span class="sh-label">{{hub.count}}</span><div class="hb-bar" role="progressbar" aria-label="{{hub.aria}}" aria-valuemin="0" aria-valuemax="{{hub.total}}" aria-valuenow="{{hub.done}}"><span style="width: {{hub.pct}}%"></span></div></div>
 </div>
-</details>
-</sc-if>
-<!-- /WHY -->
-</div>
-<a data-resume href="AILesson.dc.html" onClick="{{resume.pick}}" style="min-height: 56px; padding: 0 24px; border-radius: 12px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; gap: 12px; align-items: center; font-size: var(--fs18); font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>{{resume.text}}</a>
+<a class="sh-btn hb-go" data-continue href="{{cont.href}}" onClick="{{cont.go}}">{{cont.label}}</a>
+</header>
+<section class="hb-strip" aria-labelledby="hb-how-h">
+<h2 id="hb-how-h">How the lessons work</h2>
+<ol class="hb-how"><sc-for list="{{hub.how}}" as="h" hint-placeholder-count="3"><li><span class="hb-n" aria-hidden="true">{{h.n}}</span><span>{{h.text}}</span></li></sc-for></ol>
 </section>
-
-<!-- three groups as quiet tabs -->
-<div role="tablist" aria-label="Lesson groups" style="display: flex; flex-wrap: wrap; gap: 24px; border-bottom: 1px solid {{t.line}}">
-<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
-<button role="tab" aria-selected="{{tb.on}}" onClick="{{tb.pick}}" style="height: 48px; padding: 0; margin-bottom: -1px; border: 0; border-bottom: 2px solid {{tb.line}}; border-radius: 0; background: transparent; cursor: pointer; font-size: var(--fs17); font-weight: 600; color: {{tb.fg}}">{{tb.label}}</button>
+<sc-for list="{{sections}}" as="s" hint-placeholder-count="6">
+<section class="hb-sec" id="{{s.id}}" data-section aria-labelledby="{{s.hid}}">
+<div class="hb-sh"><h2 id="{{s.hid}}">{{s.title}}</h2><span class="sh-label">{{s.count}}</span></div>
+<div class="hb-grid">
+<sc-for list="{{s.items}}" as="l" hint-placeholder-count="6"><a class="sh-block hb-block" data-lesson aria-label="{{l.aria}}" href="{{l.href}}" onClick="{{l.go}}"><span class="hb-t">{{l.title}}</span><sc-if value="{{l.meta}}" hint-placeholder-val="{{ true }}"><span class="hb-m"><span>{{l.time}}</span><sc-if value="{{l.doneShow}}" hint-placeholder-val="{{ false }}"><span class="hb-st"><span class="hb-ok" aria-hidden="true">✓</span>Done</span></sc-if><sc-if value="{{l.upShow}}" hint-placeholder-val="{{ false }}"><span class="hb-st hb-up">Up next</span></sc-if></span></sc-if></a></sc-for>
+</div>
+</section>
 </sc-for>
-</div>
-
-<section aria-label="Lessons" style="display: flex; flex-direction: column; gap: 16px">
-<p style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}; max-width: 760px">{{cur.blurb}}</p>
-<ol class="ds-box" style="margin: 0; padding: 8px 24px; list-style: none; border-radius: 16px; background: {{t.surface}}; display: flex; flex-direction: column">
-<sc-for list="{{cur.lessons}}" as="ls" hint-placeholder-count="6">
-<li style="border-top: 1px solid {{ls.rule}}"><a href="AILesson.dc.html" onClick="{{ls.go}}" aria-label="{{ls.aria}}" style="min-height: 72px; box-sizing: border-box; padding: 16px 0; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 16px; align-items: center"><span style="font-size: var(--fs17); font-weight: 600; color: {{t.muted}}">{{ls.num}}</span><span style="min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: var(--fs18); font-weight: 600">{{ls.title}}</span><span style="font-size: var(--fs16); color: {{t.muted}}">{{ls.meta}}</span></span><span style="font-size: var(--fs16); font-weight: 600; color: {{ls.chipFg}}">{{ls.chip}}</span></a></li>
-</sc-for>
-</ol>
-<sc-if value="{{cur.hasMore}}" hint-placeholder-val="{{ false }}">
-<button onClick="{{toggleAll}}" aria-expanded="{{showAll}}" style="align-self: flex-start; height: 48px; padding: 0; border: 0; background: transparent; color: {{t.text2}}; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: var(--fs17); font-weight: 600">{{moreLabel}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="transform: {{moreChev}}"><path d="M6 9l6 6 6-6"></path></svg></button>
-</sc-if>
-</section>
-
-<!-- the rest sits in folds -->
-<section aria-label="More" style="display: flex; flex-direction: column; border-top: 1px solid {{t.line}}">
-<button class="ds-hit" onClick="{{toggleAbout}}" aria-expanded="{{foldAbout}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">How the lessons work<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevAbout}}"><path d="M6 9l6 6 6-6"></path></svg></button>
-<sc-if value="{{foldAbout}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}; max-width: 760px">Each lesson is one screen. Press play and watch the idea move, one change per step, with a single plain sentence underneath. Some lessons have a slider for the one setting that matters.</p>
-<sc-for list="{{chips}}" as="ch" hint-placeholder-count="4"><p style="margin: 0; font-size: var(--fs17); color: {{t.text2}}"><span style="font-weight: 600; color: {{t.text}}">{{ch.n}}</span> {{ch.label}}</p></sc-for>
-</div>
-</sc-if>
-<button class="ds-hit" onClick="{{toggleSoon}}" aria-expanded="{{foldSoon}}" style="min-height: 64px; padding: 0; border-bottom: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--fs18); font-weight: 600; text-align: left">Coming soon<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex-shrink: 0; transform: {{chevSoon}}"><path d="M6 9l6 6 6-6"></path></svg></button>
-<sc-if value="{{foldSoon}}" hint-placeholder-val="{{ false }}">
-<div style="padding: 24px 0; display: flex; flex-direction: column; gap: 16px; border-bottom: 1px solid {{t.line}}">
-<p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.muted}}">These lessons are not built yet.</p>
-<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="2"><p style="margin: 0; font-size: var(--fs17); line-height: 1.5; color: {{t.text2}}"><span style="font-weight: 600; color: {{t.text}}">{{tr.title}}:</span> {{tr.next}}</p></sc-for>
-</div>
-</sc-if>
-</section>
 </main>
 </div>
 </x-dc>
@@ -4836,70 +4824,103 @@ function aiSteps(i, p) {
 }
 // @@END-AILESSONS@@
 
+// @@ROADMAP-DATA@@ - generated by scripts/build_roadmap_page.js: every track lessons in teaching order, for the Roadmap page.
+const ROADMAP = {"start":[{"n":1,"title":"Talking to the computer","lessons":[["what-is-a-program","What is a program?"],["first-run","Your first run"],["calculator","Calculator mode"],["first-error","Reading your first error"],["variables","Variables are labelled boxes"],["types","Kinds of values"]]},{"n":2,"title":"Asking and deciding","lessons":[["input-output","Asking and answering"],["compare","True or false questions"],["if-else","Choosing a path"],["and-or-not","and, or, not"],["edge-cases","What could go wrong?"],["path-project","Project: choose your path"]]},{"n":3,"title":"Repeating and collecting","lessons":[["for-range","Counting laps with for"],["while","Repeat while it is true"],["accumulator","Keeping a running total"],["lists","Lists are backpacks"],["list-loops","Visiting every item"],["strings","Text is a row of letters"],["nested-loops","Loops inside loops"]]},{"n":4,"title":"Reusing and organising","lessons":[["functions","Functions are recipes"],["return-print","return versus print"],["dicts","Dictionaries find by key"],["debugging","Your debugging toolkit"],["guess-project","Project: guess the number"]]},{"n":5,"title":"The bridge","lessons":[["plan-it","Plan it before you code it"],["read-a-problem","How to read a problem"]]},{"n":6,"title":"After your first problems","lessons":[["counting-steps","Counting steps"]]},{"n":7,"title":"Calls and the stack","lessons":[["calls","Calling a function"],["call-stack","The call stack is a pile of plates"],["scope","Which names can I see?"]]},{"n":8,"title":"Arguments in depth","lessons":[["defaults","Default and keyword arguments"],["many-args","Any number of inputs"],["mutable-args","Two names, one list"]]},{"n":9,"title":"Functions as values","lessons":[["callbacks","Functions are values too"],["closures","Functions that remember"]]},{"n":10,"title":"Calling yourself","lessons":[["recursion","A function that calls itself"]]},{"n":11,"title":"Blueprints and objects","lessons":[["objects","Blueprints and objects"],["self","self: which robot is it?"],["init","Setting up a new object"],["attributes","What it knows, what it does"]]},{"n":12,"title":"Names and shared data","lessons":[["references","Two names, one object"],["class-attributes","Data the whole class shares"],["encapsulation","Keeping data safe"]]},{"n":13,"title":"Family trees","lessons":[["inheritance","The family tree"],["super","Override, then call super()"],["polymorphism","Same call, different robots"]]},{"n":14,"title":"Building well","lessons":[["composition","Built from parts"],["dunder","Teaching objects print, == and len"],["interfaces","A contract every class signs"],["no-class","When not to use a class"]]},{"n":15,"title":"Code people can read","lessons":[["clean-names","Names that explain themselves"],["no-surprises","A function does what its name says"],["comprehensions","Building a list in one line"],["type-hints","Labels for what goes in and out"]]},{"n":16,"title":"When things go wrong","lessons":[["exceptions","When things go wrong"],["raise","Raising your own errors"]]},{"n":17,"title":"Checks that run themselves","lessons":[["tests","Checks that run themselves"],["edge-tests","Awkward inputs and test-first"]]},{"n":18,"title":"Waiting","lessons":[["blocking","Why waiting matters"],["event-loop","The event loop is a queue"],["later","Call me when it is done"]]},{"n":19,"title":"Several jobs at once","lessons":[["async-await","async and await"],["gather","Doing several waits at once"],["timeouts","Errors and timeouts"],["retries","Try again, but wait longer"]]},{"n":20,"title":"Turns or at once","lessons":[["threads","Taking turns or working at once"]]}],"dsa":[["bigo","Big-O by counting steps"],["arrays","Arrays in memory"],["strings","Strings as arrays"],["recursion","Recursion from zero"],["bubble","Bubble sort"],["selection","Selection sort"],["insertion","Insertion sort"],["merge","Merge sort"],["quick","Quick sort"],["heapsort","Heap sort"],["countradix","Counting and radix sort"],["hashing","Hashing and chaining"],["openaddr","Open addressing"],["linked","Linked lists"],["stackqueue","Stacks and queues"],["deque","Deques"],["trees","Trees and the four walks"],["bst","Binary search trees"],["heap","Heaps and priority queues"],["graphrep","Storing a graph"],["topo","Topological sort"],["dijkstra","Dijkstra’s shortest paths"],["bellman","Bellman-Ford"],["floyd","Floyd-Warshall"],["kruskal","Kruskal and union-find"],["prim","Prim’s spanning tree"],["gcd","GCD with Euclid"],["sieve","The sieve of primes"],["modarith","Modular arithmetic"],["fastpow","Fast power"],["modinv","Modular inverse"],["ncr","nCr and Pascal’s triangle"],["inclexcl","Inclusion-exclusion"],["bits","Bit tricks"],["kmp","KMP string search"],["zfunc","The Z-array"],["rollhash","Rolling hash"]],"cplx":[["grow","How fast steps grow"],["rules","How to work out complexity"],["space","Space complexity"],["ds","Data structure costs"],["sort","Sorting algorithm costs"],["graph","Graph algorithm costs"],["patterns","Pattern costs"],["target","Input size tells you the target"]],"git":[["first-commit","Your first commit"],["status-diff","What changed?"],["branches","Branches"],["merge","Merging"],["rebase","Rebase"],["remote","Remotes"],["stash","Stash"],["undo","Undo"]],"sd":[["scale","Scale up or out"],["lb","Load balancer"],["cache","Caching"],["dcache","Distributed cache"],["cdn","CDN"],["replicas","Read replicas"],["sharding","Sharding"],["hashing","Consistent hashing"],["cap","CAP and consistency"],["sqlnosql","SQL or NoSQL"],["indexes","Database indexes"],["queue","Message queue"],["idempotency","Idempotency and retries"],["ratelimit","Rate limiting"],["observability","Observability"],["shortener","URL shortener"],["chat","Chat app"],["feed","News feed"],["ride","Ride sharing"],["video","Video streaming"],["payments","Payments"],["typeahead","Search autocomplete"],["notify","Notification system"],["crawler","Web crawler"],["dlimit","Rate limiter at scale"],["drive","File storage and sync"],["leaderboard","Leaderboard"],["solid","SOLID in one picture"],["strategy","Strategy pattern"],["observer","Observer pattern"],["factory","Factory pattern"],["singleton","Singleton, with care"],["decorator","Decorator pattern"],["command","Command and undo"],["vending","Vending machine"],["lru","LRU cache"],["parking","Parking lot"],["elevator","Elevator system"],["movies","Movie ticket booking"],["splitter","Expense splitter"]],"ai":[["graphs","Numbers on a graph"],["slope","Slope: how steep is a line"],["derivative","Derivative: the slope of a curve"],["chainrule","The chain rule in pictures"],["gradarrow","Gradient: many slopes in one arrow"],["vectors","Vectors and dot products"],["probability","Probability and averages"],["pandas","pandas and SQL: joins and group by"],["gradient","Fit a line by gradient descent"],["logistic","Logistic regression and the sigmoid"],["knn","k-nearest neighbours"],["tree","Decision tree splits"],["nbayes","Naive Bayes"],["svm","Support vector machines"],["confusion","Precision, recall and the confusion matrix"],["overfit","Train, test and overfitting"],["crossval","Cross-validation"],["biasvar","The bias-variance picture"],["regular","Regularization: L1 and L2"],["rforest","Random forests"],["gboost","Gradient boosting"],["kmeans","k-means clustering"],["hier","Hierarchical clustering"],["dbscan","DBSCAN: clusters from crowds"],["gmm","Gaussian mixtures and EM"],["pca","PCA: many columns into few"],["tsne","t-SNE and UMAP in pictures"],["anomaly","Anomaly detection"],["backprop","A neuron and backprop"],["optim","Optimizers: momentum and Adam"],["embeddings","Embeddings and cosine similarity"],["tokens","Tokens and byte-pair encoding"],["attention","Attention in a transformer"],["vit","Vision transformers"],["systems","System 1 and System 2 thinking"],["agents","Agents, tools and MCP"],["rag","RAG: retrieve, then generate"],["longctx","Long context and “lost in the middle”"],["moe","Mixture of experts"],["lora","Fine-tuning with LoRA"],["prefs","RLHF and DPO"],["distill","Distillation: big teacher, small student"],["ondevice","Small and on-device models"],["diffusion","Diffusion: noise to image"],["jepa","JEPA: predict meaning, not pixels"],["evals","Evals and benchmarks"]]};
+// @@END-ROADMAP-DATA@@
 // ---- page ----
-function aiHubMobile() { try { return typeof window.innerWidth === 'number' && window.innerWidth < 760; } catch (e) { return false; } }
+const HUB_KEY = 'ai'; const HUB_PAGE = 'AIML';
+// The course front, one layout and one view model for four pages: Start here (Start.dc.html), DSA concepts (Concepts.dc.html), System design
+// (SystemDesign.dc.html) and AI & ML (AIML.dc.html). Markup: src/pages/hub_body.html. scripts/build_pages.py puts the two lines
+// `const HUB_KEY = '...'; const HUB_PAGE = '...';` in front of this file, one pair per page, and the page keeps its own lesson data
+// (START_CHAPTERS, CS_LESSONS, SD_LESSONS, AI_LESSONS), which hubSections() below reads.
+// The page: Back link, the track name, one line, done out of total with a thin bar, one Continue (or Start) button for the Up next lesson,
+// a short "How the lessons work" strip (at most three points, no fold), then the lessons as a full-width grid of equal blocks, grouped by
+// section or chapter. A block shows the lesson title, its time if the track has one, and Done or Up next. One click opens the lesson.
+// Opening a lesson writes the key the lesson page reads (SEARCH_TYPES in shared/search.js), as the Roadmap and a search result do.
+const HUB_META = {
+  start: { name: 'Start here', type: 'start', lessonPage: 'Chapter.dc.html',
+    line: 'Learn to program from zero, one short lesson at a time, in Python.',
+    how: ['Each lesson is a short read with a small exercise to try.', 'Go in order: every lesson builds on the one before.', 'Your progress is saved in this browser.'] },
+  dsa: { name: 'DSA concepts', type: 'dsa', lessonPage: 'ConceptLesson.dc.html',
+    line: 'The main ideas behind data structures and algorithms, each one shown step by step.',
+    how: ['Each lesson is an animation. Press Play, or step through it.', 'Some lessons have a slider so you can change the input.', 'Finish a lesson and it gets a tick.'] },
+  sd: { name: 'System design', type: 'sd', lessonPage: 'SDLesson.dc.html',
+    line: 'How big systems are built: servers, caches, databases and queues, then whole systems.',
+    how: ['Each lesson is a diagram. Press Play and watch requests travel.', 'Start with Fundamentals. Case studies use them all.', 'Finish a lesson and it gets a tick.'] },
+  ai: { name: 'AI & ML', type: 'ai', lessonPage: 'AILesson.dc.html',
+    line: 'The maths and ideas behind machine learning and today’s AI, from a straight line to transformers.',
+    how: ['Each lesson is a short animation of a few minutes.', 'The first section builds the maths. Later lessons use it.', 'Finish a lesson and it gets a tick.'] }
+};
+// The lessons of each track in teaching order, grouped: [{ id, title, items: [{ id, title, min }] }].
+function hubSections(key) {
+  if (key === 'start') {
+    const ready = START_CHAPTERS.filter((c) => c.ready);
+    return START_PARTS.map((p) => ({ id: 'ch-' + p.n, title: 'Chapter ' + p.n + ': ' + p.title,
+      items: ready.filter((c) => c.part === p.n).map((c) => ({ id: c.id, title: c.title, min: c.minutes })) })).filter((s) => s.items.length);
+  }
+  if (key === 'dsa') {
+    return CS_TRACKS.map((tr) => ({ id: tr.id, title: tr.title, items: CS_LESSONS.filter((L) => L.track === tr.id).map((L) => ({ id: L.id, title: L.title, min: L.minutes })) })).filter((s) => s.items.length);
+  }
+  if (key === 'sd') {
+    return [['hld', 'Fundamentals', (x) => x.track === 'hld' && !x.method], ['case', 'Case studies', (x) => x.track === 'hld' && !!x.method], ['lld', 'Low-level design', (x) => x.track === 'lld']]
+      .map(([id, title, pick]) => ({ id, title, items: SD_LESSONS.filter(pick).map((x) => ({ id: x.id, title: x.title, min: 0 })) })).filter((s) => s.items.length);
+  }
+  return AI_TRACKS.map((tr) => ({ id: tr.id, title: tr.title, items: AI_LESSONS.filter((L) => L.track === tr.id).map((L) => ({ id: L.id, title: L.title, min: L.minutes })) })).filter((s) => s.items.length);
+}
+// Back: to the page the learner came from when it is a list page (the same rule as a lesson's Back link), else to the Roadmap.
+function hubBack(self) {
+  let to = null;
+  try { to = window.__dsTrail ? window.__dsTrail() : null; } catch (e) {}
+  const name = to ? String(to.page).replace('.dc.html', '') : '';
+  const use = !!(to && LIST_BACK[name] && name !== self);
+  return { label: 'Back to ' + (use ? LIST_BACK[name] : 'Roadmap'), href: '#back',
+    go: (e) => { try { if (e && e.preventDefault) e.preventDefault(); } catch (x) {} try { if (use) window.__dsBack(); else window.__dsNav('Patterns.dc.html', '', true); } catch (x) {} } };
+}
 
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { theme: loadTheme(), user: loadUser(), mobile: aiHubMobile(), drawer: false, tab: 0, showAll: false, foldAbout: false, foldSoon: false };
+    this.state = { theme: loadTheme(), user: loadUser(), drawer: false };
   }
-  componentDidMount() {
-    listenTheme(this);
-    this.onResize = () => { const m = aiHubMobile(); if (m !== this.state.mobile) this.setState({ mobile: m }); };
-    try { window.addEventListener('resize', this.onResize); } catch (e) {}
-  }
-  componentWillUnmount() { unlistenTheme(this); try { window.removeEventListener('resize', this.onResize); } catch (e) {} }
+  componentDidMount() { listenTheme(this); }
+  componentWillUnmount() { unlistenTheme(this); }
   renderVals() {
     const themeKey = this.state.theme || this.props.theme || 'max';
     const t = THEMES[themeKey] || THEMES.max;
-    const mobile = !!this.state.mobile;
-    const C = aiColors(t);
-    const steps = AI_LESSONS.reduce((s, L, i) => s + aiSteps(i).length, 0);
-    const sources = AI_LESSONS.reduce((s, L) => s + (L.sources ? L.sources.length : 0), 0);
-    const doneIds = {}; DS.lessons().ids.forEach((id) => { doneIds[id] = 1; });
-    const isDone = (L) => !!doneIds['ai:' + L.id];
-    const doneAll = AI_LESSONS.filter(isDone).length;
-    const chev = (on) => (on ? 'rotate(180deg)' : 'rotate(0deg)');
-    const trk = AI_TRACKS.map((tr, k) => ({
-      hid: 'ai-track-' + tr.id, num: k + 1, title: tr.title, blurb: tr.blurb,
-      next: (AI_NEXT[tr.id] || []).join(' · '),
-      count: AI_LESSONS.filter((L) => L.track === tr.id).length, done: AI_LESSONS.filter((L) => L.track === tr.id && isDone(L)).length,
-      lessons: AI_LESSONS.map((L, i) => [L, i]).filter(([L]) => L.track === tr.id).map(([L, i], j) => ({
-        num: String(j + 1).padStart(2, '0'), title: L.title, done: isDone(L),
-        aria: L.title + ', ' + aiSteps(i).length + ' steps' + (isDone(L) ? ', finished' : ''),
-        meta: L.tag + ' · ' + aiSteps(i).length + ' steps · ' + L.minutes + ' min' + (L.param ? ' · interactive' : ''),
-        chip: isDone(L) ? 'done' : 'start', chipFg: isDone(L) ? t.ok : t.muted,
-        go: () => { try { window.localStorage.setItem('dsaviz-ai-lesson', L.id); } catch (e) {} }
-      }))
-    }));
-    const tabIdx = Math.min(this.state.tab || 0, trk.length - 1);
-    const SHOWN = 6; const showAll = !!this.state.showAll; const curT = trk[tabIdx];
-    const cur = { blurb: curT.blurb, hasMore: curT.lessons.length > SHOWN,
-      lessons: (showAll ? curT.lessons : curT.lessons.slice(0, SHOWN)).map((x, i) => ({ ...x, rule: i === 0 ? 'transparent' : t.line })) };
-    const tabs = trk.map((tr, i) => ({ label: tr.title + ' (' + tr.count + ')', on: i === tabIdx, line: i === tabIdx ? t.accent : 'transparent', fg: i === tabIdx ? t.text : t.muted,
-      pick: () => this.setState({ tab: i, showAll: false }) }));
-    const allL = [].concat(...trk.map((tr) => tr.lessons));
-    const nextL = allL.find((x) => !x.done) || allL[0];
-    return Object.assign({
-      total: { done: doneAll, count: AI_LESSONS.length }, tabs, cur, showAll, moreLabel: showAll ? 'Show fewer' : 'Show all ' + curT.lessons.length + ' lessons', moreChev: chev(showAll),
-      toggleAll: () => this.setState({ showAll: !this.state.showAll }),
-      resume: { text: (doneAll > 0 ? 'Continue: ' : 'Start with: ') + nextL.title, pick: nextL.go },
-      foldAbout: !!this.state.foldAbout, chevAbout: chev(this.state.foldAbout), toggleAbout: () => this.setState({ foldAbout: !this.state.foldAbout }),
-      foldSoon: !!this.state.foldSoon, chevSoon: chev(this.state.foldSoon), toggleSoon: () => this.setState({ foldSoon: !this.state.foldSoon }),
-      t, themeBtns: themeButtons(this, themeKey, t),
-      L: {
-        desk: !mobile, rootW: mobile ? 420 : 1440, rootH: mobile ? 'auto' : '1400px', gutter: mobile ? 12 : 24,
-        pad: mobile ? '24px 16px 32px' : '24px 48px 48px', gap: mobile ? 20 : 20,
-        heroCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) auto', h1: mobile ? 64 : 80, lead: mobile ? 16 : 17, chipJustify: mobile ? 'flex-start' : 'flex-end',
-        trackCols: mobile ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(0, 1fr)'
-      },
-      count: AI_LESSONS.length,
-      chips: [[AI_LESSONS.length, 'lessons'], [doneAll + ' / ' + AI_LESSONS.length, 'finished by you'], [steps, 'animated steps'], [sources, 'primary sources']].map(([n, label]) => ({ n, label })),
-      tracks: trk
-    }, { why: whyVals(whyHub('ai')) }, navVals(this, t, themeKey, 'AIML'));
+    const meta = HUB_META[HUB_KEY];
+    const doneIds = {};
+    try { DS.lessons().ids.forEach((i) => { doneIds[i] = 1; }); } catch (e) {}
+    let startDone = {};
+    try { startDone = DS.start().done || {}; } catch (e) {}
+    const isDone = (id) => (HUB_KEY === 'start' ? !!startDone[id] : !!doneIds[meta.type + ':' + id]);
+    let total = 0, done = 0, upFound = false, up = null, first = null;
+    const sections = hubSections(HUB_KEY).map((s) => {
+      let sd = 0;
+      const items = s.items.map((l) => {
+        const d = isDone(l.id); total++; if (d) { done++; sd++; }
+        const isUp = !d && !upFound; if (isUp) upFound = true;
+        const it = { title: l.title, href: meta.lessonPage + (HUB_KEY === 'start' ? '?ch=' + l.id : ''), done: d, up: isUp,
+          time: l.min ? l.min + ' min' : '', meta: !!(l.min || d || isUp), mark: d ? '✓' : '', status: d ? 'Done' : isUp ? 'Up next' : '', upShow: isUp, doneShow: d,
+          aria: l.title + (l.min ? ', ' + l.min + ' minutes' : '') + (d ? ', done' : isUp ? ', up next' : ''),
+          go: () => { try { window.localStorage.setItem(SEARCH_TYPES[meta.type][2], l.id); } catch (e) {} } };
+        if (!first) first = it; if (isUp) up = it;
+        return it;
+      });
+      return { id: s.id, hid: 'hub-' + s.id + '-h', title: s.title, items, count: sd + ' of ' + items.length + ' done' };
+    });
+    const target = up || first;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    return {
+      t, ...navVals(this, t, themeKey, HUB_PAGE),
+      hub: { name: meta.name, line: meta.line, how: meta.how.map((text, i) => ({ n: String(i + 1), text })), done, total, pct, count: done + ' of ' + total + ' done',
+        aria: meta.name + ': ' + done + ' of ' + total + ' lessons done' },
+      back: hubBack(HUB_PAGE),
+      cont: target ? { href: target.href, go: target.go, label: (up ? (done ? 'Continue' : 'Start') : 'Start again') + ': ' + target.title } : { href: '#', go: () => {}, label: '' },
+      sections
+    };
   }
 }
+
 </script>
 </body>
 </html>

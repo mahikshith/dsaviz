@@ -1,0 +1,62 @@
+<div data-shell data-page="@@PAGE@@" style="--sh-bg: {{t.bg}}; --sh-surface: {{t.surface}}; --sh-sunk: {{t.sunk}}; --sh-line: {{t.line}}; --sh-text: {{t.text}}; --sh-muted: {{t.muted}}; --sh-accent: {{t.accent}}; --sh-on: {{t.onAccent}}; font-family: {{t.body}}">
+
+<!-- PILL NAV -->
+<!-- /PILL NAV -->
+<style>
+/* The course front (src/pages/hub_body.html, src/pages/hub.js), shared by Start here, DSA concepts, System design and AI & ML:
+   Back link, title, one line, progress and the one main button; the "How the lessons work" strip; then every lesson as a block in a full-width
+   grid, grouped by section. A grid row stretches its blocks, so blocks in a row are the same height. */
+.hb-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 32px;align-items:end}
+.hb-id{display:flex;flex-direction:column;gap:8px;min-width:0}
+.hb-line{max-width:72ch;color:var(--sh-text)}
+.hb-prog{display:flex;flex-direction:column;gap:8px;max-width:480px}
+.hb-bar{height:4px;border-radius:2px;background:var(--sh-line);overflow:hidden}
+.hb-bar>span{display:block;height:100%;background:var(--sh-accent)}
+.hb-go{min-height:48px;padding:8px 24px;text-align:center;max-width:100%;box-sizing:border-box;line-height:1.3;text-decoration:none}
+.hb-strip{box-sizing:border-box;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px}
+[data-shell] .hb-strip h2{font-size:calc(18px * var(--ts, 1));line-height:1.4}
+.hb-how{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 24px}
+.hb-how li{display:flex;gap:12px;align-items:baseline;min-width:0}
+.hb-n{flex-shrink:0;width:24px;height:24px;border:1px solid var(--sh-line);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:calc(14px * var(--ts, 1));color:var(--sh-muted)}
+.hb-sec{display:flex;flex-direction:column;gap:12px;scroll-margin-top:72px}
+.hb-sh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;padding-bottom:8px;border-bottom:1px solid var(--sh-line)}
+[data-shell] .hb-sec h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
+.hb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:16px;align-items:stretch}
+.hb-block{justify-content:space-between;gap:12px;min-height:64px;text-decoration:none}
+.hb-t{font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+.hb-m{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px;font-size:calc(14px * var(--ts, 1));color:var(--sh-muted)}
+.hb-st{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--sh-text)}
+.hb-ok{color:var(--sh-accent);font-weight:700}
+.hb-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
+@media (max-width:1023px){.hb-how{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:759px){
+.hb-head{grid-template-columns:minmax(0,1fr)}
+.hb-go{width:100%}
+.hb-grid{grid-template-columns:minmax(0,1fr)}
+.hb-block{min-height:56px}
+}
+</style>
+<main class="sh-main">
+<a class="sh-back" data-back href="{{back.href}}" onClick="{{back.go}}">← {{back.label}}</a>
+<header class="hb-head">
+<div class="hb-id">
+<h1>{{hub.name}}</h1>
+<p class="hb-line">{{hub.line}}</p>
+<div class="hb-prog"><span class="sh-label">{{hub.count}}</span><div class="hb-bar" role="progressbar" aria-label="{{hub.aria}}" aria-valuemin="0" aria-valuemax="{{hub.total}}" aria-valuenow="{{hub.done}}"><span style="width: {{hub.pct}}%"></span></div></div>
+</div>
+<a class="sh-btn hb-go" data-continue href="{{cont.href}}" onClick="{{cont.go}}">{{cont.label}}</a>
+</header>
+<section class="hb-strip" aria-labelledby="hb-how-h">
+<h2 id="hb-how-h">How the lessons work</h2>
+<ol class="hb-how"><sc-for list="{{hub.how}}" as="h" hint-placeholder-count="3"><li><span class="hb-n" aria-hidden="true">{{h.n}}</span><span>{{h.text}}</span></li></sc-for></ol>
+</section>
+<sc-for list="{{sections}}" as="s" hint-placeholder-count="6">
+<section class="hb-sec" id="{{s.id}}" data-section aria-labelledby="{{s.hid}}">
+<div class="hb-sh"><h2 id="{{s.hid}}">{{s.title}}</h2><span class="sh-label">{{s.count}}</span></div>
+<div class="hb-grid">
+<sc-for list="{{s.items}}" as="l" hint-placeholder-count="6"><a class="sh-block hb-block" data-lesson aria-label="{{l.aria}}" href="{{l.href}}" onClick="{{l.go}}"><span class="hb-t">{{l.title}}</span><sc-if value="{{l.meta}}" hint-placeholder-val="{{ true }}"><span class="hb-m"><span>{{l.time}}</span><sc-if value="{{l.doneShow}}" hint-placeholder-val="{{ false }}"><span class="hb-st"><span class="hb-ok" aria-hidden="true">✓</span>Done</span></sc-if><sc-if value="{{l.upShow}}" hint-placeholder-val="{{ false }}"><span class="hb-st hb-up">Up next</span></sc-if></span></sc-if></a></sc-for>
+</div>
+</section>
+</sc-for>
+</main>
+</div>

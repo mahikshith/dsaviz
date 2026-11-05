@@ -418,12 +418,19 @@ a.sh-row:hover{background:var(--sh-sunk)}
 /* The Roadmap page (src/pages/roadmap_body.html, src/pages/roadmap.js): a title, then every track as a block in a grid.
    A block holds its name, done out of total, a thin bar and all of its lessons, flowed into columns by the browser (column width, not a fixed count),
    so a long track fills a wide block and a short one stays narrow. Blocks in a row are the same height because a grid row stretches them. */
-.rm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
+.rm-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;align-items:stretch}
 .rm-block{box-sizing:border-box;min-width:0;padding:16px;border:1px solid var(--sh-line);border-radius:6px;background:var(--sh-surface);display:flex;flex-direction:column;gap:12px;scroll-margin-top:72px}
-.rm-block[data-w="1"]{grid-column:span 1}
 .rm-block[data-w="2"]{grid-column:span 2}
 .rm-block[data-w="3"]{grid-column:span 3}
 .rm-block[data-w="4"]{grid-column:span 4}
+.rm-block[data-w="6"]{grid-column:span 6}
+@media (min-width:1200px){
+.rm-block[data-track="dsa"] .rm-cols{columns:2}
+.rm-block[data-track="patterns"] .rm-cols{columns:1;flex:1;display:flex;flex-direction:column}
+.rm-block[data-track="patterns"] .rm-group,.rm-block[data-track="patterns"] .rm-list{flex:1;display:flex;flex-direction:column}
+.rm-block[data-track="patterns"] .rm-list li{flex:1 1 auto;display:flex}
+.rm-block[data-track="patterns"] .rm-lesson{flex:1}
+}
 .rm-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
 .rm-block .rm-head h2{font-size:calc(22px * var(--ts, 1));line-height:1.3}
 .rm-bar{height:4px;border-radius:2px;background:var(--sh-line);overflow:hidden;flex-shrink:0}
@@ -433,26 +440,34 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .rm-block .rm-chap{margin:0;padding:4px 8px;font-size:calc(15px * var(--ts, 1));line-height:1.4;font-weight:600;color:var(--sh-text);scroll-margin-top:72px}
 .rm-list{margin:0;padding:0;list-style:none}
 .rm-list li{break-inside:avoid}
-.rm-lesson{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.rm-lesson{display:flex;flex-wrap:nowrap;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
 .rm-lesson:hover{background:var(--sh-sunk)}
 .rm-lesson>.sh-tick{color:var(--sh-accent);font-weight:700}
-.rm-lesson>span:nth-child(2){min-width:0;overflow-wrap:anywhere;flex:1 1 0}
-.rm-lesson>.rm-n{flex-grow:0;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-variant-numeric:tabular-nums}
-.rm-up{flex:0 0 100%;box-sizing:border-box;padding-left:24px;display:inline-flex;align-items:center;gap:4px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
+.rm-lesson>.rm-t{min-width:0;overflow-wrap:anywhere;flex:1 1 0;display:flex;flex-direction:column;align-items:flex-start;gap:0}
+.rm-lesson>.rm-n{flex:0 0 auto;margin-left:auto;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-variant-numeric:tabular-nums}
+.rm-up{display:inline-flex;align-items:center;gap:4px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
 .rm-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
-.rm-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0}
-.rm-chip{min-height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
-.rm-chip:hover{background:var(--sh-sunk)}
-.rm-chip[aria-current="true"]{background:var(--sh-accent);border-color:var(--sh-accent);color:var(--sh-on);font-weight:600}
+.rm-chips{position:relative;margin:0}
+.rm-jump{display:flex;flex-wrap:wrap;align-items:center;gap:0 24px}
+.rm-jl{color:var(--sh-muted);font-size:calc(16px * var(--ts, 1))}
+.rm-chip{min-height:40px;padding:0;box-sizing:border-box;border:0;background:transparent;color:var(--sh-muted);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;text-decoration:none;text-underline-offset:6px;text-decoration-thickness:2px}
+.rm-chip:hover{color:var(--sh-text)}
+.rm-chip[aria-current="true"]{color:var(--sh-text);font-weight:600;text-decoration:underline}
 .rm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:1199px){
 .rm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.rm-block[data-w]{grid-column:auto}
 .rm-block[data-t="1"]{grid-column:span 1}
 .rm-block[data-t="2"]{grid-column:span 2}
 }
 @media (max-width:759px){
-.rm-chips{position:sticky;top:52px;z-index:5;flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:8px 16px;background:var(--sh-bg);border-bottom:1px solid var(--sh-line)}
-.rm-chip{flex-shrink:0;min-height:44px}
+.rm-chips{position:sticky;top:52px;z-index:5;margin:0 -16px;padding:0 16px;background:var(--sh-bg);border-bottom:1px solid var(--sh-line)}
+.rm-chips::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,transparent,var(--sh-bg));pointer-events:none}
+.rm-jump{flex-wrap:nowrap;overflow-x:auto;gap:0 24px;scrollbar-width:none}
+.rm-jump::-webkit-scrollbar{display:none}
+.rm-jump::after{content:"";flex:0 0 24px}
+.rm-jl,.rm-chip{flex-shrink:0;white-space:nowrap}
+.rm-chip{min-height:44px}
 .rm-block,.rm-chap{scroll-margin-top:112px}
 .rm-grid{grid-template-columns:minmax(0,1fr)}
 .rm-block[data-w],.rm-block[data-t]{grid-column:span 1}
@@ -463,7 +478,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </style>
 <main class="sh-main">
 <h1>Roadmap</h1>
-<nav class="rm-chips" aria-label="Jump to a track"><sc-for list="{{chips}}" as="c" hint-placeholder-count="7"><button class="rm-chip" aria-label="{{c.aria}}" aria-current="{{c.cur}}" data-chip="{{c.key}}" onClick="{{c.go}}">{{c.label}}</button></sc-for></nav>
+<div class="rm-chips"><nav class="rm-jump" aria-label="Jump to a track"><span class="rm-jl">Jump to:</span><sc-for list="{{chips}}" as="c" hint-placeholder-count="7"><button class="rm-chip" aria-label="{{c.aria}}" aria-current="{{c.cur}}" data-chip="{{c.key}}" onClick="{{c.go}}">{{c.label}}</button></sc-for></nav></div>
 <div class="rm-grid">
 <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="7">
 <section class="rm-block" id="{{tr.id}}" data-track="{{tr.key}}" data-w="{{tr.w}}" data-t="{{tr.t}}" aria-labelledby="{{tr.hid}}">
@@ -474,7 +489,7 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <div class="rm-group" data-titled="{{g.titled}}">
 <sc-if value="{{g.titled}}" hint-placeholder-val="{{ false }}"><h3 class="rm-chap" id="{{g.id}}">{{g.title}}</h3></sc-if>
 <ul class="rm-list">
-<sc-for list="{{g.items}}" as="l" hint-placeholder-count="6"><li><a class="rm-lesson" href="{{l.href}}" onClick="{{l.go}}"><span class="sh-tick" aria-hidden="true">{{l.tick}}</span><span>{{l.title}}</span><span class="rm-sr">{{l.sr}}</span><sc-if value="{{l.up}}" hint-placeholder-val="{{ false }}"><span class="rm-up">Up next</span></sc-if><span class="rm-n" aria-hidden="true">{{l.note}}</span></a></li></sc-for>
+<sc-for list="{{g.items}}" as="l" hint-placeholder-count="6"><li><a class="rm-lesson" href="{{l.href}}" onClick="{{l.go}}"><span class="sh-tick" aria-hidden="true">{{l.tick}}</span><span class="rm-t"><span>{{l.title}}</span><span class="rm-sr">{{l.sr}}</span><sc-if value="{{l.up}}" hint-placeholder-val="{{ false }}"><span class="rm-up">Up next</span></sc-if></span><span class="rm-n" aria-hidden="true">{{l.note}}</span></a></li></sc-for>
 </ul>
 </div>
 </sc-for>
@@ -2786,10 +2801,10 @@ const ROADMAP = {"start":[{"n":1,"title":"Talking to the computer","lessons":[["
 // Each block marks its first lesson not done as "Up next". Chips under the title jump to a block and mark the one being read.
 // Back from a lesson returns here with the scroll kept (shared/nav.js lessonBack). ?at=ch-4 scrolls a chapter or track into view.
 const RM_SEEN_KEY = 'dsaviz-roadmap-seen';
-// key, name, width in the 4-column desktop grid, width in the 2-column tablet grid. Desktop rows: 4 / 3+1 / 2+2 / 4 / 4, chosen so the blocks
+// key, name, width in the 6-column desktop grid (DSA concepts 4 in two columns and Patterns 2 in one column hold about the same height), width in the 2-column tablet grid. Desktop rows: 1 / 4+2 / 3+3 / 1 / 1, chosen so the blocks
 // in a row hold about the same number of lines (no big empty block); on a tablet: 2 / 2 / 2 / 1+1 / 2 / 2.
-const RM_TRACKS = [['start', 'Start here', 4, 2], ['dsa', 'DSA concepts', 3, 2], ['patterns', 'Patterns', 1, 2], ['cplx', 'Complexity', 2, 1],
-  ['git', 'Git', 2, 1], ['sd', 'System design', 4, 2], ['ai', 'AI & ML', 4, 2]];
+const RM_TRACKS = [['start', 'Start here', 6, 2], ['dsa', 'DSA concepts', 4, 2], ['patterns', 'Patterns', 2, 2], ['cplx', 'Complexity', 3, 1],
+  ['git', 'Git', 3, 1], ['sd', 'System design', 6, 2], ['ai', 'AI & ML', 6, 2]];
 function rmSeen() { try { const v = JSON.parse(window.localStorage.getItem(RM_SEEN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function rmMarkSeen(id) { try { const v = rmSeen(); if (!v.includes(id)) { v.push(id); window.localStorage.setItem(RM_SEEN_KEY, JSON.stringify(v)); } } catch (e) {} }
 // Done: ticked in the old sheet, solved on the Problem page, or its story finished (the same rule as the Problems page).
@@ -2889,8 +2904,8 @@ class Component extends DCLogic {
       const items = groups[0].items;
       return mk(key, name, w, tw, groups, items.filter((x) => x.tick).length, items.length, 'done');
     });
-    // Chips under the title jump to a block. The Start here chip reads "Start": the page keeps one "Start here" (the block's name).
-    const chips = RM_TRACKS.map(([key, name]) => ({ key, label: key === 'start' ? 'Start' : name, aria: 'Go to ' + name, cur: this.state.at === key ? 'true' : 'false',
+    // A "Jump to:" line of text links under the title (not tabs): each scrolls to its block, and the one in view is underlined.
+    const chips = RM_TRACKS.map(([key, name]) => ({ key, label: name, aria: 'Go to ' + name, cur: this.state.at === key ? 'true' : 'false',
       go: () => { this.lock = Date.now() + 1500; this.setState({ at: key }); try { const el = document.getElementById('track-' + key); if (el) el.scrollIntoView({ block: 'start', behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } catch (e) {} } }));
     return { t, ...navVals(this, t, themeKey, 'Patterns'), tracks: out, chips };
   }

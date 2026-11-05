@@ -10,10 +10,10 @@
 // Each block marks its first lesson not done as "Up next". Chips under the title jump to a block and mark the one being read.
 // Back from a lesson returns here with the scroll kept (shared/nav.js lessonBack). ?at=ch-4 scrolls a chapter or track into view.
 const RM_SEEN_KEY = 'dsaviz-roadmap-seen';
-// key, name, width in the 4-column desktop grid, width in the 2-column tablet grid. Desktop rows: 4 / 3+1 / 2+2 / 4 / 4, chosen so the blocks
+// key, name, width in the 6-column desktop grid (DSA concepts 4 in two columns and Patterns 2 in one column hold about the same height), width in the 2-column tablet grid. Desktop rows: 1 / 4+2 / 3+3 / 1 / 1, chosen so the blocks
 // in a row hold about the same number of lines (no big empty block); on a tablet: 2 / 2 / 2 / 1+1 / 2 / 2.
-const RM_TRACKS = [['start', 'Start here', 4, 2], ['dsa', 'DSA concepts', 3, 2], ['patterns', 'Patterns', 1, 2], ['cplx', 'Complexity', 2, 1],
-  ['git', 'Git', 2, 1], ['sd', 'System design', 4, 2], ['ai', 'AI & ML', 4, 2]];
+const RM_TRACKS = [['start', 'Start here', 6, 2], ['dsa', 'DSA concepts', 4, 2], ['patterns', 'Patterns', 2, 2], ['cplx', 'Complexity', 3, 1],
+  ['git', 'Git', 3, 1], ['sd', 'System design', 6, 2], ['ai', 'AI & ML', 6, 2]];
 function rmSeen() { try { const v = JSON.parse(window.localStorage.getItem(RM_SEEN_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function rmMarkSeen(id) { try { const v = rmSeen(); if (!v.includes(id)) { v.push(id); window.localStorage.setItem(RM_SEEN_KEY, JSON.stringify(v)); } } catch (e) {} }
 // Done: ticked in the old sheet, solved on the Problem page, or its story finished (the same rule as the Problems page).
@@ -113,8 +113,8 @@ class Component extends DCLogic {
       const items = groups[0].items;
       return mk(key, name, w, tw, groups, items.filter((x) => x.tick).length, items.length, 'done');
     });
-    // Chips under the title jump to a block. The Start here chip reads "Start": the page keeps one "Start here" (the block's name).
-    const chips = RM_TRACKS.map(([key, name]) => ({ key, label: key === 'start' ? 'Start' : name, aria: 'Go to ' + name, cur: this.state.at === key ? 'true' : 'false',
+    // A "Jump to:" line of text links under the title (not tabs): each scrolls to its block, and the one in view is underlined.
+    const chips = RM_TRACKS.map(([key, name]) => ({ key, label: name, aria: 'Go to ' + name, cur: this.state.at === key ? 'true' : 'false',
       go: () => { this.lock = Date.now() + 1500; this.setState({ at: key }); try { const el = document.getElementById('track-' + key); if (el) el.scrollIntoView({ block: 'start', behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } catch (e) {} } }));
     return { t, ...navVals(this, t, themeKey, 'Patterns'), tracks: out, chips };
   }

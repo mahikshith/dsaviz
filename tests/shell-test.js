@@ -235,7 +235,7 @@ server.listen(0, async () => {
         const blocks = [...main.querySelectorAll('.rm-block')];
         const seen = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
         const rows = {}; blocks.forEach((b) => { const k = Math.round(b.getBoundingClientRect().top); (rows[k] = rows[k] || []).push(b); });
-        const startHere = [...document.querySelectorAll('#app *')].filter((e) => !e.children.length && e.textContent.trim() === 'Start here' && seen(e)).length;
+        const startHere = [...document.querySelectorAll('#app *')].filter((e) => !e.children.length && e.textContent.trim() === 'Start here' && seen(e) && !e.closest('.rm-chips')).length;
         const W = document.documentElement.clientWidth;
         return {
           h1: [...main.querySelectorAll('h1')].map((h) => h.textContent.trim()),
@@ -254,6 +254,13 @@ server.listen(0, async () => {
           small: [...main.querySelectorAll('*')].filter((e) => !e.children.length && e.textContent.trim() && parseFloat(getComputedStyle(e).fontSize) < 13.99).length
         };
       });
+      // Counts stay on the right edge of their row (Patterns), and neither the DSA concepts nor the Patterns block has a hole at the bottom (desktop).
+      const rn = await pg.evaluate(() => { const bl = document.querySelector('[data-track="patterns"]'); const br = bl.getBoundingClientRect(); const rows = [...bl.querySelectorAll('a.rm-lesson')];
+        const bad = rows.filter((a) => { const n = a.querySelector('.rm-n'); const t = a.querySelector('.rm-t'); const ar = a.getBoundingClientRect(); const nr = n.getBoundingClientRect(); return Math.abs(nr.top - t.getBoundingClientRect().top) > 12 || ar.right - nr.right > 10 || ar.height > 72; }).length;
+        const holes = ['dsa', 'patterns'].map((k) => { const b = document.querySelector('[data-track="' + k + '"]'); const bb = b.getBoundingClientRect(); const last = Math.max(...[...b.querySelectorAll('a.rm-lesson')].map((a) => a.getBoundingClientRect().bottom)); return Math.round(bb.bottom - last); });
+        return { bad, holes }; });
+      if (rn.bad) fail(id + ': ' + rn.bad + ' Patterns rows have the count off the right edge or on its own line');
+      if (width >= 1200 && rn.holes.some((h) => h > 88)) fail(id + ': a block has a hole at the bottom (space below its last row: DSA concepts ' + rn.holes[0] + 'px, Patterns ' + rn.holes[1] + 'px)');
       if (r.h1.join() !== 'Roadmap') fail(id + ': the title is "' + r.h1.join() + '", not Roadmap');
       if (r.tracks.join('|') !== TRACKS.join('|')) fail(id + ': tracks are ' + r.tracks.join(', ') + ', not ' + TRACKS.join(', '));
       if (r.folds) fail(id + ': ' + r.folds + ' tabs or folds on the page');
@@ -344,7 +351,17 @@ server.listen(0, async () => {
       });
       info.ups.forEach((u, i) => { if (u.n !== 1 || u.ix !== u.firstUndone || u.label !== 'Up next') fail(id + ': block ' + (i + 1) + ' has ' + u.n + ' "Up next" marks, at ' + u.ix + ' not on the first lesson not done (' + u.firstUndone + ')'); });
       info.chap.forEach((c, i) => { if (c.link || c.px < 14.99 || c.px > 15.01 || c.col !== c.txt) fail(id + ': chapter heading ' + (i + 1) + ' is ' + c.px + 'px' + (c.link ? ', a link' : '') + (c.col !== c.txt ? ', not the normal text colour' : '')); });
-      if (info.chips.join('|') !== 'Start|DSA concepts|Patterns|Complexity|Git|System design|AI & ML') fail(id + ': chips are ' + info.chips.join(', '));
+      if (info.chips.join('|') !== 'Start here|DSA concepts|Patterns|Complexity|Git|System design|AI & ML') fail(id + ': jump links are ' + info.chips.join(', '));
+      // A plain "Jump to:" line of text links: no fills, no borders, not tabs; the one in view is underlined in the text colour (not lime).
+      const jl = await pg.evaluate(() => { const nav = document.querySelector('.rm-jump'); const cs = (e) => getComputedStyle(e);
+        const chips = [...document.querySelectorAll('.rm-chip')]; const cur = chips.find((c) => c.getAttribute('aria-current') === 'true');
+        return { label: nav.firstElementChild.textContent.trim(), fills: chips.filter((c) => cs(c).backgroundColor !== 'rgba(0, 0, 0, 0)' || parseFloat(cs(c).borderTopWidth) > 0).length,
+          tabs: document.querySelectorAll('.rm-jump [role=tab],.rm-jump [role=tablist]').length, under: cur ? cs(cur).textDecorationLine : '', curCol: cur ? cs(cur).color : '', text: cs(document.querySelector('.rm-lesson')).color, accent: getComputedStyle(document.querySelector('[data-shell]')).getPropertyValue('--sh-accent').trim(),
+          others: chips.filter((c) => c !== cur && cs(c).textDecorationLine.includes('underline')).length,
+          fade: cs(document.querySelector('.rm-chips'), '::after').content !== 'none' }; });
+      if (jl.label !== 'Jump to:' || jl.fills || jl.tabs) fail(id + ': the jump line is not plain text links: ' + JSON.stringify(jl));
+      if (!jl.under.includes('underline') || jl.curCol !== jl.text || jl.others) fail(id + ': the section in view is not the only underlined link in the text colour: ' + JSON.stringify(jl));
+      if (width < 760 && !jl.fade) fail(id + ': the jump line has no right-edge fade on phones');
       // Tap each chip: its block comes to the top and its chip is the one marked.
       const KEYS = ['start', 'dsa', 'patterns', 'cplx', 'git', 'sd', 'ai'];
       for (let i = 0; i < KEYS.length; i++) {

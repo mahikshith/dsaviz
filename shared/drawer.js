@@ -22,7 +22,6 @@ function drawerVals(cmp, t, themeKey) {
     drawerOpen: !!cmp.state.drawer,
     openDrawer: () => cmp.setState({ drawer: true }),
     closeDrawer: () => cmp.setState({ drawer: false }),
-    takeTour: () => { cmp.setState({ drawer: false }); if (typeof window !== 'undefined' && window.__dsTour) window.__dsTour.start(); },
     drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
     user, guest: !user,
     signIn: () => { saveUser(true); cmp.setState({ user: true }); },

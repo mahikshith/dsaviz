@@ -257,7 +257,7 @@ def main():
     pane_html = read('shared', 'code_pane.html')
     bodies = {'Story': ('src', 'story', 'story_body.html')}
     scripts = {}
-    for name in ['Revisit', 'Profile', 'Welcome']:
+    for name in ['Revisit', 'Profile', 'Welcome', 'Home']:
         bodies[name] = ('src', 'pages', name.lower() + '_body.html')
         scripts[name] = ('src', 'pages', name.lower() + '.js')
     # Sheet is the Problems page (the file keeps its old name until step 10): src/pages/problems_body.html and problems.js.

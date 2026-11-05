@@ -89,8 +89,8 @@ const a = page.indexOf('// @@SHEET@@'), b = page.indexOf('// @@END-SHEET@@');
 if (a < 0 || b < 0) fail('Sheet.dc.html has no @@SHEET@@ block');
 else if (lf(page.slice(a, b + '// @@END-SHEET@@'.length)) !== lf(sheetSrc)) fail('Sheet.dc.html is stale: run npm run build');
 
-// Main and Home show the sheet size from a generated SHEET_TOTAL
-['Main', 'Home'].forEach((name) => {
+// Main shows the sheet size from a generated SHEET_TOTAL (Home reads SHEET.length itself)
+['Main'].forEach((name) => {
   const m = read('pages', name + '.dc.html').match(/const SHEET_TOTAL = (\d+);/);
   if (!m) fail(name + '.dc.html has no SHEET_TOTAL: run npm run build');
   else if (Number(m[1]) !== SHEET.length) fail(name + '.dc.html says SHEET_TOTAL ' + m[1] + ' but the sheet has ' + SHEET.length + ': run npm run build');

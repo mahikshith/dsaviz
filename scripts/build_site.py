@@ -73,8 +73,6 @@ def main():
     out += '<script>\nwindow.DS_BOARDS = {};\n' + '\n'.join(boards) + '\n</script>\n'
     out += '<script>\nwindow.DS_EDITOR_LOAD = function () {\n' + esc(editor) + '\nreturn DSEditor;\n};\n</script>\n'
     out += '<script>' + esc(runtime) + '</script>\n'
-    # The first-visit tour (shared/tour.js) with its card markup (shared/ui/tour.html).
-    out += '<script>\nwindow.DS_TOUR_HTML = ' + js(read('shared', 'ui', 'tour.html')) + ';\n' + esc(read('shared', 'tour.js')) + '\n</script>\n'
     out += pwa.REGISTER
     os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
     with open(os.path.join(ROOT, 'dist', 'index.html'), 'w', encoding='utf-8') as f:

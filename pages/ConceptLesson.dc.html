@@ -305,7 +305,6 @@ a.sh-row:hover{background:var(--sh-sunk)}
 [data-pn-name],[data-pn-kbd]{display:none!important}
 [data-drawer]{zoom:calc(1 / var(--fit, 1))}
 [data-drawer] aside{width:min(360px,86vw)!important}
-[data-daily]{zoom:calc(1 / var(--fit, 1))}
 [data-pn-panel]{left:8px!important;right:8px!important;width:auto!important}
 [data-pn-results]{max-height:55vh!important}
 }
@@ -349,19 +348,6 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 </sc-if>
 </div>
-<sc-if value="{{nav.daily.open}}" hint-placeholder-val="{{ false }}">
-<div data-daily style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box">
-<div onClick="{{nav.daily.close}}" aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.55)"></div>
-<div role="dialog" aria-modal="true" aria-labelledby="daily-h" aria-describedby="daily-p" onKeyDown="{{nav.daily.onKey}}" data-rise style="position: relative; width: 360px; max-width: 100%; box-sizing: border-box; padding: 24px; border-radius: 20px; border: 1px solid {{t.line2}}; background: {{t.surface}}; color: {{t.text}}; box-shadow: 0 16px 40px {{t.shadow}}; font-family: {{t.body}}; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
-<button onClick="{{nav.daily.close}}" aria-label="Close" style="position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 20px; border: 0; background: transparent; color: {{t.muted}}; cursor: pointer; font-size: var(--fs18)">✕</button>
-<svg width="44" height="44" viewBox="0 0 24 24" fill="{{nav.daily.flame}}" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-3 1.8-4.6 2.4-7.2C11 7.3 12 9 12 11c1-1.4 1-5 0-9z"></path></svg>
-<h2 id="daily-h" style="margin: 0; font-family: {{t.display}}; font-size: var(--fs28); line-height: 1.1; font-weight: 600">{{nav.daily.title}}</h2>
-<p id="daily-p" role="status" style="margin: 0; font-size: var(--fs18); line-height: 1.5; color: {{t.text2}}">{{nav.daily.body}}</p>
-<sc-if value="{{nav.daily.isFreeze}}" hint-placeholder-val="{{ false }}"><button data-daily-go onClick="{{nav.daily.freeze}}" style="width: 100%; height: 48px; border: 0; border-radius: 24px; background: {{t.accent}}; color: {{t.onAccent}}; cursor: pointer; font-size: var(--fs18); font-weight: 700">{{nav.daily.action}}</button></sc-if>
-<sc-if value="{{nav.daily.isGo}}" hint-placeholder-val="{{ true }}"><a data-daily-go href="Code.dc.html" onClick="{{nav.daily.close}}" style="width: 100%; height: 48px; box-sizing: border-box; border-radius: 24px; background: {{t.accent}}; color: {{t.onAccent}}; display: flex; align-items: center; justify-content: center; font-size: var(--fs18); font-weight: 700">{{nav.daily.action}}</a></sc-if>
-</div>
-</div>
-</sc-if>
 <sc-if value="{{drawerOpen}}" hint-placeholder-val="{{ false }}">
 <div data-drawer style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; display: flex">
 <aside aria-label="Menu" onKeyDown="{{drawerKey}}" style="width: 360px; height: 100vh; box-sizing: border-box; overflow-y: auto; background: {{t.surface}}; color: {{t.text}}; border-right: 1px solid {{t.line}}; box-shadow: 0 0 60px {{t.shadow}}; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 20px; animation: slidein 0.28s ease">
@@ -400,7 +386,6 @@ a.sh-row:hover{background:var(--sh-sunk)}
 <a href="{{mi.href}}" onClick="{{mi.go}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; gap: 2px"><span style="font-size: var(--fs18); font-weight: 600">{{mi.label}}</span><span style="font-size: var(--fs15); color: {{t.muted}}">{{mi.sub}}</span></a>
 </sc-for>
 </nav>
-<button onClick="{{takeTour}}" style="min-height: 48px; padding: 8px 12px; border-radius: 10px; border: 1px solid {{t.line}}; background: transparent; color: {{t.text}}; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; text-align: left"><span style="font-size: var(--fs18); font-weight: 600">Take the tour</span><span style="font-size: var(--fs15); color: {{t.muted}}">Five short stops around the site</span></button>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <span style="font-size: var(--fs15); font-weight: 600; color: {{t.muted}}">Theme</span>
 <div role="group" aria-label="Theme" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 3px; border-radius: 12px; background: {{t.sunk}}">
@@ -1471,7 +1456,6 @@ function drawerVals(cmp, t, themeKey) {
     drawerOpen: !!cmp.state.drawer,
     openDrawer: () => cmp.setState({ drawer: true }),
     closeDrawer: () => cmp.setState({ drawer: false }),
-    takeTour: () => { cmp.setState({ drawer: false }); if (typeof window !== 'undefined' && window.__dsTour) window.__dsTour.start(); },
     drawerKey: (e) => { if (e && e.key === 'Escape') cmp.setState({ drawer: false }); },
     user, guest: !user,
     signIn: () => { saveUser(true); cmp.setState({ user: true }); },
@@ -1792,50 +1776,6 @@ function searchVals(cmp, t) {
     }
   };
 }
-// The daily check-in: on the first visit of each day (once the learner has done anything), a small modal says which
-// streak day today is, with one action. When yesterday was missed and the week's freeze can save the streak, that is the action.
-// It is marked seen as soon as it shows, so it never comes back the same day.
-function dailyVals(cmp, t) {
-  if (cmp.__daily === undefined) {
-    let d = null;
-    try { d = DS.daily(); } catch (e) {}
-    cmp.__daily = d && d.show ? d : null;
-    if (cmp.__daily) { try { DS.markDailySeen(); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 60); }
-  }
-  const d = cmp.__daily || { day: 1, keeps: 0, offer: false, broken: false, activeToday: false }, open = !!cmp.__daily && !cmp.state.dailyClosed;
-  const close = () => cmp.setState({ dailyClosed: true });
-  const saved = !!cmp.state.dailySaved;
-  const offer = d.offer && !saved;
-  const day = saved ? d.keeps + 1 : d.day;
-  return {
-    open, close,
-    title: offer ? 'You missed yesterday' : d.broken ? 'Day 1. Start again' : 'Day ' + day + '. Keep it going',
-    body: offer ? 'Your ' + d.keeps + '-day streak can still live. Use this week’s freeze to cover yesterday.'
-      : saved ? 'Freeze used. Yesterday is covered, so your streak is safe. Do one thing today to make it day ' + day + '.'
-      : d.broken ? 'Your last streak ended. One problem, story or revisit card today starts a new one.'
-      : d.activeToday ? 'You have already done something today. Your streak is ' + day + (day === 1 ? ' day.' : ' days.')
-      : 'One problem, story or revisit card today keeps your ' + (day - 1) + '-day streak going.',
-    action: offer ? 'Use my freeze' : 'Pick up where you left off',
-    isFreeze: offer, isGo: !offer,
-    freeze: () => { try { if (DS.useFreeze()) cmp.setState({ dailySaved: true }); } catch (e) {} setTimeout(() => { try { const el = document.querySelector('[data-daily-go]'); if (el) el.focus(); } catch (e) {} }, 0); },
-    go: () => { close(); try { if (window.__dsNav) window.__dsNav('Code.dc.html'); } catch (e) {} },
-    // Esc closes; Tab stays inside the dialog while it is open.
-    onKey: (e) => {
-      if (!e) return;
-      if (e.key === 'Escape') { if (e.preventDefault) e.preventDefault(); close(); return; }
-      if (e.key !== 'Tab') return;
-      try {
-        const box = document.querySelector('[data-daily] [role="dialog"]');
-        const f = box ? [...box.querySelectorAll('button, a[href]')] : [];
-        if (!f.length) return;
-        const first = f[0], last = f[f.length - 1], at = document.activeElement;
-        if (e.shiftKey && at === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus(); }
-      } catch (x) {}
-    },
-    flame: offer ? t.muted : t.flame
-  };
-}
 // The Back link names the page it returns to. The runtime keeps the trail (scripts/site-runtime.js).
 const BACK_LABELS = { Main: 'Front page', Home: 'Home', Start: 'Start here', Chapter: 'Lesson', Patterns: 'Roadmap', Concepts: 'DSA concepts', ConceptLesson: 'Lesson', Sheet: 'Problems',
   Code: 'Problem', Story: 'Problem', Git: 'Git', SystemDesign: 'System design', SDLesson: 'Lesson', AIML: 'AI & ML', AILesson: 'Lesson', Revisit: 'Revisit', Profile: 'Profile', Interview: 'Interview', Briefing: 'Pattern', Glossary: 'Glossary', Basics: 'Basics' };
@@ -1890,8 +1830,7 @@ function navVals(cmp, t, themeKey, page) {
       initials: me.initials, hasName: !!me.initials, noName: !me.initials, userIcon: ICONS.user,
       profileOn: page === 'Profile' ? 'page' : 'false',
       avatarBg: t.sunk, avatarFg: t.text,
-      srch: searchVals(cmp, t),
-      daily: dailyVals(cmp, t)
+      srch: searchVals(cmp, t)
     }
   });
 }

@@ -341,9 +341,8 @@ S.START_CHAPTERS.forEach((c) => (c.first || []).forEach((pid) => {
   ok(core.total === ready23, 'the core lane counts every written Level 2 and 3 lesson: ' + core.total + ' vs ' + ready23);
   const firstNode = RM.ROADMAP_NODES.find((n) => n.id === 's-programs');
   ok(RM.rmStartNodeCounts(firstNode, DS).total === firstNode.lessons.length, 'the Your first programs card counts its own lessons');
-  // The pages read these counts, not their own. (Step 6: the Start here front now counts all 66 lessons from its own chapter list, like the Roadmap, so only Home is checked here.)
-  [['Home', ['const startCount = DS.startCounts(1);', "startCount.done + ' of ' + startCount.total + ' Level 1 lessons done'"]]
-    ].forEach(([p, need]) => { const src = read('pages', p + '.dc.html'); need.forEach((x) => { if (src.indexOf(x) < 0) fail(p, 'should count Start here lessons with the shared helper: ' + x); }); });
+  // Step 6: the Start here front counts all 66 lessons from its own chapter list, like the Roadmap. Step 7: Home counts them from the same ROADMAP data (src/pages/home.js), so no page reads Level 1 counts any more except Profile (below).
+  if (read('src', 'pages', 'home.js').indexOf('ROADMAP.start') < 0) fail('Home', 'should count Start here lessons from ROADMAP.start, like the Roadmap');
   if (read('src', 'pages', 'profile.js').indexOf('DS.startRing()') < 0) fail('Profile', 'should count Start here lessons with DS.startRing');
 }
 

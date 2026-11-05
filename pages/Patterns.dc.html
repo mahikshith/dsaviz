@@ -433,12 +433,12 @@ a.sh-row:hover{background:var(--sh-sunk)}
 .rm-block .rm-chap{margin:0;padding:4px 8px;font-size:calc(15px * var(--ts, 1));line-height:1.4;font-weight:600;color:var(--sh-text);scroll-margin-top:72px}
 .rm-list{margin:0;padding:0;list-style:none}
 .rm-list li{break-inside:avoid}
-.rm-lesson{display:flex;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
+.rm-lesson{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;box-sizing:border-box;min-height:40px;padding:8px;border-radius:6px;color:var(--sh-text);font-size:calc(16px * var(--ts, 1));line-height:1.4;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
 .rm-lesson:hover{background:var(--sh-sunk)}
 .rm-lesson>.sh-tick{color:var(--sh-accent);font-weight:700}
-.rm-lesson>span:nth-child(2){min-width:0;overflow-wrap:anywhere;flex-grow:1}
+.rm-lesson>span:nth-child(2){min-width:0;overflow-wrap:anywhere;flex:1 1 0}
 .rm-lesson>.rm-n{flex-grow:0;color:var(--sh-muted);font-size:calc(14px * var(--ts, 1));font-variant-numeric:tabular-nums}
-.rm-up{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
+.rm-up{flex:0 0 100%;box-sizing:border-box;padding-left:24px;display:inline-flex;align-items:center;gap:4px;font-size:calc(14px * var(--ts, 1));font-weight:600;color:var(--sh-text)}
 .rm-up::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sh-accent)}
 .rm-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0}
 .rm-chip{min-height:40px;padding:0 16px;box-sizing:border-box;border:1px solid var(--sh-line);border-radius:6px;background:transparent;color:var(--sh-text);font:inherit;font-size:calc(16px * var(--ts, 1));cursor:pointer;transition:background-color .15s cubic-bezier(.23,1,.32,1)}
@@ -2810,7 +2810,7 @@ class Component extends DCLogic {
   componentDidMount() {
     listenTheme(this);
     let q = 0;
-    this.onScroll = () => { if (!q) q = requestAnimationFrame(() => { q = 0; this.mark(); }); };
+    this.onScroll = () => { if (!q) q = (window.requestAnimationFrame || ((f) => setTimeout(f, 16)))(() => { q = 0; this.mark(); }); };
     try { window.addEventListener('scroll', this.onScroll, { passive: true }); } catch (e) {}
     // A search result for a pattern lands here: send it to the Problems page filtered by that topic.
     try {

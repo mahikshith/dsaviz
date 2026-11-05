@@ -34,7 +34,7 @@ class Component extends DCLogic {
   componentDidMount() {
     listenTheme(this);
     let q = 0;
-    this.onScroll = () => { if (!q) q = requestAnimationFrame(() => { q = 0; this.mark(); }); };
+    this.onScroll = () => { if (!q) q = (window.requestAnimationFrame || ((f) => setTimeout(f, 16)))(() => { q = 0; this.mark(); }); };
     try { window.addEventListener('scroll', this.onScroll, { passive: true }); } catch (e) {}
     // A search result for a pattern lands here: send it to the Problems page filtered by that topic.
     try {

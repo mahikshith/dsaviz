@@ -57,13 +57,14 @@ Object.keys(W.hubs).forEach((h) => { if (!['start', 'concepts', 'sd', 'ai', 'pat
 
 // Every page that still shows the fold has its marker and feeds it values. The five lesson pages (step 2 of PLAN-2026-11) no longer
 // show it: they must not carry the phrase, the block or the values.
-const pages = { Start: 'whyHub', Concepts: 'whyHub', SystemDesign: 'whyHub', AIML: 'whyHub', Patterns: 'whyHub', Complexity: 'whyHub', Briefing: 'whyPattern', Story: 'whyPattern' };
+const pages = { Start: 'whyHub', Concepts: 'whyHub', SystemDesign: 'whyHub', AIML: 'whyHub', Complexity: 'whyHub', Briefing: 'whyPattern', Story: 'whyPattern' };
 for (const [pg, fn] of Object.entries(pages)) {
   const s = read('pages', pg + '.dc.html');
   if (!s.includes('<!-- WHY -->') || !s.includes('{{why.does}}')) fail(pg, 'no Why block');
   if (!s.includes('why: whyVals(' + fn)) fail(pg, 'renderVals does not pass why: whyVals(' + fn + '(...))');
 }
-for (const pg of ['Chapter', 'ConceptLesson', 'SDLesson', 'AILesson', 'Git']) {
+// The Roadmap (the Patterns page, step 5) has no Why block either.
+for (const pg of ['Chapter', 'ConceptLesson', 'SDLesson', 'AILesson', 'Git', 'Patterns']) {
   const s = read('pages', pg + '.dc.html');
   const body = s.slice(s.indexOf('</helmet>'), s.indexOf('<script type="text/x-dc"'));
   if (/Why learn this/i.test(body)) fail(pg, '"Why learn this?" is shown on a lesson page');

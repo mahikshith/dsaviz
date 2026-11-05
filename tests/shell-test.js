@@ -26,7 +26,7 @@ server.listen(0, async () => {
   // DS_ONLY=problem skips the lesson checks and runs only the Problem page checks at the end of this file.
   const ONLY_PROBLEM = process.env.DS_ONLY === 'problem';
   // DS_ONLY=problems runs only the Problems page and search checks (step 4).
-  const ONLY_PAGE = process.env.DS_ONLY === 'problems' || process.env.DS_ONLY === 'roadmap' || process.env.DS_ONLY === 'profile' || process.env.DS_ONLY === 'fronts';
+  const ONLY_PAGE = process.env.DS_ONLY === 'problems' || process.env.DS_ONLY === 'roadmap' || process.env.DS_ONLY === 'profile' || process.env.DS_ONLY === 'fronts' || process.env.DS_ONLY === 'home';
   // DS_ONLY=roadmap runs only the Roadmap checks (step 5).
   const ONLY_RM = process.env.DS_ONLY === 'roadmap';
   for (const [theme, width] of ONLY_PROBLEM || ONLY_PAGE ? [] : [['max', 320], ['max', 390], ['max', 1024], ['max', 1440], ['paper', 390]]) {
@@ -434,6 +434,188 @@ server.listen(0, async () => {
     await pg.close();
     console.log('  Profile settings: Light/Dark and Text size near the top, applied at once, kept after a reload');
   }
+  // ---- Home (step 7): pages/Home.dc.html on the frame. A new visitor (nothing done) sees one plain line, one lime "Start here" button to the first Start here lesson and three plain links, nothing else.
+  // A returning learner sees the next lesson with its track and a lime Continue button, then four equal tiles (lessons done, problems solved, streak, medals) with a big number, a short label and a thin
+  // bar where a total exists, then "Due for review" only when something is due. The numbers are checked against a second copy of DS (the data block shipped in the page) fed the same seeded localStorage.
+  // No calendar, league, XP, medals wall, tour, check-in popup, demo data, "coming soon", stepper, story words or "Why learn this". Phones: tiles 2x2, no sideways scroll at 390 and 320, dark and light. DS_ONLY=home runs just this.
+  if ((!ONLY_PROBLEM && !ONLY_PAGE) || process.env.DS_ONLY === 'home') {
+    const homeSrc = fs.readFileSync(path.join(__dirname, '..', 'pages', 'Home.dc.html'), 'utf8');
+    const grab = (a, b) => { const i = homeSrc.indexOf(a), j = homeSrc.indexOf(b, i); return homeSrc.slice(i, j + b.length); };
+    const roadmap = JSON.parse(/const ROADMAP = (\{.*\});/.exec(homeSrc)[1]);
+    const nodeDS = (store) => {
+      const win = { localStorage: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } } };
+      return new Function('window', grab('// @@CATALOG@@', '// @@END@@') + '\n' + grab('// @@SHEET@@', '// @@END-SHEET@@') + '\n' + grab('// @@DATA@@', '// @@END-DATA@@') + '\nreturn { DS, SHEET, PROBLEMS, PATTERNS };')(win);
+    };
+    const startLessons = roadmap.start.reduce((a, c) => a.concat(c.lessons), []);
+    const total = startLessons.length + roadmap.dsa.length + roadmap.git.length + roadmap.sd.length + roadmap.ai.length;
+    const dkey = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+    const NOW = Date.now(), THREE_DAYS = NOW - 3 * 86400000;
+    const probe = nodeDS({});
+    const rowOf = (pid) => probe.SHEET.find((r) => r.pid === pid);
+    const treeRow = probe.SHEET.find((r) => r.pattern === 'Trees'), otherRow = probe.SHEET.find((r) => r.pattern === 'Graphs');
+    const day = (n) => [dkey(n), { code: 1, xp: 30 }];
+    const seedOf = (kind) => {
+      const s = {};
+      if (kind === 'new') return s;
+      const days = {}; const put = (n) => { const [k, v] = day(n); days[k] = v; };
+      let code = { 'two-sum': NOW, 'valid-anagram': NOW }, stories = { 'two-sum': NOW }, lessons = { 'dsa:bigo': NOW, 'sd:scale': NOW, 'ai:graphs': NOW }, startDone = { 'what-is-a-program': NOW, 'first-run': NOW }, ticks = { [treeRow.id]: NOW };
+      if (kind === 'ret' || kind === 'due') { put(0); put(1); put(2); }
+      if (kind === 'missed') { put(1); put(2); ticks = { [treeRow.id]: NOW - 86400000 }; }
+      if (kind === 'nomedal') { code = {}; stories = {}; ticks = {}; startDone = {}; lessons = { 'dsa:bigo': NOW }; put(0); }
+      if (kind === 'due') ticks[otherRow.id] = THREE_DAYS;
+      s['dsaviz-activity-v1'] = JSON.stringify({ v: 1, days, stories, code, lessons, start: {} });
+      s['dsaviz-start-v1'] = JSON.stringify({ v: 1, done: startDone, ex: {}, skip: {}, placed: 0, last: '', stage: {} });
+      s['dsaviz-sheet-v1'] = JSON.stringify({ v: 1, done: ticks, star: {} });
+      return s;
+    };
+    const expectOf = (kind) => {
+      const { DS, SHEET, PROBLEMS, PATTERNS } = nodeDS(seedOf(kind));
+      const ids = new Set(DS.codePasses().ids.concat(DS.stories().ids)), tk = DS.sheet().done;
+      const solved = SHEET.filter((r) => tk[r.id] || ids.has(r.pid) || (r.story && ids.has(r.story))).length;
+      const med = DS.medals(PROBLEMS, PATTERNS);
+      return { lessons: DS.lessons().count + Object.keys(DS.start().done).length, solved, sheetTotal: SHEET.length, streak: DS.streak().current, activeToday: DS.streak().activeToday,
+        medals: med.filter((m) => m.tier).length, medalsTotal: med.length, due: DS.reviewDue().length };
+    };
+    const FORBID = /calendar|league|\bxp\b|leaderboard|\btour\b|check-in|demo|coming soon|why learn this|on the path|story|stories|lantern|sheet tick|medals wall/i;
+    const lessonH1 = (p) => p.evaluate(() => { const m = document.querySelector('main.sh-lesson'); return m ? (m.querySelector('h1') || {}).textContent || '' : null; });
+    const ex = { ret: expectOf('ret'), due: expectOf('due'), missed: expectOf('missed'), nomedal: expectOf('nomedal') };
+    if (ex.ret.lessons !== 5 || ex.ret.solved !== 3 || ex.ret.streak !== 3 || ex.ret.medals < 1) fail('Home test setup: the seeded learner reads ' + JSON.stringify(ex.ret) + ', not 5 lessons, 3 problems, a 3-day streak and a medal');
+    if (ex.ret.due !== 0 || ex.due.due < 1 || ex.nomedal.medals !== 0) fail('Home test setup: due ' + ex.ret.due + '/' + ex.due.due + ', no-medal learner has ' + ex.nomedal.medals + ' medals');
+    const upTitle = startLessons[2][1];
+    const homeInfo = (p) => p.evaluate(() => {
+      const root = document.querySelector('#app > div'), main = root.querySelector('main.sh-main'); const W = document.documentElement.clientWidth;
+      const seen = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0; };
+      const tiles = [...main.querySelectorAll('.hm-tile')];
+      const rc = (e) => { const b = e.getBoundingClientRect(); return { top: Math.round(b.top + window.scrollY), left: Math.round(b.left), w: Math.round(b.width), h: Math.round(b.height) }; };
+      const accent = getComputedStyle(root).getPropertyValue('--sh-accent').trim();
+      const lime = (e) => { const c = getComputedStyle(e).backgroundColor; const t = document.createElement('i'); t.style.color = accent; document.body.appendChild(t); const a = getComputedStyle(t).color; t.remove(); return c === a; };
+      const btns = [...main.querySelectorAll('a.sh-btn')];
+      return { shell: root.hasAttribute('data-shell'), zoom: document.documentElement.style.zoom, W, over: document.documentElement.scrollWidth - W, h1: [...main.querySelectorAll('h1')].map((h) => h.textContent.trim()),
+        line: (main.querySelector('.hm-line') || {}).textContent || '', kicker: (main.querySelector('.hm-up') || {}).textContent || '',
+        btns: btns.map((b) => ({ text: b.textContent.trim(), lime: lime(b), h: Math.round(b.getBoundingClientRect().height), href: b.getAttribute('href') })),
+        links: [...main.querySelectorAll('.hm-links a')].map((a) => a.textContent.trim()),
+        startHere: [...document.querySelectorAll('#app *')].filter((e) => !e.children.length && e.textContent.trim() === 'Start here' && seen(e)).length,
+        tiles: tiles.map((t) => ({ r: rc(t), num: (t.querySelector('.hm-num') || {}).textContent, name: (t.querySelector('.hm-name') || {}).textContent, note: (t.querySelector('.hm-note') || {}).textContent,
+          bar: (() => { const b = t.querySelector('[role=progressbar]'); return b ? { h: Math.round(b.getBoundingClientRect().height), now: b.getAttribute('aria-valuenow'), max: b.getAttribute('aria-valuemax') } : null; })(),
+          inner: t.querySelectorAll('a,button,details,summary,[aria-expanded],[role=button],[tabindex]').length, cursor: getComputedStyle(t).cursor, tag: t.tagName })),
+        due: (() => { const d = main.querySelector('[data-due]'); return d ? { text: d.textContent.trim(), href: d.getAttribute('href') } : null; })(),
+        text: main.textContent, whole: root.textContent, svgs: main.querySelectorAll('svg').length, buttons: main.querySelectorAll('button,[role=tab],details').length,
+        popups: document.querySelectorAll('[data-daily],[role=dialog],[data-tour-root],[data-tour-card]').length, tourApi: typeof window.__dsTour,
+        limeBlocks: [...main.querySelectorAll('*')].filter((e) => !e.closest('svg') && lime(e) && seen(e)).length,
+        small: [...main.querySelectorAll('*')].filter((e) => !e.children.length && e.textContent.trim() && parseFloat(getComputedStyle(e).fontSize) < 13.99).length,
+        bodySize: getComputedStyle(root).fontSize };
+    });
+    const openHome = async (kind, width, theme, wait) => {
+      const pg = await browser.newPage({ viewport: { width, height: 900 }, isMobile: width < 760, hasTouch: width < 760 });
+      await pg.addInitScript(([t, seed]) => { try { localStorage.setItem('dsaviz-theme', t); for (const k in seed) localStorage.setItem(k, seed[k]); } catch (e) {} }, [theme, seedOf(kind)]);
+      pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+      await pg.goto('http://localhost:' + server.address().port + '/#Home'); await pg.waitForTimeout(wait || 1300);
+      return pg;
+    };
+    const summary = [];
+    // New visitor, then returning, in every width and both themes.
+    for (const [kind, theme, width] of [['new', 'max', 1440], ['new', 'max', 1024], ['new', 'max', 390], ['new', 'paper', 390], ['new', 'max', 320], ['new', 'paper', 1440],
+      ['ret', 'max', 1440], ['ret', 'max', 1024], ['ret', 'max', 390], ['ret', 'paper', 390], ['ret', 'max', 320], ['ret', 'paper', 1440], ['due', 'max', 390], ['nomedal', 'max', 1440]]) {
+      const pg = await openHome(kind, width, theme);
+      const id = 'Home (' + kind + ') at ' + width + (theme === 'max' ? '' : ' ' + theme);
+      const r = await homeInfo(pg), e = ex[kind];
+      if (!r.shell || r.zoom !== '1') fail(id + ': not on the shared frame, no zoom (zoom ' + r.zoom + ')');
+      if (r.bodySize !== '18px') fail(id + ': body text ' + r.bodySize);
+      if (r.over > 0) fail(id + ': scrolls sideways by ' + r.over + 'px');
+      const off = await pg.evaluate(offenders); if (off.length) fail(id + ': sticks out past the screen: ' + off.join(' | '));
+      if (r.small) fail(id + ': ' + r.small + ' texts under 14px');
+      if (r.h1.length !== 1) fail(id + ': ' + r.h1.length + ' headings');
+      if (FORBID.test(r.text)) fail(id + ': old copy on the page: ' + FORBID.exec(r.text)[0]);
+      if (/medals/i.test(r.text) && r.svgs) fail(id + ': pictures on Home (a medals wall?)');
+      if (r.svgs || r.buttons) fail(id + ': ' + r.svgs + ' pictures and ' + r.buttons + ' buttons, tabs or folds in the page');
+      if (r.popups || r.tourApi !== 'undefined') fail(id + ': a popup, check-in or tour is on the page (' + r.popups + ', tour ' + r.tourApi + ')');
+      if (pg.errs.length) fail(id + ' page errors: ' + pg.errs[0]);
+      if (kind === 'new') {
+        const first = startLessons[0];
+        if (r.btns.length !== 1 || r.btns[0].text !== 'Start here' || !r.btns[0].lime || r.btns[0].h < 44) fail(id + ': the buttons are ' + JSON.stringify(r.btns));
+        else if (!/^\?ch=what-is-a-program#Chapter$|^Chapter\.dc\.html\?ch=what-is-a-program$/.test(r.btns[0].href) || first[0] !== 'what-is-a-program') fail(id + ': Start here goes to ' + r.btns[0].href);
+        if (r.startHere !== 1) fail(id + ': "Start here" shows ' + r.startHere + ' times');
+        if (r.line.length < 30 || r.line.split(' ').length > 26) fail(id + ': the line reads "' + r.line + '"');
+        if (r.links.join('|') !== 'Roadmap|Problems|Try the first problem') fail(id + ': links are ' + r.links.join('|'));
+        if (r.tiles.length || r.kicker || r.due) fail(id + ': a new visitor sees tiles, a next lesson or a due line');
+        if (r.limeBlocks !== 1) fail(id + ': ' + r.limeBlocks + ' lime blocks, not just the one button');
+        if (width === 1440 && theme === 'max') {
+          // The three links and Start here work.
+          const go = async (sel, nth, want, what) => {
+            await pg.evaluate(() => window.__dsNav('Home.dc.html')); await pg.waitForTimeout(700);
+            await pg.locator(sel).nth(nth).click(); await pg.waitForTimeout(1100);
+            const h = await pg.evaluate(() => ({ h1: ((document.querySelector('main h1') || {}).textContent || '').trim(), hash: location.hash }));
+            if (!want.test(h.h1 + ' ' + h.hash)) fail(id + ': ' + what + ' opened ' + JSON.stringify(h));
+          };
+          await go('a[data-start]', 0, new RegExp(first[1].replace(/[?]/g, '\\?'), 'i'), 'Start here');
+          await go('.hm-links a', 0, /roadmap/i, 'Roadmap');
+          await go('.hm-links a', 1, /problems/i, 'Problems');
+          await go('.hm-links a', 2, /#Code/, 'the first problem');
+        }
+      } else {
+        const [tl, tp, ts, tm] = r.tiles;
+        if (r.tiles.length !== 4) fail(id + ': ' + r.tiles.length + ' tiles, not 4');
+        else {
+          const want = [['Lessons done', String(e.lessons), 'of ' + total, total], ['Problems solved', String(e.solved), 'of ' + e.sheetTotal, e.sheetTotal], ['Day streak', String(e.streak), null, null], ['Medals', String(e.medals), e.medals ? 'of ' + e.medalsTotal : 'Finish a track to earn one', e.medalsTotal]];
+          r.tiles.forEach((t, i) => {
+            const [nm, num, note, tot] = want[i];
+            if (t.name !== nm || t.num !== num) fail(id + ': tile ' + (i + 1) + ' reads "' + t.num + ' ' + t.name + '", not "' + num + ' ' + nm + '"');
+            if (note && t.note !== note) fail(id + ': tile "' + nm + '" note reads "' + t.note + '", not "' + note + '"');
+            if (tot) { if (!t.bar || t.bar.h > 6 || t.bar.now !== num || t.bar.max !== String(tot)) fail(id + ': tile "' + nm + '" bar is ' + JSON.stringify(t.bar)); }
+            else if (t.bar) fail(id + ': tile "' + nm + '" has a bar though it has no total');
+            if (t.inner || t.tag !== 'LI' || t.cursor === 'pointer') fail(id + ': tile "' + nm + '" is clickable or opens (' + t.inner + ' controls, ' + t.cursor + ')');
+          });
+          if (Math.max(...r.tiles.map((t) => t.r.h)) - Math.min(...r.tiles.map((t) => t.r.h)) > 1) fail(id + ': tiles differ in height: ' + r.tiles.map((t) => t.r.h).join(', '));
+          if (Math.max(...r.tiles.map((t) => t.r.w)) - Math.min(...r.tiles.map((t) => t.r.w)) > 1) fail(id + ': tiles differ in width: ' + r.tiles.map((t) => t.r.w).join(', '));
+          const tops = [...new Set(r.tiles.map((t) => t.r.top))];
+          if (width >= 1024 && tops.length !== 1) fail(id + ': the four tiles are not in one row (' + tops.join(', ') + ')');
+          if (width < 760) {
+            if (tops.length !== 2 || r.tiles.filter((t) => t.r.top === tops[0]).length !== 2) fail(id + ': the tiles are not 2x2 (' + tops.join(', ') + ')');
+            r.tiles.forEach((t) => { if (t.r.w < 120) fail(id + ': a tile is only ' + t.r.w + 'px wide'); });
+          }
+        }
+        if (r.btns.length !== 1 || r.btns[0].text !== 'Continue' || !r.btns[0].lime || r.btns[0].h < 44) fail(id + ': the buttons are ' + JSON.stringify(r.btns));
+        if (kind !== 'nomedal' && r.h1[0] !== upTitle) fail(id + ': the next lesson reads "' + r.h1[0] + '", not "' + upTitle + '"');
+        if (kind === 'nomedal' && r.h1[0] !== roadmap.start[0].lessons[0][1]) fail(id + ': the next lesson reads "' + r.h1[0] + '"');
+        if (r.kicker !== 'Up next in Start here') fail(id + ': the track line reads "' + r.kicker + '"');
+        if (r.startHere !== 0) fail(id + ': a returning learner still sees a "Start here" button');
+        if (r.line || r.links.length) fail(id + ': the new-visitor line or links show for a returning learner');
+        if (e.due > 0) { if (!r.due || !/^(Sheet\.dc\.html)?\?due=1(#Sheet)?$/.test(r.due.href) || r.due.text !== 'Due for review: ' + e.due + (e.due === 1 ? ' problem' : ' problems')) fail(id + ': the due line is ' + JSON.stringify(r.due) + ', DS says ' + e.due + ' due'); }
+        else if (r.due) fail(id + ': a due line shows though nothing is due');
+        if (kind === 'ret' && ts && ts.note !== 'You did something today') fail(id + ': the streak note reads "' + ts.note + '"');
+        if (kind === 'ret' && width === 1440 && theme === 'max') {
+          // Continue opens the Up next lesson, and Back from it names Home.
+          await pg.locator('a[data-continue]').click(); await pg.waitForTimeout(1200);
+          const h = await lessonH1(pg);
+          if (!h || h.trim().toLowerCase() !== upTitle.toLowerCase()) fail(id + ': Continue opened "' + h + '", not "' + upTitle + '"');
+          const back = await pg.evaluate(() => (document.querySelector('main.sh-lesson a.sh-back') || {}).textContent || '');
+          if (h && !/Back to Start here$/.test(back.trim())) fail(id + ': the lesson says "' + back.trim() + '"');
+        }
+        if (kind === 'due' && width === 390) {
+          await pg.locator('a[data-due]').click(); await pg.waitForTimeout(1200);
+          const on = await pg.evaluate(() => ({ hash: location.hash, search: location.search, h1: ((document.querySelector('main h1') || {}).textContent || '').trim(), pressed: [...document.querySelectorAll('[aria-pressed="true"],[aria-checked="true"]')].map((x) => x.textContent.trim()).join('|') }));
+          if (!/problems/i.test(on.h1) || !/due=1/.test(on.search) || !/due/i.test(on.pressed)) fail(id + ': Due for review opened ' + JSON.stringify(on));
+        }
+        if (width === 1440 && theme === 'max' && kind === 'ret') summary.push('numbers ' + [r.tiles.map((t) => t.num).join('/')]);
+      }
+      await pg.close();
+    }
+    // The old daily check-in must not appear on any page, even for a learner who was active yesterday and not yet today, and the streak data is still read.
+    {
+      const pg = await openHome('missed', 1440, 'max');
+      const r = await homeInfo(pg), e = ex.missed;
+      if (!r.tiles.length || r.tiles[2].num !== String(e.streak) || r.tiles[2].note !== 'Do one thing today to keep it' || e.streak !== 2) fail('Home (missed yesterday): the streak tile reads ' + JSON.stringify(r.tiles[2]) + ', DS says ' + e.streak);
+      for (const p of ['Home', 'Patterns', 'Sheet', 'Start', 'Concepts', 'Profile', 'Code', 'Complexity']) {
+        await pg.evaluate((n) => window.__dsNav(n + '.dc.html'), p); await pg.waitForTimeout(900);
+        const n = await pg.evaluate(() => ({ pop: document.querySelectorAll('[data-daily],[role=dialog],[data-tour-root]').length, text: /Keep it going|You missed yesterday|Use my freeze|Take the tour/.test(document.body.textContent) }));
+        if (n.pop || n.text) fail(p + ': a check-in or tour popup is on the page (' + JSON.stringify(n) + ')');
+      }
+      if (pg.errs.length) fail('Home popups check: page errors: ' + pg.errs[0]);
+      await pg.close();
+    }
+    console.log('  Home: new visitor (one line, one lime Start here to "' + startLessons[0][1] + '", three links) and returning learner (Continue to "' + upTitle + '", four equal tiles checked against DS: ' + summary.join(', ') + '; lessons of ' + total + '), Due for review only when due, 2x2 tiles on phones, no sideways scroll at 390 and 320 in both themes, no calendar, league, XP, medals wall, tour, popup or story words');
+  }
+  if (process.env.DS_ONLY === 'home') { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'home clean'); process.exit(bad ? 1 : 0); }
   // ---- The four course fronts (step 6): Start.dc.html, Concepts.dc.html, SystemDesign.dc.html, AIML.dc.html share one layout. Back link, the track name, one line, done out of
   // total with a thin bar, a short "How the lessons work" strip (3 points at most, no fold) above the lessons, one lime Continue/Start button for the Up next lesson, then every lesson
   // as an equal block in a full-width grid under section headings: title, time if any, Done or Up next. One click opens a lesson, Continue opens the Up next one, Back works,

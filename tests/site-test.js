@@ -23,7 +23,7 @@
 // the pill nav and aria-hidden are skipped; neither element nor box containing the other); when an element with visible text is clipped (scrollWidth
 // over clientWidth by more than 1px under overflow hidden or clip, or text-overflow ellipsis), unless it sits inside
 // [data-clip-ok]; when [data-path-node] siblings have unequal gaps (more than 2px apart); when a fold summary or .ds-hit has no hover
-// transition (unless reduced motion); or when Home or Snapshot has no .ds-hit (Snapshot gets only this box check). DS_PASS=layout runs only this pass.
+// transition (unless reduced motion); or when Snapshot has no .ds-hit (Home is a frame page since step 7). DS_PASS=layout runs only this pass.
 // Needs Playwright:  npm install --no-save playwright && npx playwright install chromium
 // Or playwright-core with an installed browser:  npm install --no-save playwright-core
 //   then DS_BROWSER=msedge npm run test:browser   (or chrome)
@@ -154,7 +154,7 @@ const layout = (boxOnly) => {
     }
   }
   const pageName = root.getAttribute('data-page');
-  if ((pageName === 'Home' || pageName === 'Snapshot') && !root.querySelector('.ds-hit')) boxes.push('no .ds-hit on ' + pageName);
+  if (pageName === 'Snapshot' && !root.querySelector('.ds-hit')) boxes.push('no .ds-hit on ' + pageName); // Home left the old .ds-hit boxes in step 7 (it is a frame page)
   if (boxOnly) return { texts: 0, issues: boxes };
   const shown = (el) => { const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return false; const cs = getComputedStyle(el); return cs.visibility !== 'hidden' && cs.display !== 'none' && Number(cs.opacity) > 0.05; };
   const clean = (s) => s.replace(/\s+/g, ' ').trim().slice(0, 30);
@@ -593,7 +593,7 @@ server.listen(0, async () => {
   }
   if (!ONLY_CONTROLS && !ONLY_READ) console.log(problems > controlProblems ? (problems - controlProblems) + ' problem(s) with layout (overlapping or clipped text, uneven path gaps)' : 'no overlapping or clipped text');
 
-  // ---------- tour pass: a fresh browser sees the tour once on Home; Skip closes it and it stays closed ----------
+  // ---------- tour pass: step 7 removed the first-visit tour and the daily check-in popup, so a fresh browser sees neither on Home ----------
   if (!SKIP_MAIN) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const errors = [];
@@ -601,23 +601,12 @@ server.listen(0, async () => {
     const fails = [];
     await page.addInitScript(() => { try { localStorage.setItem('dsaviz-theme', 'max'); } catch (e) {} });
     await page.goto(url + '#Home');
-    const shown = () => page.evaluate(() => { const c = document.querySelector('[data-tour-card]'); const r = document.querySelector('[data-tour-root]'); return !!c && !!r && !r.hidden && c.getBoundingClientRect().width > 0; });
-    try { await page.waitForFunction(() => { const r = document.querySelector('[data-tour-root]'); return r && !r.hidden; }, null, { timeout: 8000 }); } catch (e) { fails.push('the tour did not open on the first Home visit'); }
-    if (!fails.length) {
-      if (!(await shown())) fails.push('tour card not visible');
-      const info = await page.evaluate(() => ({ focus: !!document.activeElement && !!document.activeElement.closest('[data-tour-card]'), words: document.querySelector('[data-tour-text]').textContent.trim().split(/\s+/).length }));
-      if (!info.focus) fails.push('focus did not move into the tour card');
-      if (info.words > 18) fails.push('a tour sentence is over 18 words');
-      await page.click('[data-tour-skip]');
-      await page.waitForTimeout(300);
-      if (await shown()) fails.push('Skip did not close the tour');
-      await page.reload();
-      await page.waitForTimeout(2000);
-      if (await shown()) fails.push('the tour opened again after Skip');
-    }
+    await page.waitForTimeout(2500);
+    const n = await page.evaluate(() => ({ tour: document.querySelectorAll('[data-tour-root],[data-tour-card]').length, daily: document.querySelectorAll('[data-daily],[role=dialog]').length, api: typeof window.__dsTour }));
+    if (n.tour || n.daily || n.api !== 'undefined') fails.push('a tour or popup is on a first Home visit: ' + JSON.stringify(n));
     if (errors.length) fails.push('errors: ' + errors.slice(0, 2).join(' | '));
     if (fails.length) problems++;
-    console.log(fails.length ? '✗' : '✓', 'tour'.padEnd(10), fails.length ? fails.join('; ') : 'opens on the first Home visit, Skip closes it, it does not reopen');
+    console.log(fails.length ? '✗' : '✓', 'tour'.padEnd(10), fails.length ? fails.join('; ') : 'no tour and no check-in popup on a first Home visit (both removed in step 7)');
     await page.close();
   }
 

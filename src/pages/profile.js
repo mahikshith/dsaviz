@@ -210,6 +210,8 @@ class Component extends DCLogic {
     const firstDay = hm.cells.find((x) => x.n);
     return {
       t, ...navVals(this, t, themeKey, 'Profile'), themeBtns: themeButtons(this, themeKey, t),
+      setThemeBtns: [['paper', 'Light'], ['max', 'Dark']].map(([k, label]) => { const on = (k === 'paper') === (themeKey === 'paper'); return { label, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, border: on ? t.accent : t.line2, pick: () => { saveTheme(k); this.setState({ theme: k }); } }; }),
+      setTextBtns: TEXT_SIZES.map(([k, label]) => { const on = loadTextSize() === k; return { label, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, border: on ? t.accent : t.line2, pick: () => { saveTextSize(k); this.setState({ textSize: k }); } }; }),
       me: {
         title: me.name || 'Your profile', hasName: !!me.initials, noName: !me.initials, initials: me.initials, icon: ICONS.user,
         avatarBg: me.initials ? t.accent : t.sunk, avatarFg: me.initials ? t.onAccent : t.text,

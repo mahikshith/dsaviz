@@ -26,7 +26,7 @@ server.listen(0, async () => {
   // DS_ONLY=problem skips the lesson checks and runs only the Problem page checks at the end of this file.
   const ONLY_PROBLEM = process.env.DS_ONLY === 'problem';
   // DS_ONLY=problems runs only the Problems page and search checks (step 4).
-  const ONLY_PAGE = process.env.DS_ONLY === 'problems' || process.env.DS_ONLY === 'roadmap';
+  const ONLY_PAGE = process.env.DS_ONLY === 'problems' || process.env.DS_ONLY === 'roadmap' || process.env.DS_ONLY === 'profile' || process.env.DS_ONLY === 'fronts';
   // DS_ONLY=roadmap runs only the Roadmap checks (step 5).
   const ONLY_RM = process.env.DS_ONLY === 'roadmap';
   for (const [theme, width] of ONLY_PROBLEM || ONLY_PAGE ? [] : [['max', 320], ['max', 390], ['max', 1024], ['max', 1440], ['paper', 390]]) {
@@ -386,6 +386,38 @@ server.listen(0, async () => {
     console.log('  Roadmap: rows ' + counts.rows + ' blocks at 1440, lessons per track ' + counts.lessons + ', one Start here, no tabs or folds, equal heights per row, one per row on phones, one click opens any lesson, Back to Roadmap / Chapter N keeps the scroll and lands on the chapter, Patterns open Problems filtered');
   }
   if (process.env.DS_ONLY === 'roadmap') { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'roadmap clean'); process.exit(bad ? 1 : 0); }
+  // ---- Settings on Profile (step 6, commit 1): theme (Light or Dark) and Text size sit near the top of Profile, change the page at once, and persist after a reload.
+  if ((!ONLY_PROBLEM && !ONLY_PAGE) || process.env.DS_ONLY === 'profile') {
+    const pg = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await pg.addInitScript(() => { try { if (!sessionStorage.getItem('seeded')) { sessionStorage.setItem('seeded', '1'); localStorage.setItem('dsaviz-theme', 'max'); localStorage.removeItem('dsaviz-text-size'); } localStorage.setItem('dsaviz-tour-done', '1'); } catch (e) {} });
+    pg.errs = []; pg.on('pageerror', (e) => pg.errs.push(e.message));
+    await pg.goto('http://localhost:' + server.address().port + '/'); await pg.waitForTimeout(500);
+    const openP = async () => { await pg.evaluate(() => window.__dsNav('Profile.dc.html')); await pg.waitForTimeout(900); await pg.evaluate(() => { const b = document.querySelector('[data-daily] button[aria-label="Close"]'); if (b) b.click(); }); };
+    const read = () => pg.evaluate(() => ({ theme: localStorage.getItem('dsaviz-theme'), size: localStorage.getItem('dsaviz-text-size'), ts: getComputedStyle(document.documentElement).getPropertyValue('--ts').trim(),
+      bg: getComputedStyle(document.querySelector('#app > div')).backgroundColor,
+      top: (document.querySelector('[data-settings]') || { getBoundingClientRect: () => ({ top: 9999 }) }).getBoundingClientRect().top,
+      light: (document.querySelector('[data-set-theme][aria-pressed="true"]') || {}).textContent, big: (document.querySelector('[data-set-text][aria-pressed="true"]') || {}).textContent }));
+    await openP();
+    const a = await read();
+    if (a.top > 400) fail('Profile: the settings are not near the top (at ' + a.top + 'px)');
+    if (a.light !== 'Dark' || a.big !== 'Normal') fail('Profile: settings start as ' + a.light + ' / ' + a.big + ', not Dark / Normal');
+    await pg.click('[data-set-theme]:has-text("Light")'); await pg.waitForTimeout(500);
+    await pg.click('[data-set-text]:has-text("Large")'); await pg.waitForTimeout(700);
+    const b = await read();
+    if (b.theme !== 'paper' || b.size !== 'large') fail('Profile: choosing Light and Large stored ' + b.theme + ' / ' + b.size);
+    if (b.bg === a.bg) fail('Profile: choosing Light did not change the page colour (' + b.bg + ')');
+    if (Math.abs(parseFloat(b.ts || '1') - 1.15) > 0.01) fail('Profile: choosing Large left --ts at "' + b.ts + '"');
+    await pg.reload(); await pg.waitForTimeout(700); await openP();
+    const c = await read();
+    if (c.theme !== 'paper' || c.size !== 'large' || c.light !== 'Light' || c.big !== 'Large' || c.bg !== b.bg || Math.abs(parseFloat(c.ts || '1') - 1.15) > 0.01) fail('Profile: after a reload the settings are ' + JSON.stringify(c) + ', not kept');
+    await pg.click('[data-set-theme]:has-text("Dark")'); await pg.click('[data-set-text]:has-text("Normal")'); await pg.waitForTimeout(500);
+    const d = await read();
+    if (d.theme !== 'max' || d.size !== 'normal' || d.bg !== a.bg) fail('Profile: going back to Dark and Normal gives ' + JSON.stringify(d));
+    if (pg.errs.length) fail('Profile settings page errors: ' + pg.errs[0]);
+    await pg.close();
+    console.log('  Profile settings: Light/Dark and Text size near the top, applied at once, kept after a reload');
+  }
+  if (process.env.DS_ONLY === 'profile') { await browser.close(); server.close(); console.log(bad ? bad + ' problems' : 'profile settings clean'); process.exit(bad ? 1 : 0); }
   // ---- The top bar: on phones (below 760) only the menu, logo, search and profile; wider: no menu, logo, Roadmap, Problems, search and profile.
   // No two items overlap, none is covered by another element or past the screen edge, and no old Back button is in the bar. On phones the menu holds
   // Roadmap and Problems, with the current page marked.

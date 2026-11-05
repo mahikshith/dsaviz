@@ -431,6 +431,14 @@ a.sh-row:hover{background:var(--sh-sunk)}
 </div>
 </section>
 
+<section aria-labelledby="pf-set-h" data-settings style="padding: 24px; border-radius: 16px; background: {{t.surface}}; display: flex; flex-wrap: wrap; align-items: center; gap: 24px 48px">
+<h2 id="pf-set-h" style="margin: 0; font-size: var(--fs24); font-weight: 600">Settings</h2>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap"><span style="font-size: var(--fs18); color: {{t.text2}}">Theme</span>
+<div role="group" aria-label="Theme" style="display: flex; gap: 8px"><sc-for list="{{setThemeBtns}}" as="sb" hint-placeholder-count="2"><button data-set-theme onClick="{{sb.pick}}" aria-pressed="{{sb.on}}" style="min-height: 44px; padding: 0 16px; border-radius: 6px; border: 1px solid {{sb.border}}; background: {{sb.bg}}; color: {{sb.fg}}; cursor: pointer; font-size: var(--fs18); font-weight: 600">{{sb.label}}</button></sc-for></div></div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap"><span style="font-size: var(--fs18); color: {{t.text2}}">Text size</span>
+<div role="group" aria-label="Text size" style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{setTextBtns}}" as="sx" hint-placeholder-count="3"><button data-set-text onClick="{{sx.pick}}" aria-pressed="{{sx.on}}" style="min-height: 44px; padding: 0 16px; border-radius: 6px; border: 1px solid {{sx.border}}; background: {{sx.bg}}; color: {{sx.fg}}; cursor: pointer; font-size: var(--fs18); font-weight: 600">{{sx.label}}</button></sc-for></div></div>
+</section>
+
 <sc-if value="{{shareOpen}}" hint-placeholder-val="{{ false }}">
 <section id="pf-share" tabindex="-1" aria-label="Share my progress" style="padding: 24px; border-radius: 16px; background: {{t.surface}}; border: 1px solid {{t.accent}}; display: grid; grid-template-columns: 600px minmax(0, 1fr); gap: 24px; align-items: center; outline: none; animation: rise 0.3s cubic-bezier(.2,.8,.2,1)">
 <img src="{{shareUrl}}" alt="{{shareAlt}}" width="600" height="315" style="display: block; width: 600px; height: 315px; border-radius: 12px; border: 1px solid {{t.line}}">
@@ -2458,6 +2466,8 @@ class Component extends DCLogic {
     const firstDay = hm.cells.find((x) => x.n);
     return {
       t, ...navVals(this, t, themeKey, 'Profile'), themeBtns: themeButtons(this, themeKey, t),
+      setThemeBtns: [['paper', 'Light'], ['max', 'Dark']].map(([k, label]) => { const on = (k === 'paper') === (themeKey === 'paper'); return { label, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, border: on ? t.accent : t.line2, pick: () => { saveTheme(k); this.setState({ theme: k }); } }; }),
+      setTextBtns: TEXT_SIZES.map(([k, label]) => { const on = loadTextSize() === k; return { label, on: on ? 'true' : 'false', bg: on ? t.accent : 'transparent', fg: on ? t.onAccent : t.text, border: on ? t.accent : t.line2, pick: () => { saveTextSize(k); this.setState({ textSize: k }); } }; }),
       me: {
         title: me.name || 'Your profile', hasName: !!me.initials, noName: !me.initials, initials: me.initials, icon: ICONS.user,
         avatarBg: me.initials ? t.accent : t.sunk, avatarFg: me.initials ? t.onAccent : t.text,
